@@ -1,0 +1,39 @@
+{
+  "name": "cubis-foundry",
+  "version": "0.3.0",
+  "description": "Cubis Foundry CLI for workflow-first AI agent environments",
+  "type": "module",
+  "bin": {
+    "cbx": "bin/cubis.js",
+    "cubiskill": "bin/cubis.js",
+    "cubis": "bin/cubis.js"
+  },
+  "files": [
+    "bin",
+    "powers",
+    "skills",
+    "workflows",
+    "README.md"
+  ],
+  "scripts": {
+    "start": "node bin/cubis.js",
+    "check": "node bin/cubis.js --help"
+  },
+  "engines": {
+    "node": ">=18.17"
+  },
+  "keywords": [
+    "cbx",
+    "cubis-foundry",
+    "workflow",
+    "antigravity",
+    "skills",
+    "codex",
+    "cli"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@inquirer/prompts": "^7.8.6",
+    "commander": "^14.0.1"
+  }
+}
