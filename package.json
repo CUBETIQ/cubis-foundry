@@ -10,9 +10,7 @@
   },
   "files": [
     "bin",
-    "powers",
-    "skills",
-    "workflows",
+    "Ai Agent Workflow",
     "README.md"
   ],
   "scripts": {

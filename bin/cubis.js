@@ -2,6 +2,7 @@
 
 import { confirm, select } from "@inquirer/prompts";
 import { Command } from "commander";
+import { existsSync } from "node:fs";
 import {
   cp,
   mkdir,
@@ -22,6 +23,7 @@ const { version: CLI_VERSION } = require("../package.json");
 
 const MANAGED_BLOCK_START_RE = /<!--\s*cbx:workflows:auto:start[^>]*-->/g;
 const MANAGED_BLOCK_END_RE = /<!--\s*cbx:workflows:auto:end\s*-->/g;
+const AGENT_ASSETS_SUBDIR = "Ai Agent Workflow";
 
 const WORKFLOW_PROFILES = {
   antigravity: {
@@ -78,6 +80,11 @@ const PLATFORM_ALIASES = {
 function packageRoot() {
   const filename = fileURLToPath(import.meta.url);
   return path.resolve(path.dirname(filename), "..");
+}
+
+function agentAssetsRoot() {
+  const preferred = path.join(packageRoot(), AGENT_ASSETS_SUBDIR);
+  return existsSync(preferred) ? preferred : packageRoot();
 }
 
 function expandPath(inputPath, cwd = process.cwd()) {
@@ -222,7 +229,7 @@ async function resolveProfilePaths(profileId, scope, cwd = process.cwd()) {
 }
 
 async function listBundleIds() {
-  const root = path.join(packageRoot(), "workflows");
+  const root = path.join(agentAssetsRoot(), "workflows");
   if (!(await pathExists(root))) return [];
 
   const entries = await readdir(root, { withFileTypes: true });
@@ -240,7 +247,7 @@ async function listBundleIds() {
 }
 
 async function readBundleManifest(bundleId) {
-  const manifestPath = path.join(packageRoot(), "workflows", bundleId, "manifest.json");
+  const manifestPath = path.join(agentAssetsRoot(), "workflows", bundleId, "manifest.json");
   if (!(await pathExists(manifestPath))) {
     throw new Error(`Bundle '${bundleId}' not found at ${manifestPath}`);
   }
@@ -664,7 +671,7 @@ async function installBundleArtifacts({
     await mkdir(profilePaths.skillsDir, { recursive: true });
   }
 
-  const bundleRoot = path.join(packageRoot(), "workflows", bundleId);
+  const bundleRoot = path.join(agentAssetsRoot(), "workflows", bundleId);
   const platformRoot = path.join(bundleRoot, "platforms", platform);
 
   const installed = [];
@@ -703,7 +710,7 @@ async function installBundleArtifacts({
 
   const skillIds = Array.isArray(platformSpec.skills) ? platformSpec.skills : [];
   for (const skillId of skillIds) {
-    const source = path.join(packageRoot(), "skills", skillId);
+    const source = path.join(agentAssetsRoot(), "skills", skillId);
     const destination = path.join(profilePaths.skillsDir, skillId);
 
     if (!(await pathExists(source))) {
@@ -740,7 +747,7 @@ async function seedRuleFileFromTemplateIfMissing({
   if (!ruleFilePath) return { ruleFilePath: null, action: "none" };
   if (await pathExists(ruleFilePath)) return { ruleFilePath, action: "exists" };
 
-  const templatePath = path.join(packageRoot(), "workflows", bundleId, platformSpec.rulesTemplate);
+  const templatePath = path.join(agentAssetsRoot(), "workflows", bundleId, platformSpec.rulesTemplate);
   if (!(await pathExists(templatePath))) return { ruleFilePath, action: "missing-template" };
 
   if (!dryRun) {

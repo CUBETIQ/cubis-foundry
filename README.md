@@ -2,6 +2,8 @@
 
 Workflow-first installer for AI agent environments.
 
+Repository layout note: reusable workflow/skill/power assets are stored under `Ai Agent Workflow/`.
+
 Primary support in this release:
 - Antigravity
 - Codex
@@ -40,7 +42,7 @@ cbx workflows install --platform antigravity --dry-run
 Catalog root:
 
 ```text
-workflows/
+Ai Agent Workflow/workflows/
 ```
 
 First bundled profile:
@@ -49,13 +51,13 @@ First bundled profile:
 Bundle manifest:
 
 ```text
-workflows/agent-environment-setup/manifest.json
+Ai Agent Workflow/workflows/agent-environment-setup/manifest.json
 ```
 
 Bundle contains platform-specific:
 - slash-command workflows (`workflows/*.md`)
 - specialist agent definitions (`agents/*.md`)
-- mapped reusable skills copied from `skills/<id>/`
+- mapped reusable skills copied from `Ai Agent Workflow/skills/<id>/`
 - rule templates (`rules/*.md`)
 
 ## Installed Workflow Set (v1)
@@ -207,19 +209,19 @@ TMP_DIR="$(mktemp -d /tmp/cbx-smoke.XXXXXX)"
 cd "$TMP_DIR"
 
 # 2) Antigravity preview + apply + doctor
-node /Users/phumrin/Documents/Cubis\ Foundry/ai_agent_skill_and_power/bin/cubis.js workflows install --platform antigravity --bundle agent-environment-setup --dry-run
-node /Users/phumrin/Documents/Cubis\ Foundry/ai_agent_skill_and_power/bin/cubis.js workflows install --platform antigravity --bundle agent-environment-setup --yes
-node /Users/phumrin/Documents/Cubis\ Foundry/ai_agent_skill_and_power/bin/cubis.js workflows doctor antigravity --json
+cbx workflows install --platform antigravity --bundle agent-environment-setup --dry-run
+cbx workflows install --platform antigravity --bundle agent-environment-setup --yes
+cbx workflows doctor antigravity --json
 
 # 3) Codex preview + apply + doctor
 mkdir -p .codex/skills  # optional: simulate legacy path warning
-node /Users/phumrin/Documents/Cubis\ Foundry/ai_agent_skill_and_power/bin/cubis.js workflows install --platform codex --bundle agent-environment-setup --dry-run
-node /Users/phumrin/Documents/Cubis\ Foundry/ai_agent_skill_and_power/bin/cubis.js workflows install --platform codex --bundle agent-environment-setup --yes
-node /Users/phumrin/Documents/Cubis\ Foundry/ai_agent_skill_and_power/bin/cubis.js workflows doctor codex --json
+cbx workflows install --platform codex --bundle agent-environment-setup --dry-run
+cbx workflows install --platform codex --bundle agent-environment-setup --yes
+cbx workflows doctor codex --json
 
 # 4) Remove bundle preview + apply
-node /Users/phumrin/Documents/Cubis\ Foundry/ai_agent_skill_and_power/bin/cubis.js workflows remove agent-environment-setup --platform antigravity --dry-run
-node /Users/phumrin/Documents/Cubis\ Foundry/ai_agent_skill_and_power/bin/cubis.js workflows remove agent-environment-setup --platform antigravity --yes
+cbx workflows remove agent-environment-setup --platform antigravity --dry-run
+cbx workflows remove agent-environment-setup --platform antigravity --yes
 ```
 
 ## Doctor Checks
