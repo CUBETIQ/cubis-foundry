@@ -1,93 +1,79 @@
-# Codex Agent Environment (CBX Template)
+# AGENTS.md - Cubis Foundry Codex Protocol
 
-This file is the operating protocol for a full AG-kit-style Codex setup, mapped to Cubis skills.
+This file defines mandatory behavior for Codex projects installed via `cbx workflows`.
 
-## 1) Operating Goals
+## 1) Platform Paths
 
-1. Ship working code fast without reducing safety.
-2. Keep decisions explicit, testable, and reversible.
-3. Route each task to the best specialist instead of one generic flow.
+- Workflows: `.agents/workflows`
+- Agents: `.agents/agents`
+- Skills: `.agents/skills`
+- Rules file: `AGENTS.md`
 
-## 2) Primary Workflow Rule
+## 2) Workflow-First Contract
 
-1. If user explicitly names a workflow command, run that workflow first.
-2. If no command is provided, select one by intent from `.agents/workflows`.
-3. If task spans multiple domains, use `/orchestrate` and delegate.
+1. If the user explicitly requests a slash command, run that workflow first.
+2. Otherwise choose the best workflow by intent from `.agents/workflows`.
+3. For cross-domain tasks, use `/orchestrate` and `@orchestrator`.
 4. Keep one primary workflow; use others only as supporting references.
 
-## 3) Full Specialist Roster
+## 3) Request Classifier
 
-Agents available in `.agents/agents`:
-- `@backend-specialist`
-- `@code-archaeologist`
-- `@database-architect`
-- `@debugger`
-- `@devops-engineer`
-- `@documentation-writer`
-- `@explorer-agent`
-- `@frontend-specialist`
-- `@game-developer`
-- `@mobile-developer`
-- `@orchestrator`
-- `@penetration-tester`
-- `@performance-optimizer`
-- `@product-manager`
-- `@product-owner`
-- `@project-planner`
-- `@qa-automation-engineer`
-- `@security-auditor`
-- `@seo-specialist`
-- `@test-engineer`
+1. Question/explanation requests: answer directly.
+2. Survey/intel requests: inspect and summarize before editing.
+3. Simple code changes: minimal edits with focused verification.
+4. Complex code/design changes: plan first, then implement and verify.
 
-## 4) Routing Matrix
+## 4) Agent Routing Policy
 
-1. Backend APIs/services/data contracts -> `@backend-specialist`
-2. Legacy code understanding/refactor safety -> `@code-archaeologist`
-3. Schema/query/migration design -> `@database-architect`
-4. Root-cause analysis and failure isolation -> `@debugger`
-5. Deployment/release/rollback -> `@devops-engineer`
-6. Technical docs and runbooks -> `@documentation-writer`
-7. Codebase discovery and architecture mapping -> `@explorer-agent`
-8. UI/UX/frontend architecture -> `@frontend-specialist`
-9. Mobile app implementation -> `@mobile-developer`
-10. Security assessment/remediation -> `@security-auditor`
-11. Offensive validation -> `@penetration-tester`
-12. Performance bottleneck removal -> `@performance-optimizer`
-13. Test strategy and execution -> `@test-engineer` or `@qa-automation-engineer`
-14. Product scope and acceptance criteria -> `@product-manager` / `@product-owner`
-15. Cross-domain execution -> `@orchestrator`
+Use the best specialist first:
 
-## 5) Skill Support Policy
+- Backend/API/database: `@backend-specialist`, `@database-architect`
+- Frontend/UI: `@frontend-specialist`
+- Mobile: `@mobile-developer`
+- Security: `@security-auditor`, `@penetration-tester`
+- DevOps/release: `@devops-engineer`
+- Testing/QA: `@test-engineer`, `@qa-automation-engineer`
+- Debugging/performance: `@debugger`, `@performance-optimizer`
+- Cross-domain orchestration: `@orchestrator`
 
-Installed Cubis skills are in `.agents/skills`.
+## 5) Skill Loading Policy
 
-Policy:
-1. Each agent should prefer its mapped Cubis skills first.
-2. If multiple skills match, pick one primary and keep others supportive.
-3. Keep context minimal: load only skills needed for current task.
-4. If a referenced skill is missing, continue with best fallback and report it.
+1. Load only skills needed for the active request.
+2. Prefer progressive disclosure: start from `SKILL.md`, then specific sections.
+3. Keep context lean; avoid loading unrelated skill documents.
+4. If a mapped skill is missing, continue with best fallback and state it.
 
-## 6) Execution Contract
+## 6) Socratic Gate (Before Complex Work)
 
-For substantial tasks, output must include:
-1. Assumptions and constraints
-2. Plan or milestone sequence
-3. Concrete changes made
-4. Verification evidence (tests/checks)
-5. Residual risks and follow-up
+Before multi-file or architecture-impacting changes, ask targeted questions when requirements are unclear:
 
-## 7) Quality Gates
+1. Goal and success criteria
+2. Constraints and compatibility requirements
+3. Validation expectations (tests, lint, release checks)
 
-Before finalizing:
-1. Verify requested behavior is implemented.
-2. Run focused checks where practical.
-3. State what was not validated.
-4. Explicitly note migration/compatibility impacts.
+## 7) Quality and Safety Gates
 
-## 8) Optional Conductor Integration
+1. Do not run destructive actions without explicit user confirmation.
+2. Keep diffs small and reversible when possible.
+3. Verify behavior with focused checks before finalizing.
+4. State what was not validated.
 
-If conductor artifacts exist (spec/plan/tasks), use them as supporting context.
-Do not require conductor for normal operation.
+## 8) CBX Maintenance Commands
+
+Use these commands to keep this setup healthy:
+
+- Install/update bundle:
+  `cbx workflows install --platform codex --bundle agent-environment-setup --scope project --overwrite`
+- Rebuild managed routing block:
+  `cbx workflows sync-rules --platform codex --scope project`
+- Diagnose setup issues:
+  `cbx workflows doctor codex --scope project`
+
+## 9) Managed Section Contract
+
+1. Preserve all user content outside managed markers.
+2. Do not manually edit content between managed markers.
+3. `cbx workflows sync-rules` is the source of truth for the managed block.
 
 <!-- cbx:workflows:auto:start platform=codex version=1 -->
 ## CBX Workflow Routing (auto-managed)

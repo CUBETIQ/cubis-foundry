@@ -114,5 +114,128 @@ node "$CLI" workflows sync-rules --platform codex >/tmp/cbx-c4b.log
 rg -n 'Action: unchanged' /tmp/cbx-c4b.log >/dev/null
 log_ok "Second sync is idempotent"
 
+log_step "P1 Copilot dry-run install"
+node "$CLI" workflows install --platform copilot --bundle agent-environment-setup --dry-run >/tmp/cbx-p1.log
+[ ! -d .github/agents ]
+[ ! -d .github/skills ]
+log_ok "Dry-run did not write Copilot files"
+
+log_step "P2 Copilot apply + doctor"
+node "$CLI" workflows install --platform copilot --bundle agent-environment-setup --yes >/tmp/cbx-p2.log
+[ -f AGENTS.md ]
+[ -f .github/copilot/workflows/backend.md ]
+[ -f .github/copilot/workflows/orchestrate.md ]
+[ -f .github/copilot/workflows/release.md ]
+[ -f .github/copilot/workflows/security.md ]
+[ -f .github/copilot/workflows/database.md ]
+[ -f .github/copilot/workflows/mobile.md ]
+[ -f .github/copilot/workflows/devops.md ]
+[ -f .github/copilot/workflows/qa.md ]
+[ -f .github/agents/backend-specialist.md ]
+[ -f .github/agents/security-auditor.md ]
+[ -f .github/agents/devops-engineer.md ]
+[ -f .github/agents/orchestrator.md ]
+[ -f .github/agents/test-engineer.md ]
+[ "$(find .github/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" = "20" ]
+[ -d .github/skills/api-designer ]
+rg -n '^name:' .github/skills/accessibility/SKILL.md >/dev/null
+if rg -n '^displayName:' .github/skills/accessibility/SKILL.md >/dev/null; then
+  echo "[FAIL] Copilot SKILL.md still contains unsupported displayName attribute" >&2
+  exit 1
+fi
+if rg -n '^keywords:' .github/skills/accessibility/SKILL.md >/dev/null; then
+  echo "[FAIL] Copilot SKILL.md still contains unsupported keywords attribute" >&2
+  exit 1
+fi
+if rg -n '^skills:' .github/agents/backend-specialist.md >/dev/null; then
+  echo "[FAIL] Copilot agent file still contains unsupported skills attribute" >&2
+  exit 1
+fi
+node - <<'NODE'
+const fs = require('fs');
+const path = require('path');
+
+const allowedSkillKeys = new Set(['compatibility', 'description', 'license', 'metadata', 'name']);
+const allowedAgentKeys = new Set([
+  'name',
+  'description',
+  'tools',
+  'target',
+  'infer',
+  'mcp-servers',
+  'metadata',
+  'model',
+  'handoffs',
+  'argument-hint'
+]);
+
+function topLevelKeys(frontmatter) {
+  return [...new Set(
+    frontmatter
+      .split(/\r?\n/)
+      .filter((line) => line && !/^\s/.test(line))
+      .map((line) => (line.match(/^([A-Za-z0-9_-]+)\s*:/) || [])[1])
+      .filter(Boolean)
+  )];
+}
+
+function frontmatter(text) {
+  const m = text.match(/^---\n([\s\S]*?)\n---\n?/);
+  return m ? m[1] : null;
+}
+
+const skillRoot = path.join(process.cwd(), '.github/skills');
+for (const skillId of fs.readdirSync(skillRoot)) {
+  const file = path.join(skillRoot, skillId, 'SKILL.md');
+  if (!fs.existsSync(file)) continue;
+  const fm = frontmatter(fs.readFileSync(file, 'utf8'));
+  if (!fm) continue;
+  const unsupported = topLevelKeys(fm).filter((k) => !allowedSkillKeys.has(k));
+  if (unsupported.length) {
+    console.error(`[FAIL] Copilot skill ${skillId} has unsupported keys: ${unsupported.join(', ')}`);
+    process.exit(1);
+  }
+}
+
+const agentRoot = path.join(process.cwd(), '.github/agents');
+for (const fileName of fs.readdirSync(agentRoot).filter((f) => f.endsWith('.md'))) {
+  const file = path.join(agentRoot, fileName);
+  const fm = frontmatter(fs.readFileSync(file, 'utf8'));
+  if (!fm) continue;
+  const unsupported = topLevelKeys(fm).filter((k) => !allowedAgentKeys.has(k));
+  if (unsupported.length) {
+    console.error(`[FAIL] Copilot agent ${fileName} has unsupported keys: ${unsupported.join(', ')}`);
+    process.exit(1);
+  }
+}
+NODE
+node "$CLI" workflows doctor copilot --json >/tmp/cbx-p2-doctor.json
+rg -n '"platform": "copilot"' /tmp/cbx-p2-doctor.json >/dev/null
+if rg -n 'Unsupported top-level Copilot agent attributes detected' /tmp/cbx-p2-doctor.json >/dev/null; then
+  echo "[FAIL] Doctor still reports unsupported Copilot agent attributes after normalization" >&2
+  exit 1
+fi
+log_ok "Copilot install complete and doctor output generated"
+
+log_step "P2.1 /backend wiring check (Copilot files)"
+rg -n '^command:\s*"/backend"' .github/copilot/workflows/backend.md >/dev/null
+rg -n '@backend-specialist' .github/copilot/workflows/backend.md >/dev/null
+log_ok "Copilot workflow declares /backend and routes to @backend-specialist"
+
+log_step "P3 Sync idempotency"
+node "$CLI" workflows sync-rules --platform copilot >/tmp/cbx-p3a.log
+node "$CLI" workflows sync-rules --platform copilot >/tmp/cbx-p3b.log
+rg -n 'Action: unchanged' /tmp/cbx-p3b.log >/dev/null
+log_ok "Copilot second sync is idempotent"
+
+log_step "P4 Remove apply"
+node "$CLI" workflows remove agent-environment-setup --platform copilot --yes >/tmp/cbx-p4.log
+[ ! -f .github/copilot/workflows/backend.md ]
+[ ! -f .github/agents/backend-specialist.md ]
+[ ! -d .github/skills/api-designer ]
+[ -f AGENTS.md ]
+rg -n 'No installed workflows found yet\.' AGENTS.md >/dev/null
+log_ok "Copilot bundle removed and managed block kept"
+
 log_step "DONE"
 echo "ALL_OK"

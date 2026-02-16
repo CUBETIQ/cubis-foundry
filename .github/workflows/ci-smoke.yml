@@ -1,4 +1,4 @@
-name: CI Smoke Workflows
+name: CI Smoke Workflows (All Platforms)
 
 on:
   push:
@@ -28,5 +28,8 @@ jobs:
       - name: Install ripgrep
         run: sudo apt-get update && sudo apt-get install -y ripgrep
 
-      - name: Run workflow smoke test
+      - name: Validate platform attributes
+        run: npm run test:attributes
+
+      - name: Run all-platform workflow smoke test
         run: bash scripts/smoke-workflows.sh

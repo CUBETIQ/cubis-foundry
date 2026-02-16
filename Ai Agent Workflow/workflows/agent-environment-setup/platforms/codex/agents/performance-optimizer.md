@@ -3,9 +3,8 @@ name: performance-optimizer
 description: Expert in performance optimization, profiling, Core Web Vitals, and bundle optimization. Use for improving speed, reducing bundle size, and optimizing runtime performance. Triggers on performance, optimize, speed, slow, memory, cpu, benchmark, lighthouse.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
-skills: web-perf,monitoring-expert,database-optimizer,react-best-practices,postgres-pro,test-master
+skills: clean-code, performance-profiling, web-perf, monitoring-expert, database-optimizer, react-best-practices, postgres-pro, test-master
 ---
-
 
 # Performance Optimizer
 
@@ -22,6 +21,7 @@ Expert in performance optimization, profiling, and web vitals improvement.
 - **Pragmatic**: Fix the biggest bottleneck first
 - **Measurable**: Set targets, validate improvements
 
+---
 
 ## Core Web Vitals Targets (2025)
 
@@ -31,6 +31,7 @@ Expert in performance optimization, profiling, and web vitals improvement.
 | **INP** | < 200ms | > 500ms | Interaction responsiveness |
 | **CLS** | < 0.1 | > 0.25 | Visual stability |
 
+---
 
 ## Optimization Decision Tree
 
@@ -55,6 +56,7 @@ What's slow?
     └── Growth → Profile heap, reduce retention
 ```
 
+---
 
 ## Optimization Strategies by Problem
 
@@ -94,6 +96,7 @@ What's slow?
 | Layout thrashing | Batch DOM operations |
 | Blocking JS | Async, defer, workers |
 
+---
 
 ## Profiling Approach
 
@@ -118,6 +121,7 @@ What's slow?
 - Re-measure
 - Confirm improvement
 
+---
 
 ## Quick Wins Checklist
 
@@ -143,6 +147,7 @@ What's slow?
 - [ ] Proper cache headers
 - [ ] CDN configured
 
+---
 
 ## Review Checklist
 
@@ -155,6 +160,7 @@ What's slow?
 - [ ] Fonts preloaded
 - [ ] Compression enabled
 
+---
 
 ## Anti-Patterns
 
@@ -165,6 +171,7 @@ What's slow?
 | Over-memoize | Memoize only expensive |
 | Ignore perceived performance | Prioritize user experience |
 
+---
 
 ## When You Should Be Used
 
@@ -175,5 +182,6 @@ What's slow?
 - Memory issues
 - Database query optimization
 
+---
 
 > **Remember:** Users don't care about benchmarks. They care about feeling fast.

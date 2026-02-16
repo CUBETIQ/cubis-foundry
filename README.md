@@ -7,6 +7,7 @@ Repository layout note: reusable workflow/skill/power assets are stored under `A
 Primary support in this release:
 - Antigravity
 - Codex
+- Copilot (VS Code Chat + Copilot CLI)
 
 ## Install
 
@@ -26,6 +27,7 @@ Compatibility binaries are still shipped for migration:
 ```bash
 cbx workflows install --platform antigravity
 cbx workflows install --platform codex
+cbx workflows install --platform copilot
 cbx workflows remove <bundle-or-workflow> --platform antigravity
 cbx workflows sync-rules --platform codex
 cbx workflows doctor codex
@@ -88,9 +90,10 @@ Codex bundle now includes additional workflow commands:
 - `/incident`
 - `/release`
 
-Full AG-kit-style specialist roster is installed for both:
+Full AG-kit-style specialist roster is installed for all supported platforms:
 - Codex: `.agents/agents`
 - Antigravity: `.agent/agents`
+- Copilot: `.github/agents`
 
 Specialists:
 - `@backend-specialist`
@@ -147,6 +150,21 @@ Global scope:
 Legacy compatibility note:
 - `.codex/skills` is treated as legacy and flagged by `doctor` with migration guidance.
 
+### Copilot
+
+Project scope:
+- Workflows: `.github/copilot/workflows`
+- Agents: `.github/agents`
+- Skills: `.github/skills`
+- Rules: `AGENTS.md` (preferred), fallback `.github/copilot-instructions.md`
+- Skill schema note: `cbx` normalizes Copilot skill frontmatter by removing unsupported top-level keys like `displayName` and `keywords` during install.
+
+Global scope:
+- Workflows: `~/.copilot/workflows`
+- Agents: `~/.copilot/agents`
+- Skills: `~/.copilot/skills`
+- Rules: `~/.copilot/copilot-instructions.md`
+
 ## Rule Auto-Sync
 
 `cbx` maintains a single managed block in the active platform rule file.
@@ -175,7 +193,7 @@ Optional:
 - `--scope global`
 
 Platform auto-detection:
-- Uses repo markers for Antigravity/Codex.
+- Uses repo markers for Antigravity/Codex/Copilot.
 - Prompts when ambiguous.
 - Remembers last selected platform in local state.
 
@@ -219,7 +237,12 @@ cbx workflows install --platform codex --bundle agent-environment-setup --dry-ru
 cbx workflows install --platform codex --bundle agent-environment-setup --yes
 cbx workflows doctor codex --json
 
-# 4) Remove bundle preview + apply
+# 4) Copilot preview + apply + doctor
+cbx workflows install --platform copilot --bundle agent-environment-setup --dry-run
+cbx workflows install --platform copilot --bundle agent-environment-setup --yes
+cbx workflows doctor copilot --json
+
+# 5) Remove bundle preview + apply
 cbx workflows remove agent-environment-setup --platform antigravity --dry-run
 cbx workflows remove agent-environment-setup --platform antigravity --yes
 ```
@@ -232,6 +255,7 @@ cbx workflows remove agent-environment-setup --platform antigravity --yes
 - managed block health
 - Codex legacy path warnings (`.codex/skills`)
 - Antigravity `.gitignore` warning for `.agent/` with recommendation to use `.git/info/exclude` for local-only excludes
+- Copilot project/global path health (`.github/agents`, `.github/skills`, `AGENTS.md` / `.github/copilot-instructions.md`)
 
 ## Conductor Integration
 
@@ -247,10 +271,34 @@ Run CLI help locally:
 node bin/cubis.js --help
 ```
 
+Run attribute validation (non-strict):
+
+```bash
+npm run test:attributes
+```
+
+Run attribute validation (strict, fails on warnings):
+
+```bash
+npm run test:attributes:strict
+```
+
 Run full workflow smoke test:
 
 ```bash
 bash scripts/smoke-workflows.sh
+```
+
+Run the full suite:
+
+```bash
+npm run test:all
+```
+
+Run the full suite in strict mode:
+
+```bash
+npm run test:all:strict
 ```
 
 ## References

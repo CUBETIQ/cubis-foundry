@@ -15,7 +15,12 @@
   ],
   "scripts": {
     "start": "node bin/cubis.js",
-    "check": "node bin/cubis.js --help"
+    "check": "node bin/cubis.js --help",
+    "test:attributes": "node scripts/validate-platform-attributes.mjs",
+    "test:attributes:strict": "node scripts/validate-platform-attributes.mjs --strict",
+    "test:smoke": "bash scripts/smoke-workflows.sh",
+    "test:all": "npm run test:attributes && npm run test:smoke",
+    "test:all:strict": "npm run test:attributes:strict && npm run test:smoke"
   },
   "engines": {
     "node": ">=18.17"

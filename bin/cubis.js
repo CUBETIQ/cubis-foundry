@@ -24,6 +24,25 @@ const { version: CLI_VERSION } = require("../package.json");
 const MANAGED_BLOCK_START_RE = /<!--\s*cbx:workflows:auto:start[^>]*-->/g;
 const MANAGED_BLOCK_END_RE = /<!--\s*cbx:workflows:auto:end\s*-->/g;
 const AGENT_ASSETS_SUBDIR = "Ai Agent Workflow";
+const COPILOT_ALLOWED_SKILL_FRONTMATTER_KEYS = new Set([
+  "compatibility",
+  "description",
+  "license",
+  "metadata",
+  "name"
+]);
+const COPILOT_ALLOWED_AGENT_FRONTMATTER_KEYS = new Set([
+  "name",
+  "description",
+  "tools",
+  "target",
+  "infer",
+  "mcp-servers",
+  "metadata",
+  "model",
+  "handoffs",
+  "argument-hint"
+]);
 
 const WORKFLOW_PROFILES = {
   antigravity: {
@@ -63,6 +82,31 @@ const WORKFLOW_PROFILES = {
     detectorPaths: [".agents", ".agents/workflows", ".agents/skills", "AGENTS.md"],
     legacyDetectorPaths: [".codex/skills"],
     ruleHintName: "AGENTS.md"
+  },
+  copilot: {
+    id: "copilot",
+    label: "GitHub Copilot",
+    project: {
+      workflowDirs: [".github/copilot/workflows"],
+      agentDirs: [".github/agents"],
+      skillDirs: [".github/skills"],
+      ruleFilesByPriority: ["AGENTS.md", ".github/copilot-instructions.md"]
+    },
+    global: {
+      workflowDirs: ["~/.copilot/workflows"],
+      agentDirs: ["~/.copilot/agents"],
+      skillDirs: ["~/.copilot/skills"],
+      ruleFilesByPriority: ["~/.copilot/copilot-instructions.md"]
+    },
+    detectorPaths: [
+      ".github/agents",
+      ".github/skills",
+      ".github/copilot-instructions.md",
+      ".github/instructions",
+      "AGENTS.md"
+    ],
+    legacyDetectorPaths: [],
+    ruleHintName: "AGENTS.md or .github/copilot-instructions.md"
   }
 };
 
@@ -74,7 +118,12 @@ const PLATFORM_ALIASES = {
   "google-antigravity-cli": "antigravity",
   "google-antigravity-ide": "antigravity",
   codex: "codex",
-  openai: "codex"
+  openai: "codex",
+  copilot: "copilot",
+  "github-copilot": "copilot",
+  "copilot-chat": "copilot",
+  "copilot-cli": "copilot",
+  github: "copilot"
 };
 
 function packageRoot() {
@@ -407,6 +456,141 @@ function extractFrontmatter(markdown) {
   };
 }
 
+function hasFrontmatter(markdown) {
+  return /^---\n[\s\S]*?\n---\n?/.test(markdown);
+}
+
+function collectTopLevelFrontmatterKeys(frontmatter) {
+  const keys = [];
+  for (const line of frontmatter.split(/\r?\n/)) {
+    if (!line || /^\s/.test(line)) continue;
+    const match = line.match(/^([A-Za-z0-9_-]+)\s*:/);
+    if (!match) continue;
+    keys.push(match[1]);
+  }
+  return unique(keys);
+}
+
+function unsupportedCopilotSkillFrontmatterKeys(frontmatter) {
+  const keys = collectTopLevelFrontmatterKeys(frontmatter);
+  return keys.filter((key) => !COPILOT_ALLOWED_SKILL_FRONTMATTER_KEYS.has(key));
+}
+
+function unsupportedCopilotAgentFrontmatterKeys(frontmatter) {
+  const keys = collectTopLevelFrontmatterKeys(frontmatter);
+  return keys.filter((key) => !COPILOT_ALLOWED_AGENT_FRONTMATTER_KEYS.has(key));
+}
+
+function sanitizeSkillMarkdownForCopilot(markdown) {
+  if (!hasFrontmatter(markdown)) {
+    return { changed: false, content: markdown, removedKeys: [] };
+  }
+
+  const { frontmatter, body } = extractFrontmatter(markdown);
+  const lines = frontmatter.split(/\r?\n/);
+  const kept = [];
+  const removedKeys = [];
+  let skipUnsupportedKey = null;
+
+  for (const line of lines) {
+    if (skipUnsupportedKey) {
+      const isTopLevelKey = /^([A-Za-z0-9_-]+)\s*:/.test(line) && !/^\s/.test(line);
+      if (!isTopLevelKey) {
+        continue;
+      }
+      skipUnsupportedKey = null;
+    }
+
+    const keyMatch = line.match(/^([A-Za-z0-9_-]+)\s*:/);
+    if (!keyMatch || /^\s/.test(line)) {
+      kept.push(line);
+      continue;
+    }
+
+    const key = keyMatch[1];
+    if (COPILOT_ALLOWED_SKILL_FRONTMATTER_KEYS.has(key)) {
+      kept.push(line);
+      continue;
+    }
+
+    removedKeys.push(key);
+    const inlineArray = /\[[\s\S]*\]\s*$/.test(line);
+    if (!inlineArray) {
+      skipUnsupportedKey = key;
+    }
+  }
+
+  const cleanedFrontmatter = kept.join("\n").replace(/\n{3,}/g, "\n\n").trimEnd();
+  const bodyWithoutLeadingNewlines = body.replace(/^\n+/, "");
+  const rebuilt = `---\n${cleanedFrontmatter}\n---\n${bodyWithoutLeadingNewlines}`;
+  const dedupedRemovedKeys = unique(removedKeys);
+
+  if (dedupedRemovedKeys.length === 0) {
+    return { changed: false, content: markdown, removedKeys: [] };
+  }
+
+  return {
+    changed: rebuilt !== markdown,
+    content: rebuilt,
+    removedKeys: dedupedRemovedKeys
+  };
+}
+
+function sanitizeAgentMarkdownForCopilot(markdown) {
+  if (!hasFrontmatter(markdown)) {
+    return { changed: false, content: markdown, removedKeys: [] };
+  }
+
+  const { frontmatter, body } = extractFrontmatter(markdown);
+  const lines = frontmatter.split(/\r?\n/);
+  const kept = [];
+  const removedKeys = [];
+  let skipUnsupportedKey = null;
+
+  for (const line of lines) {
+    if (skipUnsupportedKey) {
+      const isTopLevelKey = /^([A-Za-z0-9_-]+)\s*:/.test(line) && !/^\s/.test(line);
+      if (!isTopLevelKey) {
+        continue;
+      }
+      skipUnsupportedKey = null;
+    }
+
+    const keyMatch = line.match(/^([A-Za-z0-9_-]+)\s*:/);
+    if (!keyMatch || /^\s/.test(line)) {
+      kept.push(line);
+      continue;
+    }
+
+    const key = keyMatch[1];
+    if (COPILOT_ALLOWED_AGENT_FRONTMATTER_KEYS.has(key)) {
+      kept.push(line);
+      continue;
+    }
+
+    removedKeys.push(key);
+    const inlineArray = /\[[\s\S]*\]\s*$/.test(line);
+    if (!inlineArray) {
+      skipUnsupportedKey = key;
+    }
+  }
+
+  const cleanedFrontmatter = kept.join("\n").replace(/\n{3,}/g, "\n\n").trimEnd();
+  const bodyWithoutLeadingNewlines = body.replace(/^\n+/, "");
+  const rebuilt = `---\n${cleanedFrontmatter}\n---\n${bodyWithoutLeadingNewlines}`;
+  const dedupedRemovedKeys = unique(removedKeys);
+
+  if (dedupedRemovedKeys.length === 0) {
+    return { changed: false, content: markdown, removedKeys: [] };
+  }
+
+  return {
+    changed: rebuilt !== markdown,
+    content: rebuilt,
+    removedKeys: dedupedRemovedKeys
+  };
+}
+
 function extractFrontmatterValue(frontmatter, key) {
   const match = frontmatter.match(new RegExp(`^\\s*${key}\\s*:\\s*(.+)$`, "m"));
   if (!match) return null;
@@ -649,6 +833,112 @@ async function copyArtifact({ source, destination, overwrite, dryRun = false }) 
   return { action: exists ? "replaced" : "installed", path: destination };
 }
 
+async function sanitizeInstalledSkillsForPlatform({
+  platform,
+  skillDirs,
+  dryRun = false
+}) {
+  if (dryRun || platform !== "copilot") return [];
+
+  const sanitized = [];
+
+  for (const skillDir of skillDirs) {
+    const skillFile = path.join(skillDir, "SKILL.md");
+    if (!(await pathExists(skillFile))) continue;
+
+    const raw = await readFile(skillFile, "utf8");
+    const { changed, content, removedKeys } = sanitizeSkillMarkdownForCopilot(raw);
+    if (!changed) continue;
+
+    await writeFile(skillFile, content, "utf8");
+    sanitized.push({
+      skillId: path.basename(skillDir),
+      removedKeys
+    });
+  }
+
+  return sanitized;
+}
+
+async function sanitizeInstalledAgentsForPlatform({
+  platform,
+  agentFiles,
+  dryRun = false
+}) {
+  if (dryRun || platform !== "copilot") return [];
+
+  const sanitized = [];
+
+  for (const agentFile of agentFiles) {
+    if (!(await pathExists(agentFile))) continue;
+    const raw = await readFile(agentFile, "utf8");
+    const { changed, content, removedKeys } = sanitizeAgentMarkdownForCopilot(raw);
+    if (!changed) continue;
+
+    await writeFile(agentFile, content, "utf8");
+    const agentId = path.basename(agentFile).replace(/\.agent\.md$/i, "").replace(/\.md$/i, "");
+    sanitized.push({
+      agentId,
+      removedKeys
+    });
+  }
+
+  return sanitized;
+}
+
+async function validateCopilotSkillsSchema(skillsDir) {
+  if (!(await pathExists(skillsDir))) return [];
+
+  const entries = await readdir(skillsDir, { withFileTypes: true });
+  const findings = [];
+
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
+    const skillFile = path.join(skillsDir, entry.name, "SKILL.md");
+    if (!(await pathExists(skillFile))) continue;
+
+    const raw = await readFile(skillFile, "utf8");
+    if (!hasFrontmatter(raw)) continue;
+    const { frontmatter } = extractFrontmatter(raw);
+    const unsupportedKeys = unsupportedCopilotSkillFrontmatterKeys(frontmatter);
+    if (unsupportedKeys.length === 0) continue;
+
+    findings.push({
+      skillId: entry.name,
+      unsupportedKeys
+    });
+  }
+
+  return findings;
+}
+
+async function validateCopilotAgentsSchema(agentsDir) {
+  if (!(await pathExists(agentsDir))) return [];
+
+  const entries = await readdir(agentsDir, { withFileTypes: true });
+  const findings = [];
+
+  for (const entry of entries) {
+    if (!entry.isFile()) continue;
+    if (!entry.name.endsWith(".md")) continue;
+    const agentFile = path.join(agentsDir, entry.name);
+    if (!(await pathExists(agentFile))) continue;
+
+    const raw = await readFile(agentFile, "utf8");
+    if (!hasFrontmatter(raw)) continue;
+    const { frontmatter } = extractFrontmatter(raw);
+    const unsupportedKeys = unsupportedCopilotAgentFrontmatterKeys(frontmatter);
+    if (unsupportedKeys.length === 0) continue;
+
+    findings.push({
+      agentId: entry.name.replace(/\.agent\.md$/i, "").replace(/\.md$/i, ""),
+      unsupportedKeys
+    });
+  }
+
+  return findings;
+}
+
 async function installBundleArtifacts({
   bundleId,
   manifest,
@@ -723,11 +1013,24 @@ async function installBundleArtifacts({
     else installed.push(destination);
   }
 
+  const sanitizedSkills = await sanitizeInstalledSkillsForPlatform({
+    platform,
+    skillDirs: artifacts.skills,
+    dryRun
+  });
+  const sanitizedAgents = await sanitizeInstalledAgentsForPlatform({
+    platform,
+    agentFiles: artifacts.agents,
+    dryRun
+  });
+
   return {
     profilePaths,
     installed,
     skipped,
-    artifacts
+    artifacts,
+    sanitizedSkills,
+    sanitizedAgents
   };
 }
 
@@ -853,7 +1156,16 @@ function printRuleSyncResult(result) {
   }
 }
 
-function printInstallSummary({ platform, scope, bundleId, installed, skipped, dryRun = false }) {
+function printInstallSummary({
+  platform,
+  scope,
+  bundleId,
+  installed,
+  skipped,
+  sanitizedSkills = [],
+  sanitizedAgents = [],
+  dryRun = false
+}) {
   console.log(`\nPlatform: ${platform}`);
   console.log(`Scope: ${scope}`);
   console.log(`Bundle: ${bundleId}`);
@@ -874,6 +1186,28 @@ function printInstallSummary({ platform, scope, bundleId, installed, skipped, dr
 
   if (installed.length === 0 && skipped.length === 0) {
     console.log("\nNo changes made.");
+  }
+
+  if (!dryRun && sanitizedSkills.length > 0) {
+    console.log(`\nCopilot skill schema normalization (${sanitizedSkills.length}):`);
+    for (const item of sanitizedSkills.slice(0, 8)) {
+      const keys = item.removedKeys.join(", ");
+      console.log(`- ${item.skillId}: removed unsupported top-level keys (${keys})`);
+    }
+    if (sanitizedSkills.length > 8) {
+      console.log(`- ...and ${sanitizedSkills.length - 8} more skill(s).`);
+    }
+  }
+
+  if (!dryRun && sanitizedAgents.length > 0) {
+    console.log(`\nCopilot agent schema normalization (${sanitizedAgents.length}):`);
+    for (const item of sanitizedAgents.slice(0, 8)) {
+      const keys = item.removedKeys.join(", ");
+      console.log(`- ${item.agentId}: removed unsupported top-level keys (${keys})`);
+    }
+    if (sanitizedAgents.length > 8) {
+      console.log(`- ...and ${sanitizedAgents.length - 8} more agent file(s).`);
+    }
   }
 }
 
@@ -979,6 +1313,38 @@ async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
           "Prefer tracking .agent/ in git. For local-only excludes, use '.git/info/exclude' instead of .gitignore."
         );
       }
+    }
+  }
+
+  if (platform === "copilot" && pathStatus.skills.exists) {
+    const findings = await validateCopilotSkillsSchema(profilePaths.skillsDir);
+    if (findings.length > 0) {
+      const preview = findings
+        .slice(0, 5)
+        .map((item) => `${item.skillId}(${item.unsupportedKeys.join(",")})`)
+        .join("; ");
+      warnings.push(
+        `Unsupported top-level Copilot skill attributes detected in ${findings.length} skill(s): ${preview}${findings.length > 5 ? "; ..." : ""}`
+      );
+      recommendations.push(
+        `Normalize Copilot skill frontmatter by reinstalling with overwrite: cbx workflows install --platform copilot --bundle agent-environment-setup --scope ${scope} --overwrite`
+      );
+    }
+  }
+
+  if (platform === "copilot" && pathStatus.agents.exists) {
+    const findings = await validateCopilotAgentsSchema(profilePaths.agentsDir);
+    if (findings.length > 0) {
+      const preview = findings
+        .slice(0, 5)
+        .map((item) => `${item.agentId}(${item.unsupportedKeys.join(",")})`)
+        .join("; ");
+      warnings.push(
+        `Unsupported top-level Copilot agent attributes detected in ${findings.length} agent file(s): ${preview}${findings.length > 5 ? "; ..." : ""}`
+      );
+      recommendations.push(
+        `Normalize Copilot agent frontmatter by reinstalling with overwrite: cbx workflows install --platform copilot --bundle agent-environment-setup --scope ${scope} --overwrite`
+      );
     }
   }
 
@@ -1108,6 +1474,8 @@ async function runWorkflowInstall(options) {
       bundleId,
       installed: installResult.installed,
       skipped: installResult.skipped,
+      sanitizedSkills: installResult.sanitizedSkills,
+      sanitizedAgents: installResult.sanitizedAgents,
       dryRun
     });
     printRuleSyncResult(syncResult);
@@ -1284,7 +1652,7 @@ program
 
 const workflowsCommand = program
   .command("workflows")
-  .description("Install and manage workflow bundles for Antigravity and Codex");
+  .description("Install and manage workflow bundles for Antigravity, Codex, and Copilot");
 
 workflowsCommand.command("platforms").description("List workflow platform ids and defaults").action(printPlatforms);
 
