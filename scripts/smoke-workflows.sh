@@ -89,6 +89,12 @@ node "$CLI" workflows install --platform codex --bundle agent-environment-setup 
 [ -f .agents/workflows/devops.md ]
 [ -f .agents/workflows/qa.md ]
 [ ! -d .agents/agents ]
+[ -f .agents/skills/workflow-backend/SKILL.md ]
+[ -f .agents/skills/workflow-plan/SKILL.md ]
+[ -f .agents/skills/agent-backend-specialist/SKILL.md ]
+[ -f .agents/skills/agent-security-auditor/SKILL.md ]
+rg -n '^name:\s*workflow-backend$' .agents/skills/workflow-backend/SKILL.md >/dev/null
+rg -n '^name:\s*agent-backend-specialist$' .agents/skills/agent-backend-specialist/SKILL.md >/dev/null
 node "$CLI" workflows doctor codex --json >/tmp/cbx-c2-doctor.json
 rg -n 'Legacy path ./.codex/skills detected' /tmp/cbx-c2-doctor.json >/dev/null
 log_ok "Codex install complete and legacy warning detected"
@@ -96,6 +102,8 @@ log_ok "Codex install complete and legacy warning detected"
 log_step "C2.1 /backend wiring check (Codex files)"
 rg -n '^command:\s*"/backend"' .agents/workflows/backend.md >/dev/null
 rg -n '@backend-specialist' .agents/workflows/backend.md >/dev/null
+rg -n '^# Agent Wrapper: @backend-specialist$' .agents/skills/agent-backend-specialist/SKILL.md >/dev/null
+rg -n '^# Workflow Wrapper: /backend$' .agents/skills/workflow-backend/SKILL.md >/dev/null
 log_ok "Codex workflow declares /backend and routes to @backend-specialist"
 
 log_step "C3 Skills alias dry-run"

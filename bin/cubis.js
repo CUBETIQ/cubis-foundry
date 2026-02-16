@@ -114,6 +114,8 @@ const WORKFLOW_PROFILES = {
 };
 
 const PLATFORM_IDS = Object.keys(WORKFLOW_PROFILES);
+const CODEX_WORKFLOW_SKILL_PREFIX = "workflow-";
+const CODEX_AGENT_SKILL_PREFIX = "agent-";
 
 function platformInstallsCustomAgents(platformId) {
   const profile = WORKFLOW_PROFILES[platformId];
@@ -633,6 +635,21 @@ function extractFallbackDescription(body) {
   return "No description available.";
 }
 
+function normalizeMarkdownId(fileName) {
+  return fileName
+    .replace(/\.agent\.md$/i, "")
+    .replace(/\.md$/i, "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function yamlSingleQuoted(value) {
+  return `'${String(value || "").replace(/'/g, "''")}'`;
+}
+
 async function parseWorkflowMetadata(filePath) {
   const raw = await readFile(filePath, "utf8");
   const { frontmatter, body } = extractFrontmatter(raw);
@@ -653,6 +670,210 @@ async function parseWorkflowMetadata(filePath) {
     description,
     triggers,
     path: filePath
+  };
+}
+
+async function parseAgentMetadata(filePath) {
+  const raw = await readFile(filePath, "utf8");
+  const { frontmatter, body } = extractFrontmatter(raw);
+  const id = normalizeMarkdownId(path.basename(filePath));
+  const name = extractFrontmatterValue(frontmatter, "name") || id;
+  const description =
+    extractFrontmatterValue(frontmatter, "description") || extractFallbackDescription(body);
+  const skills = extractFrontmatterArray(frontmatter, "skills").slice(0, 12);
+
+  return {
+    id,
+    name,
+    description,
+    skills,
+    path: filePath,
+    body: body.trim()
+  };
+}
+
+function buildCodexWorkflowWrapperSkillMarkdown(wrapperSkillId, workflow) {
+  const description = `Callable Codex wrapper for ${workflow.command}: ${workflow.description}`;
+  const sourceBody = workflow.body?.trim() || "No source workflow content found.";
+
+  return [
+    "---",
+    `name: ${wrapperSkillId}`,
+    `description: ${yamlSingleQuoted(description)}`,
+    "metadata:",
+    "  source: cubis-foundry",
+    "  wrapper: workflow",
+    "  platform: codex",
+    `  workflow-id: ${yamlSingleQuoted(workflow.id)}`,
+    `  workflow-command: ${yamlSingleQuoted(workflow.command)}`,
+    "---",
+    "",
+    `# Workflow Wrapper: ${workflow.command}`,
+    "",
+    `Use this skill as a callable replacement for \`${workflow.command}\` workflow instructions in Codex.`,
+    "",
+    "## Invocation Contract",
+    "1. Match the current task against this workflow intent before execution.",
+    "2. Follow the sequence and guardrails in the source instructions below.",
+    "3. Produce actionable output and call out assumptions before edits.",
+    "",
+    "## Source Workflow Instructions",
+    "",
+    sourceBody,
+    ""
+  ].join("\n");
+}
+
+function buildCodexAgentWrapperSkillMarkdown(wrapperSkillId, agent) {
+  const description = `Callable Codex wrapper for @${agent.id}: ${agent.description}`;
+  const sourceBody = agent.body?.trim() || "No source agent content found.";
+  const relatedSkillsLine =
+    agent.skills.length > 0
+      ? `Related skills from source agent: ${agent.skills.join(", ")}`
+      : "Related skills from source agent: (none listed)";
+
+  return [
+    "---",
+    `name: ${wrapperSkillId}`,
+    `description: ${yamlSingleQuoted(description)}`,
+    "metadata:",
+    "  source: cubis-foundry",
+    "  wrapper: agent",
+    "  platform: codex",
+    `  agent-id: ${yamlSingleQuoted(agent.id)}`,
+    "---",
+    "",
+    `# Agent Wrapper: @${agent.id}`,
+    "",
+    "Use this skill as a callable replacement for custom @agent files in Codex.",
+    "",
+    "## Invocation Contract",
+    "1. Adopt the role and constraints defined in the source agent content.",
+    "2. Apply domain heuristics and escalation rules before coding.",
+    "3. Ask clarifying questions when requirements are ambiguous.",
+    "",
+    `- Source agent name: ${agent.name}`,
+    `- Source agent description: ${agent.description}`,
+    `- ${relatedSkillsLine}`,
+    "",
+    "## Source Agent Instructions",
+    "",
+    sourceBody,
+    ""
+  ].join("\n");
+}
+
+async function writeGeneratedSkillArtifact({
+  destinationDir,
+  content,
+  overwrite,
+  dryRun = false
+}) {
+  const exists = await pathExists(destinationDir);
+  if (exists && !overwrite) {
+    return { action: dryRun ? "would-skip" : "skipped", path: destinationDir };
+  }
+
+  if (!dryRun && exists && overwrite) {
+    await rm(destinationDir, { recursive: true, force: true });
+  }
+
+  if (!dryRun) {
+    await mkdir(destinationDir, { recursive: true });
+    await writeFile(path.join(destinationDir, "SKILL.md"), content, "utf8");
+  }
+
+  if (dryRun) {
+    return { action: exists ? "would-replace" : "would-install", path: destinationDir };
+  }
+
+  return { action: exists ? "replaced" : "installed", path: destinationDir };
+}
+
+function buildCodexWrapperSkillIds(platformSpec) {
+  const workflowIds = (platformSpec.workflows || []).map((fileName) => {
+    const id = normalizeMarkdownId(path.basename(fileName));
+    return `${CODEX_WORKFLOW_SKILL_PREFIX}${id}`;
+  });
+
+  const agentIds = (platformSpec.agents || []).map((fileName) => {
+    const id = normalizeMarkdownId(path.basename(fileName));
+    return `${CODEX_AGENT_SKILL_PREFIX}${id}`;
+  });
+
+  return unique([...workflowIds, ...agentIds]);
+}
+
+async function generateCodexWrapperSkills({
+  platformRoot,
+  platformSpec,
+  skillsDir,
+  overwrite,
+  dryRun = false
+}) {
+  const installed = [];
+  const skipped = [];
+  const artifacts = [];
+  const generated = [];
+
+  for (const workflowFile of platformSpec.workflows || []) {
+    const source = path.join(platformRoot, "workflows", workflowFile);
+    if (!(await pathExists(source))) {
+      throw new Error(`Missing workflow source file for wrapper generation: ${source}`);
+    }
+
+    const metadata = await parseWorkflowMetadata(source);
+    const raw = await readFile(source, "utf8");
+    const sourceBody = extractFrontmatter(raw).body.trim();
+    const wrapperSkillId = `${CODEX_WORKFLOW_SKILL_PREFIX}${metadata.id}`;
+    const destinationDir = path.join(skillsDir, wrapperSkillId);
+    const content = buildCodexWorkflowWrapperSkillMarkdown(wrapperSkillId, {
+      ...metadata,
+      body: sourceBody
+    });
+
+    const result = await writeGeneratedSkillArtifact({
+      destinationDir,
+      content,
+      overwrite,
+      dryRun
+    });
+
+    artifacts.push(destinationDir);
+    generated.push({ kind: "workflow", id: metadata.id, skillId: wrapperSkillId });
+    if (result.action === "skipped" || result.action === "would-skip") skipped.push(destinationDir);
+    else installed.push(destinationDir);
+  }
+
+  for (const agentFile of platformSpec.agents || []) {
+    const source = path.join(platformRoot, "agents", agentFile);
+    if (!(await pathExists(source))) {
+      throw new Error(`Missing agent source file for wrapper generation: ${source}`);
+    }
+
+    const metadata = await parseAgentMetadata(source);
+    const wrapperSkillId = `${CODEX_AGENT_SKILL_PREFIX}${metadata.id}`;
+    const destinationDir = path.join(skillsDir, wrapperSkillId);
+    const content = buildCodexAgentWrapperSkillMarkdown(wrapperSkillId, metadata);
+
+    const result = await writeGeneratedSkillArtifact({
+      destinationDir,
+      content,
+      overwrite,
+      dryRun
+    });
+
+    artifacts.push(destinationDir);
+    generated.push({ kind: "agent", id: metadata.id, skillId: wrapperSkillId });
+    if (result.action === "skipped" || result.action === "would-skip") skipped.push(destinationDir);
+    else installed.push(destinationDir);
+  }
+
+  return {
+    installed,
+    skipped,
+    artifacts,
+    generated
   };
 }
 
@@ -1027,6 +1248,21 @@ async function installBundleArtifacts({
     else installed.push(destination);
   }
 
+  let generatedWrapperSkills = [];
+  if (platform === "codex") {
+    const wrapperResult = await generateCodexWrapperSkills({
+      platformRoot,
+      platformSpec,
+      skillsDir: profilePaths.skillsDir,
+      overwrite,
+      dryRun
+    });
+    installed.push(...wrapperResult.installed);
+    skipped.push(...wrapperResult.skipped);
+    artifacts.skills.push(...wrapperResult.artifacts);
+    generatedWrapperSkills = wrapperResult.generated;
+  }
+
   const sanitizedSkills = await sanitizeInstalledSkillsForPlatform({
     platform,
     skillDirs: artifacts.skills,
@@ -1043,6 +1279,7 @@ async function installBundleArtifacts({
     installed,
     skipped,
     artifacts,
+    generatedWrapperSkills,
     sanitizedSkills,
     sanitizedAgents
   };
@@ -1138,6 +1375,14 @@ async function removeBundleArtifacts({
     if (await safeRemove(destination, dryRun)) removed.push(destination);
   }
 
+  if (platform === "codex") {
+    const wrapperSkillIds = buildCodexWrapperSkillIds(platformSpec);
+    for (const skillId of wrapperSkillIds) {
+      const destination = path.join(profilePaths.skillsDir, skillId);
+      if (await safeRemove(destination, dryRun)) removed.push(destination);
+    }
+  }
+
   return { removed, profilePaths };
 }
 
@@ -1187,6 +1432,7 @@ function printInstallSummary({
   bundleId,
   installed,
   skipped,
+  generatedWrapperSkills = [],
   sanitizedSkills = [],
   sanitizedAgents = [],
   dryRun = false
@@ -1211,6 +1457,15 @@ function printInstallSummary({
 
   if (installed.length === 0 && skipped.length === 0) {
     console.log("\nNo changes made.");
+  }
+
+  if (generatedWrapperSkills.length > 0) {
+    const workflowCount = generatedWrapperSkills.filter((item) => item.kind === "workflow").length;
+    const agentCount = generatedWrapperSkills.filter((item) => item.kind === "agent").length;
+    console.log(
+      `\nCodex callable wrapper skills: ${generatedWrapperSkills.length} (workflow=${workflowCount}, agent=${agentCount})`
+    );
+    console.log("Invoke these with $workflow-... or $agent-... in Codex.");
   }
 
   if (!dryRun && sanitizedSkills.length > 0) {
@@ -1509,6 +1764,7 @@ async function runWorkflowInstall(options) {
       bundleId,
       installed: installResult.installed,
       skipped: installResult.skipped,
+      generatedWrapperSkills: installResult.generatedWrapperSkills,
       sanitizedSkills: installResult.sanitizedSkills,
       sanitizedAgents: installResult.sanitizedAgents,
       dryRun

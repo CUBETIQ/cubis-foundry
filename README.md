@@ -140,6 +140,10 @@ Project scope:
 - Skills: `.agents/skills`
 - Rules: `AGENTS.md`
 - Agents: disabled by default (Codex custom agent files are not installed)
+- Callable wrappers: generated into `.agents/skills` as:
+  - `workflow-<workflow-id>` (from workflow markdown files)
+  - `agent-<agent-id>` (from agent markdown files)
+  - Example usage: `$workflow-plan`, `$agent-backend-specialist`
 
 Global scope:
 - Workflows: `~/.agents/workflows`
