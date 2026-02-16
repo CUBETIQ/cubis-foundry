@@ -200,6 +200,55 @@ async function pathExists(targetPath) {
   }
 }
 
+async function findNearestUpwardFile(startDir, relativeFilePath) {
+  let current = path.resolve(startDir);
+  while (true) {
+    const candidate = path.join(current, relativeFilePath);
+    if (await pathExists(candidate)) return candidate;
+    const parent = path.dirname(current);
+    if (parent === current) return null;
+    current = parent;
+  }
+}
+
+async function resolveWorkspaceRuleFileForGlobalScope(platform, cwd = process.cwd()) {
+  if (platform === "codex") {
+    return findNearestUpwardFile(cwd, "AGENTS.md");
+  }
+
+  const profilePaths = await resolveProfilePaths(platform, "project", cwd);
+  for (const candidate of profilePaths.ruleFilesByPriority) {
+    if (await pathExists(candidate)) return candidate;
+  }
+
+  return null;
+}
+
+async function syncWorkspaceRuleForGlobalScope({
+  platform,
+  scope,
+  cwd = process.cwd(),
+  workflows = [],
+  dryRun = false
+}) {
+  if (scope !== "global") return null;
+
+  const workspaceRuleFile = await resolveWorkspaceRuleFileForGlobalScope(platform, cwd);
+  if (!workspaceRuleFile) return null;
+
+  const profile = WORKFLOW_PROFILES[platform];
+  if (!profile) return null;
+  const globalRuleFile = expandPath(profile.global.ruleFilesByPriority[0], cwd);
+  if (path.resolve(workspaceRuleFile) === path.resolve(globalRuleFile)) return null;
+
+  const patchResult = await upsertManagedRuleBlock(workspaceRuleFile, platform, workflows, dryRun);
+  return {
+    workspaceRuleFile,
+    globalRuleFile,
+    patchResult
+  };
+}
+
 async function readState(scope, cwd = process.cwd()) {
   const statePath = getStateFilePath(scope, cwd);
   if (!(await pathExists(statePath))) return defaultState();
@@ -650,6 +699,30 @@ function yamlSingleQuoted(value) {
   return `'${String(value || "").replace(/'/g, "''")}'`;
 }
 
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function rewriteCodexWorkflowAgentReferences(sourceBody, agentIds) {
+  if (!sourceBody || !Array.isArray(agentIds) || agentIds.length === 0) return sourceBody;
+
+  let rewritten = sourceBody;
+  const sortedAgentIds = unique(agentIds.filter(Boolean)).sort((a, b) => b.length - a.length);
+
+  for (const agentId of sortedAgentIds) {
+    const agentPattern = new RegExp(
+      `(^|[^A-Za-z0-9_-])@${escapeRegExp(agentId)}(?=$|[^A-Za-z0-9_-])`,
+      "g"
+    );
+    rewritten = rewritten.replace(
+      agentPattern,
+      (_match, prefix) => `${prefix}$${CODEX_AGENT_SKILL_PREFIX}${agentId}`
+    );
+  }
+
+  return rewritten;
+}
+
 async function parseWorkflowMetadata(filePath) {
   const raw = await readFile(filePath, "utf8");
   const { frontmatter, body } = extractFrontmatter(raw);
@@ -815,6 +888,9 @@ async function generateCodexWrapperSkills({
   const skipped = [];
   const artifacts = [];
   const generated = [];
+  const codexAgentIds = (platformSpec.agents || []).map((fileName) =>
+    normalizeMarkdownId(path.basename(fileName))
+  );
 
   for (const workflowFile of platformSpec.workflows || []) {
     const source = path.join(platformRoot, "workflows", workflowFile);
@@ -825,11 +901,12 @@ async function generateCodexWrapperSkills({
     const metadata = await parseWorkflowMetadata(source);
     const raw = await readFile(source, "utf8");
     const sourceBody = extractFrontmatter(raw).body.trim();
+    const rewrittenBody = rewriteCodexWorkflowAgentReferences(sourceBody, codexAgentIds);
     const wrapperSkillId = `${CODEX_WORKFLOW_SKILL_PREFIX}${metadata.id}`;
     const destinationDir = path.join(skillsDir, wrapperSkillId);
     const content = buildCodexWorkflowWrapperSkillMarkdown(wrapperSkillId, {
       ...metadata,
-      body: sourceBody
+      body: rewrittenBody
     });
 
     const result = await writeGeneratedSkillArtifact({
@@ -1015,6 +1092,24 @@ async function syncRulesForPlatform({ platform, scope, cwd = process.cwd(), dryR
 
   const workflows = await collectInstalledWorkflows(platform, scope, cwd);
   const patchResult = await upsertManagedRuleBlock(ruleFilePath, platform, workflows, dryRun);
+  const workspaceRuleSync = await syncWorkspaceRuleForGlobalScope({
+    platform,
+    scope,
+    cwd,
+    workflows,
+    dryRun
+  });
+  const warnings = [...patchResult.warnings];
+
+  if (workspaceRuleSync) {
+    warnings.push(
+      `Workspace rule file detected at ${workspaceRuleSync.workspaceRuleFile}. In this workspace, it has higher precedence than global ${workspaceRuleSync.globalRuleFile}.`
+    );
+    warnings.push(`Workspace rule managed block sync action: ${workspaceRuleSync.patchResult.action}.`);
+    for (const warning of workspaceRuleSync.patchResult.warnings) {
+      warnings.push(`Workspace rule file: ${warning}`);
+    }
+  }
 
   if (!dryRun) {
     await setLastSelectedState(scope, platform, cwd);
@@ -1026,8 +1121,15 @@ async function syncRulesForPlatform({ platform, scope, cwd = process.cwd(), dryR
     dryRun,
     filePath: ruleFilePath,
     action: patchResult.action,
-    warnings: patchResult.warnings,
-    workflowsCount: workflows.length
+    warnings,
+    workflowsCount: workflows.length,
+    workspaceRuleSync: workspaceRuleSync
+      ? {
+          filePath: workspaceRuleSync.workspaceRuleFile,
+          action: workspaceRuleSync.patchResult.action,
+          warnings: workspaceRuleSync.patchResult.warnings
+        }
+      : null
   };
 }
 
@@ -1417,6 +1519,10 @@ function printRuleSyncResult(result) {
   console.log(`- File: ${result.filePath}`);
   console.log(`- Action: ${result.action}`);
   console.log(`- Workflows indexed: ${result.workflowsCount}`);
+  if (result.workspaceRuleSync) {
+    console.log(`- Workspace precedence file: ${result.workspaceRuleSync.filePath}`);
+    console.log(`- Workspace precedence action: ${result.workspaceRuleSync.action}`);
+  }
 
   if (result.warnings.length > 0) {
     console.log("- Warnings:");
@@ -1583,6 +1689,19 @@ async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
       warnings.push("Legacy path ./.codex/skills detected. Recommended path is ./.agents/skills.");
       recommendations.push(
         "Migrate legacy Codex skills path: move ./.codex/skills to ./.agents/skills to align with official defaults."
+      );
+    }
+  }
+
+  if (scope === "global") {
+    const workspaceRule = await resolveWorkspaceRuleFileForGlobalScope(platform, cwd);
+    if (workspaceRule) {
+      const globalRulePath = expandPath(WORKFLOW_PROFILES[platform].global.ruleFilesByPriority[0], cwd);
+      warnings.push(
+        `Workspace rule file detected at ${workspaceRule}. In this workspace, it has higher precedence than global ${globalRulePath}.`
+      );
+      recommendations.push(
+        `Use 'cbx workflows sync-rules --platform ${platform} --scope global' from this workspace to sync the managed block to both global and workspace rule files.`
       );
     }
   }

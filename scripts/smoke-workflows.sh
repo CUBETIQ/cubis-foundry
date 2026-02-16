@@ -53,6 +53,26 @@ rg -n '^command:\s*"/backend"' .agent/workflows/backend.md >/dev/null
 rg -n '@backend-specialist' .agent/workflows/backend.md >/dev/null
 log_ok "Workflow declares /backend and routes to @backend-specialist"
 
+log_step "A2.2 Antigravity global precedence sync"
+node - <<'NODE'
+const fs = require('fs');
+const file = '.agent/rules/GEMINI.md';
+const text = fs.readFileSync(file, 'utf8');
+const cleaned = text.replace(/\n?<!--\s*cbx:workflows:auto:start[\s\S]*?<!--\s*cbx:workflows:auto:end\s*-->\n?/g, '\n');
+fs.writeFileSync(file, cleaned, 'utf8');
+NODE
+echo "Custom antigravity workspace rule must stay" >>.agent/rules/GEMINI.md
+if rg -n 'cbx:workflows:auto:start' .agent/rules/GEMINI.md >/dev/null; then
+  echo "[FAIL] Failed to clear Antigravity managed block before global precedence sync test" >&2
+  exit 1
+fi
+node "$CLI" workflows sync-rules --platform antigravity --scope global >/tmp/cbx-a22.log
+rg -n 'cbx:workflows:auto:start platform=antigravity version=1' .agent/rules/GEMINI.md >/dev/null
+rg -n 'Custom antigravity workspace rule must stay' .agent/rules/GEMINI.md >/dev/null
+rg -n 'Workspace rule file detected at' /tmp/cbx-a22.log >/dev/null
+rg -n 'Workspace rule managed block sync action:' /tmp/cbx-a22.log >/dev/null
+log_ok "Antigravity global sync updates workspace rule managed block and preserves custom content"
+
 log_step "A3 Antigravity sync dry-run"
 cp .agent/rules/GEMINI.md /tmp/cbx-gemini-before.md
 node "$CLI" workflows sync-rules --platform antigravity --dry-run >/tmp/cbx-a3.log
@@ -104,7 +124,32 @@ rg -n '^command:\s*"/backend"' .agents/workflows/backend.md >/dev/null
 rg -n '@backend-specialist' .agents/workflows/backend.md >/dev/null
 rg -n '^# Agent Wrapper: @backend-specialist$' .agents/skills/agent-backend-specialist/SKILL.md >/dev/null
 rg -n '^# Workflow Wrapper: /backend$' .agents/skills/workflow-backend/SKILL.md >/dev/null
-log_ok "Codex workflow declares /backend and routes to @backend-specialist"
+rg -n '\$agent-backend-specialist' .agents/skills/workflow-backend/SKILL.md >/dev/null
+if rg -n '@backend-specialist' .agents/skills/workflow-backend/SKILL.md >/dev/null; then
+  echo "[FAIL] Codex workflow wrapper still references @backend-specialist instead of \$agent-backend-specialist" >&2
+  exit 1
+fi
+log_ok "Codex workflow wrapper rewrites @backend-specialist to \$agent-backend-specialist"
+
+log_step "C2.2 Codex global precedence warning"
+node - <<'NODE'
+const fs = require('fs');
+const file = 'AGENTS.md';
+const text = fs.readFileSync(file, 'utf8');
+const cleaned = text.replace(/\n?<!--\s*cbx:workflows:auto:start[\s\S]*?<!--\s*cbx:workflows:auto:end\s*-->\n?/g, '\n');
+fs.writeFileSync(file, cleaned, 'utf8');
+NODE
+echo "Custom workspace rule must stay" >>AGENTS.md
+if rg -n 'cbx:workflows:auto:start' AGENTS.md >/dev/null; then
+  echo "[FAIL] Failed to clear managed block before global precedence sync test" >&2
+  exit 1
+fi
+node "$CLI" workflows sync-rules --platform codex --scope global >/tmp/cbx-c22.log
+rg -n 'cbx:workflows:auto:start platform=codex version=1' AGENTS.md >/dev/null
+rg -n 'Custom workspace rule must stay' AGENTS.md >/dev/null
+rg -n 'Workspace rule file detected at' /tmp/cbx-c22.log >/dev/null
+rg -n 'Workspace rule managed block sync action:' /tmp/cbx-c22.log >/dev/null
+log_ok "Codex global sync updates workspace AGENTS.md managed block and preserves custom content"
 
 log_step "C3 Skills alias dry-run"
 node "$CLI" skills install --platform codex --bundle agent-environment-setup --dry-run >/tmp/cbx-c3.log
@@ -224,6 +269,26 @@ log_step "P2.1 /backend wiring check (Copilot files)"
 rg -n '^command:\s*"/backend"' .github/copilot/workflows/backend.md >/dev/null
 rg -n '@backend-specialist' .github/copilot/workflows/backend.md >/dev/null
 log_ok "Copilot workflow declares /backend and routes to @backend-specialist"
+
+log_step "P2.2 Copilot global precedence sync"
+node - <<'NODE'
+const fs = require('fs');
+const file = 'AGENTS.md';
+const text = fs.readFileSync(file, 'utf8');
+const cleaned = text.replace(/\n?<!--\s*cbx:workflows:auto:start[\s\S]*?<!--\s*cbx:workflows:auto:end\s*-->\n?/g, '\n');
+fs.writeFileSync(file, cleaned, 'utf8');
+NODE
+echo "Custom copilot workspace rule must stay" >>AGENTS.md
+if rg -n 'cbx:workflows:auto:start' AGENTS.md >/dev/null; then
+  echo "[FAIL] Failed to clear Copilot managed block before global precedence sync test" >&2
+  exit 1
+fi
+node "$CLI" workflows sync-rules --platform copilot --scope global >/tmp/cbx-p22.log
+rg -n 'cbx:workflows:auto:start platform=copilot version=1' AGENTS.md >/dev/null
+rg -n 'Custom copilot workspace rule must stay' AGENTS.md >/dev/null
+rg -n 'Workspace rule file detected at' /tmp/cbx-p22.log >/dev/null
+rg -n 'Workspace rule managed block sync action:' /tmp/cbx-p22.log >/dev/null
+log_ok "Copilot global sync updates workspace rule managed block and preserves custom content"
 
 log_step "P3 Sync idempotency"
 node "$CLI" workflows sync-rules --platform copilot >/tmp/cbx-p3a.log
