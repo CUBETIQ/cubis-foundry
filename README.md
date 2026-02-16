@@ -137,15 +137,15 @@ Global scope:
 
 Project scope:
 - Workflows: `.agents/workflows`
-- Agents: `.agents/agents`
 - Skills: `.agents/skills`
 - Rules: `AGENTS.md`
+- Agents: disabled by default (Codex custom agent files are not installed)
 
 Global scope:
 - Workflows: `~/.agents/workflows`
-- Agents: `~/.agents/agents`
 - Skills: `~/.agents/skills`
 - Rules: `~/.codex/AGENTS.md`
+- Agents: disabled by default (Codex custom agent files are not installed)
 
 Legacy compatibility note:
 - `.codex/skills` is treated as legacy and flagged by `doctor` with migration guidance.

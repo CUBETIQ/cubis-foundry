@@ -88,12 +88,7 @@ node "$CLI" workflows install --platform codex --bundle agent-environment-setup 
 [ -f .agents/workflows/mobile.md ]
 [ -f .agents/workflows/devops.md ]
 [ -f .agents/workflows/qa.md ]
-[ -f .agents/agents/backend-specialist.md ]
-[ -f .agents/agents/security-auditor.md ]
-[ -f .agents/agents/devops-engineer.md ]
-[ -f .agents/agents/orchestrator.md ]
-[ -f .agents/agents/test-engineer.md ]
-[ "$(find .agents/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" = "20" ]
+[ ! -d .agents/agents ]
 node "$CLI" workflows doctor codex --json >/tmp/cbx-c2-doctor.json
 rg -n 'Legacy path ./.codex/skills detected' /tmp/cbx-c2-doctor.json >/dev/null
 log_ok "Codex install complete and legacy warning detected"

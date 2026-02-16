@@ -48,6 +48,7 @@ const WORKFLOW_PROFILES = {
   antigravity: {
     id: "antigravity",
     label: "Antigravity",
+    installsCustomAgents: true,
     project: {
       workflowDirs: [".agent/workflows"],
       agentDirs: [".agent/agents"],
@@ -67,6 +68,7 @@ const WORKFLOW_PROFILES = {
   codex: {
     id: "codex",
     label: "Codex",
+    installsCustomAgents: false,
     project: {
       workflowDirs: [".agents/workflows"],
       agentDirs: [".agents/agents"],
@@ -86,6 +88,7 @@ const WORKFLOW_PROFILES = {
   copilot: {
     id: "copilot",
     label: "GitHub Copilot",
+    installsCustomAgents: true,
     project: {
       workflowDirs: [".github/copilot/workflows"],
       agentDirs: [".github/agents"],
@@ -111,6 +114,11 @@ const WORKFLOW_PROFILES = {
 };
 
 const PLATFORM_IDS = Object.keys(WORKFLOW_PROFILES);
+
+function platformInstallsCustomAgents(platformId) {
+  const profile = WORKFLOW_PROFILES[platformId];
+  return Boolean(profile && profile.installsCustomAgents !== false);
+}
 
 const PLATFORM_ALIASES = {
   antigravity: "antigravity",
@@ -957,8 +965,10 @@ async function installBundleArtifacts({
 
   if (!dryRun) {
     await mkdir(profilePaths.workflowsDir, { recursive: true });
-    await mkdir(profilePaths.agentsDir, { recursive: true });
     await mkdir(profilePaths.skillsDir, { recursive: true });
+    if (platformInstallsCustomAgents(platform)) {
+      await mkdir(profilePaths.agentsDir, { recursive: true });
+    }
   }
 
   const bundleRoot = path.join(agentAssetsRoot(), "workflows", bundleId);
@@ -983,7 +993,11 @@ async function installBundleArtifacts({
     else installed.push(destination);
   }
 
-  const agentFiles = Array.isArray(platformSpec.agents) ? platformSpec.agents : [];
+  const agentFiles = platformInstallsCustomAgents(platform)
+    ? Array.isArray(platformSpec.agents)
+      ? platformSpec.agents
+      : []
+    : [];
   for (const agentFile of agentFiles) {
     const source = path.join(platformRoot, "agents", agentFile);
     const destination = path.join(profilePaths.agentsDir, path.basename(agentFile));
@@ -1131,13 +1145,18 @@ function printPlatforms() {
   console.log("Workflow platforms:");
   for (const profileId of PLATFORM_IDS) {
     const profile = WORKFLOW_PROFILES[profileId];
+    const agentsEnabled = platformInstallsCustomAgents(profileId);
     console.log(`- ${profile.id} (${profile.label})`);
     console.log(`  project workflows: ${profile.project.workflowDirs[0]}`);
-    console.log(`  project agents:    ${profile.project.agentDirs[0]}`);
+    console.log(
+      `  project agents:    ${agentsEnabled ? profile.project.agentDirs[0] : "(disabled for this platform)"}`
+    );
     console.log(`  project skills:    ${profile.project.skillDirs[0]}`);
     console.log(`  project rules:     ${profile.project.ruleFilesByPriority.join(" | ")}`);
     console.log(`  global workflows:  ${profile.global.workflowDirs[0]}`);
-    console.log(`  global agents:     ${profile.global.agentDirs[0]}`);
+    console.log(
+      `  global agents:     ${agentsEnabled ? profile.global.agentDirs[0] : "(disabled for this platform)"}`
+    );
     console.log(`  global skills:     ${profile.global.skillDirs[0]}`);
     console.log(`  global rules:      ${profile.global.ruleFilesByPriority.join(" | ")}`);
   }
@@ -1236,6 +1255,7 @@ function printRemoveSummary({ platform, scope, target, removed, dryRun = false }
 async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
   const profile = WORKFLOW_PROFILES[platform];
   const profilePaths = await resolveProfilePaths(platform, scope, cwd);
+  const agentsEnabled = platformInstallsCustomAgents(platform);
 
   const pathStatus = {
     workflows: {
@@ -1244,7 +1264,8 @@ async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
     },
     agents: {
       path: profilePaths.agentsDir,
-      exists: await pathExists(profilePaths.agentsDir)
+      enabled: agentsEnabled,
+      exists: agentsEnabled ? await pathExists(profilePaths.agentsDir) : null
     },
     skills: {
       path: profilePaths.skillsDir,
@@ -1293,7 +1314,11 @@ async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
     );
   }
 
-  if (!pathStatus.workflows.exists && !pathStatus.skills.exists && !pathStatus.agents.exists) {
+  if (
+    !pathStatus.workflows.exists &&
+    !pathStatus.skills.exists &&
+    !(pathStatus.agents.enabled && pathStatus.agents.exists)
+  ) {
     recommendations.push("No workflow/agent/skill directories found in this scope.");
   }
 
@@ -1380,7 +1405,11 @@ function printDoctorReport(report) {
 
   console.log("\nPaths:");
   console.log(`- Workflows: ${report.paths.workflows.path} : ${report.paths.workflows.exists ? "exists" : "missing"}`);
-  console.log(`- Agents: ${report.paths.agents.path} : ${report.paths.agents.exists ? "exists" : "missing"}`);
+  if (report.paths.agents.enabled === false) {
+    console.log(`- Agents: ${report.paths.agents.path} : disabled`);
+  } else {
+    console.log(`- Agents: ${report.paths.agents.path} : ${report.paths.agents.exists ? "exists" : "missing"}`);
+  }
   console.log(`- Skills: ${report.paths.skills.path} : ${report.paths.skills.exists ? "exists" : "missing"}`);
 
   console.log("\nManaged block:");
