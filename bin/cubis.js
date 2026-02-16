@@ -1133,7 +1133,13 @@ function printPlatforms() {
     const profile = WORKFLOW_PROFILES[profileId];
     console.log(`- ${profile.id} (${profile.label})`);
     console.log(`  project workflows: ${profile.project.workflowDirs[0]}`);
-    console.log(`  global workflows: ${profile.global.workflowDirs[0]}`);
+    console.log(`  project agents:    ${profile.project.agentDirs[0]}`);
+    console.log(`  project skills:    ${profile.project.skillDirs[0]}`);
+    console.log(`  project rules:     ${profile.project.ruleFilesByPriority.join(" | ")}`);
+    console.log(`  global workflows:  ${profile.global.workflowDirs[0]}`);
+    console.log(`  global agents:     ${profile.global.agentDirs[0]}`);
+    console.log(`  global skills:     ${profile.global.skillDirs[0]}`);
+    console.log(`  global rules:      ${profile.global.ruleFilesByPriority.join(" | ")}`);
   }
 }
 
