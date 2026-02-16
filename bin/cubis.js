@@ -974,6 +974,32 @@ function buildManagedWorkflowBlock(platformId, workflows) {
   const lines = [];
   lines.push(`<!-- cbx:workflows:auto:start platform=${platformId} version=1 -->`);
   lines.push("## CBX Workflow Routing (auto-managed)");
+  if (platformId === "codex") {
+    lines.push("Use Codex callable wrappers:");
+    lines.push("- Workflows: `$workflow-<name>`");
+    lines.push("- Agents: `$agent-<name>`");
+    lines.push("");
+
+    if (workflows.length === 0) {
+      lines.push("- No installed workflows found yet.");
+    } else {
+      for (const workflow of workflows) {
+        const triggerPreview = workflow.triggers.slice(0, 2).join(", ");
+        const hint = triggerPreview ? ` (${triggerPreview})` : "";
+        lines.push(`- \`${workflow.command}\` -> \`$${CODEX_WORKFLOW_SKILL_PREFIX}${workflow.id}\`${hint}`);
+      }
+    }
+
+    lines.push("");
+    lines.push("Selection policy:");
+    lines.push("1. If user names a `$workflow-*`, use it directly.");
+    lines.push("2. Else map intent to one primary workflow.");
+    lines.push("3. Use `$agent-*` wrappers only when role specialization is needed.");
+    lines.push("");
+    lines.push("<!-- cbx:workflows:auto:end -->");
+    return lines.join("\n");
+  }
+
   lines.push("Use the following workflows proactively when task intent matches:");
   lines.push("");
 
