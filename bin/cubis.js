@@ -1376,6 +1376,15 @@ async function installBundleArtifacts({
     else installed.push(destination);
   }
 
+  // Copy skills_index.json if it exists in the package skills root
+  const skillsIndexSource = path.join(agentAssetsRoot(), "skills", "skills_index.json");
+  if (await pathExists(skillsIndexSource)) {
+    const skillsIndexDest = path.join(profilePaths.skillsDir, "skills_index.json");
+    const indexResult = await copyArtifact({ source: skillsIndexSource, destination: skillsIndexDest, overwrite, dryRun });
+    if (indexResult.action === "skipped" || indexResult.action === "would-skip") skipped.push(skillsIndexDest);
+    else installed.push(skillsIndexDest);
+  }
+
   let generatedWrapperSkills = [];
   if (platform === "codex") {
     const wrapperResult = await generateCodexWrapperSkills({
@@ -1418,6 +1427,7 @@ async function seedRuleFileFromTemplateIfMissing({
   manifest,
   platform,
   scope,
+  overwrite = false,
   dryRun = false,
   cwd = process.cwd()
 }) {
@@ -1427,7 +1437,7 @@ async function seedRuleFileFromTemplateIfMissing({
   const profilePaths = await resolveProfilePaths(platform, scope, cwd);
   const ruleFilePath = profilePaths.ruleFilesByPriority[0];
   if (!ruleFilePath) return { ruleFilePath: null, action: "none" };
-  if (await pathExists(ruleFilePath)) return { ruleFilePath, action: "exists" };
+  if (await pathExists(ruleFilePath) && !overwrite) return { ruleFilePath, action: "exists" };
 
   const templatePath = path.join(agentAssetsRoot(), "workflows", bundleId, platformSpec.rulesTemplate);
   if (!(await pathExists(templatePath))) return { ruleFilePath, action: "missing-template" };
@@ -1881,6 +1891,7 @@ async function runWorkflowInstall(options) {
       manifest,
       platform,
       scope,
+      overwrite: Boolean(options.overwrite),
       dryRun,
       cwd: process.cwd()
     });
