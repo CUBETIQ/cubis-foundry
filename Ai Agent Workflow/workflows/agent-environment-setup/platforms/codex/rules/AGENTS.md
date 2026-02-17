@@ -9,12 +9,11 @@ This file defines mandatory behavior for Codex projects installed via `cbx workf
 - Skills: `.agents/skills`
 - Rules file: `AGENTS.md`
 
-## 2) Workflow-First Contract
+## 2) Skill-Based Workflow
 
-1. If the user explicitly requests a slash command, run that workflow first.
-2. Otherwise choose the best workflow by intent from `.agents/workflows`.
-3. For cross-domain tasks, use `/orchestrate` and `@orchestrator`.
-4. Keep one primary workflow; use others only as supporting references.
+1. Codex operates primarily through **Skills** and **Rules**.
+2. Complex workflows are composed of multiple skill executions.
+3. Use `/orchestrate` for cross-domain tasks logic.
 
 ## 3) Request Classifier
 
@@ -38,10 +37,21 @@ Use the best specialist first:
 
 ## 5) Skill Loading Policy
 
-1. Load only skills needed for the active request.
-2. Prefer progressive disclosure: start from `SKILL.md`, then specific sections.
-3. Keep context lean; avoid loading unrelated skill documents.
-4. If a mapped skill is missing, continue with best fallback and state it.
+### Smart Skill Selection (TIER 0)
+
+Before starting ANY task, the agent MUST:
+
+1.  **Analyze** the user's request against the keywords in `.agents/skills/skills_index.json`.
+2.  **Select** the most relevant skill(s) if a strong match is found.
+3.  **Load** the selected skill's `SKILL.md` using `view_file` **BEFORE** proceeding.
+4.  **Announce** the selection: "I am loading the `[Skill Name]` skill to handle your request."
+
+### General Loading Rules
+
+1.  Load only skills needed for the active request.
+2.  Prefer progressive disclosure: start from `SKILL.md`, then specific sections.
+3.  Keep context lean; avoid loading unrelated skill documents.
+4.  If a mapped skill is missing, continue with best fallback and state it.
 
 ## 6) Socratic Gate (Before Complex Work)
 
@@ -76,12 +86,15 @@ Use these commands to keep this setup healthy:
 3. `cbx workflows sync-rules` is the source of truth for the managed block.
 
 <!-- cbx:workflows:auto:start platform=codex version=1 -->
+
 ## CBX Workflow Routing (auto-managed)
+
 Use the following workflows proactively when task intent matches:
 
 - No installed workflows found yet.
 
 Selection policy:
+
 1. Match explicit slash command first.
 2. Else match user intent to workflow description and triggers.
 3. Prefer one primary workflow; reference others only when needed.

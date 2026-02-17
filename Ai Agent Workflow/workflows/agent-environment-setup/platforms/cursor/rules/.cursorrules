@@ -1,0 +1,41 @@
+# .cursorrules - Cubis Foundry Cursor Protocol
+
+This file defines mandatory behavior for Cursor projects installed via `cbx workflows`.
+
+## 1) Platform Paths
+
+- Workflows: `.cursor/workflows`
+- Agents: `.cursor/agents`
+- Skills: `.cursor/skills`
+- Rules file: `.cursorrules`
+
+## 2) Smart Skill Selection (TIER 0)
+
+Before starting ANY task, the agent MUST:
+1.  **Analyze** the user's request against the keywords in `.cursor/skills/skills_index.json`.
+2.  **Select** the most relevant skill(s) if a strong match is found.
+3.  **Load** the selected skill's `SKILL.md` using `view_file` **BEFORE** proceeding.
+4.  **Announce** the selection: "I am loading the `[Skill Name]` skill to handle your request."
+
+## 3) Skill Loading Policy
+
+1.  Load only skills needed for the active request.
+2.  Prefer progressive disclosure: start from `SKILL.md`, then specific sections.
+3.  Keep context lean; avoid loading unrelated skill documents.
+4.  If a mapped skill is missing, continue with best fallback and state it.
+
+## 4) Agent Routing Policy
+
+Use the best specialist first:
+- Backend/API/database: `@backend-specialist`, `@database-architect`
+- Frontend/UI: `@frontend-specialist`
+- Mobile: `@mobile-developer`
+- Security: `@security-auditor`, `@penetration-tester`
+- DevOps/release: `@devops-engineer`
+- Testing/QA: `@test-engineer`, `@qa-automation-engineer`
+
+## 5) Quality and Safety Gates
+
+1.  Do not run destructive actions without explicit user confirmation.
+2.  Keep diffs small and reversible when possible.
+3.  Verify behavior with focused checks before finalizing.
