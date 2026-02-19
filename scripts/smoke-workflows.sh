@@ -33,7 +33,7 @@ fi
 log_ok "Dry-run did not write Antigravity files"
 
 log_step "A2 Antigravity apply"
-node "$CLI" workflows install --platform antigravity --bundle agent-environment-setup --yes >/tmp/cbx-a2.log
+node "$CLI" workflows install --platform antigravity --bundle agent-environment-setup --terminal-integration --terminal-verifier codex --yes >/tmp/cbx-a2.log
 [ -f .agent/rules/GEMINI.md ]
 [ -f .agent/workflows/backend.md ]
 [ -f .agent/workflows/security.md ]
@@ -46,6 +46,12 @@ node "$CLI" workflows install --platform antigravity --bundle agent-environment-
 [ -f .agent/agents/security-auditor.md ]
 [ "$(find .agent/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" = "20" ]
 [ -d .agent/skills/api-designer ]
+[ -d .agent/terminal-integration ]
+[ -f .agent/terminal-integration/config.json ]
+[ -f .agent/terminal-integration/verify-task.ps1 ]
+[ -f .agent/terminal-integration/verify-task.sh ]
+rg -n '"provider": "codex"' .agent/terminal-integration/config.json >/dev/null
+rg -n 'cbx:terminal:verification:start provider=codex version=1' .agent/rules/GEMINI.md >/dev/null
 log_ok "Antigravity files installed"
 
 log_step "A2.1 /backend wiring check"
@@ -82,13 +88,19 @@ log_ok "Dry-run sync did not change rule file"
 log_step "A4 Antigravity remove dry-run"
 node "$CLI" workflows remove agent-environment-setup --platform antigravity --dry-run >/tmp/cbx-a4.log
 [ -f .agent/workflows/backend.md ]
+[ -d .agent/terminal-integration ]
 log_ok "Dry-run remove did not delete files"
 
 log_step "A5 Antigravity remove apply"
 node "$CLI" workflows remove agent-environment-setup --platform antigravity --yes >/tmp/cbx-a5.log
 [ ! -f .agent/workflows/backend.md ]
 [ -f .agent/rules/GEMINI.md ]
+[ ! -d .agent/terminal-integration ]
 rg -n 'No installed workflows found yet\.' .agent/rules/GEMINI.md >/dev/null
+if rg -n 'cbx:terminal:verification:start' .agent/rules/GEMINI.md >/dev/null; then
+  echo "[FAIL] Antigravity terminal verification block was not removed" >&2
+  exit 1
+fi
 log_ok "Bundle removed and managed block kept"
 
 log_step "C1 Codex dry-run install"

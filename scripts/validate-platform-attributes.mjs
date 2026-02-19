@@ -69,7 +69,8 @@ const platforms = {
 };
 
 function parseFrontmatter(markdown) {
-  const match = markdown.match(/^---\n([\s\S]*?)\n---\n?/);
+  // Accept both LF and CRLF line endings to avoid false "missing frontmatter" errors on Windows.
+  const match = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
   if (!match) return null;
   return {
     raw: match[1],

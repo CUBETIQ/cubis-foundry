@@ -1,50 +1,1891 @@
 [
   {
-    "name": "flutter-expert",
-    "path": ".agent/skills/flutter-expert/SKILL.md",
-    "description": "Flutter app architecture, state management, and best practices.",
-    "triggers": ["flutter", "dart", "widget", "riverpod", "bloc", "buildcontext", "mobile app"]
+    "name": "accessibility",
+    "path": ".agent/skills/accessibility/SKILL.md",
+    "description": "Ensure Flutter apps meet WCAG 2.1 AA standards with proper semantics, focus management, and screen reader support",
+    "triggers": []
   },
   {
-    "name": "secure-code-guardian",
-    "path": ".agent/skills/secure-code-guardian/SKILL.md",
-    "description": "Security best practices, authentication, and vulnerability prevention.",
-    "triggers": ["security", "auth", "login", "password", "token", "jwt", "vulnerability", "hack"]
+    "name": "api-designer",
+    "path": ".agent/skills/api-designer/SKILL.md",
+    "description": "Use when designing REST or GraphQL APIs, creating OpenAPI specifications, or planning API architecture. Invoke for resource modeling, versioning strategies, pagination patterns, error handling standards.",
+    "triggers": []
   },
   {
-    "name": "backend-specialist",
-    "path": ".agent/skills/backend-specialist/SKILL.md",
-    "description": "Backend development, API design, and database management.",
-    "triggers": ["api", "backend", "server", "endpoint", "database", "sql", "nosql", "node", "express"]
+    "name": "api-patterns",
+    "path": ".agent/skills/api-patterns/SKILL.md",
+    "description": "API design principles and decision-making. REST vs GraphQL vs tRPC selection, response formats, versioning, pagination.",
+    "triggers": []
   },
   {
-    "name": "frontend-design",
-    "path": ".agent/skills/frontend-design/SKILL.md",
-    "description": "UI/UX design principles, CSS, and component styling.",
-    "triggers": ["ui", "ux", "design", "css", "style", "component", "look and feel", "frontend"]
+    "name": "app-builder",
+    "path": ".agent/skills/app-builder/SKILL.md",
+    "description": "Main application building orchestrator. Creates full-stack applications from natural language requests. Determines project type, selects tech stack, coordinates agents.",
+    "triggers": []
   },
   {
-    "name": "test-master",
-    "path": ".agent/skills/test-master/SKILL.md",
-    "description": "Comprehensive testing strategies and automation.",
-    "triggers": ["test", "testing", "unit test", "integration test", "e2e", "coverage", "qa"]
+    "name": "architecture",
+    "path": ".agent/skills/architecture/SKILL.md",
+    "description": "Architectural decision-making framework. Requirements analysis, trade-off evaluation, ADR documentation. Use when making architecture decisions or analyzing system design.",
+    "triggers": []
   },
   {
-    "name": "devops-engineer",
-    "path": ".agent/skills/devops-engineer/SKILL.md",
-    "description": "CI/CD, deployment, and infrastructure management.",
-    "triggers": ["devops", "deploy", "ci/cd", "pipeline", "docker", "kubernetes", "cloud"]
+    "name": "architecture-designer",
+    "path": ".agent/skills/architecture-designer/SKILL.md",
+    "description": "Use when designing new system architecture, reviewing existing designs, or making architectural decisions. Invoke for system design, architecture review, design patterns, ADRs, scalability planning.",
+    "triggers": []
+  },
+  {
+    "name": "ask-questions-if-underspecified",
+    "path": ".agent/skills/ask-questions-if-underspecified/SKILL.md",
+    "description": "Clarify requirements before implementing. Use when serious doubts arise.",
+    "triggers": []
+  },
+  {
+    "name": "atlassian-mcp",
+    "path": ".agent/skills/atlassian-mcp/SKILL.md",
+    "description": "Use when querying Jira issues, searching Confluence pages, creating tickets, updating documentation, or integrating Atlassian tools via MCP protocol.",
+    "triggers": [
+      "Jira",
+      "Confluence",
+      "Atlassian",
+      "MCP",
+      "tickets",
+      "issues",
+      "wiki",
+      "JQL",
+      "CQL",
+      "sprint",
+      "backlog",
+      "project management"
+    ]
+  },
+  {
+    "name": "bash-linux",
+    "path": ".agent/skills/bash-linux/SKILL.md",
+    "description": "Bash/Linux terminal patterns. Critical commands, piping, error handling, scripting. Use when working on macOS or Linux systems.",
+    "triggers": []
+  },
+  {
+    "name": "behavioral-modes",
+    "path": ".agent/skills/behavioral-modes/SKILL.md",
+    "description": "AI operational modes (brainstorm, implement, debug, review, teach, ship, orchestrate). Use to adapt behavior based on task type.",
+    "triggers": []
+  },
+  {
+    "name": "brainstorming",
+    "path": ".agent/skills/brainstorming/SKILL.md",
+    "description": "Socratic questioning protocol + user communication. MANDATORY for complex requests, new features, or unclear requirements. Includes progress reporting and error handling.",
+    "triggers": []
+  },
+  {
+    "name": "building-mcp-server-on-cloudflare",
+    "path": ".agent/skills/building-mcp-server-on-cloudflare/SKILL.md",
+    "description": "Build and deploy remote MCP servers on Cloudflare Workers with tools, OAuth authentication, and production configuration.",
+    "triggers": []
+  },
+  {
+    "name": "changelog-generator",
+    "path": ".agent/skills/changelog-generator/SKILL.md",
+    "description": "Automatically creates user-facing changelogs from git commits by analyzing commit history, categorizing changes, and transforming technical commits into clear, customer-friendly release notes. Turns hours of manual changelog writing into minutes of automated generation.",
+    "triggers": []
   },
   {
     "name": "clean-code",
     "path": ".agent/skills/clean-code/SKILL.md",
-    "description": "Clean code principles and refactoring.",
-    "triggers": ["refactor", "clean code", "readability", "structure", "best practice"]
+    "description": "Pragmatic coding standards - concise, direct, no over-engineering, no unnecessary comments",
+    "triggers": []
+  },
+  {
+    "name": "cli-developer",
+    "path": ".agent/skills/cli-developer/SKILL.md",
+    "description": "Build intuitive, cross-platform CLI tools with argument parsing, interactive prompts, progress indicators, and shell completions across Node.js, Python, and Go",
+    "triggers": []
+  },
+  {
+    "name": "code-documenter",
+    "path": ".agent/skills/code-documenter/SKILL.md",
+    "description": "Use when adding docstrings, creating API documentation, or building documentation sites. Invoke for OpenAPI/Swagger specs, JSDoc, doc portals, tutorials, user guides.",
+    "triggers": []
+  },
+  {
+    "name": "code-review-checklist",
+    "path": ".agent/skills/code-review-checklist/SKILL.md",
+    "description": "Code review guidelines covering code quality, security, and best practices.",
+    "triggers": []
+  },
+  {
+    "name": "code-reviewer",
+    "path": ".agent/skills/code-reviewer/SKILL.md",
+    "description": "Use when reviewing pull requests, conducting code quality audits, or identifying security vulnerabilities. Invoke for PR reviews, code quality checks, refactoring suggestions.",
+    "triggers": []
+  },
+  {
+    "name": "database-design",
+    "path": ".agent/skills/database-design/SKILL.md",
+    "description": "Database design principles and decision-making. Schema design, indexing strategy, ORM selection, serverless databases.",
+    "triggers": []
+  },
+  {
+    "name": "database-optimizer",
+    "path": ".agent/skills/database-optimizer/SKILL.md",
+    "description": "Use for system-level database performance triage across engines: bottleneck analysis, indexing strategy, config tuning, partitioning, and lock contention.",
+    "triggers": []
+  },
+  {
+    "name": "datadog-automation",
+    "path": ".agent/skills/datadog-automation/SKILL.md",
+    "description": "Automate Datadog tasks via Rube MCP (Composio): query metrics, search logs, manage monitors/dashboards, create events and downtimes. Always search tools first for current schemas.",
+    "triggers": []
+  },
+  {
+    "name": "debugging-wizard",
+    "path": ".agent/skills/debugging-wizard/SKILL.md",
+    "description": "Use when investigating errors, analyzing stack traces, or finding root causes of unexpected behavior. Invoke for error investigation, troubleshooting, log analysis, root cause analysis.",
+    "triggers": []
+  },
+  {
+    "name": "deployment-procedures",
+    "path": ".agent/skills/deployment-procedures/SKILL.md",
+    "description": "Production deployment principles and decision-making. Safe deployment workflows, rollback strategies, and verification. Teaches thinking, not scripts.",
+    "triggers": []
+  },
+  {
+    "name": "design-system-builder",
+    "path": ".agent/skills/design-system-builder/SKILL.md",
+    "description": "Create and review design system components: API design, token usage, theming, variants, and documentation",
+    "triggers": []
+  },
+  {
+    "name": "devops-engineer",
+    "path": ".agent/skills/devops-engineer/SKILL.md",
+    "description": "Use when setting up CI/CD pipelines, containerizing applications, or managing infrastructure as code. Invoke for pipelines, Docker, Kubernetes, cloud platforms, GitOps.",
+    "triggers": []
+  },
+  {
+    "name": "documentation-templates",
+    "path": ".agent/skills/documentation-templates/SKILL.md",
+    "description": "Documentation templates and structure guidelines. README, API docs, code comments, and AI-friendly documentation.",
+    "triggers": []
+  },
+  {
+    "name": "drift-flutter",
+    "path": ".agent/skills/drift-flutter/SKILL.md",
+    "description": "Use when implementing Flutter local persistence with Drift: schema design, DAOs, migrations, transactions, and repository integration",
+    "triggers": []
+  },
+  {
+    "name": "error-ux-observability",
+    "path": ".agent/skills/error-ux-observability/SKILL.md",
+    "description": "Map backend failures to user-friendly messages, implement proper logging levels, and ensure observable error handling",
+    "triggers": []
+  },
+  {
+    "name": "fastapi-expert",
+    "path": ".agent/skills/fastapi-expert/SKILL.md",
+    "description": "Use when building high-performance async Python APIs with FastAPI and Pydantic V2. Invoke for async SQLAlchemy, JWT authentication, WebSockets, OpenAPI documentation.",
+    "triggers": [
+      "FastAPI",
+      "Pydantic",
+      "async Python",
+      "Python API",
+      "REST API Python",
+      "SQLAlchemy async",
+      "JWT authentication",
+      "OpenAPI",
+      "Swagger Python"
+    ]
+  },
+  {
+    "name": "fastify-patterns",
+    "path": ".agent/skills/fastify-patterns/SKILL.md",
+    "description": "NestJS + Fastify integration patterns including secure sessions, cookie authentication, performance optimization, and plugin configuration. Use for high-performance API development.",
+    "triggers": []
+  },
+  {
+    "name": "feature-forge",
+    "path": ".agent/skills/feature-forge/SKILL.md",
+    "description": "Use when defining new features, gathering requirements, or writing specifications. Invoke for feature definition, requirements gathering, user stories, EARS format specs.",
+    "triggers": [
+      "requirements",
+      "specification",
+      "feature definition",
+      "user stories",
+      "EARS",
+      "planning"
+    ]
+  },
+  {
+    "name": "find-bugs",
+    "path": ".agent/skills/find-bugs/SKILL.md",
+    "description": "Find bugs, security vulnerabilities, and code quality issues in local branch changes. Use when asked to review changes, find bugs, security review, or audit code on the current branch.",
+    "triggers": []
+  },
+  {
+    "name": "fix-review",
+    "path": ".agent/skills/fix-review/SKILL.md",
+    "description": "Verify remediation commits against security audit findings and confirm fixes without introducing regressions.",
+    "triggers": []
+  },
+  {
+    "name": "flutter-code-reviewer",
+    "path": ".agent/skills/flutter-code-reviewer/SKILL.md",
+    "description": "Perform strict, actionable code reviews for Flutter/Dart projects enforcing architecture boundaries, Riverpod patterns, testing, and performance",
+    "triggers": []
+  },
+  {
+    "name": "flutter-expert",
+    "path": ".agent/skills/flutter-expert/SKILL.md",
+    "description": "Flutter app architecture coordinator for Clean Architecture projects; delegates state, routing, persistence, testing, and security to specialized skills",
+    "triggers": []
+  },
+  {
+    "name": "flutter-security-reviewer",
+    "path": ".agent/skills/flutter-security-reviewer/SKILL.md",
+    "description": "Review Flutter/Dart code for security vulnerabilities: secure storage, network hardening, log redaction, and data protection",
+    "triggers": []
+  },
+  {
+    "name": "flutter-test-master",
+    "path": ".agent/skills/flutter-test-master/SKILL.md",
+    "description": "Comprehensive Flutter testing guide covering unit tests, widget tests, integration tests, golden tests, and Riverpod provider testing with mocktail",
+    "triggers": []
+  },
+  {
+    "name": "frontend-design",
+    "path": ".agent/skills/frontend-design/SKILL.md",
+    "description": "Design thinking and decision-making for web UI. Use when designing components, layouts, color schemes, typography, or creating aesthetic interfaces. Teaches principles, not fixed values.",
+    "triggers": []
+  },
+  {
+    "name": "game-development",
+    "path": ".agent/skills/game-development/SKILL.md",
+    "description": "Game development orchestrator. Routes to platform-specific skills based on project needs.",
+    "triggers": []
+  },
+  {
+    "name": "geo-fundamentals",
+    "path": ".agent/skills/geo-fundamentals/SKILL.md",
+    "description": "Generative Engine Optimization for AI search engines (ChatGPT, Claude, Perplexity).",
+    "triggers": []
+  },
+  {
+    "name": "git-commit",
+    "path": ".agent/skills/git-commit/SKILL.md",
+    "description": "Create conventional commits with intelligent staging and message generation",
+    "triggers": []
+  },
+  {
+    "name": "github-automation",
+    "path": ".agent/skills/github-automation/SKILL.md",
+    "description": "Automate GitHub repositories, issues, pull requests, branches, CI/CD, and permissions via Rube MCP (Composio). Manage code workflows, review PRs, search code, and handle deployments programmatically.",
+    "triggers": []
+  },
+  {
+    "name": "golang-pro",
+    "path": ".agent/skills/golang-pro/SKILL.md",
+    "description": "Use when building Go applications requiring concurrent programming, microservices architecture, or high-performance systems. Invoke for goroutines, channels, Go generics, gRPC integration.",
+    "triggers": [
+      "Go",
+      "Golang",
+      "goroutines",
+      "channels",
+      "gRPC",
+      "microservices Go",
+      "Go generics",
+      "concurrent programming",
+      "Go interfaces"
+    ]
+  },
+  {
+    "name": "gorouter-restoration",
+    "path": ".agent/skills/gorouter-restoration/SKILL.md",
+    "description": "GoRouter guard patterns, deep links, redirect safety, tab preservation, and restoration best practices",
+    "triggers": []
+  },
+  {
+    "name": "graphql-architect",
+    "path": ".agent/skills/graphql-architect/SKILL.md",
+    "description": "Use when designing GraphQL schemas, implementing Apollo Federation, or building real-time subscriptions. Invoke for schema design, resolvers with DataLoader, query optimization, federation directives.",
+    "triggers": [
+      "GraphQL",
+      "Apollo Federation",
+      "GraphQL schema",
+      "API graph",
+      "GraphQL subscriptions",
+      "Apollo Server",
+      "schema design",
+      "GraphQL resolvers",
+      "DataLoader"
+    ]
+  },
+  {
+    "name": "i18n-localization",
+    "path": ".agent/skills/i18n-localization/SKILL.md",
+    "description": "Internationalization and localization patterns. Detecting hardcoded strings, managing translations, locale files, RTL support.",
+    "triggers": []
+  },
+  {
+    "name": "intelligent-routing",
+    "path": ".agent/skills/intelligent-routing/SKILL.md",
+    "description": "Automatic agent selection and intelligent task routing. Analyzes user requests and automatically selects the best specialist agent(s) without requiring explicit user mentions.",
+    "triggers": []
+  },
+  {
+    "name": "javascript-pro",
+    "path": ".agent/skills/javascript-pro/SKILL.md",
+    "description": "Use when building JavaScript applications with modern ES2023+ features, async patterns, or Node.js development. Invoke for vanilla JavaScript, browser APIs, performance optimization, module systems.",
+    "triggers": [
+      "JavaScript",
+      "ES2023",
+      "async await",
+      "Node.js",
+      "vanilla JavaScript",
+      "Web Workers",
+      "Fetch API",
+      "browser API",
+      "module system"
+    ]
+  },
+  {
+    "name": "legacy-modernizer",
+    "path": ".agent/skills/legacy-modernizer/SKILL.md",
+    "description": "Use when modernizing legacy systems, implementing incremental migration strategies, or reducing technical debt. Invoke for strangler fig pattern, monolith decomposition, framework upgrades.",
+    "triggers": [
+      "legacy modernization",
+      "strangler fig",
+      "incremental migration",
+      "technical debt",
+      "legacy refactoring",
+      "system migration",
+      "legacy system",
+      "modernize codebase"
+    ]
+  },
+  {
+    "name": "lint-and-validate",
+    "path": ".agent/skills/lint-and-validate/SKILL.md",
+    "description": "Automatic quality control, linting, and static analysis procedures. Use after every code modification to ensure syntax correctness and project standards. Triggers: lint, format, check, validate, types, static analysis.",
+    "triggers": []
+  },
+  {
+    "name": "mcp-builder",
+    "path": ".agent/skills/mcp-builder/SKILL.md",
+    "description": "MCP (Model Context Protocol) server building principles. Tool design, resource patterns, best practices.",
+    "triggers": []
+  },
+  {
+    "name": "mcp-developer",
+    "path": ".agent/skills/mcp-developer/SKILL.md",
+    "description": "Use for implementing, debugging, and maintaining MCP servers/clients with SDKs, protocol compliance, transports, schemas, and security hardening.",
+    "triggers": [
+      "MCP",
+      "Model Context Protocol",
+      "MCP server",
+      "MCP client",
+      "Claude integration",
+      "AI tools",
+      "context protocol",
+      "JSON-RPC"
+    ]
+  },
+  {
+    "name": "microservices-architect",
+    "path": ".agent/skills/microservices-architect/SKILL.md",
+    "description": "Use when designing distributed systems, decomposing monoliths, or implementing microservices patterns. Invoke for service boundaries, DDD, saga patterns, event sourcing, service mesh, distributed tracing.",
+    "triggers": []
+  },
+  {
+    "name": "mobile-design",
+    "path": ".agent/skills/mobile-design/SKILL.md",
+    "description": "Mobile-first design thinking and decision-making for iOS and Android apps. Touch interaction, performance patterns, platform conventions. Teaches principles, not fixed values. Use when building React Native, Flutter, or native mobile apps.",
+    "triggers": []
+  },
+  {
+    "name": "mongoose-nestjs",
+    "path": ".agent/skills/mongoose-nestjs/SKILL.md",
+    "description": "Mongoose integration with NestJS including schema design, repository pattern, transactions, migrations, and multi-tenancy. Use for MongoDB database layer implementation.",
+    "triggers": []
+  },
+  {
+    "name": "monitoring-expert",
+    "path": ".agent/skills/monitoring-expert/SKILL.md",
+    "description": "Use when setting up monitoring systems, logging, metrics, tracing, or alerting. Invoke for dashboards, Prometheus/Grafana, load testing, profiling, capacity planning.",
+    "triggers": [
+      "monitoring",
+      "observability",
+      "logging",
+      "metrics",
+      "tracing",
+      "alerting",
+      "Prometheus",
+      "Grafana",
+      "DataDog",
+      "APM",
+      "performance testing",
+      "load testing",
+      "profiling",
+      "capacity planning",
+      "bottleneck"
+    ]
+  },
+  {
+    "name": "nestjs-expert",
+    "path": ".agent/skills/nestjs-expert/SKILL.md",
+    "description": "Use when building NestJS applications requiring modular architecture, dependency injection, or TypeScript backend development. Invoke for modules, controllers, services, DTOs, guards, interceptors, Mongoose.",
+    "triggers": []
+  },
+  {
+    "name": "next-best-practices",
+    "path": ".agent/skills/next-best-practices/SKILL.md",
+    "description": "Rulebook for reviewing/generating Next.js code against Vercel best practices (conventions, RSC boundaries, async APIs, metadata, bundling). Not a migration or feature-implementation skill by itself.",
+    "triggers": []
+  },
+  {
+    "name": "next-cache-components",
+    "path": ".agent/skills/next-cache-components/SKILL.md",
+    "description": "Use only for Next.js 16 Cache Components and PPR implementation (use cache, cacheLife, cacheTag, updateTag, Suspense boundaries).",
+    "triggers": []
+  },
+  {
+    "name": "next-upgrade",
+    "path": ".agent/skills/next-upgrade/SKILL.md",
+    "description": "Use only for upgrading Next.js versions with official migration guides and codemods; includes dependency/version planning and upgrade validation.",
+    "triggers": []
+  },
+  {
+    "name": "nextjs-developer",
+    "path": ".agent/skills/nextjs-developer/SKILL.md",
+    "description": "Use for implementing/refactoring Next.js App Router features, Server Components/Actions, SEO, and production architecture. Not for version migration workflows or cache-components-only tuning.",
+    "triggers": []
+  },
+  {
+    "name": "nodejs-best-practices",
+    "path": ".agent/skills/nodejs-best-practices/SKILL.md",
+    "description": "Node.js development principles and decision-making. Framework selection, async patterns, security, and architecture. Teaches thinking, not copying.",
+    "triggers": []
+  },
+  {
+    "name": "oneup-design",
+    "path": ".agent/skills/oneup-design/SKILL.md",
+    "description": "OneUp HR design system with One* components, colors, spacing, and typography tokens",
+    "triggers": []
+  },
+  {
+    "name": "openapi-docs",
+    "path": ".agent/skills/openapi-docs/SKILL.md",
+    "description": "Use when writing or updating OpenAPI specifications, defining request/response schemas, or configuring Stoplight Elements (Swagger-style) documentation UI.",
+    "triggers": []
+  },
+  {
+    "name": "parallel-agents",
+    "path": ".agent/skills/parallel-agents/SKILL.md",
+    "description": "Multi-agent orchestration patterns. Use when multiple independent tasks can run with different domain expertise or when comprehensive analysis requires multiple perspectives.",
+    "triggers": []
   },
   {
     "name": "performance-profiling",
     "path": ".agent/skills/performance-profiling/SKILL.md",
-    "description": "Performance analysis and optimization.",
-    "triggers": ["performance", "speed", "slow", "optimize", "profile", "memory", "cpu"]
+    "description": "Performance profiling principles. Measurement, analysis, and optimization techniques.",
+    "triggers": []
+  },
+  {
+    "name": "plan-writing",
+    "path": ".agent/skills/plan-writing/SKILL.md",
+    "description": "Structured task planning with clear breakdowns, dependencies, and verification criteria. Use when implementing features, refactoring, or any multi-step work.",
+    "triggers": []
+  },
+  {
+    "name": "playwright-expert",
+    "path": ".agent/skills/playwright-expert/SKILL.md",
+    "description": "Use when writing E2E tests with Playwright, setting up test infrastructure, or debugging flaky browser tests. Invoke for browser automation, E2E tests, Page Object Model, test flakiness, visual testing.",
+    "triggers": [
+      "Playwright",
+      "E2E test",
+      "end-to-end",
+      "browser testing",
+      "automation",
+      "UI testing",
+      "visual testing"
+    ]
+  },
+  {
+    "name": "postgres-pro",
+    "path": ".agent/skills/postgres-pro/SKILL.md",
+    "description": "Use for PostgreSQL-specific internals and operations: EXPLAIN ANALYZE, JSONB/index types, replication, extensions, VACUUM/autovacuum, and pg_stat monitoring.",
+    "triggers": [
+      "PostgreSQL",
+      "Postgres",
+      "EXPLAIN ANALYZE",
+      "pg_stat",
+      "JSONB",
+      "streaming replication",
+      "logical replication",
+      "VACUUM",
+      "PostGIS",
+      "pgvector"
+    ]
+  },
+  {
+    "name": "postman",
+    "path": ".agent/skills/postman/SKILL.md",
+    "description": "Automate API testing and collection management with Postman - create workspaces, collections, environments, and run tests programmatically",
+    "triggers": []
+  },
+  {
+    "name": "powershell-windows",
+    "path": ".agent/skills/powershell-windows/SKILL.md",
+    "description": "PowerShell Windows patterns. Critical pitfalls, operator syntax, error handling.",
+    "triggers": []
+  },
+  {
+    "name": "prompt-engineer",
+    "path": ".agent/skills/prompt-engineer/SKILL.md",
+    "description": "Design and optimize LLM prompts with chain-of-thought, few-shot learning, and evaluation frameworks",
+    "triggers": []
+  },
+  {
+    "name": "python-patterns",
+    "path": ".agent/skills/python-patterns/SKILL.md",
+    "description": "Python development principles and decision-making. Framework selection, async patterns, type hints, project structure. Teaches thinking, not copying.",
+    "triggers": []
+  },
+  {
+    "name": "python-pro",
+    "path": ".agent/skills/python-pro/SKILL.md",
+    "description": "Use when building Python 3.11+ applications requiring type safety, async programming, or production-grade patterns. Invoke for type hints, pytest, async/await, dataclasses, mypy configuration.",
+    "triggers": [
+      "Python development",
+      "type hints",
+      "async Python",
+      "pytest",
+      "mypy",
+      "dataclasses",
+      "Python best practices",
+      "Pythonic code"
+    ]
+  },
+  {
+    "name": "react-best-practices",
+    "path": ".agent/skills/nextjs-react-expert/SKILL.md",
+    "description": "React and Next.js performance optimization from Vercel Engineering. Use when building React components, optimizing performance, eliminating waterfalls, reducing bundle size, reviewing code for performance issues, or implementing server/client-side optimizations.",
+    "triggers": []
+  },
+  {
+    "name": "react-best-practices",
+    "path": ".agent/skills/react-best-practices/SKILL.md",
+    "description": "Performance-focused React/Next.js review checklist from Vercel. Use for optimization/refactor passes, not as the primary implementation skill.",
+    "triggers": []
+  },
+  {
+    "name": "react-expert",
+    "path": ".agent/skills/react-expert/SKILL.md",
+    "description": "Use for framework-agnostic React component architecture, hooks/state patterns, and React 19 APIs. For Next.js routing/App Router specifics, use nextjs-developer.",
+    "triggers": [
+      "React",
+      "JSX",
+      "hooks",
+      "useState",
+      "useEffect",
+      "useContext",
+      "Server Components",
+      "React 19",
+      "Suspense",
+      "TanStack Query",
+      "Redux",
+      "Zustand",
+      "component",
+      "frontend"
+    ]
+  },
+  {
+    "name": "red-team-tactics",
+    "path": ".agent/skills/red-team-tactics/SKILL.md",
+    "description": "Red team tactics principles based on MITRE ATT&CK. Attack phases, detection evasion, reporting.",
+    "triggers": []
+  },
+  {
+    "name": "refactor",
+    "path": ".agent/skills/refactor/SKILL.md",
+    "description": "Migrate legacy code to new architecture while maintaining behavior",
+    "triggers": []
+  },
+  {
+    "name": "riverpod-3",
+    "path": ".agent/skills/riverpod-3/SKILL.md",
+    "description": "Riverpod 3 best practices for codegen, UI interaction boundaries, caching, paging, lifecycle, and testing",
+    "triggers": []
+  },
+  {
+    "name": "rust-engineer",
+    "path": ".agent/skills/rust-engineer/SKILL.md",
+    "description": "Use when building Rust applications requiring memory safety, systems programming, or zero-cost abstractions. Invoke for ownership patterns, lifetimes, traits, async/await with tokio.",
+    "triggers": [
+      "Rust",
+      "Cargo",
+      "ownership",
+      "borrowing",
+      "lifetimes",
+      "async Rust",
+      "tokio",
+      "zero-cost abstractions",
+      "memory safety",
+      "systems programming"
+    ]
+  },
+  {
+    "name": "rust-pro",
+    "path": ".agent/skills/rust-pro/SKILL.md",
+    "description": "Master Rust 1.75+ with modern async patterns, advanced type system",
+    "triggers": []
+  },
+  {
+    "name": "saas-builder",
+    "path": ".agent/skills/saas-builder/SKILL.md",
+    "description": "Build or review production-ready multi-tenant SaaS systems on AWS serverless architecture with React + TypeScript frontend, tenant-isolated DynamoDB data models, JWT/RBAC authorization, Stripe subscriptions, and usage-based billing. Use for SaaS architecture design, implementation planning, API/Lambda patterns, billing workflows, and tenant isolation audits.",
+    "triggers": []
+  },
+  {
+    "name": "sarif-parsing",
+    "path": ".agent/skills/sarif-parsing/SKILL.md",
+    "description": "Parse, analyze, and process SARIF (Static Analysis Results Interchange Format) files. Use when reading security scan results, aggregating findings from multiple tools, deduplicating alerts, extracting specific vulnerabilities, or integrating SARIF data into CI/CD pipelines.",
+    "triggers": []
+  },
+  {
+    "name": "secure-code-guardian",
+    "path": ".agent/skills/secure-code-guardian/SKILL.md",
+    "description": "Use when implementing authentication/authorization, securing user input, or preventing OWASP Top 10 vulnerabilities. Invoke for authentication, authorization, input validation, encryption, OWASP Top 10 prevention.",
+    "triggers": [
+      "security",
+      "authentication",
+      "authorization",
+      "encryption",
+      "OWASP",
+      "vulnerability",
+      "secure coding",
+      "password",
+      "JWT",
+      "OAuth"
+    ]
+  },
+  {
+    "name": "security-reviewer",
+    "path": ".agent/skills/security-reviewer/SKILL.md",
+    "description": "Use when conducting security audits, reviewing code for vulnerabilities, or analyzing infrastructure security. Invoke for SAST scans, penetration testing, DevSecOps practices, cloud security reviews.",
+    "triggers": []
+  },
+  {
+    "name": "semgrep",
+    "path": ".agent/skills/semgrep/SKILL.md",
+    "description": "Run Semgrep static analysis scan on a codebase using parallel subagents. Automatically",
+    "triggers": []
+  },
+  {
+    "name": "sentry-automation",
+    "path": ".agent/skills/sentry-automation/SKILL.md",
+    "description": "Automate Sentry tasks via Rube MCP (Composio): manage issues/events, configure alerts, track releases, monitor projects and teams. Always search tools first for current schemas.",
+    "triggers": []
+  },
+  {
+    "name": "seo-fundamentals",
+    "path": ".agent/skills/seo-fundamentals/SKILL.md",
+    "description": "SEO fundamentals, E-E-A-T, Core Web Vitals, and Google algorithm principles.",
+    "triggers": []
+  },
+  {
+    "name": "server-management",
+    "path": ".agent/skills/server-management/SKILL.md",
+    "description": "Server management principles and decision-making. Process management, monitoring strategy, and scaling decisions. Teaches thinking, not commands.",
+    "triggers": []
+  },
+  {
+    "name": "spec-miner",
+    "path": ".agent/skills/spec-miner/SKILL.md",
+    "description": "Use when understanding legacy or undocumented systems, creating documentation for existing code, or extracting specifications from implementations. Invoke for legacy analysis, code archaeology, undocumented features.",
+    "triggers": [
+      "reverse engineer",
+      "legacy code",
+      "code analysis",
+      "undocumented",
+      "understand codebase",
+      "existing system"
+    ]
+  },
+  {
+    "name": "sql-pro",
+    "path": ".agent/skills/sql-pro/SKILL.md",
+    "description": "Use for database-agnostic SQL query design and optimization (CTEs, window functions, joins, execution plans) across multiple SQL dialects.",
+    "triggers": [
+      "SQL optimization",
+      "query performance",
+      "database design",
+      "PostgreSQL",
+      "MySQL",
+      "SQL Server",
+      "window functions",
+      "CTEs",
+      "query tuning",
+      "EXPLAIN plan",
+      "database indexing"
+    ]
+  },
+  {
+    "name": "sre-engineer",
+    "path": ".agent/skills/sre-engineer/SKILL.md",
+    "description": "Use when defining SLIs/SLOs, managing error budgets, or building reliable systems at scale. Invoke for incident management, chaos engineering, toil reduction, capacity planning.",
+    "triggers": [
+      "SRE",
+      "site reliability",
+      "SLO",
+      "SLI",
+      "error budget",
+      "incident management",
+      "chaos engineering",
+      "toil reduction",
+      "on-call",
+      "MTTR"
+    ]
+  },
+  {
+    "name": "static-analysis",
+    "path": ".agent/skills/static-analysis/SKILL.md",
+    "description": "Runs CodeQL-based static security analysis (database build, query pack selection, and SARIF results) for vulnerability discovery and audits. Not for custom QL authoring or CI/CD setup.",
+    "triggers": []
+  },
+  {
+    "name": "stripe-best-practices",
+    "path": ".agent/skills/stripe-best-practices/SKILL.md",
+    "description": "Best practices for building Stripe integrations",
+    "triggers": []
+  },
+  {
+    "name": "sub-agents",
+    "path": ".agent/skills/sub-agents/SKILL.md",
+    "description": "Execute external CLI AIs as isolated sub-agents for task delegation, parallel processing, and context separation. Use when delegating complex multi-step tasks, running parallel investigations, needing fresh context without current conversation history, or leveraging specialized agent definitions. Returns structured JSON with agent output, exit code, and execution status.",
+    "triggers": []
+  },
+  {
+    "name": "supabase-postgres-best-practices",
+    "path": ".agent/skills/supabase-postgres-best-practices/SKILL.md",
+    "description": "Supabase-specific Postgres best practices (RLS/auth patterns, connection pooling, managed Postgres constraints, and performance rules) for Supabase-hosted workloads.",
+    "triggers": []
+  },
+  {
+    "name": "systematic-debugging",
+    "path": ".agent/skills/systematic-debugging/SKILL.md",
+    "description": "4-phase systematic debugging methodology with root cause analysis and evidence-based verification. Use when debugging complex issues.",
+    "triggers": []
+  },
+  {
+    "name": "tailwind-patterns",
+    "path": ".agent/skills/tailwind-patterns/SKILL.md",
+    "description": "Tailwind CSS v4 principles. CSS-first configuration, container queries, modern patterns, design token architecture.",
+    "triggers": []
+  },
+  {
+    "name": "tdd-workflow",
+    "path": ".agent/skills/tdd-workflow/SKILL.md",
+    "description": "Test-Driven Development workflow principles. RED-GREEN-REFACTOR cycle.",
+    "triggers": []
+  },
+  {
+    "name": "terraform-engineer",
+    "path": ".agent/skills/terraform-engineer/SKILL.md",
+    "description": "Use when implementing infrastructure as code with Terraform across AWS, Azure, or GCP. Invoke for module development, state management, provider configuration, multi-environment workflows, infrastructure testing.",
+    "triggers": [
+      "Terraform",
+      "infrastructure as code",
+      "IaC",
+      "terraform module",
+      "terraform state",
+      "AWS provider",
+      "Azure provider",
+      "GCP provider",
+      "terraform plan",
+      "terraform apply"
+    ]
+  },
+  {
+    "name": "test-master",
+    "path": ".agent/skills/test-master/SKILL.md",
+    "description": "Use when writing tests, creating test strategies, or building automation frameworks. Invoke for unit tests, integration tests, E2E, coverage analysis, performance testing, security testing.",
+    "triggers": []
+  },
+  {
+    "name": "testing-patterns",
+    "path": ".agent/skills/testing-patterns/SKILL.md",
+    "description": "Testing patterns and principles. Unit, integration, mocking strategies.",
+    "triggers": []
+  },
+  {
+    "name": "typescript-pro",
+    "path": ".agent/skills/typescript-pro/SKILL.md",
+    "description": "Use when building TypeScript applications requiring advanced type systems, generics, or full-stack type safety. Invoke for type guards, utility types, tRPC integration, monorepo setup.",
+    "triggers": []
+  },
+  {
+    "name": "ui-ux-pro-max",
+    "path": ".agent/skills/ui-ux-pro-max/SKILL.md",
+    "description": "UI/UX design intelligence. 50 styles, 21 palettes, 50 font pairings, 20 charts, 9 stacks (React, Next.js, Vue, Svelte, SwiftUI, React Native, Flutter, Tailwind, shadcn/ui). Actions: plan, build, create, design, implement, review, fix, improve, optimize, enhance, refactor, check UI/UX code. Projects: website, landing page, dashboard, admin panel, e-commerce, SaaS, portfolio, blog, mobile app, .html, .tsx, .vue, .svelte. Elements: button, modal, navbar, sidebar, card, table, form, chart. Styles: glassmorphism, claymorphism, minimalism, brutalism, neumorphism, bento grid, dark mode, responsive, skeuomorphism, flat design. Topics: color palette, accessibility, animation, layout, typography, font pairing, spacing, hover, shadow, gradient. Integrations: shadcn/ui MCP for component search and examples.",
+    "triggers": []
+  },
+  {
+    "name": "ux-ui-consistency",
+    "path": ".agent/skills/ux-ui-consistency/SKILL.md",
+    "description": "Ensure consistent UX patterns: design system component usage, screen states, error handling, and loading patterns",
+    "triggers": []
+  },
+  {
+    "name": "variant-analysis",
+    "path": ".agent/skills/variant-analysis/SKILL.md",
+    "description": "Find similar vulnerabilities and bugs across codebases using pattern-based analysis. Use when hunting bug variants, building CodeQL/Semgrep queries, analyzing security vulnerabilities, or performing systematic code audits after finding an initial issue.",
+    "triggers": []
+  },
+  {
+    "name": "vercel-2fa-enforcement",
+    "path": ".agent/skills/vercel-2fa-enforcement/SKILL.md",
+    "description": "Enforce two-factor authentication requirements across teams.",
+    "triggers": [
+      "vercel",
+      "security",
+      "2fa",
+      "enforcement"
+    ]
+  },
+  {
+    "name": "vercel-agent-workflows",
+    "path": ".agent/skills/vercel-agent-workflows/SKILL.md",
+    "description": "Run Vercel Agent workflows for iterative code review and troubleshooting.",
+    "triggers": [
+      "vercel",
+      "ai",
+      "agent",
+      "workflows"
+    ]
+  },
+  {
+    "name": "vercel-ai-gateway-auth-byok",
+    "path": ".agent/skills/vercel-ai-gateway-auth-byok/SKILL.md",
+    "description": "Configure AI Gateway authentication and bring-your-own-key controls.",
+    "triggers": [
+      "vercel",
+      "ai",
+      "gateway",
+      "auth",
+      "byok"
+    ]
+  },
+  {
+    "name": "vercel-ai-gateway-core",
+    "path": ".agent/skills/vercel-ai-gateway-core/SKILL.md",
+    "description": "Route LLM traffic through Vercel AI Gateway with unified controls.",
+    "triggers": [
+      "vercel",
+      "ai",
+      "gateway",
+      "core"
+    ]
+  },
+  {
+    "name": "vercel-ai-gateway-fallbacks",
+    "path": ".agent/skills/vercel-ai-gateway-fallbacks/SKILL.md",
+    "description": "Implement retries and fallback chains for resilient AI responses.",
+    "triggers": [
+      "vercel",
+      "ai",
+      "gateway",
+      "fallbacks"
+    ]
+  },
+  {
+    "name": "vercel-ai-gateway-model-routing",
+    "path": ".agent/skills/vercel-ai-gateway-model-routing/SKILL.md",
+    "description": "Design model and provider routing policies for latency, quality, and cost.",
+    "triggers": [
+      "vercel",
+      "ai",
+      "gateway",
+      "model",
+      "routing"
+    ]
+  },
+  {
+    "name": "vercel-ai-gateway-observability",
+    "path": ".agent/skills/vercel-ai-gateway-observability/SKILL.md",
+    "description": "Monitor AI Gateway usage, latency, and spend with actionable thresholds.",
+    "triggers": [
+      "vercel",
+      "ai",
+      "gateway",
+      "observability"
+    ]
+  },
+  {
+    "name": "vercel-ai-gateway-openai-compatible",
+    "path": ".agent/skills/vercel-ai-gateway-openai-compatible/SKILL.md",
+    "description": "Use OpenAI-compatible AI Gateway endpoints without lock-in risk.",
+    "triggers": [
+      "vercel",
+      "ai",
+      "gateway",
+      "openai",
+      "compatible"
+    ]
+  },
+  {
+    "name": "vercel-ai-sdk-core",
+    "path": ".agent/skills/vercel-ai-sdk-core/SKILL.md",
+    "description": "Implement Vercel AI SDK core abstractions for model calls and tool usage.",
+    "triggers": [
+      "vercel",
+      "ai",
+      "sdk",
+      "core"
+    ]
+  },
+  {
+    "name": "vercel-ai-sdk-ui",
+    "path": ".agent/skills/vercel-ai-sdk-ui/SKILL.md",
+    "description": "Implement AI SDK UI streaming and client interaction patterns.",
+    "triggers": [
+      "vercel",
+      "ai",
+      "sdk",
+      "ui"
+    ]
+  },
+  {
+    "name": "vercel-alerts-monitoring",
+    "path": ".agent/skills/vercel-alerts-monitoring/SKILL.md",
+    "description": "Define alerts and monitoring thresholds tied to user-impact symptoms.",
+    "triggers": [
+      "vercel",
+      "observability",
+      "alerts",
+      "monitoring"
+    ]
+  },
+  {
+    "name": "vercel-audit-logs",
+    "path": ".agent/skills/vercel-audit-logs/SKILL.md",
+    "description": "Use audit logs for compliance evidence and change forensics.",
+    "triggers": [
+      "vercel",
+      "security",
+      "audit",
+      "logs"
+    ]
+  },
+  {
+    "name": "vercel-automation",
+    "path": ".agent/skills/vercel-automation/SKILL.md",
+    "description": "Umbrella Vercel automation playbook covering project setup, deployment lifecycle, security, observability, and CLI operations.",
+    "triggers": [
+      "vercel",
+      "deployment",
+      "automation"
+    ]
+  },
+  {
+    "name": "vercel-blob",
+    "path": ".agent/skills/vercel-blob/SKILL.md",
+    "description": "Use Vercel Blob for object storage, uploads, and secure access patterns.",
+    "triggers": [
+      "vercel",
+      "storage",
+      "blob"
+    ]
+  },
+  {
+    "name": "vercel-bot-management",
+    "path": ".agent/skills/vercel-bot-management/SKILL.md",
+    "description": "Use bot-management policy controls for traffic quality and abuse defense.",
+    "triggers": [
+      "vercel",
+      "security",
+      "bot",
+      "management"
+    ]
+  },
+  {
+    "name": "vercel-botid",
+    "path": ".agent/skills/vercel-botid/SKILL.md",
+    "description": "Implement BotID challenge behavior with minimal legitimate-user friction.",
+    "triggers": [
+      "vercel",
+      "security",
+      "botid"
+    ]
+  },
+  {
+    "name": "vercel-build-image-upgrades",
+    "path": ".agent/skills/vercel-build-image-upgrades/SKILL.md",
+    "description": "Plan and validate build image and runtime toolchain upgrades on Vercel.",
+    "triggers": [
+      "vercel",
+      "deployment",
+      "build",
+      "image",
+      "upgrades"
+    ]
+  },
+  {
+    "name": "vercel-build-output-api",
+    "path": ".agent/skills/vercel-build-output-api/SKILL.md",
+    "description": "Use Build Output API patterns for framework output integration.",
+    "triggers": [
+      "vercel",
+      "deployment",
+      "build",
+      "output",
+      "api"
+    ]
+  },
+  {
+    "name": "vercel-build-pipeline",
+    "path": ".agent/skills/vercel-build-pipeline/SKILL.md",
+    "description": "Operate build settings, build logs, and build-failure triage workflows.",
+    "triggers": [
+      "vercel",
+      "deployment",
+      "build",
+      "pipeline"
+    ]
+  },
+  {
+    "name": "vercel-cache-control-headers",
+    "path": ".agent/skills/vercel-cache-control-headers/SKILL.md",
+    "description": "Apply Cache-Control and related headers for deterministic content freshness.",
+    "triggers": [
+      "vercel",
+      "cache",
+      "control",
+      "headers"
+    ]
+  },
+  {
+    "name": "vercel-cdn-cache",
+    "path": ".agent/skills/vercel-cdn-cache/SKILL.md",
+    "description": "Design cache behavior across Vercel Edge Network and origin workloads.",
+    "triggers": [
+      "vercel",
+      "cache",
+      "cdn"
+    ]
+  },
+  {
+    "name": "vercel-cdn-purging",
+    "path": ".agent/skills/vercel-cdn-purging/SKILL.md",
+    "description": "Run cache purge/invalidation workflows with low blast radius.",
+    "triggers": [
+      "vercel",
+      "cache",
+      "cdn",
+      "purging"
+    ]
+  },
+  {
+    "name": "vercel-cli-core",
+    "path": ".agent/skills/vercel-cli-core/SKILL.md",
+    "description": "Use Vercel CLI core commands for deploy, inspect, logs, and diagnostics.",
+    "triggers": [
+      "vercel",
+      "cli",
+      "core"
+    ]
+  },
+  {
+    "name": "vercel-cli-flags",
+    "path": ".agent/skills/vercel-cli-flags/SKILL.md",
+    "description": "Manage Vercel Flags lifecycle through CLI-driven workflows.",
+    "triggers": [
+      "vercel",
+      "cli",
+      "flags"
+    ]
+  },
+  {
+    "name": "vercel-cli-mcp",
+    "path": ".agent/skills/vercel-cli-mcp/SKILL.md",
+    "description": "Use Vercel CLI MCP capabilities for agent and tooling integration.",
+    "triggers": [
+      "vercel",
+      "cli",
+      "mcp"
+    ]
+  },
+  {
+    "name": "vercel-cli-microfrontends",
+    "path": ".agent/skills/vercel-cli-microfrontends/SKILL.md",
+    "description": "Operate microfrontend-specific CLI workflows and validations.",
+    "triggers": [
+      "vercel",
+      "cli",
+      "microfrontends"
+    ]
+  },
+  {
+    "name": "vercel-cli-project-domain-env",
+    "path": ".agent/skills/vercel-cli-project-domain-env/SKILL.md",
+    "description": "Automate project, domain, and environment management via CLI.",
+    "triggers": [
+      "vercel",
+      "cli",
+      "project",
+      "domain",
+      "env"
+    ]
+  },
+  {
+    "name": "vercel-cron-jobs",
+    "path": ".agent/skills/vercel-cron-jobs/SKILL.md",
+    "description": "Configure and verify scheduled cron jobs with idempotency and retry controls.",
+    "triggers": [
+      "vercel",
+      "functions",
+      "cron",
+      "jobs"
+    ]
+  },
+  {
+    "name": "vercel-custom-events",
+    "path": ".agent/skills/vercel-custom-events/SKILL.md",
+    "description": "Track and analyze custom events across frontend and backend contexts.",
+    "triggers": [
+      "vercel",
+      "observability",
+      "custom",
+      "events"
+    ]
+  },
+  {
+    "name": "vercel-data-cache-nextjs",
+    "path": ".agent/skills/vercel-data-cache-nextjs/SKILL.md",
+    "description": "Operate Next.js data cache strategy on Vercel for App Router workloads.",
+    "triggers": [
+      "vercel",
+      "functions",
+      "data",
+      "cache",
+      "nextjs"
+    ]
+  },
+  {
+    "name": "vercel-deployment-promotion",
+    "path": ".agent/skills/vercel-deployment-promotion/SKILL.md",
+    "description": "Promote deployments safely across environments with rollback-ready controls.",
+    "triggers": [
+      "vercel",
+      "deployment",
+      "promotion"
+    ]
+  },
+  {
+    "name": "vercel-deployment-protection",
+    "path": ".agent/skills/vercel-deployment-protection/SKILL.md",
+    "description": "Configure deployment protection using auth, passwords, and IP gates.",
+    "triggers": [
+      "vercel",
+      "security",
+      "deployment",
+      "protection"
+    ]
+  },
+  {
+    "name": "vercel-dns-records",
+    "path": ".agent/skills/vercel-dns-records/SKILL.md",
+    "description": "Manage DNS records and propagation-sensitive change workflows.",
+    "triggers": [
+      "vercel",
+      "domains",
+      "dns",
+      "records"
+    ]
+  },
+  {
+    "name": "vercel-domain-ownership-claims",
+    "path": ".agent/skills/vercel-domain-ownership-claims/SKILL.md",
+    "description": "Handle domain ownership claims and re-verification procedures.",
+    "triggers": [
+      "vercel",
+      "domains",
+      "domain",
+      "ownership",
+      "claims"
+    ]
+  },
+  {
+    "name": "vercel-domains",
+    "path": ".agent/skills/vercel-domains/SKILL.md",
+    "description": "Manage custom domain lifecycle: add, assign, verify, and remove.",
+    "triggers": [
+      "vercel",
+      "domains"
+    ]
+  },
+  {
+    "name": "vercel-drains-setup",
+    "path": ".agent/skills/vercel-drains-setup/SKILL.md",
+    "description": "Configure drains for exporting telemetry to external observability stacks.",
+    "triggers": [
+      "vercel",
+      "observability",
+      "drains",
+      "setup"
+    ]
+  },
+  {
+    "name": "vercel-edge-config",
+    "path": ".agent/skills/vercel-edge-config/SKILL.md",
+    "description": "Use Edge Config for low-latency dynamic config reads at edge locations.",
+    "triggers": [
+      "vercel",
+      "storage",
+      "edge",
+      "config"
+    ]
+  },
+  {
+    "name": "vercel-edge-config-integrations",
+    "path": ".agent/skills/vercel-edge-config-integrations/SKILL.md",
+    "description": "Integrate Edge Config with external flag/config providers safely.",
+    "triggers": [
+      "vercel",
+      "storage",
+      "edge",
+      "config",
+      "integrations"
+    ]
+  },
+  {
+    "name": "vercel-edge-to-node-migration",
+    "path": ".agent/skills/vercel-edge-to-node-migration/SKILL.md",
+    "description": "Migrate Edge Runtime workloads to Node runtime when compatibility requires it.",
+    "triggers": [
+      "vercel",
+      "functions",
+      "edge",
+      "to",
+      "node",
+      "migration"
+    ]
+  },
+  {
+    "name": "vercel-environments",
+    "path": ".agent/skills/vercel-environments/SKILL.md",
+    "description": "Design and operate local, preview, production, and custom environment workflows.",
+    "triggers": [
+      "vercel",
+      "deployment",
+      "environments"
+    ]
+  },
+  {
+    "name": "vercel-firewall-core",
+    "path": ".agent/skills/vercel-firewall-core/SKILL.md",
+    "description": "Operate Vercel Firewall controls and policy lifecycle management.",
+    "triggers": [
+      "vercel",
+      "security",
+      "firewall",
+      "core"
+    ]
+  },
+  {
+    "name": "vercel-flags-cli-workflows",
+    "path": ".agent/skills/vercel-flags-cli-workflows/SKILL.md",
+    "description": "Automate flag creation, rollout, and cleanup via CLI workflows.",
+    "triggers": [
+      "vercel",
+      "flags",
+      "cli",
+      "workflows"
+    ]
+  },
+  {
+    "name": "vercel-flags-dashboard",
+    "path": ".agent/skills/vercel-flags-dashboard/SKILL.md",
+    "description": "Manage Flags entities, targeting segments, and draft/publish lifecycle.",
+    "triggers": [
+      "vercel",
+      "flags",
+      "dashboard"
+    ]
+  },
+  {
+    "name": "vercel-flags-explorer",
+    "path": ".agent/skills/vercel-flags-explorer/SKILL.md",
+    "description": "Use Flags Explorer and local overrides for safe experiment debugging.",
+    "triggers": [
+      "vercel",
+      "flags",
+      "explorer"
+    ]
+  },
+  {
+    "name": "vercel-flags-openfeature",
+    "path": ".agent/skills/vercel-flags-openfeature/SKILL.md",
+    "description": "Integrate Vercel Flags with OpenFeature-compatible interfaces.",
+    "triggers": [
+      "vercel",
+      "flags",
+      "openfeature"
+    ]
+  },
+  {
+    "name": "vercel-flags-platform",
+    "path": ".agent/skills/vercel-flags-platform/SKILL.md",
+    "description": "Operate Vercel Flags as the primary feature flag and rollout system.",
+    "triggers": [
+      "vercel",
+      "flags",
+      "platform"
+    ]
+  },
+  {
+    "name": "vercel-flags-sdk",
+    "path": ".agent/skills/vercel-flags-sdk/SKILL.md",
+    "description": "Implement Vercel Flags SDK in app code with deterministic evaluation.",
+    "triggers": [
+      "vercel",
+      "flags",
+      "sdk"
+    ]
+  },
+  {
+    "name": "vercel-fluid-compute",
+    "path": ".agent/skills/vercel-fluid-compute/SKILL.md",
+    "description": "Tune Fluid Compute behavior for latency, concurrency, and cost targets.",
+    "triggers": [
+      "vercel",
+      "functions",
+      "fluid",
+      "compute"
+    ]
+  },
+  {
+    "name": "vercel-function-config",
+    "path": ".agent/skills/vercel-function-config/SKILL.md",
+    "description": "Set per-function runtime, duration, memory, and region configuration safely.",
+    "triggers": [
+      "vercel",
+      "functions",
+      "function",
+      "config"
+    ]
+  },
+  {
+    "name": "vercel-functions-core",
+    "path": ".agent/skills/vercel-functions-core/SKILL.md",
+    "description": "Build and operate Vercel Functions with reliable request lifecycle handling.",
+    "triggers": [
+      "vercel",
+      "functions",
+      "core"
+    ]
+  },
+  {
+    "name": "vercel-functions-edge-runtime",
+    "path": ".agent/skills/vercel-functions-edge-runtime/SKILL.md",
+    "description": "Build on Vercel Edge Runtime with compatibility and performance guardrails.",
+    "triggers": [
+      "vercel",
+      "functions",
+      "edge",
+      "runtime"
+    ]
+  },
+  {
+    "name": "vercel-functions-nodejs",
+    "path": ".agent/skills/vercel-functions-nodejs/SKILL.md",
+    "description": "Implement Node.js runtime patterns specific to Vercel Functions.",
+    "triggers": [
+      "vercel",
+      "functions",
+      "nodejs"
+    ]
+  },
+  {
+    "name": "vercel-functions-python",
+    "path": ".agent/skills/vercel-functions-python/SKILL.md",
+    "description": "Implement Python runtime patterns specific to Vercel Functions.",
+    "triggers": [
+      "vercel",
+      "functions",
+      "python"
+    ]
+  },
+  {
+    "name": "vercel-generated-urls",
+    "path": ".agent/skills/vercel-generated-urls/SKILL.md",
+    "description": "Handle generated deployment URLs, branch URL behavior, and preview URL policies.",
+    "triggers": [
+      "vercel",
+      "deployment",
+      "generated",
+      "urls"
+    ]
+  },
+  {
+    "name": "vercel-git-deployments",
+    "path": ".agent/skills/vercel-git-deployments/SKILL.md",
+    "description": "Manage Git-based deployment flows and production-branch promotion strategy.",
+    "triggers": [
+      "vercel",
+      "deployment",
+      "git",
+      "deployments"
+    ]
+  },
+  {
+    "name": "vercel-image-optimization",
+    "path": ".agent/skills/vercel-image-optimization/SKILL.md",
+    "description": "Tune image optimization behavior, cache keys, and quality-cost tradeoffs.",
+    "triggers": [
+      "vercel",
+      "cache",
+      "image",
+      "optimization"
+    ]
+  },
+  {
+    "name": "vercel-integrations-native",
+    "path": ".agent/skills/vercel-integrations-native/SKILL.md",
+    "description": "Design native Vercel integrations and integration lifecycle management.",
+    "triggers": [
+      "vercel",
+      "cli",
+      "integrations",
+      "native"
+    ]
+  },
+  {
+    "name": "vercel-isr",
+    "path": ".agent/skills/vercel-isr/SKILL.md",
+    "description": "Implement ISR and revalidation flows with safe fallback behavior.",
+    "triggers": [
+      "vercel",
+      "cache",
+      "isr"
+    ]
+  },
+  {
+    "name": "vercel-log-drain-reference",
+    "path": ".agent/skills/vercel-log-drain-reference/SKILL.md",
+    "description": "Implement log-drain schema handling and downstream pipeline mapping.",
+    "triggers": [
+      "vercel",
+      "observability",
+      "log",
+      "drain",
+      "reference"
+    ]
+  },
+  {
+    "name": "vercel-log-trace-correlation",
+    "path": ".agent/skills/vercel-log-trace-correlation/SKILL.md",
+    "description": "Correlate logs and traces for precise root-cause isolation.",
+    "triggers": [
+      "vercel",
+      "observability",
+      "log",
+      "trace",
+      "correlation"
+    ]
+  },
+  {
+    "name": "vercel-marketplace-partner-api",
+    "path": ".agent/skills/vercel-marketplace-partner-api/SKILL.md",
+    "description": "Implement marketplace partner API operations and publication checks.",
+    "triggers": [
+      "vercel",
+      "cli",
+      "marketplace",
+      "partner",
+      "api"
+    ]
+  },
+  {
+    "name": "vercel-marketplace-storage-postgres",
+    "path": ".agent/skills/vercel-marketplace-storage-postgres/SKILL.md",
+    "description": "Operate Vercel Marketplace Postgres integrations and connection patterns.",
+    "triggers": [
+      "vercel",
+      "storage",
+      "marketplace",
+      "postgres"
+    ]
+  },
+  {
+    "name": "vercel-marketplace-storage-redis",
+    "path": ".agent/skills/vercel-marketplace-storage-redis/SKILL.md",
+    "description": "Operate Vercel Marketplace Redis/KV integrations and caching patterns.",
+    "triggers": [
+      "vercel",
+      "storage",
+      "marketplace",
+      "redis"
+    ]
+  },
+  {
+    "name": "vercel-mcp-for-agents",
+    "path": ".agent/skills/vercel-mcp-for-agents/SKILL.md",
+    "description": "Build and deploy MCP patterns for agent-compatible Vercel workflows.",
+    "triggers": [
+      "vercel",
+      "ai",
+      "mcp",
+      "for",
+      "agents"
+    ]
+  },
+  {
+    "name": "vercel-microfrontends",
+    "path": ".agent/skills/vercel-microfrontends/SKILL.md",
+    "description": "Implement Vercel microfrontend composition, routing, and release coordination.",
+    "triggers": [
+      "vercel",
+      "deployment",
+      "microfrontends"
+    ]
+  },
+  {
+    "name": "vercel-monorepos",
+    "path": ".agent/skills/vercel-monorepos/SKILL.md",
+    "description": "Implement monorepo project linking, build isolation, and environment boundaries.",
+    "triggers": [
+      "vercel",
+      "deployment",
+      "monorepos"
+    ]
+  },
+  {
+    "name": "vercel-multi-tenant",
+    "path": ".agent/skills/vercel-multi-tenant/SKILL.md",
+    "description": "Design multi-tenant Vercel architectures with domain and isolation controls.",
+    "triggers": [
+      "vercel",
+      "deployment",
+      "multi",
+      "tenant"
+    ]
+  },
+  {
+    "name": "vercel-nameservers",
+    "path": ".agent/skills/vercel-nameservers/SKILL.md",
+    "description": "Operate nameserver delegation and authoritative DNS strategy.",
+    "triggers": [
+      "vercel",
+      "domains",
+      "nameservers"
+    ]
+  },
+  {
+    "name": "vercel-observability-overview",
+    "path": ".agent/skills/vercel-observability-overview/SKILL.md",
+    "description": "Build complete observability baselines across logs, traces, and analytics.",
+    "triggers": [
+      "vercel",
+      "observability",
+      "overview"
+    ]
+  },
+  {
+    "name": "vercel-og-image-generation",
+    "path": ".agent/skills/vercel-og-image-generation/SKILL.md",
+    "description": "Generate social preview images with @vercel/og and edge-safe rendering.",
+    "triggers": [
+      "vercel",
+      "functions",
+      "og",
+      "image",
+      "generation"
+    ]
+  },
+  {
+    "name": "vercel-oidc-federation",
+    "path": ".agent/skills/vercel-oidc-federation/SKILL.md",
+    "description": "Implement OIDC federation for short-lived cloud credentials on Vercel.",
+    "triggers": [
+      "vercel",
+      "security",
+      "oidc",
+      "federation"
+    ]
+  },
+  {
+    "name": "vercel-project-configuration",
+    "path": ".agent/skills/vercel-project-configuration/SKILL.md",
+    "description": "Configure Vercel project behavior through vercel.json and project-level settings.",
+    "triggers": [
+      "vercel",
+      "deployment",
+      "project",
+      "configuration"
+    ]
+  },
+  {
+    "name": "vercel-protection-bypass-automation",
+    "path": ".agent/skills/vercel-protection-bypass-automation/SKILL.md",
+    "description": "Design controlled bypass automation for CI and E2E workloads.",
+    "triggers": [
+      "vercel",
+      "security",
+      "protection",
+      "bypass",
+      "automation"
+    ]
+  },
+  {
+    "name": "vercel-rbac-access-groups",
+    "path": ".agent/skills/vercel-rbac-access-groups/SKILL.md",
+    "description": "Design RBAC and access-group policy with least-privilege defaults.",
+    "triggers": [
+      "vercel",
+      "security",
+      "rbac",
+      "access",
+      "groups"
+    ]
+  },
+  {
+    "name": "vercel-redirects-rewrites",
+    "path": ".agent/skills/vercel-redirects-rewrites/SKILL.md",
+    "description": "Implement redirects and rewrites with routing safety and SEO awareness.",
+    "triggers": [
+      "vercel",
+      "cache",
+      "redirects",
+      "rewrites"
+    ]
+  },
+  {
+    "name": "vercel-remote-caching",
+    "path": ".agent/skills/vercel-remote-caching/SKILL.md",
+    "description": "Operate Turborepo remote cache integration and cache-safety controls.",
+    "triggers": [
+      "vercel",
+      "deployment",
+      "remote",
+      "caching"
+    ]
+  },
+  {
+    "name": "vercel-request-collapsing",
+    "path": ".agent/skills/vercel-request-collapsing/SKILL.md",
+    "description": "Use request collapsing to protect origins under burst traffic.",
+    "triggers": [
+      "vercel",
+      "cache",
+      "request",
+      "collapsing"
+    ]
+  },
+  {
+    "name": "vercel-rest-api",
+    "path": ".agent/skills/vercel-rest-api/SKILL.md",
+    "description": "Automate Vercel operations through REST APIs with robust error handling.",
+    "triggers": [
+      "vercel",
+      "cli",
+      "rest",
+      "api"
+    ]
+  },
+  {
+    "name": "vercel-routing-middleware",
+    "path": ".agent/skills/vercel-routing-middleware/SKILL.md",
+    "description": "Use Routing Middleware for pre-cache control, auth checks, and traffic shaping.",
+    "triggers": [
+      "vercel",
+      "functions",
+      "routing",
+      "middleware"
+    ]
+  },
+  {
+    "name": "vercel-runtime-cache",
+    "path": ".agent/skills/vercel-runtime-cache/SKILL.md",
+    "description": "Apply runtime cache policies with freshness and correctness guarantees.",
+    "triggers": [
+      "vercel",
+      "functions",
+      "runtime",
+      "cache"
+    ]
+  },
+  {
+    "name": "vercel-runtime-logs",
+    "path": ".agent/skills/vercel-runtime-logs/SKILL.md",
+    "description": "Query and triage runtime logs for incident diagnosis and regression detection.",
+    "triggers": [
+      "vercel",
+      "observability",
+      "runtime",
+      "logs"
+    ]
+  },
+  {
+    "name": "vercel-sdk",
+    "path": ".agent/skills/vercel-sdk/SKILL.md",
+    "description": "Build internal automation using Vercel SDK abstractions.",
+    "triggers": [
+      "vercel",
+      "cli",
+      "sdk"
+    ]
+  },
+  {
+    "name": "vercel-secure-compute",
+    "path": ".agent/skills/vercel-secure-compute/SKILL.md",
+    "description": "Configure Secure Compute and private network access patterns.",
+    "triggers": [
+      "vercel",
+      "security",
+      "secure",
+      "compute"
+    ]
+  },
+  {
+    "name": "vercel-session-tracing",
+    "path": ".agent/skills/vercel-session-tracing/SKILL.md",
+    "description": "Capture and inspect session traces to debug real user request paths.",
+    "triggers": [
+      "vercel",
+      "observability",
+      "session",
+      "tracing"
+    ]
+  },
+  {
+    "name": "vercel-speed-insights",
+    "path": ".agent/skills/vercel-speed-insights/SKILL.md",
+    "description": "Use Speed Insights to improve Core Web Vitals and render performance.",
+    "triggers": [
+      "vercel",
+      "observability",
+      "speed",
+      "insights"
+    ]
+  },
+  {
+    "name": "vercel-ssl-certificates",
+    "path": ".agent/skills/vercel-ssl-certificates/SKILL.md",
+    "description": "Operate SSL certificate provisioning, renewal, and incident response.",
+    "triggers": [
+      "vercel",
+      "domains",
+      "ssl",
+      "certificates"
+    ]
+  },
+  {
+    "name": "vercel-static-ips",
+    "path": ".agent/skills/vercel-static-ips/SKILL.md",
+    "description": "Use static egress IPs for partner allowlists and controlled outbound paths.",
+    "triggers": [
+      "vercel",
+      "security",
+      "static",
+      "ips"
+    ]
+  },
+  {
+    "name": "vercel-storage-migrations",
+    "path": ".agent/skills/vercel-storage-migrations/SKILL.md",
+    "description": "Plan migrations from legacy Vercel storage offerings with minimal downtime.",
+    "triggers": [
+      "vercel",
+      "storage",
+      "migrations"
+    ]
+  },
+  {
+    "name": "vercel-tracing-otel",
+    "path": ".agent/skills/vercel-tracing-otel/SKILL.md",
+    "description": "Instrument and analyze traces with OpenTelemetry on Vercel.",
+    "triggers": [
+      "vercel",
+      "observability",
+      "tracing",
+      "otel"
+    ]
+  },
+  {
+    "name": "vercel-waf-custom-rules",
+    "path": ".agent/skills/vercel-waf-custom-rules/SKILL.md",
+    "description": "Author and tune custom WAF rules for exploit and abuse patterns.",
+    "triggers": [
+      "vercel",
+      "security",
+      "waf",
+      "custom",
+      "rules"
+    ]
+  },
+  {
+    "name": "vercel-waf-rate-limiting",
+    "path": ".agent/skills/vercel-waf-rate-limiting/SKILL.md",
+    "description": "Apply rate-limiting strategy to protect expensive or sensitive endpoints.",
+    "triggers": [
+      "vercel",
+      "security",
+      "waf",
+      "rate",
+      "limiting"
+    ]
+  },
+  {
+    "name": "vercel-web-analytics",
+    "path": ".agent/skills/vercel-web-analytics/SKILL.md",
+    "description": "Operate privacy-aware web analytics and KPI instrumentation.",
+    "triggers": [
+      "vercel",
+      "observability",
+      "web",
+      "analytics"
+    ]
+  },
+  {
+    "name": "vercel-webhooks-and-checks",
+    "path": ".agent/skills/vercel-webhooks-and-checks/SKILL.md",
+    "description": "Design webhook and deployment check pipelines with idempotent handlers.",
+    "triggers": [
+      "vercel",
+      "cli",
+      "webhooks",
+      "and",
+      "checks"
+    ]
+  },
+  {
+    "name": "vulnerability-scanner",
+    "path": ".agent/skills/vulnerability-scanner/SKILL.md",
+    "description": "Advanced vulnerability analysis principles. OWASP 2025, Supply Chain Security, attack surface mapping, risk prioritization.",
+    "triggers": []
+  },
+  {
+    "name": "web-design-guidelines",
+    "path": ".agent/skills/web-design-guidelines/SKILL.md",
+    "description": "Review UI code for Web Interface Guidelines compliance. Use when asked to \"review my UI\", \"check accessibility\", \"audit design\", \"review UX\", or \"check my site against best practices\".",
+    "triggers": []
+  },
+  {
+    "name": "web-perf",
+    "path": ".agent/skills/web-perf/SKILL.md",
+    "description": "Analyzes web performance using Chrome DevTools MCP. Measures Core Web Vitals (FCP, LCP, TBT, CLS, Speed Index), identifies render-blocking resources, network dependency chains, layout shifts, caching issues, and accessibility gaps. Use when asked to audit, profile, debug, or optimize page load performance, Lighthouse scores, or site speed.",
+    "triggers": []
+  },
+  {
+    "name": "webapp-testing",
+    "path": ".agent/skills/webapp-testing/SKILL.md",
+    "description": "Web application testing principles. E2E, Playwright, deep audit strategies.",
+    "triggers": []
+  },
+  {
+    "name": "wrangler",
+    "path": ".agent/skills/wrangler/SKILL.md",
+    "description": "Cloudflare Workers CLI for deploying, developing, and managing Workers, KV, R2, D1, Vectorize, Hyperdrive, Workers AI, Containers, Queues, Workflows, Pipelines, and Secrets Store. Load before running wrangler commands to ensure correct syntax and best practices.",
+    "triggers": []
   }
 ]

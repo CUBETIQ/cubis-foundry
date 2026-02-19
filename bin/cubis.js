@@ -23,6 +23,8 @@ const { version: CLI_VERSION } = require("../package.json");
 
 const MANAGED_BLOCK_START_RE = /<!--\s*cbx:workflows:auto:start[^>]*-->/g;
 const MANAGED_BLOCK_END_RE = /<!--\s*cbx:workflows:auto:end\s*-->/g;
+const TERMINAL_VERIFICATION_BLOCK_START_RE = /<!--\s*cbx:terminal:verification:start[^>]*-->/g;
+const TERMINAL_VERIFICATION_BLOCK_END_RE = /<!--\s*cbx:terminal:verification:end\s*-->/g;
 const AGENT_ASSETS_SUBDIR = "Ai Agent Workflow";
 const COPILOT_ALLOWED_SKILL_FRONTMATTER_KEYS = new Set([
   "compatibility",
@@ -116,6 +118,8 @@ const WORKFLOW_PROFILES = {
 const PLATFORM_IDS = Object.keys(WORKFLOW_PROFILES);
 const CODEX_WORKFLOW_SKILL_PREFIX = "workflow-";
 const CODEX_AGENT_SKILL_PREFIX = "agent-";
+const TERMINAL_VERIFIER_PROVIDERS = ["codex", "gemini"];
+const DEFAULT_TERMINAL_VERIFIER = "codex";
 
 function platformInstallsCustomAgents(platformId) {
   const profile = WORKFLOW_PROFILES[platformId];
@@ -134,6 +138,14 @@ const PLATFORM_ALIASES = {
   "copilot-chat": "copilot",
   "copilot-cli": "copilot",
   github: "copilot"
+};
+
+const TERMINAL_VERIFIER_ALIASES = {
+  codex: "codex",
+  openai: "codex",
+  "openai-codex": "codex",
+  gemini: "gemini",
+  "gemini-cli": "gemini"
 };
 
 function packageRoot() {
@@ -167,6 +179,12 @@ function normalizeScope(value) {
   throw new Error(`Unknown scope '${value}'. Use --scope project or --scope global.`);
 }
 
+function normalizeTerminalVerifier(value) {
+  if (!value) return null;
+  const normalized = value.trim().toLowerCase();
+  return TERMINAL_VERIFIER_ALIASES[normalized] || null;
+}
+
 function defaultState() {
   return {
     schemaVersion: 1,
@@ -180,6 +198,147 @@ function defaultState() {
 
 function toPosixPath(value) {
   return value.split(path.sep).join("/");
+}
+
+function getAntigravityTerminalIntegrationDir(profilePaths) {
+  return path.join(path.dirname(profilePaths.workflowsDir), "terminal-integration");
+}
+
+function buildTerminalVerifierDefaultPrompt() {
+  return "Review the latest completed Antigravity task. Focus on bugs, regressions, security risks, and missing tests.";
+}
+
+function buildAntigravityTerminalIntegrationConfig({ provider }) {
+  return {
+    schemaVersion: 1,
+    enabled: true,
+    provider,
+    defaultPrompt: buildTerminalVerifierDefaultPrompt(),
+    providers: {
+      codex: {
+        command: "codex exec --skip-git-repo-check \"{prompt}\""
+      },
+      gemini: {
+        primaryCommand: "gemini -p \"{prompt}\"",
+        fallbackCommand: "gemini --prompt \"{prompt}\""
+      }
+    }
+  };
+}
+
+function buildAntigravityTerminalIntegrationReadme({ provider, configPath, scriptPsPath, scriptShPath }) {
+  return [
+    "# Antigravity Terminal Verification",
+    "",
+    "This directory is managed by cbx.",
+    "",
+    `- Provider: ${provider}`,
+    `- Config: ${toPosixPath(configPath)}`,
+    `- PowerShell runner: ${toPosixPath(scriptPsPath)}`,
+    `- Bash runner: ${toPosixPath(scriptShPath)}`,
+    "",
+    "Usage:",
+    `- Windows: \`pwsh -NoLogo -NoProfile -File \"${toPosixPath(scriptPsPath)}\" -Prompt \"<summary>\"\``,
+    `- macOS/Linux: \`bash \"${toPosixPath(scriptShPath)}\" \"<summary>\"\``,
+    "",
+    "If your selected CLI is missing, install it and rerun the command."
+  ].join("\n");
+}
+
+function buildAntigravityTerminalIntegrationPowerShellScript() {
+  return [
+    "param(",
+    "  [string]$Prompt = \"Review the latest completed Antigravity task. Focus on bugs, regressions, security risks, and missing tests.\"",
+    ")",
+    "",
+    "Set-StrictMode -Version Latest",
+    "$ErrorActionPreference = \"Stop\"",
+    "",
+    "$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path",
+    "$configPath = Join-Path $scriptDir \"config.json\"",
+    "",
+    "if (-not (Test-Path $configPath)) {",
+    "  Write-Error \"Missing terminal integration config: $configPath\"",
+    "  exit 1",
+    "}",
+    "",
+    "$config = Get-Content -LiteralPath $configPath -Raw | ConvertFrom-Json",
+    "$provider = \"$($config.provider)\".ToLowerInvariant()",
+    "",
+    "if ($provider -eq \"codex\") {",
+    "  & codex exec --skip-git-repo-check \"$Prompt\"",
+    "  exit $LASTEXITCODE",
+    "}",
+    "",
+    "if ($provider -eq \"gemini\") {",
+    "  & gemini -p \"$Prompt\"",
+    "  if ($LASTEXITCODE -eq 0) {",
+    "    exit 0",
+    "  }",
+    "  & gemini --prompt \"$Prompt\"",
+    "  exit $LASTEXITCODE",
+    "}",
+    "",
+    "Write-Error \"Unsupported provider in config: $provider\"",
+    "exit 1",
+    ""
+  ].join("\n");
+}
+
+function buildAntigravityTerminalIntegrationBashScript() {
+  return [
+    "#!/usr/bin/env bash",
+    "set -euo pipefail",
+    "",
+    "PROMPT=\"${1:-Review the latest completed Antigravity task. Focus on bugs, regressions, security risks, and missing tests.}\"",
+    "SCRIPT_DIR=\"$(cd \"$(dirname \"${BASH_SOURCE[0]}\")\" && pwd)\"",
+    "CONFIG_FILE=\"$SCRIPT_DIR/config.json\"",
+    "",
+    "if [[ ! -f \"$CONFIG_FILE\" ]]; then",
+    "  echo \"Missing terminal integration config: $CONFIG_FILE\" >&2",
+    "  exit 1",
+    "fi",
+    "",
+    "PROVIDER=\"$(node -e \"const fs=require('fs');const c=JSON.parse(fs.readFileSync(process.argv[1],'utf8'));process.stdout.write(String(c.provider||'').toLowerCase());\" \"$CONFIG_FILE\")\"",
+    "",
+    "if [[ \"$PROVIDER\" == \"codex\" ]]; then",
+    "  codex exec --skip-git-repo-check \"$PROMPT\"",
+    "  exit $?",
+    "fi",
+    "",
+    "if [[ \"$PROVIDER\" == \"gemini\" ]]; then",
+    "  if gemini -p \"$PROMPT\"; then",
+    "    exit 0",
+    "  fi",
+    "  gemini --prompt \"$PROMPT\"",
+    "  exit $?",
+    "fi",
+    "",
+    "echo \"Unsupported provider in config: $PROVIDER\" >&2",
+    "exit 1",
+    ""
+  ].join("\n");
+}
+
+function buildAntigravityTerminalVerificationBlock({
+  provider,
+  powerShellScriptPath,
+  bashScriptPath
+}) {
+  return [
+    `<!-- cbx:terminal:verification:start provider=${provider} version=1 -->`,
+    "## Terminal Verification Integration",
+    "",
+    "Terminal verification is enabled for this Antigravity installation.",
+    `- Provider: \`${provider}\``,
+    "",
+    "After completing implementation and local checks, run one verifier command:",
+    `- Windows: \`pwsh -NoLogo -NoProfile -File \"${toPosixPath(powerShellScriptPath)}\" -Prompt \"<summary>\"\``,
+    `- macOS/Linux: \`bash \"${toPosixPath(bashScriptPath)}\" \"<summary>\"\``,
+    "",
+    "If verifier CLI is unavailable, report it and continue with local verification evidence.",
+    "<!-- cbx:terminal:verification:end -->"
+  ].join("\n");
 }
 
 function targetStateKey(platform, scope) {
@@ -1029,9 +1188,9 @@ function buildManagedWorkflowBlock(platformId, workflows) {
   return lines.join("\n");
 }
 
-function analyzeManagedBlock(content) {
-  const starts = [...content.matchAll(MANAGED_BLOCK_START_RE)];
-  const ends = [...content.matchAll(MANAGED_BLOCK_END_RE)];
+function analyzeTaggedBlock(content, startPattern, endPattern) {
+  const starts = [...content.matchAll(startPattern)];
+  const ends = [...content.matchAll(endPattern)];
 
   if (starts.length === 0 && ends.length === 0) {
     return { status: "absent", starts: 0, ends: 0, range: null };
@@ -1058,6 +1217,18 @@ function analyzeManagedBlock(content) {
   }
 
   return { status: "multiple", starts: starts.length, ends: ends.length, range };
+}
+
+function analyzeManagedBlock(content) {
+  return analyzeTaggedBlock(content, MANAGED_BLOCK_START_RE, MANAGED_BLOCK_END_RE);
+}
+
+function analyzeTerminalVerificationBlock(content) {
+  return analyzeTaggedBlock(
+    content,
+    TERMINAL_VERIFICATION_BLOCK_START_RE,
+    TERMINAL_VERIFICATION_BLOCK_END_RE
+  );
 }
 
 async function resolveRuleFilePath(profileId, scope, cwd = process.cwd()) {
@@ -1110,6 +1281,71 @@ async function upsertManagedRuleBlock(ruleFilePath, platformId, workflows, dryRu
     filePath: ruleFilePath,
     warnings
   };
+}
+
+async function upsertTerminalVerificationBlock({
+  ruleFilePath,
+  provider,
+  powerShellScriptPath,
+  bashScriptPath,
+  dryRun = false
+}) {
+  const block = buildAntigravityTerminalVerificationBlock({
+    provider,
+    powerShellScriptPath,
+    bashScriptPath
+  });
+  const exists = await pathExists(ruleFilePath);
+  const original = exists ? await readFile(ruleFilePath, "utf8") : "";
+  const analysis = analyzeTerminalVerificationBlock(original);
+
+  let nextContent = original;
+  if (!exists || analysis.status === "absent") {
+    const trimmed = original.trimEnd();
+    nextContent = trimmed.length > 0 ? `${trimmed}\n\n${block}\n` : `${block}\n`;
+  } else if (analysis.range) {
+    nextContent = `${original.slice(0, analysis.range.start)}${block}${original.slice(analysis.range.end)}`;
+  } else {
+    const trimmed = original.trimEnd();
+    nextContent = trimmed.length > 0 ? `${trimmed}\n\n${block}\n` : `${block}\n`;
+  }
+
+  if (nextContent === original) {
+    return { action: "unchanged", filePath: ruleFilePath };
+  }
+
+  if (!dryRun) {
+    await mkdir(path.dirname(ruleFilePath), { recursive: true });
+    await writeFile(ruleFilePath, nextContent, "utf8");
+  }
+
+  if (!exists) {
+    return { action: dryRun ? "would-create" : "created", filePath: ruleFilePath };
+  }
+
+  return { action: dryRun ? "would-patch" : "patched", filePath: ruleFilePath };
+}
+
+async function removeTerminalVerificationBlock(ruleFilePath, dryRun = false) {
+  if (!(await pathExists(ruleFilePath))) {
+    return { action: "missing-rule-file", filePath: ruleFilePath };
+  }
+
+  const original = await readFile(ruleFilePath, "utf8");
+  const analysis = analyzeTerminalVerificationBlock(original);
+  if (!analysis.range) {
+    return { action: "unchanged", filePath: ruleFilePath };
+  }
+
+  const before = original.slice(0, analysis.range.start).trimEnd();
+  const after = original.slice(analysis.range.end).trimStart();
+  const nextContent = before && after ? `${before}\n\n${after}\n` : `${before}${after}`.trimEnd() + "\n";
+
+  if (!dryRun) {
+    await writeFile(ruleFilePath, nextContent, "utf8");
+  }
+
+  return { action: dryRun ? "would-patch" : "patched", filePath: ruleFilePath };
 }
 
 async function syncRulesForPlatform({ platform, scope, cwd = process.cwd(), dryRun = false }) {
@@ -1188,6 +1424,69 @@ async function copyArtifact({ source, destination, overwrite, dryRun = false }) 
     return { action: exists ? "would-replace" : "would-install", path: destination };
   }
   return { action: exists ? "replaced" : "installed", path: destination };
+}
+
+async function writeGeneratedArtifact({ destination, content, dryRun = false }) {
+  const exists = await pathExists(destination);
+
+  if (!dryRun) {
+    await mkdir(path.dirname(destination), { recursive: true });
+    await writeFile(destination, content, "utf8");
+  }
+
+  if (dryRun) {
+    return { action: exists ? "would-replace" : "would-install", path: destination };
+  }
+
+  return { action: exists ? "replaced" : "installed", path: destination };
+}
+
+async function installAntigravityTerminalIntegrationArtifacts({
+  profilePaths,
+  provider,
+  dryRun = false
+}) {
+  const integrationDir = getAntigravityTerminalIntegrationDir(profilePaths);
+  const configPath = path.join(integrationDir, "config.json");
+  const powerShellScriptPath = path.join(integrationDir, "verify-task.ps1");
+  const bashScriptPath = path.join(integrationDir, "verify-task.sh");
+  const readmePath = path.join(integrationDir, "README.md");
+
+  const dirExists = await pathExists(integrationDir);
+  if (!dryRun && dirExists) {
+    await rm(integrationDir, { recursive: true, force: true });
+  }
+
+  const configContent = `${JSON.stringify(
+    buildAntigravityTerminalIntegrationConfig({ provider }),
+    null,
+    2
+  )}\n`;
+  const scriptPs1 = buildAntigravityTerminalIntegrationPowerShellScript();
+  const scriptSh = buildAntigravityTerminalIntegrationBashScript();
+  const readme = buildAntigravityTerminalIntegrationReadme({
+    provider,
+    configPath,
+    scriptPsPath: powerShellScriptPath,
+    scriptShPath: bashScriptPath
+  });
+
+  const writes = [];
+  writes.push(await writeGeneratedArtifact({ destination: configPath, content: configContent, dryRun }));
+  writes.push(await writeGeneratedArtifact({ destination: powerShellScriptPath, content: scriptPs1, dryRun }));
+  writes.push(await writeGeneratedArtifact({ destination: bashScriptPath, content: scriptSh, dryRun }));
+  writes.push(await writeGeneratedArtifact({ destination: readmePath, content: `${readme}\n`, dryRun }));
+
+  return {
+    provider,
+    integrationDir,
+    configPath,
+    powerShellScriptPath,
+    bashScriptPath,
+    readmePath,
+    actions: writes,
+    installedPaths: writes.map((item) => item.path)
+  };
 }
 
 async function sanitizeInstalledSkillsForPlatform({
@@ -1302,6 +1601,7 @@ async function installBundleArtifacts({
   platform,
   scope,
   overwrite,
+  terminalVerifierSelection = null,
   dryRun = false,
   cwd = process.cwd()
 }) {
@@ -1400,6 +1700,16 @@ async function installBundleArtifacts({
     generatedWrapperSkills = wrapperResult.generated;
   }
 
+  let terminalIntegration = null;
+  if (platform === "antigravity" && terminalVerifierSelection?.enabled) {
+    terminalIntegration = await installAntigravityTerminalIntegrationArtifacts({
+      profilePaths,
+      provider: terminalVerifierSelection.provider,
+      dryRun
+    });
+    installed.push(...terminalIntegration.installedPaths);
+  }
+
   const sanitizedSkills = await sanitizeInstalledSkillsForPlatform({
     platform,
     skillDirs: artifacts.skills,
@@ -1416,6 +1726,7 @@ async function installBundleArtifacts({
     installed,
     skipped,
     artifacts,
+    terminalIntegration,
     generatedWrapperSkills,
     sanitizedSkills,
     sanitizedAgents
@@ -1577,6 +1888,8 @@ function printInstallSummary({
   generatedWrapperSkills = [],
   sanitizedSkills = [],
   sanitizedAgents = [],
+  terminalIntegration = null,
+  terminalIntegrationRules = null,
   dryRun = false
 }) {
   console.log(`\nPlatform: ${platform}`);
@@ -1610,6 +1923,18 @@ function printInstallSummary({
     console.log("Invoke these with $workflow-... or $agent-... in Codex.");
   }
 
+  if (terminalIntegration) {
+    console.log("\nAntigravity terminal verification integration:");
+    console.log(`- Provider: ${terminalIntegration.provider}`);
+    console.log(`- Directory: ${terminalIntegration.integrationDir}`);
+    if (terminalIntegrationRules?.primaryRule) {
+      console.log(`- Rule block (${terminalIntegrationRules.primaryRule.filePath}): ${terminalIntegrationRules.primaryRule.action}`);
+    }
+    if (terminalIntegrationRules?.workspaceRule) {
+      console.log(`- Workspace precedence rule (${terminalIntegrationRules.workspaceRule.filePath}): ${terminalIntegrationRules.workspaceRule.action}`);
+    }
+  }
+
   if (!dryRun && sanitizedSkills.length > 0) {
     console.log(`\nCopilot skill schema normalization (${sanitizedSkills.length}):`);
     for (const item of sanitizedSkills.slice(0, 8)) {
@@ -1633,7 +1958,14 @@ function printInstallSummary({
   }
 }
 
-function printRemoveSummary({ platform, scope, target, removed, dryRun = false }) {
+function printRemoveSummary({
+  platform,
+  scope,
+  target,
+  removed,
+  terminalIntegrationCleanup = null,
+  dryRun = false
+}) {
   console.log(`\nPlatform: ${platform}`);
   console.log(`Scope: ${scope}`);
   console.log(`Target: ${target}`);
@@ -1646,6 +1978,23 @@ function printRemoveSummary({ platform, scope, target, removed, dryRun = false }
     for (const item of removed) console.log(`- ${item}`);
   } else {
     console.log(`\nNo files were ${dryRun ? "selected for removal" : "removed"}.`);
+  }
+
+  if (terminalIntegrationCleanup) {
+    console.log("\nAntigravity terminal verification cleanup:");
+    console.log(
+      `- Integration directory (${terminalIntegrationCleanup.integrationDir}): ${terminalIntegrationCleanup.dirRemoved ? (dryRun ? "would-remove" : "removed") : "unchanged"}`
+    );
+    if (terminalIntegrationCleanup.primaryRule?.filePath) {
+      console.log(
+        `- Rule block (${terminalIntegrationCleanup.primaryRule.filePath}): ${terminalIntegrationCleanup.primaryRule.action}`
+      );
+    }
+    if (terminalIntegrationCleanup.workspaceRule?.filePath) {
+      console.log(
+        `- Workspace precedence rule (${terminalIntegrationCleanup.workspaceRule.filePath}): ${terminalIntegrationCleanup.workspaceRule.action}`
+      );
+    }
   }
 }
 
@@ -1688,6 +2037,40 @@ async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
     const analysis = analyzeManagedBlock(content);
     managedBlockStatus = analysis.status;
     managedBlockCounts = { starts: analysis.starts, ends: analysis.ends };
+  }
+
+  let terminalIntegration = null;
+  if (platform === "antigravity") {
+    const integrationDir = getAntigravityTerminalIntegrationDir(profilePaths);
+    const configPath = path.join(integrationDir, "config.json");
+    const exists = await pathExists(integrationDir);
+    const configExists = await pathExists(configPath);
+    let provider = null;
+    let ruleBlockStatus = "unknown";
+
+    if (configExists) {
+      try {
+        const raw = await readFile(configPath, "utf8");
+        const parsed = JSON.parse(raw);
+        provider = typeof parsed.provider === "string" ? parsed.provider : null;
+      } catch {
+        provider = null;
+      }
+    }
+
+    if (activeRuleFile && (await pathExists(activeRuleFile))) {
+      const content = await readFile(activeRuleFile, "utf8");
+      ruleBlockStatus = analyzeTerminalVerificationBlock(content).status;
+    }
+
+    terminalIntegration = {
+      path: integrationDir,
+      exists,
+      configPath,
+      configExists,
+      provider,
+      ruleBlockStatus
+    };
   }
 
   const recommendations = [];
@@ -1757,6 +2140,26 @@ async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
     }
   }
 
+  if (platform === "antigravity" && terminalIntegration?.exists && !terminalIntegration.configExists) {
+    warnings.push(
+      `Antigravity terminal integration directory exists without config: ${terminalIntegration.configPath}.`
+    );
+    recommendations.push(
+      "Reinstall with terminal integration enabled to restore config and scripts."
+    );
+  }
+
+  if (
+    platform === "antigravity" &&
+    terminalIntegration?.exists &&
+    terminalIntegration.ruleBlockStatus === "absent"
+  ) {
+    warnings.push("Antigravity terminal integration exists but no terminal verification rule block was found.");
+    recommendations.push(
+      "Re-run install with terminal integration flags (use --overwrite if files already exist)."
+    );
+  }
+
   if (platform === "copilot" && pathStatus.skills.exists) {
     const findings = await validateCopilotSkillsSchema(profilePaths.skillsDir);
     if (findings.length > 0) {
@@ -1800,6 +2203,7 @@ async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
     paths: pathStatus,
     managedBlockStatus,
     managedBlockCounts,
+    terminalIntegration,
     warnings,
     recommendations
   };
@@ -1826,6 +2230,16 @@ function printDoctorReport(report) {
   console.log(`- Status: ${report.managedBlockStatus}`);
   console.log(`- Markers: start=${report.managedBlockCounts.starts}, end=${report.managedBlockCounts.ends}`);
 
+  if (report.terminalIntegration) {
+    console.log("\nTerminal integration:");
+    console.log(`- Path: ${report.terminalIntegration.path}`);
+    console.log(`- Exists: ${report.terminalIntegration.exists ? "yes" : "no"}`);
+    console.log(`- Config: ${report.terminalIntegration.configPath}`);
+    console.log(`- Config present: ${report.terminalIntegration.configExists ? "yes" : "no"}`);
+    console.log(`- Provider: ${report.terminalIntegration.provider || "(unknown)"}`);
+    console.log(`- Rule block status: ${report.terminalIntegration.ruleBlockStatus}`);
+  }
+
   if (report.warnings.length > 0) {
     console.log("\nWarnings:");
     for (const warning of report.warnings) console.log(`- ${warning}`);
@@ -1849,12 +2263,141 @@ function withInstallOptions(command) {
   return withWorkflowBaseOptions(command)
     .option("-b, --bundle <bundle>", "bundle id (default: agent-environment-setup)")
     .option("--overwrite", "overwrite existing files")
+    .option(
+      "--terminal-integration",
+      "Antigravity only: enable terminal verification integration (prompts for verifier when interactive)"
+    )
+    .option(
+      "--terminal-verifier <provider>",
+      "Antigravity only: verifier provider (codex|gemini). Implies --terminal-integration."
+    )
     .option("--dry-run", "preview install without writing files")
     .option("-y, --yes", "skip interactive confirmation");
 }
 
 function printSkillsDeprecation() {
   console.log("[deprecation] 'cbx skills ...' is now an alias. Use 'cbx workflows ...'.");
+}
+
+async function resolveAntigravityTerminalVerifierSelection({ platform, options }) {
+  const verifierRaw = options.terminalVerifier;
+  const hasTerminalIntegrationFlag = Boolean(options.terminalIntegration);
+  const normalizedVerifier = normalizeTerminalVerifier(verifierRaw);
+
+  if (verifierRaw && !normalizedVerifier) {
+    throw new Error(
+      `Unsupported --terminal-verifier value '${verifierRaw}'. Allowed: ${TERMINAL_VERIFIER_PROVIDERS.join(", ")}.`
+    );
+  }
+
+  if (platform !== "antigravity") {
+    if (hasTerminalIntegrationFlag || verifierRaw) {
+      throw new Error("--terminal-integration and --terminal-verifier are only supported for platform 'antigravity'.");
+    }
+    return null;
+  }
+
+  let enabled = hasTerminalIntegrationFlag || Boolean(normalizedVerifier);
+  let provider = normalizedVerifier;
+
+  const canPrompt = !options.yes && process.stdin.isTTY;
+  if (!enabled && !provider && canPrompt) {
+    enabled = await confirm({
+      message: "Enable Antigravity terminal verification integration?",
+      default: false
+    });
+  }
+
+  if (!enabled) return null;
+
+  if (!provider) {
+    if (canPrompt) {
+      provider = await select({
+        message: "Select terminal verifier provider:",
+        choices: [
+          { name: "Codex CLI", value: "codex" },
+          { name: "Gemini CLI", value: "gemini" }
+        ]
+      });
+    } else {
+      provider = DEFAULT_TERMINAL_VERIFIER;
+    }
+  }
+
+  return { enabled: true, provider };
+}
+
+async function upsertTerminalVerificationForInstall({
+  scope,
+  cwd,
+  terminalIntegration,
+  dryRun = false
+}) {
+  if (!terminalIntegration) return null;
+
+  const primaryRuleFile = await resolveRuleFilePath("antigravity", scope, cwd);
+  if (!primaryRuleFile) return null;
+
+  const primary = await upsertTerminalVerificationBlock({
+    ruleFilePath: primaryRuleFile,
+    provider: terminalIntegration.provider,
+    powerShellScriptPath: terminalIntegration.powerShellScriptPath,
+    bashScriptPath: terminalIntegration.bashScriptPath,
+    dryRun
+  });
+
+  let workspace = null;
+  if (scope === "global") {
+    const workspaceRuleFile = await resolveWorkspaceRuleFileForGlobalScope("antigravity", cwd);
+    const globalRuleFile = expandPath(WORKFLOW_PROFILES.antigravity.global.ruleFilesByPriority[0], cwd);
+    if (workspaceRuleFile && path.resolve(workspaceRuleFile) !== path.resolve(globalRuleFile)) {
+      workspace = await upsertTerminalVerificationBlock({
+        ruleFilePath: workspaceRuleFile,
+        provider: terminalIntegration.provider,
+        powerShellScriptPath: terminalIntegration.powerShellScriptPath,
+        bashScriptPath: terminalIntegration.bashScriptPath,
+        dryRun
+      });
+    }
+  }
+
+  return {
+    provider: terminalIntegration.provider,
+    primaryRule: primary,
+    workspaceRule: workspace,
+    integrationDir: terminalIntegration.integrationDir
+  };
+}
+
+async function cleanupAntigravityTerminalIntegration({
+  scope,
+  cwd,
+  dryRun = false
+}) {
+  const profilePaths = await resolveProfilePaths("antigravity", scope, cwd);
+  const integrationDir = getAntigravityTerminalIntegrationDir(profilePaths);
+  const dirRemoved = await safeRemove(integrationDir, dryRun);
+
+  const primaryRuleFile = await resolveRuleFilePath("antigravity", scope, cwd);
+  const primaryRule = primaryRuleFile
+    ? await removeTerminalVerificationBlock(primaryRuleFile, dryRun)
+    : { action: "missing-rule-file", filePath: null };
+
+  let workspaceRule = null;
+  if (scope === "global") {
+    const workspaceRuleFile = await resolveWorkspaceRuleFileForGlobalScope("antigravity", cwd);
+    const globalRuleFile = expandPath(WORKFLOW_PROFILES.antigravity.global.ruleFilesByPriority[0], cwd);
+    if (workspaceRuleFile && path.resolve(workspaceRuleFile) !== path.resolve(globalRuleFile)) {
+      workspaceRule = await removeTerminalVerificationBlock(workspaceRuleFile, dryRun);
+    }
+  }
+
+  return {
+    integrationDir,
+    dirRemoved,
+    primaryRule,
+    workspaceRule
+  };
 }
 
 async function runWorkflowInstall(options) {
@@ -1876,12 +2419,18 @@ async function runWorkflowInstall(options) {
       }
     }
 
+    const terminalVerifierSelection = await resolveAntigravityTerminalVerifierSelection({
+      platform,
+      options
+    });
+
     const installResult = await installBundleArtifacts({
       bundleId,
       manifest,
       platform,
       scope,
       overwrite: Boolean(options.overwrite),
+      terminalVerifierSelection,
       dryRun,
       cwd: process.cwd()
     });
@@ -1903,6 +2452,16 @@ async function runWorkflowInstall(options) {
       cwd: process.cwd()
     });
 
+    const terminalVerificationRuleResult =
+      platform === "antigravity" && installResult.terminalIntegration
+        ? await upsertTerminalVerificationForInstall({
+            scope,
+            cwd: process.cwd(),
+            terminalIntegration: installResult.terminalIntegration,
+            dryRun
+          })
+        : null;
+
     if (!dryRun) {
       await recordBundleInstallState({
         scope,
@@ -1923,6 +2482,8 @@ async function runWorkflowInstall(options) {
       generatedWrapperSkills: installResult.generatedWrapperSkills,
       sanitizedSkills: installResult.sanitizedSkills,
       sanitizedAgents: installResult.sanitizedAgents,
+      terminalIntegration: installResult.terminalIntegration,
+      terminalIntegrationRules: terminalVerificationRuleResult,
       dryRun
     });
     printRuleSyncResult(syncResult);
@@ -1954,6 +2515,7 @@ async function runWorkflowRemove(target, options) {
 
     let removed = [];
     let removedType = "workflow";
+    let terminalIntegrationCleanup = null;
 
     if (bundleIds.includes(target)) {
       removedType = "bundle";
@@ -1980,6 +2542,17 @@ async function runWorkflowRemove(target, options) {
       });
 
       removed = removeResult.removed;
+
+      if (platform === "antigravity") {
+        terminalIntegrationCleanup = await cleanupAntigravityTerminalIntegration({
+          scope,
+          cwd: process.cwd(),
+          dryRun
+        });
+        if (terminalIntegrationCleanup.dirRemoved) {
+          removed.push(terminalIntegrationCleanup.integrationDir);
+        }
+      }
     } else {
       const profilePaths = await resolveProfilePaths(platform, scope, process.cwd());
       const workflowFile = await findWorkflowFileByTarget(profilePaths.workflowsDir, target);
@@ -2026,6 +2599,7 @@ async function runWorkflowRemove(target, options) {
       scope,
       target,
       removed,
+      terminalIntegrationCleanup,
       dryRun
     });
     printRuleSyncResult(syncResult);

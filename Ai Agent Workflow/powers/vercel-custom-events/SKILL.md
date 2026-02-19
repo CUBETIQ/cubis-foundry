@@ -1,0 +1,21 @@
+---
+name: vercel-custom-events
+displayName: Vercel Custom Events
+description: Track and analyze custom events across frontend and backend contexts.
+keywords:
+  - vercel
+  - observability
+  - custom
+  - events
+author: Cubis Foundry
+---
+
+# Vercel Custom Events
+
+Use this power as a concise execution guide for `skills/vercel-custom-events`.
+
+## Quick Loop
+1. Clarify scope and success criteria.
+2. Apply the smallest safe Vercel-specific change.
+3. Verify behavior in preview and production context.
+4. Document rollback and follow-up actions.

@@ -33,6 +33,7 @@ cbx workflows sync-rules --platform codex
 cbx workflows doctor codex
 cbx workflows platforms
 cbx workflows install --platform antigravity --dry-run
+cbx workflows install --platform antigravity --terminal-integration --terminal-verifier codex
 ```
 
 ### Deprecated Alias
@@ -126,12 +127,26 @@ Project scope:
 - Agents: `.agent/agents`
 - Skills: `.agent/skills`
 - Rules: `.agent/rules/GEMINI.md`
+- Terminal integration (optional): `.agent/terminal-integration`
 
 Global scope:
 - Workflows: `~/.gemini/antigravity/workflows`
 - Agents: `~/.gemini/antigravity/agents`
 - Skills: `~/.gemini/antigravity/skills`
 - Rules: `~/.gemini/GEMINI.md`
+- Terminal integration (optional): `~/.gemini/antigravity/terminal-integration`
+
+### Antigravity Terminal Integration (Optional)
+
+Install-time options:
+- `--terminal-integration`
+- `--terminal-verifier <codex|gemini>`
+
+Behavior:
+- Interactive installs prompt whether to enable terminal verification integration.
+- If enabled, cbx writes managed scripts/config under `.agent/terminal-integration` (or global equivalent).
+- cbx also writes a managed terminal verification block into Antigravity rule files so post-task verification commands are explicit.
+- Removing the bundle cleans the managed terminal integration directory and block.
 
 ### Codex
 
@@ -211,6 +226,7 @@ Preview mode is supported on install/remove/sync:
 
 ```bash
 cbx workflows install --platform antigravity --bundle agent-environment-setup --dry-run
+cbx workflows install --platform antigravity --bundle agent-environment-setup --terminal-integration --terminal-verifier codex --dry-run
 cbx workflows remove agent-environment-setup --platform antigravity --dry-run
 cbx workflows sync-rules --platform codex --dry-run
 ```
@@ -232,7 +248,7 @@ cd "$TMP_DIR"
 
 # 2) Antigravity preview + apply + doctor
 cbx workflows install --platform antigravity --bundle agent-environment-setup --dry-run
-cbx workflows install --platform antigravity --bundle agent-environment-setup --yes
+cbx workflows install --platform antigravity --bundle agent-environment-setup --terminal-integration --terminal-verifier codex --yes
 cbx workflows doctor antigravity --json
 
 # 3) Codex preview + apply + doctor
@@ -259,6 +275,7 @@ cbx workflows remove agent-environment-setup --platform antigravity --yes
 - managed block health
 - Codex legacy path warnings (`.codex/skills`)
 - Antigravity `.gitignore` warning for `.agent/` with recommendation to use `.git/info/exclude` for local-only excludes
+- Antigravity terminal integration status (directory/config/rule block)
 - Copilot project/global path health (`.github/agents`, `.github/skills`, `AGENTS.md` / `.github/copilot-instructions.md`)
 
 ## Conductor Integration
