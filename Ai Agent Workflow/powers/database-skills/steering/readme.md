@@ -1,9 +1,21 @@
 # database-skills steering
 
-Primary source:
-- `Ai Agent Workflow/skills/database-skills/`
+Use this steering map for power-mode database tasks.
 
-Suggested flow:
-1. Read hub SKILL
-2. Read engine SKILL
-3. Read engine references needed for current task
+## Routing map
+
+- Postgres: `engines/postgres/POWER.md`
+- MySQL: `engines/mysql/POWER.md`
+- Vitess: `engines/vitess/POWER.md`
+- Neki: `engines/neki/POWER.md`
+- MongoDB: `engines/mongodb/POWER.md`
+- SQLite: `engines/sqlite/POWER.md`
+- Supabase: `engines/supabase/POWER.md`
+- Redis: `engines/redis/POWER.md`
+
+## Required output for DB work
+
+- Indexing plan
+- Pagination plan
+- Query-plan evidence
+- Rollback plan

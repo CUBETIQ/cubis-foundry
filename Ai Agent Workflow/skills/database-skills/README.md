@@ -1,12 +1,13 @@
 # database-skills
 
-Engine-specific database skill pack inspired by `planetscale/database-skills`, expanded for common stacks.
+Engine-specific database skill pack inspired by `planetscale/database-skills`, expanded for modern production stacks.
 
 ## Layout
 
 ```text
 database-skills/
 ├── README.md
+├── LATEST_VERSIONS.md
 ├── SKILL.md
 └── skills/
     ├── postgres/
@@ -35,7 +36,15 @@ database-skills/
         └── references/
 ```
 
+## What each engine pack must cover
+
+- Index strategy for real query patterns.
+- Pagination strategy (keyset/seek first, offset only when justified).
+- Query plan workflow (`EXPLAIN` or engine equivalent).
+- Write/read tradeoff notes.
+- Safe rollout + rollback notes for schema and operational changes.
+
 ## Notes
 
 - Use this package as the single database skill dependency in agents/workflows.
-- Keep engine-specific guidance in `skills/<engine>/references/`.
+- Keep version-sensitive guidance synced with `LATEST_VERSIONS.md`.

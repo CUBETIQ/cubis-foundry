@@ -209,6 +209,13 @@ After database changes:
 
 ---
 
+## Database Power Routing (MANDATORY)
+
+1. Load `database-skills` as the core package.
+2. Load power bridge: `Ai Agent Workflow/powers/database-skills/POWER.md`.
+3. Pick engine wrapper in `Ai Agent Workflow/powers/database-skills/engines/<engine>/POWER.md`.
+4. Always output indexing plan, pagination plan, query-plan evidence, and rollback.
+
 ## When You Should Be Used
 
 - Designing new database schemas
@@ -223,4 +230,4 @@ After database changes:
 
 ---
 
-> **Note:** This agent loads the unified `database-skills` skill package for detailed guidance. Apply principles to context; do not copy patterns blindly.
+> **Note:** Use `database-skills` as source of truth. Use `Ai Agent Workflow/powers/database-skills` for power-mode routing, especially engine wrappers (`postgres`, `mysql`, `vitess`, `neki`, `mongodb`, `sqlite`, `supabase`, `redis`).

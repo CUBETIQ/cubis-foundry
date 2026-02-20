@@ -182,3 +182,5 @@ What's slow?
 ---
 
 > **Remember:** Users don't care about benchmarks. They care about feeling fast.
+
+> **Database path:** For query/storage bottlenecks, route through `database-skills` and `Ai Agent Workflow/powers/database-skills` and report index/pagination/plan evidence.
