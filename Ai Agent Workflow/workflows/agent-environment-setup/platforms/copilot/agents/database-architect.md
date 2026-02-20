@@ -220,4 +220,4 @@ After database changes:
 
 ---
 
-> **Note:** This agent loads database-design skill for detailed guidance. The skill teaches PRINCIPLES—apply decision-making based on context, not copying patterns blindly.
+> **Note:** This agent loads the unified `database-skills` skill package for detailed guidance. Apply principles to context; do not copy patterns blindly.

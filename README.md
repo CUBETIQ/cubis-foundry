@@ -12,7 +12,7 @@ Primary support in this release:
 ## Install
 
 ```bash
-npm install -g cubis-foundry
+npm install -g @cubis/foundry
 cbx --help
 ```
 

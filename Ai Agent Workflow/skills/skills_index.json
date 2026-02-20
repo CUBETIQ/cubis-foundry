@@ -1887,5 +1887,27 @@
     "path": ".agent/skills/wrangler/SKILL.md",
     "description": "Cloudflare Workers CLI for deploying, developing, and managing Workers, KV, R2, D1, Vectorize, Hyperdrive, Workers AI, Containers, Queues, Workflows, Pipelines, and Secrets Store. Load before running wrangler commands to ensure correct syntax and best practices.",
     "triggers": []
+  },
+  {
+    "name": "database-skills",
+    "path": ".agent/skills/database-skills/SKILL.md",
+    "description": "Unified database skill hub with engine-specific packs for PostgreSQL, MySQL, Vitess, Neki, MongoDB (Mongoose), SQLite, Supabase, and Redis.",
+    "triggers": [
+      "database",
+      "sql",
+      "postgres",
+      "mysql",
+      "vitess",
+      "neki",
+      "mongodb",
+      "mongoose",
+      "sqlite",
+      "supabase",
+      "redis",
+      "schema",
+      "migration",
+      "index",
+      "query"
+    ]
   }
 ]

@@ -11,6 +11,7 @@ Use this when data modeling, query quality, or migration safety is core to the t
 - Primary specialist: `@database-architect`
 - Backend integration: `@backend-specialist`
 - Verification support: `@test-engineer`
+- Core skill package: `database-skills`
 
 ## Steps
 1. Confirm data shape and access patterns.
