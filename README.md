@@ -1,6 +1,6 @@
 # Cubis Foundry CLI (`cbx`)
 
-Workflow-first installer for AI agent environments.
+Workflow-first installer for AI agent environments, with Codex callable-skill wrappers.
 
 Repository layout note: reusable workflow/skill/power assets are stored under `Ai Agent Workflow/`.
 
@@ -36,6 +36,23 @@ cbx workflows install --platform antigravity --dry-run
 cbx workflows install --platform antigravity --terminal-integration --terminal-verifier codex
 ```
 
+`rules` manages strict engineering policy and a generated codebase tech map:
+
+```bash
+cbx rules init --platform antigravity
+cbx rules init --platform codex
+cbx rules init --platform copilot
+cbx rules init --platform codex --scope global
+cbx rules tech-md --overwrite
+cbx rules init --platform codex --dry-run
+```
+
+What `cbx rules init` does:
+- Creates `ENGINEERING_RULES.md` next to the active platform rule file.
+- Appends/patches one managed engineering block in that rule file.
+- Generates `TECH.md` at workspace root by scanning the current codebase.
+- Preserves user content outside managed markers.
+
 ### Deprecated Alias
 
 `cbx skills ...` still works for one minor cycle and prints a deprecation notice.
@@ -58,12 +75,13 @@ Ai Agent Workflow/workflows/agent-environment-setup/manifest.json
 ```
 
 Bundle contains platform-specific:
-- slash-command workflows (`workflows/*.md`)
-- specialist agent definitions (`agents/*.md`)
+- workflow templates (`workflows/*.md`)
+- specialist agent templates (`agents/*.md`)
 - mapped reusable skills copied from `Ai Agent Workflow/skills/<id>/`
+- Codex callable wrapper skills generated from workflow/agent templates
 - rule templates (`rules/*.md`)
 
-## Installed Workflow Set (v1)
+## Installed Capability Set (v1)
 
 Core workflows:
 - `/brainstorm`
@@ -79,44 +97,22 @@ Core workflows:
 - `/devops`
 - `/qa`
 
-Backend workflow routes to:
-- `@backend-specialist`
+Routing behavior:
+- Antigravity/Copilot: workflow + agent markdown can be routed by platform conventions.
+- Codex: use generated callable wrapper skills (`$workflow-*`, `$agent-*`).
+- Example for backend intent in Codex: `$workflow-backend` or `$agent-backend-specialist`.
 
-### Codex Detailed Pack
+### Codex Runtime Mode
 
-Codex bundle now includes additional workflow commands:
-- `/orchestrate`
-- `/review`
-- `/refactor`
-- `/incident`
-- `/release`
+Codex does not currently execute custom workflow slash commands or custom `@agent` markdown files as first-class runtime entities.
+Codex skill invocation syntax is `$skill-name` (not `@agent-name`).
 
-Full AG-kit-style specialist roster is installed for all supported platforms:
-- Codex: `.agents/agents`
-- Antigravity: `.agent/agents`
-- Copilot: `.github/agents`
+`cbx` handles this by generating callable Codex skills:
+- Workflow wrappers: `$workflow-<name>` (for example `$workflow-review`, `$workflow-plan`)
+- Agent wrappers: `$agent-<name>` (for example `$agent-backend-specialist`)
 
-Specialists:
-- `@backend-specialist`
-- `@code-archaeologist`
-- `@database-architect`
-- `@debugger`
-- `@devops-engineer`
-- `@documentation-writer`
-- `@explorer-agent`
-- `@frontend-specialist`
-- `@game-developer`
-- `@mobile-developer`
-- `@orchestrator`
-- `@penetration-tester`
-- `@performance-optimizer`
-- `@product-manager`
-- `@product-owner`
-- `@project-planner`
-- `@qa-automation-engineer`
-- `@security-auditor`
-- `@seo-specialist`
-- `@test-engineer`
+Use these wrappers directly in Codex prompts.
+Do not rely on custom `/workflow` execution or custom `@agent` invocation in Codex runtime.
 
 ## Platform Paths
 
@@ -151,20 +147,20 @@ Behavior:
 ### Codex
 
 Project scope:
-- Workflows: `.agents/workflows`
+- Workflow templates (reference docs): `.agents/workflows`
 - Skills: `.agents/skills`
 - Rules: `AGENTS.md`
-- Agents: disabled by default (Codex custom agent files are not installed)
+- Agents: not installed for Codex runtime
 - Callable wrappers: generated into `.agents/skills` as:
-  - `workflow-<workflow-id>` (from workflow markdown files)
-  - `agent-<agent-id>` (from agent markdown files)
+  - `workflow-<workflow-id>`
+  - `agent-<agent-id>`
   - Example usage: `$workflow-plan`, `$agent-backend-specialist`
 
 Global scope:
-- Workflows: `~/.agents/workflows`
+- Workflow templates (reference docs): `~/.agents/workflows`
 - Skills: `~/.agents/skills`
 - Rules: `~/.codex/AGENTS.md`
-- Agents: disabled by default (Codex custom agent files are not installed)
+- Agents: not installed for Codex runtime
 
 Legacy compatibility note:
 - `.codex/skills` is treated as legacy and flagged by `doctor` with migration guidance.
@@ -256,6 +252,7 @@ mkdir -p .codex/skills  # optional: simulate legacy path warning
 cbx workflows install --platform codex --bundle agent-environment-setup --dry-run
 cbx workflows install --platform codex --bundle agent-environment-setup --yes
 cbx workflows doctor codex --json
+# Codex runtime usage (in prompt): $workflow-review or $agent-backend-specialist
 
 # 4) Copilot preview + apply + doctor
 cbx workflows install --platform copilot --bundle agent-environment-setup --dry-run
@@ -273,6 +270,7 @@ cbx workflows remove agent-environment-setup --platform antigravity --yes
 - workflow/agent/skill path existence
 - active rule file status
 - managed block health
+- Codex wrapper-skill readiness (`$workflow-*`, `$agent-*`) through installed skills path
 - Codex legacy path warnings (`.codex/skills`)
 - Antigravity `.gitignore` warning for `.agent/` with recommendation to use `.git/info/exclude` for local-only excludes
 - Antigravity terminal integration status (directory/config/rule block)

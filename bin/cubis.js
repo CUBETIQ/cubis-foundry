@@ -25,6 +25,8 @@ const MANAGED_BLOCK_START_RE = /<!--\s*cbx:workflows:auto:start[^>]*-->/g;
 const MANAGED_BLOCK_END_RE = /<!--\s*cbx:workflows:auto:end\s*-->/g;
 const TERMINAL_VERIFICATION_BLOCK_START_RE = /<!--\s*cbx:terminal:verification:start[^>]*-->/g;
 const TERMINAL_VERIFICATION_BLOCK_END_RE = /<!--\s*cbx:terminal:verification:end\s*-->/g;
+const ENGINEERING_RULES_BLOCK_START_RE = /<!--\s*cbx:engineering:auto:start[^>]*-->/g;
+const ENGINEERING_RULES_BLOCK_END_RE = /<!--\s*cbx:engineering:auto:end\s*-->/g;
 const AGENT_ASSETS_SUBDIR = "Ai Agent Workflow";
 const COPILOT_ALLOWED_SKILL_FRONTMATTER_KEYS = new Set([
   "compatibility",
@@ -120,6 +122,50 @@ const CODEX_WORKFLOW_SKILL_PREFIX = "workflow-";
 const CODEX_AGENT_SKILL_PREFIX = "agent-";
 const TERMINAL_VERIFIER_PROVIDERS = ["codex", "gemini"];
 const DEFAULT_TERMINAL_VERIFIER = "codex";
+const TECH_SCAN_MAX_FILES = 5000;
+const TECH_SCAN_IGNORED_DIRS = new Set([
+  ".git",
+  ".idea",
+  ".vscode",
+  ".agent",
+  ".agents",
+  ".github",
+  "node_modules",
+  "dist",
+  "build",
+  "coverage",
+  ".next",
+  ".nuxt",
+  ".dart_tool",
+  ".turbo",
+  "target",
+  "out",
+  ".cache",
+  ".cbx"
+]);
+const TECH_LANGUAGE_BY_EXTENSION = new Map([
+  [".ts", "TypeScript"],
+  [".tsx", "TypeScript"],
+  [".js", "JavaScript"],
+  [".jsx", "JavaScript"],
+  [".mjs", "JavaScript"],
+  [".cjs", "JavaScript"],
+  [".dart", "Dart"],
+  [".py", "Python"],
+  [".go", "Go"],
+  [".rs", "Rust"],
+  [".java", "Java"],
+  [".kt", "Kotlin"],
+  [".swift", "Swift"],
+  [".cs", "C#"],
+  [".cpp", "C++"],
+  [".cc", "C++"],
+  [".c", "C"],
+  [".php", "PHP"],
+  [".rb", "Ruby"],
+  [".sh", "Shell"],
+  [".ps1", "PowerShell"]
+]);
 
 function platformInstallsCustomAgents(platformId) {
   const profile = WORKFLOW_PROFILES[platformId];
@@ -339,6 +385,391 @@ function buildAntigravityTerminalVerificationBlock({
     "If verifier CLI is unavailable, report it and continue with local verification evidence.",
     "<!-- cbx:terminal:verification:end -->"
   ].join("\n");
+}
+
+function findWorkspaceRoot(startDir = process.cwd()) {
+  let current = path.resolve(startDir);
+  while (true) {
+    if (existsSync(path.join(current, ".git"))) return current;
+    const parent = path.dirname(current);
+    if (parent === current) return path.resolve(startDir);
+    current = parent;
+  }
+}
+
+function toRelativeRuleRef(fromRuleFilePath, targetPath) {
+  const rel = toPosixPath(path.relative(path.dirname(fromRuleFilePath), targetPath));
+  if (!rel || rel === ".") return path.basename(targetPath);
+  if (rel.startsWith(".")) return rel;
+  return `./${rel}`;
+}
+
+function buildEngineeringRulesTemplate() {
+  return [
+    "# Engineering Rules",
+    "",
+    "These rules are the default for this project.",
+    "",
+    "## 1) Build Only What Is Needed (YAGNI)",
+    "",
+    "- Implement only what current requirements need.",
+    '- Do not add speculative abstractions, extension points, or feature flags "for future use."',
+    "- If a helper/class is used only once and does not improve clarity, keep it inline.",
+    "",
+    "## 2) Readability First",
+    "",
+    "- Code should be understandable in one pass.",
+    "- Prefer straightforward flow over clever tricks.",
+    "- Reduce nesting and branching where possible.",
+    "- Remove dead code and commented-out blocks.",
+    "",
+    "## 3) Precise Naming (One Look = Clear Intent)",
+    "",
+    "- Class names must say exactly what they represent.",
+    "  - Good: `AttendanceStatisticScreen`",
+    "  - Bad: `DataScreen`, `CommonManager`",
+    "- Method names must say exactly what they do.",
+    "  - Good: `loadCurrentUserSessions`",
+    "  - Bad: `handleData`, `processThing`",
+    "- Boolean names must read as true/false facts: `isActive`, `hasError`, `canSubmit`.",
+    "- Avoid vague suffixes like `Helper`, `Util`, `Manager` unless the type has a narrow, clear responsibility.",
+    "",
+    "## 4) Keep Functions and Classes Focused",
+    "",
+    "- One function should do one clear job.",
+    "- One class should own one clear responsibility.",
+    "- Split when a file mixes unrelated concerns (UI + networking + mapping in one place).",
+    "- Prefer small composable units over inheritance-heavy designs.",
+    "",
+    "## 5) Platform Implementation Rules",
+    "",
+    "- Keep providers/services focused; do not let one unit fetch unrelated feature data.",
+    "- Prevent duplicate network calls (cache or in-flight dedupe) when multiple views depend on the same data.",
+    "- Route/build functions must not return placeholder content in production flows.",
+    "",
+    "## 6) UI Migration Rule (Required for This Project)",
+    "",
+    "For each migrated screen:",
+    "",
+    "1. Copy legacy layout/behavior/state flow first (behavior parity).",
+    "2. Replace legacy widgets/components with your project design system while preserving behavior.",
+    "3. Replace ad-hoc sizing with design tokens (spacing, radius, typography).",
+    "4. Verify on both small and large devices.",
+    "",
+    "## 7) PR / Review Checklist",
+    "",
+    "Before merge, confirm:",
+    "",
+    "- Naming is precise and intention-revealing.",
+    "- No speculative abstraction was added.",
+    "- Logic is simple enough for fast onboarding.",
+    "- UI uses design system tokens/components, not ad-hoc sizing.",
+    "- Lint/analyze/tests pass.",
+    "",
+    "## 8) Keep TECH.md Fresh",
+    "",
+    "- `TECH.md` is generated from current codebase reality.",
+    "- Re-run `cbx rules tech-md --overwrite` after major stack or architecture changes.",
+    ""
+  ].join("\n");
+}
+
+function buildEngineeringRulesManagedBlock({
+  platform,
+  engineeringRulesFilePath,
+  techMdFilePath,
+  ruleFilePath
+}) {
+  const engineeringRef = toRelativeRuleRef(ruleFilePath, engineeringRulesFilePath);
+  const techRef = toRelativeRuleRef(ruleFilePath, techMdFilePath);
+
+  return [
+    `<!-- cbx:engineering:auto:start platform=${platform} version=1 -->`,
+    "## Engineering Guardrails (auto-managed)",
+    "Apply these before planning, coding, review, and release:",
+    "",
+    `- Required baseline: \`${engineeringRef}\``,
+    `- Project tech map: \`${techRef}\``,
+    "",
+    "Hard policy:",
+    "1. Build only what is needed (YAGNI).",
+    "2. Keep logic simple and readable.",
+    "3. Use precise, intention-revealing names.",
+    "4. Keep classes/functions focused on one responsibility.",
+    "",
+    "<!-- cbx:engineering:auto:end -->"
+  ].join("\n");
+}
+
+async function writeTextFile({
+  targetPath,
+  content,
+  overwrite = false,
+  dryRun = false
+}) {
+  const exists = await pathExists(targetPath);
+  if (exists && !overwrite) {
+    return { action: dryRun ? "would-skip" : "skipped", filePath: targetPath };
+  }
+
+  if (!dryRun) {
+    await mkdir(path.dirname(targetPath), { recursive: true });
+    await writeFile(targetPath, content, "utf8");
+  }
+
+  return {
+    action: exists ? (dryRun ? "would-replace" : "replaced") : dryRun ? "would-create" : "created",
+    filePath: targetPath
+  };
+}
+
+async function upsertEngineeringRulesBlock({
+  ruleFilePath,
+  platform,
+  engineeringRulesFilePath,
+  techMdFilePath,
+  dryRun = false
+}) {
+  const block = buildEngineeringRulesManagedBlock({
+    platform,
+    engineeringRulesFilePath,
+    techMdFilePath,
+    ruleFilePath
+  });
+  const exists = await pathExists(ruleFilePath);
+  const warnings = [];
+  const original = exists ? await readFile(ruleFilePath, "utf8") : "";
+  const analysis = analyzeTaggedBlock(original, ENGINEERING_RULES_BLOCK_START_RE, ENGINEERING_RULES_BLOCK_END_RE);
+
+  let nextContent = original;
+  if (!exists || analysis.status === "absent") {
+    const trimmed = original.trimEnd();
+    nextContent = trimmed.length > 0 ? `${trimmed}\n\n${block}\n` : `${block}\n`;
+  } else if (analysis.range) {
+    if (analysis.status === "multiple") {
+      warnings.push("Multiple engineering rule blocks found; patched the first valid block.");
+    }
+    nextContent = `${original.slice(0, analysis.range.start)}${block}${original.slice(analysis.range.end)}`;
+  } else {
+    warnings.push("Malformed engineering rule block; appended a new canonical block.");
+    const trimmed = original.trimEnd();
+    nextContent = trimmed.length > 0 ? `${trimmed}\n\n${block}\n` : `${block}\n`;
+  }
+
+  if (nextContent === original) {
+    return { action: "unchanged", filePath: ruleFilePath, warnings };
+  }
+
+  if (!dryRun) {
+    await mkdir(path.dirname(ruleFilePath), { recursive: true });
+    await writeFile(ruleFilePath, nextContent, "utf8");
+  }
+
+  return {
+    action: exists ? (dryRun ? "would-patch" : "patched") : dryRun ? "would-create" : "created",
+    filePath: ruleFilePath,
+    warnings
+  };
+}
+
+async function collectTechSnapshot(rootDir) {
+  const discoveredFiles = [];
+  const queue = [rootDir];
+
+  while (queue.length > 0 && discoveredFiles.length < TECH_SCAN_MAX_FILES) {
+    const dir = queue.shift();
+    let entries = [];
+    try {
+      entries = await readdir(dir, { withFileTypes: true });
+    } catch {
+      continue;
+    }
+
+    for (const entry of entries) {
+      if (entry.name.startsWith(".DS_Store")) continue;
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        if (TECH_SCAN_IGNORED_DIRS.has(entry.name)) continue;
+        queue.push(fullPath);
+        continue;
+      }
+      if (!entry.isFile()) continue;
+      discoveredFiles.push(fullPath);
+      if (discoveredFiles.length >= TECH_SCAN_MAX_FILES) break;
+    }
+  }
+
+  const languageCounts = new Map();
+  const topDirs = new Set();
+
+  for (const fullPath of discoveredFiles) {
+    const rel = toPosixPath(path.relative(rootDir, fullPath));
+    const firstDir = rel.split("/")[0];
+    if (firstDir && firstDir !== rel) topDirs.add(firstDir);
+
+    const extension = path.extname(fullPath).toLowerCase();
+    const language = TECH_LANGUAGE_BY_EXTENSION.get(extension);
+    if (!language) continue;
+    languageCounts.set(language, (languageCounts.get(language) || 0) + 1);
+  }
+
+  const fileExists = (name) => existsSync(path.join(rootDir, name));
+  const packageJsonPath = path.join(rootDir, "package.json");
+  const packageScripts = new Map();
+  const frameworks = new Set();
+  const lockfiles = [];
+
+  if (fileExists("bun.lock") || fileExists("bun.lockb")) lockfiles.push("bun");
+  if (fileExists("pnpm-lock.yaml")) lockfiles.push("pnpm");
+  if (fileExists("yarn.lock")) lockfiles.push("yarn");
+  if (fileExists("package-lock.json")) lockfiles.push("npm");
+  if (fileExists("poetry.lock")) lockfiles.push("poetry");
+  if (fileExists("Cargo.lock")) lockfiles.push("cargo");
+  if (fileExists("go.sum")) lockfiles.push("go");
+  if (fileExists("pubspec.lock")) lockfiles.push("pub");
+
+  if (fileExists("pubspec.yaml")) frameworks.add("Flutter");
+  if (fileExists("go.mod")) frameworks.add("Go Modules");
+  if (fileExists("Cargo.toml")) frameworks.add("Rust Cargo");
+  if (fileExists("requirements.txt") || fileExists("pyproject.toml")) frameworks.add("Python");
+
+  if (existsSync(packageJsonPath)) {
+    try {
+      const parsed = JSON.parse(await readFile(packageJsonPath, "utf8"));
+      const scripts = parsed.scripts && typeof parsed.scripts === "object" ? parsed.scripts : {};
+      for (const [name, command] of Object.entries(scripts)) {
+        if (typeof command !== "string") continue;
+        packageScripts.set(name, command);
+      }
+
+      const deps = {
+        ...(parsed.dependencies || {}),
+        ...(parsed.devDependencies || {}),
+        ...(parsed.peerDependencies || {})
+      };
+      const depNames = new Set(Object.keys(deps));
+      const frameworkSignals = [
+        ["next", "Next.js"],
+        ["react", "React"],
+        ["vue", "Vue"],
+        ["nuxt", "Nuxt"],
+        ["svelte", "Svelte"],
+        ["@nestjs/core", "NestJS"],
+        ["express", "Express"],
+        ["fastify", "Fastify"],
+        ["hono", "Hono"],
+        ["tailwindcss", "Tailwind CSS"],
+        ["prisma", "Prisma"],
+        ["drizzle-orm", "Drizzle ORM"],
+        ["mongoose", "Mongoose"],
+        ["typeorm", "TypeORM"],
+        ["@playwright/test", "Playwright"],
+        ["vitest", "Vitest"],
+        ["jest", "Jest"],
+        ["cypress", "Cypress"]
+      ];
+      for (const [signal, label] of frameworkSignals) {
+        if (depNames.has(signal)) frameworks.add(label);
+      }
+    } catch {
+      // ignore malformed package.json
+    }
+  }
+
+  const sortedLanguages = [...languageCounts.entries()].sort((a, b) => b[1] - a[1]);
+  const sortedFrameworks = [...frameworks].sort((a, b) => a.localeCompare(b));
+  const sortedTopDirs = [...topDirs].sort((a, b) => a.localeCompare(b)).slice(0, 12);
+  const sortedLockfiles = [...new Set(lockfiles)];
+
+  const preferredScriptNames = [
+    "lint",
+    "analyze",
+    "typecheck",
+    "test",
+    "test:unit",
+    "test:e2e",
+    "build",
+    "dev"
+  ];
+  const keyScripts = [];
+  for (const name of preferredScriptNames) {
+    if (!packageScripts.has(name)) continue;
+    keyScripts.push({ name, command: packageScripts.get(name) });
+  }
+
+  return {
+    rootDir,
+    scannedFiles: discoveredFiles.length,
+    languages: sortedLanguages,
+    frameworks: sortedFrameworks,
+    lockfiles: sortedLockfiles,
+    topDirs: sortedTopDirs,
+    keyScripts
+  };
+}
+
+function buildTechMd(snapshot) {
+  const lines = [];
+  lines.push("# TECH.md");
+  lines.push("");
+  lines.push(`Generated by cbx on ${new Date().toISOString()}.`);
+  lines.push(`Root: \`${toPosixPath(snapshot.rootDir)}\``);
+  lines.push(`Files scanned: ${snapshot.scannedFiles} (max ${TECH_SCAN_MAX_FILES}).`);
+  lines.push("");
+
+  lines.push("## Stack Snapshot");
+  if (snapshot.frameworks.length === 0) {
+    lines.push("- No major framework signal detected.");
+  } else {
+    for (const framework of snapshot.frameworks) {
+      lines.push(`- ${framework}`);
+    }
+  }
+  lines.push("");
+
+  lines.push("## Languages (by file count)");
+  if (snapshot.languages.length === 0) {
+    lines.push("- No language signals detected.");
+  } else {
+    for (const [language, count] of snapshot.languages.slice(0, 10)) {
+      lines.push(`- ${language}: ${count}`);
+    }
+  }
+  lines.push("");
+
+  lines.push("## Tooling and Lockfiles");
+  if (snapshot.lockfiles.length === 0) {
+    lines.push("- No lockfiles detected.");
+  } else {
+    lines.push(`- ${snapshot.lockfiles.join(", ")}`);
+  }
+  lines.push("");
+
+  lines.push("## Key Scripts");
+  if (snapshot.keyScripts.length === 0) {
+    lines.push("- No common scripts detected.");
+  } else {
+    for (const script of snapshot.keyScripts) {
+      lines.push(`- \`${script.name}\`: \`${script.command}\``);
+    }
+  }
+  lines.push("");
+
+  lines.push("## Important Top-Level Paths");
+  if (snapshot.topDirs.length === 0) {
+    lines.push("- No significant top-level directories detected.");
+  } else {
+    for (const dir of snapshot.topDirs) {
+      lines.push(`- \`${dir}/\``);
+    }
+  }
+  lines.push("");
+
+  lines.push("## Maintenance");
+  lines.push("- Re-run `cbx rules tech-md --overwrite` after major stack or architecture changes.");
+  lines.push("");
+
+  return lines.join("\n");
 }
 
 function targetStateKey(platform, scope) {
@@ -2664,6 +3095,152 @@ async function runWorkflowDoctor(platformArg, options) {
   }
 }
 
+function printRulesInitSummary({
+  platform,
+  scope,
+  dryRun,
+  engineeringResults,
+  techResult
+}) {
+  console.log(`Platform: ${platform}`);
+  console.log(`Scope: ${scope}`);
+  if (dryRun) {
+    console.log("Mode: dry-run (no files changed)");
+  }
+
+  console.log("\nEngineering rules:");
+  for (const item of engineeringResults) {
+    console.log(`- Rule file: ${item.ruleFilePath}`);
+    console.log(`  - ENGINEERING_RULES.md: ${item.rulesFileResult.action} (${item.rulesFilePath})`);
+    console.log(`  - Managed block: ${item.blockResult.action}`);
+    if (item.blockResult.warnings.length > 0) {
+      for (const warning of item.blockResult.warnings) {
+        console.log(`    - warning: ${warning}`);
+      }
+    }
+  }
+
+  if (techResult) {
+    console.log("\nTECH.md:");
+    console.log(`- Action: ${techResult.action}`);
+    console.log(`- File: ${techResult.filePath}`);
+    console.log(`- Files scanned: ${techResult.snapshot.scannedFiles}`);
+  }
+}
+
+async function runRulesInit(options) {
+  try {
+    const scope = normalizeScope(options.scope);
+    const dryRun = Boolean(options.dryRun);
+    const overwrite = Boolean(options.overwrite);
+    const cwd = process.cwd();
+    const platform = await resolvePlatform(options.platform, scope, cwd);
+    const ruleFilePath = await resolveRuleFilePath(platform, scope, cwd);
+    if (!ruleFilePath) throw new Error(`No rule file configured for platform '${platform}'.`);
+
+    const workspaceRoot = findWorkspaceRoot(cwd);
+    const techMdPath = path.join(workspaceRoot, "TECH.md");
+    const targets = [{ ruleFilePath }];
+
+    if (scope === "global") {
+      const workspaceRuleFile = await resolveWorkspaceRuleFileForGlobalScope(platform, cwd);
+      const globalRuleFile = expandPath(WORKFLOW_PROFILES[platform].global.ruleFilesByPriority[0], cwd);
+      if (workspaceRuleFile && path.resolve(workspaceRuleFile) !== path.resolve(globalRuleFile)) {
+        targets.push({ ruleFilePath: workspaceRuleFile });
+      }
+    }
+
+    const template = buildEngineeringRulesTemplate();
+    const engineeringResults = [];
+    for (const target of targets) {
+      const rulesFilePath = path.join(path.dirname(target.ruleFilePath), "ENGINEERING_RULES.md");
+      const rulesFileResult = await writeTextFile({
+        targetPath: rulesFilePath,
+        content: `${template}\n`,
+        overwrite,
+        dryRun
+      });
+      const blockResult = await upsertEngineeringRulesBlock({
+        ruleFilePath: target.ruleFilePath,
+        platform,
+        engineeringRulesFilePath: rulesFilePath,
+        techMdFilePath: techMdPath,
+        dryRun
+      });
+      engineeringResults.push({
+        ruleFilePath: target.ruleFilePath,
+        rulesFilePath,
+        rulesFileResult,
+        blockResult
+      });
+    }
+
+    let techResult = null;
+    if (!options.skipTech) {
+      const snapshot = await collectTechSnapshot(workspaceRoot);
+      const content = buildTechMd(snapshot);
+      const fileResult = await writeTextFile({
+        targetPath: techMdPath,
+        content: `${content}\n`,
+        overwrite,
+        dryRun
+      });
+      techResult = {
+        ...fileResult,
+        snapshot
+      };
+    }
+
+    printRulesInitSummary({
+      platform,
+      scope,
+      dryRun,
+      engineeringResults,
+      techResult
+    });
+
+    if (dryRun) {
+      console.log("\nDry-run complete. Re-run without `--dry-run` to apply changes.");
+    }
+  } catch (error) {
+    if (error?.name === "ExitPromptError") {
+      console.error("\nCancelled.");
+      process.exit(130);
+    }
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+async function runRulesTechMd(options) {
+  try {
+    const dryRun = Boolean(options.dryRun);
+    const overwrite = Boolean(options.overwrite);
+    const cwd = process.cwd();
+    const workspaceRoot = findWorkspaceRoot(cwd);
+    const outputPath = options.output ? expandPath(options.output, cwd) : path.join(workspaceRoot, "TECH.md");
+    const snapshot = await collectTechSnapshot(workspaceRoot);
+    const content = buildTechMd(snapshot);
+    const result = await writeTextFile({
+      targetPath: outputPath,
+      content: `${content}\n`,
+      overwrite,
+      dryRun
+    });
+
+    console.log(`TECH.md action: ${result.action}`);
+    console.log(`File: ${result.filePath}`);
+    console.log(`Root scanned: ${toPosixPath(workspaceRoot)}`);
+    console.log(`Files scanned: ${snapshot.scannedFiles}`);
+    if (dryRun) {
+      console.log("\nDry-run complete. Re-run without `--dry-run` to apply changes.");
+    }
+  } catch (error) {
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
 const program = new Command();
 
 program
@@ -2770,6 +3347,34 @@ withWorkflowBaseOptions(
 skillsCommand.action(() => {
   printSkillsDeprecation();
   skillsCommand.help();
+});
+
+const rulesCommand = program
+  .command("rules")
+  .description("Create and sync strict engineering rules and generated TECH.md");
+
+rulesCommand
+  .command("init")
+  .description(
+    "Create/update ENGINEERING_RULES.md, patch active platform rule file with managed guardrail block, and generate TECH.md"
+  )
+  .option("-p, --platform <platform>", "target platform id")
+  .option("--scope <scope>", "target scope: project|global", "project")
+  .option("--overwrite", "overwrite existing ENGINEERING_RULES.md and TECH.md")
+  .option("--skip-tech", "skip TECH.md generation")
+  .option("--dry-run", "preview changes without writing files")
+  .action(runRulesInit);
+
+rulesCommand
+  .command("tech-md")
+  .description("Scan the codebase and generate/update TECH.md")
+  .option("--output <path>", "output path (default: <workspace-root>/TECH.md)")
+  .option("--overwrite", "overwrite existing TECH.md")
+  .option("--dry-run", "preview generation without writing files")
+  .action(runRulesTechMd);
+
+rulesCommand.action(() => {
+  rulesCommand.help();
 });
 
 const agentsCommand = program.command("agents").description("Cubis Agent Bot commands");

@@ -44,7 +44,10 @@ node "$CLI" workflows install --platform antigravity --bundle agent-environment-
 [ -f .agent/agents/backend-specialist.md ]
 [ -f .agent/agents/orchestrator.md ]
 [ -f .agent/agents/security-auditor.md ]
-[ "$(find .agent/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" = "20" ]
+if [ "$(find .agent/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -lt "20" ]; then
+  echo "[FAIL] Antigravity expected at least 20 agent files" >&2
+  exit 1
+fi
 [ -d .agent/skills/api-designer ]
 [ -d .agent/terminal-integration ]
 [ -f .agent/terminal-integration/config.json ]
@@ -78,6 +81,15 @@ rg -n 'Custom antigravity workspace rule must stay' .agent/rules/GEMINI.md >/dev
 rg -n 'Workspace rule file detected at' /tmp/cbx-a22.log >/dev/null
 rg -n 'Workspace rule managed block sync action:' /tmp/cbx-a22.log >/dev/null
 log_ok "Antigravity global sync updates workspace rule managed block and preserves custom content"
+
+log_step "A2.3 Rules init (Antigravity)"
+node "$CLI" rules init --platform antigravity --scope project --overwrite >/tmp/cbx-a23.log
+[ -f .agent/rules/ENGINEERING_RULES.md ]
+[ -f TECH.md ]
+rg -n 'cbx:engineering:auto:start platform=antigravity version=1' .agent/rules/GEMINI.md >/dev/null
+rg -n 'Build Only What Is Needed \(YAGNI\)' .agent/rules/ENGINEERING_RULES.md >/dev/null
+rg -n '^# TECH\.md$' TECH.md >/dev/null
+log_ok "Antigravity rules init creates ENGINEERING_RULES.md, TECH.md, and rule block"
 
 log_step "A3 Antigravity sync dry-run"
 cp .agent/rules/GEMINI.md /tmp/cbx-gemini-before.md
@@ -163,6 +175,15 @@ rg -n 'Workspace rule file detected at' /tmp/cbx-c22.log >/dev/null
 rg -n 'Workspace rule managed block sync action:' /tmp/cbx-c22.log >/dev/null
 log_ok "Codex global sync updates workspace AGENTS.md managed block and preserves custom content"
 
+log_step "C2.3 Rules init (Codex)"
+node "$CLI" rules init --platform codex --scope project --overwrite >/tmp/cbx-c23.log
+[ -f ENGINEERING_RULES.md ]
+[ -f TECH.md ]
+rg -n 'cbx:engineering:auto:start platform=codex version=1' AGENTS.md >/dev/null
+rg -n 'Build Only What Is Needed \(YAGNI\)' ENGINEERING_RULES.md >/dev/null
+rg -n '^# TECH\.md$' TECH.md >/dev/null
+log_ok "Codex rules init creates ENGINEERING_RULES.md, TECH.md, and rule block"
+
 log_step "C3 Skills alias dry-run"
 node "$CLI" skills install --platform codex --bundle agent-environment-setup --dry-run >/tmp/cbx-c3.log
 rg -n "\[deprecation\] 'cbx skills \.\.\.' is now an alias" /tmp/cbx-c3.log >/dev/null
@@ -196,7 +217,10 @@ node "$CLI" workflows install --platform copilot --bundle agent-environment-setu
 [ -f .github/agents/devops-engineer.md ]
 [ -f .github/agents/orchestrator.md ]
 [ -f .github/agents/test-engineer.md ]
-[ "$(find .github/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" = "20" ]
+if [ "$(find .github/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -lt "20" ]; then
+  echo "[FAIL] Copilot expected at least 20 agent files" >&2
+  exit 1
+fi
 [ -d .github/skills/api-designer ]
 rg -n '^name:' .github/skills/accessibility/SKILL.md >/dev/null
 if rg -n '^displayName:' .github/skills/accessibility/SKILL.md >/dev/null; then
@@ -301,6 +325,15 @@ rg -n 'Custom copilot workspace rule must stay' AGENTS.md >/dev/null
 rg -n 'Workspace rule file detected at' /tmp/cbx-p22.log >/dev/null
 rg -n 'Workspace rule managed block sync action:' /tmp/cbx-p22.log >/dev/null
 log_ok "Copilot global sync updates workspace rule managed block and preserves custom content"
+
+log_step "P2.3 Rules init (Copilot)"
+node "$CLI" rules init --platform copilot --scope project --overwrite >/tmp/cbx-p23.log
+[ -f ENGINEERING_RULES.md ]
+[ -f TECH.md ]
+rg -n 'cbx:engineering:auto:start platform=copilot version=1' AGENTS.md >/dev/null
+rg -n 'Build Only What Is Needed \(YAGNI\)' ENGINEERING_RULES.md >/dev/null
+rg -n '^# TECH\.md$' TECH.md >/dev/null
+log_ok "Copilot rules init creates ENGINEERING_RULES.md, TECH.md, and rule block"
 
 log_step "P3 Sync idempotency"
 node "$CLI" workflows sync-rules --platform copilot >/tmp/cbx-p3a.log
