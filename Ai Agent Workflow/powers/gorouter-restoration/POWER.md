@@ -1,4 +1,6 @@
+````markdown
 ---
+inclusion: manual
 name: "gorouter-restoration"
 displayName: "GoRouter & State Restoration"
 description: "GoRouter guard patterns, deep links, redirect safety, tab preservation, and restoration best practices"
@@ -121,3 +123,4 @@ MaterialApp.router(
 
 - `guard_redirect` - Guard redirect function skeleton
 - `stateful_shell_skeleton` - Tab shell starter
+````

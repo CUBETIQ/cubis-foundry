@@ -40,11 +40,11 @@ Load detailed guidance on-demand:
 
 | Topic               | Reference                   | Load When                                          |
 | ------------------- | --------------------------- | -------------------------------------------------- |
-| Service Boundaries  | `steering/decomposition.md` | Monolith decomposition, bounded contexts, DDD      |
-| Communication       | `steering/communication.md` | REST vs gRPC, async messaging, event-driven        |
-| Resilience Patterns | `steering/patterns.md`      | Circuit breakers, saga, bulkhead, retry strategies |
-| Data Management     | `steering/data.md`          | Database per service, event sourcing, CQRS         |
-| Observability       | `steering/observability.md` | Distributed tracing, correlation IDs, metrics      |
+| Service Boundaries  | `references/decomposition.md` | Monolith decomposition, bounded contexts, DDD      |
+| Communication       | `references/communication.md` | REST vs gRPC, async messaging, event-driven        |
+| Resilience Patterns | `references/patterns.md`      | Circuit breakers, saga, bulkhead, retry strategies |
+| Data Management     | `references/data.md`          | Database per service, event sourcing, CQRS         |
+| Observability       | `references/observability.md` | Distributed tracing, correlation IDs, metrics      |
 
 ## Constraints
 

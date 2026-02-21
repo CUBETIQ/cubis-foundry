@@ -121,16 +121,26 @@
     "triggers": []
   },
   {
-    "name": "database-design",
-    "path": ".agent/skills/database-design/SKILL.md",
-    "description": "Database design principles and decision-making. Schema design, indexing strategy, ORM selection, serverless databases.",
-    "triggers": []
-  },
-  {
-    "name": "database-optimizer",
-    "path": ".agent/skills/database-optimizer/SKILL.md",
-    "description": "Use for system-level database performance triage across engines: bottleneck analysis, indexing strategy, config tuning, partitioning, and lock contention.",
-    "triggers": []
+    "name": "database-skills",
+    "path": ".agent/skills/database-skills/SKILL.md",
+    "description": "Unified database skill hub with engine-specific packs for PostgreSQL, MySQL, Vitess, Neki, MongoDB (Mongoose), SQLite, Supabase, and Redis.",
+    "triggers": [
+      "database",
+      "sql",
+      "postgres",
+      "mysql",
+      "vitess",
+      "neki",
+      "mongodb",
+      "mongoose",
+      "sqlite",
+      "supabase",
+      "redis",
+      "schema",
+      "migration",
+      "index",
+      "query"
+    ]
   },
   {
     "name": "datadog-automation",
@@ -166,12 +176,6 @@
     "name": "documentation-templates",
     "path": ".agent/skills/documentation-templates/SKILL.md",
     "description": "Documentation templates and structure guidelines. README, API docs, code comments, and AI-friendly documentation.",
-    "triggers": []
-  },
-  {
-    "name": "drift-flutter",
-    "path": ".agent/skills/drift-flutter/SKILL.md",
-    "description": "Use when implementing Flutter local persistence with Drift: schema design, DAOs, migrations, transactions, and repository integration",
     "triggers": []
   },
   {
@@ -402,12 +406,6 @@
     "triggers": []
   },
   {
-    "name": "mongoose-nestjs",
-    "path": ".agent/skills/mongoose-nestjs/SKILL.md",
-    "description": "Mongoose integration with NestJS including schema design, repository pattern, transactions, migrations, and multi-tenancy. Use for MongoDB database layer implementation.",
-    "triggers": []
-  },
-  {
     "name": "monitoring-expert",
     "path": ".agent/skills/monitoring-expert/SKILL.md",
     "description": "Use when setting up monitoring systems, logging, metrics, tracing, or alerting. Invoke for dashboards, Prometheus/Grafana, load testing, profiling, capacity planning.",
@@ -507,23 +505,6 @@
       "automation",
       "UI testing",
       "visual testing"
-    ]
-  },
-  {
-    "name": "postgres-pro",
-    "path": ".agent/skills/postgres-pro/SKILL.md",
-    "description": "Use for PostgreSQL-specific internals and operations: EXPLAIN ANALYZE, JSONB/index types, replication, extensions, VACUUM/autovacuum, and pg_stat monitoring.",
-    "triggers": [
-      "PostgreSQL",
-      "Postgres",
-      "EXPLAIN ANALYZE",
-      "pg_stat",
-      "JSONB",
-      "streaming replication",
-      "logical replication",
-      "VACUUM",
-      "PostGIS",
-      "pgvector"
     ]
   },
   {
@@ -712,24 +693,6 @@
     ]
   },
   {
-    "name": "sql-pro",
-    "path": ".agent/skills/sql-pro/SKILL.md",
-    "description": "Use for database-agnostic SQL query design and optimization (CTEs, window functions, joins, execution plans) across multiple SQL dialects.",
-    "triggers": [
-      "SQL optimization",
-      "query performance",
-      "database design",
-      "PostgreSQL",
-      "MySQL",
-      "SQL Server",
-      "window functions",
-      "CTEs",
-      "query tuning",
-      "EXPLAIN plan",
-      "database indexing"
-    ]
-  },
-  {
     "name": "sre-engineer",
     "path": ".agent/skills/sre-engineer/SKILL.md",
     "description": "Use when defining SLIs/SLOs, managing error budgets, or building reliable systems at scale. Invoke for incident management, chaos engineering, toil reduction, capacity planning.",
@@ -762,12 +725,6 @@
     "name": "sub-agents",
     "path": ".agent/skills/sub-agents/SKILL.md",
     "description": "Execute external CLI AIs as isolated sub-agents for task delegation, parallel processing, and context separation. Use when delegating complex multi-step tasks, running parallel investigations, needing fresh context without current conversation history, or leveraging specialized agent definitions. Returns structured JSON with agent output, exit code, and execution status.",
-    "triggers": []
-  },
-  {
-    "name": "supabase-postgres-best-practices",
-    "path": ".agent/skills/supabase-postgres-best-practices/SKILL.md",
-    "description": "Supabase-specific Postgres best practices (RLS/auth patterns, connection pooling, managed Postgres constraints, and performance rules) for Supabase-hosted workloads.",
     "triggers": []
   },
   {
@@ -842,1020 +799,232 @@
     "triggers": []
   },
   {
-    "name": "vercel-2fa-enforcement",
-    "path": ".agent/skills/vercel-2fa-enforcement/SKILL.md",
-    "description": "Enforce two-factor authentication requirements across teams.",
+    "name": "vercel-ai-gateway",
+    "path": ".agent/skills/vercel-ai-gateway/SKILL.md",
+    "description": "Complete Vercel AI Gateway integration: LLM traffic routing, authentication/BYOK, fallback chains, model-provider routing policies, usage observability, and OpenAI-compatible endpoints.",
     "triggers": [
       "vercel",
-      "security",
-      "2fa",
-      "enforcement"
+      "ai gateway",
+      "llm",
+      "byok",
+      "fallback",
+      "model routing",
+      "openai compatible",
+      "token usage",
+      "ai observability"
     ]
   },
   {
-    "name": "vercel-agent-workflows",
-    "path": ".agent/skills/vercel-agent-workflows/SKILL.md",
-    "description": "Run Vercel Agent workflows for iterative code review and troubleshooting.",
+    "name": "vercel-ai-sdk",
+    "path": ".agent/skills/vercel-ai-sdk/SKILL.md",
+    "description": "Vercel AI SDK for building AI-powered applications: core providers/streaming patterns and React/Svelte UI hooks for chat, completion, and generative UX.",
     "triggers": [
       "vercel",
-      "ai",
-      "agent",
-      "workflows"
+      "ai sdk",
+      "useChat",
+      "useCompletion",
+      "streamText",
+      "generateText",
+      "streaming",
+      "generative ui"
     ]
   },
   {
-    "name": "vercel-ai-gateway-auth-byok",
-    "path": ".agent/skills/vercel-ai-gateway-auth-byok/SKILL.md",
-    "description": "Configure AI Gateway authentication and bring-your-own-key controls.",
+    "name": "vercel-caching",
+    "path": ".agent/skills/vercel-caching/SKILL.md",
+    "description": "Vercel caching strategies: CDN cache, cache-control headers, runtime cache, ISR, Next.js Data Cache, request collapsing, remote caching, and CDN purging.",
     "triggers": [
       "vercel",
-      "ai",
-      "gateway",
-      "auth",
-      "byok"
+      "cdn cache",
+      "caching",
+      "isr",
+      "incremental static regeneration",
+      "data cache",
+      "request collapsing",
+      "remote caching",
+      "turborepo cache",
+      "cache purge",
+      "cache-control"
     ]
   },
   {
-    "name": "vercel-ai-gateway-core",
-    "path": ".agent/skills/vercel-ai-gateway-core/SKILL.md",
-    "description": "Route LLM traffic through Vercel AI Gateway with unified controls.",
+    "name": "vercel-cli",
+    "path": ".agent/skills/vercel-cli/SKILL.md",
+    "description": "Vercel CLI mastery: core commands, flags, MCP integration, microfrontend management, and project/domain/environment variable operations.",
     "triggers": [
-      "vercel",
-      "ai",
-      "gateway",
-      "core"
+      "vercel cli",
+      "vercel command",
+      "npx vercel",
+      "vercel dev",
+      "vercel deploy",
+      "vercel env",
+      "vercel pull",
+      "vercel link",
+      "vercel mcp"
     ]
   },
   {
-    "name": "vercel-ai-gateway-fallbacks",
-    "path": ".agent/skills/vercel-ai-gateway-fallbacks/SKILL.md",
-    "description": "Implement retries and fallback chains for resilient AI responses.",
-    "triggers": [
-      "vercel",
-      "ai",
-      "gateway",
-      "fallbacks"
-    ]
-  },
-  {
-    "name": "vercel-ai-gateway-model-routing",
-    "path": ".agent/skills/vercel-ai-gateway-model-routing/SKILL.md",
-    "description": "Design model and provider routing policies for latency, quality, and cost.",
-    "triggers": [
-      "vercel",
-      "ai",
-      "gateway",
-      "model",
-      "routing"
-    ]
-  },
-  {
-    "name": "vercel-ai-gateway-observability",
-    "path": ".agent/skills/vercel-ai-gateway-observability/SKILL.md",
-    "description": "Monitor AI Gateway usage, latency, and spend with actionable thresholds.",
-    "triggers": [
-      "vercel",
-      "ai",
-      "gateway",
-      "observability"
-    ]
-  },
-  {
-    "name": "vercel-ai-gateway-openai-compatible",
-    "path": ".agent/skills/vercel-ai-gateway-openai-compatible/SKILL.md",
-    "description": "Use OpenAI-compatible AI Gateway endpoints without lock-in risk.",
-    "triggers": [
-      "vercel",
-      "ai",
-      "gateway",
-      "openai",
-      "compatible"
-    ]
-  },
-  {
-    "name": "vercel-ai-sdk-core",
-    "path": ".agent/skills/vercel-ai-sdk-core/SKILL.md",
-    "description": "Implement Vercel AI SDK core abstractions for model calls and tool usage.",
-    "triggers": [
-      "vercel",
-      "ai",
-      "sdk",
-      "core"
-    ]
-  },
-  {
-    "name": "vercel-ai-sdk-ui",
-    "path": ".agent/skills/vercel-ai-sdk-ui/SKILL.md",
-    "description": "Implement AI SDK UI streaming and client interaction patterns.",
-    "triggers": [
-      "vercel",
-      "ai",
-      "sdk",
-      "ui"
-    ]
-  },
-  {
-    "name": "vercel-alerts-monitoring",
-    "path": ".agent/skills/vercel-alerts-monitoring/SKILL.md",
-    "description": "Define alerts and monitoring thresholds tied to user-impact symptoms.",
-    "triggers": [
-      "vercel",
-      "observability",
-      "alerts",
-      "monitoring"
-    ]
-  },
-  {
-    "name": "vercel-audit-logs",
-    "path": ".agent/skills/vercel-audit-logs/SKILL.md",
-    "description": "Use audit logs for compliance evidence and change forensics.",
-    "triggers": [
-      "vercel",
-      "security",
-      "audit",
-      "logs"
-    ]
-  },
-  {
-    "name": "vercel-automation",
-    "path": ".agent/skills/vercel-automation/SKILL.md",
-    "description": "Umbrella Vercel automation playbook covering project setup, deployment lifecycle, security, observability, and CLI operations.",
+    "name": "vercel-deployments",
+    "path": ".agent/skills/vercel-deployments/SKILL.md",
+    "description": "Vercel deployment lifecycle: git deployments, build pipeline, build output API, deployment promotion, environment management, preview/production protection, and generated URL patterns.",
     "triggers": [
       "vercel",
       "deployment",
-      "automation"
-    ]
-  },
-  {
-    "name": "vercel-blob",
-    "path": ".agent/skills/vercel-blob/SKILL.md",
-    "description": "Use Vercel Blob for object storage, uploads, and secure access patterns.",
-    "triggers": [
-      "vercel",
-      "storage",
-      "blob"
-    ]
-  },
-  {
-    "name": "vercel-bot-management",
-    "path": ".agent/skills/vercel-bot-management/SKILL.md",
-    "description": "Use bot-management policy controls for traffic quality and abuse defense.",
-    "triggers": [
-      "vercel",
-      "security",
-      "bot",
-      "management"
-    ]
-  },
-  {
-    "name": "vercel-botid",
-    "path": ".agent/skills/vercel-botid/SKILL.md",
-    "description": "Implement BotID challenge behavior with minimal legitimate-user friction.",
-    "triggers": [
-      "vercel",
-      "security",
-      "botid"
-    ]
-  },
-  {
-    "name": "vercel-build-image-upgrades",
-    "path": ".agent/skills/vercel-build-image-upgrades/SKILL.md",
-    "description": "Plan and validate build image and runtime toolchain upgrades on Vercel.",
-    "triggers": [
-      "vercel",
-      "deployment",
-      "build",
-      "image",
-      "upgrades"
-    ]
-  },
-  {
-    "name": "vercel-build-output-api",
-    "path": ".agent/skills/vercel-build-output-api/SKILL.md",
-    "description": "Use Build Output API patterns for framework output integration.",
-    "triggers": [
-      "vercel",
-      "deployment",
-      "build",
-      "output",
-      "api"
-    ]
-  },
-  {
-    "name": "vercel-build-pipeline",
-    "path": ".agent/skills/vercel-build-pipeline/SKILL.md",
-    "description": "Operate build settings, build logs, and build-failure triage workflows.",
-    "triggers": [
-      "vercel",
-      "deployment",
-      "build",
-      "pipeline"
-    ]
-  },
-  {
-    "name": "vercel-cache-control-headers",
-    "path": ".agent/skills/vercel-cache-control-headers/SKILL.md",
-    "description": "Apply Cache-Control and related headers for deterministic content freshness.",
-    "triggers": [
-      "vercel",
-      "cache",
-      "control",
-      "headers"
-    ]
-  },
-  {
-    "name": "vercel-cdn-cache",
-    "path": ".agent/skills/vercel-cdn-cache/SKILL.md",
-    "description": "Design cache behavior across Vercel Edge Network and origin workloads.",
-    "triggers": [
-      "vercel",
-      "cache",
-      "cdn"
-    ]
-  },
-  {
-    "name": "vercel-cdn-purging",
-    "path": ".agent/skills/vercel-cdn-purging/SKILL.md",
-    "description": "Run cache purge/invalidation workflows with low blast radius.",
-    "triggers": [
-      "vercel",
-      "cache",
-      "cdn",
-      "purging"
-    ]
-  },
-  {
-    "name": "vercel-cli-core",
-    "path": ".agent/skills/vercel-cli-core/SKILL.md",
-    "description": "Use Vercel CLI core commands for deploy, inspect, logs, and diagnostics.",
-    "triggers": [
-      "vercel",
-      "cli",
-      "core"
-    ]
-  },
-  {
-    "name": "vercel-cli-flags",
-    "path": ".agent/skills/vercel-cli-flags/SKILL.md",
-    "description": "Manage Vercel Flags lifecycle through CLI-driven workflows.",
-    "triggers": [
-      "vercel",
-      "cli",
-      "flags"
-    ]
-  },
-  {
-    "name": "vercel-cli-mcp",
-    "path": ".agent/skills/vercel-cli-mcp/SKILL.md",
-    "description": "Use Vercel CLI MCP capabilities for agent and tooling integration.",
-    "triggers": [
-      "vercel",
-      "cli",
-      "mcp"
-    ]
-  },
-  {
-    "name": "vercel-cli-microfrontends",
-    "path": ".agent/skills/vercel-cli-microfrontends/SKILL.md",
-    "description": "Operate microfrontend-specific CLI workflows and validations.",
-    "triggers": [
-      "vercel",
-      "cli",
-      "microfrontends"
-    ]
-  },
-  {
-    "name": "vercel-cli-project-domain-env",
-    "path": ".agent/skills/vercel-cli-project-domain-env/SKILL.md",
-    "description": "Automate project, domain, and environment management via CLI.",
-    "triggers": [
-      "vercel",
-      "cli",
-      "project",
-      "domain",
-      "env"
-    ]
-  },
-  {
-    "name": "vercel-cron-jobs",
-    "path": ".agent/skills/vercel-cron-jobs/SKILL.md",
-    "description": "Configure and verify scheduled cron jobs with idempotency and retry controls.",
-    "triggers": [
-      "vercel",
-      "functions",
-      "cron",
-      "jobs"
-    ]
-  },
-  {
-    "name": "vercel-custom-events",
-    "path": ".agent/skills/vercel-custom-events/SKILL.md",
-    "description": "Track and analyze custom events across frontend and backend contexts.",
-    "triggers": [
-      "vercel",
-      "observability",
-      "custom",
-      "events"
-    ]
-  },
-  {
-    "name": "vercel-data-cache-nextjs",
-    "path": ".agent/skills/vercel-data-cache-nextjs/SKILL.md",
-    "description": "Operate Next.js data cache strategy on Vercel for App Router workloads.",
-    "triggers": [
-      "vercel",
-      "functions",
-      "data",
-      "cache",
-      "nextjs"
-    ]
-  },
-  {
-    "name": "vercel-deployment-promotion",
-    "path": ".agent/skills/vercel-deployment-promotion/SKILL.md",
-    "description": "Promote deployments safely across environments with rollback-ready controls.",
-    "triggers": [
-      "vercel",
-      "deployment",
-      "promotion"
-    ]
-  },
-  {
-    "name": "vercel-deployment-protection",
-    "path": ".agent/skills/vercel-deployment-protection/SKILL.md",
-    "description": "Configure deployment protection using auth, passwords, and IP gates.",
-    "triggers": [
-      "vercel",
-      "security",
-      "deployment",
-      "protection"
-    ]
-  },
-  {
-    "name": "vercel-dns-records",
-    "path": ".agent/skills/vercel-dns-records/SKILL.md",
-    "description": "Manage DNS records and propagation-sensitive change workflows.",
-    "triggers": [
-      "vercel",
-      "domains",
-      "dns",
-      "records"
-    ]
-  },
-  {
-    "name": "vercel-domain-ownership-claims",
-    "path": ".agent/skills/vercel-domain-ownership-claims/SKILL.md",
-    "description": "Handle domain ownership claims and re-verification procedures.",
-    "triggers": [
-      "vercel",
-      "domains",
-      "domain",
-      "ownership",
-      "claims"
+      "git deploy",
+      "build pipeline",
+      "build output api",
+      "deployment promotion",
+      "environments",
+      "preview",
+      "production",
+      "protection",
+      "generated urls"
     ]
   },
   {
     "name": "vercel-domains",
     "path": ".agent/skills/vercel-domains/SKILL.md",
-    "description": "Manage custom domain lifecycle: add, assign, verify, and remove.",
+    "description": "Vercel domain management: custom domains, DNS records, nameservers, SSL certificates, domain ownership verification, and static IP configuration.",
     "triggers": [
       "vercel",
-      "domains"
+      "domain",
+      "dns",
+      "nameservers",
+      "ssl",
+      "certificate",
+      "custom domain",
+      "cname",
+      "static ip",
+      "domain ownership"
     ]
   },
   {
-    "name": "vercel-drains-setup",
-    "path": ".agent/skills/vercel-drains-setup/SKILL.md",
-    "description": "Configure drains for exporting telemetry to external observability stacks.",
+    "name": "vercel-firewall",
+    "path": ".agent/skills/vercel-firewall/SKILL.md",
+    "description": "Vercel security controls: WAF core, custom firewall rules, rate limiting, bot management, and BotID fingerprinting for DDoS protection and traffic filtering.",
     "triggers": [
       "vercel",
-      "observability",
-      "drains",
-      "setup"
-    ]
-  },
-  {
-    "name": "vercel-edge-config",
-    "path": ".agent/skills/vercel-edge-config/SKILL.md",
-    "description": "Use Edge Config for low-latency dynamic config reads at edge locations.",
-    "triggers": [
-      "vercel",
-      "storage",
-      "edge",
-      "config"
-    ]
-  },
-  {
-    "name": "vercel-edge-config-integrations",
-    "path": ".agent/skills/vercel-edge-config-integrations/SKILL.md",
-    "description": "Integrate Edge Config with external flag/config providers safely.",
-    "triggers": [
-      "vercel",
-      "storage",
-      "edge",
-      "config",
-      "integrations"
-    ]
-  },
-  {
-    "name": "vercel-edge-to-node-migration",
-    "path": ".agent/skills/vercel-edge-to-node-migration/SKILL.md",
-    "description": "Migrate Edge Runtime workloads to Node runtime when compatibility requires it.",
-    "triggers": [
-      "vercel",
-      "functions",
-      "edge",
-      "to",
-      "node",
-      "migration"
-    ]
-  },
-  {
-    "name": "vercel-environments",
-    "path": ".agent/skills/vercel-environments/SKILL.md",
-    "description": "Design and operate local, preview, production, and custom environment workflows.",
-    "triggers": [
-      "vercel",
-      "deployment",
-      "environments"
-    ]
-  },
-  {
-    "name": "vercel-firewall-core",
-    "path": ".agent/skills/vercel-firewall-core/SKILL.md",
-    "description": "Operate Vercel Firewall controls and policy lifecycle management.",
-    "triggers": [
-      "vercel",
-      "security",
       "firewall",
-      "core"
+      "waf",
+      "rate limiting",
+      "bot protection",
+      "botid",
+      "ddos",
+      "abuse",
+      "traffic filtering",
+      "custom rules"
     ]
   },
   {
-    "name": "vercel-flags-cli-workflows",
-    "path": ".agent/skills/vercel-flags-cli-workflows/SKILL.md",
-    "description": "Automate flag creation, rollout, and cleanup via CLI workflows.",
+    "name": "vercel-flags",
+    "path": ".agent/skills/vercel-flags/SKILL.md",
+    "description": "Vercel Feature Flags: SDK integration, platform setup, CLI workflows, dashboard management, explorer UI, and OpenFeature compatibility for safe targeted rollouts.",
     "triggers": [
       "vercel",
-      "flags",
-      "cli",
-      "workflows"
+      "feature flags",
+      "flags sdk",
+      "flags platform",
+      "openfeature",
+      "flags dashboard",
+      "feature toggle",
+      "rollout",
+      "a/b test"
     ]
   },
   {
-    "name": "vercel-flags-dashboard",
-    "path": ".agent/skills/vercel-flags-dashboard/SKILL.md",
-    "description": "Manage Flags entities, targeting segments, and draft/publish lifecycle.",
+    "name": "vercel-functions",
+    "path": ".agent/skills/vercel-functions/SKILL.md",
+    "description": "Vercel Serverless and Edge Functions: core patterns, Node.js and Python runtimes, edge runtime, Fluid Compute for long-running tasks, and function configuration.",
     "triggers": [
       "vercel",
-      "flags",
-      "dashboard"
-    ]
-  },
-  {
-    "name": "vercel-flags-explorer",
-    "path": ".agent/skills/vercel-flags-explorer/SKILL.md",
-    "description": "Use Flags Explorer and local overrides for safe experiment debugging.",
-    "triggers": [
-      "vercel",
-      "flags",
-      "explorer"
-    ]
-  },
-  {
-    "name": "vercel-flags-openfeature",
-    "path": ".agent/skills/vercel-flags-openfeature/SKILL.md",
-    "description": "Integrate Vercel Flags with OpenFeature-compatible interfaces.",
-    "triggers": [
-      "vercel",
-      "flags",
-      "openfeature"
-    ]
-  },
-  {
-    "name": "vercel-flags-platform",
-    "path": ".agent/skills/vercel-flags-platform/SKILL.md",
-    "description": "Operate Vercel Flags as the primary feature flag and rollout system.",
-    "triggers": [
-      "vercel",
-      "flags",
-      "platform"
-    ]
-  },
-  {
-    "name": "vercel-flags-sdk",
-    "path": ".agent/skills/vercel-flags-sdk/SKILL.md",
-    "description": "Implement Vercel Flags SDK in app code with deterministic evaluation.",
-    "triggers": [
-      "vercel",
-      "flags",
-      "sdk"
-    ]
-  },
-  {
-    "name": "vercel-fluid-compute",
-    "path": ".agent/skills/vercel-fluid-compute/SKILL.md",
-    "description": "Tune Fluid Compute behavior for latency, concurrency, and cost targets.",
-    "triggers": [
-      "vercel",
+      "serverless",
       "functions",
-      "fluid",
-      "compute"
+      "edge function",
+      "nodejs runtime",
+      "python runtime",
+      "fluid compute",
+      "function config",
+      "api route",
+      "edge runtime"
     ]
   },
   {
-    "name": "vercel-function-config",
-    "path": ".agent/skills/vercel-function-config/SKILL.md",
-    "description": "Set per-function runtime, duration, memory, and region configuration safely.",
-    "triggers": [
-      "vercel",
-      "functions",
-      "function",
-      "config"
-    ]
-  },
-  {
-    "name": "vercel-functions-core",
-    "path": ".agent/skills/vercel-functions-core/SKILL.md",
-    "description": "Build and operate Vercel Functions with reliable request lifecycle handling.",
-    "triggers": [
-      "vercel",
-      "functions",
-      "core"
-    ]
-  },
-  {
-    "name": "vercel-functions-edge-runtime",
-    "path": ".agent/skills/vercel-functions-edge-runtime/SKILL.md",
-    "description": "Build on Vercel Edge Runtime with compatibility and performance guardrails.",
-    "triggers": [
-      "vercel",
-      "functions",
-      "edge",
-      "runtime"
-    ]
-  },
-  {
-    "name": "vercel-functions-nodejs",
-    "path": ".agent/skills/vercel-functions-nodejs/SKILL.md",
-    "description": "Implement Node.js runtime patterns specific to Vercel Functions.",
-    "triggers": [
-      "vercel",
-      "functions",
-      "nodejs"
-    ]
-  },
-  {
-    "name": "vercel-functions-python",
-    "path": ".agent/skills/vercel-functions-python/SKILL.md",
-    "description": "Implement Python runtime patterns specific to Vercel Functions.",
-    "triggers": [
-      "vercel",
-      "functions",
-      "python"
-    ]
-  },
-  {
-    "name": "vercel-generated-urls",
-    "path": ".agent/skills/vercel-generated-urls/SKILL.md",
-    "description": "Handle generated deployment URLs, branch URL behavior, and preview URL policies.",
-    "triggers": [
-      "vercel",
-      "deployment",
-      "generated",
-      "urls"
-    ]
-  },
-  {
-    "name": "vercel-git-deployments",
-    "path": ".agent/skills/vercel-git-deployments/SKILL.md",
-    "description": "Manage Git-based deployment flows and production-branch promotion strategy.",
-    "triggers": [
-      "vercel",
-      "deployment",
-      "git",
-      "deployments"
-    ]
-  },
-  {
-    "name": "vercel-image-optimization",
-    "path": ".agent/skills/vercel-image-optimization/SKILL.md",
-    "description": "Tune image optimization behavior, cache keys, and quality-cost tradeoffs.",
-    "triggers": [
-      "vercel",
-      "cache",
-      "image",
-      "optimization"
-    ]
-  },
-  {
-    "name": "vercel-integrations-native",
-    "path": ".agent/skills/vercel-integrations-native/SKILL.md",
-    "description": "Design native Vercel integrations and integration lifecycle management.",
-    "triggers": [
-      "vercel",
-      "cli",
-      "integrations",
-      "native"
-    ]
-  },
-  {
-    "name": "vercel-isr",
-    "path": ".agent/skills/vercel-isr/SKILL.md",
-    "description": "Implement ISR and revalidation flows with safe fallback behavior.",
-    "triggers": [
-      "vercel",
-      "cache",
-      "isr"
-    ]
-  },
-  {
-    "name": "vercel-log-drain-reference",
-    "path": ".agent/skills/vercel-log-drain-reference/SKILL.md",
-    "description": "Implement log-drain schema handling and downstream pipeline mapping.",
+    "name": "vercel-observability",
+    "path": ".agent/skills/vercel-observability/SKILL.md",
+    "description": "Vercel observability stack: logs, tracing (OTel), session tracing, speed insights, web analytics, alerts, custom events, log drains, and audit logs.",
     "triggers": [
       "vercel",
       "observability",
-      "log",
-      "drain",
-      "reference"
+      "runtime logs",
+      "tracing",
+      "opentelemetry",
+      "session tracing",
+      "speed insights",
+      "web analytics",
+      "alerts",
+      "log drain",
+      "audit log",
+      "custom events",
+      "monitoring"
     ]
   },
   {
-    "name": "vercel-log-trace-correlation",
-    "path": ".agent/skills/vercel-log-trace-correlation/SKILL.md",
-    "description": "Correlate logs and traces for precise root-cause isolation.",
+    "name": "vercel-platform",
+    "path": ".agent/skills/vercel-platform/SKILL.md",
+    "description": "Vercel platform operations: project config, RBAC, 2FA/OIDC/SSO, secure compute, REST API, SDK, webhooks, integrations, MCP for agents, image optimization, OG images, cron jobs, monorepos, microfrontends, and multi-tenant architecture.",
     "triggers": [
       "vercel",
-      "observability",
-      "log",
-      "trace",
-      "correlation"
-    ]
-  },
-  {
-    "name": "vercel-marketplace-partner-api",
-    "path": ".agent/skills/vercel-marketplace-partner-api/SKILL.md",
-    "description": "Implement marketplace partner API operations and publication checks.",
-    "triggers": [
-      "vercel",
-      "cli",
-      "marketplace",
-      "partner",
-      "api"
-    ]
-  },
-  {
-    "name": "vercel-marketplace-storage-postgres",
-    "path": ".agent/skills/vercel-marketplace-storage-postgres/SKILL.md",
-    "description": "Operate Vercel Marketplace Postgres integrations and connection patterns.",
-    "triggers": [
-      "vercel",
-      "storage",
-      "marketplace",
-      "postgres"
-    ]
-  },
-  {
-    "name": "vercel-marketplace-storage-redis",
-    "path": ".agent/skills/vercel-marketplace-storage-redis/SKILL.md",
-    "description": "Operate Vercel Marketplace Redis/KV integrations and caching patterns.",
-    "triggers": [
-      "vercel",
-      "storage",
-      "marketplace",
-      "redis"
-    ]
-  },
-  {
-    "name": "vercel-mcp-for-agents",
-    "path": ".agent/skills/vercel-mcp-for-agents/SKILL.md",
-    "description": "Build and deploy MCP patterns for agent-compatible Vercel workflows.",
-    "triggers": [
-      "vercel",
-      "ai",
-      "mcp",
-      "for",
-      "agents"
-    ]
-  },
-  {
-    "name": "vercel-microfrontends",
-    "path": ".agent/skills/vercel-microfrontends/SKILL.md",
-    "description": "Implement Vercel microfrontend composition, routing, and release coordination.",
-    "triggers": [
-      "vercel",
-      "deployment",
-      "microfrontends"
-    ]
-  },
-  {
-    "name": "vercel-monorepos",
-    "path": ".agent/skills/vercel-monorepos/SKILL.md",
-    "description": "Implement monorepo project linking, build isolation, and environment boundaries.",
-    "triggers": [
-      "vercel",
-      "deployment",
-      "monorepos"
-    ]
-  },
-  {
-    "name": "vercel-multi-tenant",
-    "path": ".agent/skills/vercel-multi-tenant/SKILL.md",
-    "description": "Design multi-tenant Vercel architectures with domain and isolation controls.",
-    "triggers": [
-      "vercel",
-      "deployment",
-      "multi",
-      "tenant"
-    ]
-  },
-  {
-    "name": "vercel-nameservers",
-    "path": ".agent/skills/vercel-nameservers/SKILL.md",
-    "description": "Operate nameserver delegation and authoritative DNS strategy.",
-    "triggers": [
-      "vercel",
-      "domains",
-      "nameservers"
-    ]
-  },
-  {
-    "name": "vercel-observability-overview",
-    "path": ".agent/skills/vercel-observability-overview/SKILL.md",
-    "description": "Build complete observability baselines across logs, traces, and analytics.",
-    "triggers": [
-      "vercel",
-      "observability",
-      "overview"
-    ]
-  },
-  {
-    "name": "vercel-og-image-generation",
-    "path": ".agent/skills/vercel-og-image-generation/SKILL.md",
-    "description": "Generate social preview images with @vercel/og and edge-safe rendering.",
-    "triggers": [
-      "vercel",
-      "functions",
-      "og",
-      "image",
-      "generation"
-    ]
-  },
-  {
-    "name": "vercel-oidc-federation",
-    "path": ".agent/skills/vercel-oidc-federation/SKILL.md",
-    "description": "Implement OIDC federation for short-lived cloud credentials on Vercel.",
-    "triggers": [
-      "vercel",
-      "security",
+      "project config",
+      "rbac",
+      "2fa",
       "oidc",
-      "federation"
-    ]
-  },
-  {
-    "name": "vercel-project-configuration",
-    "path": ".agent/skills/vercel-project-configuration/SKILL.md",
-    "description": "Configure Vercel project behavior through vercel.json and project-level settings.",
-    "triggers": [
-      "vercel",
-      "deployment",
-      "project",
-      "configuration"
-    ]
-  },
-  {
-    "name": "vercel-protection-bypass-automation",
-    "path": ".agent/skills/vercel-protection-bypass-automation/SKILL.md",
-    "description": "Design controlled bypass automation for CI and E2E workloads.",
-    "triggers": [
-      "vercel",
-      "security",
-      "protection",
-      "bypass",
+      "sso",
+      "secure compute",
+      "rest api",
+      "webhooks",
+      "integrations",
+      "mcp for agents",
+      "image optimization",
+      "og image",
+      "cron jobs",
+      "monorepo",
+      "microfrontends",
+      "multi-tenant",
       "automation"
     ]
   },
   {
-    "name": "vercel-rbac-access-groups",
-    "path": ".agent/skills/vercel-rbac-access-groups/SKILL.md",
-    "description": "Design RBAC and access-group policy with least-privilege defaults.",
+    "name": "vercel-routing",
+    "path": ".agent/skills/vercel-routing/SKILL.md",
+    "description": "Vercel edge routing: middleware patterns, redirects/rewrites, Edge Config for real-time config without redeploys, Edge Config integrations, and Node.js migration paths.",
     "triggers": [
       "vercel",
-      "security",
-      "rbac",
-      "access",
-      "groups"
-    ]
-  },
-  {
-    "name": "vercel-redirects-rewrites",
-    "path": ".agent/skills/vercel-redirects-rewrites/SKILL.md",
-    "description": "Implement redirects and rewrites with routing safety and SEO awareness.",
-    "triggers": [
-      "vercel",
-      "cache",
-      "redirects",
-      "rewrites"
-    ]
-  },
-  {
-    "name": "vercel-remote-caching",
-    "path": ".agent/skills/vercel-remote-caching/SKILL.md",
-    "description": "Operate Turborepo remote cache integration and cache-safety controls.",
-    "triggers": [
-      "vercel",
-      "deployment",
-      "remote",
-      "caching"
-    ]
-  },
-  {
-    "name": "vercel-request-collapsing",
-    "path": ".agent/skills/vercel-request-collapsing/SKILL.md",
-    "description": "Use request collapsing to protect origins under burst traffic.",
-    "triggers": [
-      "vercel",
-      "cache",
-      "request",
-      "collapsing"
-    ]
-  },
-  {
-    "name": "vercel-rest-api",
-    "path": ".agent/skills/vercel-rest-api/SKILL.md",
-    "description": "Automate Vercel operations through REST APIs with robust error handling.",
-    "triggers": [
-      "vercel",
-      "cli",
-      "rest",
-      "api"
-    ]
-  },
-  {
-    "name": "vercel-routing-middleware",
-    "path": ".agent/skills/vercel-routing-middleware/SKILL.md",
-    "description": "Use Routing Middleware for pre-cache control, auth checks, and traffic shaping.",
-    "triggers": [
-      "vercel",
-      "functions",
       "routing",
-      "middleware"
+      "middleware",
+      "redirects",
+      "rewrites",
+      "edge config",
+      "a/b routing",
+      "geo routing",
+      "edge middleware"
     ]
   },
   {
-    "name": "vercel-runtime-cache",
-    "path": ".agent/skills/vercel-runtime-cache/SKILL.md",
-    "description": "Apply runtime cache policies with freshness and correctness guarantees.",
-    "triggers": [
-      "vercel",
-      "functions",
-      "runtime",
-      "cache"
-    ]
-  },
-  {
-    "name": "vercel-runtime-logs",
-    "path": ".agent/skills/vercel-runtime-logs/SKILL.md",
-    "description": "Query and triage runtime logs for incident diagnosis and regression detection.",
-    "triggers": [
-      "vercel",
-      "observability",
-      "runtime",
-      "logs"
-    ]
-  },
-  {
-    "name": "vercel-sdk",
-    "path": ".agent/skills/vercel-sdk/SKILL.md",
-    "description": "Build internal automation using Vercel SDK abstractions.",
-    "triggers": [
-      "vercel",
-      "cli",
-      "sdk"
-    ]
-  },
-  {
-    "name": "vercel-secure-compute",
-    "path": ".agent/skills/vercel-secure-compute/SKILL.md",
-    "description": "Configure Secure Compute and private network access patterns.",
-    "triggers": [
-      "vercel",
-      "security",
-      "secure",
-      "compute"
-    ]
-  },
-  {
-    "name": "vercel-session-tracing",
-    "path": ".agent/skills/vercel-session-tracing/SKILL.md",
-    "description": "Capture and inspect session traces to debug real user request paths.",
-    "triggers": [
-      "vercel",
-      "observability",
-      "session",
-      "tracing"
-    ]
-  },
-  {
-    "name": "vercel-speed-insights",
-    "path": ".agent/skills/vercel-speed-insights/SKILL.md",
-    "description": "Use Speed Insights to improve Core Web Vitals and render performance.",
-    "triggers": [
-      "vercel",
-      "observability",
-      "speed",
-      "insights"
-    ]
-  },
-  {
-    "name": "vercel-ssl-certificates",
-    "path": ".agent/skills/vercel-ssl-certificates/SKILL.md",
-    "description": "Operate SSL certificate provisioning, renewal, and incident response.",
-    "triggers": [
-      "vercel",
-      "domains",
-      "ssl",
-      "certificates"
-    ]
-  },
-  {
-    "name": "vercel-static-ips",
-    "path": ".agent/skills/vercel-static-ips/SKILL.md",
-    "description": "Use static egress IPs for partner allowlists and controlled outbound paths.",
-    "triggers": [
-      "vercel",
-      "security",
-      "static",
-      "ips"
-    ]
-  },
-  {
-    "name": "vercel-storage-migrations",
-    "path": ".agent/skills/vercel-storage-migrations/SKILL.md",
-    "description": "Plan migrations from legacy Vercel storage offerings with minimal downtime.",
+    "name": "vercel-storage",
+    "path": ".agent/skills/vercel-storage/SKILL.md",
+    "description": "Vercel Storage solutions: Blob for file storage, Marketplace Postgres, Marketplace Redis, and storage migration strategies between providers.",
     "triggers": [
       "vercel",
       "storage",
-      "migrations"
-    ]
-  },
-  {
-    "name": "vercel-tracing-otel",
-    "path": ".agent/skills/vercel-tracing-otel/SKILL.md",
-    "description": "Instrument and analyze traces with OpenTelemetry on Vercel.",
-    "triggers": [
-      "vercel",
-      "observability",
-      "tracing",
-      "otel"
-    ]
-  },
-  {
-    "name": "vercel-waf-custom-rules",
-    "path": ".agent/skills/vercel-waf-custom-rules/SKILL.md",
-    "description": "Author and tune custom WAF rules for exploit and abuse patterns.",
-    "triggers": [
-      "vercel",
-      "security",
-      "waf",
-      "custom",
-      "rules"
-    ]
-  },
-  {
-    "name": "vercel-waf-rate-limiting",
-    "path": ".agent/skills/vercel-waf-rate-limiting/SKILL.md",
-    "description": "Apply rate-limiting strategy to protect expensive or sensitive endpoints.",
-    "triggers": [
-      "vercel",
-      "security",
-      "waf",
-      "rate",
-      "limiting"
-    ]
-  },
-  {
-    "name": "vercel-web-analytics",
-    "path": ".agent/skills/vercel-web-analytics/SKILL.md",
-    "description": "Operate privacy-aware web analytics and KPI instrumentation.",
-    "triggers": [
-      "vercel",
-      "observability",
-      "web",
-      "analytics"
-    ]
-  },
-  {
-    "name": "vercel-webhooks-and-checks",
-    "path": ".agent/skills/vercel-webhooks-and-checks/SKILL.md",
-    "description": "Design webhook and deployment check pipelines with idempotent handlers.",
-    "triggers": [
-      "vercel",
-      "cli",
-      "webhooks",
-      "and",
-      "checks"
+      "blob",
+      "postgres",
+      "redis",
+      "kv",
+      "storage migration",
+      "file upload",
+      "vercel blob",
+      "vercel postgres",
+      "vercel redis"
     ]
   },
   {
@@ -1889,25 +1058,21 @@
     "triggers": []
   },
   {
-    "name": "database-skills",
-    "path": ".agent/skills/database-skills/SKILL.md",
-    "description": "Unified database skill hub with engine-specific packs for PostgreSQL, MySQL, Vitess, Neki, MongoDB (Mongoose), SQLite, Supabase, and Redis.",
-    "triggers": [
-      "database",
-      "sql",
-      "postgres",
-      "mysql",
-      "vitess",
-      "neki",
-      "mongodb",
-      "mongoose",
-      "sqlite",
-      "supabase",
-      "redis",
-      "schema",
-      "migration",
-      "index",
-      "query"
-    ]
+    "name": "database-design",
+    "path": ".agent/skills/database-design/SKILL.md",
+    "description": "Database design principles and decision-making. Schema design, indexing strategy, ORM selection, serverless databases.",
+    "triggers": []
+  },
+  {
+    "name": "database-optimizer",
+    "path": ".agent/skills/database-optimizer/SKILL.md",
+    "description": "Use for system-level database performance triage across engines: bottleneck analysis, indexing strategy, config tuning, partitioning, and lock contention.",
+    "triggers": []
+  },
+  {
+    "name": "drift-flutter",
+    "path": ".agent/skills/drift-flutter/SKILL.md",
+    "description": "Use when implementing Flutter local persistence with Drift: schema design, DAOs, migrations, transactions, and repository integration",
+    "triggers": []
   }
 ]

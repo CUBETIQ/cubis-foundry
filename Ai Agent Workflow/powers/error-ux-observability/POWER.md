@@ -1,4 +1,6 @@
+````markdown
 ---
+inclusion: manual
 name: "error-ux-observability"
 displayName: "Error UX & Observability"
 description: "Map backend failures to user-friendly messages, implement proper logging levels, and ensure observable error handling"
@@ -155,4 +157,4 @@ ref.listen(controllerProvider, (prev, next) {
 ## Templates
 
 - `failure_message_mapper` - Failure to UI message mapper template
-
+````

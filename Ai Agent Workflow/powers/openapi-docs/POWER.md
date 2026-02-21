@@ -1,18 +1,10 @@
+````markdown
 ---
-name: openapi-docs
-displayName: OpenAPI Docs & Stoplight UI
-description:
-  Use when writing or updating OpenAPI specifications, defining request/response
-  schemas, or configuring Stoplight Elements (Swagger-style) documentation UI.
-keywords:
-  - openapi
-  - api docs
-  - swagger ui
-  - stoplight
-  - elements
-  - documentation
-author: OneUp
+inclusion: manual
+name: "openapi-docs"
+description: "Use when writing or updating OpenAPI specifications, defining request/response schemas, or configuring Stoplight Elements (Swagger-style) documentation UI."
 ---
+
 
 # OpenAPI Docs & Stoplight UI
 
@@ -44,13 +36,13 @@ You are a technical writer and API designer. You standardize request/response sc
 
 | Topic             | Reference                         | Load When                          |
 | ----------------- | --------------------------------- | ---------------------------------- |
-| OpenAPI Checklist | steering/openapi-checklist.md     | Before writing or updating specs   |
-| CRUD Templates    | steering/crud-templates.md        | Adding create/update/delete routes |
-| Stoplight UI      | steering/stoplight-ui.md          | Configuring or styling docs UI     |
-| FastAPI           | steering/framework-fastapi.md     | FastAPI-specific documentation     |
-| NestJS            | steering/framework-nestjs.md      | NestJS Swagger integration         |
-| Express           | steering/framework-express.md     | Express spec-first or code-first   |
-| Raw OpenAPI       | steering/framework-raw-openapi.md | Spec-first workflows               |
+| OpenAPI Checklist | references/openapi-checklist.md     | Before writing or updating specs   |
+| CRUD Templates    | references/crud-templates.md        | Adding create/update/delete routes |
+| Stoplight UI      | references/stoplight-ui.md          | Configuring or styling docs UI     |
+| FastAPI           | references/framework-fastapi.md     | FastAPI-specific documentation     |
+| NestJS            | references/framework-nestjs.md      | NestJS Swagger integration         |
+| Express           | references/framework-express.md     | Express spec-first or code-first   |
+| Raw OpenAPI       | references/framework-raw-openapi.md | Spec-first workflows               |
 
 ## Constraints
 
@@ -76,3 +68,4 @@ You are a technical writer and API designer. You standardize request/response sc
 3. Updated endpoints (create/update/delete)
 4. Stoplight UI status and URL
 5. Verification notes
+````

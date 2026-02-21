@@ -83,6 +83,13 @@ Bundle contains platform-specific:
 
 ## Installed Capability Set (v1)
 
+Database capability stack:
+- `database-skills` (engine hub)
+- `database-design` (schema/migration design)
+- `database-optimizer` (query/index/tuning triage)
+- `drift-flutter` (Flutter local persistence)
+
+
 Core workflows:
 - `/brainstorm`
 - `/plan`

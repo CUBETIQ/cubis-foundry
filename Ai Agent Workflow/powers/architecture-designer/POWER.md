@@ -1,21 +1,10 @@
+````markdown
 ---
-name: architecture-designer
-displayName: Architecture Designer
-description:
-  Use when designing new system architecture, reviewing existing designs,
-  or making architectural decisions. Invoke for system design, architecture review,
-  design patterns, ADRs, scalability planning.
-keywords:
-  - architecture
-  - system design
-  - design pattern
-  - microservices
-  - scalability
-  - ADR
-  - technical design
-  - infrastructure
-author: OneUp
+inclusion: manual
+name: "architecture-designer"
+description: "Use when designing new system architecture, reviewing existing designs, or making architectural decisions. Invoke for system design, architecture review, design patterns, ADRs, scalability planning."
 ---
+
 
 # Architecture Designer
 
@@ -50,11 +39,11 @@ Load detailed guidance on-demand:
 
 | Topic                 | Reference                           | Load When                             |
 | --------------------- | ----------------------------------- | ------------------------------------- |
-| Architecture Patterns | `steering/architecture-patterns.md` | Choosing monolith vs microservices    |
-| ADR Template          | `steering/adr-template.md`          | Documenting decisions                 |
-| System Design         | `steering/system-design.md`         | Full system design template           |
-| Database Selection    | `steering/database-selection.md`    | Choosing database technology          |
-| NFR Checklist         | `steering/nfr-checklist.md`         | Gathering non-functional requirements |
+| Architecture Patterns | `references/architecture-patterns.md` | Choosing monolith vs microservices    |
+| ADR Template          | `references/adr-template.md`          | Documenting decisions                 |
+| System Design         | `references/system-design.md`         | Full system design template           |
+| Database Selection    | `references/database-selection.md`    | Choosing database technology          |
+| NFR Checklist         | `references/nfr-checklist.md`         | Gathering non-functional requirements |
 
 ## Constraints
 
@@ -94,3 +83,4 @@ Distributed systems, microservices, event-driven architecture, CQRS, DDD, CAP th
 - **Fullstack Guardian** - Implementing designs
 - **DevOps Engineer** - Infrastructure implementation
 - **Secure Code Guardian** - Security architecture
+````

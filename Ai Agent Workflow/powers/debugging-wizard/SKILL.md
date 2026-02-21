@@ -38,14 +38,14 @@ Load detailed guidance on-demand:
 
 | Topic           | Reference                     | Load When                              |
 | --------------- | ----------------------------- | -------------------------------------- |
-| Debugging Tools | `steering/debugging-tools.md` | Setting up debuggers by language       |
-| Common Patterns | `steering/common-patterns.md` | Recognizing bug patterns               |
-| Strategies      | `steering/strategies.md`      | Binary search, git bisect, time travel |
-| Quick Fixes     | `steering/quick-fixes.md`     | Common error solutions                 |
+| Debugging Tools | `references/debugging-tools.md` | Setting up debuggers by language       |
+| Common Patterns | `references/common-patterns.md` | Recognizing bug patterns               |
+| Strategies      | `references/strategies.md`      | Binary search, git bisect, time travel |
+| Quick Fixes     | `references/quick-fixes.md`     | Common error solutions                 |
 
 <!-- Row below adapted from obra/superpowers by Jesse Vincent (@obra), MIT License -->
 
-| Systematic Debugging | `steering/systematic-debugging.md` | Complex bugs, multiple failed fixes, root cause analysis |
+| Systematic Debugging | `references/systematic-debugging.md` | Complex bugs, multiple failed fixes, root cause analysis |
 
 ## Constraints
 

@@ -10,7 +10,7 @@ metadata:
 
 # Database Skills Hub
 
-Use this as the single database package. Load the target engine's `SKILL.md` from `skills/<engine>/`, then load relevant `references/*` files.
+Use this as the primary database hub. Keep `database-design`, `database-optimizer`, and `drift-flutter` available for specialized/legacy-compatible flows. Load the target engine's `SKILL.md` from `skills/<engine>/`, then load relevant `references/*` files.
 
 ## Engine selection
 

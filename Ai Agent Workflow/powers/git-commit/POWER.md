@@ -1,4 +1,6 @@
+````markdown
 ---
+inclusion: manual
 name: "git-commit"
 displayName: "Git Commit"
 description: "Create conventional commits with intelligent staging and message generation"
@@ -45,3 +47,4 @@ keywords: ["git", "commit", "conventional", "stage", "push", "version control"]
 - NEVER force push to main/master
 - NEVER skip hooks without explicit request
 - NEVER commit secrets
+````

@@ -39,11 +39,11 @@ Load detailed guidance on-demand:
 
 | Topic          | Reference                    | Load When                                   |
 | -------------- | ---------------------------- | ------------------------------------------- |
-| REST Patterns  | `steering/rest-patterns.md`  | Resource design, HTTP methods, HATEOAS      |
-| Versioning     | `steering/versioning.md`     | API versions, deprecation, breaking changes |
-| Pagination     | `steering/pagination.md`     | Cursor, offset, keyset pagination           |
-| Error Handling | `steering/error-handling.md` | Error responses, RFC 7807, status codes     |
-| OpenAPI        | `steering/openapi.md`        | OpenAPI 3.1, documentation, code generation |
+| REST Patterns  | `references/rest-patterns.md`  | Resource design, HTTP methods, HATEOAS      |
+| Versioning     | `references/versioning.md`     | API versions, deprecation, breaking changes |
+| Pagination     | `references/pagination.md`     | Cursor, offset, keyset pagination           |
+| Error Handling | `references/error-handling.md` | Error responses, RFC 7807, status codes     |
+| OpenAPI        | `references/openapi.md`        | OpenAPI 3.1, documentation, code generation |
 
 ## Constraints
 

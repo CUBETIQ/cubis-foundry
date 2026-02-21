@@ -1,37 +1,10 @@
+````markdown
 ---
-name: test-master
-displayName: Test Master
-description:
-  Use when writing tests, creating test strategies, or building automation
-  frameworks. Invoke for unit tests, integration tests, E2E, coverage analysis, performance
-  testing, security testing.
-keywords:
-  - test
-  - testing
-  - QA
-  - unit test
-  - integration test
-  - E2E
-  - coverage
-  - performance test
-  - security test
-  - regression
-  - test strategy
-  - test automation
-  - test framework
-  - quality metrics
-  - defect
-  - exploratory
-  - usability
-  - accessibility
-  - localization
-  - manual testing
-  - shift-left
-  - quality gate
-  - flaky test
-  - test maintenance
-author: OneUp
+inclusion: manual
+name: "test-master"
+description: "Use when writing tests, creating test strategies, or building automation frameworks. Invoke for unit tests, integration tests, E2E, coverage analysis, performance testing, security testing."
 ---
+
 
 # Test Master
 
@@ -70,19 +43,19 @@ Load detailed guidance on-demand:
 
 | Topic          | Reference                           | Load When                                                        |
 | -------------- | ----------------------------------- | ---------------------------------------------------------------- |
-| Unit Testing   | `steering/unit-testing.md`          | Jest, Vitest, pytest patterns                                    |
-| Integration    | `steering/integration-testing.md`   | API testing, Supertest                                           |
-| E2E            | `steering/e2e-testing.md`           | E2E strategy, user flows                                         |
-| Performance    | `steering/performance-testing.md`   | k6, load testing                                                 |
-| Security       | `steering/security-testing.md`      | Security test checklist                                          |
-| Reports        | `steering/test-reports.md`          | Report templates, findings                                       |
-| QA Methodology | `steering/qa-methodology.md`        | Manual testing, quality advocacy, shift-left, continuous testing |
-| Automation     | `steering/automation-frameworks.md` | Framework patterns, scaling, maintenance, team enablement        |
+| Unit Testing   | `references/unit-testing.md`          | Jest, Vitest, pytest patterns                                    |
+| Integration    | `references/integration-testing.md`   | API testing, Supertest                                           |
+| E2E            | `references/e2e-testing.md`           | E2E strategy, user flows                                         |
+| Performance    | `references/performance-testing.md`   | k6, load testing                                                 |
+| Security       | `references/security-testing.md`      | Security test checklist                                          |
+| Reports        | `references/test-reports.md`          | Report templates, findings                                       |
+| QA Methodology | `references/qa-methodology.md`        | Manual testing, quality advocacy, shift-left, continuous testing |
+| Automation     | `references/automation-frameworks.md` | Framework patterns, scaling, maintenance, team enablement        |
 
 <!-- Rows below adapted from obra/superpowers by Jesse Vincent (@obra), MIT License -->
 
-| TDD Iron Laws | `steering/tdd-iron-laws.md` | TDD methodology, test-first development, red-green-refactor |
-| Testing Anti-Patterns | `steering/testing-anti-patterns.md` | Test review, mock issues, test quality problems |
+| TDD Iron Laws | `references/tdd-iron-laws.md` | TDD methodology, test-first development, red-green-refactor |
+| Testing Anti-Patterns | `references/testing-anti-patterns.md` | Test review, mock issues, test quality problems |
 
 ## Constraints
 
@@ -109,3 +82,4 @@ Jest, Vitest, pytest, React Testing Library, Supertest, Playwright, Cypress, k6,
 - **Fullstack Guardian** - Receives features for testing
 - **Playwright Expert** - E2E testing specifics
 - **DevOps Engineer** - CI/CD test integration
+````

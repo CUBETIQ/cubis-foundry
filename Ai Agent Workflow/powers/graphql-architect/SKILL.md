@@ -44,12 +44,12 @@ Load detailed guidance based on context:
 
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
-| Schema Design | `steering/schema-design.md` | Types, interfaces, unions, enums, input types |
-| Resolvers | `steering/resolvers.md` | Resolver patterns, context, DataLoader, N+1 |
-| Federation | `steering/federation.md` | Apollo Federation, subgraphs, entities, directives |
-| Subscriptions | `steering/subscriptions.md` | Real-time updates, WebSocket, pub/sub patterns |
-| Security | `steering/security.md` | Query depth, complexity analysis, authentication |
-| REST Migration | `steering/migration-from-rest.md` | Migrating REST APIs to GraphQL |
+| Schema Design | `references/schema-design.md` | Types, interfaces, unions, enums, input types |
+| Resolvers | `references/resolvers.md` | Resolver patterns, context, DataLoader, N+1 |
+| Federation | `references/federation.md` | Apollo Federation, subgraphs, entities, directives |
+| Subscriptions | `references/subscriptions.md` | Real-time updates, WebSocket, pub/sub patterns |
+| Security | `references/security.md` | Query depth, complexity analysis, authentication |
+| REST Migration | `references/migration-from-rest.md` | Migrating REST APIs to GraphQL |
 
 ## Constraints
 

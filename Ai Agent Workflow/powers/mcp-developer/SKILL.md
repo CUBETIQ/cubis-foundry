@@ -44,11 +44,11 @@ Load detailed guidance based on context:
 
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
-| Protocol | `steering/protocol.md` | Message types, lifecycle, JSON-RPC 2.0 |
-| TypeScript SDK | `steering/typescript-sdk.md` | Building servers/clients in Node.js |
-| Python SDK | `steering/python-sdk.md` | Building servers/clients in Python |
-| Tools | `steering/tools.md` | Tool definitions, schemas, execution |
-| Resources | `steering/resources.md` | Resource providers, URIs, templates |
+| Protocol | `references/protocol.md` | Message types, lifecycle, JSON-RPC 2.0 |
+| TypeScript SDK | `references/typescript-sdk.md` | Building servers/clients in Node.js |
+| Python SDK | `references/python-sdk.md` | Building servers/clients in Python |
+| Tools | `references/tools.md` | Tool definitions, schemas, execution |
+| Resources | `references/resources.md` | Resource providers, URIs, templates |
 
 ## Constraints
 

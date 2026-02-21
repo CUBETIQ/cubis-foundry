@@ -1,4 +1,6 @@
+````markdown
 ---
+inclusion: manual
 name: "flutter-code-reviewer"
 displayName: "Flutter/Dart Code Reviewer"
 description: "Perform strict, actionable code reviews for Flutter/Dart projects enforcing architecture boundaries, Riverpod patterns, testing, and performance"
@@ -183,3 +185,4 @@ See: `steering/testing_expectations.md`
 ## Templates
 
 - `review_response.md` - Code review response template
+````

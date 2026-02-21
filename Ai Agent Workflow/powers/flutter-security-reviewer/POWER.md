@@ -1,4 +1,6 @@
+````markdown
 ---
+inclusion: manual
 name: "flutter-security-reviewer"
 displayName: "Flutter/Dart Security Reviewer"
 description: "Review Flutter/Dart code for security vulnerabilities: secure storage, network hardening, log redaction, and data protection"
@@ -202,3 +204,4 @@ logger.info('User login successful: userId=${user.id}');
 ## Templates
 
 - `security_review_response.md` - Security review report template
+````

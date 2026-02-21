@@ -1,4 +1,6 @@
+````markdown
 ---
+inclusion: manual
 name: "refactor"
 displayName: "Refactor - OneUp HR"
 description: "Migrate legacy code to new architecture while maintaining behavior"
@@ -61,3 +63,4 @@ OneColor.white
 - [ ] Add freezed for models
 - [ ] Remove dead code
 - [ ] Verify behavior unchanged
+````

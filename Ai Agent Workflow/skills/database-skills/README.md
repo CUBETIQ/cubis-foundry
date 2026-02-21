@@ -46,5 +46,6 @@ database-skills/
 
 ## Notes
 
-- Use this package as the single database skill dependency in agents/workflows.
+- Use this package as the primary database hub in agents/workflows.
+- Keep `database-design`, `database-optimizer`, and `drift-flutter` active as companion skills for specialized or legacy-compatible flows.
 - Keep version-sensitive guidance synced with `LATEST_VERSIONS.md`.

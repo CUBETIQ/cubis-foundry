@@ -44,11 +44,11 @@ Load detailed guidance based on context:
 
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
-| Ownership | `steering/ownership.md` | Lifetimes, borrowing, smart pointers, Pin |
-| Traits | `steering/traits.md` | Trait design, generics, associated types, derive |
-| Error Handling | `steering/error-handling.md` | Result, Option, ?, custom errors, thiserror |
-| Async | `steering/async.md` | async/await, tokio, futures, streams, concurrency |
-| Testing | `steering/testing.md` | Unit/integration tests, proptest, benchmarks |
+| Ownership | `references/ownership.md` | Lifetimes, borrowing, smart pointers, Pin |
+| Traits | `references/traits.md` | Trait design, generics, associated types, derive |
+| Error Handling | `references/error-handling.md` | Result, Option, ?, custom errors, thiserror |
+| Async | `references/async.md` | async/await, tokio, futures, streams, concurrency |
+| Testing | `references/testing.md` | Unit/integration tests, proptest, benchmarks |
 
 ## Constraints
 

@@ -1,4 +1,6 @@
+````markdown
 ---
+inclusion: manual
 name: "riverpod-3"
 displayName: "Riverpod 3 Expert"
 description: "Riverpod 3 best practices for codegen, UI interaction boundaries, caching, paging, lifecycle, and testing"
@@ -141,3 +143,4 @@ Avoid keepAlive for:
 - `cache_policy.dart` - TTL helper for repository cache policy
 - `paged_controller.dart` - Cursor/page-based infinite list controller
 - `riverpod_controller_test` - Provider/controller test template
+````

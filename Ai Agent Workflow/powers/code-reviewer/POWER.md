@@ -1,18 +1,10 @@
+````markdown
 ---
-name: code-reviewer
-displayName: Code Reviewer
-description:
-  Use when reviewing pull requests, conducting code quality audits, or
-  identifying security vulnerabilities. Invoke for PR reviews, code quality checks,
-  refactoring suggestions.
-keywords:
-  - code review
-  - PR review
-  - pull request
-  - review code
-  - code quality
-author: OneUp
+inclusion: manual
+name: "code-reviewer"
+description: "Use when reviewing pull requests, conducting code quality audits, or identifying security vulnerabilities. Invoke for PR reviews, code quality checks, refactoring suggestions."
 ---
+
 
 # Code Reviewer
 
@@ -46,15 +38,15 @@ Load detailed guidance on-demand:
 
 | Topic             | Reference                       | Load When                            |
 | ----------------- | ------------------------------- | ------------------------------------ |
-| Review Checklist  | `steering/review-checklist.md`  | Starting a review, categories        |
-| Common Issues     | `steering/common-issues.md`     | N+1 queries, magic numbers, patterns |
-| Feedback Examples | `steering/feedback-examples.md` | Writing good feedback                |
-| Report Template   | `steering/report-template.md`   | Writing final review report          |
+| Review Checklist  | `references/review-checklist.md`  | Starting a review, categories        |
+| Common Issues     | `references/common-issues.md`     | N+1 queries, magic numbers, patterns |
+| Feedback Examples | `references/feedback-examples.md` | Writing good feedback                |
+| Report Template   | `references/report-template.md`   | Writing final review report          |
 
 <!-- Rows below adapted from obra/superpowers by Jesse Vincent (@obra), MIT License -->
 
-| Spec Compliance | `steering/spec-compliance-review.md` | Reviewing implementations, PR review, spec verification |
-| Receiving Feedback | `steering/receiving-feedback.md` | Responding to review comments, handling feedback |
+| Spec Compliance | `references/spec-compliance-review.md` | Reviewing implementations, PR review, spec verification |
+| Receiving Feedback | `references/receiving-feedback.md` | Responding to review comments, handling feedback |
 
 ## Constraints
 
@@ -98,3 +90,4 @@ SOLID, DRY, KISS, YAGNI, design patterns, OWASP Top 10, language idioms, testing
 - **Security Reviewer** - Deep security analysis
 - **Test Master** - Test quality assessment
 - **Architecture Designer** - Design review
+````

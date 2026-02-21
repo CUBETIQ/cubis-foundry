@@ -44,11 +44,11 @@ Load detailed guidance based on context:
 
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
-| Modules | `steering/module-patterns.md` | Creating modules, inputs/outputs, versioning |
-| State | `steering/state-management.md` | Remote backends, locking, workspaces, migrations |
-| Providers | `steering/providers.md` | AWS/Azure/GCP configuration, authentication |
-| Testing | `steering/testing.md` | terraform plan, terratest, policy as code |
-| Best Practices | `steering/best-practices.md` | DRY patterns, naming, security, cost tracking |
+| Modules | `references/module-patterns.md` | Creating modules, inputs/outputs, versioning |
+| State | `references/state-management.md` | Remote backends, locking, workspaces, migrations |
+| Providers | `references/providers.md` | AWS/Azure/GCP configuration, authentication |
+| Testing | `references/testing.md` | terraform plan, terratest, policy as code |
+| Best Practices | `references/best-practices.md` | DRY patterns, naming, security, cost tracking |
 
 ## Constraints
 

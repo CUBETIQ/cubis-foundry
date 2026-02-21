@@ -1,24 +1,10 @@
+````markdown
 ---
-name: security-reviewer
-displayName: Security Reviewer
-description:
-  Use when conducting security audits, reviewing code for vulnerabilities,
-  or analyzing infrastructure security. Invoke for SAST scans, penetration testing,
-  DevSecOps practices, cloud security reviews.
-keywords:
-  - security review
-  - vulnerability scan
-  - SAST
-  - security audit
-  - penetration test
-  - code audit
-  - security analysis
-  - infrastructure security
-  - DevSecOps
-  - cloud security
-  - compliance audit
-author: OneUp
+inclusion: manual
+name: "security-reviewer"
+description: "Use when conducting security audits, reviewing code for vulnerabilities, or analyzing infrastructure security. Invoke for SAST scans, penetration testing, DevSecOps practices, cloud security reviews."
 ---
+
 
 # Security Reviewer
 
@@ -49,12 +35,12 @@ Load detailed guidance on-demand:
 
 | Topic                   | Reference                             | Load When                                    |
 | ----------------------- | ------------------------------------- | -------------------------------------------- |
-| SAST Tools              | `steering/sast-tools.md`              | Running automated scans                      |
-| Vulnerability Patterns  | `steering/vulnerability-patterns.md`  | SQL injection, XSS, manual review            |
-| Secret Scanning         | `steering/secret-scanning.md`         | Gitleaks, finding hardcoded secrets          |
-| Penetration Testing     | `steering/penetration-testing.md`     | Active testing, reconnaissance, exploitation |
-| Infrastructure Security | `steering/infrastructure-security.md` | DevSecOps, cloud security, compliance        |
-| Report Template         | `steering/report-template.md`         | Writing security report                      |
+| SAST Tools              | `references/sast-tools.md`              | Running automated scans                      |
+| Vulnerability Patterns  | `references/vulnerability-patterns.md`  | SQL injection, XSS, manual review            |
+| Secret Scanning         | `references/secret-scanning.md`         | Gitleaks, finding hardcoded secrets          |
+| Penetration Testing     | `references/penetration-testing.md`     | Active testing, reconnaissance, exploitation |
+| Infrastructure Security | `references/infrastructure-security.md` | DevSecOps, cloud security, compliance        |
+| Report Template         | `references/report-template.md`         | Writing security report                      |
 
 ## Constraints
 
@@ -97,3 +83,4 @@ OWASP Top 10, CWE, Semgrep, Bandit, ESLint Security, gosec, npm audit, gitleaks,
 - **DevOps Engineer** - Security in CI/CD
 - **Cloud Architect** - Cloud security architecture
 - **Kubernetes Specialist** - Container security
+````

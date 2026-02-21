@@ -11,14 +11,14 @@ Spawns external CLI AIs (claude, cursor-agent, codex, gemini) as isolated sub-ag
 ## Resources
 
 - **[run_subagent.py](scripts/run_subagent.py)** - Main execution script
-- **[codex.md](steering/codex.md)** - Codex-specific setup (permissions, timeout)
+- **[codex.md](references/codex.md)** - Codex-specific setup (permissions, timeout)
 
 **Script Path**: Use absolute path `{SKILL_DIR}/scripts/run_subagent.py` where `{SKILL_DIR}` is the directory containing this SKILL.md file.
 
 ## CLI-Specific Notes
 
 Check the corresponding reference for your environment:
-- **Codex**: Read [steering/codex.md](steering/codex.md) BEFORE first execution
+- **Codex**: Read [references/codex.md](references/codex.md) BEFORE first execution
 
 ## Interpreting User Requests
 
@@ -56,13 +56,13 @@ This script executes external CLIs that require elevated permissions.
 1. Request elevated permissions via your CLI's tool parameters
 2. Set tool timeout to match `--timeout` argument (default: 600000ms)
 
-**For Codex CLI** (most common permission issues): See [steering/codex.md](steering/codex.md) for exact JSON parameter format.
+**For Codex CLI** (most common permission issues): See [references/codex.md](references/codex.md) for exact JSON parameter format.
 
 ## Workflow
 
 ### Step 0: Read CLI-Specific Setup (if applicable)
 
-If you are running on Codex, read [steering/codex.md](steering/codex.md) first.
+If you are running on Codex, read [references/codex.md](references/codex.md) first.
 
 ### Step 1: List Available Agents
 
@@ -158,7 +158,7 @@ What this agent does.
 How results should be structured.
 ```
 
-**Critical**: The `run-agent` frontmatter determines which CLI executes the agent. See [cli-formats.md](steering/cli-formats.md) for CLI-specific behaviors.
+**Critical**: The `run-agent` frontmatter determines which CLI executes the agent. See [cli-formats.md](references/cli-formats.md) for CLI-specific behaviors.
 
 ## CLI Selection Priority
 

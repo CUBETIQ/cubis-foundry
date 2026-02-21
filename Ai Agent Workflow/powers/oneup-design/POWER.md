@@ -1,4 +1,6 @@
+````markdown
 ---
+inclusion: manual
 name: "oneup-design"
 displayName: "OneUp Design System"
 description: "OneUp HR design system with One* components, colors, spacing, and typography tokens"
@@ -70,3 +72,4 @@ Colors.white                 // Use OneColor.white
 Text(...)                    // Use OneText.X()
 ElevatedButton(...)          // Use OneButton.primary()
 ```
+````

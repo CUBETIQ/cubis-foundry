@@ -1,4 +1,6 @@
+````markdown
 ---
+inclusion: manual
 name: "accessibility"
 displayName: "Accessibility Expert"
 description: "Ensure Flutter apps meet WCAG 2.1 AA standards with proper semantics, focus management, and screen reader support"
@@ -100,4 +102,4 @@ Load detailed guidance:
 
 - `focus_form` - Form with proper focus management
 - `semantics_icon_button` - Icon button with semantic labels
-
+````

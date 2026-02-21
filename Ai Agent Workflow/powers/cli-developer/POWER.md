@@ -1,4 +1,6 @@
+````markdown
 ---
+inclusion: manual
 name: "cli-developer"
 displayName: "CLI Developer"
 description: "Build intuitive, cross-platform CLI tools with argument parsing, interactive prompts, progress indicators, and shell completions across Node.js, Python, and Go"
@@ -114,3 +116,4 @@ mycli                           # Root command
 | `python-cli.md`      | Typer, Click, argparse, Rich, questionary                    |
 | `go-cli.md`          | Cobra, Viper, Bubble Tea, progress bars                      |
 | `ux-patterns.md`     | Progress indicators, colors, help text, error messages       |
+````

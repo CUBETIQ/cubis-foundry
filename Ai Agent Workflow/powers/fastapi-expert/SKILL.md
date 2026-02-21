@@ -44,12 +44,12 @@ Load detailed guidance based on context:
 
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
-| Pydantic V2 | `steering/pydantic-v2.md` | Creating schemas, validation, model_config |
-| SQLAlchemy | `steering/async-sqlalchemy.md` | Async database, models, CRUD operations |
-| Endpoints | `steering/endpoints-routing.md` | APIRouter, dependencies, routing |
-| Authentication | `steering/authentication.md` | JWT, OAuth2, get_current_user |
-| Testing | `steering/testing-async.md` | pytest-asyncio, httpx, fixtures |
-| Django Migration | `steering/migration-from-django.md` | Migrating from Django/DRF to FastAPI |
+| Pydantic V2 | `references/pydantic-v2.md` | Creating schemas, validation, model_config |
+| SQLAlchemy | `references/async-sqlalchemy.md` | Async database, models, CRUD operations |
+| Endpoints | `references/endpoints-routing.md` | APIRouter, dependencies, routing |
+| Authentication | `references/authentication.md` | JWT, OAuth2, get_current_user |
+| Testing | `references/testing-async.md` | pytest-asyncio, httpx, fixtures |
+| Django Migration | `references/migration-from-django.md` | Migrating from Django/DRF to FastAPI |
 
 ## Constraints
 

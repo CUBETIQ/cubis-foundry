@@ -44,10 +44,10 @@ Load detailed guidance based on context:
 
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
-| Analysis Process | `steering/analysis-process.md` | Starting exploration, Glob/Grep patterns |
-| EARS Format | `steering/ears-format.md` | Writing observed requirements |
-| Specification Template | `steering/specification-template.md` | Creating final specification document |
-| Analysis Checklist | `steering/analysis-checklist.md` | Ensuring thorough analysis |
+| Analysis Process | `references/analysis-process.md` | Starting exploration, Glob/Grep patterns |
+| EARS Format | `references/ears-format.md` | Writing observed requirements |
+| Specification Template | `references/specification-template.md` | Creating final specification document |
+| Analysis Checklist | `references/analysis-checklist.md` | Ensuring thorough analysis |
 
 ## Constraints
 

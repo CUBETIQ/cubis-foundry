@@ -1,24 +1,10 @@
+````markdown
 ---
-name: microservices-architect
-displayName: Microservices Architect
-description:
-  Use when designing distributed systems, decomposing monoliths, or implementing
-  microservices patterns. Invoke for service boundaries, DDD, saga patterns, event
-  sourcing, service mesh, distributed tracing.
-keywords:
-  - microservices
-  - service mesh
-  - distributed systems
-  - service boundaries
-  - domain-driven design
-  - event sourcing
-  - CQRS
-  - saga pattern
-  - Kubernetes microservices
-  - Istio
-  - distributed tracing
-author: OneUp
+inclusion: manual
+name: "microservices-architect"
+description: "Use when designing distributed systems, decomposing monoliths, or implementing microservices patterns. Invoke for service boundaries, DDD, saga patterns, event sourcing, service mesh, distributed tracing."
 ---
+
 
 # Microservices Architect
 
@@ -56,11 +42,11 @@ Load detailed guidance on-demand:
 
 | Topic               | Reference                   | Load When                                          |
 | ------------------- | --------------------------- | -------------------------------------------------- |
-| Service Boundaries  | `steering/decomposition.md` | Monolith decomposition, bounded contexts, DDD      |
-| Communication       | `steering/communication.md` | REST vs gRPC, async messaging, event-driven        |
-| Resilience Patterns | `steering/patterns.md`      | Circuit breakers, saga, bulkhead, retry strategies |
-| Data Management     | `steering/data.md`          | Database per service, event sourcing, CQRS         |
-| Observability       | `steering/observability.md` | Distributed tracing, correlation IDs, metrics      |
+| Service Boundaries  | `references/decomposition.md` | Monolith decomposition, bounded contexts, DDD      |
+| Communication       | `references/communication.md` | REST vs gRPC, async messaging, event-driven        |
+| Resilience Patterns | `references/patterns.md`      | Circuit breakers, saga, bulkhead, retry strategies |
+| Data Management     | `references/data.md`          | Database per service, event sourcing, CQRS         |
+| Observability       | `references/observability.md` | Distributed tracing, correlation IDs, metrics      |
 
 ## Constraints
 
@@ -107,3 +93,4 @@ Domain-driven design, bounded contexts, event storming, REST/gRPC, message queue
 - **GraphQL Architect** - Federation for distributed schemas
 - **Architecture Designer** - High-level system design
 - **Monitoring Expert** - Observability implementation
+````

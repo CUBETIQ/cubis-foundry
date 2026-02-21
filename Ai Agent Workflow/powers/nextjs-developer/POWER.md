@@ -1,7 +1,9 @@
+````markdown
 ---
+inclusion: manual
 name: "nextjs-developer"
 displayName: "Next.js Developer"
-description: "Expert Next.js 14+ developer with App Router, Server Components, Server Actions, performance optimization, SEO, and production deployment patterns"
+description: "Use for implementing/refactoring Next.js App Router features, Server Components/Actions, SEO, and production architecture. Not for version migration workflows or cache-components-only tuning."
 keywords:
   [
     "nextjs",
@@ -164,3 +166,4 @@ export async function generateMetadata({ params }): Promise<Metadata> {
 | LCP    | < 2.5s  |
 | CLS    | < 0.1   |
 | FID    | < 100ms |
+````

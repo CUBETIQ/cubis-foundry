@@ -89,7 +89,7 @@ Read the file directly using the Read tool. Claude processes PDFs natively.
 Fetch web content using the WebFetch tool.
 
 **Google Drive URL that fails:**
-See `steering/report-parsing.md` for Google Drive fallback logic using `gdrive` CLI.
+See `references/report-parsing.md` for Google Drive fallback logic using `gdrive` CLI.
 
 ### Phase 3: Finding Extraction
 
@@ -105,7 +105,7 @@ Parse the report to extract findings:
 - Severity-based sections (Critical, High, Medium, Low)
 - JSON with `findings` array
 
-See `steering/report-parsing.md` for detailed parsing strategies.
+See `references/report-parsing.md` for detailed parsing strategies.
 
 ### Phase 4: Commit Analysis
 
@@ -124,7 +124,7 @@ git diff <source>..<target> --name-only
 
 For each commit in the range:
 1. Examine the diff for bug introduction patterns
-2. Check for security anti-patterns (see `steering/bug-detection.md`)
+2. Check for security anti-patterns (see `references/bug-detection.md`)
 3. Map changes to relevant findings
 
 ### Phase 5: Finding Verification
@@ -152,7 +152,7 @@ For each finding in the report:
    - Specific file and line changes
    - How the fix addresses the root cause
 
-See `steering/finding-matching.md` for detailed matching strategies.
+See `references/finding-matching.md` for detailed matching strategies.
 
 ### Phase 6: Output Generation
 
@@ -218,7 +218,7 @@ Analyze commits for security anti-patterns. Key patterns to watch:
 - Integer operation changes (SafeMath removed)
 - Cryptographic weakening
 
-See `steering/bug-detection.md` for comprehensive detection patterns and examples.
+See `references/bug-detection.md` for comprehensive detection patterns and examples.
 
 ---
 
@@ -254,6 +254,6 @@ See `steering/bug-detection.md` for comprehensive detection patterns and example
 
 For detailed guidance, consult:
 
-- **`steering/finding-matching.md`** - Strategies for matching commits to findings
-- **`steering/bug-detection.md`** - Comprehensive anti-pattern detection
-- **`steering/report-parsing.md`** - Parsing different report formats, Google Drive fallback
+- **`references/finding-matching.md`** - Strategies for matching commits to findings
+- **`references/bug-detection.md`** - Comprehensive anti-pattern detection
+- **`references/report-parsing.md`** - Parsing different report formats, Google Drive fallback

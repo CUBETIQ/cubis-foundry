@@ -1,4 +1,6 @@
+````markdown
 ---
+inclusion: manual
 name: "flutter-expert"
 displayName: "Flutter Expert"
 description: "Flutter app architecture coordinator for Clean Architecture projects; delegates state, routing, persistence, testing, and security to specialized skills"
@@ -52,10 +54,10 @@ It defines architecture boundaries and routes implementation details to speciali
 
 Use these only for high-level guidance in this skill:
 
-- `steering/project-structure.md`
-- `steering/widget-patterns.md`
-- `steering/performance.md`
-- `steering/engineering-principles.md`
+- `references/project-structure.md`
+- `references/widget-patterns.md`
+- `references/performance.md`
+- `references/engineering-principles.md`
 
 For Riverpod and GoRouter implementation details, use `riverpod-3` and `gorouter-restoration` directly.
 
@@ -66,3 +68,4 @@ flutter --version
 flutter analyze
 flutter test
 ```
+````

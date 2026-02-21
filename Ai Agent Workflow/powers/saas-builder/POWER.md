@@ -1,165 +1,88 @@
+````markdown
 ---
+inclusion: manual
 name: "saas-builder"
-displayName: "SaaS Builder"
-description: "Build production-ready multi-tenant SaaS applications with serverless architecture, integrated billing, and enterprise-grade security"
-keywords: ["saas", "multi-tenant", "serverless", "aws", "lambda", "dynamodb", "stripe", "billing", "react", "typescript"]
-author: "Allen Helton"
+description: "Build or review production-ready multi-tenant SaaS systems on AWS serverless architecture with React + TypeScript frontend, tenant-isolated DynamoDB data models, JWT/RBAC authorization, Stripe subscriptions, and usage-based billing. Use for SaaS architecture design, implementation planning, API/Lambda patterns, billing workflows, and tenant isolation audits."
 ---
 
-# SaaS Builder Power
+# SaaS Builder
 
-Build production-ready multi-tenant SaaS applications with serverless architecture, integrated billing, and enterprise-grade security.
+Implement multi-tenant SaaS systems with serverless-first architecture, strict tenant isolation, and billing-grade data handling.
 
-## Overview
+## Core Workflow
 
-The SaaS Builder power provides tools and patterns for building scalable, cost-efficient SaaS applications on AWS. It combines serverless infrastructure, multi-tenant data isolation, subscription management, and usage-based billing into a cohesive development framework.
+1. Define tenant model, subscription tiers, quotas, and billable events before API design.
+2. Set repository layout using `steering/repository-structure.md`.
+3. Implement authentication first: Lambda authorizer, tenant claims, and role extraction.
+4. Implement tenant-scoped data access: all keys prefixed by tenant ID.
+5. Implement API endpoints with validation, RBAC checks, and tenant-aware logging.
+6. Implement billing integration: idempotent payment operations, webhook verification, usage metering.
+7. Implement frontend tenant context, quota handling, and feature-flagged UI.
+8. Validate cross-tenant isolation, billing edge cases, and operational monitoring before release.
 
-## Core Capabilities
+## Load Steering Files On Demand
 
-- **Multi-tenant architecture** with tenant isolation at the data layer
-- **Serverless-first** infrastructure (Lambda, API Gateway, DynamoDB)
-- **Integrated billing** with Stripe and usage metering
-- **Authentication & authorization** with JWT and RBAC
-- **Cost-per-tenant economics** with zero idle costs
-- **React + TypeScript** frontend with Tailwind CSS
+- `steering/architecture-principles.md`
+Purpose: Multi-tenancy, cost model, auth/authorization, compliance, and scalability constraints.
+Load when: Defining architecture decisions and non-functional requirements.
 
-## MCP Servers
+- `steering/implementation-patterns.md`
+Purpose: API conventions, Lambda function sequence, DynamoDB keys, frontend/backend code style.
+Load when: Implementing endpoints, handlers, data access, and UI integration.
 
-- **fetch**: HTTP requests for external API integration
-- **stripe**: Payment processing and subscription management (disabled by default)
-- **aws-knowledge-mcp-server**: AWS documentation and best practices
-- **awslabs.dynamodb-mcp-server**: DynamoDB operations with tenant isolation
-- **awslabs.aws-serverless-mcp**: Serverless application deployment
-- **playwright**: Browser automation for testing (disabled by default)
+- `steering/billing-and-payments.md`
+Purpose: Money representation, webhook/idempotency rules, subscription lifecycle, invoicing, tax, fraud, and testing.
+Load when: Implementing payments, usage metering, and financial reporting.
 
-## Architecture Principles
+- `steering/repository-structure.md`
+Purpose: Target monorepo layout and ownership boundaries for frontend/backend/schema/infrastructure.
+Load when: Bootstrapping or refactoring project structure.
 
-### Multi-Tenancy
-- Tenant ID prefix in all database keys: `${tenantId}#${entityType}#${id}`
-- Lambda authorizer injects tenant context from JWT
-- No cross-tenant data access
-- Tenant-specific feature flags and quotas
+## Non-Negotiable Guardrails
 
-### Cost Optimization
-- Pay-per-use serverless components
-- DynamoDB on-demand pricing
-- Zero cost when idle
-- Linear scaling economics
+### Tenant Isolation
 
-### Security
-- Managed authentication (Cognito/Auth0)
-- JWT tokens with tenant claims
-- Role-based access control (RBAC)
-- Encryption at rest and in transit
+- Read tenant ID only from authorizer claims, never from request body.
+- Prefix all partition keys with tenant context.
+- Reject any operation that can return cross-tenant data.
+- Enforce RBAC checks at function entry for sensitive operations.
 
-## Repository Structure
+### Money and Billing
 
-```
-/
-├── frontend/          # React + TypeScript + Tailwind
-├── backend/           # Lambda functions
-│   ├── functions/     # API handlers
-│   │   ├── authorizer/
-│   │   ├── api/
-│   │   └── billing/
-│   ├── lib/           # Business logic
-│   └── infrastructure/ # IaC (CDK/SAM)
-├── schema/            # API contracts (OpenAPI)
-└── .kiro/             # Kiro configuration
-```
+- Store money as integer cents only.
+- Attach currency code to every monetary value.
+- Use idempotency keys for charge/refund/subscription mutations.
+- Verify webhook signatures and support retry-safe processing.
 
-## Billing & Payments
+### API and Lambda
 
-### Money Handling
-- Integer cents only (never floats)
-- Store: `amount_cents: 1999` (represents $19.99)
-- Currency code with every amount
+- Use versioned REST endpoints and proper HTTP status codes.
+- Validate request inputs at API boundary.
+- Keep handlers thin and move business logic into shared modules.
+- Log failures with tenant context while avoiding sensitive data leaks.
 
-### Payment Integration
-- Stripe for payment processing
-- Webhook verification and idempotency
-- Subscription lifecycle management
-- Usage-based metering with EventBridge
+### Security and Compliance
 
-### Subscription States
-- `trial`, `active`, `past_due`, `canceled`, `expired`
-- Grace periods for payment failures
-- Prorated plan changes
+- Use managed authentication providers (Cognito/Auth0).
+- Never store card numbers; use provider tokens only.
+- Encrypt data at rest and in transit.
+- Keep immutable financial audit trails.
 
-## Implementation Patterns
+## MCP Setup
 
-### API Design
-- RESTful conventions: `/api/v1/users`, `/api/v1/users/{id}`
-- Versioned endpoints
-- OpenAPI specification
-- Proper HTTP status codes
+Use `mcp.json` as baseline MCP configuration:
 
-### Lambda Functions
-Every function follows this pattern:
-1. Extract tenant context from authorizer
-2. Extract user roles from authorizer
-3. Validate parameters
-4. Check permissions (RBAC)
-5. Prefix database operations with tenant ID
-6. Return proper status codes
-7. Log with tenant context
+- Set `AWS_PROFILE` and `AWS_REGION` for `awslabs.aws-serverless-mcp`.
+- Enable `stripe` (`"disabled": false`) when payment integration is required.
+- Enable `playwright` when browser automation tests are required.
 
-### DynamoDB
-- Composite keys: `pk: ${tenantId}#${entityType}#${id}`
-- GSI for queries: `GSI1PK: ${tenantId}`, `GSI1SK: ${entityType}#${timestamp}`
-- Tenant-scoped queries only
+## Output Expectations
 
-### Frontend
-- Functional React components with hooks
-- TypeScript strict mode
-- Tailwind utility classes
-- Tenant context in React Context
-- Feature flags for tenant-specific UI
+When producing architecture or implementation deliverables, include:
 
-## Getting Started
-
-1. Configure AWS credentials and region in `mcp.json`
-2. Enable Stripe integration if using payments
-3. Review steering files for detailed patterns
-4. Use OpenAPI schema as source of truth
-5. Implement Lambda authorizer first
-6. Build tenant-aware API endpoints
-7. Add usage metering for billable operations
-
-## Configuration
-
-Edit `saas-builder/mcp.json` to:
-- Set AWS profile and region for serverless deployment
-- Enable Stripe integration (update `disabled: false`)
-- Enable Playwright for browser testing
-- Configure auto-approve for trusted tools
-
-## Best Practices
-
-- Never use floats for money calculations
-- Always validate tenant context
-- Check user roles before operations
-- Prefix all keys with tenant ID
-- Use idempotency keys for payments
-- Verify webhook signatures
-- Implement rate limiting per tenant
-- Monitor cost per tenant
-- Test cross-tenant isolation
-- Design for 10x growth
-
-## Testing
-
-- Unit tests for business logic
-- Integration tests for tenant isolation
-- Test cross-tenant data leakage
-- Use Stripe test mode
-- Test webhook delivery failures
-- Load test with multi-tenant traffic
-
-## Compliance
-
-- PCI compliance via Stripe (never store cards)
-- GDPR support (data export/deletion)
-- Audit logging per tenant
-- Data residency support
-- Encryption at rest and in transit
+1. Tenant isolation strategy and key schema.
+2. API contract plan (or OpenAPI updates).
+3. Billing flow and failure-handling behavior.
+4. Security/compliance controls.
+5. Testing plan including cross-tenant leakage and billing edge cases.
+````

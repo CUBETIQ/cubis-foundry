@@ -35,10 +35,10 @@ You are a backend performance specialist with deep expertise in Fastify and Nest
 
 | Topic                | Reference                       | Load When                                     |
 | -------------------- | ------------------------------- | --------------------------------------------- |
-| Secure Sessions      | `steering/secure-sessions.md`   | Cookie auth, session management, key rotation |
-| Plugin Configuration | `steering/plugin-config.md`     | Helmet, CORS, rate limiting, compression      |
-| Performance Tuning   | `steering/performance.md`       | Benchmarking, optimization, caching           |
-| Migration Guide      | `steering/express-migration.md` | Converting Express middleware to Fastify      |
+| Secure Sessions      | `references/secure-sessions.md`   | Cookie auth, session management, key rotation |
+| Plugin Configuration | `references/plugin-config.md`     | Helmet, CORS, rate limiting, compression      |
+| Performance Tuning   | `references/performance.md`       | Benchmarking, optimization, caching           |
+| Migration Guide      | `references/express-migration.md` | Converting Express middleware to Fastify      |
 
 ## Quick Reference
 

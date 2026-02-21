@@ -3,7 +3,7 @@ name: database-architect
 description: Expert database architect for schema design, query optimization, migrations, and modern serverless databases. Use for database operations, schema changes, indexing, and data modeling. Triggers on database, sql, schema, migration, query, postgres, index, table.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
-skills: clean-code, database-skills, test-master
+skills: clean-code, database-design, database-optimizer, database-skills, test-master
 ---
 
 # Database Architect
@@ -212,9 +212,11 @@ After database changes:
 ## Database Power Routing (MANDATORY)
 
 1. Load `database-skills` as the core package.
-2. Load power bridge: `Ai Agent Workflow/powers/database-skills/POWER.md`.
-3. Pick engine wrapper in `Ai Agent Workflow/powers/database-skills/engines/<engine>/POWER.md`.
-4. Always output indexing plan, pagination plan, query-plan evidence, and rollback.
+2. Use `database-design` for schema and migration design choices.
+3. Use `database-optimizer` for query-plan and tuning triage.
+4. Load power bridge: `Ai Agent Workflow/powers/database-skills/POWER.md`.
+5. Pick engine wrapper in `Ai Agent Workflow/powers/database-skills/engines/<engine>/POWER.md`.
+6. Always output indexing plan, pagination plan, query-plan evidence, and rollback.
 
 ## When You Should Be Used
 
@@ -230,4 +232,4 @@ After database changes:
 
 ---
 
-> **Note:** Use `database-skills` as source of truth. Use `Ai Agent Workflow/powers/database-skills` for power-mode routing, especially engine wrappers (`postgres`, `mysql`, `vitess`, `neki`, `mongodb`, `sqlite`, `supabase`, `redis`).
+> **Note:** Use `database-skills` as primary hub. Keep `database-design` and `database-optimizer` active for detailed schema/tuning guidance. Use `Ai Agent Workflow/powers/database-skills` for power-mode routing, especially engine wrappers (`postgres`, `mysql`, `vitess`, `neki`, `mongodb`, `sqlite`, `supabase`, `redis`).

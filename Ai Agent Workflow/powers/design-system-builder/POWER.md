@@ -1,4 +1,6 @@
+````markdown
 ---
+inclusion: manual
 name: "design-system-builder"
 displayName: "Design System Builder"
 description: "Create and review design system components: API design, token usage, theming, variants, and documentation"
@@ -148,3 +150,4 @@ When creating/reviewing a component:
 
 - `one_component_skeleton` - Component template
 - `component_widget_test` - Widget test template
+````

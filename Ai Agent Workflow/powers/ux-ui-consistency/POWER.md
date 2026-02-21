@@ -1,4 +1,6 @@
+````markdown
 ---
+inclusion: manual
 name: "ux-ui-consistency"
 displayName: "UX/UI Consistency"
 description: "Ensure consistent UX patterns: design system component usage, screen states, error handling, and loading patterns"
@@ -121,4 +123,4 @@ try {
 ## Templates
 
 - `screen_states_widget` - Complete screen state handling template
-
+````

@@ -44,11 +44,11 @@ Load detailed guidance based on context:
 
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
-| Selectors | `steering/selectors-locators.md` | Writing selectors, locator priority |
-| Page Objects | `steering/page-object-model.md` | POM patterns, fixtures |
-| API Mocking | `steering/api-mocking.md` | Route interception, mocking |
-| Configuration | `steering/configuration.md` | playwright.config.ts setup |
-| Debugging | `steering/debugging-flaky.md` | Flaky tests, trace viewer |
+| Selectors | `references/selectors-locators.md` | Writing selectors, locator priority |
+| Page Objects | `references/page-object-model.md` | POM patterns, fixtures |
+| API Mocking | `references/api-mocking.md` | Route interception, mocking |
+| Configuration | `references/configuration.md` | playwright.config.ts setup |
+| Debugging | `references/debugging-flaky.md` | Flaky tests, trace viewer |
 
 ## Constraints
 

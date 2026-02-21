@@ -1,10 +1,10 @@
+````markdown
 ---
+inclusion: manual
 name: "postman"
-displayName: "API Testing with Postman"
 description: "Automate API testing and collection management with Postman - create workspaces, collections, environments, and run tests programmatically"
-keywords: ["postman", "api", "testing", "collections", "rest", "http", "automation"]
-author: "Postman"
 ---
+
 
 # Onboarding
 
@@ -240,3 +240,4 @@ for (const collection of collections) {
 **Full mode (112 tools):** Change URL to `https://mcp.postman.com/full`
 
 **API Key Permissions:** Workspace management, collection read/write, environment read/write, collection runs
+````

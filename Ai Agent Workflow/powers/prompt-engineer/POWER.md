@@ -1,4 +1,6 @@
+````markdown
 ---
+inclusion: manual
 name: "prompt-engineer"
 displayName: "Prompt Engineer"
 description: "Design and optimize LLM prompts with chain-of-thought, few-shot learning, and evaluation frameworks"
@@ -40,3 +42,4 @@ keywords: ["prompt", "llm", "ai", "chain-of-thought", "few-shot", "evaluation", 
 - Version prompts and track changes
 - Consider token costs and latency
 - Don't deploy without evaluation
+````

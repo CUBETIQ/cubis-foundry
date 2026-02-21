@@ -1,22 +1,10 @@
+````markdown
 ---
-name: api-designer
-displayName: Api Designer
-description:
-  Use when designing REST or GraphQL APIs, creating OpenAPI specifications,
-  or planning API architecture. Invoke for resource modeling, versioning strategies,
-  pagination patterns, error handling standards.
-keywords:
-  - API design
-  - REST API
-  - OpenAPI
-  - API specification
-  - API architecture
-  - resource modeling
-  - API versioning
-  - GraphQL schema
-  - API documentation
-author: OneUp
+inclusion: manual
+name: "api-designer"
+description: "Use when designing REST or GraphQL APIs, creating OpenAPI specifications, or planning API architecture. Invoke for resource modeling, versioning strategies, pagination patterns, error handling standards."
 ---
+
 
 # API Designer
 
@@ -53,11 +41,11 @@ Load detailed guidance on-demand:
 
 | Topic          | Reference                    | Load When                                   |
 | -------------- | ---------------------------- | ------------------------------------------- |
-| REST Patterns  | `steering/rest-patterns.md`  | Resource design, HTTP methods, HATEOAS      |
-| Versioning     | `steering/versioning.md`     | API versions, deprecation, breaking changes |
-| Pagination     | `steering/pagination.md`     | Cursor, offset, keyset pagination           |
-| Error Handling | `steering/error-handling.md` | Error responses, RFC 7807, status codes     |
-| OpenAPI        | `steering/openapi.md`        | OpenAPI 3.1, documentation, code generation |
+| REST Patterns  | `references/rest-patterns.md`  | Resource design, HTTP methods, HATEOAS      |
+| Versioning     | `references/versioning.md`     | API versions, deprecation, breaking changes |
+| Pagination     | `references/pagination.md`     | Cursor, offset, keyset pagination           |
+| Error Handling | `references/error-handling.md` | Error responses, RFC 7807, status codes     |
+| OpenAPI        | `references/openapi.md`        | OpenAPI 3.1, documentation, code generation |
 
 ## Constraints
 
@@ -106,3 +94,4 @@ REST architecture, OpenAPI 3.1, GraphQL, HTTP semantics, JSON:API, HATEOAS, OAut
 - **NestJS Expert** - TypeScript API implementation
 - **Spring Boot Engineer** - Java API implementation
 - **Security Reviewer** - API security assessment
+````

@@ -52,7 +52,6 @@
         "database-skills",
         "debugging-wizard",
         "devops-engineer",
-        "drift-flutter",
         "error-ux-observability",
         "fastapi-expert",
         "feature-forge",
@@ -215,7 +214,10 @@
         "vercel-sdk",
         "vercel-integrations-native",
         "vercel-marketplace-partner-api",
-        "vercel-webhooks-and-checks"
+        "vercel-webhooks-and-checks",
+        "drift-flutter",
+        "database-design",
+        "database-optimizer"
       ],
       "rulesTemplate": "platforms/antigravity/rules/GEMINI.md",
       "hooks": [
@@ -280,7 +282,6 @@
         "database-skills",
         "debugging-wizard",
         "devops-engineer",
-        "drift-flutter",
         "error-ux-observability",
         "fastapi-expert",
         "feature-forge",
@@ -443,7 +444,10 @@
         "vercel-sdk",
         "vercel-integrations-native",
         "vercel-marketplace-partner-api",
-        "vercel-webhooks-and-checks"
+        "vercel-webhooks-and-checks",
+        "drift-flutter",
+        "database-design",
+        "database-optimizer"
       ],
       "rulesTemplate": "platforms/codex/rules/AGENTS.md",
       "hooks": [
@@ -508,7 +512,6 @@
         "database-skills",
         "debugging-wizard",
         "devops-engineer",
-        "drift-flutter",
         "error-ux-observability",
         "fastapi-expert",
         "feature-forge",
@@ -671,7 +674,10 @@
         "vercel-sdk",
         "vercel-integrations-native",
         "vercel-marketplace-partner-api",
-        "vercel-webhooks-and-checks"
+        "vercel-webhooks-and-checks",
+        "drift-flutter",
+        "database-design",
+        "database-optimizer"
       ],
       "rulesTemplate": "platforms/copilot/rules/AGENTS.md",
       "hooks": [

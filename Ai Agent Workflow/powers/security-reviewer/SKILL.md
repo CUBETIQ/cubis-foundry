@@ -33,12 +33,12 @@ Load detailed guidance on-demand:
 
 | Topic                   | Reference                             | Load When                                    |
 | ----------------------- | ------------------------------------- | -------------------------------------------- |
-| SAST Tools              | `steering/sast-tools.md`              | Running automated scans                      |
-| Vulnerability Patterns  | `steering/vulnerability-patterns.md`  | SQL injection, XSS, manual review            |
-| Secret Scanning         | `steering/secret-scanning.md`         | Gitleaks, finding hardcoded secrets          |
-| Penetration Testing     | `steering/penetration-testing.md`     | Active testing, reconnaissance, exploitation |
-| Infrastructure Security | `steering/infrastructure-security.md` | DevSecOps, cloud security, compliance        |
-| Report Template         | `steering/report-template.md`         | Writing security report                      |
+| SAST Tools              | `references/sast-tools.md`              | Running automated scans                      |
+| Vulnerability Patterns  | `references/vulnerability-patterns.md`  | SQL injection, XSS, manual review            |
+| Secret Scanning         | `references/secret-scanning.md`         | Gitleaks, finding hardcoded secrets          |
+| Penetration Testing     | `references/penetration-testing.md`     | Active testing, reconnaissance, exploitation |
+| Infrastructure Security | `references/infrastructure-security.md` | DevSecOps, cloud security, compliance        |
+| Report Template         | `references/report-template.md`         | Writing security report                      |
 
 ## Constraints
 

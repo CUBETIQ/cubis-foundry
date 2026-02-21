@@ -41,7 +41,7 @@ npm create cloudflare@latest -- my-mcp-server \
 cd my-mcp-server
 ```
 
-Requires OAuth app setup. See [steering/oauth-setup.md](steering/oauth-setup.md).
+Requires OAuth app setup. See [references/oauth-setup.md](references/oauth-setup.md).
 
 ## Core Workflow
 
@@ -102,7 +102,7 @@ export default {
 export { MyMCP };
 ```
 
-**Authenticated server** — See [steering/oauth-setup.md](steering/oauth-setup.md).
+**Authenticated server** — See [references/oauth-setup.md](references/oauth-setup.md).
 
 ### Step 3: Test Locally
 
@@ -190,7 +190,7 @@ export class MyMCP extends McpAgent<Env> {
 
 ## Authentication
 
-For OAuth-protected servers, see [steering/oauth-setup.md](steering/oauth-setup.md).
+For OAuth-protected servers, see [references/oauth-setup.md](references/oauth-setup.md).
 
 Supported providers:
 - GitHub
@@ -252,7 +252,7 @@ id = "xxx"
 
 ## References
 
-- [steering/examples.md](steering/examples.md) — Official templates and production examples
-- [steering/oauth-setup.md](steering/oauth-setup.md) — OAuth provider configuration
-- [steering/tool-patterns.md](steering/tool-patterns.md) — Advanced tool examples
-- [steering/troubleshooting.md](steering/troubleshooting.md) — Error codes and fixes
+- [references/examples.md](references/examples.md) — Official templates and production examples
+- [references/oauth-setup.md](references/oauth-setup.md) — OAuth provider configuration
+- [references/tool-patterns.md](references/tool-patterns.md) — Advanced tool examples
+- [references/troubleshooting.md](references/troubleshooting.md) — Error codes and fixes

@@ -36,15 +36,15 @@ Load detailed guidance on-demand:
 
 | Topic             | Reference                       | Load When                            |
 | ----------------- | ------------------------------- | ------------------------------------ |
-| Review Checklist  | `steering/review-checklist.md`  | Starting a review, categories        |
-| Common Issues     | `steering/common-issues.md`     | N+1 queries, magic numbers, patterns |
-| Feedback Examples | `steering/feedback-examples.md` | Writing good feedback                |
-| Report Template   | `steering/report-template.md`   | Writing final review report          |
+| Review Checklist  | `references/review-checklist.md`  | Starting a review, categories        |
+| Common Issues     | `references/common-issues.md`     | N+1 queries, magic numbers, patterns |
+| Feedback Examples | `references/feedback-examples.md` | Writing good feedback                |
+| Report Template   | `references/report-template.md`   | Writing final review report          |
 
 <!-- Rows below adapted from obra/superpowers by Jesse Vincent (@obra), MIT License -->
 
-| Spec Compliance | `steering/spec-compliance-review.md` | Reviewing implementations, PR review, spec verification |
-| Receiving Feedback | `steering/receiving-feedback.md` | Responding to review comments, handling feedback |
+| Spec Compliance | `references/spec-compliance-review.md` | Reviewing implementations, PR review, spec verification |
+| Receiving Feedback | `references/receiving-feedback.md` | Responding to review comments, handling feedback |
 
 ## Constraints
 

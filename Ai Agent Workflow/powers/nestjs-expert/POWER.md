@@ -1,24 +1,10 @@
+````markdown
 ---
-name: nestjs-expert
-displayName: Nestjs Expert
-description:
-  Use when building NestJS applications requiring modular architecture,
-  dependency injection, or TypeScript backend development. Invoke for modules, controllers,
-  services, DTOs, guards, interceptors, Mongoose.
-keywords:
-  - NestJS
-  - Nest
-  - Node.js backend
-  - TypeScript backend
-  - dependency injection
-  - controller
-  - service
-  - module
-  - guard
-  - interceptor
-  - session authentication
-author: OneUp
+inclusion: manual
+name: "nestjs-expert"
+description: "Use when building NestJS applications requiring modular architecture, dependency injection, or TypeScript backend development. Invoke for modules, controllers, services, DTOs, guards, interceptors, Mongoose."
 ---
+
 
 # NestJS Expert
 
@@ -53,12 +39,12 @@ Load detailed guidance on-demand:
 
 | Topic             | Reference                            | Load When                                   |
 | ----------------- | ------------------------------------ | ------------------------------------------- |
-| Controllers       | `steering/controllers-routing.md`    | Creating controllers, routing, Swagger docs |
-| Services          | `steering/services-di.md`            | Services, dependency injection, providers   |
-| DTOs              | `steering/dtos-validation.md`        | Validation, class-validator, DTOs           |
-| Authentication    | `steering/authentication.md`         | Session auth, guards, roles, multi-tenant   |
-| Testing           | `steering/testing-patterns.md`       | Unit tests, E2E tests, mocking              |
-| Express Migration | `steering/migration-from-express.md` | Migrating from Express.js to NestJS         |
+| Controllers       | `references/controllers-routing.md`    | Creating controllers, routing, Swagger docs |
+| Services          | `references/services-di.md`            | Services, dependency injection, providers   |
+| DTOs              | `references/dtos-validation.md`        | Validation, class-validator, DTOs           |
+| Authentication    | `references/authentication.md`         | Session auth, guards, roles, multi-tenant   |
+| Testing           | `references/testing-patterns.md`       | Unit tests, E2E tests, mocking              |
+| Express Migration | `references/migration-from-express.md` | Migrating from Express.js to NestJS         |
 
 ## Authentication Approach
 
@@ -85,7 +71,7 @@ async logout(@Req() request: FastifyRequest) {
 }
 ```
 
-See `steering/authentication.md` for complete session auth implementation.
+See `references/authentication.md` for complete session auth implementation.
 
 ## Constraints
 
@@ -128,3 +114,4 @@ NestJS, TypeScript, Mongoose, Fastify, @fastify/secure-session, class-validator,
 - **Mongoose NestJS** - MongoDB integration patterns
 - **Test Master** - Comprehensive testing strategies
 - **Security Reviewer** - Security auditing
+````

@@ -3,7 +3,7 @@ name: backend-specialist
 description: Expert backend architect for Node.js, Python, and modern serverless/edge systems. Use for API development, server-side logic, database integration, and security. Triggers on backend, server, api, endpoint, database, auth.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
-skills: clean-code, nodejs-best-practices, python-patterns, api-patterns, database-skills, mcp-builder, lint-and-validate, powershell-windows, bash-linux, rust-pro, api-designer, architecture-designer, typescript-pro, nestjs-expert, fastapi-expert, secure-code-guardian, test-master
+skills: clean-code, nodejs-best-practices, python-patterns, api-patterns, database-design, database-optimizer, database-skills, mcp-builder, lint-and-validate, powershell-windows, bash-linux, rust-pro, api-designer, architecture-designer, typescript-pro, nestjs-expert, fastapi-expert, secure-code-guardian, test-master
 ---
 
 # Backend Development Architect
@@ -260,4 +260,4 @@ After editing any file:
 
 ---
 
-> **Note:** For database-heavy backend work, route through `database-skills` plus `Ai Agent Workflow/powers/database-skills` so indexing, pagination, query-plan evidence, and rollback stay explicit.
+> **Note:** For database-heavy backend work, route through `database-skills` plus `Ai Agent Workflow/powers/database-skills`, and use `database-design`/`database-optimizer` for focused schema/tuning decisions so indexing, pagination, query-plan evidence, and rollback stay explicit.

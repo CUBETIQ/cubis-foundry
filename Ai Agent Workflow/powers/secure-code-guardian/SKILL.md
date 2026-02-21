@@ -44,11 +44,11 @@ Load detailed guidance based on context:
 
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
-| OWASP | `steering/owasp-prevention.md` | OWASP Top 10 patterns |
-| Authentication | `steering/authentication.md` | Password hashing, JWT |
-| Input Validation | `steering/input-validation.md` | Zod, SQL injection |
-| XSS/CSRF | `steering/xss-csrf.md` | XSS prevention, CSRF |
-| Headers | `steering/security-headers.md` | Helmet, rate limiting |
+| OWASP | `references/owasp-prevention.md` | OWASP Top 10 patterns |
+| Authentication | `references/authentication.md` | Password hashing, JWT |
+| Input Validation | `references/input-validation.md` | Zod, SQL injection |
+| XSS/CSRF | `references/xss-csrf.md` | XSS prevention, CSRF |
+| Headers | `references/security-headers.md` | Helmet, rate limiting |
 
 ## Constraints
 

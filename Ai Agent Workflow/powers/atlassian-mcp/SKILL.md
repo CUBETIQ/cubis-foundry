@@ -46,11 +46,11 @@ Load detailed guidance based on context:
 
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
-| Server Setup | `steering/mcp-server-setup.md` | Installation, choosing servers, configuration |
-| Jira Operations | `steering/jira-queries.md` | JQL syntax, issue CRUD, sprints, boards |
-| Confluence Ops | `steering/confluence-operations.md` | CQL search, page creation, spaces, comments |
-| Authentication | `steering/authentication-patterns.md` | OAuth 2.0, API tokens, permission scopes |
-| Common Workflows | `steering/common-workflows.md` | Issue triage, doc sync, sprint automation |
+| Server Setup | `references/mcp-server-setup.md` | Installation, choosing servers, configuration |
+| Jira Operations | `references/jira-queries.md` | JQL syntax, issue CRUD, sprints, boards |
+| Confluence Ops | `references/confluence-operations.md` | CQL search, page creation, spaces, comments |
+| Authentication | `references/authentication-patterns.md` | OAuth 2.0, API tokens, permission scopes |
+| Common Workflows | `references/common-workflows.md` | Issue triage, doc sync, sprint automation |
 
 ## Constraints
 

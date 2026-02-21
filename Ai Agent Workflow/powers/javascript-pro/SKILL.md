@@ -44,11 +44,11 @@ Load detailed guidance based on context:
 
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
-| Modern Syntax | `steering/modern-syntax.md` | ES2023+ features, optional chaining, private fields |
-| Async Patterns | `steering/async-patterns.md` | Promises, async/await, error handling, event loop |
-| Modules | `steering/modules.md` | ESM vs CJS, dynamic imports, package.json exports |
-| Browser APIs | `steering/browser-apis.md` | Fetch, Web Workers, Storage, IntersectionObserver |
-| Node Essentials | `steering/node-essentials.md` | fs/promises, streams, EventEmitter, worker threads |
+| Modern Syntax | `references/modern-syntax.md` | ES2023+ features, optional chaining, private fields |
+| Async Patterns | `references/async-patterns.md` | Promises, async/await, error handling, event loop |
+| Modules | `references/modules.md` | ESM vs CJS, dynamic imports, package.json exports |
+| Browser APIs | `references/browser-apis.md` | Fetch, Web Workers, Storage, IntersectionObserver |
+| Node Essentials | `references/node-essentials.md` | fs/promises, streams, EventEmitter, worker threads |
 
 ## Constraints
 

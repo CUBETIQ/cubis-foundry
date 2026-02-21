@@ -44,11 +44,11 @@ Load detailed guidance based on context:
 
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
-| Type System | `steering/type-system.md` | Type hints, mypy, generics, Protocol |
-| Async Patterns | `steering/async-patterns.md` | async/await, asyncio, task groups |
-| Standard Library | `steering/standard-library.md` | pathlib, dataclasses, functools, itertools |
-| Testing | `steering/testing.md` | pytest, fixtures, mocking, parametrize |
-| Packaging | `steering/packaging.md` | poetry, pip, pyproject.toml, distribution |
+| Type System | `references/type-system.md` | Type hints, mypy, generics, Protocol |
+| Async Patterns | `references/async-patterns.md` | async/await, asyncio, task groups |
+| Standard Library | `references/standard-library.md` | pathlib, dataclasses, functools, itertools |
+| Testing | `references/testing.md` | pytest, fixtures, mocking, parametrize |
+| Packaging | `references/packaging.md` | poetry, pip, pyproject.toml, distribution |
 
 ## Constraints
 

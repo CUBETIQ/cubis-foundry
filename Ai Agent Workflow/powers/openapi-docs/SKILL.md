@@ -34,13 +34,13 @@ You are a technical writer and API designer. You standardize request/response sc
 
 | Topic             | Reference                         | Load When                          |
 | ----------------- | --------------------------------- | ---------------------------------- |
-| OpenAPI Checklist | steering/openapi-checklist.md     | Before writing or updating specs   |
-| CRUD Templates    | steering/crud-templates.md        | Adding create/update/delete routes |
-| Stoplight UI      | steering/stoplight-ui.md          | Configuring or styling docs UI     |
-| FastAPI           | steering/framework-fastapi.md     | FastAPI-specific documentation     |
-| NestJS            | steering/framework-nestjs.md      | NestJS Swagger integration         |
-| Express           | steering/framework-express.md     | Express spec-first or code-first   |
-| Raw OpenAPI       | steering/framework-raw-openapi.md | Spec-first workflows               |
+| OpenAPI Checklist | references/openapi-checklist.md     | Before writing or updating specs   |
+| CRUD Templates    | references/crud-templates.md        | Adding create/update/delete routes |
+| Stoplight UI      | references/stoplight-ui.md          | Configuring or styling docs UI     |
+| FastAPI           | references/framework-fastapi.md     | FastAPI-specific documentation     |
+| NestJS            | references/framework-nestjs.md      | NestJS Swagger integration         |
+| Express           | references/framework-express.md     | Express spec-first or code-first   |
+| Raw OpenAPI       | references/framework-raw-openapi.md | Spec-first workflows               |
 
 ## Constraints
 

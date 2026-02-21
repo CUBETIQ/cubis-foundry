@@ -39,14 +39,14 @@ Load detailed guidance on-demand:
 
 | Topic                   | Reference                             | Load When                                            |
 | ----------------------- | ------------------------------------- | ---------------------------------------------------- |
-| Python Docstrings       | `steering/python-docstrings.md`       | Google, NumPy, Sphinx styles                         |
-| TypeScript JSDoc        | `steering/typescript-jsdoc.md`        | JSDoc patterns, TypeScript                           |
-| FastAPI/Django API      | `steering/api-docs-fastapi-django.md` | Python API documentation                             |
-| NestJS/Express API      | `steering/api-docs-nestjs-express.md` | Node.js API documentation                            |
-| Coverage Reports        | `steering/coverage-reports.md`        | Generating documentation reports                     |
-| Documentation Systems   | `steering/documentation-systems.md`   | Doc sites, static generators, search, testing        |
-| Interactive API Docs    | `steering/interactive-api-docs.md`    | OpenAPI 3.1, portals, GraphQL, WebSocket, gRPC, SDKs |
-| User Guides & Tutorials | `steering/user-guides-tutorials.md`   | Getting started, tutorials, troubleshooting, FAQs    |
+| Python Docstrings       | `references/python-docstrings.md`       | Google, NumPy, Sphinx styles                         |
+| TypeScript JSDoc        | `references/typescript-jsdoc.md`        | JSDoc patterns, TypeScript                           |
+| FastAPI/Django API      | `references/api-docs-fastapi-django.md` | Python API documentation                             |
+| NestJS/Express API      | `references/api-docs-nestjs-express.md` | Node.js API documentation                            |
+| Coverage Reports        | `references/coverage-reports.md`        | Generating documentation reports                     |
+| Documentation Systems   | `references/documentation-systems.md`   | Doc sites, static generators, search, testing        |
+| Interactive API Docs    | `references/interactive-api-docs.md`    | OpenAPI 3.1, portals, GraphQL, WebSocket, gRPC, SDKs |
+| User Guides & Tutorials | `references/user-guides-tutorials.md`   | Getting started, tutorials, troubleshooting, FAQs    |
 
 ## Constraints
 

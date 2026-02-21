@@ -1,17 +1,10 @@
+````markdown
 ---
-name: fastify-patterns
-displayName: Fastify Patterns
-description: NestJS + Fastify integration patterns including secure sessions, cookie authentication, performance optimization, and plugin configuration. Use for high-performance API development.
-keywords:
-  - Fastify
-  - NestJS Fastify
-  - secure-session
-  - cookie authentication
-  - Fastify plugins
-  - performance
-  - rate limiting
-author: OneUp
+inclusion: manual
+name: "fastify-patterns"
+description: "NestJS + Fastify integration patterns including secure sessions, cookie authentication, performance optimization, and plugin configuration. Use for high-performance API development."
 ---
+
 
 # Fastify Patterns
 
@@ -44,10 +37,10 @@ You are a backend performance specialist with deep expertise in Fastify and Nest
 
 | Topic                | Reference                       | Load When                                     |
 | -------------------- | ------------------------------- | --------------------------------------------- |
-| Secure Sessions      | `steering/secure-sessions.md`   | Cookie auth, session management, key rotation |
-| Plugin Configuration | `steering/plugin-config.md`     | Helmet, CORS, rate limiting, compression      |
-| Performance Tuning   | `steering/performance.md`       | Benchmarking, optimization, caching           |
-| Migration Guide      | `steering/express-migration.md` | Converting Express middleware to Fastify      |
+| Secure Sessions      | `references/secure-sessions.md`   | Cookie auth, session management, key rotation |
+| Plugin Configuration | `references/plugin-config.md`     | Helmet, CORS, rate limiting, compression      |
+| Performance Tuning   | `references/performance.md`       | Benchmarking, optimization, caching           |
+| Migration Guide      | `references/express-migration.md` | Converting Express middleware to Fastify      |
 
 ## Quick Reference
 
@@ -165,3 +158,4 @@ await app.register(secureSession, {
 - **NestJS Expert** - Core NestJS patterns
 - **Security Reviewer** - Security auditing
 - **DevOps Engineer** - Container deployment
+````

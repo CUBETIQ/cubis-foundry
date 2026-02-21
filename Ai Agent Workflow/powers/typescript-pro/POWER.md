@@ -1,22 +1,10 @@
+````markdown
 ---
-name: typescript-pro
-displayName: Typescript Pro
-description:
-  Use when building TypeScript applications requiring advanced type systems,
-  generics, or full-stack type safety. Invoke for type guards, utility types, tRPC
-  integration, monorepo setup.
-keywords:
-  - TypeScript
-  - generics
-  - type safety
-  - conditional types
-  - mapped types
-  - tRPC
-  - tsconfig
-  - type guards
-  - discriminated unions
-author: OneUp
+inclusion: manual
+name: "typescript-pro"
+description: "Use when building TypeScript applications requiring advanced type systems, generics, or full-stack type safety. Invoke for type guards, utility types, tRPC integration, monorepo setup."
 ---
+
 
 # TypeScript Pro
 
@@ -51,11 +39,11 @@ Load detailed guidance on-demand:
 
 | Topic          | Reference                    | Load When                                                    |
 | -------------- | ---------------------------- | ------------------------------------------------------------ |
-| Advanced Types | `steering/advanced-types.md` | Generics, conditional types, mapped types, template literals |
-| Type Guards    | `steering/type-guards.md`    | Type narrowing, discriminated unions, assertion functions    |
-| Utility Types  | `steering/utility-types.md`  | Partial, Pick, Omit, Record, custom utilities                |
-| Configuration  | `steering/configuration.md`  | tsconfig options, strict mode, project references            |
-| Patterns       | `steering/patterns.md`       | Builder pattern, factory pattern, type-safe APIs             |
+| Advanced Types | `references/advanced-types.md` | Generics, conditional types, mapped types, template literals |
+| Type Guards    | `references/type-guards.md`    | Type narrowing, discriminated unions, assertion functions    |
+| Utility Types  | `references/utility-types.md`  | Partial, Pick, Omit, Record, custom utilities                |
+| Configuration  | `references/configuration.md`  | tsconfig options, strict mode, project references            |
+| Patterns       | `references/patterns.md`       | Builder pattern, factory pattern, type-safe APIs             |
 
 ## Constraints
 
@@ -99,3 +87,4 @@ TypeScript 5.0+, generics, conditional types, mapped types, template literal typ
 - **React Developer** - Component type safety
 - **Fullstack Guardian** - End-to-end type safety
 - **API Designer** - Type-safe API contracts
+````

@@ -1,4 +1,6 @@
+````markdown
 ---
+inclusion: manual
 name: "flutter-test-master"
 displayName: "Flutter Test Master"
 description: "Comprehensive Flutter testing guide covering unit tests, widget tests, integration tests, golden tests, and Riverpod provider testing with mocktail"
@@ -523,3 +525,4 @@ patrol test
 patrol test -d <device_id>
 patrol test --dart-define=TEST_EMAIL=user@test.com
 ```
+````

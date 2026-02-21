@@ -170,7 +170,7 @@ Map findings to categories:
 
 ### Step 2: Select Rulesets Based on Detection
 
-Using the detected languages and frameworks from Step 1, select rulesets by following the **Ruleset Selection Algorithm** in [rulesets.md]({baseDir}/steering/rulesets.md).
+Using the detected languages and frameworks from Step 1, select rulesets by following the **Ruleset Selection Algorithm** in [rulesets.md]({baseDir}/references/rulesets.md).
 
 The algorithm covers:
 1. Security baseline (always included)
@@ -298,7 +298,7 @@ echo "Output directory: $OUTPUT_DIR"
 
 **Spawn N Tasks in a SINGLE message** (one per language category) using `subagent_type: Bash`.
 
-Use the scanner task prompt template from [scanner-task-prompt.md]({baseDir}/steering/scanner-task-prompt.md).
+Use the scanner task prompt template from [scanner-task-prompt.md]({baseDir}/references/scanner-task-prompt.md).
 
 **Example - 3 Language Scan (with approved rulesets):**
 
@@ -320,7 +320,7 @@ Spawn these 3 Tasks in a SINGLE message:
 
 After scan Tasks complete, spawn triage Tasks using `subagent_type: general-purpose` (triage requires reading code context, not just running commands).
 
-Use the triage task prompt template from [triage-task-prompt.md]({baseDir}/steering/triage-task-prompt.md).
+Use the triage task prompt template from [triage-task-prompt.md]({baseDir}/references/triage-task-prompt.md).
 
 ### Step 6: Collect Results (Main Agent)
 

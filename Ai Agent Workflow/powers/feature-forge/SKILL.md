@@ -45,11 +45,11 @@ Load detailed guidance based on context:
 
 | Topic | Reference | Load When |
 |-------|-----------|-----------|
-| EARS Syntax | `steering/ears-syntax.md` | Writing functional requirements |
-| Interview Questions | `steering/interview-questions.md` | Gathering requirements |
-| Specification Template | `steering/specification-template.md` | Writing final spec document |
-| Acceptance Criteria | `steering/acceptance-criteria.md` | Given/When/Then format |
-| Pre-Discovery Subagents | `steering/pre-discovery-subagents.md` | Multi-domain features needing front-loaded context |
+| EARS Syntax | `references/ears-syntax.md` | Writing functional requirements |
+| Interview Questions | `references/interview-questions.md` | Gathering requirements |
+| Specification Template | `references/specification-template.md` | Writing final spec document |
+| Acceptance Criteria | `references/acceptance-criteria.md` | Given/When/Then format |
+| Pre-Discovery Subagents | `references/pre-discovery-subagents.md` | Multi-domain features needing front-loaded context |
 
 ## Constraints
 

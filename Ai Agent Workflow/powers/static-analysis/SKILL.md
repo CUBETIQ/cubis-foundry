@@ -18,7 +18,7 @@ allowed-tools:
 
 Supported languages: Python, JavaScript/TypeScript, Go, Java/Kotlin, C/C++, C#, Ruby, Swift.
 
-**Skill resources:** Reference files and templates are located at `{baseDir}/steering/` and `{baseDir}/workflows/`. Use `{baseDir}` to resolve paths to these files at runtime.
+**Skill resources:** Reference files and templates are located at `{baseDir}/references/` and `{baseDir}/workflows/`. Use `{baseDir}` to resolve paths to these files at runtime.
 
 ## Quick Start
 

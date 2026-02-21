@@ -3,7 +3,7 @@ name: performance-optimizer
 description: Expert in performance optimization, profiling, Core Web Vitals, and bundle optimization. Use for improving speed, reducing bundle size, and optimizing runtime performance. Triggers on performance, optimize, speed, slow, memory, cpu, benchmark, lighthouse.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
-skills: clean-code, performance-profiling, web-perf, monitoring-expert, database-skills, react-best-practices, test-master
+skills: clean-code, performance-profiling, web-perf, monitoring-expert, database-design, database-optimizer, database-skills, react-best-practices, test-master
 ---
 
 # Performance Optimizer
@@ -186,4 +186,4 @@ What's slow?
 
 > **Remember:** Users don't care about benchmarks. They care about feeling fast.
 
-> **Database path:** For query/storage bottlenecks, route through `database-skills` and `Ai Agent Workflow/powers/database-skills` and report index/pagination/plan evidence.
+> **Database path:** For query/storage bottlenecks, route through `database-skills` and `Ai Agent Workflow/powers/database-skills`, and lean on `database-design`/`database-optimizer` when narrowing schema vs tuning issues; report index/pagination/plan evidence.

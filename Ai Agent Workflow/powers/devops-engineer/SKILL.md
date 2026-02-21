@@ -44,14 +44,14 @@ Load detailed guidance on-demand:
 
 | Topic          | Reference                           | Load When                                                      |
 | -------------- | ----------------------------------- | -------------------------------------------------------------- |
-| GitHub Actions | `steering/github-actions.md`        | Setting up CI/CD pipelines, GitHub workflows                   |
-| Docker         | `steering/docker-patterns.md`       | Containerizing applications, writing Dockerfiles               |
-| Kubernetes     | `steering/kubernetes.md`            | K8s deployments, services, ingress, pods                       |
-| Terraform      | `steering/terraform-iac.md`         | Infrastructure as code, AWS/GCP provisioning                   |
-| Deployment     | `steering/deployment-strategies.md` | Blue-green, canary, rolling updates, rollback                  |
-| Platform       | `steering/platform-engineering.md`  | Self-service infra, developer portals, golden paths, Backstage |
-| Release        | `steering/release-automation.md`    | Artifact management, feature flags, multi-platform CI/CD       |
-| Incidents      | `steering/incident-response.md`     | Production outages, on-call, MTTR, postmortems, runbooks       |
+| GitHub Actions | `references/github-actions.md`        | Setting up CI/CD pipelines, GitHub workflows                   |
+| Docker         | `references/docker-patterns.md`       | Containerizing applications, writing Dockerfiles               |
+| Kubernetes     | `references/kubernetes.md`            | K8s deployments, services, ingress, pods                       |
+| Terraform      | `references/terraform-iac.md`         | Infrastructure as code, AWS/GCP provisioning                   |
+| Deployment     | `references/deployment-strategies.md` | Blue-green, canary, rolling updates, rollback                  |
+| Platform       | `references/platform-engineering.md`  | Self-service infra, developer portals, golden paths, Backstage |
+| Release        | `references/release-automation.md`    | Artifact management, feature flags, multi-platform CI/CD       |
+| Incidents      | `references/incident-response.md`     | Production outages, on-call, MTTR, postmortems, runbooks       |
 
 ## Constraints
 

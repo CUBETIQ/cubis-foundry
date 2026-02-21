@@ -37,11 +37,11 @@ Load detailed guidance on-demand:
 
 | Topic          | Reference                    | Load When                                                    |
 | -------------- | ---------------------------- | ------------------------------------------------------------ |
-| Advanced Types | `steering/advanced-types.md` | Generics, conditional types, mapped types, template literals |
-| Type Guards    | `steering/type-guards.md`    | Type narrowing, discriminated unions, assertion functions    |
-| Utility Types  | `steering/utility-types.md`  | Partial, Pick, Omit, Record, custom utilities                |
-| Configuration  | `steering/configuration.md`  | tsconfig options, strict mode, project references            |
-| Patterns       | `steering/patterns.md`       | Builder pattern, factory pattern, type-safe APIs             |
+| Advanced Types | `references/advanced-types.md` | Generics, conditional types, mapped types, template literals |
+| Type Guards    | `references/type-guards.md`    | Type narrowing, discriminated unions, assertion functions    |
+| Utility Types  | `references/utility-types.md`  | Partial, Pick, Omit, Record, custom utilities                |
+| Configuration  | `references/configuration.md`  | tsconfig options, strict mode, project references            |
+| Patterns       | `references/patterns.md`       | Builder pattern, factory pattern, type-safe APIs             |
 
 ## Constraints
 
