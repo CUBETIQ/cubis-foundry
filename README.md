@@ -36,6 +36,10 @@ cbx workflows install --platform antigravity --dry-run
 cbx workflows install --platform antigravity --terminal-integration --terminal-verifier codex
 ```
 
+Install bootstrap behavior:
+- `cbx workflows install` now also bootstraps `ENGINEERING_RULES.md` and `TECH.md` (creates when missing; keeps existing files unless explicitly regenerated).
+- Use `cbx rules init --platform <platform> --overwrite` to force-regenerate both files.
+
 `rules` manages strict engineering policy and a generated codebase tech map:
 
 ```bash

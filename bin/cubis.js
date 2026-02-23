@@ -2882,6 +2882,14 @@ async function runWorkflowInstall(options) {
       dryRun,
       cwd: process.cwd()
     });
+    const engineeringArtifactsResult = await upsertEngineeringArtifacts({
+      platform,
+      scope,
+      overwrite: false,
+      dryRun,
+      skipTech: false,
+      cwd: process.cwd()
+    });
 
     const terminalVerificationRuleResult =
       platform === "antigravity" && installResult.terminalIntegration
@@ -2918,6 +2926,10 @@ async function runWorkflowInstall(options) {
       dryRun
     });
     printRuleSyncResult(syncResult);
+    printInstallEngineeringSummary({
+      engineeringResults: engineeringArtifactsResult.engineeringResults,
+      techResult: engineeringArtifactsResult.techResult
+    });
     if (dryRun) {
       console.log("\nDry-run complete. Re-run without `--dry-run` to apply changes.");
     } else {
@@ -3128,6 +3140,94 @@ function printRulesInitSummary({
   }
 }
 
+function printInstallEngineeringSummary({ engineeringResults, techResult }) {
+  console.log("\nEngineering artifacts:");
+  for (const item of engineeringResults) {
+    console.log(`- ENGINEERING_RULES.md: ${item.rulesFileResult.action} (${item.rulesFilePath})`);
+    console.log(`- Managed engineering block (${item.ruleFilePath}): ${item.blockResult.action}`);
+    if (item.blockResult.warnings.length > 0) {
+      for (const warning of item.blockResult.warnings) {
+        console.log(`  - warning: ${warning}`);
+      }
+    }
+  }
+
+  if (techResult) {
+    console.log(`- TECH.md: ${techResult.action} (${techResult.filePath})`);
+    console.log(`- TECH scan files: ${techResult.snapshot.scannedFiles}`);
+  }
+}
+
+async function upsertEngineeringArtifacts({
+  platform,
+  scope,
+  overwrite = false,
+  skipTech = false,
+  dryRun = false,
+  cwd = process.cwd()
+}) {
+  const ruleFilePath = await resolveRuleFilePath(platform, scope, cwd);
+  if (!ruleFilePath) throw new Error(`No rule file configured for platform '${platform}'.`);
+
+  const workspaceRoot = findWorkspaceRoot(cwd);
+  const techMdPath = path.join(workspaceRoot, "TECH.md");
+  const targets = [{ ruleFilePath }];
+
+  if (scope === "global") {
+    const workspaceRuleFile = await resolveWorkspaceRuleFileForGlobalScope(platform, cwd);
+    const globalRuleFile = expandPath(WORKFLOW_PROFILES[platform].global.ruleFilesByPriority[0], cwd);
+    if (workspaceRuleFile && path.resolve(workspaceRuleFile) !== path.resolve(globalRuleFile)) {
+      targets.push({ ruleFilePath: workspaceRuleFile });
+    }
+  }
+
+  const template = buildEngineeringRulesTemplate();
+  const engineeringResults = [];
+  for (const target of targets) {
+    const rulesFilePath = path.join(path.dirname(target.ruleFilePath), "ENGINEERING_RULES.md");
+    const rulesFileResult = await writeTextFile({
+      targetPath: rulesFilePath,
+      content: `${template}\n`,
+      overwrite,
+      dryRun
+    });
+    const blockResult = await upsertEngineeringRulesBlock({
+      ruleFilePath: target.ruleFilePath,
+      platform,
+      engineeringRulesFilePath: rulesFilePath,
+      techMdFilePath: techMdPath,
+      dryRun
+    });
+    engineeringResults.push({
+      ruleFilePath: target.ruleFilePath,
+      rulesFilePath,
+      rulesFileResult,
+      blockResult
+    });
+  }
+
+  let techResult = null;
+  if (!skipTech) {
+    const snapshot = await collectTechSnapshot(workspaceRoot);
+    const content = buildTechMd(snapshot);
+    const fileResult = await writeTextFile({
+      targetPath: techMdPath,
+      content: `${content}\n`,
+      overwrite,
+      dryRun
+    });
+    techResult = {
+      ...fileResult,
+      snapshot
+    };
+  }
+
+  return {
+    engineeringResults,
+    techResult
+  };
+}
+
 async function runRulesInit(options) {
   try {
     const scope = normalizeScope(options.scope);
@@ -3135,68 +3235,21 @@ async function runRulesInit(options) {
     const overwrite = Boolean(options.overwrite);
     const cwd = process.cwd();
     const platform = await resolvePlatform(options.platform, scope, cwd);
-    const ruleFilePath = await resolveRuleFilePath(platform, scope, cwd);
-    if (!ruleFilePath) throw new Error(`No rule file configured for platform '${platform}'.`);
-
-    const workspaceRoot = findWorkspaceRoot(cwd);
-    const techMdPath = path.join(workspaceRoot, "TECH.md");
-    const targets = [{ ruleFilePath }];
-
-    if (scope === "global") {
-      const workspaceRuleFile = await resolveWorkspaceRuleFileForGlobalScope(platform, cwd);
-      const globalRuleFile = expandPath(WORKFLOW_PROFILES[platform].global.ruleFilesByPriority[0], cwd);
-      if (workspaceRuleFile && path.resolve(workspaceRuleFile) !== path.resolve(globalRuleFile)) {
-        targets.push({ ruleFilePath: workspaceRuleFile });
-      }
-    }
-
-    const template = buildEngineeringRulesTemplate();
-    const engineeringResults = [];
-    for (const target of targets) {
-      const rulesFilePath = path.join(path.dirname(target.ruleFilePath), "ENGINEERING_RULES.md");
-      const rulesFileResult = await writeTextFile({
-        targetPath: rulesFilePath,
-        content: `${template}\n`,
-        overwrite,
-        dryRun
-      });
-      const blockResult = await upsertEngineeringRulesBlock({
-        ruleFilePath: target.ruleFilePath,
-        platform,
-        engineeringRulesFilePath: rulesFilePath,
-        techMdFilePath: techMdPath,
-        dryRun
-      });
-      engineeringResults.push({
-        ruleFilePath: target.ruleFilePath,
-        rulesFilePath,
-        rulesFileResult,
-        blockResult
-      });
-    }
-
-    let techResult = null;
-    if (!options.skipTech) {
-      const snapshot = await collectTechSnapshot(workspaceRoot);
-      const content = buildTechMd(snapshot);
-      const fileResult = await writeTextFile({
-        targetPath: techMdPath,
-        content: `${content}\n`,
-        overwrite,
-        dryRun
-      });
-      techResult = {
-        ...fileResult,
-        snapshot
-      };
-    }
+    const initResult = await upsertEngineeringArtifacts({
+      platform,
+      scope,
+      overwrite,
+      skipTech: Boolean(options.skipTech),
+      dryRun,
+      cwd
+    });
 
     printRulesInitSummary({
       platform,
       scope,
       dryRun,
-      engineeringResults,
-      techResult
+      engineeringResults: initResult.engineeringResults,
+      techResult: initResult.techResult
     });
 
     if (dryRun) {
