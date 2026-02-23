@@ -20,6 +20,23 @@ Compatibility binaries are still shipped for migration:
 - `cubiskill`
 - `cubis`
 
+## Quick Setup (Simple)
+
+```bash
+# 1) Install CLI
+npm install -g @cubis/foundry
+
+# 2) Set Postman key once (recommended: env mode)
+export POSTMAN_API_KEY="<your-postman-api-key>"
+
+# 3) Install workflow bundle for your platform
+cbx workflows install --platform codex --bundle agent-environment-setup --postman --yes
+
+# 4) Optional: install for other platforms too
+cbx workflows install --platform antigravity --bundle agent-environment-setup --postman --yes
+cbx workflows install --platform copilot --bundle agent-environment-setup --postman --yes
+```
+
 ## Command Model
 
 `workflows` is now the primary command group.
@@ -36,12 +53,22 @@ cbx workflows install --platform antigravity --dry-run
 cbx workflows install --platform antigravity --terminal-integration --terminal-verifier codex
 cbx workflows install --platform codex --postman
 cbx workflows install --platform codex --postman --postman-workspace-id null
+cbx workflows install --platform codex --postman --postman-api-key "<key>"
+cbx workflows install --platform antigravity --postman
+cbx workflows install --platform copilot --postman
 ```
 
 Install bootstrap behavior:
 - `cbx workflows install` now also bootstraps `ENGINEERING_RULES.md` and `TECH.md` (creates when missing; keeps existing files unless explicitly regenerated).
-- Optional `--postman` bootstrap creates `postman_setting.json` and installs/configures the Postman skill.
+- Optional `--postman` bootstrap creates `postman_setting.json` and installs/configures the Postman skill/MCP for Codex, Antigravity, and Copilot.
 - Use `cbx rules init --platform <platform> --overwrite` to force-regenerate both files.
+
+Postman setup behavior:
+- `postman_setting.json` is generated in project root (or `~/.cbx/postman_setting.json` with `--scope global`).
+- Env-first auth is supported: when `POSTMAN_API_KEY` is set, generated settings keep `apiKey: null` and MCP config uses `Bearer ${POSTMAN_API_KEY}`.
+- Inline auth is supported with `--postman-api-key <key>`.
+- `--postman-workspace-id null` writes JSON `null` for `defaultWorkspaceId`.
+- In project scope, `postman_setting.json` is auto-added to `.gitignore` (no duplicate entries).
 
 `rules` manages strict engineering policy and a generated codebase tech map:
 
@@ -59,6 +86,14 @@ What `cbx rules init` does:
 - Appends/patches one managed engineering block in that rule file.
 - Generates `TECH.md` at workspace root by scanning the current codebase.
 - Preserves user content outside managed markers.
+
+`TECH.md` scanner coverage (deterministic, no AI calls):
+- Language/file signals from workspace scan.
+- JS/TS package signals from `package.json` (including nested/monorepo package files).
+- Flutter/Dart package signals from `pubspec.yaml`.
+- Go module signals from `go.mod`.
+- Python package signals from `requirements*.txt` and `pyproject.toml`.
+- Rust crate signals from `Cargo.toml`.
 
 ### Deprecated Alias
 
@@ -315,6 +350,12 @@ Run attribute validation (strict, fails on warnings):
 
 ```bash
 npm run test:attributes:strict
+```
+
+Run TECH.md scanner integration tests:
+
+```bash
+npm run test:tech-md
 ```
 
 Run full workflow smoke test:
