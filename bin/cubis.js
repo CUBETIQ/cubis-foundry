@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { confirm, select } from "@inquirer/prompts";
+import { confirm, input, select } from "@inquirer/prompts";
 import { Command } from "commander";
 import { existsSync } from "node:fs";
 import {
@@ -122,6 +122,12 @@ const CODEX_WORKFLOW_SKILL_PREFIX = "workflow-";
 const CODEX_AGENT_SKILL_PREFIX = "agent-";
 const TERMINAL_VERIFIER_PROVIDERS = ["codex", "gemini"];
 const DEFAULT_TERMINAL_VERIFIER = "codex";
+const POSTMAN_API_KEY_ENV_VAR = "POSTMAN_API_KEY";
+const POSTMAN_MCP_URL = "https://mcp.postman.com/minimal";
+const POSTMAN_SKILL_ID = "postman";
+const POSTMAN_SETTINGS_FILENAME = "postman_setting.json";
+const POSTMAN_API_KEY_MISSING_WARNING =
+  `Postman API key is not configured. Set ${POSTMAN_API_KEY_ENV_VAR} or update ${POSTMAN_SETTINGS_FILENAME}.`;
 const TECH_SCAN_MAX_FILES = 5000;
 const TECH_SCAN_IGNORED_DIRS = new Set([
   ".git",
@@ -229,6 +235,13 @@ function normalizeTerminalVerifier(value) {
   if (!value) return null;
   const normalized = value.trim().toLowerCase();
   return TERMINAL_VERIFIER_ALIASES[normalized] || null;
+}
+
+function normalizePostmanWorkspaceId(value) {
+  if (value === undefined || value === null) return null;
+  const normalized = String(value).trim();
+  if (!normalized || normalized.toLowerCase() === "null") return null;
+  return normalized;
 }
 
 function defaultState() {
@@ -1872,6 +1885,237 @@ async function writeGeneratedArtifact({ destination, content, dryRun = false }) 
   return { action: exists ? "replaced" : "installed", path: destination };
 }
 
+function resolvePostmanSettingsPath({ scope, cwd = process.cwd() }) {
+  if (scope === "global") {
+    return path.join(os.homedir(), ".cbx", POSTMAN_SETTINGS_FILENAME);
+  }
+  const workspaceRoot = findWorkspaceRoot(cwd);
+  return path.join(workspaceRoot, POSTMAN_SETTINGS_FILENAME);
+}
+
+function buildPostmanMcpConfig({ apiKey = null, mcpUrl = POSTMAN_MCP_URL }) {
+  const authHeader = apiKey
+    ? `Bearer ${apiKey}`
+    : `Bearer \${${POSTMAN_API_KEY_ENV_VAR}}`;
+  return {
+    mcpServers: {
+      postman: {
+        url: mcpUrl,
+        headers: {
+          Authorization: authHeader
+        }
+      }
+    },
+    disabled: false
+  };
+}
+
+function getPostmanApiKeySource({ apiKey, envApiKey }) {
+  if (apiKey) return "inline";
+  if (envApiKey) return "env";
+  return "unset";
+}
+
+function normalizePostmanApiKey(value) {
+  if (value === undefined || value === null) return null;
+  const normalized = String(value).trim();
+  return normalized || null;
+}
+
+async function ensureGitIgnoreEntry({
+  filePath,
+  entry,
+  dryRun = false
+}) {
+  const exists = await pathExists(filePath);
+  const original = exists ? await readFile(filePath, "utf8") : "";
+  const lines = original.split(/\r?\n/).map((line) => line.trim());
+  const alreadyPresent = lines.includes(entry);
+
+  if (alreadyPresent) {
+    return { action: "unchanged", filePath };
+  }
+
+  if (dryRun) {
+    return {
+      action: exists ? "would-patch" : "would-create",
+      filePath
+    };
+  }
+
+  const suffix = original.endsWith("\n") || original.length === 0 ? "" : "\n";
+  const nextContent = `${original}${suffix}${entry}\n`;
+  await mkdir(path.dirname(filePath), { recursive: true });
+  await writeFile(filePath, nextContent, "utf8");
+  return {
+    action: exists ? "patched" : "created",
+    filePath
+  };
+}
+
+async function resolvePostmanInstallSelection({
+  scope,
+  options,
+  cwd = process.cwd()
+}) {
+  const hasApiKeyOption = options.postmanApiKey !== undefined;
+  const hasWorkspaceOption = options.postmanWorkspaceId !== undefined;
+  const enabled = Boolean(options.postman) || hasApiKeyOption || hasWorkspaceOption;
+  if (!enabled) return { enabled: false };
+
+  const explicitApiKey = hasApiKeyOption ? String(options.postmanApiKey || "").trim() : "";
+  let apiKey = explicitApiKey || null;
+  const envApiKey = String(process.env[POSTMAN_API_KEY_ENV_VAR] || "").trim();
+  let defaultWorkspaceId = hasWorkspaceOption
+    ? normalizePostmanWorkspaceId(options.postmanWorkspaceId)
+    : null;
+  const warnings = [];
+
+  const canPrompt = !options.yes && process.stdin.isTTY;
+  if (canPrompt && !hasApiKeyOption && !apiKey && !envApiKey) {
+    const promptedApiKey = String(
+      await input({
+        message: `Postman API key (optional, leave blank to keep ${POSTMAN_API_KEY_ENV_VAR} env mode):`,
+        default: ""
+      })
+    ).trim();
+    if (promptedApiKey) {
+      apiKey = promptedApiKey;
+    }
+  }
+
+  if (canPrompt && !hasWorkspaceOption) {
+    const promptedWorkspaceId = await input({
+      message: "Default Postman workspace ID (optional, leave blank for null):",
+      default: ""
+    });
+    defaultWorkspaceId = normalizePostmanWorkspaceId(promptedWorkspaceId);
+  }
+
+  const apiKeySource = getPostmanApiKeySource({ apiKey, envApiKey });
+  if (apiKeySource === "unset") {
+    warnings.push(POSTMAN_API_KEY_MISSING_WARNING);
+  }
+
+  const settingsPath = resolvePostmanSettingsPath({ scope, cwd });
+  const settings = {
+    apiKey: apiKey || null,
+    apiKeyEnvVar: POSTMAN_API_KEY_ENV_VAR,
+    apiKeySource,
+    defaultWorkspaceId: defaultWorkspaceId ?? null,
+    mcpUrl: POSTMAN_MCP_URL,
+    generatedBy: "cbx workflows install --postman",
+    generatedAt: new Date().toISOString()
+  };
+
+  return {
+    enabled: true,
+    apiKey,
+    apiKeySource,
+    defaultWorkspaceId: defaultWorkspaceId ?? null,
+    warnings,
+    settings,
+    settingsPath
+  };
+}
+
+async function configurePostmanInstallArtifacts({
+  scope,
+  profilePaths,
+  postmanSelection,
+  overwrite = false,
+  dryRun = false,
+  cwd = process.cwd()
+}) {
+  if (!postmanSelection?.enabled) return null;
+
+  let warnings = postmanSelection.warnings.filter((warning) => warning !== POSTMAN_API_KEY_MISSING_WARNING);
+  const settingsContent = `${JSON.stringify(postmanSelection.settings, null, 2)}\n`;
+  const settingsResult = await writeTextFile({
+    targetPath: postmanSelection.settingsPath,
+    content: settingsContent,
+    overwrite,
+    dryRun
+  });
+
+  let effectiveApiKey = normalizePostmanApiKey(postmanSelection.settings.apiKey);
+  let effectiveDefaultWorkspaceId = postmanSelection.defaultWorkspaceId ?? null;
+  let effectiveMcpUrl = postmanSelection.settings.mcpUrl || POSTMAN_MCP_URL;
+
+  if (settingsResult.action === "skipped" || settingsResult.action === "would-skip") {
+    try {
+      const existingSettingsRaw = await readFile(postmanSelection.settingsPath, "utf8");
+      const existingSettings = JSON.parse(existingSettingsRaw);
+      effectiveApiKey = normalizePostmanApiKey(existingSettings?.apiKey);
+      effectiveDefaultWorkspaceId = normalizePostmanWorkspaceId(existingSettings?.defaultWorkspaceId);
+      const existingMcpUrl = String(existingSettings?.mcpUrl || "").trim();
+      if (existingMcpUrl) {
+        effectiveMcpUrl = existingMcpUrl;
+      }
+    } catch {
+      warnings.push(
+        `Existing ${POSTMAN_SETTINGS_FILENAME} could not be parsed. Using install-time Postman values for MCP config.`
+      );
+    }
+  }
+
+  const envApiKey = normalizePostmanApiKey(process.env[POSTMAN_API_KEY_ENV_VAR]);
+  const effectiveApiKeySource = getPostmanApiKeySource({
+    apiKey: effectiveApiKey,
+    envApiKey
+  });
+  if (effectiveApiKeySource === "unset") {
+    warnings.push(POSTMAN_API_KEY_MISSING_WARNING);
+  }
+
+  let gitIgnoreResult = null;
+  if (scope === "project") {
+    const workspaceRoot = findWorkspaceRoot(cwd);
+    const gitIgnorePath = path.join(workspaceRoot, ".gitignore");
+    gitIgnoreResult = await ensureGitIgnoreEntry({
+      filePath: gitIgnorePath,
+      entry: POSTMAN_SETTINGS_FILENAME,
+      dryRun
+    });
+  }
+
+  const postmanSkillDir = path.join(profilePaths.skillsDir, POSTMAN_SKILL_ID);
+  const postmanMcpPath = path.join(postmanSkillDir, "mcp.json");
+  let mcpResult = null;
+  const postmanSkillExists = await pathExists(postmanSkillDir);
+  if (!dryRun && !postmanSkillExists) {
+    mcpResult = {
+      action: "missing-postman-skill",
+      path: postmanMcpPath
+    };
+  } else {
+    const mcpConfigContent = `${JSON.stringify(
+      buildPostmanMcpConfig({
+        apiKey: effectiveApiKey,
+        mcpUrl: effectiveMcpUrl
+      }),
+      null,
+      2
+    )}\n`;
+    mcpResult = await writeGeneratedArtifact({
+      destination: postmanMcpPath,
+      content: mcpConfigContent,
+      dryRun
+    });
+  }
+
+  return {
+    enabled: true,
+    apiKeySource: effectiveApiKeySource,
+    defaultWorkspaceId: effectiveDefaultWorkspaceId,
+    warnings,
+    settingsPath: postmanSelection.settingsPath,
+    settingsResult,
+    gitIgnoreResult,
+    mcpResult
+  };
+}
+
 async function installAntigravityTerminalIntegrationArtifacts({
   profilePaths,
   provider,
@@ -2032,6 +2276,7 @@ async function installBundleArtifacts({
   platform,
   scope,
   overwrite,
+  extraSkillIds = [],
   terminalVerifierSelection = null,
   dryRun = false,
   cwd = process.cwd()
@@ -2092,7 +2337,8 @@ async function installBundleArtifacts({
     else installed.push(destination);
   }
 
-  const skillIds = Array.isArray(platformSpec.skills) ? platformSpec.skills : [];
+  const manifestSkillIds = Array.isArray(platformSpec.skills) ? platformSpec.skills : [];
+  const skillIds = unique([...manifestSkillIds, ...extraSkillIds.filter(Boolean)]);
   for (const skillId of skillIds) {
     const source = path.join(agentAssetsRoot(), "skills", skillId);
     const destination = path.join(profilePaths.skillsDir, skillId);
@@ -2385,6 +2631,32 @@ function printInstallSummary({
     }
     if (sanitizedAgents.length > 8) {
       console.log(`- ...and ${sanitizedAgents.length - 8} more agent file(s).`);
+    }
+  }
+}
+
+function printPostmanSetupSummary({ postmanSetup }) {
+  if (!postmanSetup?.enabled) return;
+
+  console.log("\nPostman setup:");
+  console.log(`- Settings file: ${postmanSetup.settingsResult.action} (${postmanSetup.settingsPath})`);
+  console.log(`- API key source: ${postmanSetup.apiKeySource}`);
+  console.log(
+    `- Default workspace ID: ${postmanSetup.defaultWorkspaceId === null ? "null" : postmanSetup.defaultWorkspaceId}`
+  );
+  if (postmanSetup.gitIgnoreResult) {
+    console.log(
+      `- .gitignore (${postmanSetup.gitIgnoreResult.filePath}): ${postmanSetup.gitIgnoreResult.action}`
+    );
+  }
+  if (postmanSetup.mcpResult) {
+    console.log(`- Postman MCP config (${postmanSetup.mcpResult.path}): ${postmanSetup.mcpResult.action}`);
+  }
+
+  if (postmanSetup.warnings.length > 0) {
+    console.log("- Warnings:");
+    for (const warning of postmanSetup.warnings) {
+      console.log(`  - ${warning}`);
     }
   }
 }
@@ -2695,6 +2967,18 @@ function withInstallOptions(command) {
     .option("-b, --bundle <bundle>", "bundle id (default: agent-environment-setup)")
     .option("--overwrite", "overwrite existing files")
     .option(
+      "--postman",
+      "optional: install Postman skill and generate postman_setting.json"
+    )
+    .option(
+      "--postman-api-key <key>",
+      "optional: set Postman API key inline for generated postman_setting.json and installed Postman MCP config"
+    )
+    .option(
+      "--postman-workspace-id <id|null>",
+      "optional: set default Postman workspace ID (use 'null' for no default)"
+    )
+    .option(
       "--terminal-integration",
       "Antigravity only: enable terminal verification integration (prompts for verifier when interactive)"
     )
@@ -2854,6 +3138,11 @@ async function runWorkflowInstall(options) {
       platform,
       options
     });
+    const postmanSelection = await resolvePostmanInstallSelection({
+      scope,
+      options,
+      cwd: process.cwd()
+    });
 
     const installResult = await installBundleArtifacts({
       bundleId,
@@ -2861,6 +3150,7 @@ async function runWorkflowInstall(options) {
       platform,
       scope,
       overwrite: Boolean(options.overwrite),
+      extraSkillIds: postmanSelection.enabled ? [POSTMAN_SKILL_ID] : [],
       terminalVerifierSelection,
       dryRun,
       cwd: process.cwd()
@@ -2888,6 +3178,14 @@ async function runWorkflowInstall(options) {
       overwrite: false,
       dryRun,
       skipTech: false,
+      cwd: process.cwd()
+    });
+    const postmanSetupResult = await configurePostmanInstallArtifacts({
+      scope,
+      profilePaths: installResult.profilePaths,
+      postmanSelection,
+      overwrite: Boolean(options.overwrite),
+      dryRun,
       cwd: process.cwd()
     });
 
@@ -2929,6 +3227,9 @@ async function runWorkflowInstall(options) {
     printInstallEngineeringSummary({
       engineeringResults: engineeringArtifactsResult.engineeringResults,
       techResult: engineeringArtifactsResult.techResult
+    });
+    printPostmanSetupSummary({
+      postmanSetup: postmanSetupResult
     });
     if (dryRun) {
       console.log("\nDry-run complete. Re-run without `--dry-run` to apply changes.");

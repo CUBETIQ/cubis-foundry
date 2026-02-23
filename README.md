@@ -34,10 +34,13 @@ cbx workflows doctor codex
 cbx workflows platforms
 cbx workflows install --platform antigravity --dry-run
 cbx workflows install --platform antigravity --terminal-integration --terminal-verifier codex
+cbx workflows install --platform codex --postman
+cbx workflows install --platform codex --postman --postman-workspace-id null
 ```
 
 Install bootstrap behavior:
 - `cbx workflows install` now also bootstraps `ENGINEERING_RULES.md` and `TECH.md` (creates when missing; keeps existing files unless explicitly regenerated).
+- Optional `--postman` bootstrap creates `postman_setting.json` and installs/configures the Postman skill.
 - Use `cbx rules init --platform <platform> --overwrite` to force-regenerate both files.
 
 `rules` manages strict engineering policy and a generated codebase tech map:
@@ -112,6 +115,7 @@ Routing behavior:
 - Antigravity/Copilot: workflow + agent markdown can be routed by platform conventions.
 - Codex: use generated callable wrapper skills (`$workflow-*`, `$agent-*`).
 - Example for backend intent in Codex: `$workflow-backend` or `$agent-backend-specialist`.
+- Backend workflow policy: always include OpenAPI updates plus Swagger UI and Stoplight Elements status in output.
 
 ### Codex Runtime Mode
 

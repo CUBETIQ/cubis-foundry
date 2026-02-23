@@ -10,7 +10,7 @@ Before proceeding, validate that the user has completed the following steps befo
 
 ## Step 1
 
-Prompt the user to configure their own Postman API key for authentication. They can either set it as an environment variable named POSTMAN_API_KEY on their system, or hardcode it directly into the user level MCP configuration file (usually at ~/.kiro/settings/mcp.json) in the power section. To obtain an API key, they log into their Postman account, navigate to Settings → API Keys, and generate a new key with appropriate permissions for workspace, collection, and environment management. The key will be automatically used by the MCP server to authenticate all API requests to Postman's services.
+Generate and maintain `postman_setting.json` as the primary Postman configuration. Use env-first authentication by default: keep `apiKey` as `null`, set `apiKeyEnvVar` to `POSTMAN_API_KEY`, and read the key from environment variables. Only store `apiKey` inline when the user explicitly requests file-based key storage. Keep `defaultWorkspaceId` nullable (`null` when unknown) so workflows can run without a preselected workspace.
 
 ## Step 2
 
@@ -66,7 +66,7 @@ Create a hook that runs anytime the source code or configuration file has been c
 
 Automate API testing and collection management with Postman. Create workspaces, collections, environments, and run tests programmatically.
 
-**Authentication**: Requires Postman API key (Settings → API Keys at postman.com)
+**Authentication**: Env-first via `postman_setting.json` + `POSTMAN_API_KEY`; inline `apiKey` is optional.
 
 ## Available MCP Servers
 
