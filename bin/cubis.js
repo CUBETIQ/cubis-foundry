@@ -172,6 +172,54 @@ const TECH_LANGUAGE_BY_EXTENSION = new Map([
   [".sh", "Shell"],
   [".ps1", "PowerShell"]
 ]);
+const TECH_PACKAGE_PREVIEW_LIMIT = 40;
+const TECH_JS_FRAMEWORK_SIGNALS = [
+  ["next", "Next.js"],
+  ["react", "React"],
+  ["vue", "Vue"],
+  ["nuxt", "Nuxt"],
+  ["svelte", "Svelte"],
+  ["@nestjs/core", "NestJS"],
+  ["express", "Express"],
+  ["fastify", "Fastify"],
+  ["hono", "Hono"],
+  ["tailwindcss", "Tailwind CSS"],
+  ["prisma", "Prisma"],
+  ["drizzle-orm", "Drizzle ORM"],
+  ["mongoose", "Mongoose"],
+  ["typeorm", "TypeORM"],
+  ["@playwright/test", "Playwright"],
+  ["vitest", "Vitest"],
+  ["jest", "Jest"],
+  ["cypress", "Cypress"]
+];
+const TECH_DART_FRAMEWORK_SIGNALS = [
+  ["flutter_riverpod", "Riverpod"],
+  ["riverpod", "Riverpod"],
+  ["go_router", "go_router"],
+  ["dio", "Dio"],
+  ["freezed", "Freezed"],
+  ["bloc", "BLoC"]
+];
+const TECH_GO_FRAMEWORK_SIGNALS = [
+  ["github.com/gofiber/fiber/v2", "Go Fiber"],
+  ["github.com/gin-gonic/gin", "Gin"],
+  ["github.com/labstack/echo/v4", "Echo"],
+  ["github.com/go-chi/chi/v5", "Chi"]
+];
+const TECH_PYTHON_FRAMEWORK_SIGNALS = [
+  ["fastapi", "FastAPI"],
+  ["django", "Django"],
+  ["flask", "Flask"],
+  ["pydantic", "Pydantic"],
+  ["sqlalchemy", "SQLAlchemy"]
+];
+const TECH_RUST_FRAMEWORK_SIGNALS = [
+  ["axum", "Axum"],
+  ["actix-web", "Actix Web"],
+  ["rocket", "Rocket"],
+  ["tokio", "Tokio"]
+];
 
 function platformInstallsCustomAgents(platformId) {
   const profile = WORKFLOW_PROFILES[platformId];
@@ -585,6 +633,198 @@ async function upsertEngineeringRulesBlock({
   };
 }
 
+function normalizeTechPackageName(value) {
+  if (value === undefined || value === null) return null;
+  const normalized = String(value).trim().replace(/^['"]|['"]$/g, "").toLowerCase();
+  return normalized || null;
+}
+
+function parseTomlSections(content) {
+  const sections = new Map();
+  let currentSection = "";
+  sections.set(currentSection, []);
+
+  for (const line of content.split(/\r?\n/)) {
+    const sectionMatch = line.match(/^\s*\[([^\]]+)\]\s*$/);
+    if (sectionMatch) {
+      currentSection = sectionMatch[1].trim();
+      if (!sections.has(currentSection)) sections.set(currentSection, []);
+      continue;
+    }
+    sections.get(currentSection).push(line);
+  }
+
+  return sections;
+}
+
+function parsePubspecDependencyNames(content) {
+  const packages = new Set();
+  let currentSection = null;
+
+  for (const rawLine of content.split(/\r?\n/)) {
+    const line = rawLine.replace(/\t/g, "  ");
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+
+    if (!line.startsWith(" ")) {
+      const sectionMatch = trimmed.match(/^([a-zA-Z0-9_]+):\s*$/);
+      if (!sectionMatch) {
+        currentSection = null;
+        continue;
+      }
+      currentSection = sectionMatch[1];
+      continue;
+    }
+
+    if (currentSection !== "dependencies" && currentSection !== "dev_dependencies") continue;
+    const depMatch = trimmed.match(/^([a-zA-Z0-9_]+):/);
+    if (!depMatch) continue;
+    const packageName = normalizeTechPackageName(depMatch[1]);
+    if (!packageName || packageName === "flutter" || packageName === "sdk") continue;
+    packages.add(packageName);
+  }
+
+  return packages;
+}
+
+function parseGoModuleNames(content) {
+  const modules = new Set();
+  let inRequireBlock = false;
+
+  for (const rawLine of content.split(/\r?\n/)) {
+    const trimmed = rawLine.trim();
+    if (!trimmed || trimmed.startsWith("//")) continue;
+
+    if (trimmed.startsWith("require (")) {
+      inRequireBlock = true;
+      continue;
+    }
+    if (inRequireBlock && trimmed === ")") {
+      inRequireBlock = false;
+      continue;
+    }
+
+    if (inRequireBlock) {
+      const moduleName = normalizeTechPackageName(trimmed.split(/\s+/)[0]);
+      if (moduleName) modules.add(moduleName);
+      continue;
+    }
+
+    if (trimmed.startsWith("require ")) {
+      const moduleName = normalizeTechPackageName(trimmed.slice("require ".length).trim().split(/\s+/)[0]);
+      if (moduleName) modules.add(moduleName);
+    }
+  }
+
+  return modules;
+}
+
+function parseRequirementsPackageNames(content) {
+  const packages = new Set();
+  for (const rawLine of content.split(/\r?\n/)) {
+    const withoutComment = rawLine.split("#")[0].trim();
+    if (!withoutComment) continue;
+    if (withoutComment.startsWith("-")) continue;
+
+    const cleaned = withoutComment.split(";")[0].trim();
+    const match = cleaned.match(/^([A-Za-z0-9_.-]+)/);
+    if (!match) continue;
+    const packageName = normalizeTechPackageName(match[1]);
+    if (packageName) packages.add(packageName);
+  }
+  return packages;
+}
+
+function parsePyprojectPackageNames(content) {
+  const packages = new Set();
+  const sections = parseTomlSections(content);
+
+  const projectSection = sections.get("project");
+  if (projectSection) {
+    const projectBody = projectSection.join("\n");
+    const dependenciesArrayMatch = projectBody.match(/dependencies\s*=\s*\[([\s\S]*?)\]/m);
+    if (dependenciesArrayMatch) {
+      const entries = dependenciesArrayMatch[1].match(/"([^"]+)"|'([^']+)'/g) || [];
+      for (const entry of entries) {
+        const normalizedEntry = normalizeTechPackageName(entry);
+        if (!normalizedEntry) continue;
+        const packageName = normalizeTechPackageName(normalizedEntry.split(/[<>=!~\s\[]/)[0]);
+        if (packageName) packages.add(packageName);
+      }
+    }
+
+    for (const line of projectSection) {
+      const trimmed = line.trim();
+      const optionalDepsMatch = trimmed.match(
+        /^([A-Za-z0-9_.-]+)\s*=\s*\[\s*("([^"]+)"|'([^']+)')/
+      );
+      if (!optionalDepsMatch) continue;
+      const entry = optionalDepsMatch[3] || optionalDepsMatch[4];
+      const packageName = normalizeTechPackageName(String(entry).split(/[<>=!~\s\[]/)[0]);
+      if (packageName) packages.add(packageName);
+    }
+  }
+
+  for (const [sectionName, lines] of sections.entries()) {
+    const isPoetryDependencySection =
+      sectionName === "tool.poetry.dependencies" ||
+      /^tool\.poetry\.group\.[^.]+\.dependencies$/.test(sectionName);
+    if (!isPoetryDependencySection) continue;
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) continue;
+      const depMatch = trimmed.match(/^([A-Za-z0-9_.-]+)\s*=/);
+      if (!depMatch) continue;
+      const packageName = normalizeTechPackageName(depMatch[1]);
+      if (!packageName || packageName === "python") continue;
+      packages.add(packageName);
+    }
+  }
+
+  return packages;
+}
+
+function parseCargoCrateNames(content) {
+  const crates = new Set();
+  const sections = parseTomlSections(content);
+
+  for (const [sectionName, lines] of sections.entries()) {
+    const isDependencySection =
+      sectionName === "dependencies" ||
+      sectionName === "dev-dependencies" ||
+      sectionName === "build-dependencies" ||
+      sectionName === "workspace.dependencies" ||
+      /\.dependencies$/.test(sectionName) ||
+      /\.dev-dependencies$/.test(sectionName) ||
+      /\.build-dependencies$/.test(sectionName);
+    if (!isDependencySection) continue;
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) continue;
+      const depMatch = trimmed.match(/^([A-Za-z0-9_-]+)\s*=/);
+      if (!depMatch) continue;
+      const crateName = normalizeTechPackageName(depMatch[1]);
+      if (crateName) crates.add(crateName);
+    }
+  }
+
+  return crates;
+}
+
+function addFrameworkSignalsFromPackages({ packages, frameworks, signals }) {
+  for (const [signal, frameworkLabel] of signals) {
+    if (packages.has(signal.toLowerCase())) {
+      frameworks.add(frameworkLabel);
+    }
+  }
+}
+
+function toSortedArray(values) {
+  return [...values].sort((a, b) => a.localeCompare(b));
+}
+
 async function collectTechSnapshot(rootDir) {
   const discoveredFiles = [];
   const queue = [rootDir];
@@ -614,6 +854,12 @@ async function collectTechSnapshot(rootDir) {
 
   const languageCounts = new Map();
   const topDirs = new Set();
+  const packageJsonFiles = [];
+  const pubspecFiles = [];
+  const goModFiles = [];
+  const pyprojectFiles = [];
+  const requirementsFiles = [];
+  const cargoTomlFiles = [];
 
   for (const fullPath of discoveredFiles) {
     const rel = toPosixPath(path.relative(rootDir, fullPath));
@@ -622,15 +868,31 @@ async function collectTechSnapshot(rootDir) {
 
     const extension = path.extname(fullPath).toLowerCase();
     const language = TECH_LANGUAGE_BY_EXTENSION.get(extension);
-    if (!language) continue;
-    languageCounts.set(language, (languageCounts.get(language) || 0) + 1);
+    if (language) {
+      languageCounts.set(language, (languageCounts.get(language) || 0) + 1);
+    }
+
+    const baseName = path.basename(fullPath).toLowerCase();
+    if (baseName === "package.json") packageJsonFiles.push(fullPath);
+    if (baseName === "pubspec.yaml") pubspecFiles.push(fullPath);
+    if (baseName === "go.mod") goModFiles.push(fullPath);
+    if (baseName === "pyproject.toml") pyprojectFiles.push(fullPath);
+    if (baseName === "cargo.toml") cargoTomlFiles.push(fullPath);
+    if (baseName === "requirements.txt" || /^requirements(?:[-_.].+)?\.txt$/.test(baseName)) {
+      requirementsFiles.push(fullPath);
+    }
   }
 
   const fileExists = (name) => existsSync(path.join(rootDir, name));
-  const packageJsonPath = path.join(rootDir, "package.json");
+  const rootPackageJsonPath = path.join(rootDir, "package.json");
   const packageScripts = new Map();
   const frameworks = new Set();
   const lockfiles = [];
+  const javascriptPackages = new Set();
+  const dartPackages = new Set();
+  const goModules = new Set();
+  const pythonPackages = new Set();
+  const rustCrates = new Set();
 
   if (fileExists("bun.lock") || fileExists("bun.lockb")) lockfiles.push("bun");
   if (fileExists("pnpm-lock.yaml")) lockfiles.push("pnpm");
@@ -641,53 +903,117 @@ async function collectTechSnapshot(rootDir) {
   if (fileExists("go.sum")) lockfiles.push("go");
   if (fileExists("pubspec.lock")) lockfiles.push("pub");
 
-  if (fileExists("pubspec.yaml")) frameworks.add("Flutter");
-  if (fileExists("go.mod")) frameworks.add("Go Modules");
-  if (fileExists("Cargo.toml")) frameworks.add("Rust Cargo");
-  if (fileExists("requirements.txt") || fileExists("pyproject.toml")) frameworks.add("Python");
+  if (pubspecFiles.length > 0) frameworks.add("Flutter");
+  if (goModFiles.length > 0) frameworks.add("Go Modules");
+  if (cargoTomlFiles.length > 0) frameworks.add("Rust Cargo");
+  if (requirementsFiles.length > 0 || pyprojectFiles.length > 0) frameworks.add("Python");
 
-  if (existsSync(packageJsonPath)) {
+  for (const packageJsonFile of packageJsonFiles) {
     try {
-      const parsed = JSON.parse(await readFile(packageJsonPath, "utf8"));
-      const scripts = parsed.scripts && typeof parsed.scripts === "object" ? parsed.scripts : {};
-      for (const [name, command] of Object.entries(scripts)) {
-        if (typeof command !== "string") continue;
-        packageScripts.set(name, command);
-      }
-
+      const parsed = JSON.parse(await readFile(packageJsonFile, "utf8"));
       const deps = {
         ...(parsed.dependencies || {}),
         ...(parsed.devDependencies || {}),
-        ...(parsed.peerDependencies || {})
+        ...(parsed.peerDependencies || {}),
+        ...(parsed.optionalDependencies || {})
       };
-      const depNames = new Set(Object.keys(deps));
-      const frameworkSignals = [
-        ["next", "Next.js"],
-        ["react", "React"],
-        ["vue", "Vue"],
-        ["nuxt", "Nuxt"],
-        ["svelte", "Svelte"],
-        ["@nestjs/core", "NestJS"],
-        ["express", "Express"],
-        ["fastify", "Fastify"],
-        ["hono", "Hono"],
-        ["tailwindcss", "Tailwind CSS"],
-        ["prisma", "Prisma"],
-        ["drizzle-orm", "Drizzle ORM"],
-        ["mongoose", "Mongoose"],
-        ["typeorm", "TypeORM"],
-        ["@playwright/test", "Playwright"],
-        ["vitest", "Vitest"],
-        ["jest", "Jest"],
-        ["cypress", "Cypress"]
-      ];
-      for (const [signal, label] of frameworkSignals) {
-        if (depNames.has(signal)) frameworks.add(label);
+      for (const depName of Object.keys(deps)) {
+        const normalized = normalizeTechPackageName(depName);
+        if (normalized) javascriptPackages.add(normalized);
+      }
+
+      if (path.resolve(packageJsonFile) === path.resolve(rootPackageJsonPath)) {
+        const scripts = parsed.scripts && typeof parsed.scripts === "object" ? parsed.scripts : {};
+        for (const [name, command] of Object.entries(scripts)) {
+          if (typeof command !== "string") continue;
+          packageScripts.set(name, command);
+        }
       }
     } catch {
       // ignore malformed package.json
     }
   }
+
+  for (const pubspecFile of pubspecFiles) {
+    try {
+      const content = await readFile(pubspecFile, "utf8");
+      for (const packageName of parsePubspecDependencyNames(content)) {
+        dartPackages.add(packageName);
+      }
+    } catch {
+      // ignore malformed pubspec.yaml
+    }
+  }
+
+  for (const goModFile of goModFiles) {
+    try {
+      const content = await readFile(goModFile, "utf8");
+      for (const moduleName of parseGoModuleNames(content)) {
+        goModules.add(moduleName);
+      }
+    } catch {
+      // ignore unreadable go.mod
+    }
+  }
+
+  for (const pyprojectFile of pyprojectFiles) {
+    try {
+      const content = await readFile(pyprojectFile, "utf8");
+      for (const packageName of parsePyprojectPackageNames(content)) {
+        pythonPackages.add(packageName);
+      }
+    } catch {
+      // ignore malformed pyproject.toml
+    }
+  }
+
+  for (const requirementsFile of requirementsFiles) {
+    try {
+      const content = await readFile(requirementsFile, "utf8");
+      for (const packageName of parseRequirementsPackageNames(content)) {
+        pythonPackages.add(packageName);
+      }
+    } catch {
+      // ignore unreadable requirements file
+    }
+  }
+
+  for (const cargoTomlFile of cargoTomlFiles) {
+    try {
+      const content = await readFile(cargoTomlFile, "utf8");
+      for (const crateName of parseCargoCrateNames(content)) {
+        rustCrates.add(crateName);
+      }
+    } catch {
+      // ignore malformed Cargo.toml
+    }
+  }
+
+  addFrameworkSignalsFromPackages({
+    packages: javascriptPackages,
+    frameworks,
+    signals: TECH_JS_FRAMEWORK_SIGNALS
+  });
+  addFrameworkSignalsFromPackages({
+    packages: dartPackages,
+    frameworks,
+    signals: TECH_DART_FRAMEWORK_SIGNALS
+  });
+  addFrameworkSignalsFromPackages({
+    packages: goModules,
+    frameworks,
+    signals: TECH_GO_FRAMEWORK_SIGNALS
+  });
+  addFrameworkSignalsFromPackages({
+    packages: pythonPackages,
+    frameworks,
+    signals: TECH_PYTHON_FRAMEWORK_SIGNALS
+  });
+  addFrameworkSignalsFromPackages({
+    packages: rustCrates,
+    frameworks,
+    signals: TECH_RUST_FRAMEWORK_SIGNALS
+  });
 
   const sortedLanguages = [...languageCounts.entries()].sort((a, b) => b[1] - a[1]);
   const sortedFrameworks = [...frameworks].sort((a, b) => a.localeCompare(b));
@@ -717,8 +1043,31 @@ async function collectTechSnapshot(rootDir) {
     frameworks: sortedFrameworks,
     lockfiles: sortedLockfiles,
     topDirs: sortedTopDirs,
-    keyScripts
+    keyScripts,
+    packageSignals: {
+      javascript: toSortedArray(javascriptPackages),
+      dart: toSortedArray(dartPackages),
+      go: toSortedArray(goModules),
+      python: toSortedArray(pythonPackages),
+      rust: toSortedArray(rustCrates)
+    }
   };
+}
+
+function appendTechPackageSection(lines, heading, packages) {
+  lines.push(`### ${heading}`);
+  if (!packages || packages.length === 0) {
+    lines.push("- None detected.");
+  } else {
+    const preview = packages.slice(0, TECH_PACKAGE_PREVIEW_LIMIT);
+    for (const packageName of preview) {
+      lines.push(`- \`${packageName}\``);
+    }
+    if (packages.length > TECH_PACKAGE_PREVIEW_LIMIT) {
+      lines.push(`- ... (+${packages.length - TECH_PACKAGE_PREVIEW_LIMIT} more)`);
+    }
+  }
+  lines.push("");
 }
 
 function buildTechMd(snapshot) {
@@ -749,6 +1098,13 @@ function buildTechMd(snapshot) {
     }
   }
   lines.push("");
+
+  lines.push("## Package Signals");
+  appendTechPackageSection(lines, "JavaScript / TypeScript (package.json)", snapshot.packageSignals.javascript);
+  appendTechPackageSection(lines, "Dart / Flutter (pubspec.yaml)", snapshot.packageSignals.dart);
+  appendTechPackageSection(lines, "Go Modules (go.mod)", snapshot.packageSignals.go);
+  appendTechPackageSection(lines, "Python Packages (requirements / pyproject)", snapshot.packageSignals.python);
+  appendTechPackageSection(lines, "Rust Crates (Cargo.toml)", snapshot.packageSignals.rust);
 
   lines.push("## Tooling and Lockfiles");
   if (snapshot.lockfiles.length === 0) {

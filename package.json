@@ -1,6 +1,6 @@
 {
   "name": "@cubis/foundry",
-  "version": "0.3.14",
+  "version": "0.3.15",
   "description": "Cubis Foundry CLI for workflow-first AI agent environments",
   "type": "module",
   "bin": {
@@ -18,6 +18,7 @@
     "check": "node bin/cubis.js --help",
     "test:attributes": "node scripts/validate-platform-attributes.mjs",
     "test:attributes:strict": "node scripts/validate-platform-attributes.mjs --strict",
+    "test:tech-md": "node scripts/test-tech-md-scanner.mjs",
     "test:smoke": "bash scripts/smoke-workflows.sh",
     "test:all": "npm run test:attributes && npm run test:smoke",
     "test:all:strict": "npm run test:attributes:strict && npm run test:smoke",
