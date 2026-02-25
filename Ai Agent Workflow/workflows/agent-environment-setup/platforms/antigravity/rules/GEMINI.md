@@ -13,6 +13,18 @@ This file defines mandatory behavior for Antigravity projects installed via `cbx
 - Skills: `.agent/skills`
 - Rules file: `.agent/rules/GEMINI.md`
 
+## Startup Transparency (Required)
+
+Before executing workflows, agents, or code edits, publish a short `Decision Log` that is visible to the user:
+
+1. Rule file(s) read at startup (at minimum `.agent/rules/GEMINI.md`, plus any additional rule files loaded).
+2. Workflow decision (`/workflow` or direct mode) and why it was chosen.
+3. Agent routing decision (`@agent` or direct mode) and why it was chosen.
+4. Skill loading decision (skill names loaded) and why they were chosen.
+
+If routing changes during the task, publish a `Decision Update` before continuing.
+Keep this user-visible summary concise and factual; do not expose private chain-of-thought.
+
 ## 2) Workflow-First Contract
 
 1. If the user explicitly requests a slash command, run that workflow first.
