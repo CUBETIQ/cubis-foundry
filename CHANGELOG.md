@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.27] - 2026-02-26
+
+### Changed
+
+- Updated Postman skill/power guidance to use `cbx_config.json` as the default config source with `POSTMAN_API_KEY` env-first auth.
+- Added explicit instruction to avoid referencing `postman_setting.json` in normal responses when `cbx_config.json` exists.
+
 ## [0.3.26] - 2026-02-26
 
 ### Fixed

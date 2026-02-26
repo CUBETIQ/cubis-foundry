@@ -12,7 +12,7 @@ Before proceeding, validate that the user has completed the following steps befo
 
 ## Step 1
 
-Generate and maintain `postman_setting.json` as the primary Postman configuration. Use env-first authentication by default: keep `apiKey` as `null`, set `apiKeyEnvVar` to `POSTMAN_API_KEY`, and read the key from environment variables. Only store `apiKey` inline when the user explicitly requests file-based key storage. Keep `defaultWorkspaceId` nullable (`null` when unknown) so workflows can run without a preselected workspace.
+Generate and maintain `cbx_config.json` as the primary Postman configuration (workspace: `./cbx_config.json`, global: `~/.cbx/cbx_config.json`). Use `postman_setting.json` only as a legacy fallback when `cbx_config.json` is unavailable. When both files exist, always use `cbx_config.json` and do not reference `postman_setting.json` in normal responses. Use env-first authentication by default: keep `apiKey` as `null`, set `apiKeyEnvVar` to `POSTMAN_API_KEY`, and read the key from environment variables. Only store `apiKey` inline when the user explicitly requests file-based key storage. Keep `defaultWorkspaceId` nullable (`null` when unknown) so workflows can run without a preselected workspace.
 
 ## Step 2
 
@@ -68,7 +68,7 @@ Create a hook that runs anytime the source code or configuration file has been c
 
 Automate API testing and collection management with Postman. Create workspaces, collections, environments, and run tests programmatically.
 
-**Authentication**: Env-first via `postman_setting.json` + `POSTMAN_API_KEY`; inline `apiKey` is optional.
+**Authentication**: Env-first via `cbx_config.json` + `POSTMAN_API_KEY` (legacy fallback: `postman_setting.json`); inline `apiKey` is optional.
 
 ## Available MCP Servers
 
