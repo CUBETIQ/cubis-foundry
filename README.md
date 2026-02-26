@@ -60,6 +60,7 @@ cbx workflows install --platform copilot --postman
 
 Install bootstrap behavior:
 - `cbx workflows install` now also bootstraps `ENGINEERING_RULES.md` and `TECH.md` (creates when missing; keeps existing files unless explicitly regenerated).
+- When install scope is `global`, workflow/skill/agent artifacts install to global paths, but rule sync + engineering artifacts are maintained in workspace (`project`) scope.
 - Optional `--postman` bootstrap creates `postman_setting.json` and installs/configures the Postman skill/MCP for Codex, Antigravity, and Copilot.
 - Use `cbx rules init --platform <platform> --overwrite` to force-regenerate both files.
 
@@ -260,6 +261,7 @@ Default scope:
   - `cbx install` (legacy alias)
   - `cbx init` (legacy alias)
   - Default scope for these commands is `global`.
+  - Rule files (`AGENTS.md`/`GEMINI.md`/Copilot instructions) and engineering files (`ENGINEERING_RULES.md`, `TECH.md`) are still updated in workspace (`project`) scope during install.
 - Other workflow/rules commands default to `project`.
 
 Optional:

@@ -79,9 +79,9 @@ Use these commands to keep this setup healthy:
 - Install/update bundle:
   `cbx workflows install --platform windsurf --bundle agent-environment-setup --scope global --overwrite`
 - Rebuild managed routing block:
-  `cbx workflows sync-rules --platform windsurf --scope global`
+  `cbx workflows sync-rules --platform windsurf --scope project`
 - Diagnose setup issues:
-  `cbx workflows doctor windsurf --scope global`
+  `cbx workflows doctor windsurf --scope project`
 
 ## 9) Managed Section Contract
 

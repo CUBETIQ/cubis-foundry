@@ -3476,6 +3476,7 @@ async function cleanupAntigravityTerminalIntegration({
 async function runWorkflowInstall(options) {
   try {
     const scope = normalizeScope(options.scope);
+    const ruleScope = scope === "global" ? "project" : scope;
     const dryRun = Boolean(options.dryRun);
     const platform = await resolvePlatform(options.platform, scope, process.cwd());
     const bundleId = await chooseBundle(options.bundle);
@@ -3518,7 +3519,7 @@ async function runWorkflowInstall(options) {
       bundleId,
       manifest,
       platform,
-      scope,
+      scope: ruleScope,
       overwrite: Boolean(options.overwrite),
       dryRun,
       cwd: process.cwd()
@@ -3526,13 +3527,13 @@ async function runWorkflowInstall(options) {
 
     const syncResult = await syncRulesForPlatform({
       platform,
-      scope,
+      scope: ruleScope,
       dryRun,
       cwd: process.cwd()
     });
     const engineeringArtifactsResult = await upsertEngineeringArtifacts({
       platform,
-      scope,
+      scope: ruleScope,
       overwrite: false,
       dryRun,
       skipTech: false,
@@ -3550,7 +3551,7 @@ async function runWorkflowInstall(options) {
     const terminalVerificationRuleResult =
       platform === "antigravity" && installResult.terminalIntegration
         ? await upsertTerminalVerificationForInstall({
-            scope,
+            scope: ruleScope,
             cwd: process.cwd(),
             terminalIntegration: installResult.terminalIntegration,
             dryRun
@@ -3592,7 +3593,7 @@ async function runWorkflowInstall(options) {
     if (dryRun) {
       console.log("\nDry-run complete. Re-run without `--dry-run` to apply changes.");
     } else {
-      console.log("\nTip: run `cbx workflows doctor --platform " + platform + " --scope " + scope + "`.");
+      console.log("\nTip: run `cbx workflows doctor --platform " + platform + " --scope " + ruleScope + "`.");
     }
   } catch (error) {
     if (error?.name === "ExitPromptError") {

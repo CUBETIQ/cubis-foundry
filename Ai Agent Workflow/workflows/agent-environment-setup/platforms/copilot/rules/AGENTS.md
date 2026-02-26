@@ -96,9 +96,9 @@ Use these commands to keep this setup healthy:
 - Install/update bundle:
   `cbx workflows install --platform copilot --bundle agent-environment-setup --scope global --overwrite`
 - Rebuild managed routing block:
-  `cbx workflows sync-rules --platform copilot --scope global`
+  `cbx workflows sync-rules --platform copilot --scope project`
 - Diagnose setup issues:
-  `cbx workflows doctor copilot --scope global`
+  `cbx workflows doctor copilot --scope project`
 
 ## 10) Managed Section Contract
 

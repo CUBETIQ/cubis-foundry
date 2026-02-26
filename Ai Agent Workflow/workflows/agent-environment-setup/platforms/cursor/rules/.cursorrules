@@ -79,9 +79,9 @@ Use these commands to keep this setup healthy:
 - Install/update bundle:
   `cbx workflows install --platform cursor --bundle agent-environment-setup --scope global --overwrite`
 - Rebuild managed routing block:
-  `cbx workflows sync-rules --platform cursor --scope global`
+  `cbx workflows sync-rules --platform cursor --scope project`
 - Diagnose setup issues:
-  `cbx workflows doctor cursor --scope global`
+  `cbx workflows doctor cursor --scope project`
 
 ## 9) Managed Section Contract
 

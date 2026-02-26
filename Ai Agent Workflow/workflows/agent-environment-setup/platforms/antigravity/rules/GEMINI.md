@@ -97,9 +97,9 @@ Use these commands to keep this setup healthy:
 - Install/update bundle:
   `cbx workflows install --platform antigravity --bundle agent-environment-setup --scope global --overwrite`
 - Rebuild managed routing block:
-  `cbx workflows sync-rules --platform antigravity --scope global`
+  `cbx workflows sync-rules --platform antigravity --scope project`
 - Diagnose setup issues:
-  `cbx workflows doctor antigravity --scope global`
+  `cbx workflows doctor antigravity --scope project`
 
 ## 9) Managed Section Contract
 
