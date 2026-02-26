@@ -2792,6 +2792,7 @@ async function resolvePostmanInstallSelection({
   let defaultWorkspaceId = hasWorkspaceOption
     ? normalizePostmanWorkspaceId(options.postmanWorkspaceId)
     : null;
+  let workspaceSelectionSource = hasWorkspaceOption ? "option" : "none";
   const requestedMcpScope = options.mcpScope
     ? normalizeMcpScope(options.mcpScope, normalizeMcpScope(scope, "project"))
     : null;
@@ -2868,6 +2869,7 @@ async function resolvePostmanInstallSelection({
     }
 
     defaultWorkspaceId = selectedWorkspaceId;
+    workspaceSelectionSource = "interactive";
   }
 
   if (canPrompt && stitchEnabled && !hasStitchApiKeyOption && !stitchApiKey && !envStitchApiKey) {
@@ -2945,6 +2947,7 @@ async function resolvePostmanInstallSelection({
     stitchApiKey,
     stitchApiKeySource,
     defaultWorkspaceId: defaultWorkspaceId ?? null,
+    workspaceSelectionSource,
     mcpScope,
     warnings,
     cbxConfig,
@@ -3012,6 +3015,21 @@ async function configurePostmanInstallArtifacts({
     if (storedStitchConfig) {
       effectiveStitchApiKey = storedStitchConfig.apiKey;
       effectiveStitchMcpUrl = storedStitchConfig.mcpUrl || STITCH_MCP_URL;
+    }
+
+    if (postmanSelection.workspaceSelectionSource && postmanSelection.workspaceSelectionSource !== "none") {
+      const requestedWorkspaceId = postmanSelection.defaultWorkspaceId ?? null;
+      const persistedWorkspaceId = effectiveDefaultWorkspaceId ?? null;
+      if (requestedWorkspaceId !== persistedWorkspaceId) {
+        const configScope = postmanSelection.mcpScope === "global" ? "global" : "project";
+        const configHint =
+          requestedWorkspaceId === null
+            ? `cbx workflows config --scope ${configScope} --clear-workspace-id`
+            : `cbx workflows config --scope ${configScope} --workspace-id \"${requestedWorkspaceId}\"`;
+        warnings.push(
+          `Selected Postman workspace (${requestedWorkspaceId === null ? "null" : requestedWorkspaceId}) was not saved because ${CBX_CONFIG_FILENAME} already exists. Re-run with --overwrite or run '${configHint}'.`
+        );
+      }
     }
   }
 
@@ -4519,6 +4537,105 @@ async function runWorkflowDoctor(platformArg, options) {
   }
 }
 
+async function runWorkflowConfig(options) {
+  try {
+    const cwd = process.cwd();
+    const scope = normalizeMcpScope(options.scope, "global");
+    const dryRun = Boolean(options.dryRun);
+    const hasWorkspaceIdOption = options.workspaceId !== undefined;
+    const wantsClearWorkspaceId = Boolean(options.clearWorkspaceId);
+    const wantsInteractiveEdit = Boolean(options.edit);
+
+    if (hasWorkspaceIdOption && wantsClearWorkspaceId) {
+      throw new Error("Use either --workspace-id or --clear-workspace-id, not both.");
+    }
+
+    const wantsMutation = hasWorkspaceIdOption || wantsClearWorkspaceId || wantsInteractiveEdit;
+    const showOnly = Boolean(options.show) || !wantsMutation;
+    const configPath = resolveCbxConfigPath({ scope, cwd });
+    const existing = await readJsonFileIfExists(configPath);
+    const existingValue =
+      existing.value && typeof existing.value === "object" && !Array.isArray(existing.value) ? existing.value : null;
+
+    if (showOnly) {
+      console.log(`Config file: ${configPath}`);
+      if (!existing.exists) {
+        console.log("Status: missing");
+        return;
+      }
+      if (!existingValue) {
+        throw new Error(`Existing config at ${configPath} is not valid JSON object.`);
+      }
+      console.log(`Status: ${existing.exists ? "exists" : "missing"}`);
+      console.log(JSON.stringify(existingValue, null, 2));
+      return;
+    }
+
+    if (existing.exists && !existingValue) {
+      throw new Error(`Existing config at ${configPath} is not valid JSON object.`);
+    }
+
+    const next = existingValue ? JSON.parse(JSON.stringify(existingValue)) : {};
+    if (!next.schemaVersion || typeof next.schemaVersion !== "number") next.schemaVersion = 1;
+    next.generatedBy = "cbx workflows config";
+    next.generatedAt = new Date().toISOString();
+
+    if (!next.mcp || typeof next.mcp !== "object" || Array.isArray(next.mcp)) next.mcp = {};
+    next.mcp.scope = scope;
+    if (!next.mcp.server) next.mcp.server = POSTMAN_SKILL_ID;
+
+    if (!next.postman || typeof next.postman !== "object" || Array.isArray(next.postman)) next.postman = {};
+    next.postman.apiKey = normalizePostmanApiKey(next.postman.apiKey);
+    next.postman.apiKeyEnvVar = String(next.postman.apiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR).trim() || POSTMAN_API_KEY_ENV_VAR;
+    next.postman.mcpUrl = String(next.postman.mcpUrl || POSTMAN_MCP_URL).trim() || POSTMAN_MCP_URL;
+
+    let workspaceId = normalizePostmanWorkspaceId(next.postman.defaultWorkspaceId);
+
+    if (wantsInteractiveEdit) {
+      const promptedWorkspaceId = await input({
+        message: "Postman default workspace ID (optional, leave blank or 'null' to clear):",
+        default: workspaceId || ""
+      });
+      workspaceId = normalizePostmanWorkspaceId(promptedWorkspaceId);
+    }
+
+    if (hasWorkspaceIdOption) {
+      workspaceId = normalizePostmanWorkspaceId(options.workspaceId);
+    }
+
+    if (wantsClearWorkspaceId) {
+      workspaceId = null;
+    }
+
+    next.postman.defaultWorkspaceId = workspaceId;
+    const envApiKey = normalizePostmanApiKey(process.env[POSTMAN_API_KEY_ENV_VAR]);
+    next.postman.apiKeySource = getPostmanApiKeySource({
+      apiKey: next.postman.apiKey,
+      envApiKey
+    });
+
+    const content = `${JSON.stringify(next, null, 2)}\n`;
+    if (!dryRun) {
+      await mkdir(path.dirname(configPath), { recursive: true });
+      await writeFile(configPath, content, "utf8");
+    }
+
+    console.log(`Config file: ${configPath}`);
+    console.log(`Action: ${dryRun ? (existing.exists ? "would-update" : "would-create") : existing.exists ? "updated" : "created"}`);
+    console.log(`postman.defaultWorkspaceId: ${workspaceId === null ? "null" : workspaceId}`);
+    if (Boolean(options.showAfter)) {
+      console.log(JSON.stringify(next, null, 2));
+    }
+  } catch (error) {
+    if (error?.name === "ExitPromptError") {
+      console.error("\nCancelled.");
+      process.exit(130);
+    }
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
 function printRulesInitSummary({
   platform,
   scope,
@@ -4750,6 +4867,18 @@ withWorkflowBaseOptions(
     .option("--json", "output JSON")
 ).action(runWorkflowDoctor);
 
+workflowsCommand
+  .command("config")
+  .description("View or edit cbx_config.json from terminal")
+  .option("--scope <scope>", "config scope: project|workspace|global|user", "global")
+  .option("--show", "show current config (default when no edit flags)")
+  .option("--edit", "edit Postman default workspace ID interactively")
+  .option("--workspace-id <id|null>", "set postman.defaultWorkspaceId")
+  .option("--clear-workspace-id", "set postman.defaultWorkspaceId to null")
+  .option("--show-after", "print JSON after update")
+  .option("--dry-run", "preview changes without writing files")
+  .action(runWorkflowConfig);
+
 workflowsCommand.action(() => {
   workflowsCommand.help();
 });
@@ -4808,6 +4937,21 @@ withWorkflowBaseOptions(
   printSkillsDeprecation();
   await runWorkflowDoctor(platform, options);
 });
+
+skillsCommand
+  .command("config")
+  .description("Alias for workflows config")
+  .option("--scope <scope>", "config scope: project|workspace|global|user", "global")
+  .option("--show", "show current config (default when no edit flags)")
+  .option("--edit", "edit Postman default workspace ID interactively")
+  .option("--workspace-id <id|null>", "set postman.defaultWorkspaceId")
+  .option("--clear-workspace-id", "set postman.defaultWorkspaceId to null")
+  .option("--show-after", "print JSON after update")
+  .option("--dry-run", "preview changes without writing files")
+  .action(async (options) => {
+    printSkillsDeprecation();
+    await runWorkflowConfig(options);
+  });
 
 skillsCommand.action(() => {
   printSkillsDeprecation();

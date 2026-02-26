@@ -89,6 +89,51 @@ Postman + Antigravity Stitch setup behavior:
 - Stitch key source priority for Antigravity: `--stitch-api-key` then `STITCH_API_KEY`; when unset, generated config keeps placeholder `X-Goog-Api-Key: ur stitch key`.
 - In project MCP scope, `cbx_config.json` and `.cbx/mcp/` are auto-added to `.gitignore` (no duplicate entries).
 
+Codex Postman workspace selection:
+
+```bash
+# Set Postman API key first
+export POSTMAN_API_KEY="<your-postman-api-key>"
+
+# Interactive workspace selector (recommended)
+cbx workflows install --platform codex --bundle agent-environment-setup --postman
+```
+
+- Do not use `--yes` here (it skips prompts).
+- You will get a workspace selector and the selected value is saved as `defaultWorkspaceId`.
+
+Direct/manual workspace ID:
+
+```bash
+cbx workflows install --platform codex --bundle agent-environment-setup --postman --postman-workspace-id "<workspace-id>" --yes
+```
+
+Clear default workspace:
+
+```bash
+cbx workflows install --platform codex --bundle agent-environment-setup --postman --postman-workspace-id null --yes
+```
+
+Important:
+- If `cbx_config.json` already exists and you want to change the saved workspace, use `--overwrite` (or edit config manually), because existing config is preserved by default.
+- If install output shows `Config file: skipped (...)`, your newly selected workspace is not persisted. Use `--overwrite` or edit with the config command below.
+
+View/edit config in terminal:
+
+```bash
+# View config
+cbx workflows config --scope global --show
+
+# Interactive edit (workspace ID)
+cbx workflows config --scope global --edit
+
+# Direct set workspace ID
+cbx workflows config --scope global --workspace-id "<workspace-id>"
+
+# Clear workspace ID
+cbx workflows config --scope global --clear-workspace-id
+```
+
 Platform runtime MCP placement:
 - Codex:
   - Global MCP scope: `~/.codex/config.toml` via `codex mcp add`.
