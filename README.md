@@ -26,8 +26,9 @@ Compatibility binaries are still shipped for migration:
 # 1) Install CLI
 npm install -g @cubis/foundry
 
-# 2) Set Postman key once (recommended: env mode)
+# 2) Set API keys once (recommended: env mode)
 export POSTMAN_API_KEY="<your-postman-api-key>"
+export STITCH_API_KEY="<your-stitch-api-key>" # Antigravity StitchMCP only
 
 # 3) Install workflow bundle for your platform
 cbx workflows install --platform codex --bundle agent-environment-setup --postman --yes
@@ -57,6 +58,7 @@ cbx workflows install --platform codex --postman --postman-api-key "<key>"
 cbx workflows install --platform codex --postman --mcp-scope global
 cbx workflows install --platform copilot --postman --mcp-scope project
 cbx workflows install --platform antigravity --postman
+cbx workflows install --platform antigravity --postman --stitch-api-key "<key>"
 cbx workflows install --platform copilot --postman
 ```
 
@@ -66,15 +68,18 @@ Install bootstrap behavior:
 - Rule sync + engineering artifacts (`AGENTS.md`/`GEMINI.md`/Copilot instructions, `ENGINEERING_RULES.md`, `TECH.md`) are maintained in workspace (`project`) scope.
 - Codex workflow templates are maintained in workspace `.agents/workflows` so workflow-wrapper routing remains discoverable in project rules.
 - Optional `--postman` bootstrap creates `cbx_config.json`, stores managed MCP definitions in `.cbx/mcp/`, and installs/configures Postman MCP for Codex, Antigravity, and Copilot.
+- For Antigravity only, `--postman` also installs a default `StitchMCP` entry (`stitch.googleapis.com/mcp`) using key from `--stitch-api-key` or `STITCH_API_KEY`.
 - Use `--mcp-scope <project|workspace|global|user>` to choose where MCP runtime config is installed (interactive installs prompt for this when not provided).
 - Use `cbx rules init --platform <platform> --overwrite` to force-regenerate both files.
 
-Postman setup behavior:
+Postman + Antigravity Stitch setup behavior:
 - `cbx_config.json` is generated in workspace root (project MCP scope) or `~/.cbx/cbx_config.json` (global MCP scope).
 - Managed MCP definition files are generated under `.cbx/mcp/<platform>/postman.json` (workspace scope) or `~/.cbx/mcp/<platform>/postman.json` (global scope).
 - Env-first auth is supported: when `POSTMAN_API_KEY` is set, generated settings keep `apiKey: null` and MCP config uses `Bearer ${POSTMAN_API_KEY}`.
 - Inline auth is supported with `--postman-api-key <key>`.
 - `--postman-workspace-id null` writes JSON `null` for `defaultWorkspaceId`.
+- Antigravity gets an additional managed file at `.cbx/mcp/antigravity/stitch.json` (or `~/.cbx/mcp/antigravity/stitch.json` in global MCP scope).
+- Stitch key source priority for Antigravity: `--stitch-api-key` then `STITCH_API_KEY`; when unset, generated config keeps placeholder `X-Goog-Api-Key: ur stitch key`.
 - In project MCP scope, `cbx_config.json` and `.cbx/mcp/` are auto-added to `.gitignore` (no duplicate entries).
 
 Platform runtime MCP placement:
@@ -82,11 +87,18 @@ Platform runtime MCP placement:
   - Global MCP scope: `~/.codex/config.toml` via `codex mcp add`.
   - Workspace MCP scope: `.vscode/mcp.json`.
 - Antigravity (Gemini CLI):
-  - Global MCP scope: `~/.gemini/settings.json` (`mcpServers`).
-  - Workspace MCP scope: `.gemini/settings.json` (`mcpServers`).
+  - Global MCP scope: `~/.gemini/settings.json` (`mcpServers`, includes `postman` + default `StitchMCP`).
+  - Workspace MCP scope: `.gemini/settings.json` (`mcpServers`, includes `postman` + default `StitchMCP`).
 - Copilot:
   - Workspace MCP scope: `.vscode/mcp.json`.
   - Global MCP scope: `~/.copilot/mcp-config.json`.
+
+API key docs:
+- Google Stitch MCP setup docs: [stitch.withgoogle.com/docs/mcp/setup](https://stitch.withgoogle.com/docs/mcp/setup)
+- Google Stitch settings (create API key): [stitch.withgoogle.com/settings](https://stitch.withgoogle.com/settings)
+- Google Cloud API key guidance: [Authenticate to Google and Google Cloud MCP servers](https://docs.cloud.google.com/mcp/authenticate-mcp)
+- Postman API key creation: [Generate and use Postman API keys](https://learning.postman.com/docs/developer/postman-api/authentication/)
+- Postman MCP setup: [Set up the Postman MCP Server](https://learning.postman.com/docs/developer/postman-api/postman-mcp-server/set-up-postman-mcp-server)
 
 `rules` manages strict engineering policy and a generated codebase tech map:
 
