@@ -1295,6 +1295,19 @@ async function resolveProfilePaths(profileId, scope, cwd = process.cwd()) {
   };
 }
 
+async function resolveArtifactProfilePaths(profileId, scope, cwd = process.cwd()) {
+  const scopedPaths = await resolveProfilePaths(profileId, scope, cwd);
+  if (scope !== "global") return scopedPaths;
+
+  // Global install mode is skills-only. Keep workflows/agents in workspace scope.
+  const workspacePaths = await resolveProfilePaths(profileId, "project", cwd);
+  return {
+    ...scopedPaths,
+    workflowsDir: workspacePaths.workflowsDir,
+    agentsDir: workspacePaths.agentsDir
+  };
+}
+
 async function listBundleIds() {
   const root = path.join(agentAssetsRoot(), "workflows");
   if (!(await pathExists(root))) return [];
@@ -2632,12 +2645,13 @@ async function installBundleArtifacts({
   platform,
   scope,
   overwrite,
+  profilePathsOverride = null,
   extraSkillIds = [],
   terminalVerifierSelection = null,
   dryRun = false,
   cwd = process.cwd()
 }) {
-  const profilePaths = await resolveProfilePaths(platform, scope, cwd);
+  const profilePaths = profilePathsOverride || (await resolveArtifactProfilePaths(platform, scope, cwd));
   const platformSpec = manifest.platforms?.[platform];
 
   if (!platformSpec) {
@@ -2766,6 +2780,46 @@ async function installBundleArtifacts({
   };
 }
 
+async function installCodexProjectWorkflowTemplates({
+  bundleId,
+  manifest,
+  overwrite,
+  dryRun = false,
+  cwd = process.cwd()
+}) {
+  const platform = "codex";
+  const platformSpec = manifest.platforms?.[platform];
+  if (!platformSpec) return { installed: [], skipped: [] };
+
+  const workflowFiles = Array.isArray(platformSpec.workflows) ? platformSpec.workflows : [];
+  if (workflowFiles.length === 0) return { installed: [], skipped: [] };
+
+  const profilePaths = await resolveProfilePaths(platform, "project", cwd);
+  if (!dryRun) {
+    await mkdir(profilePaths.workflowsDir, { recursive: true });
+  }
+
+  const bundleRoot = path.join(agentAssetsRoot(), "workflows", bundleId);
+  const platformRoot = path.join(bundleRoot, "platforms", platform);
+  const installed = [];
+  const skipped = [];
+
+  for (const workflowFile of workflowFiles) {
+    const source = path.join(platformRoot, "workflows", workflowFile);
+    const destination = path.join(profilePaths.workflowsDir, path.basename(workflowFile));
+
+    if (!(await pathExists(source))) {
+      throw new Error(`Missing workflow source file: ${source}`);
+    }
+
+    const result = await copyArtifact({ source, destination, overwrite, dryRun });
+    if (result.action === "skipped" || result.action === "would-skip") skipped.push(destination);
+    else installed.push(destination);
+  }
+
+  return { installed, skipped };
+}
+
 async function seedRuleFileFromTemplateIfMissing({
   bundleId,
   manifest,
@@ -2833,10 +2887,11 @@ async function removeBundleArtifacts({
   manifest,
   platform,
   scope,
+  profilePathsOverride = null,
   dryRun = false,
   cwd = process.cwd()
 }) {
-  const profilePaths = await resolveProfilePaths(platform, scope, cwd);
+  const profilePaths = profilePathsOverride || (await resolveArtifactProfilePaths(platform, scope, cwd));
   const platformSpec = manifest.platforms?.[platform];
   if (!platformSpec) throw new Error(`Bundle '${bundleId}' does not define platform '${platform}'.`);
 
@@ -2886,6 +2941,7 @@ function printPlatforms() {
     );
     console.log(`  global skills:     ${profile.global.skillDirs[0]}`);
     console.log(`  global rules:      ${profile.global.ruleFilesByPriority.join(" | ")}`);
+    console.log("  default install:   workflows/agents -> project, skills -> global");
   }
 }
 
@@ -3060,21 +3116,22 @@ function printRemoveSummary({
 async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
   const profile = WORKFLOW_PROFILES[platform];
   const profilePaths = await resolveProfilePaths(platform, scope, cwd);
+  const artifactPaths = await resolveArtifactProfilePaths(platform, scope, cwd);
   const agentsEnabled = platformInstallsCustomAgents(platform);
 
   const pathStatus = {
     workflows: {
-      path: profilePaths.workflowsDir,
-      exists: await pathExists(profilePaths.workflowsDir)
+      path: artifactPaths.workflowsDir,
+      exists: await pathExists(artifactPaths.workflowsDir)
     },
     agents: {
-      path: profilePaths.agentsDir,
+      path: artifactPaths.agentsDir,
       enabled: agentsEnabled,
-      exists: agentsEnabled ? await pathExists(profilePaths.agentsDir) : null
+      exists: agentsEnabled ? await pathExists(artifactPaths.agentsDir) : null
     },
     skills: {
-      path: profilePaths.skillsDir,
-      exists: await pathExists(profilePaths.skillsDir)
+      path: artifactPaths.skillsDir,
+      exists: await pathExists(artifactPaths.skillsDir)
     }
   };
 
@@ -3100,7 +3157,7 @@ async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
 
   let terminalIntegration = null;
   if (platform === "antigravity") {
-    const integrationDir = getAntigravityTerminalIntegrationDir(profilePaths);
+    const integrationDir = getAntigravityTerminalIntegrationDir(artifactPaths);
     const configPath = path.join(integrationDir, "config.json");
     const exists = await pathExists(integrationDir);
     const configExists = await pathExists(configPath);
@@ -3220,7 +3277,7 @@ async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
   }
 
   if (platform === "copilot" && pathStatus.skills.exists) {
-    const findings = await validateCopilotSkillsSchema(profilePaths.skillsDir);
+    const findings = await validateCopilotSkillsSchema(artifactPaths.skillsDir);
     if (findings.length > 0) {
       const preview = findings
         .slice(0, 5)
@@ -3236,7 +3293,7 @@ async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
   }
 
   if (platform === "copilot" && pathStatus.agents.exists) {
-    const findings = await validateCopilotAgentsSchema(profilePaths.agentsDir);
+    const findings = await validateCopilotAgentsSchema(artifactPaths.agentsDir);
     if (findings.length > 0) {
       const preview = findings
         .slice(0, 5)
@@ -3447,7 +3504,7 @@ async function cleanupAntigravityTerminalIntegration({
   cwd,
   dryRun = false
 }) {
-  const profilePaths = await resolveProfilePaths("antigravity", scope, cwd);
+  const profilePaths = await resolveArtifactProfilePaths("antigravity", scope, cwd);
   const integrationDir = getAntigravityTerminalIntegrationDir(profilePaths);
   const dirRemoved = await safeRemove(integrationDir, dryRun);
 
@@ -3475,10 +3532,12 @@ async function cleanupAntigravityTerminalIntegration({
 
 async function runWorkflowInstall(options) {
   try {
+    const cwd = process.cwd();
     const scope = normalizeScope(options.scope);
     const ruleScope = scope === "global" ? "project" : scope;
     const dryRun = Boolean(options.dryRun);
-    const platform = await resolvePlatform(options.platform, scope, process.cwd());
+    const platform = await resolvePlatform(options.platform, scope, cwd);
+    const artifactProfilePaths = await resolveArtifactProfilePaths(platform, scope, cwd);
     const bundleId = await chooseBundle(options.bundle);
     const manifest = await readBundleManifest(bundleId);
 
@@ -3500,7 +3559,7 @@ async function runWorkflowInstall(options) {
     const postmanSelection = await resolvePostmanInstallSelection({
       scope,
       options,
-      cwd: process.cwd()
+      cwd
     });
 
     const installResult = await installBundleArtifacts({
@@ -3509,11 +3568,27 @@ async function runWorkflowInstall(options) {
       platform,
       scope,
       overwrite: Boolean(options.overwrite),
+      profilePathsOverride: artifactProfilePaths,
       extraSkillIds: postmanSelection.enabled ? [POSTMAN_SKILL_ID] : [],
       terminalVerifierSelection,
       dryRun,
-      cwd: process.cwd()
+      cwd
     });
+
+    if (platform === "codex" && scope === "global") {
+      const codexProjectPaths = await resolveProfilePaths("codex", "project", cwd);
+      if (path.resolve(artifactProfilePaths.workflowsDir) !== path.resolve(codexProjectPaths.workflowsDir)) {
+        const codexProjectWorkflows = await installCodexProjectWorkflowTemplates({
+          bundleId,
+          manifest,
+          overwrite: Boolean(options.overwrite),
+          dryRun,
+          cwd
+        });
+        installResult.installed.push(...codexProjectWorkflows.installed);
+        installResult.skipped.push(...codexProjectWorkflows.skipped);
+      }
+    }
 
     await seedRuleFileFromTemplateIfMissing({
       bundleId,
@@ -3522,14 +3597,14 @@ async function runWorkflowInstall(options) {
       scope: ruleScope,
       overwrite: Boolean(options.overwrite),
       dryRun,
-      cwd: process.cwd()
+      cwd
     });
 
     const syncResult = await syncRulesForPlatform({
       platform,
       scope: ruleScope,
       dryRun,
-      cwd: process.cwd()
+      cwd
     });
     const engineeringArtifactsResult = await upsertEngineeringArtifacts({
       platform,
@@ -3537,7 +3612,7 @@ async function runWorkflowInstall(options) {
       overwrite: false,
       dryRun,
       skipTech: false,
-      cwd: process.cwd()
+      cwd
     });
     const postmanSetupResult = await configurePostmanInstallArtifacts({
       scope,
@@ -3545,14 +3620,14 @@ async function runWorkflowInstall(options) {
       postmanSelection,
       overwrite: Boolean(options.overwrite),
       dryRun,
-      cwd: process.cwd()
+      cwd
     });
 
     const terminalVerificationRuleResult =
       platform === "antigravity" && installResult.terminalIntegration
         ? await upsertTerminalVerificationForInstall({
             scope: ruleScope,
-            cwd: process.cwd(),
+            cwd,
             terminalIntegration: installResult.terminalIntegration,
             dryRun
           })
@@ -3565,7 +3640,7 @@ async function runWorkflowInstall(options) {
         bundleId,
         artifacts: installResult.artifacts,
         ruleFilePath: syncResult.filePath,
-        cwd: process.cwd()
+        cwd
       });
     }
 
@@ -3611,9 +3686,12 @@ async function runWorkflowRemove(target, options) {
       throw new Error("Missing <bundle-or-workflow>. Usage: cbx workflows remove <bundle-or-workflow>");
     }
 
+    const cwd = process.cwd();
     const scope = normalizeScope(options.scope);
+    const ruleScope = scope === "global" ? "project" : scope;
     const dryRun = Boolean(options.dryRun);
-    const platform = await resolvePlatform(options.platform, scope, process.cwd());
+    const platform = await resolvePlatform(options.platform, scope, cwd);
+    const artifactProfilePaths = await resolveArtifactProfilePaths(platform, scope, cwd);
     const bundleIds = await listBundleIds();
 
     let removed = [];
@@ -3640,8 +3718,9 @@ async function runWorkflowRemove(target, options) {
         manifest,
         platform,
         scope,
+        profilePathsOverride: artifactProfilePaths,
         dryRun,
-        cwd: process.cwd()
+        cwd
       });
 
       removed = removeResult.removed;
@@ -3649,7 +3728,7 @@ async function runWorkflowRemove(target, options) {
       if (platform === "antigravity") {
         terminalIntegrationCleanup = await cleanupAntigravityTerminalIntegration({
           scope,
-          cwd: process.cwd(),
+          cwd,
           dryRun
         });
         if (terminalIntegrationCleanup.dirRemoved) {
@@ -3657,8 +3736,7 @@ async function runWorkflowRemove(target, options) {
         }
       }
     } else {
-      const profilePaths = await resolveProfilePaths(platform, scope, process.cwd());
-      const workflowFile = await findWorkflowFileByTarget(profilePaths.workflowsDir, target);
+      const workflowFile = await findWorkflowFileByTarget(artifactProfilePaths.workflowsDir, target);
 
       if (!workflowFile) {
         throw new Error(`Could not find workflow or bundle '${target}' in platform '${platform}'.`);
@@ -3682,9 +3760,9 @@ async function runWorkflowRemove(target, options) {
 
     const syncResult = await syncRulesForPlatform({
       platform,
-      scope,
+      scope: ruleScope,
       dryRun,
-      cwd: process.cwd()
+      cwd
     });
 
     if (!dryRun && removedType === "bundle") {
@@ -3693,7 +3771,7 @@ async function runWorkflowRemove(target, options) {
         platform,
         bundleId: target,
         ruleFilePath: syncResult.filePath,
-        cwd: process.cwd()
+        cwd
       });
     }
 

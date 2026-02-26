@@ -60,7 +60,9 @@ cbx workflows install --platform copilot --postman
 
 Install bootstrap behavior:
 - `cbx workflows install` now also bootstraps `ENGINEERING_RULES.md` and `TECH.md` (creates when missing; keeps existing files unless explicitly regenerated).
-- When install scope is `global`, workflow/skill/agent artifacts install to global paths, but rule sync + engineering artifacts are maintained in workspace (`project`) scope.
+- When install scope is `global` (default), skills/powers install to global paths, while workflows + agents stay in workspace (`project`) paths.
+- Rule sync + engineering artifacts (`AGENTS.md`/`GEMINI.md`/Copilot instructions, `ENGINEERING_RULES.md`, `TECH.md`) are maintained in workspace (`project`) scope.
+- Codex workflow templates are maintained in workspace `.agents/workflows` so workflow-wrapper routing remains discoverable in project rules.
 - Optional `--postman` bootstrap creates `postman_setting.json` and installs/configures the Postman skill/MCP for Codex, Antigravity, and Copilot.
 - Use `cbx rules init --platform <platform> --overwrite` to force-regenerate both files.
 
@@ -177,11 +179,9 @@ Project scope:
 - Terminal integration (optional): `.agent/terminal-integration`
 
 Global scope:
-- Workflows: `~/.gemini/antigravity/workflows`
-- Agents: `~/.gemini/antigravity/agents`
 - Skills: `~/.gemini/antigravity/skills`
 - Rules: `~/.gemini/GEMINI.md`
-- Terminal integration (optional): `~/.gemini/antigravity/terminal-integration`
+- Workflows/agents/terminal-integration: default install keeps these in workspace (`.agent/...`) paths.
 
 ### Antigravity Terminal Integration (Optional)
 
@@ -191,7 +191,7 @@ Install-time options:
 
 Behavior:
 - Interactive installs prompt whether to enable terminal verification integration.
-- If enabled, cbx writes managed scripts/config under `.agent/terminal-integration` (or global equivalent).
+- If enabled, cbx writes managed scripts/config under `.agent/terminal-integration`.
 - cbx also writes a managed terminal verification block into Antigravity rule files so post-task verification commands are explicit.
 - Removing the bundle cleans the managed terminal integration directory and block.
 
@@ -208,9 +208,9 @@ Project scope:
   - Example usage: `$workflow-plan`, `$agent-backend-specialist`
 
 Global scope:
-- Workflow templates (reference docs): `~/.agents/workflows`
 - Skills: `~/.agents/skills`
 - Rules: `~/.codex/AGENTS.md`
+- Workflow templates (reference docs): default install keeps these in workspace `.agents/workflows`
 - Agents: not installed for Codex runtime
 
 Legacy compatibility note:
@@ -226,10 +226,9 @@ Project scope:
 - Skill schema note: `cbx` normalizes Copilot skill frontmatter by removing unsupported top-level keys like `displayName` and `keywords` during install.
 
 Global scope:
-- Workflows: `~/.copilot/workflows`
-- Agents: `~/.copilot/agents`
 - Skills: `~/.copilot/skills`
 - Rules: `~/.copilot/copilot-instructions.md`
+- Workflows/agents: default install keeps these in workspace (`.github/...`) paths.
 
 ## Rule Auto-Sync
 
@@ -261,7 +260,7 @@ Default scope:
   - `cbx install` (legacy alias)
   - `cbx init` (legacy alias)
   - Default scope for these commands is `global`.
-  - Rule files (`AGENTS.md`/`GEMINI.md`/Copilot instructions) and engineering files (`ENGINEERING_RULES.md`, `TECH.md`) are still updated in workspace (`project`) scope during install.
+  - In this default global mode, only skills/powers install globally. Workflows/agents and rule/engineering files remain workspace-scoped.
 - Other workflow/rules commands default to `project`.
 
 Optional:
