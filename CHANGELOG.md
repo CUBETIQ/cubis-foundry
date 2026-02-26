@@ -2,6 +2,19 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.25] - 2026-02-26
+
+### Added
+
+- Added `cbx workflows config` command to view and edit `cbx_config.json` from terminal.
+- Added `cbx skills config` alias for compatibility with deprecated `skills` command group.
+- Added docs for showing/updating/clearing Postman `defaultWorkspaceId` after install.
+
+### Changed
+
+- Improved Postman install warnings when workspace selection is not persisted because existing `cbx_config.json` was skipped.
+- Included actionable follow-up command in warnings (`cbx workflows config ...`).
+
 ## [0.3.23] - 2026-02-26
 
 ### Added
