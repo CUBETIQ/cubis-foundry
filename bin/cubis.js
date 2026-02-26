@@ -127,11 +127,13 @@ const TERMINAL_VERIFIER_PROVIDERS = ["codex", "gemini"];
 const DEFAULT_TERMINAL_VERIFIER = "codex";
 const POSTMAN_API_KEY_ENV_VAR = "POSTMAN_API_KEY";
 const POSTMAN_MCP_URL = "https://mcp.postman.com/minimal";
+const POSTMAN_API_BASE_URL = "https://api.getpostman.com";
 const POSTMAN_SKILL_ID = "postman";
 const STITCH_MCP_SERVER_ID = "StitchMCP";
 const STITCH_API_KEY_ENV_VAR = "STITCH_API_KEY";
 const STITCH_MCP_URL = "https://stitch.googleapis.com/mcp";
 const STITCH_API_KEY_PLACEHOLDER = "ur stitch key";
+const POSTMAN_WORKSPACE_MANUAL_CHOICE = "__postman_workspace_manual__";
 const CBX_CONFIG_FILENAME = "cbx_config.json";
 const POSTMAN_SETTINGS_FILENAME = "postman_setting.json";
 const POSTMAN_API_KEY_MISSING_WARNING =
@@ -2428,6 +2430,57 @@ function parseStoredPostmanConfig(raw) {
   };
 }
 
+async function fetchPostmanWorkspaces({
+  apiKey,
+  apiBaseUrl = POSTMAN_API_BASE_URL,
+  timeoutMs = 12000
+}) {
+  if (!apiKey) return [];
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  const endpoint = `${apiBaseUrl.replace(/\/$/, "")}/workspaces`;
+
+  try {
+    const response = await fetch(endpoint, {
+      method: "GET",
+      headers: {
+        "X-Api-Key": apiKey,
+        Accept: "application/json"
+      },
+      signal: controller.signal
+    });
+
+    const payload = await response.json().catch(() => null);
+    if (!response.ok) {
+      const message =
+        payload?.error?.message ||
+        payload?.error?.name ||
+        `Postman API request failed (${response.status} ${response.statusText}).`;
+      throw new Error(message);
+    }
+
+    const workspaces = Array.isArray(payload?.workspaces) ? payload.workspaces : [];
+    return workspaces
+      .map((workspace) => {
+        const id = normalizePostmanWorkspaceId(workspace?.id);
+        if (!id) return null;
+        const name = String(workspace?.name || "").trim() || id;
+        const type = String(workspace?.type || "").trim() || null;
+        const visibility = String(workspace?.visibility || "").trim() || null;
+        return { id, name, type, visibility };
+      })
+      .filter(Boolean);
+  } catch (error) {
+    if (error?.name === "AbortError") {
+      throw new Error("Postman workspace lookup timed out.");
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 function parseStoredStitchConfig(raw) {
   if (!raw || typeof raw !== "object") return null;
   const source = raw.stitch && typeof raw.stitch === "object" ? raw.stitch : null;
@@ -2762,11 +2815,59 @@ async function resolvePostmanInstallSelection({
   }
 
   if (canPrompt && !hasWorkspaceOption) {
-    const promptedWorkspaceId = await input({
-      message: "Default Postman workspace ID (optional, leave blank for null):",
-      default: ""
-    });
-    defaultWorkspaceId = normalizePostmanWorkspaceId(promptedWorkspaceId);
+    const selectableApiKey = normalizePostmanApiKey(apiKey || envApiKey);
+    let usedWorkspaceSelector = false;
+    let selectedWorkspaceId = defaultWorkspaceId;
+
+    if (selectableApiKey) {
+      try {
+        const fetchedWorkspaces = await fetchPostmanWorkspaces({
+          apiKey: selectableApiKey
+        });
+        if (fetchedWorkspaces.length > 0) {
+          usedWorkspaceSelector = true;
+          const sortedWorkspaces = [...fetchedWorkspaces].sort((a, b) => a.name.localeCompare(b.name));
+          const workspaceChoice = await select({
+            message: "Choose default Postman workspace for this install:",
+            choices: [
+              { name: "No default workspace (null)", value: null },
+              ...sortedWorkspaces.map((workspace) => {
+                const details = [workspace.type, workspace.visibility].filter(Boolean).join(", ");
+                const suffix = details ? ` - ${details}` : "";
+                return {
+                  name: `${workspace.name} (${workspace.id})${suffix}`,
+                  value: workspace.id
+                };
+              }),
+              { name: "Enter workspace ID manually", value: POSTMAN_WORKSPACE_MANUAL_CHOICE }
+            ],
+            default: null
+          });
+
+          if (workspaceChoice === POSTMAN_WORKSPACE_MANUAL_CHOICE) {
+            const promptedWorkspaceId = await input({
+              message: "Default Postman workspace ID (optional, leave blank for null):",
+              default: ""
+            });
+            selectedWorkspaceId = normalizePostmanWorkspaceId(promptedWorkspaceId);
+          } else {
+            selectedWorkspaceId = normalizePostmanWorkspaceId(workspaceChoice);
+          }
+        }
+      } catch (error) {
+        warnings.push(`Could not load Postman workspaces for selection: ${error.message}`);
+      }
+    }
+
+    if (!usedWorkspaceSelector) {
+      const promptedWorkspaceId = await input({
+        message: "Default Postman workspace ID (optional, leave blank for null):",
+        default: ""
+      });
+      selectedWorkspaceId = normalizePostmanWorkspaceId(promptedWorkspaceId);
+    }
+
+    defaultWorkspaceId = selectedWorkspaceId;
   }
 
   if (canPrompt && stitchEnabled && !hasStitchApiKeyOption && !stitchApiKey && !envStitchApiKey) {

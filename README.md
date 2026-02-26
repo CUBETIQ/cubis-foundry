@@ -59,6 +59,7 @@ cbx workflows install --platform antigravity --dry-run
 cbx workflows install --platform antigravity --terminal-integration --terminal-verifier codex
 cbx workflows install --platform codex --postman
 cbx workflows install --platform codex --postman --postman-workspace-id null
+cbx workflows install --platform codex --postman --postman-workspace-id "<workspace-id>"
 cbx workflows install --platform codex --postman --postman-api-key "<key>"
 cbx workflows install --platform codex --postman --mcp-scope global
 cbx workflows install --platform copilot --postman --mcp-scope project
@@ -83,6 +84,7 @@ Postman + Antigravity Stitch setup behavior:
 - Env-first auth is supported: when `POSTMAN_API_KEY` is set, generated settings keep `apiKey: null` and MCP config uses `Bearer ${POSTMAN_API_KEY}`.
 - Inline auth is supported with `--postman-api-key <key>`.
 - `--postman-workspace-id null` writes JSON `null` for `defaultWorkspaceId`.
+- If `POSTMAN_API_KEY` is available and install is interactive (no `--yes`) without `--postman-workspace-id`, `cbx` fetches your Postman workspaces and prompts you to pick one as default.
 - Antigravity gets an additional managed file at `.cbx/mcp/antigravity/stitch.json` (or `~/.cbx/mcp/antigravity/stitch.json` in global MCP scope).
 - Stitch key source priority for Antigravity: `--stitch-api-key` then `STITCH_API_KEY`; when unset, generated config keeps placeholder `X-Goog-Api-Key: ur stitch key`.
 - In project MCP scope, `cbx_config.json` and `.cbx/mcp/` are auto-added to `.gitignore` (no duplicate entries).
