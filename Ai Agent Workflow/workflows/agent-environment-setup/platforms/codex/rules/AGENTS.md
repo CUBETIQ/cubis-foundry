@@ -85,11 +85,11 @@ Before multi-file or architecture-impacting changes, ask targeted questions when
 Use these commands to keep this setup healthy:
 
 - Install/update bundle:
-  `cbx workflows install --platform codex --bundle agent-environment-setup --scope project --overwrite`
+  `cbx workflows install --platform codex --bundle agent-environment-setup --scope global --overwrite`
 - Rebuild managed routing block:
-  `cbx workflows sync-rules --platform codex --scope project`
+  `cbx workflows sync-rules --platform codex --scope global`
 - Diagnose setup issues:
-  `cbx workflows doctor codex --scope project`
+  `cbx workflows doctor codex --scope global`
 
 ## 9) Managed Section Contract
 

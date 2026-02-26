@@ -95,11 +95,11 @@ If Antigravity script harness exists, prefer:
 Use these commands to keep this setup healthy:
 
 - Install/update bundle:
-  `cbx workflows install --platform antigravity --bundle agent-environment-setup --scope project --overwrite`
+  `cbx workflows install --platform antigravity --bundle agent-environment-setup --scope global --overwrite`
 - Rebuild managed routing block:
-  `cbx workflows sync-rules --platform antigravity --scope project`
+  `cbx workflows sync-rules --platform antigravity --scope global`
 - Diagnose setup issues:
-  `cbx workflows doctor antigravity --scope project`
+  `cbx workflows doctor antigravity --scope global`
 
 ## 9) Managed Section Contract
 

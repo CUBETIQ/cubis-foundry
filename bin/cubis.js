@@ -3319,7 +3319,9 @@ function withWorkflowBaseOptions(command) {
 }
 
 function withInstallOptions(command) {
-  return withWorkflowBaseOptions(command)
+  return command
+    .option("-p, --platform <platform>", "target platform id")
+    .option("--scope <scope>", "target scope: project|global", "global")
     .option("-b, --bundle <bundle>", "bundle id (default: agent-environment-setup)")
     .option("--overwrite", "overwrite existing files")
     .option(

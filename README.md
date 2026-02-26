@@ -252,10 +252,19 @@ Behavior:
 ## Scope and Detection
 
 Default scope:
-- `project`
+- Install/init commands:
+  - `cbx workflows install`
+  - `cbx workflows init`
+  - `cbx skills install`
+  - `cbx skills init`
+  - `cbx install` (legacy alias)
+  - `cbx init` (legacy alias)
+  - Default scope for these commands is `global`.
+- Other workflow/rules commands default to `project`.
 
 Optional:
 - `--scope global`
+- `--scope project`
 
 Platform auto-detection:
 - Uses repo markers for Antigravity/Codex/Copilot.
