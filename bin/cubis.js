@@ -13,13 +13,16 @@ import {
   writeFile
 } from "node:fs/promises";
 import { createRequire } from "node:module";
+import { execFile as execFileCallback } from "node:child_process";
 import os from "node:os";
 import path from "node:path";
 import process from "node:process";
+import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
 
 const require = createRequire(import.meta.url);
 const { version: CLI_VERSION } = require("../package.json");
+const execFile = promisify(execFileCallback);
 
 const MANAGED_BLOCK_START_RE = /<!--\s*cbx:workflows:auto:start[^>]*-->/g;
 const MANAGED_BLOCK_END_RE = /<!--\s*cbx:workflows:auto:end\s*-->/g;
@@ -125,9 +128,10 @@ const DEFAULT_TERMINAL_VERIFIER = "codex";
 const POSTMAN_API_KEY_ENV_VAR = "POSTMAN_API_KEY";
 const POSTMAN_MCP_URL = "https://mcp.postman.com/minimal";
 const POSTMAN_SKILL_ID = "postman";
+const CBX_CONFIG_FILENAME = "cbx_config.json";
 const POSTMAN_SETTINGS_FILENAME = "postman_setting.json";
 const POSTMAN_API_KEY_MISSING_WARNING =
-  `Postman API key is not configured. Set ${POSTMAN_API_KEY_ENV_VAR} or update ${POSTMAN_SETTINGS_FILENAME}.`;
+  `Postman API key is not configured. Set ${POSTMAN_API_KEY_ENV_VAR} or update ${CBX_CONFIG_FILENAME}.`;
 const TECH_SCAN_MAX_FILES = 5000;
 const TECH_SCAN_IGNORED_DIRS = new Set([
   ".git",
@@ -277,6 +281,14 @@ function normalizeScope(value) {
   const normalized = value.trim().toLowerCase();
   if (normalized === "project" || normalized === "global") return normalized;
   throw new Error(`Unknown scope '${value}'. Use --scope project or --scope global.`);
+}
+
+function normalizeMcpScope(value, fallback = "project") {
+  if (!value) return fallback;
+  const normalized = value.trim().toLowerCase();
+  if (normalized === "project" || normalized === "workspace") return "project";
+  if (normalized === "global" || normalized === "user") return "global";
+  throw new Error(`Unknown MCP scope '${value}'. Use project/workspace or global/user.`);
 }
 
 function normalizeTerminalVerifier(value) {
@@ -2254,7 +2266,7 @@ async function writeGeneratedArtifact({ destination, content, dryRun = false }) 
   return { action: exists ? "replaced" : "installed", path: destination };
 }
 
-function resolvePostmanSettingsPath({ scope, cwd = process.cwd() }) {
+function resolveLegacyPostmanSettingsPath({ scope, cwd = process.cwd() }) {
   if (scope === "global") {
     return path.join(os.homedir(), ".cbx", POSTMAN_SETTINGS_FILENAME);
   }
@@ -2262,20 +2274,70 @@ function resolvePostmanSettingsPath({ scope, cwd = process.cwd() }) {
   return path.join(workspaceRoot, POSTMAN_SETTINGS_FILENAME);
 }
 
-function buildPostmanMcpConfig({ apiKey = null, mcpUrl = POSTMAN_MCP_URL }) {
-  const authHeader = apiKey
-    ? `Bearer ${apiKey}`
-    : `Bearer \${${POSTMAN_API_KEY_ENV_VAR}}`;
+function resolveCbxConfigPath({ scope, cwd = process.cwd() }) {
+  if (scope === "global") {
+    return path.join(os.homedir(), ".cbx", CBX_CONFIG_FILENAME);
+  }
+  const workspaceRoot = findWorkspaceRoot(cwd);
+  return path.join(workspaceRoot, CBX_CONFIG_FILENAME);
+}
+
+function resolveMcpRootPath({ scope, cwd = process.cwd() }) {
+  if (scope === "global") {
+    return path.join(os.homedir(), ".cbx", "mcp");
+  }
+  const workspaceRoot = findWorkspaceRoot(cwd);
+  return path.join(workspaceRoot, ".cbx", "mcp");
+}
+
+function resolvePostmanMcpDefinitionPath({ platform, scope, cwd = process.cwd() }) {
+  return path.join(resolveMcpRootPath({ scope, cwd }), platform, `${POSTMAN_SKILL_ID}.json`);
+}
+
+function buildPostmanAuthHeader({ apiKey = null, apiKeyEnvVar = POSTMAN_API_KEY_ENV_VAR }) {
+  return apiKey ? `Bearer ${apiKey}` : `Bearer \${${apiKeyEnvVar}}`;
+}
+
+function buildPostmanMcpDefinition({
+  apiKey = null,
+  apiKeyEnvVar = POSTMAN_API_KEY_ENV_VAR,
+  mcpUrl = POSTMAN_MCP_URL
+}) {
   return {
-    mcpServers: {
-      postman: {
-        url: mcpUrl,
-        headers: {
-          Authorization: authHeader
-        }
-      }
-    },
-    disabled: false
+    schemaVersion: 1,
+    server: POSTMAN_SKILL_ID,
+    transport: "http",
+    url: mcpUrl,
+    headers: {
+      Authorization: buildPostmanAuthHeader({ apiKey, apiKeyEnvVar })
+    }
+  };
+}
+
+function buildVsCodePostmanServer({
+  apiKey = null,
+  apiKeyEnvVar = POSTMAN_API_KEY_ENV_VAR,
+  mcpUrl = POSTMAN_MCP_URL
+}) {
+  return {
+    type: "sse",
+    url: mcpUrl,
+    headers: {
+      Authorization: buildPostmanAuthHeader({ apiKey, apiKeyEnvVar })
+    }
+  };
+}
+
+function buildGeminiPostmanServer({
+  apiKey = null,
+  apiKeyEnvVar = POSTMAN_API_KEY_ENV_VAR,
+  mcpUrl = POSTMAN_MCP_URL
+}) {
+  return {
+    httpUrl: mcpUrl,
+    headers: {
+      Authorization: buildPostmanAuthHeader({ apiKey, apiKeyEnvVar })
+    }
   };
 }
 
@@ -2289,6 +2351,260 @@ function normalizePostmanApiKey(value) {
   if (value === undefined || value === null) return null;
   const normalized = String(value).trim();
   return normalized || null;
+}
+
+function parseStoredPostmanConfig(raw) {
+  if (!raw || typeof raw !== "object") return null;
+  const source = raw.postman && typeof raw.postman === "object" ? raw.postman : raw;
+
+  const apiKey = normalizePostmanApiKey(source.apiKey);
+  const apiKeyEnvVar = String(source.apiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR).trim() || POSTMAN_API_KEY_ENV_VAR;
+  const mcpUrl = String(source.mcpUrl || POSTMAN_MCP_URL).trim() || POSTMAN_MCP_URL;
+  const defaultWorkspaceId = normalizePostmanWorkspaceId(source.defaultWorkspaceId);
+
+  return {
+    apiKey,
+    apiKeyEnvVar,
+    mcpUrl,
+    defaultWorkspaceId
+  };
+}
+
+async function readJsonFileIfExists(filePath) {
+  if (!(await pathExists(filePath))) return { exists: false, value: null };
+  try {
+    const raw = await readFile(filePath, "utf8");
+    return { exists: true, value: JSON.parse(raw) };
+  } catch (error) {
+    return { exists: true, value: null, error };
+  }
+}
+
+async function upsertJsonObjectFile({ targetPath, updater, dryRun = false }) {
+  const exists = await pathExists(targetPath);
+  const warnings = [];
+  let parsed = {};
+
+  if (exists) {
+    try {
+      const raw = await readFile(targetPath, "utf8");
+      const decoded = JSON.parse(raw);
+      if (decoded && typeof decoded === "object" && !Array.isArray(decoded)) {
+        parsed = decoded;
+      } else {
+        warnings.push(`Existing JSON at ${targetPath} was not an object. Resetting structure.`);
+      }
+    } catch {
+      warnings.push(`Existing JSON at ${targetPath} could not be parsed. Resetting structure.`);
+    }
+  }
+
+  const nextValue = updater(parsed);
+  const content = `${JSON.stringify(nextValue, null, 2)}\n`;
+  const writeResult = await writeGeneratedArtifact({
+    destination: targetPath,
+    content,
+    dryRun
+  });
+
+  return {
+    action: writeResult.action,
+    filePath: targetPath,
+    warnings
+  };
+}
+
+async function removeGeneratedArtifactIfExists({ targetPath, dryRun = false }) {
+  const exists = await pathExists(targetPath);
+  if (!exists) {
+    return {
+      action: "missing",
+      path: targetPath
+    };
+  }
+
+  if (!dryRun) {
+    await rm(targetPath, { recursive: true, force: true });
+  }
+
+  return {
+    action: dryRun ? "would-remove" : "removed",
+    path: targetPath
+  };
+}
+
+async function applyPostmanMcpForPlatform({
+  platform,
+  mcpScope,
+  apiKey,
+  apiKeyEnvVar,
+  mcpUrl,
+  dryRun = false,
+  cwd = process.cwd()
+}) {
+  const workspaceRoot = findWorkspaceRoot(cwd);
+  const warnings = [];
+
+  if (platform === "antigravity") {
+    const settingsPath =
+      mcpScope === "global"
+        ? path.join(os.homedir(), ".gemini", "settings.json")
+        : path.join(workspaceRoot, ".gemini", "settings.json");
+    const result = await upsertJsonObjectFile({
+      targetPath: settingsPath,
+      updater: (existing) => {
+        const next = { ...existing };
+        const mcpServers =
+          next.mcpServers && typeof next.mcpServers === "object" && !Array.isArray(next.mcpServers)
+            ? { ...next.mcpServers }
+            : {};
+        mcpServers[POSTMAN_SKILL_ID] = buildGeminiPostmanServer({
+          apiKey,
+          apiKeyEnvVar,
+          mcpUrl
+        });
+        next.mcpServers = mcpServers;
+        return next;
+      },
+      dryRun
+    });
+    return {
+      kind: "gemini-settings",
+      scope: mcpScope,
+      path: settingsPath,
+      action: result.action,
+      warnings: [...warnings, ...result.warnings]
+    };
+  }
+
+  if (platform === "copilot") {
+    const configPath =
+      mcpScope === "global"
+        ? path.join(os.homedir(), ".copilot", "mcp-config.json")
+        : path.join(workspaceRoot, ".vscode", "mcp.json");
+    const result = await upsertJsonObjectFile({
+      targetPath: configPath,
+      updater: (existing) => {
+        const next = { ...existing };
+        const servers =
+          next.servers && typeof next.servers === "object" && !Array.isArray(next.servers)
+            ? { ...next.servers }
+            : {};
+        servers[POSTMAN_SKILL_ID] = buildVsCodePostmanServer({
+          apiKey,
+          apiKeyEnvVar,
+          mcpUrl
+        });
+        next.servers = servers;
+        return next;
+      },
+      dryRun
+    });
+    return {
+      kind: mcpScope === "global" ? "copilot-cli-mcp" : "vscode-mcp",
+      scope: mcpScope,
+      path: configPath,
+      action: result.action,
+      warnings: [...warnings, ...result.warnings]
+    };
+  }
+
+  if (platform === "codex") {
+    if (mcpScope === "project") {
+      const vscodePath = path.join(workspaceRoot, ".vscode", "mcp.json");
+      const result = await upsertJsonObjectFile({
+        targetPath: vscodePath,
+        updater: (existing) => {
+          const next = { ...existing };
+          const servers =
+            next.servers && typeof next.servers === "object" && !Array.isArray(next.servers)
+              ? { ...next.servers }
+              : {};
+          servers[POSTMAN_SKILL_ID] = buildVsCodePostmanServer({
+            apiKey,
+            apiKeyEnvVar,
+            mcpUrl
+          });
+          next.servers = servers;
+          return next;
+        },
+        dryRun
+      });
+      return {
+        kind: "vscode-mcp",
+        scope: mcpScope,
+        path: vscodePath,
+        action: result.action,
+        warnings: [...warnings, ...result.warnings]
+      };
+    }
+
+    const codexConfigPath = path.join(os.homedir(), ".codex", "config.toml");
+    if (dryRun) {
+      return {
+        kind: "codex-cli",
+        scope: mcpScope,
+        path: codexConfigPath,
+        action: "would-patch",
+        warnings
+      };
+    }
+
+    try {
+      await execFile("codex", ["mcp", "remove", POSTMAN_SKILL_ID], { cwd });
+    } catch {
+      // Best effort. Add will still run and becomes source of truth.
+    }
+
+    try {
+      await execFile(
+        "codex",
+        [
+          "mcp",
+          "add",
+          POSTMAN_SKILL_ID,
+          "--url",
+          mcpUrl,
+          "--bearer-token-env-var",
+          apiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR
+        ],
+        { cwd }
+      );
+    } catch (error) {
+      warnings.push(
+        `Failed to register Postman MCP via Codex CLI. Ensure 'codex' is installed and rerun. (${error.message})`
+      );
+      return {
+        kind: "codex-cli",
+        scope: mcpScope,
+        path: codexConfigPath,
+        action: "failed",
+        warnings
+      };
+    }
+
+    if (apiKey) {
+      warnings.push(
+        "Codex global MCP uses bearer token env vars. Inline apiKey in cbx_config.json is not directly used by Codex."
+      );
+    }
+
+    return {
+      kind: "codex-cli",
+      scope: mcpScope,
+      path: codexConfigPath,
+      action: "patched",
+      warnings
+    };
+  }
+
+  return {
+    kind: "unknown",
+    scope: mcpScope,
+    path: null,
+    action: "skipped",
+    warnings: [`Unsupported platform '${platform}' for Postman MCP installation.`]
+  };
 }
 
 async function ensureGitIgnoreEntry({
@@ -2323,6 +2639,7 @@ async function ensureGitIgnoreEntry({
 }
 
 async function resolvePostmanInstallSelection({
+  platform,
   scope,
   options,
   cwd = process.cwd()
@@ -2338,6 +2655,10 @@ async function resolvePostmanInstallSelection({
   let defaultWorkspaceId = hasWorkspaceOption
     ? normalizePostmanWorkspaceId(options.postmanWorkspaceId)
     : null;
+  const requestedMcpScope = options.mcpScope
+    ? normalizeMcpScope(options.mcpScope, normalizeMcpScope(scope, "project"))
+    : null;
+  let mcpScope = requestedMcpScope || normalizeMcpScope(scope, "project");
   const warnings = [];
 
   const canPrompt = !options.yes && process.stdin.isTTY;
@@ -2361,20 +2682,40 @@ async function resolvePostmanInstallSelection({
     defaultWorkspaceId = normalizePostmanWorkspaceId(promptedWorkspaceId);
   }
 
+  if (canPrompt && !requestedMcpScope) {
+    mcpScope = await select({
+      message: "Install MCP config in workspace or global scope?",
+      choices: [
+        { name: scope === "global" ? "Global (recommended)" : "Global", value: "global" },
+        { name: scope === "project" ? "Workspace (recommended)" : "Workspace", value: "project" }
+      ],
+      default: mcpScope
+    });
+  }
+
   const apiKeySource = getPostmanApiKeySource({ apiKey, envApiKey });
   if (apiKeySource === "unset") {
     warnings.push(POSTMAN_API_KEY_MISSING_WARNING);
   }
 
-  const settingsPath = resolvePostmanSettingsPath({ scope, cwd });
-  const settings = {
-    apiKey: apiKey || null,
-    apiKeyEnvVar: POSTMAN_API_KEY_ENV_VAR,
-    apiKeySource,
-    defaultWorkspaceId: defaultWorkspaceId ?? null,
-    mcpUrl: POSTMAN_MCP_URL,
+  const cbxConfigPath = resolveCbxConfigPath({ scope: mcpScope, cwd });
+  const legacySettingsPath = resolveLegacyPostmanSettingsPath({ scope: mcpScope, cwd });
+  const cbxConfig = {
+    schemaVersion: 1,
     generatedBy: "cbx workflows install --postman",
-    generatedAt: new Date().toISOString()
+    generatedAt: new Date().toISOString(),
+    mcp: {
+      scope: mcpScope,
+      server: POSTMAN_SKILL_ID,
+      platform
+    },
+    postman: {
+      apiKey: apiKey || null,
+      apiKeyEnvVar: POSTMAN_API_KEY_ENV_VAR,
+      apiKeySource,
+      defaultWorkspaceId: defaultWorkspaceId ?? null,
+      mcpUrl: POSTMAN_MCP_URL
+    }
   };
 
   return {
@@ -2382,13 +2723,16 @@ async function resolvePostmanInstallSelection({
     apiKey,
     apiKeySource,
     defaultWorkspaceId: defaultWorkspaceId ?? null,
+    mcpScope,
     warnings,
-    settings,
-    settingsPath
+    cbxConfig,
+    cbxConfigPath,
+    legacySettingsPath
   };
 }
 
 async function configurePostmanInstallArtifacts({
+  platform,
   scope,
   profilePaths,
   postmanSelection,
@@ -2399,31 +2743,35 @@ async function configurePostmanInstallArtifacts({
   if (!postmanSelection?.enabled) return null;
 
   let warnings = postmanSelection.warnings.filter((warning) => warning !== POSTMAN_API_KEY_MISSING_WARNING);
-  const settingsContent = `${JSON.stringify(postmanSelection.settings, null, 2)}\n`;
-  const settingsResult = await writeTextFile({
-    targetPath: postmanSelection.settingsPath,
-    content: settingsContent,
+  const cbxConfigContent = `${JSON.stringify(postmanSelection.cbxConfig, null, 2)}\n`;
+  const cbxConfigResult = await writeTextFile({
+    targetPath: postmanSelection.cbxConfigPath,
+    content: cbxConfigContent,
     overwrite,
     dryRun
   });
 
-  let effectiveApiKey = normalizePostmanApiKey(postmanSelection.settings.apiKey);
+  let effectiveApiKey = normalizePostmanApiKey(postmanSelection.cbxConfig?.postman?.apiKey);
+  let effectiveApiKeyEnvVar = String(
+    postmanSelection.cbxConfig?.postman?.apiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR
+  ).trim();
   let effectiveDefaultWorkspaceId = postmanSelection.defaultWorkspaceId ?? null;
-  let effectiveMcpUrl = postmanSelection.settings.mcpUrl || POSTMAN_MCP_URL;
+  let effectiveMcpUrl = postmanSelection.cbxConfig?.postman?.mcpUrl || POSTMAN_MCP_URL;
 
-  if (settingsResult.action === "skipped" || settingsResult.action === "would-skip") {
-    try {
-      const existingSettingsRaw = await readFile(postmanSelection.settingsPath, "utf8");
-      const existingSettings = JSON.parse(existingSettingsRaw);
-      effectiveApiKey = normalizePostmanApiKey(existingSettings?.apiKey);
-      effectiveDefaultWorkspaceId = normalizePostmanWorkspaceId(existingSettings?.defaultWorkspaceId);
-      const existingMcpUrl = String(existingSettings?.mcpUrl || "").trim();
-      if (existingMcpUrl) {
-        effectiveMcpUrl = existingMcpUrl;
-      }
-    } catch {
+  if (cbxConfigResult.action === "skipped" || cbxConfigResult.action === "would-skip") {
+    const existingCbxConfig = await readJsonFileIfExists(postmanSelection.cbxConfigPath);
+    const existingLegacySettings = await readJsonFileIfExists(postmanSelection.legacySettingsPath);
+    const storedConfig =
+      parseStoredPostmanConfig(existingCbxConfig.value) || parseStoredPostmanConfig(existingLegacySettings.value);
+
+    if (storedConfig) {
+      effectiveApiKey = storedConfig.apiKey;
+      effectiveApiKeyEnvVar = storedConfig.apiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR;
+      effectiveDefaultWorkspaceId = storedConfig.defaultWorkspaceId;
+      effectiveMcpUrl = storedConfig.mcpUrl || POSTMAN_MCP_URL;
+    } else {
       warnings.push(
-        `Existing ${POSTMAN_SETTINGS_FILENAME} could not be parsed. Using install-time Postman values for MCP config.`
+        `Existing ${CBX_CONFIG_FILENAME} (or legacy ${POSTMAN_SETTINGS_FILENAME}) could not be parsed. Using install-time Postman values for MCP config.`
       );
     }
   }
@@ -2437,51 +2785,74 @@ async function configurePostmanInstallArtifacts({
     warnings.push(POSTMAN_API_KEY_MISSING_WARNING);
   }
 
-  let gitIgnoreResult = null;
-  if (scope === "project") {
+  const gitIgnoreResults = [];
+  if (postmanSelection.mcpScope === "project") {
     const workspaceRoot = findWorkspaceRoot(cwd);
     const gitIgnorePath = path.join(workspaceRoot, ".gitignore");
-    gitIgnoreResult = await ensureGitIgnoreEntry({
+    const configIgnore = await ensureGitIgnoreEntry({
       filePath: gitIgnorePath,
-      entry: POSTMAN_SETTINGS_FILENAME,
+      entry: CBX_CONFIG_FILENAME,
       dryRun
     });
+    gitIgnoreResults.push(configIgnore);
+
+    const mcpIgnore = await ensureGitIgnoreEntry({
+      filePath: gitIgnorePath,
+      entry: ".cbx/mcp/",
+      dryRun
+    });
+    gitIgnoreResults.push(mcpIgnore);
   }
 
-  const postmanSkillDir = path.join(profilePaths.skillsDir, POSTMAN_SKILL_ID);
-  const postmanMcpPath = path.join(postmanSkillDir, "mcp.json");
-  let mcpResult = null;
-  const postmanSkillExists = await pathExists(postmanSkillDir);
-  if (!dryRun && !postmanSkillExists) {
-    mcpResult = {
-      action: "missing-postman-skill",
-      path: postmanMcpPath
-    };
-  } else {
-    const mcpConfigContent = `${JSON.stringify(
-      buildPostmanMcpConfig({
-        apiKey: effectiveApiKey,
-        mcpUrl: effectiveMcpUrl
-      }),
-      null,
-      2
-    )}\n`;
-    mcpResult = await writeGeneratedArtifact({
-      destination: postmanMcpPath,
-      content: mcpConfigContent,
-      dryRun
-    });
-  }
+  const mcpDefinitionPath = resolvePostmanMcpDefinitionPath({
+    platform,
+    scope: postmanSelection.mcpScope,
+    cwd
+  });
+  const mcpDefinitionContent = `${JSON.stringify(
+    buildPostmanMcpDefinition({
+      apiKey: effectiveApiKey,
+      apiKeyEnvVar: effectiveApiKeyEnvVar,
+      mcpUrl: effectiveMcpUrl
+    }),
+    null,
+    2
+  )}\n`;
+  const mcpDefinitionResult = await writeGeneratedArtifact({
+    destination: mcpDefinitionPath,
+    content: mcpDefinitionContent,
+    dryRun
+  });
+
+  const mcpRuntimeResult = await applyPostmanMcpForPlatform({
+    platform,
+    mcpScope: postmanSelection.mcpScope,
+    apiKey: effectiveApiKey,
+    apiKeyEnvVar: effectiveApiKeyEnvVar,
+    mcpUrl: effectiveMcpUrl,
+    dryRun,
+    cwd
+  });
+  warnings.push(...(mcpRuntimeResult.warnings || []));
+
+  const legacySkillMcpCleanup = await removeGeneratedArtifactIfExists({
+    targetPath: path.join(profilePaths.skillsDir, POSTMAN_SKILL_ID, "mcp.json"),
+    dryRun
+  });
 
   return {
     enabled: true,
+    mcpScope: postmanSelection.mcpScope,
     apiKeySource: effectiveApiKeySource,
     defaultWorkspaceId: effectiveDefaultWorkspaceId,
     warnings,
-    settingsPath: postmanSelection.settingsPath,
-    settingsResult,
-    gitIgnoreResult,
-    mcpResult
+    cbxConfigPath: postmanSelection.cbxConfigPath,
+    cbxConfigResult,
+    gitIgnoreResults,
+    mcpDefinitionPath,
+    mcpDefinitionResult,
+    mcpRuntimeResult,
+    legacySkillMcpCleanup
   };
 }
 
@@ -3051,18 +3422,27 @@ function printPostmanSetupSummary({ postmanSetup }) {
   if (!postmanSetup?.enabled) return;
 
   console.log("\nPostman setup:");
-  console.log(`- Settings file: ${postmanSetup.settingsResult.action} (${postmanSetup.settingsPath})`);
+  console.log(`- MCP scope: ${postmanSetup.mcpScope}`);
+  console.log(`- Config file: ${postmanSetup.cbxConfigResult.action} (${postmanSetup.cbxConfigPath})`);
   console.log(`- API key source: ${postmanSetup.apiKeySource}`);
   console.log(
     `- Default workspace ID: ${postmanSetup.defaultWorkspaceId === null ? "null" : postmanSetup.defaultWorkspaceId}`
   );
-  if (postmanSetup.gitIgnoreResult) {
+  for (const ignoreResult of postmanSetup.gitIgnoreResults || []) {
+    console.log(`- .gitignore (${ignoreResult.filePath}): ${ignoreResult.action}`);
+  }
+  console.log(
+    `- Managed MCP definition (${postmanSetup.mcpDefinitionPath}): ${postmanSetup.mcpDefinitionResult.action}`
+  );
+  if (postmanSetup.mcpRuntimeResult) {
     console.log(
-      `- .gitignore (${postmanSetup.gitIgnoreResult.filePath}): ${postmanSetup.gitIgnoreResult.action}`
+      `- Platform MCP target (${postmanSetup.mcpRuntimeResult.path || "n/a"}): ${postmanSetup.mcpRuntimeResult.action}`
     );
   }
-  if (postmanSetup.mcpResult) {
-    console.log(`- Postman MCP config (${postmanSetup.mcpResult.path}): ${postmanSetup.mcpResult.action}`);
+  if (postmanSetup.legacySkillMcpCleanup) {
+    console.log(
+      `- Legacy skill mcp.json cleanup (${postmanSetup.legacySkillMcpCleanup.path}): ${postmanSetup.legacySkillMcpCleanup.action}`
+    );
   }
 
   if (postmanSetup.warnings.length > 0) {
@@ -3383,15 +3763,19 @@ function withInstallOptions(command) {
     .option("--overwrite", "overwrite existing files")
     .option(
       "--postman",
-      "optional: install Postman skill and generate postman_setting.json"
+      "optional: install Postman skill and generate cbx_config.json"
     )
     .option(
       "--postman-api-key <key>",
-      "optional: set Postman API key inline for generated postman_setting.json and installed Postman MCP config"
+      "optional: set Postman API key inline for generated cbx_config.json and installed Postman MCP config"
     )
     .option(
       "--postman-workspace-id <id|null>",
       "optional: set default Postman workspace ID (use 'null' for no default)"
+    )
+    .option(
+      "--mcp-scope <scope>",
+      "optional: MCP config scope for --postman (project|workspace|global|user)"
     )
     .option(
       "--terminal-integration",
@@ -3557,6 +3941,7 @@ async function runWorkflowInstall(options) {
       options
     });
     const postmanSelection = await resolvePostmanInstallSelection({
+      platform,
       scope,
       options,
       cwd
@@ -3615,6 +4000,7 @@ async function runWorkflowInstall(options) {
       cwd
     });
     const postmanSetupResult = await configurePostmanInstallArtifacts({
+      platform,
       scope,
       profilePaths: installResult.profilePaths,
       postmanSelection,

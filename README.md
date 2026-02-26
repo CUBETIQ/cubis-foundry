@@ -54,6 +54,8 @@ cbx workflows install --platform antigravity --terminal-integration --terminal-v
 cbx workflows install --platform codex --postman
 cbx workflows install --platform codex --postman --postman-workspace-id null
 cbx workflows install --platform codex --postman --postman-api-key "<key>"
+cbx workflows install --platform codex --postman --mcp-scope global
+cbx workflows install --platform copilot --postman --mcp-scope project
 cbx workflows install --platform antigravity --postman
 cbx workflows install --platform copilot --postman
 ```
@@ -63,15 +65,28 @@ Install bootstrap behavior:
 - When install scope is `global` (default), skills/powers install to global paths, while workflows + agents stay in workspace (`project`) paths.
 - Rule sync + engineering artifacts (`AGENTS.md`/`GEMINI.md`/Copilot instructions, `ENGINEERING_RULES.md`, `TECH.md`) are maintained in workspace (`project`) scope.
 - Codex workflow templates are maintained in workspace `.agents/workflows` so workflow-wrapper routing remains discoverable in project rules.
-- Optional `--postman` bootstrap creates `postman_setting.json` and installs/configures the Postman skill/MCP for Codex, Antigravity, and Copilot.
+- Optional `--postman` bootstrap creates `cbx_config.json`, stores managed MCP definitions in `.cbx/mcp/`, and installs/configures Postman MCP for Codex, Antigravity, and Copilot.
+- Use `--mcp-scope <project|workspace|global|user>` to choose where MCP runtime config is installed (interactive installs prompt for this when not provided).
 - Use `cbx rules init --platform <platform> --overwrite` to force-regenerate both files.
 
 Postman setup behavior:
-- `postman_setting.json` is generated in project root (or `~/.cbx/postman_setting.json` with `--scope global`).
+- `cbx_config.json` is generated in workspace root (project MCP scope) or `~/.cbx/cbx_config.json` (global MCP scope).
+- Managed MCP definition files are generated under `.cbx/mcp/<platform>/postman.json` (workspace scope) or `~/.cbx/mcp/<platform>/postman.json` (global scope).
 - Env-first auth is supported: when `POSTMAN_API_KEY` is set, generated settings keep `apiKey: null` and MCP config uses `Bearer ${POSTMAN_API_KEY}`.
 - Inline auth is supported with `--postman-api-key <key>`.
 - `--postman-workspace-id null` writes JSON `null` for `defaultWorkspaceId`.
-- In project scope, `postman_setting.json` is auto-added to `.gitignore` (no duplicate entries).
+- In project MCP scope, `cbx_config.json` and `.cbx/mcp/` are auto-added to `.gitignore` (no duplicate entries).
+
+Platform runtime MCP placement:
+- Codex:
+  - Global MCP scope: `~/.codex/config.toml` via `codex mcp add`.
+  - Workspace MCP scope: `.vscode/mcp.json`.
+- Antigravity (Gemini CLI):
+  - Global MCP scope: `~/.gemini/settings.json` (`mcpServers`).
+  - Workspace MCP scope: `.gemini/settings.json` (`mcpServers`).
+- Copilot:
+  - Workspace MCP scope: `.vscode/mcp.json`.
+  - Global MCP scope: `~/.copilot/mcp-config.json`.
 
 `rules` manages strict engineering policy and a generated codebase tech map:
 
