@@ -2,6 +2,7 @@
 
 import { confirm, input, select } from "@inquirer/prompts";
 import { Command } from "commander";
+import { parse as parseJsonc } from "jsonc-parser";
 import { existsSync } from "node:fs";
 import {
   cp,
@@ -2497,11 +2498,44 @@ function parseStoredStitchConfig(raw) {
   };
 }
 
+function parseJsonLenient(raw) {
+  try {
+    return {
+      ok: true,
+      value: JSON.parse(raw),
+      mode: "json"
+    };
+  } catch (jsonError) {
+    const errors = [];
+    const value = parseJsonc(raw, errors, {
+      allowTrailingComma: true,
+      disallowComments: false,
+      allowEmptyContent: false
+    });
+    if (errors.length === 0) {
+      return {
+        ok: true,
+        value,
+        mode: "jsonc"
+      };
+    }
+    return {
+      ok: false,
+      value: null,
+      error: jsonError
+    };
+  }
+}
+
 async function readJsonFileIfExists(filePath) {
   if (!(await pathExists(filePath))) return { exists: false, value: null };
   try {
     const raw = await readFile(filePath, "utf8");
-    return { exists: true, value: JSON.parse(raw) };
+    const parsed = parseJsonLenient(raw);
+    if (!parsed.ok) {
+      return { exists: true, value: null, error: parsed.error };
+    }
+    return { exists: true, value: parsed.value };
   } catch (error) {
     return { exists: true, value: null, error };
   }
@@ -2515,9 +2549,11 @@ async function upsertJsonObjectFile({ targetPath, updater, dryRun = false }) {
   if (exists) {
     try {
       const raw = await readFile(targetPath, "utf8");
-      const decoded = JSON.parse(raw);
-      if (decoded && typeof decoded === "object" && !Array.isArray(decoded)) {
-        parsed = decoded;
+      const decoded = parseJsonLenient(raw);
+      if (!decoded.ok) {
+        warnings.push(`Existing JSON at ${targetPath} could not be parsed. Resetting structure.`);
+      } else if (decoded.value && typeof decoded.value === "object" && !Array.isArray(decoded.value)) {
+        parsed = decoded.value;
       } else {
         warnings.push(`Existing JSON at ${targetPath} was not an object. Resetting structure.`);
       }

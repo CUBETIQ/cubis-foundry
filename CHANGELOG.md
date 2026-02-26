@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.26] - 2026-02-26
+
+### Fixed
+
+- Fixed MCP install merge behavior for existing JSONC config files (comments/trailing commas), so existing MCP entries are preserved instead of being reset.
+- Fixed Postman MCP patching to parse and merge JSONC for platform config targets (for example `.vscode/mcp.json`).
+
 ## [0.3.25] - 2026-02-26
 
 ### Added
