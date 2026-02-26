@@ -9,6 +9,11 @@ Primary support in this release:
 - Codex
 - Copilot (VS Code Chat + Copilot CLI)
 
+## Changelog
+
+- Latest release notes are visible here on npm and tracked in [`CHANGELOG.md`](./CHANGELOG.md).
+- GitHub view: [CHANGELOG.md](https://github.com/CUBETIQ/cubis-foundry/blob/main/CHANGELOG.md)
+
 ## Install
 
 ```bash
