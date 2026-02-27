@@ -31,7 +31,7 @@ const TERMINAL_VERIFICATION_BLOCK_START_RE = /<!--\s*cbx:terminal:verification:s
 const TERMINAL_VERIFICATION_BLOCK_END_RE = /<!--\s*cbx:terminal:verification:end\s*-->/g;
 const ENGINEERING_RULES_BLOCK_START_RE = /<!--\s*cbx:engineering:auto:start[^>]*-->/g;
 const ENGINEERING_RULES_BLOCK_END_RE = /<!--\s*cbx:engineering:auto:end\s*-->/g;
-const AGENT_ASSETS_SUBDIR = "Ai Agent Workflow";
+const AGENT_ASSETS_SUBDIR = "workflows";
 const COPILOT_ALLOWED_SKILL_FRONTMATTER_KEYS = new Set([
   "compatibility",
   "description",

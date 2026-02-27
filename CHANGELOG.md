@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.31] - 2026-02-27
+
+### Changed
+
+- Renamed repository assets directory from `Ai Agent Workflow` to `workflows`.
+- Updated all CLI/scripts/package references to use the new `workflows` path.
+
 ## [0.3.30] - 2026-02-27
 
 ### Changed

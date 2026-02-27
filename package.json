@@ -1,6 +1,6 @@
 {
   "name": "@cubis/foundry",
-  "version": "0.3.30",
+  "version": "0.3.31",
   "description": "Cubis Foundry CLI for workflow-first AI agent environments",
   "type": "module",
   "bin": {
@@ -10,7 +10,7 @@
   },
   "files": [
     "bin",
-    "Ai Agent Workflow",
+    "workflows",
     "README.md",
     "CHANGELOG.md"
   ],
@@ -23,10 +23,10 @@
     "test:smoke": "bash scripts/smoke-workflows.sh",
     "test:all": "npm run test:attributes && npm run test:smoke",
     "test:all:strict": "npm run test:attributes:strict && npm run test:smoke",
-    "generate:powers": "node \"Ai Agent Workflow/scripts/generate-powers.mjs\"",
-    "generate:powers:force": "node \"Ai Agent Workflow/scripts/generate-powers.mjs\" --force",
-    "generate:powers:from-skills": "node \"Ai Agent Workflow/scripts/generate-powers.mjs\" --from-skills",
-    "generate:powers:sync": "node \"Ai Agent Workflow/scripts/generate-powers.mjs\" --sync-skills --force"
+    "generate:powers": "node \"workflows/scripts/generate-powers.mjs\"",
+    "generate:powers:force": "node \"workflows/scripts/generate-powers.mjs\" --force",
+    "generate:powers:from-skills": "node \"workflows/scripts/generate-powers.mjs\" --from-skills",
+    "generate:powers:sync": "node \"workflows/scripts/generate-powers.mjs\" --sync-skills --force"
   },
   "engines": {
     "node": ">=18.17"

@@ -5,7 +5,7 @@ import process from "node:process";
 import { promises as fs } from "node:fs";
 
 const ROOT = process.cwd();
-const ASSETS_ROOT = path.join(ROOT, "Ai Agent Workflow");
+const ASSETS_ROOT = path.join(ROOT, "workflows");
 const BUNDLE_ROOT = path.join(
   ASSETS_ROOT,
   "workflows",
