@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.28] - 2026-02-27
+
+### Fixed
+
+- Added missing `golang-pro` skill to `agent-environment-setup` manifest for Codex, Antigravity, and Copilot installs.
+
 ## [0.3.27] - 2026-02-26
 
 ### Changed
