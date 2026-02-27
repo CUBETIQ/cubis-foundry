@@ -3,6 +3,9 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CLI="$ROOT_DIR/bin/cubis.js"
+ANTIGRAVITY_GLOBAL_SKILLS="$HOME/.gemini/antigravity/skills"
+CODEX_GLOBAL_SKILLS="$HOME/.agents/skills"
+COPILOT_GLOBAL_SKILLS="$HOME/.copilot/skills"
 
 if [ ! -f "$CLI" ]; then
   echo "ERROR: CLI entry not found at $CLI" >&2
@@ -48,7 +51,7 @@ if [ "$(find .agent/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')
   echo "[FAIL] Antigravity expected at least 20 agent files" >&2
   exit 1
 fi
-[ -d .agent/skills/api-designer ]
+[ -d "$ANTIGRAVITY_GLOBAL_SKILLS/api-designer" ]
 [ -d .agent/terminal-integration ]
 [ -f .agent/terminal-integration/config.json ]
 [ -f .agent/terminal-integration/verify-task.ps1 ]
@@ -98,13 +101,13 @@ cmp -s /tmp/cbx-gemini-before.md .agent/rules/GEMINI.md
 log_ok "Dry-run sync did not change rule file"
 
 log_step "A4 Antigravity remove dry-run"
-node "$CLI" workflows remove agent-environment-setup --platform antigravity --dry-run >/tmp/cbx-a4.log
+node "$CLI" workflows remove agent-environment-setup --platform antigravity --scope global --dry-run >/tmp/cbx-a4.log
 [ -f .agent/workflows/backend.md ]
 [ -d .agent/terminal-integration ]
 log_ok "Dry-run remove did not delete files"
 
 log_step "A5 Antigravity remove apply"
-node "$CLI" workflows remove agent-environment-setup --platform antigravity --yes >/tmp/cbx-a5.log
+node "$CLI" workflows remove agent-environment-setup --platform antigravity --scope global --yes >/tmp/cbx-a5.log
 [ ! -f .agent/workflows/backend.md ]
 [ -f .agent/rules/GEMINI.md ]
 [ ! -d .agent/terminal-integration ]
@@ -133,12 +136,12 @@ node "$CLI" workflows install --platform codex --bundle agent-environment-setup 
 [ -f .agents/workflows/devops.md ]
 [ -f .agents/workflows/qa.md ]
 [ ! -d .agents/agents ]
-[ -f .agents/skills/workflow-backend/SKILL.md ]
-[ -f .agents/skills/workflow-plan/SKILL.md ]
-[ -f .agents/skills/agent-backend-specialist/SKILL.md ]
-[ -f .agents/skills/agent-security-auditor/SKILL.md ]
-rg -n '^name:\s*workflow-backend$' .agents/skills/workflow-backend/SKILL.md >/dev/null
-rg -n '^name:\s*agent-backend-specialist$' .agents/skills/agent-backend-specialist/SKILL.md >/dev/null
+[ -f "$CODEX_GLOBAL_SKILLS/workflow-backend/SKILL.md" ]
+[ -f "$CODEX_GLOBAL_SKILLS/workflow-plan/SKILL.md" ]
+[ -f "$CODEX_GLOBAL_SKILLS/agent-backend-specialist/SKILL.md" ]
+[ -f "$CODEX_GLOBAL_SKILLS/agent-security-auditor/SKILL.md" ]
+rg -n '^name:\s*workflow-backend$' "$CODEX_GLOBAL_SKILLS/workflow-backend/SKILL.md" >/dev/null
+rg -n '^name:\s*agent-backend-specialist$' "$CODEX_GLOBAL_SKILLS/agent-backend-specialist/SKILL.md" >/dev/null
 node "$CLI" workflows doctor codex --json >/tmp/cbx-c2-doctor.json
 rg -n 'Legacy path ./.codex/skills detected' /tmp/cbx-c2-doctor.json >/dev/null
 log_ok "Codex install complete and legacy warning detected"
@@ -146,10 +149,10 @@ log_ok "Codex install complete and legacy warning detected"
 log_step "C2.1 /backend wiring check (Codex files)"
 rg -n '^command:\s*"/backend"' .agents/workflows/backend.md >/dev/null
 rg -n '@backend-specialist' .agents/workflows/backend.md >/dev/null
-rg -n '^# Agent Wrapper: @backend-specialist$' .agents/skills/agent-backend-specialist/SKILL.md >/dev/null
-rg -n '^# Workflow Wrapper: /backend$' .agents/skills/workflow-backend/SKILL.md >/dev/null
-rg -n '\$agent-backend-specialist' .agents/skills/workflow-backend/SKILL.md >/dev/null
-if rg -n '@backend-specialist' .agents/skills/workflow-backend/SKILL.md >/dev/null; then
+rg -n '^# Agent Wrapper: @backend-specialist$' "$CODEX_GLOBAL_SKILLS/agent-backend-specialist/SKILL.md" >/dev/null
+rg -n '^# Workflow Wrapper: /backend$' "$CODEX_GLOBAL_SKILLS/workflow-backend/SKILL.md" >/dev/null
+rg -n '\$agent-backend-specialist' "$CODEX_GLOBAL_SKILLS/workflow-backend/SKILL.md" >/dev/null
+if rg -n '@backend-specialist' "$CODEX_GLOBAL_SKILLS/workflow-backend/SKILL.md" >/dev/null; then
   echo "[FAIL] Codex workflow wrapper still references @backend-specialist instead of \$agent-backend-specialist" >&2
   exit 1
 fi
@@ -221,13 +224,13 @@ if [ "$(find .github/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' '
   echo "[FAIL] Copilot expected at least 20 agent files" >&2
   exit 1
 fi
-[ -d .github/skills/api-designer ]
-rg -n '^name:' .github/skills/accessibility/SKILL.md >/dev/null
-if rg -n '^displayName:' .github/skills/accessibility/SKILL.md >/dev/null; then
+[ -d "$COPILOT_GLOBAL_SKILLS/api-designer" ]
+rg -n '^name:' "$COPILOT_GLOBAL_SKILLS/accessibility/SKILL.md" >/dev/null
+if rg -n '^displayName:' "$COPILOT_GLOBAL_SKILLS/accessibility/SKILL.md" >/dev/null; then
   echo "[FAIL] Copilot SKILL.md still contains unsupported displayName attribute" >&2
   exit 1
 fi
-if rg -n '^keywords:' .github/skills/accessibility/SKILL.md >/dev/null; then
+if rg -n '^keywords:' "$COPILOT_GLOBAL_SKILLS/accessibility/SKILL.md" >/dev/null; then
   echo "[FAIL] Copilot SKILL.md still contains unsupported keywords attribute" >&2
   exit 1
 fi
@@ -268,7 +271,7 @@ function frontmatter(text) {
   return m ? m[1] : null;
 }
 
-const skillRoot = path.join(process.cwd(), '.github/skills');
+const skillRoot = path.join(process.env.HOME || '', '.copilot/skills');
 for (const skillId of fs.readdirSync(skillRoot)) {
   const file = path.join(skillRoot, skillId, 'SKILL.md');
   if (!fs.existsSync(file)) continue;
@@ -342,10 +345,10 @@ rg -n 'Action: unchanged' /tmp/cbx-p3b.log >/dev/null
 log_ok "Copilot second sync is idempotent"
 
 log_step "P4 Remove apply"
-node "$CLI" workflows remove agent-environment-setup --platform copilot --yes >/tmp/cbx-p4.log
+node "$CLI" workflows remove agent-environment-setup --platform copilot --scope global --yes >/tmp/cbx-p4.log
 [ ! -f .github/copilot/workflows/backend.md ]
 [ ! -f .github/agents/backend-specialist.md ]
-[ ! -d .github/skills/api-designer ]
+[ ! -d "$COPILOT_GLOBAL_SKILLS/api-designer" ]
 [ -f AGENTS.md ]
 rg -n 'No installed workflows found yet\.' AGENTS.md >/dev/null
 log_ok "Copilot bundle removed and managed block kept"

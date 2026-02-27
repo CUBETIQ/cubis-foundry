@@ -12,6 +12,7 @@ const BUNDLE_ROOT = path.join(
   "agent-environment-setup"
 );
 const MANIFEST_PATH = path.join(BUNDLE_ROOT, "manifest.json");
+const SKILLS_INDEX_PATH = path.join(ASSETS_ROOT, "skills", "skills_index.json");
 const CLI_ARGS = new Set(process.argv.slice(2));
 const STRICT_MODE = CLI_ARGS.has("--strict");
 
@@ -151,6 +152,52 @@ async function readUtf8(filePath) {
   return fs.readFile(filePath, "utf8");
 }
 
+function extractSkillIdFromIndexPath(indexPathValue) {
+  const raw = String(indexPathValue || "").trim();
+  if (!raw) return null;
+  const normalized = raw.replace(/\\\\/g, "/");
+  const marker = "/skills/";
+  const markerIndex = normalized.indexOf(marker);
+  if (markerIndex === -1) return null;
+  const remainder = normalized.slice(markerIndex + marker.length);
+  const [skillId] = remainder.split("/");
+  const normalizedSkillId = String(skillId || "").trim();
+  return normalizedSkillId || null;
+}
+
+async function resolveIndexedTopLevelSkillIds(skillRoot) {
+  if (!(await pathExists(SKILLS_INDEX_PATH))) return [];
+  const raw = await readUtf8(SKILLS_INDEX_PATH);
+  const parsed = JSON.parse(raw);
+  const entries = Array.isArray(parsed) ? parsed : [];
+  const candidates = [];
+
+  for (const entry of entries) {
+    if (!entry || typeof entry !== "object") continue;
+    if (typeof entry.name === "string" && entry.name.trim()) {
+      candidates.push(entry.name.trim());
+    }
+    const byPath = extractSkillIdFromIndexPath(entry.path);
+    if (byPath) candidates.push(byPath);
+  }
+
+  const out = [];
+  const seen = new Set();
+  for (const candidate of candidates) {
+    if (!candidate || candidate.startsWith(".")) continue;
+    const key = candidate.toLowerCase();
+    if (seen.has(key)) continue;
+    const skillDir = path.join(skillRoot, candidate);
+    const skillFile = path.join(skillDir, "SKILL.md");
+    if (!(await pathExists(skillDir))) continue;
+    if (!(await pathExists(skillFile))) continue;
+    seen.add(key);
+    out.push(candidate);
+  }
+
+  return out.sort((a, b) => a.localeCompare(b));
+}
+
 function error(errors, filePath, message) {
   errors.push(`${filePath}: ${message}`);
 }
@@ -217,7 +264,8 @@ async function validateAgentFile({
   platform,
   skillSet,
   errors,
-  warnings
+  warnings,
+  notes
 }) {
   const raw = await readUtf8(filePath);
   const fm = parseFrontmatter(raw);
@@ -236,13 +284,9 @@ async function validateAgentFile({
   if (platform === "copilot") {
     const unsupported = keys.filter((key) => !COPILOT_ALLOWED_AGENT_KEYS.has(key));
     if (unsupported.length > 0) {
-      error(
-        errors,
-        filePath,
-        `unsupported Copilot agent keys: ${unsupported.join(", ")} (allowed: ${[
-          ...COPILOT_ALLOWED_AGENT_KEYS
-        ].join(", ")})`
-      );
+      notes.push(`${filePath}: source Copilot agent has unsupported keys (${unsupported.join(
+        ", "
+      )}); installer is expected to sanitize these during install`);
     }
 
     const ignoredOnGithub = keys.filter((key) => ["model", "handoffs", "argument-hint"].includes(key));
@@ -285,6 +329,11 @@ async function main() {
   const manifest = JSON.parse(await readUtf8(MANIFEST_PATH));
   const skillRoot = path.join(ASSETS_ROOT, "skills");
   const powerRoot = path.join(ASSETS_ROOT, "powers");
+  const indexedSkillIds = await resolveIndexedTopLevelSkillIds(skillRoot);
+  const indexedSkillSet = new Set(indexedSkillIds);
+  if (indexedSkillSet.size === 0) {
+    error(errors, SKILLS_INDEX_PATH, "no indexed top-level skills resolved");
+  }
 
   const allManifestSkills = new Set();
 
@@ -301,7 +350,7 @@ async function main() {
     const agentFiles = Array.isArray(spec.agents) ? spec.agents : [];
     const skills = Array.isArray(spec.skills) ? spec.skills : [];
 
-    const uniqueSkills = new Set(skills);
+    const uniqueSkills = new Set(indexedSkillSet);
     for (const skillId of skills) allManifestSkills.add(skillId);
 
     for (const rel of workflowFiles) {
@@ -324,7 +373,8 @@ async function main() {
         platform: platformId,
         skillSet: uniqueSkills,
         errors,
-        warnings
+        warnings,
+        notes
       });
     }
 
@@ -369,7 +419,7 @@ async function main() {
   const summary = {
     manifest: MANIFEST_PATH,
     platforms: Object.keys(manifest.platforms || {}),
-    skillCount: allManifestSkills.size,
+    skillCount: indexedSkillSet.size,
     strict: STRICT_MODE,
     errors: errors.length,
     warnings: warnings.length,

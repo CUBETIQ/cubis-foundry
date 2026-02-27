@@ -1,477 +1,351 @@
-# Cubis Foundry CLI (`cbx`)
+# @cubis/foundry
 
-Workflow-first installer for AI agent environments, with Codex callable-skill wrappers.
+Workflow-first installer for multi-platform AI agent environments.
 
-Repository layout note: reusable workflow/skill/power assets are stored under `Ai Agent Workflow/`.
-
-Primary support in this release:
-- Antigravity
+`cbx` installs workflows, skills, wrappers, and rule files for:
 - Codex
-- Copilot (VS Code Chat + Copilot CLI)
+- Antigravity (Gemini)
+- GitHub Copilot
 
-## Changelog
+## Table of Contents
 
-- Latest release notes are visible here on npm and tracked in [`CHANGELOG.md`](./CHANGELOG.md).
-- GitHub view: [CHANGELOG.md](https://github.com/CUBETIQ/cubis-foundry/blob/main/CHANGELOG.md)
+- [What This CLI Manages](#what-this-cli-manages)
+- [Install](#install)
+- [Quickstarts](#quickstarts)
+- [Scope Model (Global vs Project)](#scope-model-global-vs-project)
+- [Credential Model (`cbx_config.json` only)](#credential-model-cbx_configjson-only)
+- [Postman and Stitch Setup Flows](#postman-and-stitch-setup-flows)
+- [MCP Placement Matrix](#mcp-placement-matrix)
+- [Command Reference](#command-reference)
+- [Troubleshooting](#troubleshooting)
+- [Migration Notes](#migration-notes)
+- [Platform Docs](#platform-docs)
+
+## What This CLI Manages
+
+- Workflow files (`/plan`, `/create`, etc.)
+- Skill folders
+- Codex callable wrapper skills (`$workflow-*`, `$agent-*`)
+- Platform rule files (`AGENTS.md`, `GEMINI.md`, etc.)
+- Engineering artifacts in workspace (`ENGINEERING_RULES.md`, `TECH.md`)
+- Managed MCP config for Postman and Stitch
 
 ## Install
 
 ```bash
 npm install -g @cubis/foundry
-cbx --help
 ```
 
-Compatibility binaries are still shipped for migration:
-- `cubiskill`
-- `cubis`
-
-## Quick Setup (Simple)
+Recommended environment setup:
 
 ```bash
-# 1) Install CLI
-npm install -g @cubis/foundry
-
-# 2) Set API keys once (recommended: env mode)
 export POSTMAN_API_KEY="<your-postman-api-key>"
 export STITCH_API_KEY="<your-stitch-api-key>" # Antigravity StitchMCP only
-
-# 3) Install workflow bundle for your platform
-cbx workflows install --platform codex --bundle agent-environment-setup --postman --yes
-
-# 4) Optional: install for other platforms too
-cbx workflows install --platform antigravity --bundle agent-environment-setup --postman --yes
-cbx workflows install --platform copilot --bundle agent-environment-setup --postman --yes
 ```
 
-## Command Model
+## Quickstarts
 
-`workflows` is now the primary command group.
-
-```bash
-cbx workflows install --platform antigravity
-cbx workflows install --platform codex
-cbx workflows install --platform copilot
-cbx workflows remove <bundle-or-workflow> --platform antigravity
-cbx workflows sync-rules --platform codex
-cbx workflows doctor codex
-cbx workflows platforms
-cbx workflows install --platform antigravity --dry-run
-cbx workflows install --platform antigravity --terminal-integration --terminal-verifier codex
-cbx workflows install --platform codex --postman
-cbx workflows install --platform codex --postman --postman-workspace-id null
-cbx workflows install --platform codex --postman --postman-workspace-id "<workspace-id>"
-cbx workflows install --platform codex --postman --postman-api-key "<key>"
-cbx workflows install --platform codex --postman --mcp-scope global
-cbx workflows install --platform copilot --postman --mcp-scope project
-cbx workflows install --platform antigravity --postman
-cbx workflows install --platform antigravity --postman --stitch-api-key "<key>"
-cbx workflows install --platform copilot --postman
-```
-
-Install bootstrap behavior:
-- `cbx workflows install` now also bootstraps `ENGINEERING_RULES.md` and `TECH.md` (creates when missing; keeps existing files unless explicitly regenerated).
-- When install scope is `global` (default), skills/powers install to global paths, while workflows + agents stay in workspace (`project`) paths.
-- Rule sync + engineering artifacts (`AGENTS.md`/`GEMINI.md`/Copilot instructions, `ENGINEERING_RULES.md`, `TECH.md`) are maintained in workspace (`project`) scope.
-- Codex workflow templates are maintained in workspace `.agents/workflows` so workflow-wrapper routing remains discoverable in project rules.
-- Optional `--postman` bootstrap creates `cbx_config.json`, stores managed MCP definitions in `.cbx/mcp/`, and installs/configures Postman MCP for Codex, Antigravity, and Copilot.
-- For Antigravity only, `--postman` also installs a default `StitchMCP` entry (`stitch.googleapis.com/mcp`) using key from `--stitch-api-key` or `STITCH_API_KEY`.
-- Use `--mcp-scope <project|workspace|global|user>` to choose where MCP runtime config is installed (interactive installs prompt for this when not provided).
-- Use `cbx rules init --platform <platform> --overwrite` to force-regenerate both files.
-
-Postman + Antigravity Stitch setup behavior:
-- `cbx_config.json` is generated in workspace root (project MCP scope) or `~/.cbx/cbx_config.json` (global MCP scope).
-- Managed MCP definition files are generated under `.cbx/mcp/<platform>/postman.json` (workspace scope) or `~/.cbx/mcp/<platform>/postman.json` (global scope).
-- Env-first auth is supported: when `POSTMAN_API_KEY` is set, generated settings keep `apiKey: null` and MCP config uses `Bearer ${POSTMAN_API_KEY}`.
-- Inline auth is supported with `--postman-api-key <key>`.
-- `--postman-workspace-id null` writes JSON `null` for `defaultWorkspaceId`.
-- If `POSTMAN_API_KEY` is available and install is interactive (no `--yes`) without `--postman-workspace-id`, `cbx` fetches your Postman workspaces and prompts you to pick one as default.
-- Antigravity gets an additional managed file at `.cbx/mcp/antigravity/stitch.json` (or `~/.cbx/mcp/antigravity/stitch.json` in global MCP scope).
-- Stitch key source priority for Antigravity: `--stitch-api-key` then `STITCH_API_KEY`; when unset, generated config keeps placeholder `X-Goog-Api-Key: ur stitch key`.
-- In project MCP scope, `cbx_config.json` and `.cbx/mcp/` are auto-added to `.gitignore` (no duplicate entries).
-
-Codex Postman workspace selection:
+### Codex (recommended baseline)
 
 ```bash
-# Set Postman API key first
-export POSTMAN_API_KEY="<your-postman-api-key>"
-
-# Interactive workspace selector (recommended)
 cbx workflows install --platform codex --bundle agent-environment-setup --postman
 ```
 
-- Do not use `--yes` here (it skips prompts).
-- You will get a workspace selector and the selected value is saved as `defaultWorkspaceId`.
+Important:
+- Do not use `--yes` if you want interactive Postman workspace selection.
+- Interactive install can fetch your Postman workspaces and save the selected workspace as the active profile `workspaceId`.
 
-Direct/manual workspace ID:
+### Antigravity
+
+```bash
+cbx workflows install --platform antigravity --bundle agent-environment-setup --postman
+```
+
+This also manages default `StitchMCP` wiring for Antigravity.
+
+### Copilot
+
+```bash
+cbx workflows install --platform copilot --bundle agent-environment-setup --postman
+```
+
+## Scope Model (Global vs Project)
+
+Default install scope is `global`.
+
+Behavior:
+- Skills are installed in global platform skill directories.
+- Workflows and agents are installed in project paths for active workspace behavior.
+- Rule files remain workspace-oriented for current repo context.
+- Engineering files (`ENGINEERING_RULES.md`, `TECH.md`) are workspace files.
+
+### Where files go
+
+Codex:
+- Global skills: `~/.agents/skills`
+- Project workflows: `<workspace>/.agents/workflows`
+- Project rules: `<workspace>/AGENTS.md`
+- Global rules: `~/.codex/AGENTS.md`
+
+Antigravity:
+- Global skills: `~/.gemini/antigravity/skills`
+- Project workflows: `<workspace>/.agent/workflows`
+- Project rules: `<workspace>/.agent/rules/GEMINI.md`
+- Global rules: `~/.gemini/GEMINI.md`
+
+Copilot:
+- Global skills: `~/.copilot/skills`
+- Project workflows: `<workspace>/.github/copilot/workflows`
+- Project rules: `<workspace>/AGENTS.md` and `<workspace>/.github/copilot-instructions.md`
+- Global rules: `~/.copilot/copilot-instructions.md`
+
+## Credential Model (`cbx_config.json` only)
+
+`cbx_config.json` is the single supported credentials/config source.
+
+Paths:
+- Global: `~/.cbx/cbx_config.json`
+- Project: `<workspace>/cbx_config.json`
+
+### Profile schema
+
+Postman and Stitch now support multiple named profiles with active selection.
+
+```json
+{
+  "postman": {
+    "profiles": [
+      {
+        "name": "default",
+        "apiKey": null,
+        "apiKeyEnvVar": "POSTMAN_API_KEY",
+        "workspaceId": null
+      }
+    ],
+    "activeProfileName": "default",
+    "mcpUrl": "https://mcp.postman.com/minimal"
+  },
+  "stitch": {
+    "profiles": [
+      {
+        "name": "default",
+        "apiKey": null,
+        "apiKeyEnvVar": "STITCH_API_KEY"
+      }
+    ],
+    "activeProfileName": "default",
+    "mcpUrl": "https://stitch.googleapis.com/mcp"
+  }
+}
+```
+
+Compatibility fields (`apiKey`, `apiKeyEnvVar`, `apiKeySource`, `defaultWorkspaceId`) are still mirrored for older consumers, but profile fields are authoritative.
+
+### List/Add/Use/Remove profiles
+
+```bash
+# List profiles
+cbx workflows config keys list --service all --scope global
+
+# Add profile (env-alias-first)
+cbx workflows config keys add --service postman --name team-a --env-var POSTMAN_API_KEY_TEAM_A --scope global
+cbx workflows config keys add --service stitch --name prod --env-var STITCH_API_KEY_PROD --scope global
+
+# Switch active profile
+cbx workflows config keys use --service postman --name team-a --scope global
+
+# Remove non-active profile
+cbx workflows config keys remove --service postman --name old-profile --scope global
+```
+
+Alias commands are also available:
+- `cbx skills config keys ...`
+
+## Postman and Stitch Setup Flows
+
+### Interactive Postman workspace selection
+
+```bash
+cbx workflows install --platform codex --bundle agent-environment-setup --postman
+```
+
+If `POSTMAN_API_KEY` is available and `--yes` is not used, installer can show workspace chooser and save selected `workspaceId` in active Postman profile.
+
+### Manual workspace ID
 
 ```bash
 cbx workflows install --platform codex --bundle agent-environment-setup --postman --postman-workspace-id "<workspace-id>" --yes
 ```
 
-Clear default workspace:
+Clear workspace ID:
 
 ```bash
 cbx workflows install --platform codex --bundle agent-environment-setup --postman --postman-workspace-id null --yes
 ```
 
-Important:
-- If `cbx_config.json` already exists and you want to change the saved workspace, use `--overwrite` (or edit config manually), because existing config is preserved by default.
-- If install output shows `Config file: skipped (...)`, your newly selected workspace is not persisted. Use `--overwrite` or edit with the config command below.
-
-View/edit config in terminal:
+If config already exists and you want to overwrite saved values:
 
 ```bash
-# View config
+cbx workflows install --platform codex --bundle agent-environment-setup --postman --overwrite --yes
+```
+
+### StitchMCP (Antigravity)
+
+Antigravity includes managed Stitch MCP support using active Stitch profile from `cbx_config.json`.
+
+Default managed command template:
+
+```json
+{
+  "StitchMCP": {
+    "$typeName": "exa.cascade_plugins_pb.CascadePluginCommandTemplate",
+    "command": "npx",
+    "args": [
+      "-y",
+      "mcp-remote",
+      "https://stitch.googleapis.com/mcp",
+      "--header",
+      "X-Goog-Api-Key: ur stitch key"
+    ],
+    "env": {}
+  }
+}
+```
+
+## MCP Placement Matrix
+
+Managed MCP definition files (`.cbx/mcp/...`):
+- Global scope: `~/.cbx/mcp/<platform>/postman.json`
+- Project scope: `<workspace>/.cbx/mcp/<platform>/postman.json`
+
+Runtime target patching:
+
+Codex:
+- Global MCP runtime target: `~/.codex/config.toml` (via `codex mcp add/remove`)
+- Project MCP runtime target: `<workspace>/.vscode/mcp.json`
+
+Antigravity:
+- Global runtime target: `~/.gemini/settings.json` (`mcpServers`)
+- Project runtime target: `<workspace>/.gemini/settings.json` (`mcpServers`)
+
+Copilot:
+- Global runtime target: `~/.copilot/mcp-config.json` (`servers`)
+- Project runtime target: `<workspace>/.vscode/mcp.json` (`servers`)
+
+## Command Reference
+
+### Install / Remove / Doctor / Rule Sync
+
+```bash
+cbx workflows install --platform <codex|antigravity|copilot> --bundle agent-environment-setup
+cbx workflows remove <bundle-or-workflow> --platform <platform>
+cbx workflows doctor --platform <platform> --scope <project|global>
+cbx workflows sync-rules --platform <platform> --scope <project|global>
+```
+
+### Config commands
+
+```bash
+# Show config (+ computed status block)
 cbx workflows config --scope global --show
 
-# Interactive edit (workspace ID)
+# Edit active Postman workspace ID
 cbx workflows config --scope global --edit
-
-# Direct set workspace ID
 cbx workflows config --scope global --workspace-id "<workspace-id>"
-
-# Clear workspace ID
 cbx workflows config --scope global --clear-workspace-id
 ```
 
-Platform runtime MCP placement:
-- Codex:
-  - Global MCP scope: `~/.codex/config.toml` via `codex mcp add`.
-  - Workspace MCP scope: `.vscode/mcp.json`.
-- Antigravity (Gemini CLI):
-  - Global MCP scope: `~/.gemini/settings.json` (`mcpServers`, includes `postman` + default `StitchMCP`).
-  - Workspace MCP scope: `.gemini/settings.json` (`mcpServers`, includes `postman` + default `StitchMCP`).
-- Copilot:
-  - Workspace MCP scope: `.vscode/mcp.json`.
-  - Global MCP scope: `~/.copilot/mcp-config.json`.
+`--show` now includes computed `status`:
+- stored source (from active profile config)
+- effective source (resolved at runtime with env)
+- active profile name
+- effective env var alias
 
-API key docs:
-- Google Stitch MCP setup docs: [stitch.withgoogle.com/docs/mcp/setup](https://stitch.withgoogle.com/docs/mcp/setup)
-- Google Stitch settings (create API key): [stitch.withgoogle.com/settings](https://stitch.withgoogle.com/settings)
-- Google Cloud API key guidance: [Authenticate to Google and Google Cloud MCP servers](https://docs.cloud.google.com/mcp/authenticate-mcp)
-- Postman API key creation: [Generate and use Postman API keys](https://learning.postman.com/docs/developer/postman-api/authentication/)
-- Postman MCP setup: [Set up the Postman MCP Server](https://learning.postman.com/docs/developer/postman-api/postman-mcp-server/set-up-postman-mcp-server)
-
-`rules` manages strict engineering policy and a generated codebase tech map:
+### Rules commands
 
 ```bash
-cbx rules init --platform antigravity
-cbx rules init --platform codex
-cbx rules init --platform copilot
-cbx rules init --platform codex --scope global
+cbx rules init --platform <platform> --scope project --overwrite
 cbx rules tech-md --overwrite
-cbx rules init --platform codex --dry-run
 ```
 
-What `cbx rules init` does:
-- Creates `ENGINEERING_RULES.md` next to the active platform rule file.
-- Appends/patches one managed engineering block in that rule file.
-- Generates `TECH.md` at workspace root by scanning the current codebase.
-- Preserves user content outside managed markers.
+### Legacy alias
 
-`TECH.md` scanner coverage (deterministic, no AI calls):
-- Language/file signals from workspace scan.
-- JS/TS package signals from `package.json` (including nested/monorepo package files).
-- Flutter/Dart package signals from `pubspec.yaml`.
-- Go module signals from `go.mod`.
-- Python package signals from `requirements*.txt` and `pyproject.toml`.
-- Rust crate signals from `Cargo.toml`.
+`cbx skills ...` remains as a compatibility alias for `cbx workflows ...`.
 
-### Deprecated Alias
+## Troubleshooting
 
-`cbx skills ...` still works for one minor cycle and prints a deprecation notice.
+### `MCP startup failed: Environment variable POSTMAN_API_KEY ... is not set`
 
-## Bundle Catalog
+Cause:
+- Active profile uses env alias but variable is not exported in current shell/process.
 
-Catalog root:
-
-```text
-Ai Agent Workflow/workflows/
+Fix:
+```bash
+export POSTMAN_API_KEY="<key>"
+cbx workflows config --scope global --show
 ```
 
-First bundled profile:
-- `agent-environment-setup`
+Then confirm `status.postman.effectiveSource` is `env`.
 
-Bundle manifest:
+### `apiKeySource` looks unset even after export
 
-```text
-Ai Agent Workflow/workflows/agent-environment-setup/manifest.json
+Use:
+```bash
+cbx workflows config --scope global --show
 ```
 
-Bundle contains platform-specific:
-- workflow templates (`workflows/*.md`)
-- specialist agent templates (`agents/*.md`)
-- mapped reusable skills copied from `Ai Agent Workflow/skills/<id>/`
-- Codex callable wrapper skills generated from workflow/agent templates
-- rule templates (`rules/*.md`)
+Check these fields:
+- `status.postman.storedSource`
+- `status.postman.effectiveSource`
+- `status.postman.effectiveEnvVar`
 
-## Installed Capability Set (v1)
+If stored source is env but effective source is unset, your env var alias is missing in the running process.
 
-Database capability stack:
-- `database-skills` (engine hub)
-- `database-design` (schema/migration design)
-- `database-optimizer` (query/index/tuning triage)
-- `drift-flutter` (Flutter local persistence)
+### Existing config skipped during install
 
+If installer says config was skipped:
+- Re-run with `--overwrite`, or
+- Use `cbx workflows config` / `cbx workflows config keys ...` to mutate existing config.
 
-Core workflows:
-- `/brainstorm`
-- `/plan`
-- `/create`
-- `/test`
-- `/debug`
-- `/implement-track`
-- `/backend`
-- `/security`
-- `/database`
-- `/mobile`
-- `/devops`
-- `/qa`
+### Duplicate skills shown in UI after older installs
 
-Routing behavior:
-- Antigravity/Copilot: workflow + agent markdown can be routed by platform conventions.
-- Codex: use generated callable wrapper skills (`$workflow-*`, `$agent-*`).
-- Example for backend intent in Codex: `$workflow-backend` or `$agent-backend-specialist`.
-- Backend workflow policy: always include OpenAPI updates plus Swagger UI and Stoplight Elements status in output.
+Installer now auto-cleans nested duplicate skills (for example duplicates under `postman/*`).
 
-### Codex Runtime Mode
-
-Codex does not currently execute custom workflow slash commands or custom `@agent` markdown files as first-class runtime entities.
-Codex skill invocation syntax is `$skill-name` (not `@agent-name`).
-
-`cbx` handles this by generating callable Codex skills:
-- Workflow wrappers: `$workflow-<name>` (for example `$workflow-review`, `$workflow-plan`)
-- Agent wrappers: `$agent-<name>` (for example `$agent-backend-specialist`)
-
-Use these wrappers directly in Codex prompts.
-Do not rely on custom `/workflow` execution or custom `@agent` invocation in Codex runtime.
-
-## Platform Paths
-
-### Antigravity
-
-Project scope:
-- Workflows: `.agent/workflows`
-- Agents: `.agent/agents`
-- Skills: `.agent/skills`
-- Rules: `.agent/rules/GEMINI.md`
-- Terminal integration (optional): `.agent/terminal-integration`
-
-Global scope:
-- Skills: `~/.gemini/antigravity/skills`
-- Rules: `~/.gemini/GEMINI.md`
-- Workflows/agents/terminal-integration: default install keeps these in workspace (`.agent/...`) paths.
-
-### Antigravity Terminal Integration (Optional)
-
-Install-time options:
-- `--terminal-integration`
-- `--terminal-verifier <codex|gemini>`
-
-Behavior:
-- Interactive installs prompt whether to enable terminal verification integration.
-- If enabled, cbx writes managed scripts/config under `.agent/terminal-integration`.
-- cbx also writes a managed terminal verification block into Antigravity rule files so post-task verification commands are explicit.
-- Removing the bundle cleans the managed terminal integration directory and block.
-
-### Codex
-
-Project scope:
-- Workflow templates (reference docs): `.agents/workflows`
-- Skills: `.agents/skills`
-- Rules: `AGENTS.md`
-- Agents: not installed for Codex runtime
-- Callable wrappers: generated into `.agents/skills` as:
-  - `workflow-<workflow-id>`
-  - `agent-<agent-id>`
-  - Example usage: `$workflow-plan`, `$agent-backend-specialist`
-
-Global scope:
-- Skills: `~/.agents/skills`
-- Rules: `~/.codex/AGENTS.md`
-- Workflow templates (reference docs): default install keeps these in workspace `.agents/workflows`
-- Agents: not installed for Codex runtime
-
-Legacy compatibility note:
-- `.codex/skills` is treated as legacy and flagged by `doctor` with migration guidance.
-
-### Copilot
-
-Project scope:
-- Workflows: `.github/copilot/workflows`
-- Agents: `.github/agents`
-- Skills: `.github/skills`
-- Rules: `AGENTS.md` (preferred), fallback `.github/copilot-instructions.md`
-- Skill schema note: `cbx` normalizes Copilot skill frontmatter by removing unsupported top-level keys like `displayName` and `keywords` during install.
-
-Global scope:
-- Skills: `~/.copilot/skills`
-- Rules: `~/.copilot/copilot-instructions.md`
-- Workflows/agents: default install keeps these in workspace (`.github/...`) paths.
-
-## Rule Auto-Sync
-
-`cbx` maintains a single managed block in the active platform rule file.
-
-Markers:
-
-```md
-<!-- cbx:workflows:auto:start platform=<platform-id> version=1 -->
-...
-<!-- cbx:workflows:auto:end -->
-```
-
-Behavior:
-- Preserves user content outside markers.
-- Replaces first valid managed block in place.
-- Appends a managed block if missing.
-- On malformed/multiple markers, patches first valid range and warns.
-- Keeps markers even when no workflows are installed.
-
-## Scope and Detection
-
-Default scope:
-- Install/init commands:
-  - `cbx workflows install`
-  - `cbx workflows init`
-  - `cbx skills install`
-  - `cbx skills init`
-  - `cbx install` (legacy alias)
-  - `cbx init` (legacy alias)
-  - Default scope for these commands is `global`.
-  - In this default global mode, only skills/powers install globally. Workflows/agents and rule/engineering files remain workspace-scoped.
-- Other workflow/rules commands default to `project`.
-
-Optional:
-- `--scope global`
-- `--scope project`
-
-Platform auto-detection:
-- Uses repo markers for Antigravity/Codex/Copilot.
-- Prompts when ambiguous.
-- Remembers last selected platform in local state.
-
-State files:
-- Project: `.cbx/workflows-state.json`
-- Global: `~/.cbx/state.json`
-
-## Dry Run
-
-Preview mode is supported on install/remove/sync:
+Run refresh install:
 
 ```bash
-cbx workflows install --platform antigravity --bundle agent-environment-setup --dry-run
-cbx workflows install --platform antigravity --bundle agent-environment-setup --terminal-integration --terminal-verifier codex --dry-run
-cbx workflows remove agent-environment-setup --platform antigravity --dry-run
-cbx workflows sync-rules --platform codex --dry-run
+cbx workflows install --platform codex --bundle agent-environment-setup --overwrite --yes
 ```
 
-Dry-run behavior:
-- prints planned file changes
-- prints planned managed-block action (`would-create`/`would-patch`)
-- does not write files
-- does not update state files
+### Legacy Postman config file exists without `cbx_config.json`
 
-## Full Smoke Test Sample
-
-Use this script-style sequence to validate end-to-end behavior:
+Behavior is now hard-fail. Create/repair `cbx_config.json` first:
 
 ```bash
-# 1) Create isolated workspace
-TMP_DIR="$(mktemp -d /tmp/cbx-smoke.XXXXXX)"
-cd "$TMP_DIR"
-
-# 2) Antigravity preview + apply + doctor
-cbx workflows install --platform antigravity --bundle agent-environment-setup --dry-run
-cbx workflows install --platform antigravity --bundle agent-environment-setup --terminal-integration --terminal-verifier codex --yes
-cbx workflows doctor antigravity --json
-
-# 3) Codex preview + apply + doctor
-mkdir -p .codex/skills  # optional: simulate legacy path warning
-cbx workflows install --platform codex --bundle agent-environment-setup --dry-run
-cbx workflows install --platform codex --bundle agent-environment-setup --yes
-cbx workflows doctor codex --json
-# Codex runtime usage (in prompt): $workflow-review or $agent-backend-specialist
-
-# 4) Copilot preview + apply + doctor
-cbx workflows install --platform copilot --bundle agent-environment-setup --dry-run
-cbx workflows install --platform copilot --bundle agent-environment-setup --yes
-cbx workflows doctor copilot --json
-
-# 5) Remove bundle preview + apply
-cbx workflows remove agent-environment-setup --platform antigravity --dry-run
-cbx workflows remove agent-environment-setup --platform antigravity --yes
+cbx workflows config --scope global --clear-workspace-id
 ```
 
-## Doctor Checks
+## Migration Notes
 
-`cbx workflows doctor` validates:
-- workflow/agent/skill path existence
-- active rule file status
-- managed block health
-- Codex wrapper-skill readiness (`$workflow-*`, `$agent-*`) through installed skills path
-- Codex legacy path warnings (`.codex/skills`)
-- Antigravity `.gitignore` warning for `.agent/` with recommendation to use `.git/info/exclude` for local-only excludes
-- Antigravity terminal integration status (directory/config/rule block)
-- Copilot project/global path health (`.github/agents`, `.github/skills`, `AGENTS.md` / `.github/copilot-instructions.md`)
+### Behavior changes in this release
 
-## Conductor Integration
+- `cbx_config.json` is now the only supported config source for Postman/Stitch credentials.
+- Multi-profile key model added (`profiles[]` + `activeProfileName`).
+- `config keys` commands added (`list/add/use/remove`).
+- `config --show` now reports stored vs effective auth source.
+- Install now defaults to indexed top-level all-skill install.
+- Nested duplicate skill directories are auto-cleaned during install.
 
-No automatic Conductor installation is performed.
-
-If Conductor artifacts already exist, workflows may reference them as supporting context.
-
-## Development
-
-Run CLI help locally:
+### Suggested refresh
 
 ```bash
-node bin/cubis.js --help
+npm install -g @cubis/foundry
+cbx workflows install --platform codex --bundle agent-environment-setup --overwrite --yes
+cbx workflows config --scope global --show
 ```
 
-Run attribute validation (non-strict):
+## Platform Docs
 
-```bash
-npm run test:attributes
-```
-
-Run attribute validation (strict, fails on warnings):
-
-```bash
-npm run test:attributes:strict
-```
-
-Run TECH.md scanner integration tests:
-
-```bash
-npm run test:tech-md
-```
-
-Run full workflow smoke test:
-
-```bash
-bash scripts/smoke-workflows.sh
-```
-
-Run the full suite:
-
-```bash
-npm run test:all
-```
-
-Run the full suite in strict mode:
-
-```bash
-npm run test:all:strict
-```
-
-## References
-
-- [antigravity-kit](https://github.com/vudovn/antigravity-kit)
-- [Codex Skills](https://developers.openai.com/codex/skills/)
-- [Codex AGENTS Guide](https://developers.openai.com/codex/guides/agents-md)
-- [Codex Config Basics](https://developers.openai.com/codex/config-basic)
-- [OpenCode Skills](https://opencode.ai/docs/skills/)
-- [OpenCode Rules](https://opencode.ai/docs/rules/)
-- [Claude Code Skills](https://docs.anthropic.com/en/docs/claude-code/skills)
-- [GitHub Copilot Skills](https://docs.github.com/en/copilot/how-tos/context/configure-custom-instructions/add-repository-instructions#using-skills-to-group-custom-instructions)
+- Postman API keys: <https://learning.postman.com/docs/developer/postman-api/authentication/>
+- Postman MCP setup: <https://learning.postman.com/docs/developer/postman-api/postman-mcp-server/set-up-postman-mcp-server>
+- Google Stitch MCP: <https://developers.google.com/stitch>

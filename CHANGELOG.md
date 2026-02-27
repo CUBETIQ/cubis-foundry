@@ -2,6 +2,31 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.29] - 2026-02-27
+
+### Changed
+
+- Switched credential/config source to `cbx_config.json` only for Postman and Stitch runtime selection.
+- Added profile-based credential model for Postman/Stitch (`profiles[]` + `activeProfileName`) with compatibility mirrors.
+- Updated `cbx workflows config --show` to include computed `status` with stored source vs effective source and active profile/env alias context.
+- Changed default skill install resolution to indexed top-level skills (`skills_index.json` + resolved skill dirs), instead of curated manifest subset.
+- Added automatic nested duplicate skill cleanup during install (for example duplicate skill packs nested under `postman/*`).
+- Rewrote README into a full operational guide (quickstarts, scopes, credential flows, MCP placement, troubleshooting, migration).
+
+### Added
+
+- Added `cbx workflows config keys` profile-management commands:
+  - `list`
+  - `add`
+  - `use`
+  - `remove`
+- Added `cbx skills config keys` compatibility alias.
+
+### Fixed
+
+- Removed legacy Postman fallback file references from runtime/docs and enforce migration to `cbx_config.json`.
+- Updated validation/smoke scripts to align with global-skill default install model and profile-based config behavior.
+
 ## [0.3.28] - 2026-02-27
 
 ### Fixed
@@ -13,7 +38,7 @@ All notable changes to this project are documented in this file.
 ### Changed
 
 - Updated Postman skill/power guidance to use `cbx_config.json` as the default config source with `POSTMAN_API_KEY` env-first auth.
-- Added explicit instruction to avoid referencing `postman_setting.json` in normal responses when `cbx_config.json` exists.
+- Added explicit instruction to avoid referencing legacy Postman fallback configs in normal responses when `cbx_config.json` exists.
 
 ## [0.3.26] - 2026-02-26
 

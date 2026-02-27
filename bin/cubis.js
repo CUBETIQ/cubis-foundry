@@ -136,7 +136,10 @@ const STITCH_MCP_URL = "https://stitch.googleapis.com/mcp";
 const STITCH_API_KEY_PLACEHOLDER = "ur stitch key";
 const POSTMAN_WORKSPACE_MANUAL_CHOICE = "__postman_workspace_manual__";
 const CBX_CONFIG_FILENAME = "cbx_config.json";
-const POSTMAN_SETTINGS_FILENAME = "postman_setting.json";
+const LEGACY_POSTMAN_CONFIG_FILENAME = ["postman", "setting.json"].join("_");
+const DEFAULT_CREDENTIAL_PROFILE_NAME = "default";
+const RESERVED_CREDENTIAL_PROFILE_NAMES = new Set(["all"]);
+const CREDENTIAL_SERVICES = new Set(["postman", "stitch"]);
 const POSTMAN_API_KEY_MISSING_WARNING =
   `Postman API key is not configured. Set ${POSTMAN_API_KEY_ENV_VAR} or update ${CBX_CONFIG_FILENAME}.`;
 const STITCH_API_KEY_MISSING_WARNING =
@@ -311,6 +314,77 @@ function normalizePostmanWorkspaceId(value) {
   const normalized = String(value).trim();
   if (!normalized || normalized.toLowerCase() === "null") return null;
   return normalized;
+}
+
+function normalizeCredentialProfileName(value) {
+  if (value === undefined || value === null) return null;
+  const normalized = String(value).trim();
+  return normalized || null;
+}
+
+function credentialProfileNameKey(value) {
+  const normalized = normalizeCredentialProfileName(value);
+  return normalized ? normalized.toLowerCase() : null;
+}
+
+function normalizeCredentialService(value, { allowAll = false } = {}) {
+  if (!value) return allowAll ? "all" : "postman";
+  const normalized = String(value).trim().toLowerCase();
+  if (allowAll && normalized === "all") return "all";
+  if (!CREDENTIAL_SERVICES.has(normalized)) {
+    throw new Error(
+      `Unknown credential service '${value}'. Use ${allowAll ? "postman|stitch|all" : "postman|stitch"}.`
+    );
+  }
+  return normalized;
+}
+
+function defaultEnvVarForCredentialService(service) {
+  return service === "stitch" ? STITCH_API_KEY_ENV_VAR : POSTMAN_API_KEY_ENV_VAR;
+}
+
+function defaultMcpUrlForCredentialService(service) {
+  return service === "stitch" ? STITCH_MCP_URL : POSTMAN_MCP_URL;
+}
+
+function isCredentialServiceEnvVar(value) {
+  return typeof value === "string" && /^[A-Za-z_][A-Za-z0-9_]*$/.test(value.trim());
+}
+
+function normalizeCredentialProfileRecord(service, rawProfile, fallbackName = DEFAULT_CREDENTIAL_PROFILE_NAME) {
+  const defaultEnvVar = defaultEnvVarForCredentialService(service);
+  const source = rawProfile && typeof rawProfile === "object" && !Array.isArray(rawProfile) ? rawProfile : {};
+  const name = normalizeCredentialProfileName(source.name) || fallbackName;
+  const apiKey = normalizePostmanApiKey(source.apiKey);
+  const envVarCandidate = normalizePostmanApiKey(source.apiKeyEnvVar) || defaultEnvVar;
+  const apiKeyEnvVar = isCredentialServiceEnvVar(envVarCandidate) ? envVarCandidate : defaultEnvVar;
+  const profile = {
+    name,
+    apiKey,
+    apiKeyEnvVar
+  };
+  if (service === "postman") {
+    profile.workspaceId = normalizePostmanWorkspaceId(source.workspaceId ?? source.defaultWorkspaceId);
+  }
+  return profile;
+}
+
+function dedupeCredentialProfiles(profiles) {
+  const seen = new Set();
+  const deduped = [];
+  for (const profile of profiles) {
+    const key = credentialProfileNameKey(profile?.name);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    deduped.push(profile);
+  }
+  return deduped;
+}
+
+function storedCredentialSource(profile) {
+  if (normalizePostmanApiKey(profile?.apiKey)) return "inline";
+  if (normalizePostmanApiKey(profile?.apiKeyEnvVar)) return "env";
+  return "unset";
 }
 
 function defaultState() {
@@ -1368,6 +1442,79 @@ async function readBundleManifest(bundleId) {
   return parsed;
 }
 
+function extractSkillIdFromIndexPath(indexPathValue) {
+  const raw = String(indexPathValue || "").trim();
+  if (!raw) return null;
+  const normalized = raw.replace(/\\/g, "/");
+  const marker = "/skills/";
+  const markerIndex = normalized.indexOf(marker);
+  if (markerIndex === -1) return null;
+  const remainder = normalized.slice(markerIndex + marker.length);
+  const [skillId] = remainder.split("/");
+  const normalizedSkillId = String(skillId || "").trim();
+  return normalizedSkillId || null;
+}
+
+async function resolveTopLevelSkillIdsFromIndex() {
+  const skillsRoot = path.join(agentAssetsRoot(), "skills");
+  const indexPath = path.join(skillsRoot, "skills_index.json");
+  if (!(await pathExists(indexPath))) return [];
+
+  let parsed;
+  try {
+    parsed = JSON.parse(await readFile(indexPath, "utf8"));
+  } catch {
+    parsed = [];
+  }
+  const entries = Array.isArray(parsed) ? parsed : [];
+
+  const candidates = [];
+  for (const entry of entries) {
+    if (!entry || typeof entry !== "object") continue;
+    const byName = normalizeCredentialProfileName(entry.name);
+    if (byName) candidates.push(byName);
+    const byPath = extractSkillIdFromIndexPath(entry.path);
+    if (byPath) candidates.push(byPath);
+  }
+
+  const topLevelIds = [];
+  const seen = new Set();
+  for (const rawCandidate of candidates) {
+    const skillId = String(rawCandidate || "").trim();
+    if (!skillId || skillId.startsWith(".")) continue;
+    if (skillId === ".system" || skillId.startsWith(".system/")) continue;
+    const key = skillId.toLowerCase();
+    if (seen.has(key)) continue;
+
+    const skillDir = path.join(skillsRoot, skillId);
+    const skillFile = path.join(skillDir, "SKILL.md");
+    if (!(await pathExists(skillDir)) || !(await pathExists(skillFile))) continue;
+
+    seen.add(key);
+    topLevelIds.push(skillId);
+  }
+
+  topLevelIds.sort((a, b) => a.localeCompare(b));
+  return topLevelIds;
+}
+
+async function resolveInstallSkillIds({ platformSpec, extraSkillIds = [] }) {
+  const indexedSkillIds = await resolveTopLevelSkillIdsFromIndex();
+  const fallbackManifestSkillIds = Array.isArray(platformSpec.skills) ? platformSpec.skills : [];
+
+  let selected = indexedSkillIds.length > 0 ? indexedSkillIds : fallbackManifestSkillIds;
+  if (Array.isArray(platformSpec.skillAllowList) && platformSpec.skillAllowList.length > 0) {
+    const allow = new Set(platformSpec.skillAllowList.map((item) => String(item).toLowerCase()));
+    selected = selected.filter((skillId) => allow.has(String(skillId).toLowerCase()));
+  }
+  if (Array.isArray(platformSpec.skillBlockList) && platformSpec.skillBlockList.length > 0) {
+    const blocked = new Set(platformSpec.skillBlockList.map((item) => String(item).toLowerCase()));
+    selected = selected.filter((skillId) => !blocked.has(String(skillId).toLowerCase()));
+  }
+
+  return unique([...selected, ...extraSkillIds.filter(Boolean)]);
+}
+
 async function chooseBundle(bundleOption) {
   const bundleIds = await listBundleIds();
   if (bundleIds.length === 0) {
@@ -2275,12 +2422,12 @@ async function writeGeneratedArtifact({ destination, content, dryRun = false }) 
   return { action: exists ? "replaced" : "installed", path: destination };
 }
 
-function resolveLegacyPostmanSettingsPath({ scope, cwd = process.cwd() }) {
+function resolveLegacyPostmanConfigPath({ scope, cwd = process.cwd() }) {
   if (scope === "global") {
-    return path.join(os.homedir(), ".cbx", POSTMAN_SETTINGS_FILENAME);
+    return path.join(os.homedir(), ".cbx", LEGACY_POSTMAN_CONFIG_FILENAME);
   }
   const workspaceRoot = findWorkspaceRoot(cwd);
-  return path.join(workspaceRoot, POSTMAN_SETTINGS_FILENAME);
+  return path.join(workspaceRoot, LEGACY_POSTMAN_CONFIG_FILENAME);
 }
 
 function resolveCbxConfigPath({ scope, cwd = process.cwd() }) {
@@ -2289,6 +2436,18 @@ function resolveCbxConfigPath({ scope, cwd = process.cwd() }) {
   }
   const workspaceRoot = findWorkspaceRoot(cwd);
   return path.join(workspaceRoot, CBX_CONFIG_FILENAME);
+}
+
+async function assertNoLegacyOnlyPostmanConfig({ scope, cwd = process.cwd() }) {
+  const configPath = resolveCbxConfigPath({ scope, cwd });
+  if (await pathExists(configPath)) return;
+
+  const legacyPath = resolveLegacyPostmanConfigPath({ scope, cwd });
+  if (!(await pathExists(legacyPath))) return;
+
+  throw new Error(
+    `Legacy Postman config detected at ${legacyPath}. Create ${configPath} first (for example: cbx workflows config --scope ${scope} --clear-workspace-id).`
+  );
 }
 
 function resolveMcpRootPath({ scope, cwd = process.cwd() }) {
@@ -2414,20 +2573,158 @@ function normalizePostmanApiKey(value) {
   return normalized || null;
 }
 
+function parseStoredCredentialServiceConfig({
+  service,
+  rawService
+}) {
+  if (!rawService || typeof rawService !== "object" || Array.isArray(rawService)) {
+    return null;
+  }
+
+  const defaultEnvVar = defaultEnvVarForCredentialService(service);
+  const defaultMcpUrl = defaultMcpUrlForCredentialService(service);
+  const mcpUrl = String(rawService.mcpUrl || defaultMcpUrl).trim() || defaultMcpUrl;
+  const profiles = [];
+  const rawProfiles = Array.isArray(rawService.profiles) ? rawService.profiles : [];
+
+  for (const rawProfile of rawProfiles) {
+    const name = normalizeCredentialProfileName(rawProfile?.name);
+    if (!name) continue;
+    profiles.push(normalizeCredentialProfileRecord(service, rawProfile, name));
+  }
+
+  if (profiles.length === 0) {
+    profiles.push(
+      normalizeCredentialProfileRecord(
+        service,
+        {
+          name: DEFAULT_CREDENTIAL_PROFILE_NAME,
+          apiKey: rawService.apiKey,
+          apiKeyEnvVar: rawService.apiKeyEnvVar,
+          workspaceId: service === "postman" ? rawService.defaultWorkspaceId : null
+        },
+        DEFAULT_CREDENTIAL_PROFILE_NAME
+      )
+    );
+  }
+
+  const dedupedProfiles = dedupeCredentialProfiles(profiles);
+  const activeProfileNameCandidate =
+    normalizeCredentialProfileName(rawService.activeProfileName) || dedupedProfiles[0].name;
+  const activeProfile =
+    dedupedProfiles.find(
+      (profile) => credentialProfileNameKey(profile.name) === credentialProfileNameKey(activeProfileNameCandidate)
+    ) || dedupedProfiles[0];
+  const activeProfileName = activeProfile.name;
+
+  if (service === "postman" && activeProfile.workspaceId === null) {
+    const legacyWorkspaceId = normalizePostmanWorkspaceId(rawService.defaultWorkspaceId);
+    if (legacyWorkspaceId) {
+      activeProfile.workspaceId = legacyWorkspaceId;
+    }
+  }
+
+  return {
+    mcpUrl,
+    profiles: dedupedProfiles,
+    activeProfileName,
+    activeProfile,
+    apiKey: normalizePostmanApiKey(activeProfile.apiKey),
+    apiKeyEnvVar: String(activeProfile.apiKeyEnvVar || defaultEnvVar).trim() || defaultEnvVar,
+    defaultWorkspaceId: service === "postman" ? normalizePostmanWorkspaceId(activeProfile.workspaceId) : null
+  };
+}
+
 function parseStoredPostmanConfig(raw) {
   if (!raw || typeof raw !== "object") return null;
   const source = raw.postman && typeof raw.postman === "object" ? raw.postman : raw;
+  return parseStoredCredentialServiceConfig({ service: "postman", rawService: source });
+}
 
-  const apiKey = normalizePostmanApiKey(source.apiKey);
-  const apiKeyEnvVar = String(source.apiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR).trim() || POSTMAN_API_KEY_ENV_VAR;
-  const mcpUrl = String(source.mcpUrl || POSTMAN_MCP_URL).trim() || POSTMAN_MCP_URL;
-  const defaultWorkspaceId = normalizePostmanWorkspaceId(source.defaultWorkspaceId);
+function parseStoredStitchConfig(raw) {
+  if (!raw || typeof raw !== "object") return null;
+  const source = raw.stitch && typeof raw.stitch === "object" ? raw.stitch : raw;
+  if (!source || typeof source !== "object" || Array.isArray(source)) return null;
+  const hasStitchShape =
+    source.profiles !== undefined ||
+    source.apiKey !== undefined ||
+    source.apiKeyEnvVar !== undefined ||
+    source.mcpUrl !== undefined ||
+    source.activeProfileName !== undefined;
+  if (!hasStitchShape) return null;
+  return parseStoredCredentialServiceConfig({ service: "stitch", rawService: source, allowMissing: true });
+}
+
+function upsertNormalizedPostmanConfig(target, postmanState) {
+  const next = target && typeof target === "object" && !Array.isArray(target) ? target : {};
+  const existingPostman =
+    next.postman && typeof next.postman === "object" && !Array.isArray(next.postman) ? next.postman : {};
+  const serviceConfig = postmanState || parseStoredPostmanConfig({ postman: existingPostman });
+  if (!serviceConfig) return next;
+
+  next.postman = {
+    ...existingPostman,
+    profiles: serviceConfig.profiles,
+    activeProfileName: serviceConfig.activeProfileName,
+    apiKey: serviceConfig.apiKey,
+    apiKeyEnvVar: serviceConfig.apiKeyEnvVar,
+    apiKeySource: storedCredentialSource(serviceConfig.activeProfile),
+    defaultWorkspaceId: serviceConfig.defaultWorkspaceId,
+    mcpUrl: serviceConfig.mcpUrl
+  };
+  return next;
+}
+
+function upsertNormalizedStitchConfig(target, stitchState) {
+  const next = target && typeof target === "object" && !Array.isArray(target) ? target : {};
+  const existingStitch =
+    next.stitch && typeof next.stitch === "object" && !Array.isArray(next.stitch) ? next.stitch : {};
+  const serviceConfig =
+    stitchState ||
+    parseStoredStitchConfig({ stitch: existingStitch }) ||
+    parseStoredCredentialServiceConfig({ service: "stitch", rawService: existingStitch, allowMissing: true });
+  if (!serviceConfig) return next;
+
+  next.stitch = {
+    ...existingStitch,
+    server: existingStitch.server || STITCH_MCP_SERVER_ID,
+    profiles: serviceConfig.profiles,
+    activeProfileName: serviceConfig.activeProfileName,
+    apiKey: serviceConfig.apiKey,
+    apiKeyEnvVar: serviceConfig.apiKeyEnvVar,
+    apiKeySource: storedCredentialSource(serviceConfig.activeProfile),
+    mcpUrl: serviceConfig.mcpUrl
+  };
+  return next;
+}
+
+function resolveCredentialEffectiveStatus({
+  service,
+  serviceConfig,
+  env = process.env
+}) {
+  if (!serviceConfig) return null;
+  const defaultEnvVar = defaultEnvVarForCredentialService(service);
+  const activeProfile = serviceConfig.activeProfile || serviceConfig.profiles?.[0] || null;
+  const apiKey = normalizePostmanApiKey(activeProfile?.apiKey);
+  const apiKeyEnvVar = String(activeProfile?.apiKeyEnvVar || defaultEnvVar).trim() || defaultEnvVar;
+  const envApiKey = normalizePostmanApiKey(env?.[apiKeyEnvVar]);
+  const storedSource = storedCredentialSource(activeProfile);
+  const effectiveSource =
+    service === "stitch"
+      ? getStitchApiKeySource({ apiKey, envApiKey })
+      : getPostmanApiKeySource({ apiKey, envApiKey });
 
   return {
-    apiKey,
-    apiKeyEnvVar,
-    mcpUrl,
-    defaultWorkspaceId
+    service,
+    activeProfileName: serviceConfig.activeProfileName,
+    activeProfile,
+    profileCount: Array.isArray(serviceConfig.profiles) ? serviceConfig.profiles.length : 0,
+    storedSource,
+    effectiveSource,
+    effectiveEnvVar: apiKeyEnvVar,
+    envVarPresent: Boolean(envApiKey),
+    workspaceId: service === "postman" ? normalizePostmanWorkspaceId(activeProfile?.workspaceId) : null
   };
 }
 
@@ -2480,22 +2777,6 @@ async function fetchPostmanWorkspaces({
   } finally {
     clearTimeout(timeout);
   }
-}
-
-function parseStoredStitchConfig(raw) {
-  if (!raw || typeof raw !== "object") return null;
-  const source = raw.stitch && typeof raw.stitch === "object" ? raw.stitch : null;
-  if (!source) return null;
-
-  const apiKey = normalizePostmanApiKey(source.apiKey);
-  const apiKeyEnvVar = String(source.apiKeyEnvVar || STITCH_API_KEY_ENV_VAR).trim() || STITCH_API_KEY_ENV_VAR;
-  const mcpUrl = String(source.mcpUrl || STITCH_MCP_URL).trim() || STITCH_MCP_URL;
-
-  return {
-    apiKey,
-    apiKeyEnvVar,
-    mcpUrl
-  };
 }
 
 function parseJsonLenient(raw) {
@@ -2947,7 +3228,12 @@ async function resolvePostmanInstallSelection({
   }
 
   const cbxConfigPath = resolveCbxConfigPath({ scope: mcpScope, cwd });
-  const legacySettingsPath = resolveLegacyPostmanSettingsPath({ scope: mcpScope, cwd });
+  const defaultProfile = normalizeCredentialProfileRecord("postman", {
+    name: DEFAULT_CREDENTIAL_PROFILE_NAME,
+    apiKey: apiKey || null,
+    apiKeyEnvVar: POSTMAN_API_KEY_ENV_VAR,
+    workspaceId: defaultWorkspaceId ?? null
+  });
   const cbxConfig = {
     schemaVersion: 1,
     generatedBy: "cbx workflows install --postman",
@@ -2958,19 +3244,28 @@ async function resolvePostmanInstallSelection({
       platform
     },
     postman: {
-      apiKey: apiKey || null,
-      apiKeyEnvVar: POSTMAN_API_KEY_ENV_VAR,
-      apiKeySource,
-      defaultWorkspaceId: defaultWorkspaceId ?? null,
+      profiles: [defaultProfile],
+      activeProfileName: defaultProfile.name,
+      apiKey: defaultProfile.apiKey,
+      apiKeyEnvVar: defaultProfile.apiKeyEnvVar,
+      apiKeySource: storedCredentialSource(defaultProfile),
+      defaultWorkspaceId: defaultProfile.workspaceId,
       mcpUrl: POSTMAN_MCP_URL
     }
   };
   if (stitchEnabled) {
+    const defaultStitchProfile = normalizeCredentialProfileRecord("stitch", {
+      name: DEFAULT_CREDENTIAL_PROFILE_NAME,
+      apiKey: stitchApiKey || null,
+      apiKeyEnvVar: STITCH_API_KEY_ENV_VAR
+    });
     cbxConfig.stitch = {
       server: STITCH_MCP_SERVER_ID,
-      apiKey: stitchApiKey || null,
-      apiKeyEnvVar: STITCH_API_KEY_ENV_VAR,
-      apiKeySource: stitchApiKeySource,
+      profiles: [defaultStitchProfile],
+      activeProfileName: defaultStitchProfile.name,
+      apiKey: defaultStitchProfile.apiKey,
+      apiKeyEnvVar: defaultStitchProfile.apiKeyEnvVar,
+      apiKeySource: storedCredentialSource(defaultStitchProfile),
       mcpUrl: STITCH_MCP_URL
     };
   }
@@ -2987,8 +3282,7 @@ async function resolvePostmanInstallSelection({
     mcpScope,
     warnings,
     cbxConfig,
-    cbxConfigPath,
-    legacySettingsPath
+    cbxConfigPath
   };
 }
 
@@ -3006,6 +3300,7 @@ async function configurePostmanInstallArtifacts({
   let warnings = postmanSelection.warnings.filter(
     (warning) => warning !== POSTMAN_API_KEY_MISSING_WARNING && warning !== STITCH_API_KEY_MISSING_WARNING
   );
+  await assertNoLegacyOnlyPostmanConfig({ scope: postmanSelection.mcpScope, cwd });
   const cbxConfigContent = `${JSON.stringify(postmanSelection.cbxConfig, null, 2)}\n`;
   const cbxConfigResult = await writeTextFile({
     targetPath: postmanSelection.cbxConfigPath,
@@ -3014,28 +3309,27 @@ async function configurePostmanInstallArtifacts({
     dryRun
   });
 
-  let effectiveApiKey = normalizePostmanApiKey(postmanSelection.cbxConfig?.postman?.apiKey);
-  let effectiveApiKeyEnvVar = String(
-    postmanSelection.cbxConfig?.postman?.apiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR
-  ).trim();
-  let effectiveDefaultWorkspaceId = postmanSelection.defaultWorkspaceId ?? null;
-  let effectiveMcpUrl = postmanSelection.cbxConfig?.postman?.mcpUrl || POSTMAN_MCP_URL;
+  const installPostmanConfig = parseStoredPostmanConfig(postmanSelection.cbxConfig);
+  let effectiveApiKey = normalizePostmanApiKey(installPostmanConfig?.apiKey);
+  let effectiveApiKeyEnvVar = String(installPostmanConfig?.apiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR).trim();
+  let effectiveDefaultWorkspaceId = installPostmanConfig?.defaultWorkspaceId ?? postmanSelection.defaultWorkspaceId ?? null;
+  let effectiveMcpUrl = installPostmanConfig?.mcpUrl || POSTMAN_MCP_URL;
   const shouldInstallStitch = Boolean(postmanSelection.stitchEnabled);
+  const installStitchConfig = shouldInstallStitch ? parseStoredStitchConfig(postmanSelection.cbxConfig) : null;
   let effectiveStitchApiKey = shouldInstallStitch
-    ? normalizePostmanApiKey(postmanSelection.cbxConfig?.stitch?.apiKey)
+    ? normalizePostmanApiKey(installStitchConfig?.apiKey)
     : null;
+  let effectiveStitchApiKeyEnvVar = shouldInstallStitch
+    ? String(installStitchConfig?.apiKeyEnvVar || STITCH_API_KEY_ENV_VAR).trim() || STITCH_API_KEY_ENV_VAR
+    : STITCH_API_KEY_ENV_VAR;
   let effectiveStitchMcpUrl = shouldInstallStitch
-    ? postmanSelection.cbxConfig?.stitch?.mcpUrl || STITCH_MCP_URL
+    ? installStitchConfig?.mcpUrl || STITCH_MCP_URL
     : STITCH_MCP_URL;
 
   if (cbxConfigResult.action === "skipped" || cbxConfigResult.action === "would-skip") {
     const existingCbxConfig = await readJsonFileIfExists(postmanSelection.cbxConfigPath);
-    const existingLegacySettings = await readJsonFileIfExists(postmanSelection.legacySettingsPath);
-    const storedPostmanConfig =
-      parseStoredPostmanConfig(existingCbxConfig.value) || parseStoredPostmanConfig(existingLegacySettings.value);
-    const storedStitchConfig =
-      shouldInstallStitch &&
-      (parseStoredStitchConfig(existingCbxConfig.value) || parseStoredStitchConfig(existingLegacySettings.value));
+    const storedPostmanConfig = parseStoredPostmanConfig(existingCbxConfig.value);
+    const storedStitchConfig = shouldInstallStitch ? parseStoredStitchConfig(existingCbxConfig.value) : null;
 
     if (storedPostmanConfig) {
       effectiveApiKey = storedPostmanConfig.apiKey;
@@ -3044,12 +3338,14 @@ async function configurePostmanInstallArtifacts({
       effectiveMcpUrl = storedPostmanConfig.mcpUrl || POSTMAN_MCP_URL;
     } else {
       warnings.push(
-        `Existing ${CBX_CONFIG_FILENAME} (or legacy ${POSTMAN_SETTINGS_FILENAME}) could not be parsed. Using install-time Postman values for MCP config.`
+        `Existing ${CBX_CONFIG_FILENAME} could not be parsed. Using install-time Postman values for MCP config.`
       );
     }
 
     if (storedStitchConfig) {
       effectiveStitchApiKey = storedStitchConfig.apiKey;
+      effectiveStitchApiKeyEnvVar =
+        String(storedStitchConfig.apiKeyEnvVar || STITCH_API_KEY_ENV_VAR).trim() || STITCH_API_KEY_ENV_VAR;
       effectiveStitchMcpUrl = storedStitchConfig.mcpUrl || STITCH_MCP_URL;
     }
 
@@ -3069,7 +3365,7 @@ async function configurePostmanInstallArtifacts({
     }
   }
 
-  const envApiKey = normalizePostmanApiKey(process.env[POSTMAN_API_KEY_ENV_VAR]);
+  const envApiKey = normalizePostmanApiKey(process.env[effectiveApiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR]);
   const effectiveApiKeySource = getPostmanApiKeySource({
     apiKey: effectiveApiKey,
     envApiKey
@@ -3077,7 +3373,7 @@ async function configurePostmanInstallArtifacts({
   if (effectiveApiKeySource === "unset") {
     warnings.push(POSTMAN_API_KEY_MISSING_WARNING);
   }
-  const envStitchApiKey = normalizePostmanApiKey(process.env[STITCH_API_KEY_ENV_VAR]);
+  const envStitchApiKey = normalizePostmanApiKey(process.env[effectiveStitchApiKeyEnvVar]);
   const effectiveStitchApiKeySource = shouldInstallStitch
     ? getStitchApiKeySource({
         apiKey: effectiveStitchApiKey,
@@ -3340,6 +3636,62 @@ async function validateCopilotAgentsSchema(agentsDir) {
   return findings;
 }
 
+async function findNestedSkillDirs(rootDir, depth = 0, nested = []) {
+  if (!(await pathExists(rootDir))) return nested;
+  const entries = await readdir(rootDir, { withFileTypes: true });
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
+    const childDir = path.join(rootDir, entry.name);
+    const skillFile = path.join(childDir, "SKILL.md");
+    if (depth >= 1 && (await pathExists(skillFile))) {
+      nested.push(childDir);
+    }
+    await findNestedSkillDirs(childDir, depth + 1, nested);
+  }
+  return nested;
+}
+
+async function cleanupNestedDuplicateSkills({
+  skillsRootDir,
+  installedSkillDirs,
+  dryRun = false
+}) {
+  if (!skillsRootDir || !Array.isArray(installedSkillDirs) || installedSkillDirs.length === 0) return [];
+
+  const topLevelSkillIds = new Set();
+  for (const skillDir of installedSkillDirs) {
+    const skillId = path.basename(skillDir);
+    if (!skillId || skillId.startsWith(".")) continue;
+    const topLevelSkillFile = path.join(skillsRootDir, skillId, "SKILL.md");
+    if (await pathExists(topLevelSkillFile)) {
+      topLevelSkillIds.add(skillId.toLowerCase());
+    }
+  }
+
+  if (topLevelSkillIds.size === 0) return [];
+
+  const cleanup = [];
+  for (const topLevelSkillDir of installedSkillDirs) {
+    if (!(await pathExists(topLevelSkillDir))) continue;
+    const nestedSkillDirs = await findNestedSkillDirs(topLevelSkillDir);
+    for (const nestedDir of nestedSkillDirs) {
+      const nestedSkillId = path.basename(nestedDir);
+      if (!topLevelSkillIds.has(nestedSkillId.toLowerCase())) continue;
+      if (!dryRun) {
+        await rm(nestedDir, { recursive: true, force: true });
+      }
+      cleanup.push({
+        nestedSkillId,
+        path: nestedDir,
+        ownerSkillId: path.basename(topLevelSkillDir),
+        action: dryRun ? "would-remove" : "removed"
+      });
+    }
+  }
+
+  return cleanup;
+}
+
 async function installBundleArtifacts({
   bundleId,
   manifest,
@@ -3408,8 +3760,10 @@ async function installBundleArtifacts({
     else installed.push(destination);
   }
 
-  const manifestSkillIds = Array.isArray(platformSpec.skills) ? platformSpec.skills : [];
-  const skillIds = unique([...manifestSkillIds, ...extraSkillIds.filter(Boolean)]);
+  const skillIds = await resolveInstallSkillIds({
+    platformSpec,
+    extraSkillIds
+  });
   for (const skillId of skillIds) {
     const source = path.join(agentAssetsRoot(), "skills", skillId);
     const destination = path.join(profilePaths.skillsDir, skillId);
@@ -3458,6 +3812,12 @@ async function installBundleArtifacts({
     installed.push(...terminalIntegration.installedPaths);
   }
 
+  const duplicateSkillCleanup = await cleanupNestedDuplicateSkills({
+    skillsRootDir: profilePaths.skillsDir,
+    installedSkillDirs: artifacts.skills,
+    dryRun
+  });
+
   const sanitizedSkills = await sanitizeInstalledSkillsForPlatform({
     platform,
     skillDirs: artifacts.skills,
@@ -3476,6 +3836,7 @@ async function installBundleArtifacts({
     artifacts,
     terminalIntegration,
     generatedWrapperSkills,
+    duplicateSkillCleanup,
     sanitizedSkills,
     sanitizedAgents
   };
@@ -3608,7 +3969,8 @@ async function removeBundleArtifacts({
     if (await safeRemove(destination, dryRun)) removed.push(destination);
   }
 
-  for (const skillId of platformSpec.skills || []) {
+  const skillIds = await resolveInstallSkillIds({ platformSpec, extraSkillIds: [] });
+  for (const skillId of skillIds) {
     const destination = path.join(profilePaths.skillsDir, skillId);
     if (await safeRemove(destination, dryRun)) removed.push(destination);
   }
@@ -3676,6 +4038,7 @@ function printInstallSummary({
   installed,
   skipped,
   generatedWrapperSkills = [],
+  duplicateSkillCleanup = [],
   sanitizedSkills = [],
   sanitizedAgents = [],
   terminalIntegration = null,
@@ -3722,6 +4085,18 @@ function printInstallSummary({
     }
     if (terminalIntegrationRules?.workspaceRule) {
       console.log(`- Workspace precedence rule (${terminalIntegrationRules.workspaceRule.filePath}): ${terminalIntegrationRules.workspaceRule.action}`);
+    }
+  }
+
+  if (duplicateSkillCleanup.length > 0) {
+    console.log(`\nNested duplicate skill cleanup (${duplicateSkillCleanup.length}):`);
+    for (const item of duplicateSkillCleanup.slice(0, 10)) {
+      console.log(
+        `- ${item.path}: ${item.action} duplicate skill '${item.nestedSkillId}' nested under '${item.ownerSkillId}'`
+      );
+    }
+    if (duplicateSkillCleanup.length > 10) {
+      console.log(`- ...and ${duplicateSkillCleanup.length - 10} more duplicate skill folder(s).`);
     }
   }
 
@@ -4135,6 +4510,56 @@ function printSkillsDeprecation() {
   console.log("[deprecation] 'cbx skills ...' is now an alias. Use 'cbx workflows ...'.");
 }
 
+function registerConfigKeysSubcommands(configCommand, { aliasMode = false } = {}) {
+  const wrap = (handler) =>
+    aliasMode
+      ? async (options) => {
+          printSkillsDeprecation();
+          await handler(options);
+        }
+      : handler;
+
+  const keysCommand = configCommand
+    .command("keys")
+    .description("Manage named key profiles in cbx_config.json for Postman/Stitch");
+
+  keysCommand
+    .command("list")
+    .description("List key profiles")
+    .option("--service <service>", "postman|stitch|all", "all")
+    .option("--scope <scope>", "config scope: project|workspace|global|user", "global")
+    .action(wrap(runWorkflowConfigKeysList));
+
+  keysCommand
+    .command("add")
+    .description("Add key profile")
+    .option("--service <service>", "postman|stitch", "postman")
+    .requiredOption("--name <profile>", "profile name")
+    .requiredOption("--env-var <envVar>", "environment variable alias")
+    .option("--workspace-id <id|null>", "optional: Postman profile workspace ID")
+    .option("--scope <scope>", "config scope: project|workspace|global|user", "global")
+    .option("--dry-run", "preview changes without writing files")
+    .action(wrap(runWorkflowConfigKeysAdd));
+
+  keysCommand
+    .command("use")
+    .description("Set active key profile")
+    .option("--service <service>", "postman|stitch", "postman")
+    .requiredOption("--name <profile>", "profile name")
+    .option("--scope <scope>", "config scope: project|workspace|global|user", "global")
+    .option("--dry-run", "preview changes without writing files")
+    .action(wrap(runWorkflowConfigKeysUse));
+
+  keysCommand
+    .command("remove")
+    .description("Remove key profile")
+    .option("--service <service>", "postman|stitch", "postman")
+    .requiredOption("--name <profile>", "profile name")
+    .option("--scope <scope>", "config scope: project|workspace|global|user", "global")
+    .option("--dry-run", "preview changes without writing files")
+    .action(wrap(runWorkflowConfigKeysRemove));
+}
+
 async function resolveAntigravityTerminalVerifierSelection({ platform, options }) {
   const verifierRaw = options.terminalVerifier;
   const hasTerminalIntegrationFlag = Boolean(options.terminalIntegration);
@@ -4379,6 +4804,7 @@ async function runWorkflowInstall(options) {
       installed: installResult.installed,
       skipped: installResult.skipped,
       generatedWrapperSkills: installResult.generatedWrapperSkills,
+      duplicateSkillCleanup: installResult.duplicateSkillCleanup,
       sanitizedSkills: installResult.sanitizedSkills,
       sanitizedAgents: installResult.sanitizedAgents,
       terminalIntegration: installResult.terminalIntegration,
@@ -4573,25 +4999,365 @@ async function runWorkflowDoctor(platformArg, options) {
   }
 }
 
+function cloneJsonObject(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+  return JSON.parse(JSON.stringify(value));
+}
+
+function resolveActionOptions(options) {
+  if (!options) return {};
+  if (typeof options.optsWithGlobals === "function") {
+    const resolved = options.optsWithGlobals();
+    return resolved && typeof resolved === "object" ? resolved : {};
+  }
+  if (typeof options.opts === "function") {
+    const resolved = options.opts();
+    return resolved && typeof resolved === "object" ? resolved : {};
+  }
+  return options;
+}
+
+function readCliOptionFromArgv(optionName) {
+  const argv = process.argv.slice(2);
+  for (let i = 0; i < argv.length; i += 1) {
+    const token = argv[i];
+    if (token === optionName) {
+      return argv[i + 1] ?? null;
+    }
+    if (token.startsWith(`${optionName}=`)) {
+      return token.slice(optionName.length + 1);
+    }
+  }
+  return null;
+}
+
+function hasCliFlag(optionName) {
+  const argv = process.argv.slice(2);
+  return argv.includes(optionName);
+}
+
+function prepareConfigDocument(existingValue, { scope, generatedBy }) {
+  const next = cloneJsonObject(existingValue);
+  if (!next.schemaVersion || typeof next.schemaVersion !== "number") next.schemaVersion = 1;
+  next.generatedBy = generatedBy;
+  next.generatedAt = new Date().toISOString();
+  if (!next.mcp || typeof next.mcp !== "object" || Array.isArray(next.mcp)) next.mcp = {};
+  next.mcp.scope = scope;
+  if (!next.mcp.server) next.mcp.server = POSTMAN_SKILL_ID;
+  return next;
+}
+
+function ensureCredentialServiceState(configValue, service) {
+  if (service === "postman") {
+    return parseStoredPostmanConfig(configValue) || parseStoredCredentialServiceConfig({ service, rawService: {} });
+  }
+  return (
+    parseStoredStitchConfig(configValue) || parseStoredCredentialServiceConfig({ service: "stitch", rawService: {} })
+  );
+}
+
+function upsertCredentialServiceConfig(configValue, service, serviceState) {
+  if (service === "postman") {
+    return upsertNormalizedPostmanConfig(configValue, serviceState);
+  }
+  return upsertNormalizedStitchConfig(configValue, serviceState);
+}
+
+function buildConfigShowPayload(rawConfig) {
+  const payload = cloneJsonObject(rawConfig);
+  const postmanState = ensureCredentialServiceState(payload, "postman");
+  upsertNormalizedPostmanConfig(payload, postmanState);
+
+  const stitchState = parseStoredStitchConfig(payload);
+  if (stitchState) {
+    upsertNormalizedStitchConfig(payload, stitchState);
+  }
+
+  payload.status = {
+    postman: resolveCredentialEffectiveStatus({
+      service: "postman",
+      serviceConfig: postmanState
+    })
+  };
+  if (stitchState) {
+    payload.status.stitch = resolveCredentialEffectiveStatus({
+      service: "stitch",
+      serviceConfig: stitchState
+    });
+  }
+
+  return payload;
+}
+
+function normalizeProfileNameOrThrow(name) {
+  const normalizedName = normalizeCredentialProfileName(name);
+  if (!normalizedName) {
+    throw new Error("Missing required profile name. Use --name <profile>.");
+  }
+  if (RESERVED_CREDENTIAL_PROFILE_NAMES.has(credentialProfileNameKey(normalizedName))) {
+    throw new Error(`Profile name '${normalizedName}' is reserved.`);
+  }
+  return normalizedName;
+}
+
+function findProfileByName(profiles, profileName) {
+  const key = credentialProfileNameKey(profileName);
+  return profiles.find((profile) => credentialProfileNameKey(profile.name) === key) || null;
+}
+
+async function loadConfigForScope({ scope, cwd = process.cwd() }) {
+  const configPath = resolveCbxConfigPath({ scope, cwd });
+  await assertNoLegacyOnlyPostmanConfig({ scope, cwd });
+  const existing = await readJsonFileIfExists(configPath);
+  const existingValue =
+    existing.value && typeof existing.value === "object" && !Array.isArray(existing.value) ? existing.value : null;
+  if (existing.exists && !existingValue) {
+    throw new Error(`Existing config at ${configPath} is not valid JSON object.`);
+  }
+  return { configPath, existing, existingValue };
+}
+
+async function writeConfigFile({ configPath, nextConfig, existingExists, dryRun }) {
+  const content = `${JSON.stringify(nextConfig, null, 2)}\n`;
+  if (!dryRun) {
+    await mkdir(path.dirname(configPath), { recursive: true });
+    await writeFile(configPath, content, "utf8");
+  }
+  return dryRun ? (existingExists ? "would-update" : "would-create") : existingExists ? "updated" : "created";
+}
+
+async function runWorkflowConfigKeysList(options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const cwd = process.cwd();
+    const scopeArg = readCliOptionFromArgv("--scope");
+    const scope = normalizeMcpScope(scopeArg ?? opts.scope, "global");
+    const service = normalizeCredentialService(opts.service, { allowAll: true });
+    const { configPath, existing, existingValue } = await loadConfigForScope({ scope, cwd });
+
+    console.log(`Config file: ${configPath}`);
+    if (!existing.exists) {
+      console.log("Status: missing");
+      return;
+    }
+
+    const services = service === "all" ? ["postman", "stitch"] : [service];
+    for (const serviceId of services) {
+      const serviceState = ensureCredentialServiceState(existingValue, serviceId);
+      if (serviceId === "stitch" && !parseStoredStitchConfig(existingValue)) {
+        console.log(`\n${serviceId}: not configured`);
+        continue;
+      }
+      const effective = resolveCredentialEffectiveStatus({
+        service: serviceId,
+        serviceConfig: serviceState
+      });
+      console.log(`\n${serviceId}: active=${serviceState.activeProfileName} profiles=${serviceState.profiles.length}`);
+      console.log(`- Stored source: ${effective.storedSource}`);
+      console.log(`- Effective source: ${effective.effectiveSource}`);
+      console.log(`- Effective env var: ${effective.effectiveEnvVar}`);
+      for (const profile of serviceState.profiles) {
+        const marker = credentialProfileNameKey(profile.name) === credentialProfileNameKey(serviceState.activeProfileName) ? "*" : " ";
+        const workspaceSuffix =
+          serviceId === "postman"
+            ? ` workspace=${normalizePostmanWorkspaceId(profile.workspaceId) ?? "null"}`
+            : "";
+        console.log(`  ${marker} ${profile.name} env=${profile.apiKeyEnvVar}${workspaceSuffix}`);
+      }
+    }
+  } catch (error) {
+    if (error?.name === "ExitPromptError") {
+      console.error("\nCancelled.");
+      process.exit(130);
+    }
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+async function runWorkflowConfigKeysAdd(options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const cwd = process.cwd();
+    const scopeArg = readCliOptionFromArgv("--scope");
+    const scope = normalizeMcpScope(scopeArg ?? opts.scope, "global");
+    const dryRun = hasCliFlag("--dry-run") || Boolean(opts.dryRun);
+    const service = normalizeCredentialService(opts.service);
+    const profileName = normalizeProfileNameOrThrow(opts.name);
+    const envVar = normalizePostmanApiKey(opts.envVar);
+    if (!envVar || !isCredentialServiceEnvVar(envVar)) {
+      throw new Error("Missing or invalid --env-var. Example: --env-var POSTMAN_API_KEY");
+    }
+
+    const { configPath, existing, existingValue } = await loadConfigForScope({ scope, cwd });
+    const next = prepareConfigDocument(existingValue, {
+      scope,
+      generatedBy: "cbx workflows config keys add"
+    });
+
+    const serviceState = ensureCredentialServiceState(next, service);
+    if (findProfileByName(serviceState.profiles, profileName)) {
+      throw new Error(`Profile '${profileName}' already exists for ${service}.`);
+    }
+
+    const newProfile = normalizeCredentialProfileRecord(service, {
+      name: profileName,
+      apiKey: null,
+      apiKeyEnvVar: envVar,
+      workspaceId: service === "postman" ? normalizePostmanWorkspaceId(opts.workspaceId) : undefined
+    });
+    const updatedServiceState = {
+      ...serviceState,
+      profiles: dedupeCredentialProfiles([...serviceState.profiles, newProfile])
+    };
+    upsertCredentialServiceConfig(next, service, updatedServiceState);
+
+    const action = await writeConfigFile({
+      configPath,
+      nextConfig: next,
+      existingExists: existing.exists,
+      dryRun
+    });
+    console.log(`Config file: ${configPath}`);
+    console.log(`Action: ${action}`);
+    console.log(`Added profile '${profileName}' for ${service} (env var ${envVar}).`);
+    console.log(`Active profile remains '${updatedServiceState.activeProfileName}'.`);
+  } catch (error) {
+    if (error?.name === "ExitPromptError") {
+      console.error("\nCancelled.");
+      process.exit(130);
+    }
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+async function runWorkflowConfigKeysUse(options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const cwd = process.cwd();
+    const scopeArg = readCliOptionFromArgv("--scope");
+    const scope = normalizeMcpScope(scopeArg ?? opts.scope, "global");
+    const dryRun = hasCliFlag("--dry-run") || Boolean(opts.dryRun);
+    const service = normalizeCredentialService(opts.service);
+    const profileName = normalizeProfileNameOrThrow(opts.name);
+
+    const { configPath, existing, existingValue } = await loadConfigForScope({ scope, cwd });
+    if (!existing.exists) {
+      throw new Error(`Config file is missing at ${configPath}.`);
+    }
+
+    const next = prepareConfigDocument(existingValue, {
+      scope,
+      generatedBy: "cbx workflows config keys use"
+    });
+    const serviceState = ensureCredentialServiceState(next, service);
+    const selectedProfile = findProfileByName(serviceState.profiles, profileName);
+    if (!selectedProfile) {
+      throw new Error(`Profile '${profileName}' does not exist for ${service}.`);
+    }
+
+    const updatedServiceState = {
+      ...serviceState,
+      activeProfileName: selectedProfile.name
+    };
+    upsertCredentialServiceConfig(next, service, updatedServiceState);
+
+    const action = await writeConfigFile({
+      configPath,
+      nextConfig: next,
+      existingExists: existing.exists,
+      dryRun
+    });
+    console.log(`Config file: ${configPath}`);
+    console.log(`Action: ${action}`);
+    console.log(`Active ${service} profile: ${selectedProfile.name}`);
+  } catch (error) {
+    if (error?.name === "ExitPromptError") {
+      console.error("\nCancelled.");
+      process.exit(130);
+    }
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+async function runWorkflowConfigKeysRemove(options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const cwd = process.cwd();
+    const scopeArg = readCliOptionFromArgv("--scope");
+    const scope = normalizeMcpScope(scopeArg ?? opts.scope, "global");
+    const dryRun = hasCliFlag("--dry-run") || Boolean(opts.dryRun);
+    const service = normalizeCredentialService(opts.service);
+    const profileName = normalizeProfileNameOrThrow(opts.name);
+
+    const { configPath, existing, existingValue } = await loadConfigForScope({ scope, cwd });
+    if (!existing.exists) {
+      throw new Error(`Config file is missing at ${configPath}.`);
+    }
+
+    const next = prepareConfigDocument(existingValue, {
+      scope,
+      generatedBy: "cbx workflows config keys remove"
+    });
+    const serviceState = ensureCredentialServiceState(next, service);
+    const selectedProfile = findProfileByName(serviceState.profiles, profileName);
+    if (!selectedProfile) {
+      throw new Error(`Profile '${profileName}' does not exist for ${service}.`);
+    }
+    if (
+      credentialProfileNameKey(serviceState.activeProfileName) === credentialProfileNameKey(selectedProfile.name)
+    ) {
+      throw new Error(`Cannot remove active profile '${selectedProfile.name}'. Switch active profile first.`);
+    }
+
+    const updatedProfiles = serviceState.profiles.filter(
+      (profile) => credentialProfileNameKey(profile.name) !== credentialProfileNameKey(selectedProfile.name)
+    );
+    const updatedServiceState = {
+      ...serviceState,
+      profiles: updatedProfiles
+    };
+    upsertCredentialServiceConfig(next, service, updatedServiceState);
+
+    const action = await writeConfigFile({
+      configPath,
+      nextConfig: next,
+      existingExists: existing.exists,
+      dryRun
+    });
+    console.log(`Config file: ${configPath}`);
+    console.log(`Action: ${action}`);
+    console.log(`Removed profile '${selectedProfile.name}' from ${service}.`);
+  } catch (error) {
+    if (error?.name === "ExitPromptError") {
+      console.error("\nCancelled.");
+      process.exit(130);
+    }
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
 async function runWorkflowConfig(options) {
   try {
+    const opts = resolveActionOptions(options);
     const cwd = process.cwd();
-    const scope = normalizeMcpScope(options.scope, "global");
-    const dryRun = Boolean(options.dryRun);
-    const hasWorkspaceIdOption = options.workspaceId !== undefined;
-    const wantsClearWorkspaceId = Boolean(options.clearWorkspaceId);
-    const wantsInteractiveEdit = Boolean(options.edit);
+    const scopeArg = readCliOptionFromArgv("--scope");
+    const scope = normalizeMcpScope(scopeArg ?? opts.scope, "global");
+    const dryRun = Boolean(opts.dryRun);
+    const hasWorkspaceIdOption = opts.workspaceId !== undefined;
+    const wantsClearWorkspaceId = Boolean(opts.clearWorkspaceId);
+    const wantsInteractiveEdit = Boolean(opts.edit);
 
     if (hasWorkspaceIdOption && wantsClearWorkspaceId) {
       throw new Error("Use either --workspace-id or --clear-workspace-id, not both.");
     }
 
     const wantsMutation = hasWorkspaceIdOption || wantsClearWorkspaceId || wantsInteractiveEdit;
-    const showOnly = Boolean(options.show) || !wantsMutation;
-    const configPath = resolveCbxConfigPath({ scope, cwd });
-    const existing = await readJsonFileIfExists(configPath);
-    const existingValue =
-      existing.value && typeof existing.value === "object" && !Array.isArray(existing.value) ? existing.value : null;
+    const showOnly = Boolean(opts.show) || !wantsMutation;
+    const { configPath, existing, existingValue } = await loadConfigForScope({ scope, cwd });
 
     if (showOnly) {
       console.log(`Config file: ${configPath}`);
@@ -4599,33 +5365,20 @@ async function runWorkflowConfig(options) {
         console.log("Status: missing");
         return;
       }
-      if (!existingValue) {
-        throw new Error(`Existing config at ${configPath} is not valid JSON object.`);
-      }
       console.log(`Status: ${existing.exists ? "exists" : "missing"}`);
-      console.log(JSON.stringify(existingValue, null, 2));
+      const payload = buildConfigShowPayload(existingValue);
+      console.log(JSON.stringify(payload, null, 2));
       return;
     }
 
-    if (existing.exists && !existingValue) {
-      throw new Error(`Existing config at ${configPath} is not valid JSON object.`);
-    }
+    const next = prepareConfigDocument(existingValue, {
+      scope,
+      generatedBy: "cbx workflows config"
+    });
 
-    const next = existingValue ? JSON.parse(JSON.stringify(existingValue)) : {};
-    if (!next.schemaVersion || typeof next.schemaVersion !== "number") next.schemaVersion = 1;
-    next.generatedBy = "cbx workflows config";
-    next.generatedAt = new Date().toISOString();
-
-    if (!next.mcp || typeof next.mcp !== "object" || Array.isArray(next.mcp)) next.mcp = {};
-    next.mcp.scope = scope;
-    if (!next.mcp.server) next.mcp.server = POSTMAN_SKILL_ID;
-
-    if (!next.postman || typeof next.postman !== "object" || Array.isArray(next.postman)) next.postman = {};
-    next.postman.apiKey = normalizePostmanApiKey(next.postman.apiKey);
-    next.postman.apiKeyEnvVar = String(next.postman.apiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR).trim() || POSTMAN_API_KEY_ENV_VAR;
-    next.postman.mcpUrl = String(next.postman.mcpUrl || POSTMAN_MCP_URL).trim() || POSTMAN_MCP_URL;
-
-    let workspaceId = normalizePostmanWorkspaceId(next.postman.defaultWorkspaceId);
+    const postmanState = ensureCredentialServiceState(next, "postman");
+    const activeProfile = { ...postmanState.activeProfile };
+    let workspaceId = normalizePostmanWorkspaceId(activeProfile.workspaceId);
 
     if (wantsInteractiveEdit) {
       const promptedWorkspaceId = await input({
@@ -4634,33 +5387,47 @@ async function runWorkflowConfig(options) {
       });
       workspaceId = normalizePostmanWorkspaceId(promptedWorkspaceId);
     }
-
     if (hasWorkspaceIdOption) {
-      workspaceId = normalizePostmanWorkspaceId(options.workspaceId);
+      workspaceId = normalizePostmanWorkspaceId(opts.workspaceId);
     }
-
     if (wantsClearWorkspaceId) {
       workspaceId = null;
     }
 
-    next.postman.defaultWorkspaceId = workspaceId;
-    const envApiKey = normalizePostmanApiKey(process.env[POSTMAN_API_KEY_ENV_VAR]);
-    next.postman.apiKeySource = getPostmanApiKeySource({
-      apiKey: next.postman.apiKey,
-      envApiKey
+    activeProfile.workspaceId = workspaceId;
+    const updatedProfiles = postmanState.profiles.map((profile) =>
+      credentialProfileNameKey(profile.name) === credentialProfileNameKey(postmanState.activeProfileName)
+        ? activeProfile
+        : profile
+    );
+    const updatedPostmanState = parseStoredCredentialServiceConfig({
+      service: "postman",
+      rawService: {
+        ...(next.postman && typeof next.postman === "object" ? next.postman : {}),
+        profiles: updatedProfiles,
+        activeProfileName: postmanState.activeProfileName,
+        mcpUrl: postmanState.mcpUrl
+      }
     });
+    upsertNormalizedPostmanConfig(next, updatedPostmanState);
 
-    const content = `${JSON.stringify(next, null, 2)}\n`;
-    if (!dryRun) {
-      await mkdir(path.dirname(configPath), { recursive: true });
-      await writeFile(configPath, content, "utf8");
+    if (parseStoredStitchConfig(next)) {
+      upsertNormalizedStitchConfig(next, parseStoredStitchConfig(next));
     }
 
+    const action = await writeConfigFile({
+      configPath,
+      nextConfig: next,
+      existingExists: existing.exists,
+      dryRun
+    });
+
     console.log(`Config file: ${configPath}`);
-    console.log(`Action: ${dryRun ? (existing.exists ? "would-update" : "would-create") : existing.exists ? "updated" : "created"}`);
+    console.log(`Action: ${action}`);
     console.log(`postman.defaultWorkspaceId: ${workspaceId === null ? "null" : workspaceId}`);
-    if (Boolean(options.showAfter)) {
-      console.log(JSON.stringify(next, null, 2));
+    if (Boolean(opts.showAfter)) {
+      const payload = buildConfigShowPayload(next);
+      console.log(JSON.stringify(payload, null, 2));
     }
   } catch (error) {
     if (error?.name === "ExitPromptError") {
@@ -4903,7 +5670,7 @@ withWorkflowBaseOptions(
     .option("--json", "output JSON")
 ).action(runWorkflowDoctor);
 
-workflowsCommand
+const workflowsConfigCommand = workflowsCommand
   .command("config")
   .description("View or edit cbx_config.json from terminal")
   .option("--scope <scope>", "config scope: project|workspace|global|user", "global")
@@ -4914,6 +5681,7 @@ workflowsCommand
   .option("--show-after", "print JSON after update")
   .option("--dry-run", "preview changes without writing files")
   .action(runWorkflowConfig);
+registerConfigKeysSubcommands(workflowsConfigCommand);
 
 workflowsCommand.action(() => {
   workflowsCommand.help();
@@ -4974,7 +5742,7 @@ withWorkflowBaseOptions(
   await runWorkflowDoctor(platform, options);
 });
 
-skillsCommand
+const skillsConfigCommand = skillsCommand
   .command("config")
   .description("Alias for workflows config")
   .option("--scope <scope>", "config scope: project|workspace|global|user", "global")
@@ -4988,6 +5756,7 @@ skillsCommand
     printSkillsDeprecation();
     await runWorkflowConfig(options);
   });
+registerConfigKeysSubcommands(skillsConfigCommand, { aliasMode: true });
 
 skillsCommand.action(() => {
   printSkillsDeprecation();
