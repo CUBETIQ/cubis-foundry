@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.30] - 2026-02-27
+
+### Changed
+
+- Republished package with a README content touch to force npm UI metadata/index refresh.
+
 ## [0.3.29] - 2026-02-27
 
 ### Changed

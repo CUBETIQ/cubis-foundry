@@ -2,6 +2,8 @@
 
 Workflow-first installer for multi-platform AI agent environments.
 
+Last updated: 2026-02-27.
+
 `cbx` installs workflows, skills, wrappers, and rule files for:
 - Codex
 - Antigravity (Gemini)
