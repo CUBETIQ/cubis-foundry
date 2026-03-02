@@ -5,6 +5,7 @@ triggers: ["vercel", "deployment", "preview", "edge", "functions", "domains", "v
 ---
 # Vercel Workflow
 
+## When to use
 Use this workflow when the primary concern is Vercel platform behavior, deployment safety, or Vercel-specific automation.
 
 ## Routing
@@ -13,11 +14,24 @@ Use this workflow when the primary concern is Vercel platform behavior, deployme
 - Add `@security-auditor` for WAF, auth, and network-hardening decisions.
 - Add `@test-engineer` or `@qa-automation-engineer` for release quality gates.
 
-## Steps
+## Context notes
+- This workflow file, active platform rules, and selected agents/skills guide execution.
+- Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
+
+## Skill Routing
+- Primary skills: `vercel-platform`, `vercel-runtime`
+- Supporting skills (optional): `vercel-delivery`, `vercel-security`, `vercel-ai`, `vercel-storage`
+
+## Workflow steps
 1. Confirm environment targets, success criteria, and rollback constraints.
 2. Design the smallest Vercel-specific change that solves the issue.
 3. Implement and verify using focused checks with logs/traces evidence.
 4. Summarize risk, residual gaps, and next operational actions.
+
+## Verification
+- Run focused checks/tests for the changed scope.
+- Confirm no regressions in adjacent behavior.
+- Note any gaps that were not validated.
 
 ## Output Contract
 - Config/code changes and affected Vercel components

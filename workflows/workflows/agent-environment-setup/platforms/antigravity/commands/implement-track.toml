@@ -1,0 +1,11 @@
+description = "Execute large work in milestones with explicit quality gates and status updates."
+prompt = '''
+Follow the /implement-track workflow from .agent/workflows/implement-track.md.
+
+Execution contract:
+1. Confirm the request fits the workflow's "When to use" section.
+2. Execute according to "Workflow steps" and apply "Context notes".
+3. Complete "Verification" checks and report concrete evidence.
+
+If command arguments are provided, treat them as additional user context.
+'''

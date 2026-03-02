@@ -7,6 +7,7 @@ This file defines mandatory behavior for GitHub Copilot projects installed via `
 - Workflows: `.github/copilot/workflows`
 - Agents: `.github/agents`
 - Skills: `.github/skills`
+- Prompt files: `.github/prompts`
 - Rules file (project): `.github/copilot-instructions.md`
 
 ## Startup Transparency (Required)
@@ -24,7 +25,7 @@ Keep this user-visible summary concise and factual; do not expose private chain-
 ## 2) Workflow-First Contract
 
 1. If the user explicitly requests a slash command, run that workflow first.
-2. Otherwise choose the best workflow by intent from `.github/copilot/workflows`.
+2. Otherwise choose the best workflow by intent from `.github/copilot/workflows` and reuse `.github/prompts/workflow-*.prompt.md` when available.
 3. For cross-domain tasks, use `/orchestrate` and `@orchestrator`.
 4. Keep one primary workflow; use others only as supporting references.
 
@@ -34,6 +35,19 @@ Keep this user-visible summary concise and factual; do not expose private chain-
 2. Survey/intel requests: inspect and summarize before editing.
 3. Simple code changes: minimal edits with focused verification.
 4. Complex code/design changes: plan first, then implement and verify.
+
+## 3A) Workflow Pattern Map (Copilot)
+
+Map intent to one primary workflow first:
+
+- Explain codebase -> `/plan`
+- Fix bug -> `/debug`
+- Write test -> `/test` or `/qa`
+- Prototype from screenshot -> `/create` + `@frontend-specialist`
+- Iterate UI updates -> `/create` with verification loop
+- Refactor safely -> `/refactor` (or `@code-archaeologist` for targeted legacy areas)
+- Local code review -> `/review`
+- Documentation update -> `/create` + `@documentation-writer`
 
 ## 4) Agent Routing Policy
 

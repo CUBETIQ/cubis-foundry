@@ -1,308 +1,1435 @@
 [
   {
-    "name": "backend-specialist",
-    "path": ".agent/skills/backend-specialist/SKILL.md",
-    "description": "Backend development, API design, and database management.",
+    "id": "accessibility",
+    "name": "accessibility",
+    "canonical_id": "accessibility",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/accessibility/SKILL.md",
+    "description": "Ensure Flutter apps meet WCAG 2.1 AA standards with proper semantics, focus management, and screen reader support",
+    "triggers": []
+  },
+  {
+    "id": "api-designer",
+    "name": "api-designer",
+    "canonical_id": "api-designer",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/api-designer/SKILL.md",
+    "description": "Use when designing REST or GraphQL APIs, creating OpenAPI specifications, or planning API architecture. Invoke for resource modeling, versioning strategies, pagination patterns, error handling standards.",
+    "triggers": []
+  },
+  {
+    "id": "api-patterns",
+    "name": "api-patterns",
+    "canonical_id": "api-patterns",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/api-patterns/SKILL.md",
+    "description": "API design principles and decision-making. REST vs GraphQL vs tRPC selection, response formats, versioning, pagination.",
+    "triggers": []
+  },
+  {
+    "id": "app-builder",
+    "name": "app-builder",
+    "canonical_id": "app-builder",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/app-builder/SKILL.md",
+    "description": "Main application building orchestrator. Creates full-stack applications from natural language requests. Determines project type, selects tech stack, coordinates agents.",
+    "triggers": []
+  },
+  {
+    "id": "architecture",
+    "name": "architecture",
+    "canonical_id": "architecture-designer",
+    "deprecated": true,
+    "replaced_by": "architecture-designer",
+    "path": ".github/skills/architecture/SKILL.md",
+    "description": "Compatibility alias skill. Deprecated: use architecture-designer.",
+    "triggers": []
+  },
+  {
+    "id": "architecture-designer",
+    "name": "architecture-designer",
+    "canonical_id": "architecture-designer",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/architecture-designer/SKILL.md",
+    "description": "Use when designing new system architecture, reviewing existing designs, or making architectural decisions. Invoke for system design, architecture review, design patterns, ADRs, scalability planning.",
+    "triggers": []
+  },
+  {
+    "id": "ask-questions-if-underspecified",
+    "name": "ask-questions-if-underspecified",
+    "canonical_id": "ask-questions-if-underspecified",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/ask-questions-if-underspecified/SKILL.md",
+    "description": "Clarify requirements before implementing. Use when serious doubts arise.",
+    "triggers": []
+  },
+  {
+    "id": "atlassian-mcp",
+    "name": "atlassian-mcp",
+    "canonical_id": "atlassian-mcp",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/atlassian-mcp/SKILL.md",
+    "description": "Use when querying Jira issues, searching Confluence pages, creating tickets, updating documentation, or integrating Atlassian tools via MCP protocol.",
     "triggers": [
-      "api",
-      "backend",
-      "server",
-      "endpoint",
+      "Jira",
+      "Confluence",
+      "Atlassian",
+      "MCP",
+      "tickets",
+      "issues",
+      "wiki",
+      "JQL",
+      "CQL",
+      "sprint",
+      "backlog",
+      "project management"
+    ]
+  },
+  {
+    "id": "bash-linux",
+    "name": "bash-linux",
+    "canonical_id": "bash-linux",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/bash-linux/SKILL.md",
+    "description": "Bash/Linux terminal patterns. Critical commands, piping, error handling, scripting. Use when working on macOS or Linux systems.",
+    "triggers": []
+  },
+  {
+    "id": "behavioral-modes",
+    "name": "behavioral-modes",
+    "canonical_id": "behavioral-modes",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/behavioral-modes/SKILL.md",
+    "description": "AI operational modes (brainstorm, implement, debug, review, teach, ship, orchestrate). Use to adapt behavior based on task type.",
+    "triggers": []
+  },
+  {
+    "id": "brainstorming",
+    "name": "brainstorming",
+    "canonical_id": "brainstorming",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/brainstorming/SKILL.md",
+    "description": "Socratic questioning protocol + user communication. MANDATORY for complex requests, new features, or unclear requirements. Includes progress reporting and error handling.",
+    "triggers": []
+  },
+  {
+    "id": "building-mcp-server-on-cloudflare",
+    "name": "building-mcp-server-on-cloudflare",
+    "canonical_id": "building-mcp-server-on-cloudflare",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/building-mcp-server-on-cloudflare/SKILL.md",
+    "description": "Build and deploy remote MCP servers on Cloudflare Workers with tools, OAuth authentication, and production configuration.",
+    "triggers": []
+  },
+  {
+    "id": "changelog-generator",
+    "name": "changelog-generator",
+    "canonical_id": "changelog-generator",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/changelog-generator/SKILL.md",
+    "description": "Automatically creates user-facing changelogs from git commits by analyzing commit history, categorizing changes, and transforming technical commits into clear, customer-friendly release notes. Turns hours of manual changelog writing into minutes of automated generation.",
+    "triggers": []
+  },
+  {
+    "id": "clean-code",
+    "name": "clean-code",
+    "canonical_id": "clean-code",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/clean-code/SKILL.md",
+    "description": "Pragmatic coding standards - concise, direct, no over-engineering, no unnecessary comments",
+    "triggers": []
+  },
+  {
+    "id": "cli-developer",
+    "name": "cli-developer",
+    "canonical_id": "cli-developer",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/cli-developer/SKILL.md",
+    "description": "Build intuitive, cross-platform CLI tools with argument parsing, interactive prompts, progress indicators, and shell completions across Node.js, Python, and Go",
+    "triggers": []
+  },
+  {
+    "id": "code-documenter",
+    "name": "code-documenter",
+    "canonical_id": "code-documenter",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/code-documenter/SKILL.md",
+    "description": "Use when adding docstrings, creating API documentation, or building documentation sites. Invoke for OpenAPI/Swagger specs, JSDoc, doc portals, tutorials, user guides.",
+    "triggers": []
+  },
+  {
+    "id": "code-review-checklist",
+    "name": "code-review-checklist",
+    "canonical_id": "code-reviewer",
+    "deprecated": true,
+    "replaced_by": "code-reviewer",
+    "path": ".github/skills/code-review-checklist/SKILL.md",
+    "description": "Compatibility alias skill. Deprecated: use code-reviewer.",
+    "triggers": []
+  },
+  {
+    "id": "code-reviewer",
+    "name": "code-reviewer",
+    "canonical_id": "code-reviewer",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/code-reviewer/SKILL.md",
+    "description": "Use when reviewing pull requests, conducting code quality audits, or identifying security vulnerabilities. Invoke for PR reviews, code quality checks, refactoring suggestions.",
+    "triggers": []
+  },
+  {
+    "id": "database-design",
+    "name": "database-design",
+    "canonical_id": "database-design",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/database-design/SKILL.md",
+    "description": "Database design principles and decision-making. Schema design, indexing strategy, ORM selection, serverless databases.",
+    "triggers": []
+  },
+  {
+    "id": "database-optimizer",
+    "name": "database-optimizer",
+    "canonical_id": "database-optimizer",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/database-optimizer/SKILL.md",
+    "description": "Use for system-level database performance triage across engines: bottleneck analysis, indexing strategy, config tuning, partitioning, and lock contention.",
+    "triggers": []
+  },
+  {
+    "id": "database-skills",
+    "name": "database-skills",
+    "canonical_id": "database-skills",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/database-skills/SKILL.md",
+    "description": "Unified database skill hub with engine-specific packs for PostgreSQL, MySQL, Vitess, Neki, MongoDB (Mongoose), SQLite, Supabase, and Redis.",
+    "triggers": [
       "database",
       "sql",
-      "nosql",
-      "node",
-      "express"
+      "postgres",
+      "mysql",
+      "vitess",
+      "neki",
+      "mongodb",
+      "mongoose",
+      "sqlite",
+      "supabase",
+      "redis",
+      "schema",
+      "migration",
+      "index",
+      "query",
+      "performance",
+      "pagination",
+      "replication",
+      "pooling",
+      "sharding",
+      "cache"
     ]
   },
   {
-    "name": "clean-code",
-    "path": ".agent/skills/clean-code/SKILL.md",
-    "description": "Clean code principles and refactoring.",
-    "triggers": [
-      "refactor",
-      "clean code",
-      "readability",
-      "structure",
-      "best practice"
-    ]
+    "id": "datadog-automation",
+    "name": "datadog-automation",
+    "canonical_id": "datadog-automation",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/datadog-automation/SKILL.md",
+    "description": "Automate Datadog tasks via Rube MCP (Composio): query metrics, search logs, manage monitors/dashboards, create events and downtimes. Always search tools first for current schemas.",
+    "triggers": []
   },
   {
+    "id": "debugging-wizard",
+    "name": "debugging-wizard",
+    "canonical_id": "systematic-debugging",
+    "deprecated": true,
+    "replaced_by": "systematic-debugging",
+    "path": ".github/skills/debugging-wizard/SKILL.md",
+    "description": "Compatibility alias skill. Deprecated: use systematic-debugging.",
+    "triggers": []
+  },
+  {
+    "id": "deployment-procedures",
+    "name": "deployment-procedures",
+    "canonical_id": "devops-engineer",
+    "deprecated": true,
+    "replaced_by": "devops-engineer",
+    "path": ".github/skills/deployment-procedures/SKILL.md",
+    "description": "Compatibility alias skill. Deprecated: use devops-engineer.",
+    "triggers": []
+  },
+  {
+    "id": "design-system-builder",
+    "name": "design-system-builder",
+    "canonical_id": "design-system-builder",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/design-system-builder/SKILL.md",
+    "description": "Create and review design system components: API design, token usage, theming, variants, and documentation",
+    "triggers": []
+  },
+  {
+    "id": "devops-engineer",
     "name": "devops-engineer",
-    "path": ".agent/skills/devops-engineer/SKILL.md",
-    "description": "CI/CD, deployment, and infrastructure management.",
+    "canonical_id": "devops-engineer",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/devops-engineer/SKILL.md",
+    "description": "Use when setting up CI/CD pipelines, containerizing applications, or managing infrastructure as code. Invoke for pipelines, Docker, Kubernetes, cloud platforms, GitOps.",
+    "triggers": []
+  },
+  {
+    "id": "documentation-templates",
+    "name": "documentation-templates",
+    "canonical_id": "documentation-templates",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/documentation-templates/SKILL.md",
+    "description": "Documentation templates and structure guidelines. README, API docs, code comments, and AI-friendly documentation.",
+    "triggers": []
+  },
+  {
+    "id": "drift-flutter",
+    "name": "drift-flutter",
+    "canonical_id": "drift-flutter",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/drift-flutter/SKILL.md",
+    "description": "Use when implementing Flutter local persistence with Drift: schema design, DAOs, migrations, transactions, and repository integration",
+    "triggers": []
+  },
+  {
+    "id": "error-ux-observability",
+    "name": "error-ux-observability",
+    "canonical_id": "error-ux-observability",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/error-ux-observability/SKILL.md",
+    "description": "Map backend failures to user-friendly messages, implement proper logging levels, and ensure observable error handling",
+    "triggers": []
+  },
+  {
+    "id": "fastapi-expert",
+    "name": "fastapi-expert",
+    "canonical_id": "fastapi-expert",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/fastapi-expert/SKILL.md",
+    "description": "Use when building high-performance async Python APIs with FastAPI and Pydantic V2. Invoke for async SQLAlchemy, JWT authentication, WebSockets, OpenAPI documentation.",
     "triggers": [
-      "devops",
-      "deploy",
-      "ci/cd",
-      "pipeline",
-      "docker",
-      "kubernetes",
-      "cloud"
+      "FastAPI",
+      "Pydantic",
+      "async Python",
+      "Python API",
+      "REST API Python",
+      "SQLAlchemy async",
+      "JWT authentication",
+      "OpenAPI",
+      "Swagger Python"
     ]
   },
   {
+    "id": "fastify-patterns",
+    "name": "fastify-patterns",
+    "canonical_id": "fastify-patterns",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/fastify-patterns/SKILL.md",
+    "description": "NestJS + Fastify integration patterns including secure sessions, cookie authentication, performance optimization, and plugin configuration. Use for high-performance API development.",
+    "triggers": []
+  },
+  {
+    "id": "feature-forge",
+    "name": "feature-forge",
+    "canonical_id": "feature-forge",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/feature-forge/SKILL.md",
+    "description": "Use when defining new features, gathering requirements, or writing specifications. Invoke for feature definition, requirements gathering, user stories, EARS format specs.",
+    "triggers": [
+      "requirements",
+      "specification",
+      "feature definition",
+      "user stories",
+      "EARS",
+      "planning"
+    ]
+  },
+  {
+    "id": "find-bugs",
+    "name": "find-bugs",
+    "canonical_id": "find-bugs",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/find-bugs/SKILL.md",
+    "description": "Find bugs, security vulnerabilities, and code quality issues in local branch changes. Use when asked to review changes, find bugs, security review, or audit code on the current branch.",
+    "triggers": []
+  },
+  {
+    "id": "fix-review",
+    "name": "fix-review",
+    "canonical_id": "fix-review",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/fix-review/SKILL.md",
+    "description": "Verify remediation commits against security audit findings and confirm fixes without introducing regressions.",
+    "triggers": []
+  },
+  {
+    "id": "flutter-code-reviewer",
+    "name": "flutter-code-reviewer",
+    "canonical_id": "flutter-code-reviewer",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/flutter-code-reviewer/SKILL.md",
+    "description": "Perform strict, actionable code reviews for Flutter/Dart projects enforcing architecture boundaries, Riverpod patterns, testing, and performance",
+    "triggers": []
+  },
+  {
+    "id": "flutter-expert",
     "name": "flutter-expert",
-    "path": ".agent/skills/flutter-expert/SKILL.md",
-    "description": "Flutter app architecture, state management, and best practices.",
+    "canonical_id": "flutter-expert",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/flutter-expert/SKILL.md",
+    "description": "Flutter app architecture coordinator for Clean Architecture projects; delegates state, routing, persistence, testing, and security to specialized skills",
+    "triggers": []
+  },
+  {
+    "id": "flutter-security-reviewer",
+    "name": "flutter-security-reviewer",
+    "canonical_id": "flutter-security-reviewer",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/flutter-security-reviewer/SKILL.md",
+    "description": "Review Flutter/Dart code for security vulnerabilities: secure storage, network hardening, log redaction, and data protection",
+    "triggers": []
+  },
+  {
+    "id": "flutter-test-master",
+    "name": "flutter-test-master",
+    "canonical_id": "flutter-test-master",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/flutter-test-master/SKILL.md",
+    "description": "Comprehensive Flutter testing guide covering unit tests, widget tests, integration tests, golden tests, and Riverpod provider testing with mocktail",
+    "triggers": []
+  },
+  {
+    "id": "frontend-design",
+    "name": "frontend-design",
+    "canonical_id": "frontend-design",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/frontend-design/SKILL.md",
+    "description": "Design thinking and decision-making for web UI. Use when designing components, layouts, color schemes, typography, or creating aesthetic interfaces. Teaches principles, not fixed values.",
+    "triggers": []
+  },
+  {
+    "id": "game-development",
+    "name": "game-development",
+    "canonical_id": "game-development",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/game-development/SKILL.md",
+    "description": "Game development orchestrator. Routes to platform-specific skills based on project needs.",
+    "triggers": []
+  },
+  {
+    "id": "geo-fundamentals",
+    "name": "geo-fundamentals",
+    "canonical_id": "geo-fundamentals",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/geo-fundamentals/SKILL.md",
+    "description": "Generative Engine Optimization for AI search engines (ChatGPT, Claude, Perplexity).",
+    "triggers": []
+  },
+  {
+    "id": "git-commit",
+    "name": "git-commit",
+    "canonical_id": "git-commit",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/git-commit/SKILL.md",
+    "description": "Create conventional commits with intelligent staging and message generation",
+    "triggers": []
+  },
+  {
+    "id": "github-automation",
+    "name": "github-automation",
+    "canonical_id": "github-automation",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/github-automation/SKILL.md",
+    "description": "Automate GitHub repositories, issues, pull requests, branches, CI/CD, and permissions via Rube MCP (Composio). Manage code workflows, review PRs, search code, and handle deployments programmatically.",
+    "triggers": []
+  },
+  {
+    "id": "golang-pro",
+    "name": "golang-pro",
+    "canonical_id": "golang-pro",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/golang-pro/SKILL.md",
+    "description": "Use when building Go applications requiring concurrent programming, microservices architecture, or high-performance systems. Invoke for goroutines, channels, Go generics, gRPC integration.",
     "triggers": [
-      "flutter",
-      "dart",
-      "widget",
-      "riverpod",
-      "bloc",
-      "buildcontext",
-      "mobile app"
+      "Go",
+      "Golang",
+      "goroutines",
+      "channels",
+      "gRPC",
+      "microservices Go",
+      "Go generics",
+      "concurrent programming",
+      "Go interfaces"
     ]
   },
   {
-    "name": "frontend-design",
-    "path": ".agent/skills/frontend-design/SKILL.md",
-    "description": "UI/UX design principles, CSS, and component styling.",
+    "id": "gorouter-restoration",
+    "name": "gorouter-restoration",
+    "canonical_id": "gorouter-restoration",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/gorouter-restoration/SKILL.md",
+    "description": "GoRouter guard patterns, deep links, redirect safety, tab preservation, and restoration best practices",
+    "triggers": []
+  },
+  {
+    "id": "graphql-architect",
+    "name": "graphql-architect",
+    "canonical_id": "graphql-architect",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/graphql-architect/SKILL.md",
+    "description": "Use when designing GraphQL schemas, implementing Apollo Federation, or building real-time subscriptions. Invoke for schema design, resolvers with DataLoader, query optimization, federation directives.",
     "triggers": [
-      "ui",
-      "ux",
-      "design",
-      "css",
-      "style",
+      "GraphQL",
+      "Apollo Federation",
+      "GraphQL schema",
+      "API graph",
+      "GraphQL subscriptions",
+      "Apollo Server",
+      "schema design",
+      "GraphQL resolvers",
+      "DataLoader"
+    ]
+  },
+  {
+    "id": "i18n-localization",
+    "name": "i18n-localization",
+    "canonical_id": "i18n-localization",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/i18n-localization/SKILL.md",
+    "description": "Internationalization and localization patterns. Detecting hardcoded strings, managing translations, locale files, RTL support.",
+    "triggers": []
+  },
+  {
+    "id": "intelligent-routing",
+    "name": "intelligent-routing",
+    "canonical_id": "intelligent-routing",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/intelligent-routing/SKILL.md",
+    "description": "Automatic agent selection and intelligent task routing. Analyzes user requests and automatically selects the best specialist agent(s) without requiring explicit user mentions.",
+    "triggers": []
+  },
+  {
+    "id": "javascript-pro",
+    "name": "javascript-pro",
+    "canonical_id": "javascript-pro",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/javascript-pro/SKILL.md",
+    "description": "Use when building JavaScript applications with modern ES2023+ features, async patterns, or Node.js development. Invoke for vanilla JavaScript, browser APIs, performance optimization, module systems.",
+    "triggers": [
+      "JavaScript",
+      "ES2023",
+      "async await",
+      "Node.js",
+      "vanilla JavaScript",
+      "Web Workers",
+      "Fetch API",
+      "browser API",
+      "module system"
+    ]
+  },
+  {
+    "id": "legacy-modernizer",
+    "name": "legacy-modernizer",
+    "canonical_id": "legacy-modernizer",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/legacy-modernizer/SKILL.md",
+    "description": "Use when modernizing legacy systems, implementing incremental migration strategies, or reducing technical debt. Invoke for strangler fig pattern, monolith decomposition, framework upgrades.",
+    "triggers": [
+      "legacy modernization",
+      "strangler fig",
+      "incremental migration",
+      "technical debt",
+      "legacy refactoring",
+      "system migration",
+      "legacy system",
+      "modernize codebase"
+    ]
+  },
+  {
+    "id": "lint-and-validate",
+    "name": "lint-and-validate",
+    "canonical_id": "lint-and-validate",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/lint-and-validate/SKILL.md",
+    "description": "Automatic quality control, linting, and static analysis procedures. Use after every code modification to ensure syntax correctness and project standards. Triggers: lint, format, check, validate, types, static analysis.",
+    "triggers": []
+  },
+  {
+    "id": "mcp-builder",
+    "name": "mcp-builder",
+    "canonical_id": "mcp-builder",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/mcp-builder/SKILL.md",
+    "description": "MCP (Model Context Protocol) server building principles. Tool design, resource patterns, best practices.",
+    "triggers": []
+  },
+  {
+    "id": "mcp-developer",
+    "name": "mcp-developer",
+    "canonical_id": "mcp-developer",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/mcp-developer/SKILL.md",
+    "description": "Use for implementing, debugging, and maintaining MCP servers/clients with SDKs, protocol compliance, transports, schemas, and security hardening.",
+    "triggers": [
+      "MCP",
+      "Model Context Protocol",
+      "MCP server",
+      "MCP client",
+      "Claude integration",
+      "AI tools",
+      "context protocol",
+      "JSON-RPC"
+    ]
+  },
+  {
+    "id": "microservices-architect",
+    "name": "microservices-architect",
+    "canonical_id": "microservices-architect",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/microservices-architect/SKILL.md",
+    "description": "Use when designing distributed systems, decomposing monoliths, or implementing microservices patterns. Invoke for service boundaries, DDD, saga patterns, event sourcing, service mesh, distributed tracing.",
+    "triggers": []
+  },
+  {
+    "id": "mobile-design",
+    "name": "mobile-design",
+    "canonical_id": "mobile-design",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/mobile-design/SKILL.md",
+    "description": "Mobile-first design thinking and decision-making for iOS and Android apps. Touch interaction, performance patterns, platform conventions. Teaches principles, not fixed values. Use when building React Native, Flutter, or native mobile apps.",
+    "triggers": []
+  },
+  {
+    "id": "monitoring-expert",
+    "name": "monitoring-expert",
+    "canonical_id": "monitoring-expert",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/monitoring-expert/SKILL.md",
+    "description": "Use when setting up monitoring systems, logging, metrics, tracing, or alerting. Invoke for dashboards, Prometheus/Grafana, load testing, profiling, capacity planning.",
+    "triggers": [
+      "monitoring",
+      "observability",
+      "logging",
+      "metrics",
+      "tracing",
+      "alerting",
+      "Prometheus",
+      "Grafana",
+      "DataDog",
+      "APM",
+      "performance testing",
+      "load testing",
+      "profiling",
+      "capacity planning",
+      "bottleneck"
+    ]
+  },
+  {
+    "id": "nestjs-expert",
+    "name": "nestjs-expert",
+    "canonical_id": "nestjs-expert",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/nestjs-expert/SKILL.md",
+    "description": "Use when building NestJS applications requiring modular architecture, dependency injection, or TypeScript backend development. Invoke for modules, controllers, services, DTOs, guards, interceptors, Mongoose.",
+    "triggers": []
+  },
+  {
+    "id": "next-best-practices",
+    "name": "next-best-practices",
+    "canonical_id": "next-best-practices",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/next-best-practices/SKILL.md",
+    "description": "Rulebook for reviewing/generating Next.js code against Vercel best practices (conventions, RSC boundaries, async APIs, metadata, bundling). Not a migration or feature-implementation skill by itself.",
+    "triggers": []
+  },
+  {
+    "id": "next-cache-components",
+    "name": "next-cache-components",
+    "canonical_id": "next-cache-components",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/next-cache-components/SKILL.md",
+    "description": "Use only for Next.js 16 Cache Components and PPR implementation (use cache, cacheLife, cacheTag, updateTag, Suspense boundaries).",
+    "triggers": []
+  },
+  {
+    "id": "next-upgrade",
+    "name": "next-upgrade",
+    "canonical_id": "next-upgrade",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/next-upgrade/SKILL.md",
+    "description": "Use only for upgrading Next.js versions with official migration guides and codemods; includes dependency/version planning and upgrade validation.",
+    "triggers": []
+  },
+  {
+    "id": "nextjs-developer",
+    "name": "nextjs-developer",
+    "canonical_id": "nextjs-developer",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/nextjs-developer/SKILL.md",
+    "description": "Use for implementing/refactoring Next.js App Router features, Server Components/Actions, SEO, and production architecture. Not for version migration workflows or cache-components-only tuning.",
+    "triggers": []
+  },
+  {
+    "id": "nextjs-react-expert",
+    "name": "nextjs-react-expert",
+    "canonical_id": "react-best-practices",
+    "deprecated": true,
+    "replaced_by": "react-best-practices",
+    "path": ".github/skills/nextjs-react-expert/SKILL.md",
+    "description": "Compatibility alias skill. Deprecated: use react-best-practices.",
+    "triggers": []
+  },
+  {
+    "id": "nodejs-best-practices",
+    "name": "nodejs-best-practices",
+    "canonical_id": "nodejs-best-practices",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/nodejs-best-practices/SKILL.md",
+    "description": "Node.js development principles and decision-making. Framework selection, async patterns, security, and architecture. Teaches thinking, not copying.",
+    "triggers": []
+  },
+  {
+    "id": "oneup-design",
+    "name": "oneup-design",
+    "canonical_id": "oneup-design",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/oneup-design/SKILL.md",
+    "description": "OneUp HR design system with One* components, colors, spacing, and typography tokens",
+    "triggers": []
+  },
+  {
+    "id": "openapi-docs",
+    "name": "openapi-docs",
+    "canonical_id": "openapi-docs",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/openapi-docs/SKILL.md",
+    "description": "Use when writing or updating OpenAPI specifications, defining request/response schemas, or configuring Stoplight Elements (Swagger-style) documentation UI.",
+    "triggers": []
+  },
+  {
+    "id": "parallel-agents",
+    "name": "parallel-agents",
+    "canonical_id": "parallel-agents",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/parallel-agents/SKILL.md",
+    "description": "Multi-agent orchestration patterns. Use when multiple independent tasks can run with different domain expertise or when comprehensive analysis requires multiple perspectives.",
+    "triggers": []
+  },
+  {
+    "id": "performance-profiling",
+    "name": "performance-profiling",
+    "canonical_id": "performance-profiling",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/performance-profiling/SKILL.md",
+    "description": "Performance profiling principles. Measurement, analysis, and optimization techniques.",
+    "triggers": []
+  },
+  {
+    "id": "plan-writing",
+    "name": "plan-writing",
+    "canonical_id": "plan-writing",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/plan-writing/SKILL.md",
+    "description": "Structured task planning with clear breakdowns, dependencies, and verification criteria. Use when implementing features, refactoring, or any multi-step work.",
+    "triggers": []
+  },
+  {
+    "id": "playwright-expert",
+    "name": "playwright-expert",
+    "canonical_id": "playwright-expert",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/playwright-expert/SKILL.md",
+    "description": "Use when writing E2E tests with Playwright, setting up test infrastructure, or debugging flaky browser tests. Invoke for browser automation, E2E tests, Page Object Model, test flakiness, visual testing.",
+    "triggers": [
+      "Playwright",
+      "E2E test",
+      "end-to-end",
+      "browser testing",
+      "automation",
+      "UI testing",
+      "visual testing"
+    ]
+  },
+  {
+    "id": "postman",
+    "name": "postman",
+    "canonical_id": "postman",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/postman/SKILL.md",
+    "description": "Automate API testing and collection management with Postman - create workspaces, collections, environments, and run tests programmatically",
+    "triggers": []
+  },
+  {
+    "id": "powershell-windows",
+    "name": "powershell-windows",
+    "canonical_id": "powershell-windows",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/powershell-windows/SKILL.md",
+    "description": "PowerShell Windows patterns. Critical pitfalls, operator syntax, error handling.",
+    "triggers": []
+  },
+  {
+    "id": "prompt-engineer",
+    "name": "prompt-engineer",
+    "canonical_id": "prompt-engineer",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/prompt-engineer/SKILL.md",
+    "description": "Design and optimize LLM prompts with chain-of-thought, few-shot learning, and evaluation frameworks",
+    "triggers": []
+  },
+  {
+    "id": "python-patterns",
+    "name": "python-patterns",
+    "canonical_id": "python-pro",
+    "deprecated": true,
+    "replaced_by": "python-pro",
+    "path": ".github/skills/python-patterns/SKILL.md",
+    "description": "Compatibility alias skill. Deprecated: use python-pro.",
+    "triggers": []
+  },
+  {
+    "id": "python-pro",
+    "name": "python-pro",
+    "canonical_id": "python-pro",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/python-pro/SKILL.md",
+    "description": "Use when building Python 3.11+ applications requiring type safety, async programming, or production-grade patterns. Invoke for type hints, pytest, async/await, dataclasses, mypy configuration.",
+    "triggers": [
+      "Python development",
+      "type hints",
+      "async Python",
+      "pytest",
+      "mypy",
+      "dataclasses",
+      "Python best practices",
+      "Pythonic code"
+    ]
+  },
+  {
+    "id": "react-best-practices",
+    "name": "react-best-practices",
+    "canonical_id": "react-best-practices",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/react-best-practices/SKILL.md",
+    "description": "Performance-focused React/Next.js review checklist from Vercel. Use for optimization/refactor passes, not as the primary implementation skill.",
+    "triggers": []
+  },
+  {
+    "id": "react-expert",
+    "name": "react-expert",
+    "canonical_id": "react-expert",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/react-expert/SKILL.md",
+    "description": "Use for framework-agnostic React component architecture, hooks/state patterns, and React 19 APIs. For Next.js routing/App Router specifics, use nextjs-developer.",
+    "triggers": [
+      "React",
+      "JSX",
+      "hooks",
+      "useState",
+      "useEffect",
+      "useContext",
+      "Server Components",
+      "React 19",
+      "Suspense",
+      "TanStack Query",
+      "Redux",
+      "Zustand",
       "component",
-      "look and feel",
       "frontend"
     ]
   },
   {
-    "name": "performance-profiling",
-    "path": ".agent/skills/performance-profiling/SKILL.md",
-    "description": "Performance analysis and optimization.",
-    "triggers": [
-      "performance",
-      "speed",
-      "slow",
-      "optimize",
-      "profile",
-      "memory",
-      "cpu"
-    ]
+    "id": "red-team-tactics",
+    "name": "red-team-tactics",
+    "canonical_id": "red-team-tactics",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/red-team-tactics/SKILL.md",
+    "description": "Red team tactics principles based on MITRE ATT&CK. Attack phases, detection evasion, reporting.",
+    "triggers": []
   },
   {
+    "id": "refactor",
+    "name": "refactor",
+    "canonical_id": "refactor",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/refactor/SKILL.md",
+    "description": "Migrate legacy code to new architecture while maintaining behavior",
+    "triggers": []
+  },
+  {
+    "id": "riverpod-3",
+    "name": "riverpod-3",
+    "canonical_id": "riverpod-3",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/riverpod-3/SKILL.md",
+    "description": "Riverpod 3 best practices for codegen, UI interaction boundaries, caching, paging, lifecycle, and testing",
+    "triggers": []
+  },
+  {
+    "id": "rust-engineer",
+    "name": "rust-engineer",
+    "canonical_id": "rust-pro",
+    "deprecated": true,
+    "replaced_by": "rust-pro",
+    "path": ".github/skills/rust-engineer/SKILL.md",
+    "description": "Compatibility alias skill. Deprecated: use rust-pro.",
+    "triggers": []
+  },
+  {
+    "id": "rust-pro",
+    "name": "rust-pro",
+    "canonical_id": "rust-pro",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/rust-pro/SKILL.md",
+    "description": "Master Rust 1.75+ with modern async patterns, advanced type system",
+    "triggers": []
+  },
+  {
+    "id": "saas-builder",
+    "name": "saas-builder",
+    "canonical_id": "saas-builder",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/saas-builder/SKILL.md",
+    "description": "Build or review production-ready multi-tenant SaaS systems on AWS serverless architecture with React + TypeScript frontend, tenant-isolated DynamoDB data models, JWT/RBAC authorization, Stripe subscriptions, and usage-based billing. Use for SaaS architecture design, implementation planning, API/Lambda patterns, billing workflows, and tenant isolation audits.",
+    "triggers": []
+  },
+  {
+    "id": "sarif-parsing",
+    "name": "sarif-parsing",
+    "canonical_id": "sarif-parsing",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/sarif-parsing/SKILL.md",
+    "description": "Parse, analyze, and process SARIF (Static Analysis Results Interchange Format) files. Use when reading security scan results, aggregating findings from multiple tools, deduplicating alerts, extracting specific vulnerabilities, or integrating SARIF data into CI/CD pipelines.",
+    "triggers": []
+  },
+  {
+    "id": "secure-code-guardian",
     "name": "secure-code-guardian",
-    "path": ".agent/skills/secure-code-guardian/SKILL.md",
-    "description": "Security best practices, authentication, and vulnerability prevention.",
+    "canonical_id": "secure-code-guardian",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/secure-code-guardian/SKILL.md",
+    "description": "Use when implementing authentication/authorization, securing user input, or preventing OWASP Top 10 vulnerabilities. Invoke for authentication, authorization, input validation, encryption, OWASP Top 10 prevention.",
     "triggers": [
       "security",
-      "auth",
-      "login",
-      "password",
-      "token",
-      "jwt",
+      "authentication",
+      "authorization",
+      "encryption",
+      "OWASP",
       "vulnerability",
-      "hack"
+      "secure coding",
+      "password",
+      "JWT",
+      "OAuth"
     ]
   },
   {
+    "id": "security-reviewer",
+    "name": "security-reviewer",
+    "canonical_id": "security-reviewer",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/security-reviewer/SKILL.md",
+    "description": "Use when conducting security audits, reviewing code for vulnerabilities, or analyzing infrastructure security. Invoke for SAST scans, penetration testing, DevSecOps practices, cloud security reviews.",
+    "triggers": []
+  },
+  {
+    "id": "semgrep",
+    "name": "semgrep",
+    "canonical_id": "semgrep",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/semgrep/SKILL.md",
+    "description": "Run Semgrep static analysis scan on a codebase using parallel subagents. Automatically",
+    "triggers": []
+  },
+  {
+    "id": "sentry-automation",
+    "name": "sentry-automation",
+    "canonical_id": "sentry-automation",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/sentry-automation/SKILL.md",
+    "description": "Automate Sentry tasks via Rube MCP (Composio): manage issues/events, configure alerts, track releases, monitor projects and teams. Always search tools first for current schemas.",
+    "triggers": []
+  },
+  {
+    "id": "seo-fundamentals",
+    "name": "seo-fundamentals",
+    "canonical_id": "seo-fundamentals",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/seo-fundamentals/SKILL.md",
+    "description": "SEO fundamentals, E-E-A-T, Core Web Vitals, and Google algorithm principles.",
+    "triggers": []
+  },
+  {
+    "id": "server-management",
+    "name": "server-management",
+    "canonical_id": "sre-engineer",
+    "deprecated": true,
+    "replaced_by": "sre-engineer",
+    "path": ".github/skills/server-management/SKILL.md",
+    "description": "Compatibility alias skill. Deprecated: use sre-engineer.",
+    "triggers": []
+  },
+  {
+    "id": "spec-miner",
+    "name": "spec-miner",
+    "canonical_id": "spec-miner",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/spec-miner/SKILL.md",
+    "description": "Use when understanding legacy or undocumented systems, creating documentation for existing code, or extracting specifications from implementations. Invoke for legacy analysis, code archaeology, undocumented features.",
+    "triggers": [
+      "reverse engineer",
+      "legacy code",
+      "code analysis",
+      "undocumented",
+      "understand codebase",
+      "existing system"
+    ]
+  },
+  {
+    "id": "sre-engineer",
+    "name": "sre-engineer",
+    "canonical_id": "sre-engineer",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/sre-engineer/SKILL.md",
+    "description": "Use when defining SLIs/SLOs, managing error budgets, or building reliable systems at scale. Invoke for incident management, chaos engineering, toil reduction, capacity planning.",
+    "triggers": [
+      "SRE",
+      "site reliability",
+      "SLO",
+      "SLI",
+      "error budget",
+      "incident management",
+      "chaos engineering",
+      "toil reduction",
+      "on-call",
+      "MTTR"
+    ]
+  },
+  {
+    "id": "static-analysis",
+    "name": "static-analysis",
+    "canonical_id": "static-analysis",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/static-analysis/SKILL.md",
+    "description": "Runs CodeQL-based static security analysis (database build, query pack selection, and SARIF results) for vulnerability discovery and audits. Not for custom QL authoring or CI/CD setup.",
+    "triggers": []
+  },
+  {
+    "id": "stripe-best-practices",
+    "name": "stripe-best-practices",
+    "canonical_id": "stripe-best-practices",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/stripe-best-practices/SKILL.md",
+    "description": "Best practices for building Stripe integrations",
+    "triggers": []
+  },
+  {
+    "id": "sub-agents",
+    "name": "sub-agents",
+    "canonical_id": "sub-agents",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/sub-agents/SKILL.md",
+    "description": "Execute external CLI AIs as isolated sub-agents for task delegation, parallel processing, and context separation. Use when delegating complex multi-step tasks, running parallel investigations, needing fresh context without current conversation history, or leveraging specialized agent definitions. Returns structured JSON with agent output, exit code, and execution status.",
+    "triggers": []
+  },
+  {
+    "id": "systematic-debugging",
+    "name": "systematic-debugging",
+    "canonical_id": "systematic-debugging",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/systematic-debugging/SKILL.md",
+    "description": "4-phase systematic debugging methodology with root cause analysis and evidence-based verification. Use when debugging complex issues.",
+    "triggers": []
+  },
+  {
+    "id": "tailwind-patterns",
+    "name": "tailwind-patterns",
+    "canonical_id": "tailwind-patterns",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/tailwind-patterns/SKILL.md",
+    "description": "Tailwind CSS v4 principles. CSS-first configuration, container queries, modern patterns, design token architecture.",
+    "triggers": []
+  },
+  {
+    "id": "tdd-workflow",
+    "name": "tdd-workflow",
+    "canonical_id": "test-master",
+    "deprecated": true,
+    "replaced_by": "test-master",
+    "path": ".github/skills/tdd-workflow/SKILL.md",
+    "description": "Compatibility alias skill. Deprecated: use test-master.",
+    "triggers": []
+  },
+  {
+    "id": "terraform-engineer",
+    "name": "terraform-engineer",
+    "canonical_id": "terraform-engineer",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/terraform-engineer/SKILL.md",
+    "description": "Use when implementing infrastructure as code with Terraform across AWS, Azure, or GCP. Invoke for module development, state management, provider configuration, multi-environment workflows, infrastructure testing.",
+    "triggers": [
+      "Terraform",
+      "infrastructure as code",
+      "IaC",
+      "terraform module",
+      "terraform state",
+      "AWS provider",
+      "Azure provider",
+      "GCP provider",
+      "terraform plan",
+      "terraform apply"
+    ]
+  },
+  {
+    "id": "test-master",
     "name": "test-master",
-    "path": ".agent/skills/test-master/SKILL.md",
-    "description": "Comprehensive testing strategies and automation.",
-    "triggers": [
-      "test",
-      "testing",
-      "unit test",
-      "integration test",
-      "e2e",
-      "coverage",
-      "qa"
-    ]
+    "canonical_id": "test-master",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/test-master/SKILL.md",
+    "description": "Use when writing tests, creating test strategies, or building automation frameworks. Invoke for unit tests, integration tests, E2E, coverage analysis, performance testing, security testing.",
+    "triggers": []
   },
   {
+    "id": "testing-patterns",
+    "name": "testing-patterns",
+    "canonical_id": "test-master",
+    "deprecated": true,
+    "replaced_by": "test-master",
+    "path": ".github/skills/testing-patterns/SKILL.md",
+    "description": "Compatibility alias skill. Deprecated: use test-master.",
+    "triggers": []
+  },
+  {
+    "id": "typescript-pro",
+    "name": "typescript-pro",
+    "canonical_id": "typescript-pro",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/typescript-pro/SKILL.md",
+    "description": "Use when building TypeScript applications requiring advanced type systems, generics, or full-stack type safety. Invoke for type guards, utility types, tRPC integration, monorepo setup.",
+    "triggers": []
+  },
+  {
+    "id": "ui-ux-pro-max",
+    "name": "ui-ux-pro-max",
+    "canonical_id": "ui-ux-pro-max",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/ui-ux-pro-max/SKILL.md",
+    "description": "UI/UX design intelligence. 50 styles, 21 palettes, 50 font pairings, 20 charts, 9 stacks (React, Next.js, Vue, Svelte, SwiftUI, React Native, Flutter, Tailwind, shadcn/ui). Actions: plan, build, create, design, implement, review, fix, improve, optimize, enhance, refactor, check UI/UX code. Projects: website, landing page, dashboard, admin panel, e-commerce, SaaS, portfolio, blog, mobile app, .html, .tsx, .vue, .svelte. Elements: button, modal, navbar, sidebar, card, table, form, chart. Styles: glassmorphism, claymorphism, minimalism, brutalism, neumorphism, bento grid, dark mode, responsive, skeuomorphism, flat design. Topics: color palette, accessibility, animation, layout, typography, font pairing, spacing, hover, shadow, gradient. Integrations: shadcn/ui MCP for component search and examples.",
+    "triggers": []
+  },
+  {
+    "id": "ux-ui-consistency",
+    "name": "ux-ui-consistency",
+    "canonical_id": "ux-ui-consistency",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/ux-ui-consistency/SKILL.md",
+    "description": "Ensure consistent UX patterns: design system component usage, screen states, error handling, and loading patterns",
+    "triggers": []
+  },
+  {
+    "id": "variant-analysis",
+    "name": "variant-analysis",
+    "canonical_id": "variant-analysis",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/variant-analysis/SKILL.md",
+    "description": "Find similar vulnerabilities and bugs across codebases using pattern-based analysis. Use when hunting bug variants, building CodeQL/Semgrep queries, analyzing security vulnerabilities, or performing systematic code audits after finding an initial issue.",
+    "triggers": []
+  },
+  {
+    "id": "vercel-ai",
+    "name": "vercel-ai",
+    "canonical_id": "null",
+    "deprecated": false,
+    "replaced_by": "null",
+    "path": ".github/skills/vercel-ai/SKILL.md",
+    "description": "Canonical Vercel AI skill covering AI Gateway and AI SDK integration, routing, resilience, and observability.",
+    "triggers": []
+  },
+  {
+    "id": "vercel-ai-gateway",
     "name": "vercel-ai-gateway",
-    "path": ".agent/skills/vercel-ai-gateway/SKILL.md",
-    "description": "Complete Vercel AI Gateway integration: LLM traffic routing, authentication/BYOK, fallback chains, model-provider routing policies, usage observability, and OpenAI-compatible endpoints.",
-    "triggers": [
-      "vercel",
-      "ai gateway",
-      "llm",
-      "byok",
-      "fallback",
-      "model routing",
-      "openai compatible",
-      "token usage",
-      "ai observability"
-    ]
+    "canonical_id": "vercel-ai",
+    "deprecated": true,
+    "replaced_by": "vercel-ai",
+    "path": ".github/skills/vercel-ai-gateway/SKILL.md",
+    "description": "Compatibility alias skill. Deprecated: use vercel-ai.",
+    "triggers": []
   },
   {
+    "id": "vercel-ai-sdk",
     "name": "vercel-ai-sdk",
-    "path": ".agent/skills/vercel-ai-sdk/SKILL.md",
-    "description": "Vercel AI SDK for building AI-powered applications: core providers/streaming patterns and React/Svelte UI hooks for chat, completion, and generative UX.",
-    "triggers": [
-      "vercel",
-      "ai sdk",
-      "useChat",
-      "useCompletion",
-      "streamText",
-      "generateText",
-      "streaming",
-      "generative ui"
-    ]
+    "canonical_id": "vercel-ai",
+    "deprecated": true,
+    "replaced_by": "vercel-ai",
+    "path": ".github/skills/vercel-ai-sdk/SKILL.md",
+    "description": "Compatibility alias skill. Deprecated: use vercel-ai.",
+    "triggers": []
   },
   {
+    "id": "vercel-caching",
     "name": "vercel-caching",
-    "path": ".agent/skills/vercel-caching/SKILL.md",
-    "description": "Vercel caching strategies: CDN cache, cache-control headers, runtime cache, ISR, Next.js Data Cache, request collapsing, remote caching, and CDN purging.",
-    "triggers": [
-      "vercel",
-      "cdn cache",
-      "caching",
-      "isr",
-      "data cache",
-      "request collapsing",
-      "remote caching",
-      "cache-control"
-    ]
+    "canonical_id": "vercel-runtime",
+    "deprecated": true,
+    "replaced_by": "vercel-runtime",
+    "path": ".github/skills/vercel-caching/SKILL.md",
+    "description": "Compatibility alias skill. Deprecated: use vercel-runtime.",
+    "triggers": []
   },
   {
+    "id": "vercel-cli",
     "name": "vercel-cli",
-    "path": ".agent/skills/vercel-cli/SKILL.md",
-    "description": "Vercel CLI mastery: core commands, flags, MCP integration, microfrontend management, and project/domain/environment variable operations.",
-    "triggers": [
-      "vercel cli",
-      "vercel command",
-      "npx vercel",
-      "vercel dev",
-      "vercel deploy",
-      "vercel env"
-    ]
+    "canonical_id": "vercel-delivery",
+    "deprecated": true,
+    "replaced_by": "vercel-delivery",
+    "path": ".github/skills/vercel-cli/SKILL.md",
+    "description": "Compatibility alias skill. Deprecated: use vercel-delivery.",
+    "triggers": []
   },
   {
+    "id": "vercel-delivery",
+    "name": "vercel-delivery",
+    "canonical_id": "null",
+    "deprecated": false,
+    "replaced_by": "null",
+    "path": ".github/skills/vercel-delivery/SKILL.md",
+    "description": "Canonical Vercel delivery skill covering deployments, domains, flags, and CLI-driven release operations.",
+    "triggers": []
+  },
+  {
+    "id": "vercel-deployments",
     "name": "vercel-deployments",
-    "path": ".agent/skills/vercel-deployments/SKILL.md",
-    "description": "Vercel deployment lifecycle: git deployments, build pipeline, build output API, deployment promotion, environment management, preview/production protection, and generated URL patterns.",
-    "triggers": [
-      "vercel",
-      "deployment",
-      "git deploy",
-      "build pipeline",
-      "deployment promotion",
-      "environments",
-      "preview",
-      "production"
-    ]
+    "canonical_id": "vercel-delivery",
+    "deprecated": true,
+    "replaced_by": "vercel-delivery",
+    "path": ".github/skills/vercel-deployments/SKILL.md",
+    "description": "Compatibility alias skill. Deprecated: use vercel-delivery.",
+    "triggers": []
   },
   {
+    "id": "vercel-domains",
     "name": "vercel-domains",
-    "path": ".agent/skills/vercel-domains/SKILL.md",
-    "description": "Vercel domain management: custom domains, DNS records, nameservers, SSL certificates, domain ownership verification, and static IP configuration.",
-    "triggers": [
-      "vercel",
-      "domain",
-      "dns",
-      "nameservers",
-      "ssl",
-      "certificate",
-      "custom domain",
-      "cname",
-      "static ip"
-    ]
+    "canonical_id": "vercel-delivery",
+    "deprecated": true,
+    "replaced_by": "vercel-delivery",
+    "path": ".github/skills/vercel-domains/SKILL.md",
+    "description": "Compatibility alias skill. Deprecated: use vercel-delivery.",
+    "triggers": []
   },
   {
+    "id": "vercel-firewall",
     "name": "vercel-firewall",
-    "path": ".agent/skills/vercel-firewall/SKILL.md",
-    "description": "Vercel security controls: WAF core, custom firewall rules, rate limiting, bot management, and BotID fingerprinting for DDoS protection and traffic filtering.",
-    "triggers": [
-      "vercel",
-      "firewall",
-      "waf",
-      "rate limiting",
-      "bot protection",
-      "botid",
-      "ddos",
-      "traffic filtering"
-    ]
+    "canonical_id": "vercel-security",
+    "deprecated": true,
+    "replaced_by": "vercel-security",
+    "path": ".github/skills/vercel-firewall/SKILL.md",
+    "description": "Compatibility alias skill. Deprecated: use vercel-security.",
+    "triggers": []
   },
   {
+    "id": "vercel-flags",
     "name": "vercel-flags",
-    "path": ".agent/skills/vercel-flags/SKILL.md",
-    "description": "Vercel Feature Flags: SDK integration, platform setup, CLI workflows, dashboard management, explorer UI, and OpenFeature compatibility.",
-    "triggers": [
-      "vercel",
-      "feature flags",
-      "flags sdk",
-      "openfeature",
-      "feature toggle",
-      "rollout",
-      "a/b test"
-    ]
+    "canonical_id": "vercel-delivery",
+    "deprecated": true,
+    "replaced_by": "vercel-delivery",
+    "path": ".github/skills/vercel-flags/SKILL.md",
+    "description": "Compatibility alias skill. Deprecated: use vercel-delivery.",
+    "triggers": []
   },
   {
+    "id": "vercel-functions",
     "name": "vercel-functions",
-    "path": ".agent/skills/vercel-functions/SKILL.md",
-    "description": "Vercel Serverless and Edge Functions: core patterns, Node.js and Python runtimes, edge runtime, Fluid Compute, and function configuration.",
-    "triggers": [
-      "vercel",
-      "serverless",
-      "functions",
-      "edge function",
-      "nodejs runtime",
-      "python runtime",
-      "fluid compute",
-      "api route"
-    ]
+    "canonical_id": "vercel-runtime",
+    "deprecated": true,
+    "replaced_by": "vercel-runtime",
+    "path": ".github/skills/vercel-functions/SKILL.md",
+    "description": "Compatibility alias skill. Deprecated: use vercel-runtime.",
+    "triggers": []
   },
   {
+    "id": "vercel-observability",
     "name": "vercel-observability",
-    "path": ".agent/skills/vercel-observability/SKILL.md",
-    "description": "Vercel observability stack: logs, tracing (OTel), session tracing, speed insights, web analytics, alerts, custom events, log drains, and audit logs.",
+    "canonical_id": "vercel-observability",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/vercel-observability/SKILL.md",
+    "description": "Vercel observability stack: logs, tracing (OTel), session tracing, speed insights, web analytics, alerts, custom events, log drains, audit logs, and structured monitoring.",
     "triggers": [
       "vercel",
       "observability",
       "runtime logs",
       "tracing",
       "opentelemetry",
+      "session tracing",
       "speed insights",
       "web analytics",
       "alerts",
       "log drain",
+      "audit log",
+      "custom events",
       "monitoring"
     ]
   },
   {
+    "id": "vercel-platform",
     "name": "vercel-platform",
-    "path": ".agent/skills/vercel-platform/SKILL.md",
-    "description": "Vercel platform operations: project config, RBAC, 2FA/OIDC/SSO, secure compute, REST API, SDK, webhooks, integrations, MCP for agents, image optimization, OG images, cron jobs, monorepos, microfrontends, and multi-tenant arch.",
+    "canonical_id": "vercel-platform",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/vercel-platform/SKILL.md",
+    "description": "Vercel platform operations: project configuration, RBAC, 2FA/OIDC/SSO, secure compute, REST API, SDK, webhooks, integrations, MCP for agents, image optimization, OG images, cron jobs, monorepos, microfrontends, and multi-tenant architecture.",
     "triggers": [
       "vercel",
       "project config",
       "rbac",
       "2fa",
       "oidc",
+      "sso",
       "secure compute",
       "rest api",
+      "vercel sdk",
       "webhooks",
+      "integrations marketplace",
       "mcp for agents",
       "image optimization",
+      "og image",
       "cron jobs",
       "monorepo",
-      "multi-tenant"
+      "microfrontends",
+      "multi-tenant",
+      "automation",
+      "audit"
     ]
   },
   {
+    "id": "vercel-routing",
     "name": "vercel-routing",
-    "path": ".agent/skills/vercel-routing/SKILL.md",
-    "description": "Vercel edge routing: middleware patterns, redirects/rewrites, Edge Config for real-time config without redeploys, Edge Config integrations, and migration paths.",
-    "triggers": [
-      "vercel",
-      "routing",
-      "middleware",
-      "redirects",
-      "rewrites",
-      "edge config",
-      "a/b routing",
-      "geo routing"
-    ]
+    "canonical_id": "vercel-runtime",
+    "deprecated": true,
+    "replaced_by": "vercel-runtime",
+    "path": ".github/skills/vercel-routing/SKILL.md",
+    "description": "Compatibility alias skill. Deprecated: use vercel-runtime.",
+    "triggers": []
   },
   {
+    "id": "vercel-runtime",
+    "name": "vercel-runtime",
+    "canonical_id": "null",
+    "deprecated": false,
+    "replaced_by": "null",
+    "path": ".github/skills/vercel-runtime/SKILL.md",
+    "description": "Canonical Vercel runtime skill covering functions, routing, and caching with production guardrails.",
+    "triggers": []
+  },
+  {
+    "id": "vercel-security",
+    "name": "vercel-security",
+    "canonical_id": "null",
+    "deprecated": false,
+    "replaced_by": "null",
+    "path": ".github/skills/vercel-security/SKILL.md",
+    "description": "Canonical Vercel security skill covering WAF, rate limiting, bot controls, and traffic-protection policy.",
+    "triggers": []
+  },
+  {
+    "id": "vercel-storage",
     "name": "vercel-storage",
-    "path": ".agent/skills/vercel-storage/SKILL.md",
-    "description": "Vercel Storage solutions: Blob for file storage, Marketplace Postgres, Marketplace Redis, and storage migration strategies.",
+    "canonical_id": "vercel-storage",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/vercel-storage/SKILL.md",
+    "description": "Vercel Storage solutions: Blob for file storage, Marketplace Postgres, Marketplace Redis, and storage migration strategies between providers.",
     "triggers": [
       "vercel",
       "storage",
@@ -311,62 +1438,60 @@
       "redis",
       "kv",
       "storage migration",
-      "vercel blob"
+      "file upload",
+      "vercel blob",
+      "vercel postgres",
+      "vercel redis"
     ]
   },
   {
-    "name": "database-skills",
-    "path": ".agent/skills/database-skills/SKILL.md",
-    "description": "Unified database skill hub with engine-specific packs for PostgreSQL, MySQL, Vitess, Neki, MongoDB, SQLite, Supabase, and Redis.",
-    "triggers": [
-      "database",
-      "sql",
-      "postgres",
-      "mysql",
-      "mongodb",
-      "sqlite",
-      "supabase",
-      "redis",
-      "schema",
-      "migration",
-      "index",
-      "query",
-      "performance"
-    ]
+    "id": "vulnerability-scanner",
+    "name": "vulnerability-scanner",
+    "canonical_id": "security-reviewer",
+    "deprecated": true,
+    "replaced_by": "security-reviewer",
+    "path": ".github/skills/vulnerability-scanner/SKILL.md",
+    "description": "Compatibility alias skill. Deprecated: use security-reviewer.",
+    "triggers": []
   },
   {
-    "name": "database-design",
-    "path": ".agent/skills/database-design/SKILL.md",
-    "description": "Database design principles and decision-making. Schema design, indexing strategy, ORM selection, serverless databases.",
-    "triggers": [
-      "database",
-      "schema",
-      "indexing",
-      "migration"
-    ]
+    "id": "web-design-guidelines",
+    "name": "web-design-guidelines",
+    "canonical_id": "web-design-guidelines",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/web-design-guidelines/SKILL.md",
+    "description": "Review UI code for Web Interface Guidelines compliance. Use when asked to \"review my UI\", \"check accessibility\", \"audit design\", \"review UX\", or \"check my site against best practices\".",
+    "triggers": []
   },
   {
-    "name": "database-optimizer",
-    "path": ".agent/skills/database-optimizer/SKILL.md",
-    "description": "System-level database performance triage across engines.",
-    "triggers": [
-      "database",
-      "performance",
-      "query",
-      "index",
-      "tuning"
-    ]
+    "id": "web-perf",
+    "name": "web-perf",
+    "canonical_id": "web-perf",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/web-perf/SKILL.md",
+    "description": "Analyzes web performance using Chrome DevTools MCP. Measures Core Web Vitals (FCP, LCP, TBT, CLS, Speed Index), identifies render-blocking resources, network dependency chains, layout shifts, caching issues, and accessibility gaps. Use when asked to audit, profile, debug, or optimize page load performance, Lighthouse scores, or site speed.",
+    "triggers": []
   },
   {
-    "name": "drift-flutter",
-    "path": ".agent/skills/drift-flutter/SKILL.md",
-    "description": "Flutter Drift local persistence: DAOs, migrations, transactions.",
-    "triggers": [
-      "flutter",
-      "drift",
-      "sqlite",
-      "migration",
-      "dao"
-    ]
+    "id": "webapp-testing",
+    "name": "webapp-testing",
+    "canonical_id": "webapp-testing",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/webapp-testing/SKILL.md",
+    "description": "Web application testing principles. E2E, Playwright, deep audit strategies.",
+    "triggers": []
+  },
+  {
+    "id": "wrangler",
+    "name": "wrangler",
+    "canonical_id": "wrangler",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".github/skills/wrangler/SKILL.md",
+    "description": "Cloudflare Workers CLI for deploying, developing, and managing Workers, KV, R2, D1, Vectorize, Hyperdrive, Workers AI, Containers, Queues, Workflows, Pipelines, and Secrets Store. Load before running wrangler commands to ensure correct syntax and best practices.",
+    "triggers": []
   }
 ]

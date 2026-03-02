@@ -17,9 +17,11 @@ metadata:
 # Vercel Platform
 
 ## Purpose
+
 Administer Vercel at the platform level — project configuration, team access control, identity/SSO, secure networking, REST API automation, webhooks, native integrations, architecture patterns (monorepos, microfrontends, multi-tenant), and platform-level features like image optimization, OG image generation, and cron jobs.
 
 ## When To Use
+
 - Configuring project-level settings in `vercel.json`.
 - Managing team RBAC roles and access groups.
 - Enforcing 2FA or configuring OIDC/SSO federation.
@@ -37,59 +39,72 @@ Administer Vercel at the platform level — project configuration, team access c
 ## Domain Areas
 
 ### Project Configuration
+
 - `vercel.json` schema: functions, headers, redirects, rewrites, regions.
 - Framework detection and override settings.
 
 ### RBAC & Access Groups
+
 - Assign Owner, Member, Viewer roles per project or team.
 - Access groups for project-level permission scoping.
 
 ### Identity & Security (2FA / OIDC / Secure Compute)
+
 - Enforce 2FA for all team members.
 - Configure OIDC federation for CI/CD token-based auth.
 - Use Secure Compute for private egress to internal services.
 
 ### REST API & SDK
+
 - Authenticate with `VERCEL_TOKEN`; respect rate limits.
 - Use `@vercel/sdk` (TypeScript) for typed API access.
 - Common endpoints: deployments, env vars, domains, projects.
 
 ### Webhooks & Checks
+
 - Register webhooks for `deployment.created`, `deployment.succeeded`, etc.
 - Implement deployment checks (CI gates) via the Checks API.
 
 ### Integrations & Marketplace
+
 - Install native integrations (e.g., observability, storage).
 - Build marketplace partner integrations with OAuth and webhooks.
 
 ### MCP for Agents
+
 - Run Vercel MCP server locally or in CI for agent workflows.
 - Use for automated deployment queries, log retrieval, and config changes.
 
 ### Image Optimization & OG Images
+
 - Use `next/image` for automatic format conversion and resizing.
 - Generate OG images on the fly with `@vercel/og` (ImageResponse).
 - Cache OG images appropriately.
 
 ### Cron Jobs
+
 - Define cron schedules in `vercel.json` under `crons`.
 - Secure cron handler endpoints with `CRON_SECRET`.
 - Monitor cron execution logs in Vercel dashboard.
 
 ### Monorepos
+
 - Configure `rootDirectory` per project for monorepo packages.
 - Use Turborepo + Vercel Remote Cache for fast incremental builds.
 
 ### Microfrontends
+
 - Define app groups and routing in Vercel Microfrontends config.
 - Route per-path segments to independent Next.js apps.
 
 ### Multi-Tenant Architecture
+
 - Use hostname-based routing in middleware for tenant resolution.
 - Scope environment variables and storage per tenant.
 - Combine with Edge Config for real-time tenant config.
 
 ## Operating Checklist
+
 1. Audit and lock project configuration in `vercel.json`.
 2. Review and tighten RBAC roles; remove over-privileged members.
 3. Enforce 2FA for all team members; configure OIDC for CI.
@@ -99,6 +114,7 @@ Administer Vercel at the platform level — project configuration, team access c
 7. Validate monorepo build filtering and Turborepo cache hit rates.
 
 ## Output Contract
+
 - `vercel.json` configuration with annotated sections
 - RBAC role matrix and access group definitions
 - Identity/SSO configuration steps and validation evidence

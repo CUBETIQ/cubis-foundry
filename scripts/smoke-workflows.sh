@@ -2,10 +2,12 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+export ROOT_DIR
 CLI="$ROOT_DIR/bin/cubis.js"
 ANTIGRAVITY_GLOBAL_SKILLS="$HOME/.gemini/antigravity/skills"
 CODEX_GLOBAL_SKILLS="$HOME/.agents/skills"
 COPILOT_GLOBAL_SKILLS="$HOME/.copilot/skills"
+export ANTIGRAVITY_GLOBAL_SKILLS CODEX_GLOBAL_SKILLS COPILOT_GLOBAL_SKILLS
 
 if [ ! -f "$CLI" ]; then
   echo "ERROR: CLI entry not found at $CLI" >&2
@@ -23,8 +25,81 @@ log_step() {
   echo "\n== $1 =="
 }
 
+assert_workflow_contract() {
+  local workflow_dir="$1"
+  local label="$2"
+  for file in "$workflow_dir"/*.md; do
+    [ -f "$file" ] || continue
+    if ! rg -n '^## When to use$' "$file" >/dev/null; then
+      echo "[FAIL] $label workflow missing '## When to use': $(basename "$file")" >&2
+      exit 1
+    fi
+    if ! rg -n '^## Workflow steps$' "$file" >/dev/null; then
+      echo "[FAIL] $label workflow missing '## Workflow steps': $(basename "$file")" >&2
+      exit 1
+    fi
+    if ! rg -n '^## Context notes$' "$file" >/dev/null; then
+      echo "[FAIL] $label workflow missing '## Context notes': $(basename "$file")" >&2
+      exit 1
+    fi
+    if ! rg -n '^## Verification$' "$file" >/dev/null; then
+      echo "[FAIL] $label workflow missing '## Verification': $(basename "$file")" >&2
+      exit 1
+    fi
+  done
+}
+
 log_step "Workspace"
 echo "TMP=$TMP_DIR"
+log_step "Generated asset drift check"
+node "$ROOT_DIR/scripts/generate-platform-assets.mjs" --check >/tmp/cbx-generate-assets-check.log
+log_ok "Shared -> platform generated assets are in sync"
+
+log_step "Catalog parity precheck"
+node - <<'NODE'
+const fs = require('fs');
+const path = require('path');
+const root = process.env.ROOT_DIR;
+if (!root) {
+  console.error('[FAIL] ROOT_DIR env is required for parity precheck');
+  process.exit(1);
+}
+const canonicalRoot = path.join(root, 'workflows', 'skills');
+const mirrors = {
+  copilot: path.join(root, 'workflows', 'workflows', 'agent-environment-setup', 'platforms', 'copilot', 'skills'),
+  cursor: path.join(root, 'workflows', 'workflows', 'agent-environment-setup', 'platforms', 'cursor', 'skills'),
+  windsurf: path.join(root, 'workflows', 'workflows', 'agent-environment-setup', 'platforms', 'windsurf', 'skills')
+};
+function listDirs(dir) {
+  return fs.readdirSync(dir, { withFileTypes: true })
+    .filter((d) => d.isDirectory() && !d.name.startsWith('.'))
+    .map((d) => d.name)
+    .sort();
+}
+const canonical = listDirs(canonicalRoot);
+const canonicalSet = new Set(canonical);
+for (const [label, mirrorRoot] of Object.entries(mirrors)) {
+  const mirror = listDirs(mirrorRoot);
+  if (mirror.length !== canonical.length) {
+    console.error(`[FAIL] ${label} mirror count mismatch: expected ${canonical.length}, got ${mirror.length}`);
+    process.exit(1);
+  }
+  for (const id of canonical) {
+    const file = path.join(mirrorRoot, id, 'SKILL.md');
+    if (!fs.existsSync(file)) {
+      console.error(`[FAIL] ${label} mirror missing SKILL.md for ${id}`);
+      process.exit(1);
+    }
+  }
+  for (const id of mirror) {
+    if (!canonicalSet.has(id)) {
+      console.error(`[FAIL] ${label} mirror contains non-canonical skill ${id}`);
+      process.exit(1);
+    }
+  }
+}
+NODE
+log_ok "Canonical and mirrors are in parity with SKILL.md present"
 cd "$TMP_DIR"
 
 log_step "A1 Antigravity dry-run install"
@@ -44,9 +119,25 @@ node "$CLI" workflows install --platform antigravity --bundle agent-environment-
 [ -f .agent/workflows/mobile.md ]
 [ -f .agent/workflows/devops.md ]
 [ -f .agent/workflows/qa.md ]
+[ -f .agent/workflows/orchestrate.md ]
+[ -f .agent/workflows/review.md ]
+[ -f .agent/workflows/refactor.md ]
+[ -f .agent/workflows/release.md ]
+[ -f .agent/workflows/incident.md ]
 [ -f .agent/agents/backend-specialist.md ]
 [ -f .agent/agents/orchestrator.md ]
 [ -f .agent/agents/security-auditor.md ]
+[ -f .gemini/commands/backend.toml ]
+[ -f .gemini/commands/review.toml ]
+[ -f .gemini/commands/vercel.toml ]
+if [ "$(find .agent/workflows -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "18" ]; then
+  echo "[FAIL] Antigravity expected exactly 18 workflow files" >&2
+  exit 1
+fi
+if [ "$(find .gemini/commands -maxdepth 1 -type f -name '*.toml' | wc -l | tr -d ' ')" -ne "18" ]; then
+  echo "[FAIL] Antigravity expected exactly 18 Gemini command files" >&2
+  exit 1
+fi
 if [ "$(find .agent/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -lt "20" ]; then
   echo "[FAIL] Antigravity expected at least 20 agent files" >&2
   exit 1
@@ -58,6 +149,7 @@ fi
 [ -f .agent/terminal-integration/verify-task.sh ]
 rg -n '"provider": "codex"' .agent/terminal-integration/config.json >/dev/null
 rg -n 'cbx:terminal:verification:start provider=codex version=1' .agent/rules/GEMINI.md >/dev/null
+assert_workflow_contract .agent/workflows "Antigravity"
 log_ok "Antigravity files installed"
 
 log_step "A2.1 /backend wiring check"
@@ -111,6 +203,7 @@ node "$CLI" workflows remove agent-environment-setup --platform antigravity --sc
 [ ! -f .agent/workflows/backend.md ]
 [ -f .agent/rules/GEMINI.md ]
 [ ! -d .agent/terminal-integration ]
+[ ! -f .gemini/commands/backend.toml ]
 rg -n 'No installed workflows found yet\.' .agent/rules/GEMINI.md >/dev/null
 if rg -n 'cbx:terminal:verification:start' .agent/rules/GEMINI.md >/dev/null; then
   echo "[FAIL] Antigravity terminal verification block was not removed" >&2
@@ -125,7 +218,7 @@ log_ok "Dry-run did not write Codex files"
 
 log_step "C2 Codex apply + doctor"
 mkdir -p .codex/skills
-node "$CLI" workflows install --platform codex --bundle agent-environment-setup --yes >/tmp/cbx-c2.log
+node "$CLI" workflows install --platform codex --bundle agent-environment-setup --overwrite --yes >/tmp/cbx-c2.log
 [ -f AGENTS.md ]
 [ -f .agents/workflows/backend.md ]
 [ -f .agents/workflows/orchestrate.md ]
@@ -135,13 +228,49 @@ node "$CLI" workflows install --platform codex --bundle agent-environment-setup 
 [ -f .agents/workflows/mobile.md ]
 [ -f .agents/workflows/devops.md ]
 [ -f .agents/workflows/qa.md ]
+if [ "$(find .agents/workflows -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "18" ]; then
+  echo "[FAIL] Codex expected exactly 18 workflow files" >&2
+  exit 1
+fi
 [ ! -d .agents/agents ]
 [ -f "$CODEX_GLOBAL_SKILLS/workflow-backend/SKILL.md" ]
 [ -f "$CODEX_GLOBAL_SKILLS/workflow-plan/SKILL.md" ]
 [ -f "$CODEX_GLOBAL_SKILLS/agent-backend-specialist/SKILL.md" ]
 [ -f "$CODEX_GLOBAL_SKILLS/agent-security-auditor/SKILL.md" ]
+[ -f "$CODEX_GLOBAL_SKILLS/vercel-runtime/SKILL.md" ]
+[ -f "$CODEX_GLOBAL_SKILLS/vercel-delivery/SKILL.md" ]
+[ -f "$CODEX_GLOBAL_SKILLS/vercel-security/SKILL.md" ]
+[ -f "$CODEX_GLOBAL_SKILLS/vercel-ai/SKILL.md" ]
+[ -f "$CODEX_GLOBAL_SKILLS/vercel-functions/SKILL.md" ]
+[ -f "$CODEX_GLOBAL_SKILLS/vercel-deployments/SKILL.md" ]
 rg -n '^name:\s*workflow-backend$' "$CODEX_GLOBAL_SKILLS/workflow-backend/SKILL.md" >/dev/null
 rg -n '^name:\s*agent-backend-specialist$' "$CODEX_GLOBAL_SKILLS/agent-backend-specialist/SKILL.md" >/dev/null
+rg -n '^metadata:$' "$CODEX_GLOBAL_SKILLS/vercel-functions/SKILL.md" >/dev/null
+rg -n '^\s*deprecated:\s*true$' "$CODEX_GLOBAL_SKILLS/vercel-functions/SKILL.md" >/dev/null
+rg -n '^\s*replaced_by:\s*vercel-runtime$' "$CODEX_GLOBAL_SKILLS/vercel-functions/SKILL.md" >/dev/null
+rg -n '^\s*replaced_by:\s*react-best-practices$' "$CODEX_GLOBAL_SKILLS/nextjs-react-expert/SKILL.md" >/dev/null
+node - <<'NODE'
+const fs = require('fs');
+const path = require('path');
+const root = process.env.ROOT_DIR;
+const installedRoot = process.env.CODEX_GLOBAL_SKILLS;
+if (!root || !installedRoot) {
+  console.error('[FAIL] ROOT_DIR and CODEX_GLOBAL_SKILLS env vars are required');
+  process.exit(1);
+}
+const canonicalRoot = path.join(root, 'workflows', 'skills');
+const canonical = fs.readdirSync(canonicalRoot, { withFileTypes: true })
+  .filter((d) => d.isDirectory() && !d.name.startsWith('.'))
+  .map((d) => d.name);
+for (const id of canonical) {
+  const skillFile = path.join(installedRoot, id, 'SKILL.md');
+  if (!fs.existsSync(skillFile)) {
+    console.error(`[FAIL] Codex global skills missing canonical skill ${id}`);
+    process.exit(1);
+  }
+}
+NODE
+assert_workflow_contract .agents/workflows "Codex"
 node "$CLI" workflows doctor codex --json >/tmp/cbx-c2-doctor.json
 rg -n 'Legacy path ./.codex/skills detected' /tmp/cbx-c2-doctor.json >/dev/null
 log_ok "Codex install complete and legacy warning detected"
@@ -215,13 +344,24 @@ node "$CLI" workflows install --platform copilot --bundle agent-environment-setu
 [ -f .github/copilot/workflows/mobile.md ]
 [ -f .github/copilot/workflows/devops.md ]
 [ -f .github/copilot/workflows/qa.md ]
+if [ "$(find .github/copilot/workflows -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "18" ]; then
+  echo "[FAIL] Copilot expected exactly 18 workflow files" >&2
+  exit 1
+fi
 [ -f .github/agents/backend-specialist.md ]
 [ -f .github/agents/security-auditor.md ]
 [ -f .github/agents/devops-engineer.md ]
 [ -f .github/agents/orchestrator.md ]
 [ -f .github/agents/test-engineer.md ]
+[ -f .github/prompts/workflow-backend.prompt.md ]
+[ -f .github/prompts/workflow-review.prompt.md ]
+[ -f .github/prompts/workflow-vercel.prompt.md ]
 if [ "$(find .github/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -lt "20" ]; then
   echo "[FAIL] Copilot expected at least 20 agent files" >&2
+  exit 1
+fi
+if [ "$(find .github/prompts -maxdepth 1 -type f -name '*.prompt.md' | wc -l | tr -d ' ')" -ne "18" ]; then
+  echo "[FAIL] Copilot expected exactly 18 prompt files" >&2
   exit 1
 fi
 [ -d "$COPILOT_GLOBAL_SKILLS/api-designer" ]
@@ -238,6 +378,7 @@ if rg -n '^skills:' .github/agents/backend-specialist.md >/dev/null; then
   echo "[FAIL] Copilot agent file still contains unsupported skills attribute" >&2
   exit 1
 fi
+assert_workflow_contract .github/copilot/workflows "Copilot"
 node - <<'NODE'
 const fs = require('fs');
 const path = require('path');
@@ -348,6 +489,7 @@ log_step "P4 Remove apply"
 node "$CLI" workflows remove agent-environment-setup --platform copilot --scope global --yes >/tmp/cbx-p4.log
 [ ! -f .github/copilot/workflows/backend.md ]
 [ ! -f .github/agents/backend-specialist.md ]
+[ ! -f .github/prompts/workflow-backend.prompt.md ]
 [ ! -d "$COPILOT_GLOBAL_SKILLS/api-designer" ]
 [ -f AGENTS.md ]
 rg -n 'No installed workflows found yet\.' AGENTS.md >/dev/null

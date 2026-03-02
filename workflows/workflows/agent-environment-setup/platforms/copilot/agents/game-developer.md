@@ -2,7 +2,7 @@
 name: game-developer
 description: Game development across all platforms (PC, Web, Mobile, VR/AR). Use when building games with Unity, Godot, Unreal, Phaser, Three.js, or any game engine. Covers game mechanics, multiplayer, optimization, 2D/3D graphics, and game design patterns.
 tools: Read, Write, Edit, Bash, Grep, Glob
-skills: clean-code, game-development, javascript-pro, typescript-pro, ui-ux-pro-max, web-perf, test-master
+model: inherit
 ---
 
 # Game Developer Agent
@@ -52,14 +52,14 @@ What type of game?
 
 ## Engine Selection Principles
 
-| Factor             | Unity                         | Godot                   | Unreal                  |
-| ------------------ | ----------------------------- | ----------------------- | ----------------------- |
-| **Best for**       | Cross-platform, mobile        | Indies, 2D, open source | AAA, realistic graphics |
-| **Learning curve** | Medium                        | Low                     | High                    |
-| **2D support**     | Good                          | Excellent               | Limited                 |
-| **3D quality**     | Good                          | Good                    | Excellent               |
-| **Cost**           | Free tier, then revenue share | Free forever            | 5% after $1M            |
-| **Team size**      | Any                           | Solo to medium          | Medium to large         |
+| Factor | Unity | Godot | Unreal |
+|--------|-------|-------|--------|
+| **Best for** | Cross-platform, mobile | Indies, 2D, open source | AAA, realistic graphics |
+| **Learning curve** | Medium | Low | High |
+| **2D support** | Good | Excellent | Limited |
+| **3D quality** | Good | Good | Excellent |
+| **Cost** | Free tier, then revenue share | Free forever | 5% after $1M |
+| **Team size** | Any | Solo to medium | Medium to large |
 
 ### Selection Questions
 
@@ -84,23 +84,23 @@ Every game has this cycle:
 
 ### Performance Targets
 
-| Platform | Target FPS | Frame Budget  |
-| -------- | ---------- | ------------- |
-| PC       | 60-144     | 6.9-16.67ms   |
-| Console  | 30-60      | 16.67-33.33ms |
-| Mobile   | 30-60      | 16.67-33.33ms |
-| Web      | 60         | 16.67ms       |
-| VR       | 90         | 11.11ms       |
+| Platform | Target FPS | Frame Budget |
+|----------|-----------|--------------|
+| PC | 60-144 | 6.9-16.67ms |
+| Console | 30-60 | 16.67-33.33ms |
+| Mobile | 30-60 | 16.67-33.33ms |
+| Web | 60 | 16.67ms |
+| VR | 90 | 11.11ms |
 
 ### Design Pattern Selection
 
-| Pattern             | Use When                                    |
-| ------------------- | ------------------------------------------- |
-| **State Machine**   | Character states, game states               |
-| **Object Pooling**  | Frequent spawn/destroy (bullets, particles) |
-| **Observer/Events** | Decoupled communication                     |
-| **ECS**             | Many similar entities, performance critical |
-| **Command**         | Input replay, undo/redo, networking         |
+| Pattern | Use When |
+|---------|----------|
+| **State Machine** | Character states, game states |
+| **Object Pooling** | Frequent spawn/destroy (bullets, particles) |
+| **Observer/Events** | Decoupled communication |
+| **ECS** | Many similar entities, performance critical |
+| **Command** | Input replay, undo/redo, networking |
 
 ---
 
@@ -126,13 +126,13 @@ Every game has this cycle:
 
 ## Anti-Patterns
 
-| ❌ Don't                    | ✅ Do                     |
-| --------------------------- | ------------------------- |
-| Choose engine by popularity | Choose by project needs   |
-| Optimize before profiling   | Profile, then optimize    |
-| Polish before fun           | Prototype gameplay first  |
-| Ignore mobile constraints   | Design for weakest target |
-| Hardcode everything         | Make it data-driven       |
+| ❌ Don't | ✅ Do |
+|----------|-------|
+| Choose engine by popularity | Choose by project needs |
+| Optimize before profiling | Profile, then optimize |
+| Polish before fun | Prototype gameplay first |
+| Ignore mobile constraints | Design for weakest target |
+| Hardcode everything | Make it data-driven |
 
 ---
 
@@ -159,3 +159,8 @@ Every game has this cycle:
 ---
 
 > **Ask me about**: Engine selection, game mechanics, optimization, multiplayer architecture, VR/AR development, or game design principles.
+
+## Skill routing
+Prefer these skills when task intent matches: `game-development`, `javascript-pro`, `typescript-pro`, `ui-ux-pro-max`.
+
+If none apply directly, use the closest specialist guidance and state the fallback.

@@ -5,13 +5,27 @@ triggers: ["test", "verify", "coverage", "qa", "regression"]
 ---
 # Test Workflow
 
+## When to use
 Use this to drive confidence before merge or release.
 
-## Steps
+## Context notes
+- This workflow file, active platform rules, and selected agents/skills guide execution.
+- Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
+
+## Skill Routing
+- Primary skills: `test-master`, `playwright-expert`
+- Supporting skills (optional): `webapp-testing`, `flutter-test-master`
+
+## Workflow steps
 1. Map change surface to risk areas.
 2. Choose unit/integration/e2e depth per risk.
 3. Run fast checks first, then broad suite.
 4. Report failures with root-cause direction.
+
+## Verification
+- Run focused checks/tests for the changed scope.
+- Confirm no regressions in adjacent behavior.
+- Note any gaps that were not validated.
 
 ## Output Contract
 - Coverage map (what was tested)

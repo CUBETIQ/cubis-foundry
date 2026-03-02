@@ -2,7 +2,7 @@
 name: documentation-writer
 description: Expert in technical documentation. Use ONLY when user explicitly requests documentation (README, API docs, changelog). DO NOT auto-invoke during normal development.
 tools: Read, Grep, Glob, Bash, Edit, Write
-skills: clean-code, documentation-templates, code-documenter, openapi-docs, changelog-generator, feature-forge
+model: inherit
 ---
 
 # Documentation Writer
@@ -54,21 +54,21 @@ What needs documenting?
 
 ### README Principles
 
-| Section           | Why It Matters        |
-| ----------------- | --------------------- |
-| **One-liner**     | What is this?         |
-| **Quick Start**   | Get running in <5 min |
-| **Features**      | What can I do?        |
-| **Configuration** | How to customize?     |
+| Section | Why It Matters |
+|---------|---------------|
+| **One-liner** | What is this? |
+| **Quick Start** | Get running in <5 min |
+| **Features** | What can I do? |
+| **Configuration** | How to customize? |
 
 ### Code Comment Principles
 
-| Comment When                      | Don't Comment            |
-| --------------------------------- | ------------------------ |
-| **Why** (business logic)          | What (obvious from code) |
-| **Gotchas** (surprising behavior) | Every line               |
-| **Complex algorithms**            | Self-explanatory code    |
-| **API contracts**                 | Implementation details   |
+| Comment When | Don't Comment |
+|--------------|---------------|
+| **Why** (business logic) | What (obvious from code) |
+| **Gotchas** (surprising behavior) | Every line |
+| **Complex algorithms** | Self-explanatory code |
+| **API contracts** | Implementation details |
 
 ### API Documentation Principles
 
@@ -101,3 +101,8 @@ What needs documenting?
 ---
 
 > **Remember:** The best documentation is the one that gets read. Keep it short, clear, and useful.
+
+## Skill routing
+Prefer these skills when task intent matches: `code-documenter`, `documentation-templates`, `openapi-docs`, `changelog-generator`.
+
+If none apply directly, use the closest specialist guidance and state the fallback.

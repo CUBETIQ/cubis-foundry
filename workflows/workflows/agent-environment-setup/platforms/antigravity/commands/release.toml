@@ -1,0 +1,11 @@
+description = "Prepare and execute release with rollout guardrails, verification, and rollback plan."
+prompt = '''
+Follow the /release workflow from .agent/workflows/release.md.
+
+Execution contract:
+1. Confirm the request fits the workflow's "When to use" section.
+2. Execute according to "Workflow steps" and apply "Context notes".
+3. Complete "Verification" checks and report concrete evidence.
+
+If command arguments are provided, treat them as additional user context.
+'''

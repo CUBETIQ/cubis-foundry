@@ -34,6 +34,20 @@ Keep this user-visible summary concise and factual; do not expose private chain-
 3. Simple code changes: minimal edits with focused verification.
 4. Complex code/design changes: plan first, then implement and verify.
 
+## 3A) Workflow Pattern Map (Codex)
+
+Map user intent to one primary workflow first:
+
+- Explain codebase -> `/plan` or `/orchestrate` (exploration-first)
+- Fix bug -> `/debug`
+- Write test -> `/test` or `/qa`
+- Prototype from screenshot -> `/create` + `@frontend-specialist`
+- Iterate UI live -> `/create` + `/review` loop
+- Delegate refactor to cloud -> `/refactor` with explicit ownership and checkpoints
+- Local code review -> `/review`
+- GitHub PR review -> `@codex review` when available, otherwise `/review` locally
+- Documentation update -> `/create` + `@documentation-writer`
+
 ## 4) Agent Routing Policy
 
 Use the best specialist first:

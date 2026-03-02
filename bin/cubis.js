@@ -61,12 +61,23 @@ const WORKFLOW_PROFILES = {
       workflowDirs: [".agent/workflows"],
       agentDirs: [".agent/agents"],
       skillDirs: [".agent/skills"],
+      commandDirs: [".gemini/commands"],
       ruleFilesByPriority: [".agent/rules/GEMINI.md"]
     },
     global: {
-      workflowDirs: ["~/.gemini/antigravity/workflows"],
-      agentDirs: ["~/.gemini/antigravity/agents"],
-      skillDirs: ["~/.gemini/antigravity/skills"],
+      workflowDirs: [
+        "~/.gemini/antigravity/workflows",
+        "~/.gemini/antigravity/global_workflows"
+      ],
+      agentDirs: [
+        "~/.gemini/antigravity/agents",
+        "~/.gemini/antigravity/global_agents"
+      ],
+      skillDirs: [
+        "~/.gemini/antigravity/skills",
+        "~/.gemini/antigravity/global_skills"
+      ],
+      commandDirs: ["~/.gemini/commands"],
       ruleFilesByPriority: ["~/.gemini/GEMINI.md"]
     },
     detectorPaths: [".agent", ".agent/workflows", ".agent/rules/GEMINI.md"],
@@ -101,12 +112,14 @@ const WORKFLOW_PROFILES = {
       workflowDirs: [".github/copilot/workflows"],
       agentDirs: [".github/agents"],
       skillDirs: [".github/skills"],
+      promptDirs: [".github/prompts"],
       ruleFilesByPriority: ["AGENTS.md", ".github/copilot-instructions.md"]
     },
     global: {
       workflowDirs: ["~/.copilot/workflows"],
       agentDirs: ["~/.copilot/agents"],
       skillDirs: ["~/.copilot/skills"],
+      promptDirs: ["~/.copilot/prompts"],
       ruleFilesByPriority: ["~/.copilot/copilot-instructions.md"]
     },
     detectorPaths: [
@@ -1359,7 +1372,9 @@ async function recordBundleInstallState({ scope, platform, bundleId, artifacts, 
     installedAt: new Date().toISOString(),
     workflows: artifacts.workflows.map(toPosixPath),
     agents: artifacts.agents.map(toPosixPath),
-    skills: artifacts.skills.map(toPosixPath)
+    skills: artifacts.skills.map(toPosixPath),
+    commands: (artifacts.commands || []).map(toPosixPath),
+    prompts: (artifacts.prompts || []).map(toPosixPath)
   };
 
   await writeState(scope, state, cwd);
@@ -1381,11 +1396,27 @@ async function resolveProfilePaths(profileId, scope, cwd = process.cwd()) {
   const profile = WORKFLOW_PROFILES[profileId];
   if (!profile) throw new Error(`Unknown platform '${profileId}'.`);
   const cfg = profile[scope];
+  const workflowDirs = Array.isArray(cfg.workflowDirs) ? cfg.workflowDirs : [];
+  const agentDirs = Array.isArray(cfg.agentDirs) ? cfg.agentDirs : [];
+  const skillDirs = Array.isArray(cfg.skillDirs) ? cfg.skillDirs : [];
+  const commandDirs = Array.isArray(cfg.commandDirs) ? cfg.commandDirs : [];
+  const promptDirs = Array.isArray(cfg.promptDirs) ? cfg.promptDirs : [];
+
+  const resolvePreferredDir = async (dirs) => {
+    if (dirs.length === 0) return null;
+    const expanded = dirs.map((dirPath) => expandPath(dirPath, cwd));
+    for (const candidate of expanded) {
+      if (await pathExists(candidate)) return candidate;
+    }
+    return expanded[0];
+  };
 
   return {
-    workflowsDir: expandPath(cfg.workflowDirs[0], cwd),
-    agentsDir: expandPath(cfg.agentDirs[0], cwd),
-    skillsDir: expandPath(cfg.skillDirs[0], cwd),
+    workflowsDir: await resolvePreferredDir(workflowDirs),
+    agentsDir: await resolvePreferredDir(agentDirs),
+    skillsDir: await resolvePreferredDir(skillDirs),
+    commandsDir: commandDirs[0] ? expandPath(commandDirs[0], cwd) : null,
+    promptsDir: promptDirs[0] ? expandPath(promptDirs[0], cwd) : null,
     ruleFilesByPriority: cfg.ruleFilesByPriority.map((filePath) => expandPath(filePath, cwd))
   };
 }
@@ -1399,7 +1430,9 @@ async function resolveArtifactProfilePaths(profileId, scope, cwd = process.cwd()
   return {
     ...scopedPaths,
     workflowsDir: workspacePaths.workflowsDir,
-    agentsDir: workspacePaths.agentsDir
+    agentsDir: workspacePaths.agentsDir,
+    commandsDir: workspacePaths.commandsDir ?? scopedPaths.commandsDir,
+    promptsDir: workspacePaths.promptsDir ?? scopedPaths.promptsDir
   };
 }
 
@@ -3643,9 +3676,14 @@ async function findNestedSkillDirs(rootDir, depth = 0, nested = []) {
     if (!entry.isDirectory()) continue;
     const childDir = path.join(rootDir, entry.name);
     const skillFile = path.join(childDir, "SKILL.md");
-    if (depth >= 1 && (await pathExists(skillFile))) {
+
+    // Treat direct children and deeper descendants as nested skills.
+    // Once a nested skill boundary is detected, stop descending further.
+    if (depth >= 0 && (await pathExists(skillFile))) {
       nested.push(childDir);
+      continue;
     }
+
     await findNestedSkillDirs(childDir, depth + 1, nested);
   }
   return nested;
@@ -3717,6 +3755,12 @@ async function installBundleArtifacts({
     if (platformInstallsCustomAgents(platform)) {
       await mkdir(profilePaths.agentsDir, { recursive: true });
     }
+    if (profilePaths.commandsDir && Array.isArray(platformSpec.commands) && platformSpec.commands.length > 0) {
+      await mkdir(profilePaths.commandsDir, { recursive: true });
+    }
+    if (profilePaths.promptsDir && Array.isArray(platformSpec.prompts) && platformSpec.prompts.length > 0) {
+      await mkdir(profilePaths.promptsDir, { recursive: true });
+    }
   }
 
   const bundleRoot = path.join(agentAssetsRoot(), "workflows", bundleId);
@@ -3724,7 +3768,7 @@ async function installBundleArtifacts({
 
   const installed = [];
   const skipped = [];
-  const artifacts = { workflows: [], agents: [], skills: [] };
+  const artifacts = { workflows: [], agents: [], skills: [], commands: [], prompts: [] };
 
   const workflowFiles = Array.isArray(platformSpec.workflows) ? platformSpec.workflows : [];
   for (const workflowFile of workflowFiles) {
@@ -3756,6 +3800,38 @@ async function installBundleArtifacts({
 
     const result = await copyArtifact({ source, destination, overwrite, dryRun });
     artifacts.agents.push(destination);
+    if (result.action === "skipped" || result.action === "would-skip") skipped.push(destination);
+    else installed.push(destination);
+  }
+
+  const commandFiles = Array.isArray(platformSpec.commands) ? platformSpec.commands : [];
+  for (const commandFile of commandFiles) {
+    if (!profilePaths.commandsDir) continue;
+    const source = path.join(platformRoot, "commands", commandFile);
+    const destination = path.join(profilePaths.commandsDir, path.basename(commandFile));
+
+    if (!(await pathExists(source))) {
+      throw new Error(`Missing command source file: ${source}`);
+    }
+
+    const result = await copyArtifact({ source, destination, overwrite, dryRun });
+    artifacts.commands.push(destination);
+    if (result.action === "skipped" || result.action === "would-skip") skipped.push(destination);
+    else installed.push(destination);
+  }
+
+  const promptFiles = Array.isArray(platformSpec.prompts) ? platformSpec.prompts : [];
+  for (const promptFile of promptFiles) {
+    if (!profilePaths.promptsDir) continue;
+    const source = path.join(platformRoot, "prompts", promptFile);
+    const destination = path.join(profilePaths.promptsDir, path.basename(promptFile));
+
+    if (!(await pathExists(source))) {
+      throw new Error(`Missing prompt source file: ${source}`);
+    }
+
+    const result = await copyArtifact({ source, destination, overwrite, dryRun });
+    artifacts.prompts.push(destination);
     if (result.action === "skipped" || result.action === "would-skip") skipped.push(destination);
     else installed.push(destination);
   }
@@ -3969,6 +4045,18 @@ async function removeBundleArtifacts({
     if (await safeRemove(destination, dryRun)) removed.push(destination);
   }
 
+  for (const commandFile of platformSpec.commands || []) {
+    if (!profilePaths.commandsDir) continue;
+    const destination = path.join(profilePaths.commandsDir, path.basename(commandFile));
+    if (await safeRemove(destination, dryRun)) removed.push(destination);
+  }
+
+  for (const promptFile of platformSpec.prompts || []) {
+    if (!profilePaths.promptsDir) continue;
+    const destination = path.join(profilePaths.promptsDir, path.basename(promptFile));
+    if (await safeRemove(destination, dryRun)) removed.push(destination);
+  }
+
   const skillIds = await resolveInstallSkillIds({ platformSpec, extraSkillIds: [] });
   for (const skillId of skillIds) {
     const destination = path.join(profilePaths.skillsDir, skillId);
@@ -3997,14 +4085,26 @@ function printPlatforms() {
       `  project agents:    ${agentsEnabled ? profile.project.agentDirs[0] : "(disabled for this platform)"}`
     );
     console.log(`  project skills:    ${profile.project.skillDirs[0]}`);
+    if (Array.isArray(profile.project.commandDirs) && profile.project.commandDirs.length > 0) {
+      console.log(`  project commands:  ${profile.project.commandDirs[0]}`);
+    }
+    if (Array.isArray(profile.project.promptDirs) && profile.project.promptDirs.length > 0) {
+      console.log(`  project prompts:   ${profile.project.promptDirs[0]}`);
+    }
     console.log(`  project rules:     ${profile.project.ruleFilesByPriority.join(" | ")}`);
     console.log(`  global workflows:  ${profile.global.workflowDirs[0]}`);
     console.log(
       `  global agents:     ${agentsEnabled ? profile.global.agentDirs[0] : "(disabled for this platform)"}`
     );
     console.log(`  global skills:     ${profile.global.skillDirs[0]}`);
+    if (Array.isArray(profile.global.commandDirs) && profile.global.commandDirs.length > 0) {
+      console.log(`  global commands:   ${profile.global.commandDirs[0]}`);
+    }
+    if (Array.isArray(profile.global.promptDirs) && profile.global.promptDirs.length > 0) {
+      console.log(`  global prompts:    ${profile.global.promptDirs[0]}`);
+    }
     console.log(`  global rules:      ${profile.global.ruleFilesByPriority.join(" | ")}`);
-    console.log("  default install:   workflows/agents -> project, skills -> global");
+    console.log("  default install:   workflows/agents/commands/prompts -> project, skills -> global");
   }
 }
 
@@ -4225,6 +4325,16 @@ async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
     skills: {
       path: artifactPaths.skillsDir,
       exists: await pathExists(artifactPaths.skillsDir)
+    },
+    commands: {
+      path: artifactPaths.commandsDir,
+      enabled: Boolean(artifactPaths.commandsDir),
+      exists: artifactPaths.commandsDir ? await pathExists(artifactPaths.commandsDir) : null
+    },
+    prompts: {
+      path: artifactPaths.promptsDir,
+      enabled: Boolean(artifactPaths.promptsDir),
+      exists: artifactPaths.promptsDir ? await pathExists(artifactPaths.promptsDir) : null
     }
   };
 
@@ -4306,9 +4416,11 @@ async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
   if (
     !pathStatus.workflows.exists &&
     !pathStatus.skills.exists &&
-    !(pathStatus.agents.enabled && pathStatus.agents.exists)
+    !(pathStatus.agents.enabled && pathStatus.agents.exists) &&
+    !(pathStatus.commands.enabled && pathStatus.commands.exists) &&
+    !(pathStatus.prompts.enabled && pathStatus.prompts.exists)
   ) {
-    recommendations.push("No workflow/agent/skill directories found in this scope.");
+    recommendations.push("No workflow/agent/skill/command/prompt directories found in this scope.");
   }
 
   if (platform === "codex" && scope === "project") {
@@ -4366,6 +4478,20 @@ async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
     warnings.push("Antigravity terminal integration exists but no terminal verification rule block was found.");
     recommendations.push(
       "Re-run install with terminal integration flags (use --overwrite if files already exist)."
+    );
+  }
+
+  if (platform === "antigravity" && pathStatus.workflows.exists && pathStatus.commands.enabled && !pathStatus.commands.exists) {
+    warnings.push("Antigravity workflows are present but .gemini/commands is missing.");
+    recommendations.push(
+      `Reinstall to generate command files: cbx workflows install --platform antigravity --bundle agent-environment-setup --scope ${scope} --overwrite`
+    );
+  }
+
+  if (platform === "copilot" && pathStatus.workflows.exists && pathStatus.prompts.enabled && !pathStatus.prompts.exists) {
+    warnings.push("Copilot workflows are present but prompts directory is missing.");
+    recommendations.push(
+      `Reinstall to generate prompt files: cbx workflows install --platform copilot --bundle agent-environment-setup --scope ${scope} --overwrite`
     );
   }
 
@@ -4434,6 +4560,16 @@ function printDoctorReport(report) {
     console.log(`- Agents: ${report.paths.agents.path} : ${report.paths.agents.exists ? "exists" : "missing"}`);
   }
   console.log(`- Skills: ${report.paths.skills.path} : ${report.paths.skills.exists ? "exists" : "missing"}`);
+  if (report.paths.commands.enabled === false) {
+    console.log(`- Commands: (disabled)`);
+  } else {
+    console.log(`- Commands: ${report.paths.commands.path} : ${report.paths.commands.exists ? "exists" : "missing"}`);
+  }
+  if (report.paths.prompts.enabled === false) {
+    console.log(`- Prompts: (disabled)`);
+  } else {
+    console.log(`- Prompts: ${report.paths.prompts.path} : ${report.paths.prompts.exists ? "exists" : "missing"}`);
+  }
 
   console.log("\nManaged block:");
   console.log(`- Status: ${report.managedBlockStatus}`);
