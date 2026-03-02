@@ -1,11 +1,9 @@
 {
   "profile": "mcp-default",
-  "version": 1,
+  "version": 2,
   "skills": [
+    "mcp-catalog",
     "postman",
-    "atlassian-mcp",
-    "github-automation",
-    "sentry-automation",
     "datadog-automation",
     "mcp-builder",
     "mcp-developer",

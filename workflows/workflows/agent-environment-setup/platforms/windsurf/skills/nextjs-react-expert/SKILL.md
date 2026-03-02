@@ -3,7 +3,7 @@ name: "nextjs-react-expert"
 description: "Compatibility alias skill. Deprecated: use react-best-practices."
 metadata:
   deprecated: true
-  replaced_by: "react-best-practices"
+  replaced_by: react-best-practices
   removal_target: "v0.6.0"
   alias_of: "react-best-practices"
 ---

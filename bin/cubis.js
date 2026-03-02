@@ -252,9 +252,8 @@ const TECH_RUST_FRAMEWORK_SIGNALS = [
 const SKILL_PROFILES = new Set(["core", "web-backend", "full"]);
 const DEFAULT_SKILL_PROFILE = "core";
 const CATALOG_FILES = Object.freeze({
-  core: path.join("skills", "catalogs", "core.json"),
-  "web-backend": path.join("skills", "catalogs", "web-backend.json"),
-  mcp: path.join("catalogs", "default.json")
+  core: path.join("catalogs", "core.json"),
+  "web-backend": path.join("catalogs", "web-backend.json")
 });
 
 function platformInstallsCustomAgents(platformId) {
@@ -298,18 +297,6 @@ function workflowSkillsRoot() {
   return path.join(agentAssetsRoot(), "skills");
 }
 
-function mcpRoot() {
-  return path.join(packageRoot(), "mcp");
-}
-
-function mcpSkillsRoot() {
-  return path.join(mcpRoot(), "skills");
-}
-
-function mcpCatalogRoot() {
-  return path.join(mcpRoot(), "catalogs");
-}
-
 function expandPath(inputPath, cwd = process.cwd()) {
   if (!inputPath) return cwd;
   if (inputPath === "~") return os.homedir();
@@ -344,16 +331,13 @@ function normalizeSkillProfile(value) {
 function resolveWorkflowSkillInstallOptions(options) {
   const allSkills = Boolean(options.allSkills);
   let skillProfile = normalizeSkillProfile(options.skillProfile || DEFAULT_SKILL_PROFILE);
-  let includeMcp = Boolean(options.includeMcp);
 
   if (allSkills) {
     skillProfile = "full";
-    includeMcp = true;
   }
 
   return {
-    skillProfile,
-    includeMcp
+    skillProfile
   };
 }
 
@@ -363,6 +347,13 @@ function normalizeMcpScope(value, fallback = "project") {
   if (normalized === "project" || normalized === "workspace") return "project";
   if (normalized === "global" || normalized === "user") return "global";
   throw new Error(`Unknown MCP scope '${value}'. Use project/workspace or global/user.`);
+}
+
+function isPathInsideRoot(targetPath, rootPath) {
+  const target = path.resolve(targetPath);
+  const root = path.resolve(rootPath);
+  const relative = path.relative(root, target);
+  return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
 }
 
 function normalizeTerminalVerifier(value) {
@@ -1714,22 +1705,16 @@ async function listTopLevelSkillIdsFromRoot(rootPath) {
 async function resolveSkillSourceDirectory(skillId) {
   const normalized = String(skillId || "").trim();
   if (!normalized) return null;
-  const candidates = [
-    path.join(mcpSkillsRoot(), normalized),
-    path.join(workflowSkillsRoot(), normalized)
-  ];
-  for (const candidate of candidates) {
-    const skillFile = path.join(candidate, "SKILL.md");
-    if ((await pathExists(candidate)) && (await pathExists(skillFile))) {
-      return candidate;
-    }
+  const candidate = path.join(workflowSkillsRoot(), normalized);
+  const skillFile = path.join(candidate, "SKILL.md");
+  if ((await pathExists(candidate)) && (await pathExists(skillFile))) {
+    return candidate;
   }
   return null;
 }
 
 async function resolveCatalogSkillIds({
-  profile,
-  includeMcp
+  profile
 }) {
   const workflowCatalogPath = path.join(workflowSkillsRoot(), CATALOG_FILES[profile] || "");
   const workflowCatalogIds = await readSkillCatalogIds(workflowCatalogPath);
@@ -1740,24 +1725,17 @@ async function resolveCatalogSkillIds({
         ? await listTopLevelSkillIdsFromRoot(workflowSkillsRoot())
         : [];
 
-  if (!includeMcp) return workflowProfileIds;
-
-  const mcpCatalogPath = path.join(mcpCatalogRoot(), CATALOG_FILES.mcp);
-  const mcpCatalogIds = await readSkillCatalogIds(mcpCatalogPath);
-  const mcpIds = mcpCatalogIds.length > 0 ? mcpCatalogIds : await listTopLevelSkillIdsFromRoot(mcpSkillsRoot());
-  return unique([...workflowProfileIds, ...mcpIds]);
+  return workflowProfileIds;
 }
 
 async function resolveInstallSkillIds({
   platformSpec,
   extraSkillIds = [],
-  skillProfile = DEFAULT_SKILL_PROFILE,
-  includeMcp = false
+  skillProfile = DEFAULT_SKILL_PROFILE
 }) {
   const fallbackManifestSkillIds = Array.isArray(platformSpec.skills) ? platformSpec.skills : [];
   const catalogSelectedIds = await resolveCatalogSkillIds({
-    profile: normalizeSkillProfile(skillProfile),
-    includeMcp
+    profile: normalizeSkillProfile(skillProfile)
   });
 
   let selected = catalogSelectedIds.length > 0 ? catalogSelectedIds : fallbackManifestSkillIds;
@@ -3939,6 +3917,8 @@ async function cleanupNestedDuplicateSkills({
 
   const cleanup = [];
   for (const topLevelSkillDir of installedSkillDirs) {
+    const ownerSkillId = path.basename(topLevelSkillDir);
+    if (!ownerSkillId || ownerSkillId.startsWith(".")) continue;
     if (!(await pathExists(topLevelSkillDir))) continue;
     const nestedSkillDirs = await findNestedSkillDirs(topLevelSkillDir);
     for (const nestedDir of nestedSkillDirs) {
@@ -3950,7 +3930,7 @@ async function cleanupNestedDuplicateSkills({
       cleanup.push({
         nestedSkillId,
         path: nestedDir,
-        ownerSkillId: path.basename(topLevelSkillDir),
+        ownerSkillId,
         action: dryRun ? "would-remove" : "removed"
       });
     }
@@ -3968,7 +3948,6 @@ async function installBundleArtifacts({
   profilePathsOverride = null,
   extraSkillIds = [],
   skillProfile = DEFAULT_SKILL_PROFILE,
-  includeMcp = false,
   terminalVerifierSelection = null,
   dryRun = false,
   cwd = process.cwd()
@@ -4066,12 +4045,10 @@ async function installBundleArtifacts({
     if (result.action === "skipped" || result.action === "would-skip") skipped.push(destination);
     else installed.push(destination);
   }
-
   const skillIds = await resolveInstallSkillIds({
     platformSpec,
     extraSkillIds,
-    skillProfile,
-    includeMcp
+    skillProfile
   });
   for (const skillId of skillIds) {
     const source = await resolveSkillSourceDirectory(skillId);
@@ -4079,7 +4056,7 @@ async function installBundleArtifacts({
 
     if (!source) {
       throw new Error(
-        `Missing skill source directory for '${skillId}' (checked ${workflowSkillsRoot()} and ${mcpSkillsRoot()}).`
+        `Missing skill source directory for '${skillId}' (checked ${workflowSkillsRoot()}).`
       );
     }
 
@@ -4087,6 +4064,14 @@ async function installBundleArtifacts({
     artifacts.skills.push(destination);
     if (result.action === "skipped" || result.action === "would-skip") skipped.push(destination);
     else installed.push(destination);
+  });
+      artifacts.skills.push(mcpVaultDestination);
+      if (vaultResult.action === "skipped" || vaultResult.action === "would-skip") {
+        skipped.push(mcpVaultDestination);
+      } else {
+        installed.push(mcpVaultDestination);
+      }
+    }
   }
 
   // Copy skills_index.json if it exists in the package skills root
@@ -4297,6 +4282,9 @@ async function removeBundleArtifacts({
     const destination = path.join(profilePaths.skillsDir, skillId);
     if (await safeRemove(destination, dryRun)) removed.push(destination);
   }
+
+  const mcpVaultDestination = path.join(profilePaths.skillsDir, ".mcp-vault");
+  if (await safeRemove(mcpVaultDestination, dryRun)) removed.push(mcpVaultDestination);
 
   if (platform === "codex") {
     const wrapperSkillIds = buildCodexWrapperSkillIds(platformSpec);
@@ -4878,8 +4866,7 @@ function withInstallOptions(command) {
       "skill install profile: core|web-backend|full (default: core)",
       DEFAULT_SKILL_PROFILE
     )
-    .option("--include-mcp", "include MCP catalog skills in install selection")
-    .option("--all-skills", "alias for --skill-profile full --include-mcp")
+    .option("--all-skills", "alias for --skill-profile full")
     .option("--dry-run", "preview install without writing files")
     .option("-y, --yes", "skip interactive confirmation");
 }
@@ -5102,7 +5089,6 @@ async function runWorkflowInstall(options) {
       profilePathsOverride: artifactProfilePaths,
       extraSkillIds: postmanSelection.enabled ? [POSTMAN_SKILL_ID] : [],
       skillProfile: skillInstallOptions.skillProfile,
-      includeMcp: skillInstallOptions.includeMcp,
       terminalVerifierSelection,
       dryRun,
       cwd
@@ -5258,8 +5244,7 @@ async function runWorkflowPruneSkills(options) {
     const desiredSkillIds = await resolveInstallSkillIds({
       platformSpec,
       extraSkillIds: [],
-      skillProfile: skillInstallOptions.skillProfile,
-      includeMcp: skillInstallOptions.includeMcp
+      skillProfile: skillInstallOptions.skillProfile
     });
     const desiredSet = new Set(desiredSkillIds.map((skillId) => String(skillId).toLowerCase()));
 
@@ -5280,7 +5265,7 @@ async function runWorkflowPruneSkills(options) {
     if (!hasWork) {
       console.log("No stale skills found. Installed set already matches selected profile.");
       console.log(
-        `Profile: ${skillInstallOptions.skillProfile} (include MCP: ${skillInstallOptions.includeMcp ? "yes" : "no"})`
+        `Profile: ${skillInstallOptions.skillProfile}`
       );
       return;
     }
@@ -5324,7 +5309,7 @@ async function runWorkflowPruneSkills(options) {
     console.log(`- Platform/scope: ${platform}/${scope}`);
     console.log(`- Bundle: ${bundleId}`);
     console.log(
-      `- Profile: ${skillInstallOptions.skillProfile} (include MCP: ${skillInstallOptions.includeMcp ? "yes" : "no"})`
+      `- Profile: ${skillInstallOptions.skillProfile}`
     );
     console.log(`- Installed before: ${beforeCount}`);
     console.log(`- Nested duplicates: ${nestedResult.length}`);
@@ -6189,7 +6174,6 @@ withWorkflowBaseOptions(
       "skill prune profile: core|web-backend|full (default: core)",
       DEFAULT_SKILL_PROFILE
     )
-    .option("--include-mcp", "include MCP catalog skills in desired profile set")
     .option("--all-skills", "alias for --skill-profile full --include-mcp")
     .option("--dry-run", "preview prune operations without deleting files")
     .option("-y, --yes", "skip interactive confirmation")
@@ -6271,7 +6255,6 @@ withWorkflowBaseOptions(
       "skill prune profile: core|web-backend|full (default: core)",
       DEFAULT_SKILL_PROFILE
     )
-    .option("--include-mcp", "include MCP catalog skills in desired profile set")
     .option("--all-skills", "alias for --skill-profile full --include-mcp")
     .option("--dry-run", "preview prune operations without deleting files")
     .option("-y, --yes", "skip interactive confirmation")

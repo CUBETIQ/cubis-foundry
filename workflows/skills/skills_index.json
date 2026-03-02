@@ -70,29 +70,6 @@
     "triggers": []
   },
   {
-    "id": "atlassian-mcp",
-    "name": "atlassian-mcp",
-    "canonical_id": "atlassian-mcp",
-    "deprecated": false,
-    "replaced_by": null,
-    "path": ".agents/skills/atlassian-mcp/SKILL.md",
-    "description": "Use when querying Jira issues, searching Confluence pages, creating tickets, updating documentation, or integrating Atlassian tools via MCP protocol.",
-    "triggers": [
-      "Jira",
-      "Confluence",
-      "Atlassian",
-      "MCP",
-      "tickets",
-      "issues",
-      "wiki",
-      "JQL",
-      "CQL",
-      "sprint",
-      "backlog",
-      "project management"
-    ]
-  },
-  {
     "id": "bash-linux",
     "name": "bash-linux",
     "canonical_id": "bash-linux",
@@ -129,7 +106,7 @@
     "deprecated": false,
     "replaced_by": null,
     "path": ".agents/skills/building-mcp-server-on-cloudflare/SKILL.md",
-    "description": "Build and deploy remote MCP servers on Cloudflare Workers with tools, OAuth authentication, and production configuration.",
+    "description": "MCP pointer for Cloudflare-hosted MCP server build/deploy guidance from the hidden vault.",
     "triggers": []
   },
   {
@@ -261,7 +238,7 @@
     "deprecated": false,
     "replaced_by": null,
     "path": ".agents/skills/datadog-automation/SKILL.md",
-    "description": "Automate Datadog tasks via Rube MCP (Composio): query metrics, search logs, manage monitors/dashboards, create events and downtimes. Always search tools first for current schemas.",
+    "description": "MCP pointer for Datadog automation. Loads the full workflow from the hidden MCP vault.",
     "triggers": []
   },
   {
@@ -482,16 +459,6 @@
     "triggers": []
   },
   {
-    "id": "github-automation",
-    "name": "github-automation",
-    "canonical_id": "github-automation",
-    "deprecated": false,
-    "replaced_by": null,
-    "path": ".agents/skills/github-automation/SKILL.md",
-    "description": "Automate GitHub repositories, issues, pull requests, branches, CI/CD, and permissions via Rube MCP (Composio). Manage code workflows, review PRs, search code, and handle deployments programmatically.",
-    "triggers": []
-  },
-  {
     "id": "golang-pro",
     "name": "golang-pro",
     "canonical_id": "golang-pro",
@@ -617,7 +584,17 @@
     "deprecated": false,
     "replaced_by": null,
     "path": ".agents/skills/mcp-builder/SKILL.md",
-    "description": "MCP (Model Context Protocol) server building principles. Tool design, resource patterns, best practices.",
+    "description": "MCP pointer for server-building patterns. Loads complete guidance from the hidden MCP vault.",
+    "triggers": []
+  },
+  {
+    "id": "mcp-catalog",
+    "name": "mcp-catalog",
+    "canonical_id": "mcp-catalog",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".agents/skills/mcp-catalog/SKILL.md",
+    "description": "MCP category pointer. Use this to discover MCP vault skills on demand with file tools instead of preloading everything.",
     "triggers": []
   },
   {
@@ -627,17 +604,8 @@
     "deprecated": false,
     "replaced_by": null,
     "path": ".agents/skills/mcp-developer/SKILL.md",
-    "description": "Use for implementing, debugging, and maintaining MCP servers/clients with SDKs, protocol compliance, transports, schemas, and security hardening.",
-    "triggers": [
-      "MCP",
-      "Model Context Protocol",
-      "MCP server",
-      "MCP client",
-      "Claude integration",
-      "AI tools",
-      "context protocol",
-      "JSON-RPC"
-    ]
+    "description": "MCP pointer for implementation/debugging workflows. Loads the full MCP developer guide from the vault.",
+    "triggers": []
   },
   {
     "id": "microservices-architect",
@@ -830,7 +798,7 @@
     "deprecated": false,
     "replaced_by": null,
     "path": ".agents/skills/postman/SKILL.md",
-    "description": "Automate API testing and collection management with Postman - create workspaces, collections, environments, and run tests programmatically",
+    "description": "MCP pointer for Postman automation. Loads detailed guidance from the hidden MCP vault on demand.",
     "triggers": []
   },
   {
@@ -1002,16 +970,6 @@
     "replaced_by": null,
     "path": ".agents/skills/semgrep/SKILL.md",
     "description": "Run Semgrep static analysis scan on a codebase using parallel subagents. Automatically",
-    "triggers": []
-  },
-  {
-    "id": "sentry-automation",
-    "name": "sentry-automation",
-    "canonical_id": "sentry-automation",
-    "deprecated": false,
-    "replaced_by": null,
-    "path": ".agents/skills/sentry-automation/SKILL.md",
-    "description": "Automate Sentry tasks via Rube MCP (Composio): manage issues/events, configure alerts, track releases, monitor projects and teams. Always search tools first for current schemas.",
     "triggers": []
   },
   {

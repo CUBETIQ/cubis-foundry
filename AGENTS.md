@@ -1,0 +1,160 @@
+# AGENTS.md - Cubis Foundry Codex Protocol
+
+This file defines mandatory behavior for Codex projects installed via `cbx workflows`.
+
+## 1) Platform Paths
+
+- Workflows: `.agents/workflows`
+- Agents: `.agents/agents`
+- Skills: `.agents/skills`
+- Rules file: `AGENTS.md`
+
+## Startup Transparency (Required)
+
+Before executing workflows, agents, or code edits, publish a short `Decision Log` that is visible to the user:
+
+1. Rule file(s) read at startup (at minimum `AGENTS.md`, plus any additional rule files loaded).
+2. Workflow decision (`$workflow-*` or direct mode) and why it was chosen.
+3. Agent routing decision (`$agent-*` or direct mode) and why it was chosen.
+4. Skill loading decision (skill names loaded) and why they were chosen.
+
+If routing changes during the task, publish a `Decision Update` before continuing.
+Keep this user-visible summary concise and factual; do not expose private chain-of-thought.
+
+## 2) Skill-Based Workflow
+
+1. Codex operates primarily through **Skills** and **Rules**.
+2. Complex workflows are composed of multiple skill executions.
+3. Use `/orchestrate` for cross-domain tasks logic.
+
+## 3) Request Classifier
+
+1. Question/explanation requests: answer directly.
+2. Survey/intel requests: inspect and summarize before editing.
+3. Simple code changes: minimal edits with focused verification.
+4. Complex code/design changes: plan first, then implement and verify.
+
+## 3A) Workflow Pattern Map (Codex)
+
+Map user intent to one primary workflow first:
+
+- Explain codebase -> `/plan` or `/orchestrate` (exploration-first)
+- Fix bug -> `/debug`
+- Write test -> `/test` or `/qa`
+- Prototype from screenshot -> `/create` + `@frontend-specialist`
+- Iterate UI live -> `/create` + `/review` loop
+- Delegate refactor to cloud -> `/refactor` with explicit ownership and checkpoints
+- Local code review -> `/review`
+- GitHub PR review -> `@codex review` when available, otherwise `/review` locally
+- Documentation update -> `/create` + `@documentation-writer`
+
+## 4) Agent Routing Policy
+
+Use the best specialist first:
+
+- Backend/API/database: `@backend-specialist`, `@database-architect`
+- Frontend/UI: `@frontend-specialist`
+- Mobile: `@mobile-developer`
+- Security: `@security-auditor`, `@penetration-tester`
+- DevOps/release: `@devops-engineer`
+- Testing/QA: `@test-engineer`, `@qa-automation-engineer`
+- Debugging/performance: `@debugger`, `@performance-optimizer`
+- Cross-domain orchestration: `@orchestrator`
+
+## 5) Skill Loading Policy
+
+### Smart Skill Selection (Adaptive)
+
+Use an adaptive load policy to control context size:
+
+1. Q&A/explanations: do not load skills unless the user explicitly asks for one.
+2. Implementation/debug/review: load at most 1 primary skill and 1 supporting skill.
+3. Cross-domain orchestration: use additional skills only when domains clearly differ.
+4. Explicit skill mention by user always takes precedence.
+
+### General Loading Rules
+
+1.  Load only skills needed for the active request.
+2.  Prefer progressive disclosure: start from `SKILL.md`, then specific sections.
+3.  Keep context lean; avoid loading unrelated skill documents.
+4.  If a mapped skill is missing, continue with best fallback and state it.
+5.  Keep user-visible decision logs concise: selected skill(s) and one-line rationale.
+
+## 6) Socratic Gate (Before Complex Work)
+
+Before multi-file or architecture-impacting changes, ask targeted questions when requirements are unclear:
+
+1. Goal and success criteria
+2. Constraints and compatibility requirements
+3. Validation expectations (tests, lint, release checks)
+
+## 7) Quality and Safety Gates
+
+1. Do not run destructive actions without explicit user confirmation.
+2. Keep diffs small and reversible when possible.
+3. Verify behavior with focused checks before finalizing.
+4. State what was not validated.
+
+## 8) CBX Maintenance Commands
+
+Use these commands to keep this setup healthy:
+
+- Install/update bundle:
+  `cbx workflows install --platform codex --bundle agent-environment-setup --scope global --overwrite`
+- Rebuild managed routing block:
+  `cbx workflows sync-rules --platform codex --scope project`
+- Diagnose setup issues:
+  `cbx workflows doctor codex --scope project`
+
+## 9) Managed Section Contract
+
+1. Preserve all user content outside managed markers.
+2. Do not manually edit content between managed markers.
+3. `cbx workflows sync-rules` is the source of truth for the managed block.
+
+<!-- cbx:workflows:auto:start platform=codex version=1 -->
+## CBX Workflow Routing (auto-managed)
+Use Codex callable wrappers:
+- Workflows: `$workflow-<name>`
+- Agents: `$agent-<name>`
+
+- `/backend` -> `$workflow-backend` (backend, api)
+- `/brainstorm` -> `$workflow-brainstorm` (idea, brainstorm)
+- `/create` -> `$workflow-create` (create, build)
+- `/database` -> `$workflow-database` (database, sql)
+- `/debug` -> `$workflow-debug` (debug, bug)
+- `/devops` -> `$workflow-devops` (devops, deploy)
+- `/implement-track` -> `$workflow-implement-track` (track, milestone)
+- `/incident` -> `$workflow-incident` (incident, outage)
+- `/mobile` -> `$workflow-mobile` (mobile, flutter)
+- `/orchestrate` -> `$workflow-orchestrate` (orchestrate, coordinate)
+- `/plan` -> `$workflow-plan` (plan, spec)
+- `/qa` -> `$workflow-qa` (qa, test)
+- `/refactor` -> `$workflow-refactor` (refactor, cleanup)
+- `/release` -> `$workflow-release` (release, deploy)
+- `/review` -> `$workflow-review` (review, audit)
+- `/security` -> `$workflow-security` (security, vulnerability)
+- `/test` -> `$workflow-test` (test, verify)
+- `/vercel` -> `$workflow-vercel` (vercel, deployment)
+
+Selection policy:
+1. If user names a `$workflow-*`, use it directly.
+2. Else map intent to one primary workflow.
+3. Use `$agent-*` wrappers only when role specialization is needed.
+
+<!-- cbx:workflows:auto:end -->
+
+<!-- cbx:engineering:auto:start platform=codex version=1 -->
+## Engineering Guardrails (auto-managed)
+Apply these before planning, coding, review, and release:
+
+- Required baseline: `./ENGINEERING_RULES.md`
+- Project tech map: `./TECH.md`
+
+Hard policy:
+1. Build only what is needed (YAGNI).
+2. Keep logic simple and readable.
+3. Use precise, intention-revealing names.
+4. Keep classes/functions focused on one responsibility.
+
+<!-- cbx:engineering:auto:end -->

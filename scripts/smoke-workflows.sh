@@ -385,13 +385,13 @@ if [ "$(find .github/prompts -maxdepth 1 -type f -name '*.prompt.md' | wc -l | t
   exit 1
 fi
 [ -d "$COPILOT_GLOBAL_SKILLS/api-designer" ]
-rg -n '^name:' "$COPILOT_GLOBAL_SKILLS/accessibility/SKILL.md" >/dev/null
-if rg -n '^displayName:' "$COPILOT_GLOBAL_SKILLS/accessibility/SKILL.md" >/dev/null; then
-  echo "[FAIL] Copilot SKILL.md still contains unsupported displayName attribute" >&2
+rg -n '^name:' "$COPILOT_GLOBAL_SKILLS/clean-code/SKILL.md" >/dev/null
+if rg -n '^allowed-tools:' "$COPILOT_GLOBAL_SKILLS/clean-code/SKILL.md" >/dev/null; then
+  echo "[FAIL] Copilot SKILL.md still contains unsupported allowed-tools attribute" >&2
   exit 1
 fi
-if rg -n '^keywords:' "$COPILOT_GLOBAL_SKILLS/accessibility/SKILL.md" >/dev/null; then
-  echo "[FAIL] Copilot SKILL.md still contains unsupported keywords attribute" >&2
+if rg -n '^priority:' "$COPILOT_GLOBAL_SKILLS/clean-code/SKILL.md" >/dev/null; then
+  echo "[FAIL] Copilot SKILL.md still contains unsupported priority attribute" >&2
   exit 1
 fi
 if rg -n '^skills:' .github/agents/backend-specialist.md >/dev/null; then
