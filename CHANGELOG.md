@@ -2,6 +2,36 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.34] - 2026-03-02
+
+### Added
+
+- Added profile-based install controls for workflow setup:
+  - `--skill-profile <core|web-backend|full>`
+  - `--include-mcp`
+  - `--all-skills` alias for full catalog install
+- Added `cbx workflows prune-skills` to detect/remove nested duplicates and out-of-profile installed skills.
+- Added split MCP catalog and roots:
+  - `mcp/skills`
+  - `mcp/powers`
+  - `mcp/catalogs/default.json`
+
+### Changed
+
+- Changed default install behavior to `core` skill profile for lower context footprint.
+- Updated resolver/index generation to support combined workflow + MCP skill roots.
+- Updated powers generation and validation scripts to handle split roots.
+- Refined rule/agent templates to reduce forced skill loading and keep selection adaptive.
+- Refreshed language skills and added new language packs:
+  - `java-pro`
+  - `csharp-pro`
+  - `kotlin-pro`
+
+### Fixed
+
+- Fixed nested duplicate cleanup to catch direct-child duplicate skill folders.
+- Fixed duplicate-skill-name collision handling in index generation and alias metadata.
+
 ## [0.3.31] - 2026-02-27
 
 ### Changed
