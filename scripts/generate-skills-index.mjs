@@ -10,9 +10,9 @@ const ROOT = path.resolve(__dirname, "..");
 
 const DEFAULT_TARGETS = {
   canonical: {
-    roots: [path.join(ROOT, "workflows", "skills"), path.join(ROOT, "mcp", "skills")],
+    roots: [path.join(ROOT, "workflows", "skills")],
     outFile: path.join(ROOT, "workflows", "skills", "skills_index.json"),
-    indexPathPrefix: ".agents/skills"
+    indexPathPrefix: ".agents/skills",
   },
   copilot: {
     roots: [
@@ -23,8 +23,8 @@ const DEFAULT_TARGETS = {
         "agent-environment-setup",
         "platforms",
         "copilot",
-        "skills"
-      )
+        "skills",
+      ),
     ],
     outFile: path.join(
       ROOT,
@@ -34,9 +34,9 @@ const DEFAULT_TARGETS = {
       "platforms",
       "copilot",
       "skills",
-      "skills_index.json"
+      "skills_index.json",
     ),
-    indexPathPrefix: ".github/skills"
+    indexPathPrefix: ".github/skills",
   },
   cursor: {
     roots: [
@@ -47,8 +47,8 @@ const DEFAULT_TARGETS = {
         "agent-environment-setup",
         "platforms",
         "cursor",
-        "skills"
-      )
+        "skills",
+      ),
     ],
     outFile: path.join(
       ROOT,
@@ -58,9 +58,9 @@ const DEFAULT_TARGETS = {
       "platforms",
       "cursor",
       "skills",
-      "skills_index.json"
+      "skills_index.json",
     ),
-    indexPathPrefix: ".cursor/skills"
+    indexPathPrefix: ".cursor/skills",
   },
   windsurf: {
     roots: [
@@ -71,8 +71,8 @@ const DEFAULT_TARGETS = {
         "agent-environment-setup",
         "platforms",
         "windsurf",
-        "skills"
-      )
+        "skills",
+      ),
     ],
     outFile: path.join(
       ROOT,
@@ -82,15 +82,16 @@ const DEFAULT_TARGETS = {
       "platforms",
       "windsurf",
       "skills",
-      "skills_index.json"
+      "skills_index.json",
     ),
-    indexPathPrefix: ".windsurf/skills"
-  }
+    indexPathPrefix: ".windsurf/skills",
+  },
 };
 
 function parseArgs(argv) {
   const args = new Set(argv.slice(2));
-  const targetArg = argv.find((item, idx) => argv[idx - 1] === "--target") || "all";
+  const targetArg =
+    argv.find((item, idx) => argv[idx - 1] === "--target") || "all";
   const target = String(targetArg).toLowerCase();
   const dryRun = args.has("--dry-run");
   return { target, dryRun };
@@ -105,7 +106,8 @@ function splitTopLevelCsv(value) {
 
 function parseInlineList(value) {
   const trimmed = String(value || "").trim();
-  if (!trimmed.startsWith("[") || !trimmed.endsWith("]")) return splitTopLevelCsv(trimmed);
+  if (!trimmed.startsWith("[") || !trimmed.endsWith("]"))
+    return splitTopLevelCsv(trimmed);
   const inner = trimmed.slice(1, -1);
   return splitTopLevelCsv(inner);
 }
@@ -117,7 +119,9 @@ function parseFrontmatter(markdown) {
 }
 
 function getScalar(frontmatterRaw, key) {
-  const match = frontmatterRaw.match(new RegExp(`^\\s*${key}\\s*:\\s*(.+)$`, "m"));
+  const match = frontmatterRaw.match(
+    new RegExp(`^\\s*${key}\\s*:\\s*(.+)$`, "m"),
+  );
   if (!match) return null;
   return match[1].trim().replace(/^['\"]|['\"]$/g, "");
 }
@@ -211,7 +215,9 @@ async function collectSkillsIndexEntries(roots, indexPathPrefix) {
       const description = getScalar(fm.raw, "description") || "";
       const triggers = getAllTriggerValues(fm.raw);
       const deprecated = normalizeBoolean(metadata.deprecated);
-      const replacedBy = metadata.replaced_by ? String(metadata.replaced_by).trim() : null;
+      const replacedBy = metadata.replaced_by
+        ? String(metadata.replaced_by).trim()
+        : null;
       const canonicalId = replacedBy || id;
 
       // Later roots override earlier roots for same id (MCP canonical preferred).
@@ -223,7 +229,7 @@ async function collectSkillsIndexEntries(roots, indexPathPrefix) {
         replaced_by: replacedBy,
         path: `${indexPathPrefix}/${id}/SKILL.md`,
         description,
-        triggers
+        triggers,
       });
     }
   }
@@ -249,7 +255,9 @@ function ensureUniqueNames(rows, label) {
     }
     const count = seen.get(key) + 1;
     seen.set(key, count);
-    throw new Error(`Duplicate skill name '${row.name}' found in target '${label}'`);
+    throw new Error(
+      `Duplicate skill name '${row.name}' found in target '${label}'`,
+    );
   }
 }
 
@@ -289,14 +297,16 @@ async function main() {
       : Object.keys(DEFAULT_TARGETS).filter((key) => key === target);
 
   if (targetLabels.length === 0) {
-    throw new Error(`Unknown target '${target}'. Use one of: all, canonical, copilot, cursor, windsurf.`);
+    throw new Error(
+      `Unknown target '${target}'. Use one of: all, canonical, copilot, cursor, windsurf.`,
+    );
   }
 
   for (const label of targetLabels) {
     const spec = DEFAULT_TARGETS[label];
     const result = await writeIndex({ label, ...spec, dryRun });
     console.log(
-      `${result.dryRun ? "[dry-run] " : ""}generated ${result.label} skills index (${result.count} entries): ${result.outFile}`
+      `${result.dryRun ? "[dry-run] " : ""}generated ${result.label} skills index (${result.count} entries): ${result.outFile}`,
     );
   }
 }

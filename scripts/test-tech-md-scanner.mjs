@@ -42,7 +42,7 @@ async function generateTechMd(workspaceDir, { compact = false } = {}) {
   if (compact) args.push("--compact");
   await execFile(process.execPath, args, {
     cwd: workspaceDir,
-    env: process.env
+    env: process.env,
   });
 
   const techPath = path.join(workspaceDir, "TECH.md");
@@ -74,7 +74,13 @@ function techPreview(content, maxLines = 32) {
   return content.split("\n").slice(0, maxLines).join("\n");
 }
 
-function buildResultMarkdown({ startedAt, finishedAt, passedCount, failedCount, cases }) {
+function buildResultMarkdown({
+  startedAt,
+  finishedAt,
+  passedCount,
+  failedCount,
+  cases,
+}) {
   const lines = [];
   lines.push("# TECH Scanner Test Results");
   lines.push("");
@@ -88,7 +94,9 @@ function buildResultMarkdown({ startedAt, finishedAt, passedCount, failedCount, 
   lines.push("");
 
   for (const result of cases) {
-    lines.push(`## ${result.status === "PASS" ? "PASS" : "FAIL"}: ${result.name}`);
+    lines.push(
+      `## ${result.status === "PASS" ? "PASS" : "FAIL"}: ${result.name}`,
+    );
     lines.push(`- Description: ${result.description}`);
     lines.push(`- Workspace: \`${result.workspaceDir}\``);
     if (result.error) {
@@ -120,11 +128,12 @@ function buildResultMarkdown({ startedAt, finishedAt, passedCount, failedCount, 
 const testCases = [
   {
     name: "flutter-go-router-riverpod",
-    description: "Detect Flutter stack with go_router and riverpod packages from pubspec.",
+    description:
+      "Detect Flutter stack with go_router and riverpod packages from pubspec.",
     files: {
       "pubspec.yaml": `name: sample_app\nenvironment:\n  sdk: ^3.4.0\ndependencies:\n  flutter:\n    sdk: flutter\n  flutter_riverpod: ^2.5.1\n  go_router: ^14.2.0\n  dio: ^5.7.0\ndev_dependencies:\n  flutter_test:\n    sdk: flutter\n`,
       "pubspec.lock": "# lock\n",
-      "lib/main.dart": "void main() {}\n"
+      "lib/main.dart": "void main() {}\n",
     },
     includes: [
       "- Flutter",
@@ -133,12 +142,13 @@ const testCases = [
       "### Dart / Flutter (pubspec.yaml)",
       "`flutter_riverpod`",
       "`go_router`",
-      "`dio`"
-    ]
+      "`dio`",
+    ],
   },
   {
     name: "nextjs-stack",
-    description: "Detect Next.js/React/Tailwind from package.json dependencies.",
+    description:
+      "Detect Next.js/React/Tailwind from package.json dependencies.",
     files: {
       "package.json": JSON.stringify(
         {
@@ -147,22 +157,22 @@ const testCases = [
           scripts: {
             dev: "next dev",
             build: "next build",
-            test: "vitest"
+            test: "vitest",
           },
           dependencies: {
             next: "15.0.0",
             react: "19.0.0",
-            "react-dom": "19.0.0"
+            "react-dom": "19.0.0",
           },
           devDependencies: {
             tailwindcss: "4.0.0",
-            vitest: "2.0.0"
-          }
+            vitest: "2.0.0",
+          },
         },
         null,
-        2
+        2,
       ),
-      "pages/index.tsx": "export default function Home(){return null}\n"
+      "pages/index.tsx": "export default function Home(){return null}\n",
     },
     includes: [
       "- Next.js",
@@ -172,8 +182,8 @@ const testCases = [
       "`next`",
       "`react`",
       "`tailwindcss`",
-      "`dev`: `next dev`"
-    ]
+      "`dev`: `next dev`",
+    ],
   },
   {
     name: "nestjs-stack",
@@ -185,36 +195,37 @@ const testCases = [
           dependencies: {
             "@nestjs/core": "11.0.0",
             "@nestjs/common": "11.0.0",
-            rxjs: "7.8.0"
-          }
+            rxjs: "7.8.0",
+          },
         },
         null,
-        2
+        2,
       ),
-      "src/main.ts": "console.log('nest');\n"
+      "src/main.ts": "console.log('nest');\n",
     },
-    includes: ["- NestJS", "`@nestjs/core`", "`@nestjs/common`"]
+    includes: ["- NestJS", "`@nestjs/core`", "`@nestjs/common`"],
   },
   {
     name: "go-fiber-stack",
     description: "Detect Go Fiber module from go.mod requirements.",
     files: {
       "go.mod": `module sample/service\n\ngo 1.22\n\nrequire (\n  github.com/gofiber/fiber/v2 v2.52.5\n  github.com/google/uuid v1.6.0\n)\n`,
-      "main.go": "package main\nfunc main(){}\n"
+      "main.go": "package main\nfunc main(){}\n",
     },
     includes: [
       "- Go Modules",
       "- Go Fiber",
       "### Go Modules (go.mod)",
-      "`github.com/gofiber/fiber/v2`"
-    ]
+      "`github.com/gofiber/fiber/v2`",
+    ],
   },
   {
     name: "python-fastapi-requirements",
     description: "Detect FastAPI and related packages from requirements.txt.",
     files: {
-      "requirements.txt": "fastapi==0.115.2\nuvicorn[standard]>=0.31.0\npydantic>=2.8.0\n",
-      "app/main.py": "from fastapi import FastAPI\napp=FastAPI()\n"
+      "requirements.txt":
+        "fastapi==0.115.2\nuvicorn[standard]>=0.31.0\npydantic>=2.8.0\n",
+      "app/main.py": "from fastapi import FastAPI\napp=FastAPI()\n",
     },
     includes: [
       "- Python",
@@ -222,30 +233,39 @@ const testCases = [
       "### Python Packages (requirements / pyproject)",
       "`fastapi`",
       "`uvicorn`",
-      "`pydantic`"
-    ]
+      "`pydantic`",
+    ],
   },
   {
     name: "python-pyproject-poetry",
-    description: "Detect python packages from pyproject.toml poetry dependencies.",
+    description:
+      "Detect python packages from pyproject.toml poetry dependencies.",
     files: {
       "pyproject.toml": `[tool.poetry]\nname = "py-app"\nversion = "0.1.0"\n\n[tool.poetry.dependencies]\npython = "^3.12"\nfastapi = "^0.115.0"\nuvicorn = "^0.31.0"\n`,
-      "service/main.py": "print('hello')\n"
+      "service/main.py": "print('hello')\n",
     },
-    includes: ["- Python", "- FastAPI", "`fastapi`", "`uvicorn`"]
+    includes: ["- Python", "- FastAPI", "`fastapi`", "`uvicorn`"],
   },
   {
     name: "rust-axum-stack",
     description: "Detect Rust crates and Axum framework from Cargo.toml.",
     files: {
       "Cargo.toml": `[package]\nname = "api"\nversion = "0.1.0"\n\n[dependencies]\naxum = "0.7"\ntokio = { version = "1", features = ["full"] }\nserde = "1"\n`,
-      "src/main.rs": "fn main() {}\n"
+      "src/main.rs": "fn main() {}\n",
     },
-    includes: ["- Rust Cargo", "- Axum", "- Tokio", "### Rust Crates (Cargo.toml)", "`axum`", "`tokio`"]
+    includes: [
+      "- Rust Cargo",
+      "- Axum",
+      "- Tokio",
+      "### Rust Crates (Cargo.toml)",
+      "`axum`",
+      "`tokio`",
+    ],
   },
   {
     name: "monorepo-nested-package-json",
-    description: "Detect framework signals from nested package.json files in monorepo.",
+    description:
+      "Detect framework signals from nested package.json files in monorepo.",
     files: {
       "package.json": JSON.stringify({ name: "mono", private: true }, null, 2),
       "apps/web/package.json": JSON.stringify(
@@ -253,19 +273,20 @@ const testCases = [
           name: "web",
           dependencies: {
             next: "15.0.0",
-            react: "19.0.0"
-          }
+            react: "19.0.0",
+          },
         },
         null,
-        2
+        2,
       ),
-      "apps/web/pages/index.tsx": "export default function P(){return null}\n"
+      "apps/web/pages/index.tsx": "export default function P(){return null}\n",
     },
-    includes: ["- Next.js", "`next`", "`react`"]
+    includes: ["- Next.js", "`next`", "`react`"],
   },
   {
     name: "ignore-node-modules",
-    description: "Ensure ignored directories do not leak false package signals.",
+    description:
+      "Ensure ignored directories do not leak false package signals.",
     files: {
       "package.json": JSON.stringify({ name: "clean", private: true }, null, 2),
       "src/index.js": "console.log('ok')\n",
@@ -273,19 +294,20 @@ const testCases = [
         {
           name: "fake",
           dependencies: {
-            "totally-fake-framework": "1.0.0"
-          }
+            "totally-fake-framework": "1.0.0",
+          },
         },
         null,
-        2
-      )
+        2,
+      ),
     },
     includes: ["### JavaScript / TypeScript (package.json)"],
-    notIncludes: ["`totally-fake-framework`"]
+    notIncludes: ["`totally-fake-framework`"],
   },
   {
     name: "compact-mode-with-mcp-signal",
-    description: "Compact mode should keep context budget sections and omit verbose package/tooling sections.",
+    description:
+      "Compact mode should keep context budget sections and omit verbose package/tooling sections.",
     compact: true,
     files: {
       "package.json": JSON.stringify(
@@ -294,35 +316,39 @@ const testCases = [
           private: true,
           dependencies: {
             next: "15.0.0",
-            react: "19.0.0"
-          }
+            react: "19.0.0",
+          },
         },
         null,
-        2
+        2,
       ),
       ".vscode/mcp.json": JSON.stringify(
         {
           servers: {
             postman: {
-              url: "https://mcp.postman.com/minimal"
-            }
-          }
+              url: "https://mcp.postman.com/minimal",
+            },
+          },
         },
         null,
-        2
-      )
+        2,
+      ),
     },
-    includes: ["Mode: compact.", "`.vscode/mcp.json`", "- Suggested MCP inclusion: `--include-mcp`"],
+    includes: ["Mode: compact.", "`.vscode/mcp.json`"],
     notIncludes: [
       "## Package Signals",
       "## Tooling and Lockfiles",
       "## Key Scripts",
-      "## Important Top-Level Paths"
-    ]
-  }
+      "## Important Top-Level Paths",
+    ],
+  },
 ];
 
-const COMMON_INCLUDES = ["## Recommended Skills", "## MCP Footprint", "## Context Budget Notes"];
+const COMMON_INCLUDES = [
+  "## Recommended Skills",
+  "## MCP Footprint",
+  "## Context Budget Notes",
+];
 
 async function run() {
   const startedAt = nowIso();
@@ -331,7 +357,11 @@ async function run() {
 
   try {
     for (const testCase of testCases) {
-      const workspaceDir = await createWorkspace(testRoot, testCase.name, testCase.files);
+      const workspaceDir = await createWorkspace(
+        testRoot,
+        testCase.name,
+        testCase.files,
+      );
       const result = {
         name: testCase.name,
         description: testCase.description,
@@ -340,13 +370,21 @@ async function run() {
         missing: [],
         unexpected: [],
         error: null,
-        preview: ""
+        preview: "",
       };
 
       try {
-        const techContent = await generateTechMd(workspaceDir, { compact: Boolean(testCase.compact) });
-        result.missing = assertIncludes(techContent, [...COMMON_INCLUDES, ...(testCase.includes || [])]);
-        result.unexpected = assertNotIncludes(techContent, testCase.notIncludes || []);
+        const techContent = await generateTechMd(workspaceDir, {
+          compact: Boolean(testCase.compact),
+        });
+        result.missing = assertIncludes(techContent, [
+          ...COMMON_INCLUDES,
+          ...(testCase.includes || []),
+        ]);
+        result.unexpected = assertNotIncludes(
+          techContent,
+          testCase.notIncludes || [],
+        );
         if (result.missing.length > 0 || result.unexpected.length > 0) {
           result.status = "FAIL";
         }
@@ -368,12 +406,14 @@ async function run() {
       finishedAt,
       passedCount,
       failedCount,
-      cases: results
+      cases: results,
     });
 
     await writeFile(resultsPath, report, "utf8");
 
-    console.log(`Tech scanner tests completed: ${passedCount}/${results.length} passed.`);
+    console.log(
+      `Tech scanner tests completed: ${passedCount}/${results.length} passed.`,
+    );
     console.log(`Report: ${resultsPath}`);
 
     if (failedCount > 0) {
@@ -385,7 +425,8 @@ async function run() {
 }
 
 run().catch(async (error) => {
-  const message = error instanceof Error ? error.stack || error.message : String(error);
+  const message =
+    error instanceof Error ? error.stack || error.message : String(error);
   const fallback = [
     "# TECH Scanner Test Results",
     "",
@@ -400,7 +441,7 @@ run().catch(async (error) => {
     "```txt",
     message,
     "```",
-    ""
+    "",
   ].join("\n");
   await writeFile(resultsPath, fallback, "utf8");
   console.error(message);

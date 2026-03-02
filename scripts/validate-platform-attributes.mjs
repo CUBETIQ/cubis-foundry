@@ -8,19 +8,26 @@ import { promisify } from "node:util";
 
 const ROOT = process.cwd();
 const ASSETS_ROOT = path.join(ROOT, "workflows");
-const BUNDLE_ROOT = path.join(ASSETS_ROOT, "workflows", "agent-environment-setup");
+const BUNDLE_ROOT = path.join(
+  ASSETS_ROOT,
+  "workflows",
+  "agent-environment-setup",
+);
 const SHARED_ROOT = path.join(BUNDLE_ROOT, "shared");
 const SHARED_AGENTS_DIR = path.join(SHARED_ROOT, "agents");
 const SHARED_WORKFLOWS_DIR = path.join(SHARED_ROOT, "workflows");
 const MANIFEST_PATH = path.join(BUNDLE_ROOT, "manifest.json");
-const GENERATE_PLATFORM_ASSETS_SCRIPT = path.join(ROOT, "scripts", "generate-platform-assets.mjs");
+const GENERATE_PLATFORM_ASSETS_SCRIPT = path.join(
+  ROOT,
+  "scripts",
+  "generate-platform-assets.mjs",
+);
 const SKILLS_INDEX_PATH = path.join(ASSETS_ROOT, "skills", "skills_index.json");
 const CANONICAL_SKILLS_ROOT = path.join(ASSETS_ROOT, "skills");
-const MCP_SKILLS_ROOT = path.join(ROOT, "mcp", "skills");
 const MIRROR_SKILL_ROOTS = {
   copilot: path.join(BUNDLE_ROOT, "platforms", "copilot", "skills"),
   cursor: path.join(BUNDLE_ROOT, "platforms", "cursor", "skills"),
-  windsurf: path.join(BUNDLE_ROOT, "platforms", "windsurf", "skills")
+  windsurf: path.join(BUNDLE_ROOT, "platforms", "windsurf", "skills"),
 };
 
 const CLI_ARGS = new Set(process.argv.slice(2));
@@ -32,7 +39,7 @@ const COPILOT_ALLOWED_SKILL_KEYS = new Set([
   "description",
   "license",
   "metadata",
-  "name"
+  "name",
 ]);
 
 const COPILOT_ALLOWED_AGENT_KEYS = new Set([
@@ -45,14 +52,14 @@ const COPILOT_ALLOWED_AGENT_KEYS = new Set([
   "metadata",
   "model",
   "handoffs",
-  "argument-hint"
+  "argument-hint",
 ]);
 
 const WORKFLOW_REQUIRED_SECTIONS = [
   "When to use",
   "Workflow steps",
   "Context notes",
-  "Verification"
+  "Verification",
 ];
 
 const platforms = {
@@ -60,19 +67,19 @@ const platforms = {
     workflowDir: "workflows",
     agentDir: "agents",
     commandsDir: "commands",
-    rulesFile: "rules/GEMINI.md"
+    rulesFile: "rules/GEMINI.md",
   },
   codex: {
     workflowDir: "workflows",
     agentDir: "agents",
-    rulesFile: "rules/AGENTS.md"
+    rulesFile: "rules/AGENTS.md",
   },
   copilot: {
     workflowDir: "workflows",
     agentDir: "agents",
     promptsDir: "prompts",
-    rulesFile: "rules/AGENTS.md"
-  }
+    rulesFile: "rules/AGENTS.md",
+  },
 };
 
 function parseFrontmatter(markdown) {
@@ -80,7 +87,7 @@ function parseFrontmatter(markdown) {
   if (!match) return null;
   return {
     raw: match[1],
-    body: markdown.slice(match[0].length)
+    body: markdown.slice(match[0].length),
   };
 }
 
@@ -187,7 +194,12 @@ async function listMarkdownFiles(dirPath) {
   if (!(await pathExists(dirPath))) return [];
   const entries = await fs.readdir(dirPath, { withFileTypes: true });
   return entries
-    .filter((entry) => entry.isFile() && entry.name.endsWith(".md") && !entry.name.startsWith("."))
+    .filter(
+      (entry) =>
+        entry.isFile() &&
+        entry.name.endsWith(".md") &&
+        !entry.name.startsWith("."),
+    )
     .map((entry) => entry.name)
     .sort((a, b) => a.localeCompare(b));
 }
@@ -249,7 +261,7 @@ async function listTopLevelSkillIds(skillsRoot) {
 
 async function buildCanonicalSkillMap() {
   const map = new Map();
-  for (const root of [CANONICAL_SKILLS_ROOT, MCP_SKILLS_ROOT]) {
+  for (const root of [CANONICAL_SKILLS_ROOT]) {
     if (!(await pathExists(root))) continue;
     const ids = await listTopLevelSkillIds(root);
     for (const skillId of ids) {
@@ -291,7 +303,10 @@ async function findDuplicateSkillIdsInIndex() {
   const counts = new Map();
   for (const entry of entries) {
     if (!entry || typeof entry !== "object") continue;
-    const id = String(entry.id || "").trim() || extractSkillIdFromIndexPath(entry.path) || "";
+    const id =
+      String(entry.id || "").trim() ||
+      extractSkillIdFromIndexPath(entry.path) ||
+      "";
     if (!id) continue;
     const key = id.toLowerCase();
     counts.set(key, (counts.get(key) || 0) + 1);
@@ -320,7 +335,8 @@ function extractMarkdownLinks(markdown) {
 
 function shouldValidateRelativeLink(target) {
   if (!target) return false;
-  if (target.startsWith("http://") || target.startsWith("https://")) return false;
+  if (target.startsWith("http://") || target.startsWith("https://"))
+    return false;
   if (target.startsWith("mailto:") || target.startsWith("#")) return false;
   if (target.startsWith("/")) return false;
   if (target.includes("{") || target.includes("}")) return false;
@@ -365,7 +381,11 @@ async function validateWorkflowFile(filePath, errors) {
   const description = getScalar(fm.raw, "description");
 
   if (!command || !command.startsWith("/")) {
-    error(errors, filePath, "frontmatter command is missing or invalid (must start with '/')");
+    error(
+      errors,
+      filePath,
+      "frontmatter command is missing or invalid (must start with '/')",
+    );
   }
   if (!description) {
     error(errors, filePath, "frontmatter description is missing");
@@ -374,7 +394,13 @@ async function validateWorkflowFile(filePath, errors) {
   validateWorkflowRequiredSections(fm.body, filePath, errors);
 }
 
-async function validateSkillFile({ filePath, platform, errors, notes, canonicalMap }) {
+async function validateSkillFile({
+  filePath,
+  platform,
+  errors,
+  notes,
+  canonicalMap,
+}) {
   const raw = await readUtf8(filePath);
   const fm = parseFrontmatter(raw);
   if (!fm) {
@@ -388,19 +414,30 @@ async function validateSkillFile({ filePath, platform, errors, notes, canonicalM
   const metadata = parseMetadata(fm.raw);
 
   if (!name) error(errors, filePath, "missing required 'name' in frontmatter");
-  if (!description) error(errors, filePath, "missing required 'description' in frontmatter");
+  if (!description)
+    error(errors, filePath, "missing required 'description' in frontmatter");
 
   if (toBoolean(metadata.deprecated)) {
     if (!metadata.replaced_by) {
       error(errors, filePath, "deprecated skill missing metadata.replaced_by");
     }
     if (!metadata.removal_target) {
-      error(errors, filePath, "deprecated skill missing metadata.removal_target");
+      error(
+        errors,
+        filePath,
+        "deprecated skill missing metadata.removal_target",
+      );
     }
     if (metadata.replaced_by) {
-      const replacement = canonicalMap?.get(String(metadata.replaced_by).toLowerCase());
+      const replacement = canonicalMap?.get(
+        String(metadata.replaced_by).toLowerCase(),
+      );
       if (!replacement) {
-        error(errors, filePath, `deprecated skill replacement missing: ${metadata.replaced_by}`);
+        error(
+          errors,
+          filePath,
+          `deprecated skill replacement missing: ${metadata.replaced_by}`,
+        );
       }
     }
   }
@@ -416,38 +453,52 @@ async function validateSkillFile({ filePath, platform, errors, notes, canonicalM
   }
 
   if (platform === "copilot") {
-    const unsupported = keys.filter((key) => !COPILOT_ALLOWED_SKILL_KEYS.has(key));
+    const unsupported = keys.filter(
+      (key) => !COPILOT_ALLOWED_SKILL_KEYS.has(key),
+    );
     if (unsupported.length > 0) {
       note(
         notes,
         filePath,
-        `canonical skill has Copilot-unsupported keys (${unsupported.join(", ")}); installer sanitization remains fallback`
+        `canonical skill has Copilot-unsupported keys (${unsupported.join(", ")}); installer sanitization remains fallback`,
       );
     }
     return;
   }
 
-  const nonStandard = keys.filter((key) => ![
-    "name",
-    "description",
-    "keywords",
-    "displayName",
-    "triggers",
-    "compatibility",
-    "license",
-    "metadata",
-    "allowed-tools",
-    "author",
-    "version",
-    "priority"
-  ].includes(key));
+  const nonStandard = keys.filter(
+    (key) =>
+      ![
+        "name",
+        "description",
+        "keywords",
+        "displayName",
+        "triggers",
+        "compatibility",
+        "license",
+        "metadata",
+        "allowed-tools",
+        "author",
+        "version",
+        "priority",
+      ].includes(key),
+  );
   if (nonStandard.length > 0) {
-    note(notes, filePath, `non-standard skill keys present: ${nonStandard.join(", ")}`);
+    note(
+      notes,
+      filePath,
+      `non-standard skill keys present: ${nonStandard.join(", ")}`,
+    );
   }
-
 }
 
-async function validateAgentFile({ filePath, platform, skillSet, errors, notes }) {
+async function validateAgentFile({
+  filePath,
+  platform,
+  skillSet,
+  errors,
+  notes,
+}) {
   const raw = await readUtf8(filePath);
   const fm = parseFrontmatter(raw);
   if (!fm) {
@@ -460,12 +511,19 @@ async function validateAgentFile({ filePath, platform, skillSet, errors, notes }
   const description = getScalar(fm.raw, "description");
 
   if (!name) error(errors, filePath, "missing required 'name' in frontmatter");
-  if (!description) error(errors, filePath, "missing required 'description' in frontmatter");
+  if (!description)
+    error(errors, filePath, "missing required 'description' in frontmatter");
 
   if (platform === "copilot") {
-    const unsupported = keys.filter((key) => !COPILOT_ALLOWED_AGENT_KEYS.has(key));
+    const unsupported = keys.filter(
+      (key) => !COPILOT_ALLOWED_AGENT_KEYS.has(key),
+    );
     if (unsupported.length > 0) {
-      error(errors, filePath, `Copilot agent contains unsupported keys (${unsupported.join(", ")})`);
+      error(
+        errors,
+        filePath,
+        `Copilot agent contains unsupported keys (${unsupported.join(", ")})`,
+      );
     }
     return;
   }
@@ -477,7 +535,7 @@ async function validateAgentFile({ filePath, platform, skillSet, errors, notes }
       note(
         notes,
         filePath,
-        `references hierarchical skill '${skillId}' (no direct skill folder; treated as conceptual alias)`
+        `references hierarchical skill '${skillId}' (no direct skill folder; treated as conceptual alias)`,
       );
       continue;
     }
@@ -486,14 +544,21 @@ async function validateAgentFile({ filePath, platform, skillSet, errors, notes }
 }
 
 async function validateCanonicalSkillsStructure({ errors, canonicalMap }) {
-  const canonicalIds = [...canonicalMap.values()].map((item) => item.id).sort((a, b) => a.localeCompare(b));
+  const canonicalIds = [...canonicalMap.values()]
+    .map((item) => item.id)
+    .sort((a, b) => a.localeCompare(b));
   const canonicalSet = new Set(canonicalIds.map((id) => id.toLowerCase()));
 
   for (const skillId of canonicalIds) {
-    const source = canonicalMap.get(skillId.toLowerCase())?.root || CANONICAL_SKILLS_ROOT;
+    const source =
+      canonicalMap.get(skillId.toLowerCase())?.root || CANONICAL_SKILLS_ROOT;
     const skillFile = path.join(source, skillId, "SKILL.md");
     if (!(await pathExists(skillFile))) {
-      error(errors, skillFile, `top-level canonical skill '${skillId}' is missing SKILL.md`);
+      error(
+        errors,
+        skillFile,
+        `top-level canonical skill '${skillId}' is missing SKILL.md`,
+      );
     }
   }
 
@@ -508,24 +573,47 @@ async function validateCanonicalSkillsStructure({ errors, canonicalMap }) {
 
     for (const skillId of canonicalIds) {
       if (!mirrorSet.has(skillId.toLowerCase())) {
-        error(errors, mirrorRoot, `mirror '${label}' missing canonical skill '${skillId}'`);
+        error(
+          errors,
+          mirrorRoot,
+          `mirror '${label}' missing canonical skill '${skillId}'`,
+        );
       }
       const skillFile = path.join(mirrorRoot, skillId, "SKILL.md");
-      if (await pathExists(path.join(mirrorRoot, skillId)) && !(await pathExists(skillFile))) {
-        error(errors, skillFile, `mirror '${label}' skill '${skillId}' missing SKILL.md`);
+      if (
+        (await pathExists(path.join(mirrorRoot, skillId))) &&
+        !(await pathExists(skillFile))
+      ) {
+        error(
+          errors,
+          skillFile,
+          `mirror '${label}' skill '${skillId}' missing SKILL.md`,
+        );
       }
     }
 
     for (const mirrorId of mirrorIds) {
       if (!canonicalSet.has(mirrorId.toLowerCase())) {
-        error(errors, mirrorRoot, `mirror '${label}' has non-canonical skill '${mirrorId}'`);
+        error(
+          errors,
+          mirrorRoot,
+          `mirror '${label}' has non-canonical skill '${mirrorId}'`,
+        );
       }
     }
   }
 }
 
 function normalizedSet(values) {
-  return new Set(values.map((value) => String(value || "").trim().toLowerCase()).filter(Boolean));
+  return new Set(
+    values
+      .map((value) =>
+        String(value || "")
+          .trim()
+          .toLowerCase(),
+      )
+      .filter(Boolean),
+  );
 }
 
 function assertFileSetParity({ label, expected, actual, errors, contextPath }) {
@@ -545,7 +633,11 @@ function assertFileSetParity({ label, expected, actual, errors, contextPath }) {
   }
 }
 
-async function validateSharedSourceAndGeneratedParity({ manifest, errors, notes }) {
+async function validateSharedSourceAndGeneratedParity({
+  manifest,
+  errors,
+  notes,
+}) {
   if (!(await pathExists(SHARED_AGENTS_DIR))) {
     error(errors, SHARED_AGENTS_DIR, "shared agents directory missing");
     return;
@@ -562,11 +654,18 @@ async function validateSharedSourceAndGeneratedParity({ manifest, errors, notes 
     error(errors, SHARED_AGENTS_DIR, "no shared agent markdown files found");
   }
   if (sharedWorkflows.length === 0) {
-    error(errors, SHARED_WORKFLOWS_DIR, "no shared workflow markdown files found");
+    error(
+      errors,
+      SHARED_WORKFLOWS_DIR,
+      "no shared workflow markdown files found",
+    );
   }
 
   for (const fileName of sharedWorkflows) {
-    await validateWorkflowFile(path.join(SHARED_WORKFLOWS_DIR, fileName), errors);
+    await validateWorkflowFile(
+      path.join(SHARED_WORKFLOWS_DIR, fileName),
+      errors,
+    );
   }
 
   for (const platformId of ["codex", "antigravity", "copilot"]) {
@@ -585,7 +684,7 @@ async function validateSharedSourceAndGeneratedParity({ manifest, errors, notes 
       expected: sharedWorkflows,
       actual: workflowFiles,
       errors,
-      contextPath: MANIFEST_PATH
+      contextPath: MANIFEST_PATH,
     });
 
     assertFileSetParity({
@@ -593,18 +692,26 @@ async function validateSharedSourceAndGeneratedParity({ manifest, errors, notes 
       expected: sharedAgents,
       actual: agentFiles,
       errors,
-      contextPath: MANIFEST_PATH
+      contextPath: MANIFEST_PATH,
     });
 
     for (const fileName of sharedWorkflows) {
-      const platformWorkflow = path.join(platformRoot, platforms[platformId].workflowDir, fileName);
+      const platformWorkflow = path.join(
+        platformRoot,
+        platforms[platformId].workflowDir,
+        fileName,
+      );
       if (!(await pathExists(platformWorkflow))) {
         error(errors, platformWorkflow, "generated workflow missing");
       }
     }
 
     for (const fileName of sharedAgents) {
-      const platformAgent = path.join(platformRoot, platforms[platformId].agentDir, fileName);
+      const platformAgent = path.join(
+        platformRoot,
+        platforms[platformId].agentDir,
+        fileName,
+      );
       if (!(await pathExists(platformAgent))) {
         error(errors, platformAgent, "generated agent missing");
       }
@@ -612,55 +719,95 @@ async function validateSharedSourceAndGeneratedParity({ manifest, errors, notes 
   }
 
   const antigravitySpec = manifest.platforms?.antigravity || {};
-  const antCommands = Array.isArray(antigravitySpec.commands) ? antigravitySpec.commands : [];
+  const antCommands = Array.isArray(antigravitySpec.commands)
+    ? antigravitySpec.commands
+    : [];
   if (antCommands.length !== sharedWorkflows.length) {
     error(
       errors,
       MANIFEST_PATH,
-      `antigravity commands count mismatch: expected ${sharedWorkflows.length}, found ${antCommands.length}`
+      `antigravity commands count mismatch: expected ${sharedWorkflows.length}, found ${antCommands.length}`,
     );
   }
   for (const commandFile of antCommands) {
-    const filePath = path.join(BUNDLE_ROOT, "platforms", "antigravity", "commands", commandFile);
+    const filePath = path.join(
+      BUNDLE_ROOT,
+      "platforms",
+      "antigravity",
+      "commands",
+      commandFile,
+    );
     if (!(await pathExists(filePath))) {
-      error(errors, filePath, "antigravity command file listed in manifest is missing");
+      error(
+        errors,
+        filePath,
+        "antigravity command file listed in manifest is missing",
+      );
     }
   }
 
   const copilotSpec = manifest.platforms?.copilot || {};
-  const copilotPrompts = Array.isArray(copilotSpec.prompts) ? copilotSpec.prompts : [];
+  const copilotPrompts = Array.isArray(copilotSpec.prompts)
+    ? copilotSpec.prompts
+    : [];
   if (copilotPrompts.length !== sharedWorkflows.length) {
     error(
       errors,
       MANIFEST_PATH,
-      `copilot prompts count mismatch: expected ${sharedWorkflows.length}, found ${copilotPrompts.length}`
+      `copilot prompts count mismatch: expected ${sharedWorkflows.length}, found ${copilotPrompts.length}`,
     );
   }
   for (const promptFile of copilotPrompts) {
-    const filePath = path.join(BUNDLE_ROOT, "platforms", "copilot", "prompts", promptFile);
+    const filePath = path.join(
+      BUNDLE_ROOT,
+      "platforms",
+      "copilot",
+      "prompts",
+      promptFile,
+    );
     if (!(await pathExists(filePath))) {
-      error(errors, filePath, "copilot prompt file listed in manifest is missing");
+      error(
+        errors,
+        filePath,
+        "copilot prompt file listed in manifest is missing",
+      );
     }
   }
 
   if (!(await pathExists(GENERATE_PLATFORM_ASSETS_SCRIPT))) {
-    error(errors, GENERATE_PLATFORM_ASSETS_SCRIPT, "platform asset generator script is missing");
+    error(
+      errors,
+      GENERATE_PLATFORM_ASSETS_SCRIPT,
+      "platform asset generator script is missing",
+    );
     return;
   }
 
   try {
-    await execFile(process.execPath, [GENERATE_PLATFORM_ASSETS_SCRIPT, "--check"], {
-      cwd: ROOT,
-      env: process.env
-    });
+    await execFile(
+      process.execPath,
+      [GENERATE_PLATFORM_ASSETS_SCRIPT, "--check"],
+      {
+        cwd: ROOT,
+        env: process.env,
+      },
+    );
   } catch (runError) {
     const stderr = String(runError?.stderr || "").trim();
     const stdout = String(runError?.stdout || "").trim();
     const detail = stderr || stdout || runError.message;
-    error(errors, GENERATE_PLATFORM_ASSETS_SCRIPT, `generated assets drift detected (${detail})`);
+    error(
+      errors,
+      GENERATE_PLATFORM_ASSETS_SCRIPT,
+      `generated assets drift detected (${detail})`,
+    );
   }
 
-  note(notes, SHARED_ROOT, `shared source validated (agents=${sharedAgents.length}, workflows=${sharedWorkflows.length})`);
+  note(
+    notes,
+    SHARED_ROOT,
+    `shared source validated (agents=${sharedAgents.length}, workflows=${sharedWorkflows.length})`,
+  );
 }
 
 async function main() {
@@ -676,24 +823,38 @@ async function main() {
   const manifest = JSON.parse(await readUtf8(MANIFEST_PATH));
   const canonicalMap = await buildCanonicalSkillMap();
   const indexedSkillIds = await resolveIndexedTopLevelSkillIds(canonicalMap);
-  const indexedSkillSet = new Set(indexedSkillIds.map((id) => String(id).toLowerCase()));
+  const indexedSkillSet = new Set(
+    indexedSkillIds.map((id) => String(id).toLowerCase()),
+  );
   if (indexedSkillSet.size === 0) {
     error(errors, SKILLS_INDEX_PATH, "no indexed top-level skills resolved");
   }
 
   const duplicateSkillNames = await findDuplicateSkillNamesInIndex();
   for (const duplicate of duplicateSkillNames) {
-    error(errors, SKILLS_INDEX_PATH, `duplicate skill name '${duplicate.name}' found ${duplicate.count} times`);
+    error(
+      errors,
+      SKILLS_INDEX_PATH,
+      `duplicate skill name '${duplicate.name}' found ${duplicate.count} times`,
+    );
   }
   const duplicateSkillIds = await findDuplicateSkillIdsInIndex();
   for (const duplicate of duplicateSkillIds) {
-    error(errors, SKILLS_INDEX_PATH, `duplicate skill id '${duplicate.id}' found ${duplicate.count} times`);
+    error(
+      errors,
+      SKILLS_INDEX_PATH,
+      `duplicate skill id '${duplicate.id}' found ${duplicate.count} times`,
+    );
   }
 
   for (const [platformId, spec] of Object.entries(manifest.platforms || {})) {
     const platformCfg = platforms[platformId];
     if (!platformCfg) {
-      error(errors, MANIFEST_PATH, `unknown platform in manifest: '${platformId}'`);
+      error(
+        errors,
+        MANIFEST_PATH,
+        `unknown platform in manifest: '${platformId}'`,
+      );
       continue;
     }
 
@@ -722,16 +883,24 @@ async function main() {
         platform: platformId,
         skillSet: indexedSkillSet,
         errors,
-        notes
+        notes,
       });
     }
 
     if (Array.isArray(spec.commands)) {
       if (!platformCfg.commandsDir) {
-        error(errors, MANIFEST_PATH, `platform '${platformId}' defines commands but has no commandsDir mapping`);
+        error(
+          errors,
+          MANIFEST_PATH,
+          `platform '${platformId}' defines commands but has no commandsDir mapping`,
+        );
       }
       for (const rel of spec.commands) {
-        const filePath = path.join(platformRoot, platformCfg.commandsDir || "commands", rel);
+        const filePath = path.join(
+          platformRoot,
+          platformCfg.commandsDir || "commands",
+          rel,
+        );
         if (!(await pathExists(filePath))) {
           error(errors, filePath, "command file listed in manifest is missing");
         }
@@ -740,10 +909,18 @@ async function main() {
 
     if (Array.isArray(spec.prompts)) {
       if (!platformCfg.promptsDir) {
-        error(errors, MANIFEST_PATH, `platform '${platformId}' defines prompts but has no promptsDir mapping`);
+        error(
+          errors,
+          MANIFEST_PATH,
+          `platform '${platformId}' defines prompts but has no promptsDir mapping`,
+        );
       }
       for (const rel of spec.prompts) {
-        const filePath = path.join(platformRoot, platformCfg.promptsDir || "prompts", rel);
+        const filePath = path.join(
+          platformRoot,
+          platformCfg.promptsDir || "prompts",
+          rel,
+        );
         if (!(await pathExists(filePath))) {
           error(errors, filePath, "prompt file listed in manifest is missing");
         }
@@ -753,7 +930,11 @@ async function main() {
     for (const skillId of skills) {
       const canonicalSkill = canonicalMap.get(String(skillId).toLowerCase());
       if (!canonicalSkill) {
-        error(errors, MANIFEST_PATH, `skill '${skillId}' listed in manifest for ${platformId} is missing`);
+        error(
+          errors,
+          MANIFEST_PATH,
+          `skill '${skillId}' listed in manifest for ${platformId} is missing`,
+        );
         continue;
       }
       const skillDir = path.join(canonicalSkill.root, canonicalSkill.id);
@@ -768,7 +949,7 @@ async function main() {
         platform: platformId,
         errors,
         notes,
-        canonicalMap
+        canonicalMap,
       });
     }
 
@@ -778,7 +959,11 @@ async function main() {
         error(errors, rulesPath, "rulesTemplate path is missing");
       }
     } else {
-      error(errors, MANIFEST_PATH, `rulesTemplate missing for platform '${platformId}'`);
+      error(
+        errors,
+        MANIFEST_PATH,
+        `rulesTemplate missing for platform '${platformId}'`,
+      );
     }
   }
 
@@ -792,7 +977,7 @@ async function main() {
     strict: STRICT_MODE,
     errors: errors.length,
     warnings: warnings.length,
-    notes: notes.length
+    notes: notes.length,
   };
 
   console.log(JSON.stringify(summary, null, 2));

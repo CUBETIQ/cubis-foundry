@@ -11,7 +11,7 @@ import {
   readFile,
   rm,
   stat,
-  writeFile
+  writeFile,
 } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { execFile as execFileCallback } from "node:child_process";
@@ -27,9 +27,12 @@ const execFile = promisify(execFileCallback);
 
 const MANAGED_BLOCK_START_RE = /<!--\s*cbx:workflows:auto:start[^>]*-->/g;
 const MANAGED_BLOCK_END_RE = /<!--\s*cbx:workflows:auto:end\s*-->/g;
-const TERMINAL_VERIFICATION_BLOCK_START_RE = /<!--\s*cbx:terminal:verification:start[^>]*-->/g;
-const TERMINAL_VERIFICATION_BLOCK_END_RE = /<!--\s*cbx:terminal:verification:end\s*-->/g;
-const ENGINEERING_RULES_BLOCK_START_RE = /<!--\s*cbx:engineering:auto:start[^>]*-->/g;
+const TERMINAL_VERIFICATION_BLOCK_START_RE =
+  /<!--\s*cbx:terminal:verification:start[^>]*-->/g;
+const TERMINAL_VERIFICATION_BLOCK_END_RE =
+  /<!--\s*cbx:terminal:verification:end\s*-->/g;
+const ENGINEERING_RULES_BLOCK_START_RE =
+  /<!--\s*cbx:engineering:auto:start[^>]*-->/g;
 const ENGINEERING_RULES_BLOCK_END_RE = /<!--\s*cbx:engineering:auto:end\s*-->/g;
 const AGENT_ASSETS_SUBDIR = "workflows";
 const COPILOT_ALLOWED_SKILL_FRONTMATTER_KEYS = new Set([
@@ -37,7 +40,7 @@ const COPILOT_ALLOWED_SKILL_FRONTMATTER_KEYS = new Set([
   "description",
   "license",
   "metadata",
-  "name"
+  "name",
 ]);
 const COPILOT_ALLOWED_AGENT_FRONTMATTER_KEYS = new Set([
   "name",
@@ -49,7 +52,7 @@ const COPILOT_ALLOWED_AGENT_FRONTMATTER_KEYS = new Set([
   "metadata",
   "model",
   "handoffs",
-  "argument-hint"
+  "argument-hint",
 ]);
 
 const WORKFLOW_PROFILES = {
@@ -62,27 +65,27 @@ const WORKFLOW_PROFILES = {
       agentDirs: [".agent/agents"],
       skillDirs: [".agent/skills"],
       commandDirs: [".gemini/commands"],
-      ruleFilesByPriority: [".agent/rules/GEMINI.md"]
+      ruleFilesByPriority: [".agent/rules/GEMINI.md"],
     },
     global: {
       workflowDirs: [
         "~/.gemini/antigravity/workflows",
-        "~/.gemini/antigravity/global_workflows"
+        "~/.gemini/antigravity/global_workflows",
       ],
       agentDirs: [
         "~/.gemini/antigravity/agents",
-        "~/.gemini/antigravity/global_agents"
+        "~/.gemini/antigravity/global_agents",
       ],
       skillDirs: [
         "~/.gemini/antigravity/skills",
-        "~/.gemini/antigravity/global_skills"
+        "~/.gemini/antigravity/global_skills",
       ],
       commandDirs: ["~/.gemini/commands"],
-      ruleFilesByPriority: ["~/.gemini/GEMINI.md"]
+      ruleFilesByPriority: ["~/.gemini/GEMINI.md"],
     },
     detectorPaths: [".agent", ".agent/workflows", ".agent/rules/GEMINI.md"],
     legacyDetectorPaths: [],
-    ruleHintName: "GEMINI.md"
+    ruleHintName: "GEMINI.md",
   },
   codex: {
     id: "codex",
@@ -92,17 +95,22 @@ const WORKFLOW_PROFILES = {
       workflowDirs: [".agents/workflows"],
       agentDirs: [".agents/agents"],
       skillDirs: [".agents/skills"],
-      ruleFilesByPriority: ["AGENTS.md"]
+      ruleFilesByPriority: ["AGENTS.md"],
     },
     global: {
       workflowDirs: ["~/.agents/workflows"],
       agentDirs: ["~/.agents/agents"],
       skillDirs: ["~/.agents/skills"],
-      ruleFilesByPriority: ["~/.codex/AGENTS.md"]
+      ruleFilesByPriority: ["~/.codex/AGENTS.md"],
     },
-    detectorPaths: [".agents", ".agents/workflows", ".agents/skills", "AGENTS.md"],
+    detectorPaths: [
+      ".agents",
+      ".agents/workflows",
+      ".agents/skills",
+      "AGENTS.md",
+    ],
     legacyDetectorPaths: [".codex/skills"],
-    ruleHintName: "AGENTS.md"
+    ruleHintName: "AGENTS.md",
   },
   copilot: {
     id: "copilot",
@@ -113,25 +121,25 @@ const WORKFLOW_PROFILES = {
       agentDirs: [".github/agents"],
       skillDirs: [".github/skills"],
       promptDirs: [".github/prompts"],
-      ruleFilesByPriority: ["AGENTS.md", ".github/copilot-instructions.md"]
+      ruleFilesByPriority: ["AGENTS.md", ".github/copilot-instructions.md"],
     },
     global: {
       workflowDirs: ["~/.copilot/workflows"],
       agentDirs: ["~/.copilot/agents"],
       skillDirs: ["~/.copilot/skills"],
       promptDirs: ["~/.copilot/prompts"],
-      ruleFilesByPriority: ["~/.copilot/copilot-instructions.md"]
+      ruleFilesByPriority: ["~/.copilot/copilot-instructions.md"],
     },
     detectorPaths: [
       ".github/agents",
       ".github/skills",
       ".github/copilot-instructions.md",
       ".github/instructions",
-      "AGENTS.md"
+      "AGENTS.md",
     ],
     legacyDetectorPaths: [],
-    ruleHintName: "AGENTS.md or .github/copilot-instructions.md"
-  }
+    ruleHintName: "AGENTS.md or .github/copilot-instructions.md",
+  },
 };
 
 const PLATFORM_IDS = Object.keys(WORKFLOW_PROFILES);
@@ -153,10 +161,8 @@ const LEGACY_POSTMAN_CONFIG_FILENAME = ["postman", "setting.json"].join("_");
 const DEFAULT_CREDENTIAL_PROFILE_NAME = "default";
 const RESERVED_CREDENTIAL_PROFILE_NAMES = new Set(["all"]);
 const CREDENTIAL_SERVICES = new Set(["postman", "stitch"]);
-const POSTMAN_API_KEY_MISSING_WARNING =
-  `Postman API key is not configured. Set ${POSTMAN_API_KEY_ENV_VAR} or update ${CBX_CONFIG_FILENAME}.`;
-const STITCH_API_KEY_MISSING_WARNING =
-  `Google Stitch API key is not configured. Set ${STITCH_API_KEY_ENV_VAR} or update ${CBX_CONFIG_FILENAME}.`;
+const POSTMAN_API_KEY_MISSING_WARNING = `Postman API key is not configured. Set ${POSTMAN_API_KEY_ENV_VAR} or update ${CBX_CONFIG_FILENAME}.`;
+const STITCH_API_KEY_MISSING_WARNING = `Google Stitch API key is not configured. Set ${STITCH_API_KEY_ENV_VAR} or update ${CBX_CONFIG_FILENAME}.`;
 const TECH_SCAN_MAX_FILES = 5000;
 const TECH_SCAN_IGNORED_DIRS = new Set([
   ".git",
@@ -176,7 +182,7 @@ const TECH_SCAN_IGNORED_DIRS = new Set([
   "target",
   "out",
   ".cache",
-  ".cbx"
+  ".cbx",
 ]);
 const TECH_LANGUAGE_BY_EXTENSION = new Map([
   [".ts", "TypeScript"],
@@ -199,7 +205,7 @@ const TECH_LANGUAGE_BY_EXTENSION = new Map([
   [".php", "PHP"],
   [".rb", "Ruby"],
   [".sh", "Shell"],
-  [".ps1", "PowerShell"]
+  [".ps1", "PowerShell"],
 ]);
 const TECH_PACKAGE_PREVIEW_LIMIT = 40;
 const TECH_JS_FRAMEWORK_SIGNALS = [
@@ -220,7 +226,7 @@ const TECH_JS_FRAMEWORK_SIGNALS = [
   ["@playwright/test", "Playwright"],
   ["vitest", "Vitest"],
   ["jest", "Jest"],
-  ["cypress", "Cypress"]
+  ["cypress", "Cypress"],
 ];
 const TECH_DART_FRAMEWORK_SIGNALS = [
   ["flutter_riverpod", "Riverpod"],
@@ -228,32 +234,32 @@ const TECH_DART_FRAMEWORK_SIGNALS = [
   ["go_router", "go_router"],
   ["dio", "Dio"],
   ["freezed", "Freezed"],
-  ["bloc", "BLoC"]
+  ["bloc", "BLoC"],
 ];
 const TECH_GO_FRAMEWORK_SIGNALS = [
   ["github.com/gofiber/fiber/v2", "Go Fiber"],
   ["github.com/gin-gonic/gin", "Gin"],
   ["github.com/labstack/echo/v4", "Echo"],
-  ["github.com/go-chi/chi/v5", "Chi"]
+  ["github.com/go-chi/chi/v5", "Chi"],
 ];
 const TECH_PYTHON_FRAMEWORK_SIGNALS = [
   ["fastapi", "FastAPI"],
   ["django", "Django"],
   ["flask", "Flask"],
   ["pydantic", "Pydantic"],
-  ["sqlalchemy", "SQLAlchemy"]
+  ["sqlalchemy", "SQLAlchemy"],
 ];
 const TECH_RUST_FRAMEWORK_SIGNALS = [
   ["axum", "Axum"],
   ["actix-web", "Actix Web"],
   ["rocket", "Rocket"],
-  ["tokio", "Tokio"]
+  ["tokio", "Tokio"],
 ];
 const SKILL_PROFILES = new Set(["core", "web-backend", "full"]);
 const DEFAULT_SKILL_PROFILE = "core";
 const CATALOG_FILES = Object.freeze({
   core: path.join("catalogs", "core.json"),
-  "web-backend": path.join("catalogs", "web-backend.json")
+  "web-backend": path.join("catalogs", "web-backend.json"),
 });
 
 function platformInstallsCustomAgents(platformId) {
@@ -272,7 +278,7 @@ const PLATFORM_ALIASES = {
   "github-copilot": "copilot",
   "copilot-chat": "copilot",
   "copilot-cli": "copilot",
-  github: "copilot"
+  github: "copilot",
 };
 
 const TERMINAL_VERIFIER_ALIASES = {
@@ -280,7 +286,7 @@ const TERMINAL_VERIFIER_ALIASES = {
   openai: "codex",
   "openai-codex": "codex",
   gemini: "gemini",
-  "gemini-cli": "gemini"
+  "gemini-cli": "gemini",
 };
 
 function packageRoot() {
@@ -300,7 +306,8 @@ function workflowSkillsRoot() {
 function expandPath(inputPath, cwd = process.cwd()) {
   if (!inputPath) return cwd;
   if (inputPath === "~") return os.homedir();
-  if (inputPath.startsWith("~/")) return path.join(os.homedir(), inputPath.slice(2));
+  if (inputPath.startsWith("~/"))
+    return path.join(os.homedir(), inputPath.slice(2));
   if (path.isAbsolute(inputPath)) return inputPath;
   return path.resolve(cwd, inputPath);
 }
@@ -315,7 +322,9 @@ function normalizeScope(value) {
   if (!value) return "project";
   const normalized = value.trim().toLowerCase();
   if (normalized === "project" || normalized === "global") return normalized;
-  throw new Error(`Unknown scope '${value}'. Use --scope project or --scope global.`);
+  throw new Error(
+    `Unknown scope '${value}'. Use --scope project or --scope global.`,
+  );
 }
 
 function normalizeSkillProfile(value) {
@@ -323,21 +332,25 @@ function normalizeSkillProfile(value) {
     .trim()
     .toLowerCase();
   if (!SKILL_PROFILES.has(normalized)) {
-    throw new Error(`Unknown skill profile '${value}'. Use core|web-backend|full.`);
+    throw new Error(
+      `Unknown skill profile '${value}'. Use core|web-backend|full.`,
+    );
   }
   return normalized;
 }
 
 function resolveWorkflowSkillInstallOptions(options) {
   const allSkills = Boolean(options.allSkills);
-  let skillProfile = normalizeSkillProfile(options.skillProfile || DEFAULT_SKILL_PROFILE);
+  let skillProfile = normalizeSkillProfile(
+    options.skillProfile || DEFAULT_SKILL_PROFILE,
+  );
 
   if (allSkills) {
     skillProfile = "full";
   }
 
   return {
-    skillProfile
+    skillProfile,
   };
 }
 
@@ -346,14 +359,19 @@ function normalizeMcpScope(value, fallback = "project") {
   const normalized = value.trim().toLowerCase();
   if (normalized === "project" || normalized === "workspace") return "project";
   if (normalized === "global" || normalized === "user") return "global";
-  throw new Error(`Unknown MCP scope '${value}'. Use project/workspace or global/user.`);
+  throw new Error(
+    `Unknown MCP scope '${value}'. Use project/workspace or global/user.`,
+  );
 }
 
 function isPathInsideRoot(targetPath, rootPath) {
   const target = path.resolve(targetPath);
   const root = path.resolve(rootPath);
   const relative = path.relative(root, target);
-  return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
+  return (
+    relative === "" ||
+    (!relative.startsWith("..") && !path.isAbsolute(relative))
+  );
 }
 
 function normalizeTerminalVerifier(value) {
@@ -386,14 +404,16 @@ function normalizeCredentialService(value, { allowAll = false } = {}) {
   if (allowAll && normalized === "all") return "all";
   if (!CREDENTIAL_SERVICES.has(normalized)) {
     throw new Error(
-      `Unknown credential service '${value}'. Use ${allowAll ? "postman|stitch|all" : "postman|stitch"}.`
+      `Unknown credential service '${value}'. Use ${allowAll ? "postman|stitch|all" : "postman|stitch"}.`,
     );
   }
   return normalized;
 }
 
 function defaultEnvVarForCredentialService(service) {
-  return service === "stitch" ? STITCH_API_KEY_ENV_VAR : POSTMAN_API_KEY_ENV_VAR;
+  return service === "stitch"
+    ? STITCH_API_KEY_ENV_VAR
+    : POSTMAN_API_KEY_ENV_VAR;
 }
 
 function defaultMcpUrlForCredentialService(service) {
@@ -401,23 +421,37 @@ function defaultMcpUrlForCredentialService(service) {
 }
 
 function isCredentialServiceEnvVar(value) {
-  return typeof value === "string" && /^[A-Za-z_][A-Za-z0-9_]*$/.test(value.trim());
+  return (
+    typeof value === "string" && /^[A-Za-z_][A-Za-z0-9_]*$/.test(value.trim())
+  );
 }
 
-function normalizeCredentialProfileRecord(service, rawProfile, fallbackName = DEFAULT_CREDENTIAL_PROFILE_NAME) {
+function normalizeCredentialProfileRecord(
+  service,
+  rawProfile,
+  fallbackName = DEFAULT_CREDENTIAL_PROFILE_NAME,
+) {
   const defaultEnvVar = defaultEnvVarForCredentialService(service);
-  const source = rawProfile && typeof rawProfile === "object" && !Array.isArray(rawProfile) ? rawProfile : {};
+  const source =
+    rawProfile && typeof rawProfile === "object" && !Array.isArray(rawProfile)
+      ? rawProfile
+      : {};
   const name = normalizeCredentialProfileName(source.name) || fallbackName;
   const apiKey = normalizePostmanApiKey(source.apiKey);
-  const envVarCandidate = normalizePostmanApiKey(source.apiKeyEnvVar) || defaultEnvVar;
-  const apiKeyEnvVar = isCredentialServiceEnvVar(envVarCandidate) ? envVarCandidate : defaultEnvVar;
+  const envVarCandidate =
+    normalizePostmanApiKey(source.apiKeyEnvVar) || defaultEnvVar;
+  const apiKeyEnvVar = isCredentialServiceEnvVar(envVarCandidate)
+    ? envVarCandidate
+    : defaultEnvVar;
   const profile = {
     name,
     apiKey,
-    apiKeyEnvVar
+    apiKeyEnvVar,
   };
   if (service === "postman") {
-    profile.workspaceId = normalizePostmanWorkspaceId(source.workspaceId ?? source.defaultWorkspaceId);
+    profile.workspaceId = normalizePostmanWorkspaceId(
+      source.workspaceId ?? source.defaultWorkspaceId,
+    );
   }
   return profile;
 }
@@ -445,9 +479,9 @@ function defaultState() {
     schemaVersion: 1,
     lastSelected: {
       platform: null,
-      scope: "project"
+      scope: "project",
     },
-    targets: {}
+    targets: {},
   };
 }
 
@@ -456,7 +490,10 @@ function toPosixPath(value) {
 }
 
 function getAntigravityTerminalIntegrationDir(profilePaths) {
-  return path.join(path.dirname(profilePaths.workflowsDir), "terminal-integration");
+  return path.join(
+    path.dirname(profilePaths.workflowsDir),
+    "terminal-integration",
+  );
 }
 
 function buildTerminalVerifierDefaultPrompt() {
@@ -471,17 +508,22 @@ function buildAntigravityTerminalIntegrationConfig({ provider }) {
     defaultPrompt: buildTerminalVerifierDefaultPrompt(),
     providers: {
       codex: {
-        command: "codex exec --skip-git-repo-check \"{prompt}\""
+        command: 'codex exec --skip-git-repo-check "{prompt}"',
       },
       gemini: {
-        primaryCommand: "gemini -p \"{prompt}\"",
-        fallbackCommand: "gemini --prompt \"{prompt}\""
-      }
-    }
+        primaryCommand: 'gemini -p "{prompt}"',
+        fallbackCommand: 'gemini --prompt "{prompt}"',
+      },
+    },
   };
 }
 
-function buildAntigravityTerminalIntegrationReadme({ provider, configPath, scriptPsPath, scriptShPath }) {
+function buildAntigravityTerminalIntegrationReadme({
+  provider,
+  configPath,
+  scriptPsPath,
+  scriptShPath,
+}) {
   return [
     "# Antigravity Terminal Verification",
     "",
@@ -496,47 +538,47 @@ function buildAntigravityTerminalIntegrationReadme({ provider, configPath, scrip
     `- Windows: \`pwsh -NoLogo -NoProfile -File \"${toPosixPath(scriptPsPath)}\" -Prompt \"<summary>\"\``,
     `- macOS/Linux: \`bash \"${toPosixPath(scriptShPath)}\" \"<summary>\"\``,
     "",
-    "If your selected CLI is missing, install it and rerun the command."
+    "If your selected CLI is missing, install it and rerun the command.",
   ].join("\n");
 }
 
 function buildAntigravityTerminalIntegrationPowerShellScript() {
   return [
     "param(",
-    "  [string]$Prompt = \"Review the latest completed Antigravity task. Focus on bugs, regressions, security risks, and missing tests.\"",
+    '  [string]$Prompt = "Review the latest completed Antigravity task. Focus on bugs, regressions, security risks, and missing tests."',
     ")",
     "",
     "Set-StrictMode -Version Latest",
-    "$ErrorActionPreference = \"Stop\"",
+    '$ErrorActionPreference = "Stop"',
     "",
     "$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path",
-    "$configPath = Join-Path $scriptDir \"config.json\"",
+    '$configPath = Join-Path $scriptDir "config.json"',
     "",
     "if (-not (Test-Path $configPath)) {",
-    "  Write-Error \"Missing terminal integration config: $configPath\"",
+    '  Write-Error "Missing terminal integration config: $configPath"',
     "  exit 1",
     "}",
     "",
     "$config = Get-Content -LiteralPath $configPath -Raw | ConvertFrom-Json",
-    "$provider = \"$($config.provider)\".ToLowerInvariant()",
+    '$provider = "$($config.provider)".ToLowerInvariant()',
     "",
-    "if ($provider -eq \"codex\") {",
-    "  & codex exec --skip-git-repo-check \"$Prompt\"",
+    'if ($provider -eq "codex") {',
+    '  & codex exec --skip-git-repo-check "$Prompt"',
     "  exit $LASTEXITCODE",
     "}",
     "",
-    "if ($provider -eq \"gemini\") {",
-    "  & gemini -p \"$Prompt\"",
+    'if ($provider -eq "gemini") {',
+    '  & gemini -p "$Prompt"',
     "  if ($LASTEXITCODE -eq 0) {",
     "    exit 0",
     "  }",
-    "  & gemini --prompt \"$Prompt\"",
+    '  & gemini --prompt "$Prompt"',
     "  exit $LASTEXITCODE",
     "}",
     "",
-    "Write-Error \"Unsupported provider in config: $provider\"",
+    'Write-Error "Unsupported provider in config: $provider"',
     "exit 1",
-    ""
+    "",
   ].join("\n");
 }
 
@@ -545,40 +587,40 @@ function buildAntigravityTerminalIntegrationBashScript() {
     "#!/usr/bin/env bash",
     "set -euo pipefail",
     "",
-    "PROMPT=\"${1:-Review the latest completed Antigravity task. Focus on bugs, regressions, security risks, and missing tests.}\"",
-    "SCRIPT_DIR=\"$(cd \"$(dirname \"${BASH_SOURCE[0]}\")\" && pwd)\"",
-    "CONFIG_FILE=\"$SCRIPT_DIR/config.json\"",
+    'PROMPT="${1:-Review the latest completed Antigravity task. Focus on bugs, regressions, security risks, and missing tests.}"',
+    'SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"',
+    'CONFIG_FILE="$SCRIPT_DIR/config.json"',
     "",
-    "if [[ ! -f \"$CONFIG_FILE\" ]]; then",
-    "  echo \"Missing terminal integration config: $CONFIG_FILE\" >&2",
+    'if [[ ! -f "$CONFIG_FILE" ]]; then',
+    '  echo "Missing terminal integration config: $CONFIG_FILE" >&2',
     "  exit 1",
     "fi",
     "",
     "PROVIDER=\"$(node -e \"const fs=require('fs');const c=JSON.parse(fs.readFileSync(process.argv[1],'utf8'));process.stdout.write(String(c.provider||'').toLowerCase());\" \"$CONFIG_FILE\")\"",
     "",
-    "if [[ \"$PROVIDER\" == \"codex\" ]]; then",
-    "  codex exec --skip-git-repo-check \"$PROMPT\"",
+    'if [[ "$PROVIDER" == "codex" ]]; then',
+    '  codex exec --skip-git-repo-check "$PROMPT"',
     "  exit $?",
     "fi",
     "",
-    "if [[ \"$PROVIDER\" == \"gemini\" ]]; then",
-    "  if gemini -p \"$PROMPT\"; then",
+    'if [[ "$PROVIDER" == "gemini" ]]; then',
+    '  if gemini -p "$PROMPT"; then',
     "    exit 0",
     "  fi",
-    "  gemini --prompt \"$PROMPT\"",
+    '  gemini --prompt "$PROMPT"',
     "  exit $?",
     "fi",
     "",
-    "echo \"Unsupported provider in config: $PROVIDER\" >&2",
+    'echo "Unsupported provider in config: $PROVIDER" >&2',
     "exit 1",
-    ""
+    "",
   ].join("\n");
 }
 
 function buildAntigravityTerminalVerificationBlock({
   provider,
   powerShellScriptPath,
-  bashScriptPath
+  bashScriptPath,
 }) {
   return [
     `<!-- cbx:terminal:verification:start provider=${provider} version=1 -->`,
@@ -592,7 +634,7 @@ function buildAntigravityTerminalVerificationBlock({
     `- macOS/Linux: \`bash \"${toPosixPath(bashScriptPath)}\" \"<summary>\"\``,
     "",
     "If verifier CLI is unavailable, report it and continue with local verification evidence.",
-    "<!-- cbx:terminal:verification:end -->"
+    "<!-- cbx:terminal:verification:end -->",
   ].join("\n");
 }
 
@@ -607,7 +649,9 @@ function findWorkspaceRoot(startDir = process.cwd()) {
 }
 
 function toRelativeRuleRef(fromRuleFilePath, targetPath) {
-  const rel = toPosixPath(path.relative(path.dirname(fromRuleFilePath), targetPath));
+  const rel = toPosixPath(
+    path.relative(path.dirname(fromRuleFilePath), targetPath),
+  );
   if (!rel || rel === ".") return path.basename(targetPath);
   if (rel.startsWith(".")) return rel;
   return `./${rel}`;
@@ -679,7 +723,7 @@ function buildEngineeringRulesTemplate() {
     "",
     "- `TECH.md` is generated from current codebase reality.",
     "- Re-run `cbx rules tech-md --overwrite` after major stack or architecture changes.",
-    ""
+    "",
   ].join("\n");
 }
 
@@ -687,9 +731,12 @@ function buildEngineeringRulesManagedBlock({
   platform,
   engineeringRulesFilePath,
   techMdFilePath,
-  ruleFilePath
+  ruleFilePath,
 }) {
-  const engineeringRef = toRelativeRuleRef(ruleFilePath, engineeringRulesFilePath);
+  const engineeringRef = toRelativeRuleRef(
+    ruleFilePath,
+    engineeringRulesFilePath,
+  );
   const techRef = toRelativeRuleRef(ruleFilePath, techMdFilePath);
 
   return [
@@ -706,7 +753,7 @@ function buildEngineeringRulesManagedBlock({
     "3. Use precise, intention-revealing names.",
     "4. Keep classes/functions focused on one responsibility.",
     "",
-    "<!-- cbx:engineering:auto:end -->"
+    "<!-- cbx:engineering:auto:end -->",
   ].join("\n");
 }
 
@@ -714,7 +761,7 @@ async function writeTextFile({
   targetPath,
   content,
   overwrite = false,
-  dryRun = false
+  dryRun = false,
 }) {
   const exists = await pathExists(targetPath);
   if (exists && !overwrite) {
@@ -727,8 +774,14 @@ async function writeTextFile({
   }
 
   return {
-    action: exists ? (dryRun ? "would-replace" : "replaced") : dryRun ? "would-create" : "created",
-    filePath: targetPath
+    action: exists
+      ? dryRun
+        ? "would-replace"
+        : "replaced"
+      : dryRun
+        ? "would-create"
+        : "created",
+    filePath: targetPath,
   };
 }
 
@@ -737,32 +790,42 @@ async function upsertEngineeringRulesBlock({
   platform,
   engineeringRulesFilePath,
   techMdFilePath,
-  dryRun = false
+  dryRun = false,
 }) {
   const block = buildEngineeringRulesManagedBlock({
     platform,
     engineeringRulesFilePath,
     techMdFilePath,
-    ruleFilePath
+    ruleFilePath,
   });
   const exists = await pathExists(ruleFilePath);
   const warnings = [];
   const original = exists ? await readFile(ruleFilePath, "utf8") : "";
-  const analysis = analyzeTaggedBlock(original, ENGINEERING_RULES_BLOCK_START_RE, ENGINEERING_RULES_BLOCK_END_RE);
+  const analysis = analyzeTaggedBlock(
+    original,
+    ENGINEERING_RULES_BLOCK_START_RE,
+    ENGINEERING_RULES_BLOCK_END_RE,
+  );
 
   let nextContent = original;
   if (!exists || analysis.status === "absent") {
     const trimmed = original.trimEnd();
-    nextContent = trimmed.length > 0 ? `${trimmed}\n\n${block}\n` : `${block}\n`;
+    nextContent =
+      trimmed.length > 0 ? `${trimmed}\n\n${block}\n` : `${block}\n`;
   } else if (analysis.range) {
     if (analysis.status === "multiple") {
-      warnings.push("Multiple engineering rule blocks found; patched the first valid block.");
+      warnings.push(
+        "Multiple engineering rule blocks found; patched the first valid block.",
+      );
     }
     nextContent = `${original.slice(0, analysis.range.start)}${block}${original.slice(analysis.range.end)}`;
   } else {
-    warnings.push("Malformed engineering rule block; appended a new canonical block.");
+    warnings.push(
+      "Malformed engineering rule block; appended a new canonical block.",
+    );
     const trimmed = original.trimEnd();
-    nextContent = trimmed.length > 0 ? `${trimmed}\n\n${block}\n` : `${block}\n`;
+    nextContent =
+      trimmed.length > 0 ? `${trimmed}\n\n${block}\n` : `${block}\n`;
   }
 
   if (nextContent === original) {
@@ -775,15 +838,24 @@ async function upsertEngineeringRulesBlock({
   }
 
   return {
-    action: exists ? (dryRun ? "would-patch" : "patched") : dryRun ? "would-create" : "created",
+    action: exists
+      ? dryRun
+        ? "would-patch"
+        : "patched"
+      : dryRun
+        ? "would-create"
+        : "created",
     filePath: ruleFilePath,
-    warnings
+    warnings,
   };
 }
 
 function normalizeTechPackageName(value) {
   if (value === undefined || value === null) return null;
-  const normalized = String(value).trim().replace(/^['"]|['"]$/g, "").toLowerCase();
+  const normalized = String(value)
+    .trim()
+    .replace(/^['"]|['"]$/g, "")
+    .toLowerCase();
   return normalized || null;
 }
 
@@ -824,11 +896,16 @@ function parsePubspecDependencyNames(content) {
       continue;
     }
 
-    if (currentSection !== "dependencies" && currentSection !== "dev_dependencies") continue;
+    if (
+      currentSection !== "dependencies" &&
+      currentSection !== "dev_dependencies"
+    )
+      continue;
     const depMatch = trimmed.match(/^([a-zA-Z0-9_]+):/);
     if (!depMatch) continue;
     const packageName = normalizeTechPackageName(depMatch[1]);
-    if (!packageName || packageName === "flutter" || packageName === "sdk") continue;
+    if (!packageName || packageName === "flutter" || packageName === "sdk")
+      continue;
     packages.add(packageName);
   }
 
@@ -859,7 +936,9 @@ function parseGoModuleNames(content) {
     }
 
     if (trimmed.startsWith("require ")) {
-      const moduleName = normalizeTechPackageName(trimmed.slice("require ".length).trim().split(/\s+/)[0]);
+      const moduleName = normalizeTechPackageName(
+        trimmed.slice("require ".length).trim().split(/\s+/)[0],
+      );
       if (moduleName) modules.add(moduleName);
     }
   }
@@ -890,13 +969,18 @@ function parsePyprojectPackageNames(content) {
   const projectSection = sections.get("project");
   if (projectSection) {
     const projectBody = projectSection.join("\n");
-    const dependenciesArrayMatch = projectBody.match(/dependencies\s*=\s*\[([\s\S]*?)\]/m);
+    const dependenciesArrayMatch = projectBody.match(
+      /dependencies\s*=\s*\[([\s\S]*?)\]/m,
+    );
     if (dependenciesArrayMatch) {
-      const entries = dependenciesArrayMatch[1].match(/"([^"]+)"|'([^']+)'/g) || [];
+      const entries =
+        dependenciesArrayMatch[1].match(/"([^"]+)"|'([^']+)'/g) || [];
       for (const entry of entries) {
         const normalizedEntry = normalizeTechPackageName(entry);
         if (!normalizedEntry) continue;
-        const packageName = normalizeTechPackageName(normalizedEntry.split(/[<>=!~\s\[]/)[0]);
+        const packageName = normalizeTechPackageName(
+          normalizedEntry.split(/[<>=!~\s\[]/)[0],
+        );
         if (packageName) packages.add(packageName);
       }
     }
@@ -904,11 +988,13 @@ function parsePyprojectPackageNames(content) {
     for (const line of projectSection) {
       const trimmed = line.trim();
       const optionalDepsMatch = trimmed.match(
-        /^([A-Za-z0-9_.-]+)\s*=\s*\[\s*("([^"]+)"|'([^']+)')/
+        /^([A-Za-z0-9_.-]+)\s*=\s*\[\s*("([^"]+)"|'([^']+)')/,
       );
       if (!optionalDepsMatch) continue;
       const entry = optionalDepsMatch[3] || optionalDepsMatch[4];
-      const packageName = normalizeTechPackageName(String(entry).split(/[<>=!~\s\[]/)[0]);
+      const packageName = normalizeTechPackageName(
+        String(entry).split(/[<>=!~\s\[]/)[0],
+      );
       if (packageName) packages.add(packageName);
     }
   }
@@ -1026,7 +1112,10 @@ async function collectTechSnapshot(rootDir) {
     if (baseName === "go.mod") goModFiles.push(fullPath);
     if (baseName === "pyproject.toml") pyprojectFiles.push(fullPath);
     if (baseName === "cargo.toml") cargoTomlFiles.push(fullPath);
-    if (baseName === "requirements.txt" || /^requirements(?:[-_.].+)?\.txt$/.test(baseName)) {
+    if (
+      baseName === "requirements.txt" ||
+      /^requirements(?:[-_.].+)?\.txt$/.test(baseName)
+    ) {
       requirementsFiles.push(fullPath);
     }
   }
@@ -1054,7 +1143,8 @@ async function collectTechSnapshot(rootDir) {
   if (pubspecFiles.length > 0) frameworks.add("Flutter");
   if (goModFiles.length > 0) frameworks.add("Go Modules");
   if (cargoTomlFiles.length > 0) frameworks.add("Rust Cargo");
-  if (requirementsFiles.length > 0 || pyprojectFiles.length > 0) frameworks.add("Python");
+  if (requirementsFiles.length > 0 || pyprojectFiles.length > 0)
+    frameworks.add("Python");
 
   for (const packageJsonFile of packageJsonFiles) {
     try {
@@ -1063,7 +1153,7 @@ async function collectTechSnapshot(rootDir) {
         ...(parsed.dependencies || {}),
         ...(parsed.devDependencies || {}),
         ...(parsed.peerDependencies || {}),
-        ...(parsed.optionalDependencies || {})
+        ...(parsed.optionalDependencies || {}),
       };
       for (const depName of Object.keys(deps)) {
         const normalized = normalizeTechPackageName(depName);
@@ -1071,7 +1161,10 @@ async function collectTechSnapshot(rootDir) {
       }
 
       if (path.resolve(packageJsonFile) === path.resolve(rootPackageJsonPath)) {
-        const scripts = parsed.scripts && typeof parsed.scripts === "object" ? parsed.scripts : {};
+        const scripts =
+          parsed.scripts && typeof parsed.scripts === "object"
+            ? parsed.scripts
+            : {};
         for (const [name, command] of Object.entries(scripts)) {
           if (typeof command !== "string") continue;
           packageScripts.set(name, command);
@@ -1140,32 +1233,36 @@ async function collectTechSnapshot(rootDir) {
   addFrameworkSignalsFromPackages({
     packages: javascriptPackages,
     frameworks,
-    signals: TECH_JS_FRAMEWORK_SIGNALS
+    signals: TECH_JS_FRAMEWORK_SIGNALS,
   });
   addFrameworkSignalsFromPackages({
     packages: dartPackages,
     frameworks,
-    signals: TECH_DART_FRAMEWORK_SIGNALS
+    signals: TECH_DART_FRAMEWORK_SIGNALS,
   });
   addFrameworkSignalsFromPackages({
     packages: goModules,
     frameworks,
-    signals: TECH_GO_FRAMEWORK_SIGNALS
+    signals: TECH_GO_FRAMEWORK_SIGNALS,
   });
   addFrameworkSignalsFromPackages({
     packages: pythonPackages,
     frameworks,
-    signals: TECH_PYTHON_FRAMEWORK_SIGNALS
+    signals: TECH_PYTHON_FRAMEWORK_SIGNALS,
   });
   addFrameworkSignalsFromPackages({
     packages: rustCrates,
     frameworks,
-    signals: TECH_RUST_FRAMEWORK_SIGNALS
+    signals: TECH_RUST_FRAMEWORK_SIGNALS,
   });
 
-  const sortedLanguages = [...languageCounts.entries()].sort((a, b) => b[1] - a[1]);
+  const sortedLanguages = [...languageCounts.entries()].sort(
+    (a, b) => b[1] - a[1],
+  );
   const sortedFrameworks = [...frameworks].sort((a, b) => a.localeCompare(b));
-  const sortedTopDirs = [...topDirs].sort((a, b) => a.localeCompare(b)).slice(0, 12);
+  const sortedTopDirs = [...topDirs]
+    .sort((a, b) => a.localeCompare(b))
+    .slice(0, 12);
   const sortedLockfiles = [...new Set(lockfiles)];
 
   const preferredScriptNames = [
@@ -1176,7 +1273,7 @@ async function collectTechSnapshot(rootDir) {
     "test:unit",
     "test:e2e",
     "build",
-    "dev"
+    "dev",
   ];
   const keyScripts = [];
   for (const name of preferredScriptNames) {
@@ -1190,7 +1287,7 @@ async function collectTechSnapshot(rootDir) {
     ".cbx/mcp",
     ".vscode/mcp.json",
     ".gemini/settings.json",
-    ".copilot/mcp-config.json"
+    ".copilot/mcp-config.json",
   ];
   for (const signalPath of mcpSignalPaths) {
     if (fileExists(signalPath)) {
@@ -1211,9 +1308,9 @@ async function collectTechSnapshot(rootDir) {
       dart: toSortedArray(dartPackages),
       go: toSortedArray(goModules),
       python: toSortedArray(pythonPackages),
-      rust: toSortedArray(rustCrates)
+      rust: toSortedArray(rustCrates),
     },
-    mcpSignals: toSortedArray(mcpSignals)
+    mcpSignals: toSortedArray(mcpSignals),
   };
 }
 
@@ -1227,7 +1324,9 @@ function appendTechPackageSection(lines, heading, packages) {
       lines.push(`- \`${packageName}\``);
     }
     if (packages.length > TECH_PACKAGE_PREVIEW_LIMIT) {
-      lines.push(`- ... (+${packages.length - TECH_PACKAGE_PREVIEW_LIMIT} more)`);
+      lines.push(
+        `- ... (+${packages.length - TECH_PACKAGE_PREVIEW_LIMIT} more)`,
+      );
     }
   }
   lines.push("");
@@ -1272,13 +1371,20 @@ function inferRecommendedSkills(snapshot) {
 }
 
 function inferContextBudget(snapshot) {
-  const webBackendSignals = new Set(["Next.js", "React", "NestJS", "FastAPI", "Go Modules", "Rust Cargo"]);
-  const webBackendDetected = snapshot.frameworks.some((framework) => webBackendSignals.has(framework));
+  const webBackendSignals = new Set([
+    "Next.js",
+    "React",
+    "NestJS",
+    "FastAPI",
+    "Go Modules",
+    "Rust Cargo",
+  ]);
+  const webBackendDetected = snapshot.frameworks.some((framework) =>
+    webBackendSignals.has(framework),
+  );
   const suggestedProfile = webBackendDetected ? "web-backend" : "core";
-  const includeMcp = Array.isArray(snapshot.mcpSignals) && snapshot.mcpSignals.length > 0;
   return {
     suggestedProfile,
-    includeMcp
   };
 }
 
@@ -1291,7 +1397,9 @@ function buildTechMd(snapshot, { compact = false } = {}) {
   lines.push("");
   lines.push(`Generated by cbx on ${new Date().toISOString()}.`);
   lines.push(`Root: \`${toPosixPath(snapshot.rootDir)}\``);
-  lines.push(`Files scanned: ${snapshot.scannedFiles} (max ${TECH_SCAN_MAX_FILES}).`);
+  lines.push(
+    `Files scanned: ${snapshot.scannedFiles} (max ${TECH_SCAN_MAX_FILES}).`,
+  );
   lines.push(`Mode: ${compact ? "compact" : "full"}.`);
   lines.push("");
 
@@ -1332,18 +1440,41 @@ function buildTechMd(snapshot, { compact = false } = {}) {
   lines.push("");
 
   lines.push("## Context Budget Notes");
-  lines.push(`- Suggested install profile: \`${contextBudget.suggestedProfile}\``);
-  lines.push(`- Suggested MCP inclusion: \`${contextBudget.includeMcp ? "--include-mcp" : "skip --include-mcp"}\``);
-  lines.push("- Use `--all-skills` only when task scope clearly requires full catalog breadth.");
+  lines.push(
+    `- Suggested install profile: \`${contextBudget.suggestedProfile}\``,
+  );
+  lines.push(
+    "- Use `--all-skills` only when task scope clearly requires full catalog breadth.",
+  );
   lines.push("");
 
   if (!compact) {
     lines.push("## Package Signals");
-    appendTechPackageSection(lines, "JavaScript / TypeScript (package.json)", snapshot.packageSignals.javascript);
-    appendTechPackageSection(lines, "Dart / Flutter (pubspec.yaml)", snapshot.packageSignals.dart);
-    appendTechPackageSection(lines, "Go Modules (go.mod)", snapshot.packageSignals.go);
-    appendTechPackageSection(lines, "Python Packages (requirements / pyproject)", snapshot.packageSignals.python);
-    appendTechPackageSection(lines, "Rust Crates (Cargo.toml)", snapshot.packageSignals.rust);
+    appendTechPackageSection(
+      lines,
+      "JavaScript / TypeScript (package.json)",
+      snapshot.packageSignals.javascript,
+    );
+    appendTechPackageSection(
+      lines,
+      "Dart / Flutter (pubspec.yaml)",
+      snapshot.packageSignals.dart,
+    );
+    appendTechPackageSection(
+      lines,
+      "Go Modules (go.mod)",
+      snapshot.packageSignals.go,
+    );
+    appendTechPackageSection(
+      lines,
+      "Python Packages (requirements / pyproject)",
+      snapshot.packageSignals.python,
+    );
+    appendTechPackageSection(
+      lines,
+      "Rust Crates (Cargo.toml)",
+      snapshot.packageSignals.rust,
+    );
 
     lines.push("## Tooling and Lockfiles");
     if (snapshot.lockfiles.length === 0) {
@@ -1376,7 +1507,7 @@ function buildTechMd(snapshot, { compact = false } = {}) {
 
   lines.push("## Maintenance");
   lines.push(
-    `- Re-run \`cbx rules tech-md --overwrite${compact ? " --compact" : ""}\` after major stack or architecture changes.`
+    `- Re-run \`cbx rules tech-md --overwrite${compact ? " --compact" : ""}\` after major stack or architecture changes.`,
   );
   lines.push("");
 
@@ -1412,7 +1543,10 @@ async function findNearestUpwardFile(startDir, relativeFilePath) {
   }
 }
 
-async function resolveWorkspaceRuleFileForGlobalScope(platform, cwd = process.cwd()) {
+async function resolveWorkspaceRuleFileForGlobalScope(
+  platform,
+  cwd = process.cwd(),
+) {
   if (platform === "codex") {
     return findNearestUpwardFile(cwd, "AGENTS.md");
   }
@@ -1430,23 +1564,32 @@ async function syncWorkspaceRuleForGlobalScope({
   scope,
   cwd = process.cwd(),
   workflows = [],
-  dryRun = false
+  dryRun = false,
 }) {
   if (scope !== "global") return null;
 
-  const workspaceRuleFile = await resolveWorkspaceRuleFileForGlobalScope(platform, cwd);
+  const workspaceRuleFile = await resolveWorkspaceRuleFileForGlobalScope(
+    platform,
+    cwd,
+  );
   if (!workspaceRuleFile) return null;
 
   const profile = WORKFLOW_PROFILES[platform];
   if (!profile) return null;
   const globalRuleFile = expandPath(profile.global.ruleFilesByPriority[0], cwd);
-  if (path.resolve(workspaceRuleFile) === path.resolve(globalRuleFile)) return null;
+  if (path.resolve(workspaceRuleFile) === path.resolve(globalRuleFile))
+    return null;
 
-  const patchResult = await upsertManagedRuleBlock(workspaceRuleFile, platform, workflows, dryRun);
+  const patchResult = await upsertManagedRuleBlock(
+    workspaceRuleFile,
+    platform,
+    workflows,
+    dryRun,
+  );
   return {
     workspaceRuleFile,
     globalRuleFile,
-    patchResult
+    patchResult,
   };
 }
 
@@ -1463,13 +1606,19 @@ async function readState(scope, cwd = process.cwd()) {
       schemaVersion: 1,
       lastSelected: {
         platform:
-          parsed.lastSelected && typeof parsed.lastSelected.platform === "string"
+          parsed.lastSelected &&
+          typeof parsed.lastSelected.platform === "string"
             ? parsed.lastSelected.platform
             : null,
         scope:
-          parsed.lastSelected && parsed.lastSelected.scope === "global" ? "global" : "project"
+          parsed.lastSelected && parsed.lastSelected.scope === "global"
+            ? "global"
+            : "project",
       },
-      targets: parsed.targets && typeof parsed.targets === "object" ? parsed.targets : {}
+      targets:
+        parsed.targets && typeof parsed.targets === "object"
+          ? parsed.targets
+          : {},
     };
   } catch {
     return defaultState();
@@ -1488,14 +1637,21 @@ async function setLastSelectedState(scope, platform, cwd = process.cwd()) {
   await writeState(scope, state, cwd);
 }
 
-async function recordBundleInstallState({ scope, platform, bundleId, artifacts, ruleFilePath, cwd }) {
+async function recordBundleInstallState({
+  scope,
+  platform,
+  bundleId,
+  artifacts,
+  ruleFilePath,
+  cwd,
+}) {
   const state = await readState(scope, cwd);
   const key = targetStateKey(platform, scope);
   if (!state.targets[key]) {
     state.targets[key] = {
       updatedAt: null,
       ruleFile: null,
-      bundles: {}
+      bundles: {},
     };
   }
 
@@ -1508,13 +1664,19 @@ async function recordBundleInstallState({ scope, platform, bundleId, artifacts, 
     agents: artifacts.agents.map(toPosixPath),
     skills: artifacts.skills.map(toPosixPath),
     commands: (artifacts.commands || []).map(toPosixPath),
-    prompts: (artifacts.prompts || []).map(toPosixPath)
+    prompts: (artifacts.prompts || []).map(toPosixPath),
   };
 
   await writeState(scope, state, cwd);
 }
 
-async function recordBundleRemovalState({ scope, platform, bundleId, ruleFilePath, cwd }) {
+async function recordBundleRemovalState({
+  scope,
+  platform,
+  bundleId,
+  ruleFilePath,
+  cwd,
+}) {
   const state = await readState(scope, cwd);
   const key = targetStateKey(platform, scope);
   if (state.targets[key] && state.targets[key].bundles[bundleId]) {
@@ -1551,11 +1713,17 @@ async function resolveProfilePaths(profileId, scope, cwd = process.cwd()) {
     skillsDir: await resolvePreferredDir(skillDirs),
     commandsDir: commandDirs[0] ? expandPath(commandDirs[0], cwd) : null,
     promptsDir: promptDirs[0] ? expandPath(promptDirs[0], cwd) : null,
-    ruleFilesByPriority: cfg.ruleFilesByPriority.map((filePath) => expandPath(filePath, cwd))
+    ruleFilesByPriority: cfg.ruleFilesByPriority.map((filePath) =>
+      expandPath(filePath, cwd),
+    ),
   };
 }
 
-async function resolveArtifactProfilePaths(profileId, scope, cwd = process.cwd()) {
+async function resolveArtifactProfilePaths(
+  profileId,
+  scope,
+  cwd = process.cwd(),
+) {
   const scopedPaths = await resolveProfilePaths(profileId, scope, cwd);
   if (scope !== "global") return scopedPaths;
 
@@ -1566,7 +1734,7 @@ async function resolveArtifactProfilePaths(profileId, scope, cwd = process.cwd()
     workflowsDir: workspacePaths.workflowsDir,
     agentsDir: workspacePaths.agentsDir,
     commandsDir: workspacePaths.commandsDir ?? scopedPaths.commandsDir,
-    promptsDir: workspacePaths.promptsDir ?? scopedPaths.promptsDir
+    promptsDir: workspacePaths.promptsDir ?? scopedPaths.promptsDir,
   };
 }
 
@@ -1589,7 +1757,12 @@ async function listBundleIds() {
 }
 
 async function readBundleManifest(bundleId) {
-  const manifestPath = path.join(agentAssetsRoot(), "workflows", bundleId, "manifest.json");
+  const manifestPath = path.join(
+    agentAssetsRoot(),
+    "workflows",
+    bundleId,
+    "manifest.json",
+  );
   if (!(await pathExists(manifestPath))) {
     throw new Error(`Bundle '${bundleId}' not found at ${manifestPath}`);
   }
@@ -1599,7 +1772,9 @@ async function readBundleManifest(bundleId) {
   try {
     parsed = JSON.parse(raw);
   } catch (error) {
-    throw new Error(`Invalid manifest JSON for '${bundleId}': ${error.message}`);
+    throw new Error(
+      `Invalid manifest JSON for '${bundleId}': ${error.message}`,
+    );
   }
 
   if (!parsed || typeof parsed !== "object") {
@@ -1655,7 +1830,8 @@ async function resolveTopLevelSkillIdsFromIndex() {
 
     const skillDir = path.join(skillsRoot, skillId);
     const skillFile = path.join(skillDir, "SKILL.md");
-    if (!(await pathExists(skillDir)) || !(await pathExists(skillFile))) continue;
+    if (!(await pathExists(skillDir)) || !(await pathExists(skillFile)))
+      continue;
 
     seen.add(key);
     topLevelIds.push(skillId);
@@ -1674,7 +1850,11 @@ async function readSkillCatalogIds(catalogPath) {
     return [];
   }
 
-  const values = Array.isArray(parsed) ? parsed : Array.isArray(parsed?.skills) ? parsed.skills : [];
+  const values = Array.isArray(parsed)
+    ? parsed
+    : Array.isArray(parsed?.skills)
+      ? parsed.skills
+      : [];
   const ids = [];
   const seen = new Set();
   for (const value of values) {
@@ -1713,10 +1893,11 @@ async function resolveSkillSourceDirectory(skillId) {
   return null;
 }
 
-async function resolveCatalogSkillIds({
-  profile
-}) {
-  const workflowCatalogPath = path.join(workflowSkillsRoot(), CATALOG_FILES[profile] || "");
+async function resolveCatalogSkillIds({ profile }) {
+  const workflowCatalogPath = path.join(
+    workflowSkillsRoot(),
+    CATALOG_FILES[profile] || "",
+  );
   const workflowCatalogIds = await readSkillCatalogIds(workflowCatalogPath);
   const workflowProfileIds =
     workflowCatalogIds.length > 0
@@ -1731,25 +1912,44 @@ async function resolveCatalogSkillIds({
 async function resolveInstallSkillIds({
   platformSpec,
   extraSkillIds = [],
-  skillProfile = DEFAULT_SKILL_PROFILE
+  skillProfile = DEFAULT_SKILL_PROFILE,
 }) {
-  const fallbackManifestSkillIds = Array.isArray(platformSpec.skills) ? platformSpec.skills : [];
+  const fallbackManifestSkillIds = Array.isArray(platformSpec.skills)
+    ? platformSpec.skills
+    : [];
   const catalogSelectedIds = await resolveCatalogSkillIds({
-    profile: normalizeSkillProfile(skillProfile)
+    profile: normalizeSkillProfile(skillProfile),
   });
 
-  let selected = catalogSelectedIds.length > 0 ? catalogSelectedIds : fallbackManifestSkillIds;
+  let selected =
+    catalogSelectedIds.length > 0
+      ? catalogSelectedIds
+      : fallbackManifestSkillIds;
   if (selected.length === 0) {
     const indexedSkillIds = await resolveTopLevelSkillIdsFromIndex();
     selected = indexedSkillIds;
   }
-  if (Array.isArray(platformSpec.skillAllowList) && platformSpec.skillAllowList.length > 0) {
-    const allow = new Set(platformSpec.skillAllowList.map((item) => String(item).toLowerCase()));
-    selected = selected.filter((skillId) => allow.has(String(skillId).toLowerCase()));
+  if (
+    Array.isArray(platformSpec.skillAllowList) &&
+    platformSpec.skillAllowList.length > 0
+  ) {
+    const allow = new Set(
+      platformSpec.skillAllowList.map((item) => String(item).toLowerCase()),
+    );
+    selected = selected.filter((skillId) =>
+      allow.has(String(skillId).toLowerCase()),
+    );
   }
-  if (Array.isArray(platformSpec.skillBlockList) && platformSpec.skillBlockList.length > 0) {
-    const blocked = new Set(platformSpec.skillBlockList.map((item) => String(item).toLowerCase()));
-    selected = selected.filter((skillId) => !blocked.has(String(skillId).toLowerCase()));
+  if (
+    Array.isArray(platformSpec.skillBlockList) &&
+    platformSpec.skillBlockList.length > 0
+  ) {
+    const blocked = new Set(
+      platformSpec.skillBlockList.map((item) => String(item).toLowerCase()),
+    );
+    selected = selected.filter(
+      (skillId) => !blocked.has(String(skillId).toLowerCase()),
+    );
   }
 
   return unique([...selected, ...extraSkillIds.filter(Boolean)]);
@@ -1763,7 +1963,9 @@ async function chooseBundle(bundleOption) {
 
   if (bundleOption) {
     if (!bundleIds.includes(bundleOption)) {
-      throw new Error(`Unknown bundle '${bundleOption}'. Run 'cbx workflows platforms' and docs for options.`);
+      throw new Error(
+        `Unknown bundle '${bundleOption}'. Run 'cbx workflows platforms' and docs for options.`,
+      );
     }
     return bundleOption;
   }
@@ -1777,7 +1979,7 @@ async function chooseBundle(bundleOption) {
 
   return select({
     message: "Select workflow bundle:",
-    choices: bundleIds.map((id) => ({ name: id, value: id }))
+    choices: bundleIds.map((id) => ({ name: id, value: id })),
   });
 }
 
@@ -1813,7 +2015,9 @@ async function resolvePlatform(optionValue, scope, cwd = process.cwd()) {
   const normalized = normalizePlatform(optionValue);
   if (normalized) {
     if (!WORKFLOW_PROFILES[normalized]) {
-      throw new Error(`Unknown platform '${optionValue}'. Use 'cbx workflows platforms'.`);
+      throw new Error(
+        `Unknown platform '${optionValue}'. Use 'cbx workflows platforms'.`,
+      );
     }
     return normalized;
   }
@@ -1825,25 +2029,33 @@ async function resolvePlatform(optionValue, scope, cwd = process.cwd()) {
 
   if (candidates.length > 1) {
     const state = await readState(scope, cwd);
-    if (state.lastSelected.platform && candidates.includes(state.lastSelected.platform)) {
+    if (
+      state.lastSelected.platform &&
+      candidates.includes(state.lastSelected.platform)
+    ) {
       return state.lastSelected.platform;
     }
 
     if (!process.stdin.isTTY) {
-      throw new Error(`Multiple platforms detected (${candidates.join(", ")}). Use --platform.`);
+      throw new Error(
+        `Multiple platforms detected (${candidates.join(", ")}). Use --platform.`,
+      );
     }
 
     return select({
       message: "Multiple platforms detected. Select active platform:",
       choices: candidates.map((id) => ({
         name: `${WORKFLOW_PROFILES[id].label} (${id})`,
-        value: id
-      }))
+        value: id,
+      })),
     });
   }
 
   const state = await readState(scope, cwd);
-  if (state.lastSelected.platform && WORKFLOW_PROFILES[state.lastSelected.platform]) {
+  if (
+    state.lastSelected.platform &&
+    WORKFLOW_PROFILES[state.lastSelected.platform]
+  ) {
     return state.lastSelected.platform;
   }
 
@@ -1855,8 +2067,8 @@ async function resolvePlatform(optionValue, scope, cwd = process.cwd()) {
     message: "Select platform:",
     choices: PLATFORM_IDS.map((id) => ({
       name: `${WORKFLOW_PROFILES[id].label} (${id})`,
-      value: id
-    }))
+      value: id,
+    })),
   });
 }
 
@@ -1891,7 +2103,7 @@ function extractFrontmatter(markdown) {
   }
   return {
     frontmatter: match[1],
-    body: markdown.slice(match[0].length)
+    body: markdown.slice(match[0].length),
   };
 }
 
@@ -1933,7 +2145,8 @@ function sanitizeSkillMarkdownForCopilot(markdown) {
 
   for (const line of lines) {
     if (skipUnsupportedKey) {
-      const isTopLevelKey = /^([A-Za-z0-9_-]+)\s*:/.test(line) && !/^\s/.test(line);
+      const isTopLevelKey =
+        /^([A-Za-z0-9_-]+)\s*:/.test(line) && !/^\s/.test(line);
       if (!isTopLevelKey) {
         continue;
       }
@@ -1959,7 +2172,10 @@ function sanitizeSkillMarkdownForCopilot(markdown) {
     }
   }
 
-  const cleanedFrontmatter = kept.join("\n").replace(/\n{3,}/g, "\n\n").trimEnd();
+  const cleanedFrontmatter = kept
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trimEnd();
   const bodyWithoutLeadingNewlines = body.replace(/^\n+/, "");
   const rebuilt = `---\n${cleanedFrontmatter}\n---\n${bodyWithoutLeadingNewlines}`;
   const dedupedRemovedKeys = unique(removedKeys);
@@ -1971,7 +2187,7 @@ function sanitizeSkillMarkdownForCopilot(markdown) {
   return {
     changed: rebuilt !== markdown,
     content: rebuilt,
-    removedKeys: dedupedRemovedKeys
+    removedKeys: dedupedRemovedKeys,
   };
 }
 
@@ -1988,7 +2204,8 @@ function sanitizeAgentMarkdownForCopilot(markdown) {
 
   for (const line of lines) {
     if (skipUnsupportedKey) {
-      const isTopLevelKey = /^([A-Za-z0-9_-]+)\s*:/.test(line) && !/^\s/.test(line);
+      const isTopLevelKey =
+        /^([A-Za-z0-9_-]+)\s*:/.test(line) && !/^\s/.test(line);
       if (!isTopLevelKey) {
         continue;
       }
@@ -2014,7 +2231,10 @@ function sanitizeAgentMarkdownForCopilot(markdown) {
     }
   }
 
-  const cleanedFrontmatter = kept.join("\n").replace(/\n{3,}/g, "\n\n").trimEnd();
+  const cleanedFrontmatter = kept
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trimEnd();
   const bodyWithoutLeadingNewlines = body.replace(/^\n+/, "");
   const rebuilt = `---\n${cleanedFrontmatter}\n---\n${bodyWithoutLeadingNewlines}`;
   const dedupedRemovedKeys = unique(removedKeys);
@@ -2026,7 +2246,7 @@ function sanitizeAgentMarkdownForCopilot(markdown) {
   return {
     changed: rebuilt !== markdown,
     content: rebuilt,
-    removedKeys: dedupedRemovedKeys
+    removedKeys: dedupedRemovedKeys,
   };
 }
 
@@ -2037,12 +2257,16 @@ function extractFrontmatterValue(frontmatter, key) {
 }
 
 function extractFrontmatterArray(frontmatter, key) {
-  const bracketMatch = frontmatter.match(new RegExp(`${key}\\s*:\\s*\\[([\\s\\S]*?)\\]`, "m"));
+  const bracketMatch = frontmatter.match(
+    new RegExp(`${key}\\s*:\\s*\\[([\\s\\S]*?)\\]`, "m"),
+  );
   if (bracketMatch) {
     return unique(parseInlineArray(bracketMatch[1]));
   }
 
-  const singleLine = frontmatter.match(new RegExp(`^\\s*${key}\\s*:\\s*(.+)$`, "m"));
+  const singleLine = frontmatter.match(
+    new RegExp(`^\\s*${key}\\s*:\\s*(.+)$`, "m"),
+  );
   if (!singleLine) return [];
   return unique(parseInlineArray(singleLine[1]));
 }
@@ -2084,19 +2308,22 @@ function escapeRegExp(value) {
 }
 
 function rewriteCodexWorkflowAgentReferences(sourceBody, agentIds) {
-  if (!sourceBody || !Array.isArray(agentIds) || agentIds.length === 0) return sourceBody;
+  if (!sourceBody || !Array.isArray(agentIds) || agentIds.length === 0)
+    return sourceBody;
 
   let rewritten = sourceBody;
-  const sortedAgentIds = unique(agentIds.filter(Boolean)).sort((a, b) => b.length - a.length);
+  const sortedAgentIds = unique(agentIds.filter(Boolean)).sort(
+    (a, b) => b.length - a.length,
+  );
 
   for (const agentId of sortedAgentIds) {
     const agentPattern = new RegExp(
       `(^|[^A-Za-z0-9_-])@${escapeRegExp(agentId)}(?=$|[^A-Za-z0-9_-])`,
-      "g"
+      "g",
     );
     rewritten = rewritten.replace(
       agentPattern,
-      (_match, prefix) => `${prefix}$${CODEX_AGENT_SKILL_PREFIX}${agentId}`
+      (_match, prefix) => `${prefix}$${CODEX_AGENT_SKILL_PREFIX}${agentId}`,
     );
   }
 
@@ -2109,11 +2336,12 @@ async function parseWorkflowMetadata(filePath) {
   const id = path.basename(filePath, path.extname(filePath));
   const command = extractFrontmatterValue(frontmatter, "command") || `/${id}`;
   const description =
-    extractFrontmatterValue(frontmatter, "description") || extractFallbackDescription(body);
+    extractFrontmatterValue(frontmatter, "description") ||
+    extractFallbackDescription(body);
   const heading = extractHeading(body) || id;
   const triggers = unique([
     ...extractFrontmatterArray(frontmatter, "triggers"),
-    ...extractFrontmatterArray(frontmatter, "keywords")
+    ...extractFrontmatterArray(frontmatter, "keywords"),
   ]).slice(0, 8);
 
   return {
@@ -2122,7 +2350,7 @@ async function parseWorkflowMetadata(filePath) {
     name: heading,
     description,
     triggers,
-    path: filePath
+    path: filePath,
   };
 }
 
@@ -2132,7 +2360,8 @@ async function parseAgentMetadata(filePath) {
   const id = normalizeMarkdownId(path.basename(filePath));
   const name = extractFrontmatterValue(frontmatter, "name") || id;
   const description =
-    extractFrontmatterValue(frontmatter, "description") || extractFallbackDescription(body);
+    extractFrontmatterValue(frontmatter, "description") ||
+    extractFallbackDescription(body);
   const skills = extractFrontmatterArray(frontmatter, "skills").slice(0, 12);
 
   return {
@@ -2141,13 +2370,14 @@ async function parseAgentMetadata(filePath) {
     description,
     skills,
     path: filePath,
-    body: body.trim()
+    body: body.trim(),
   };
 }
 
 function buildCodexWorkflowWrapperSkillMarkdown(wrapperSkillId, workflow) {
   const description = `Callable Codex wrapper for ${workflow.command}: ${workflow.description}`;
-  const sourceBody = workflow.body?.trim() || "No source workflow content found.";
+  const sourceBody =
+    workflow.body?.trim() || "No source workflow content found.";
 
   return [
     "---",
@@ -2173,7 +2403,7 @@ function buildCodexWorkflowWrapperSkillMarkdown(wrapperSkillId, workflow) {
     "## Source Workflow Instructions",
     "",
     sourceBody,
-    ""
+    "",
   ].join("\n");
 }
 
@@ -2212,7 +2442,7 @@ function buildCodexAgentWrapperSkillMarkdown(wrapperSkillId, agent) {
     "## Source Agent Instructions",
     "",
     sourceBody,
-    ""
+    "",
   ].join("\n");
 }
 
@@ -2220,7 +2450,7 @@ async function writeGeneratedSkillArtifact({
   destinationDir,
   content,
   overwrite,
-  dryRun = false
+  dryRun = false,
 }) {
   const exists = await pathExists(destinationDir);
   if (exists && !overwrite) {
@@ -2237,7 +2467,10 @@ async function writeGeneratedSkillArtifact({
   }
 
   if (dryRun) {
-    return { action: exists ? "would-replace" : "would-install", path: destinationDir };
+    return {
+      action: exists ? "would-replace" : "would-install",
+      path: destinationDir,
+    };
   }
 
   return { action: exists ? "replaced" : "installed", path: destinationDir };
@@ -2262,67 +2495,83 @@ async function generateCodexWrapperSkills({
   platformSpec,
   skillsDir,
   overwrite,
-  dryRun = false
+  dryRun = false,
 }) {
   const installed = [];
   const skipped = [];
   const artifacts = [];
   const generated = [];
   const codexAgentIds = (platformSpec.agents || []).map((fileName) =>
-    normalizeMarkdownId(path.basename(fileName))
+    normalizeMarkdownId(path.basename(fileName)),
   );
 
   for (const workflowFile of platformSpec.workflows || []) {
     const source = path.join(platformRoot, "workflows", workflowFile);
     if (!(await pathExists(source))) {
-      throw new Error(`Missing workflow source file for wrapper generation: ${source}`);
+      throw new Error(
+        `Missing workflow source file for wrapper generation: ${source}`,
+      );
     }
 
     const metadata = await parseWorkflowMetadata(source);
     const raw = await readFile(source, "utf8");
     const sourceBody = extractFrontmatter(raw).body.trim();
-    const rewrittenBody = rewriteCodexWorkflowAgentReferences(sourceBody, codexAgentIds);
+    const rewrittenBody = rewriteCodexWorkflowAgentReferences(
+      sourceBody,
+      codexAgentIds,
+    );
     const wrapperSkillId = `${CODEX_WORKFLOW_SKILL_PREFIX}${metadata.id}`;
     const destinationDir = path.join(skillsDir, wrapperSkillId);
     const content = buildCodexWorkflowWrapperSkillMarkdown(wrapperSkillId, {
       ...metadata,
-      body: rewrittenBody
+      body: rewrittenBody,
     });
 
     const result = await writeGeneratedSkillArtifact({
       destinationDir,
       content,
       overwrite,
-      dryRun
+      dryRun,
     });
 
     artifacts.push(destinationDir);
-    generated.push({ kind: "workflow", id: metadata.id, skillId: wrapperSkillId });
-    if (result.action === "skipped" || result.action === "would-skip") skipped.push(destinationDir);
+    generated.push({
+      kind: "workflow",
+      id: metadata.id,
+      skillId: wrapperSkillId,
+    });
+    if (result.action === "skipped" || result.action === "would-skip")
+      skipped.push(destinationDir);
     else installed.push(destinationDir);
   }
 
   for (const agentFile of platformSpec.agents || []) {
     const source = path.join(platformRoot, "agents", agentFile);
     if (!(await pathExists(source))) {
-      throw new Error(`Missing agent source file for wrapper generation: ${source}`);
+      throw new Error(
+        `Missing agent source file for wrapper generation: ${source}`,
+      );
     }
 
     const metadata = await parseAgentMetadata(source);
     const wrapperSkillId = `${CODEX_AGENT_SKILL_PREFIX}${metadata.id}`;
     const destinationDir = path.join(skillsDir, wrapperSkillId);
-    const content = buildCodexAgentWrapperSkillMarkdown(wrapperSkillId, metadata);
+    const content = buildCodexAgentWrapperSkillMarkdown(
+      wrapperSkillId,
+      metadata,
+    );
 
     const result = await writeGeneratedSkillArtifact({
       destinationDir,
       content,
       overwrite,
-      dryRun
+      dryRun,
     });
 
     artifacts.push(destinationDir);
     generated.push({ kind: "agent", id: metadata.id, skillId: wrapperSkillId });
-    if (result.action === "skipped" || result.action === "would-skip") skipped.push(destinationDir);
+    if (result.action === "skipped" || result.action === "would-skip")
+      skipped.push(destinationDir);
     else installed.push(destinationDir);
   }
 
@@ -2330,19 +2579,30 @@ async function generateCodexWrapperSkills({
     installed,
     skipped,
     artifacts,
-    generated
+    generated,
   };
 }
 
-async function collectInstalledWorkflows(profileId, scope, cwd = process.cwd()) {
+async function collectInstalledWorkflows(
+  profileId,
+  scope,
+  cwd = process.cwd(),
+) {
   const profilePaths = await resolveProfilePaths(profileId, scope, cwd);
   if (!(await pathExists(profilePaths.workflowsDir))) return [];
 
-  const entries = await readdir(profilePaths.workflowsDir, { withFileTypes: true });
+  const entries = await readdir(profilePaths.workflowsDir, {
+    withFileTypes: true,
+  });
   const workflows = [];
 
   for (const entry of entries) {
-    if (!entry.isFile() || !entry.name.endsWith(".md") || entry.name.startsWith(".")) continue;
+    if (
+      !entry.isFile() ||
+      !entry.name.endsWith(".md") ||
+      entry.name.startsWith(".")
+    )
+      continue;
     const filePath = path.join(profilePaths.workflowsDir, entry.name);
     workflows.push(await parseWorkflowMetadata(filePath));
   }
@@ -2352,7 +2612,9 @@ async function collectInstalledWorkflows(profileId, scope, cwd = process.cwd()) 
 
 function buildManagedWorkflowBlock(platformId, workflows) {
   const lines = [];
-  lines.push(`<!-- cbx:workflows:auto:start platform=${platformId} version=1 -->`);
+  lines.push(
+    `<!-- cbx:workflows:auto:start platform=${platformId} version=1 -->`,
+  );
   lines.push("## CBX Workflow Routing (auto-managed)");
   if (platformId === "codex") {
     lines.push("Use Codex callable wrappers:");
@@ -2366,7 +2628,9 @@ function buildManagedWorkflowBlock(platformId, workflows) {
       for (const workflow of workflows) {
         const triggerPreview = workflow.triggers.slice(0, 2).join(", ");
         const hint = triggerPreview ? ` (${triggerPreview})` : "";
-        lines.push(`- \`${workflow.command}\` -> \`$${CODEX_WORKFLOW_SKILL_PREFIX}${workflow.id}\`${hint}`);
+        lines.push(
+          `- \`${workflow.command}\` -> \`$${CODEX_WORKFLOW_SKILL_PREFIX}${workflow.id}\`${hint}`,
+        );
       }
     }
 
@@ -2374,13 +2638,17 @@ function buildManagedWorkflowBlock(platformId, workflows) {
     lines.push("Selection policy:");
     lines.push("1. If user names a `$workflow-*`, use it directly.");
     lines.push("2. Else map intent to one primary workflow.");
-    lines.push("3. Use `$agent-*` wrappers only when role specialization is needed.");
+    lines.push(
+      "3. Use `$agent-*` wrappers only when role specialization is needed.",
+    );
     lines.push("");
     lines.push("<!-- cbx:workflows:auto:end -->");
     return lines.join("\n");
   }
 
-  lines.push("Use the following workflows proactively when task intent matches:");
+  lines.push(
+    "Use the following workflows proactively when task intent matches:",
+  );
   lines.push("");
 
   if (workflows.length === 0) {
@@ -2402,7 +2670,9 @@ function buildManagedWorkflowBlock(platformId, workflows) {
   lines.push("Selection policy:");
   lines.push("1. Match explicit slash command first.");
   lines.push("2. Else match user intent to workflow description and triggers.");
-  lines.push("3. Prefer one primary workflow; reference others only when needed.");
+  lines.push(
+    "3. Prefer one primary workflow; reference others only when needed.",
+  );
   lines.push("");
   lines.push("<!-- cbx:workflows:auto:end -->");
 
@@ -2419,36 +2689,52 @@ function analyzeTaggedBlock(content, startPattern, endPattern) {
 
   let range = null;
   for (const startMatch of starts) {
-    const endMatch = ends.find((candidate) => candidate.index > startMatch.index);
+    const endMatch = ends.find(
+      (candidate) => candidate.index > startMatch.index,
+    );
     if (endMatch) {
       range = {
         start: startMatch.index,
-        end: endMatch.index + endMatch[0].length
+        end: endMatch.index + endMatch[0].length,
       };
       break;
     }
   }
 
   if (!range) {
-    return { status: "malformed", starts: starts.length, ends: ends.length, range: null };
+    return {
+      status: "malformed",
+      starts: starts.length,
+      ends: ends.length,
+      range: null,
+    };
   }
 
   if (starts.length === 1 && ends.length === 1) {
     return { status: "valid", starts: 1, ends: 1, range };
   }
 
-  return { status: "multiple", starts: starts.length, ends: ends.length, range };
+  return {
+    status: "multiple",
+    starts: starts.length,
+    ends: ends.length,
+    range,
+  };
 }
 
 function analyzeManagedBlock(content) {
-  return analyzeTaggedBlock(content, MANAGED_BLOCK_START_RE, MANAGED_BLOCK_END_RE);
+  return analyzeTaggedBlock(
+    content,
+    MANAGED_BLOCK_START_RE,
+    MANAGED_BLOCK_END_RE,
+  );
 }
 
 function analyzeTerminalVerificationBlock(content) {
   return analyzeTaggedBlock(
     content,
     TERMINAL_VERIFICATION_BLOCK_START_RE,
-    TERMINAL_VERIFICATION_BLOCK_END_RE
+    TERMINAL_VERIFICATION_BLOCK_END_RE,
   );
 }
 
@@ -2462,7 +2748,12 @@ async function resolveRuleFilePath(profileId, scope, cwd = process.cwd()) {
   return profilePaths.ruleFilesByPriority[0] || null;
 }
 
-async function upsertManagedRuleBlock(ruleFilePath, platformId, workflows, dryRun = false) {
+async function upsertManagedRuleBlock(
+  ruleFilePath,
+  platformId,
+  workflows,
+  dryRun = false,
+) {
   const block = buildManagedWorkflowBlock(platformId, workflows);
   const exists = await pathExists(ruleFilePath);
   const warnings = [];
@@ -2472,23 +2763,29 @@ async function upsertManagedRuleBlock(ruleFilePath, platformId, workflows, dryRu
   let nextContent = original;
   if (!exists || analysis.status === "absent") {
     const trimmed = original.trimEnd();
-    nextContent = trimmed.length > 0 ? `${trimmed}\n\n${block}\n` : `${block}\n`;
+    nextContent =
+      trimmed.length > 0 ? `${trimmed}\n\n${block}\n` : `${block}\n`;
   } else if (analysis.range) {
     if (analysis.status === "multiple") {
-      warnings.push("Multiple managed workflow blocks found; patched the first valid block.");
+      warnings.push(
+        "Multiple managed workflow blocks found; patched the first valid block.",
+      );
     }
     nextContent = `${original.slice(0, analysis.range.start)}${block}${original.slice(analysis.range.end)}`;
   } else {
-    warnings.push("Malformed managed workflow block; appended a new canonical block.");
+    warnings.push(
+      "Malformed managed workflow block; appended a new canonical block.",
+    );
     const trimmed = original.trimEnd();
-    nextContent = trimmed.length > 0 ? `${trimmed}\n\n${block}\n` : `${block}\n`;
+    nextContent =
+      trimmed.length > 0 ? `${trimmed}\n\n${block}\n` : `${block}\n`;
   }
 
   if (nextContent === original) {
     return {
       action: "unchanged",
       filePath: ruleFilePath,
-      warnings
+      warnings,
     };
   }
 
@@ -2498,9 +2795,15 @@ async function upsertManagedRuleBlock(ruleFilePath, platformId, workflows, dryRu
   }
 
   return {
-    action: exists ? (dryRun ? "would-patch" : "patched") : dryRun ? "would-create" : "created",
+    action: exists
+      ? dryRun
+        ? "would-patch"
+        : "patched"
+      : dryRun
+        ? "would-create"
+        : "created",
     filePath: ruleFilePath,
-    warnings
+    warnings,
   };
 }
 
@@ -2509,12 +2812,12 @@ async function upsertTerminalVerificationBlock({
   provider,
   powerShellScriptPath,
   bashScriptPath,
-  dryRun = false
+  dryRun = false,
 }) {
   const block = buildAntigravityTerminalVerificationBlock({
     provider,
     powerShellScriptPath,
-    bashScriptPath
+    bashScriptPath,
   });
   const exists = await pathExists(ruleFilePath);
   const original = exists ? await readFile(ruleFilePath, "utf8") : "";
@@ -2523,12 +2826,14 @@ async function upsertTerminalVerificationBlock({
   let nextContent = original;
   if (!exists || analysis.status === "absent") {
     const trimmed = original.trimEnd();
-    nextContent = trimmed.length > 0 ? `${trimmed}\n\n${block}\n` : `${block}\n`;
+    nextContent =
+      trimmed.length > 0 ? `${trimmed}\n\n${block}\n` : `${block}\n`;
   } else if (analysis.range) {
     nextContent = `${original.slice(0, analysis.range.start)}${block}${original.slice(analysis.range.end)}`;
   } else {
     const trimmed = original.trimEnd();
-    nextContent = trimmed.length > 0 ? `${trimmed}\n\n${block}\n` : `${block}\n`;
+    nextContent =
+      trimmed.length > 0 ? `${trimmed}\n\n${block}\n` : `${block}\n`;
   }
 
   if (nextContent === original) {
@@ -2541,7 +2846,10 @@ async function upsertTerminalVerificationBlock({
   }
 
   if (!exists) {
-    return { action: dryRun ? "would-create" : "created", filePath: ruleFilePath };
+    return {
+      action: dryRun ? "would-create" : "created",
+      filePath: ruleFilePath,
+    };
   }
 
   return { action: dryRun ? "would-patch" : "patched", filePath: ruleFilePath };
@@ -2560,7 +2868,10 @@ async function removeTerminalVerificationBlock(ruleFilePath, dryRun = false) {
 
   const before = original.slice(0, analysis.range.start).trimEnd();
   const after = original.slice(analysis.range.end).trimStart();
-  const nextContent = before && after ? `${before}\n\n${after}\n` : `${before}${after}`.trimEnd() + "\n";
+  const nextContent =
+    before && after
+      ? `${before}\n\n${after}\n`
+      : `${before}${after}`.trimEnd() + "\n";
 
   if (!dryRun) {
     await writeFile(ruleFilePath, nextContent, "utf8");
@@ -2569,26 +2880,39 @@ async function removeTerminalVerificationBlock(ruleFilePath, dryRun = false) {
   return { action: dryRun ? "would-patch" : "patched", filePath: ruleFilePath };
 }
 
-async function syncRulesForPlatform({ platform, scope, cwd = process.cwd(), dryRun = false }) {
+async function syncRulesForPlatform({
+  platform,
+  scope,
+  cwd = process.cwd(),
+  dryRun = false,
+}) {
   const ruleFilePath = await resolveRuleFilePath(platform, scope, cwd);
-  if (!ruleFilePath) throw new Error(`No rule file configured for platform '${platform}'.`);
+  if (!ruleFilePath)
+    throw new Error(`No rule file configured for platform '${platform}'.`);
 
   const workflows = await collectInstalledWorkflows(platform, scope, cwd);
-  const patchResult = await upsertManagedRuleBlock(ruleFilePath, platform, workflows, dryRun);
+  const patchResult = await upsertManagedRuleBlock(
+    ruleFilePath,
+    platform,
+    workflows,
+    dryRun,
+  );
   const workspaceRuleSync = await syncWorkspaceRuleForGlobalScope({
     platform,
     scope,
     cwd,
     workflows,
-    dryRun
+    dryRun,
   });
   const warnings = [...patchResult.warnings];
 
   if (workspaceRuleSync) {
     warnings.push(
-      `Workspace rule file detected at ${workspaceRuleSync.workspaceRuleFile}. In this workspace, it has higher precedence than global ${workspaceRuleSync.globalRuleFile}.`
+      `Workspace rule file detected at ${workspaceRuleSync.workspaceRuleFile}. In this workspace, it has higher precedence than global ${workspaceRuleSync.globalRuleFile}.`,
     );
-    warnings.push(`Workspace rule managed block sync action: ${workspaceRuleSync.patchResult.action}.`);
+    warnings.push(
+      `Workspace rule managed block sync action: ${workspaceRuleSync.patchResult.action}.`,
+    );
     for (const warning of workspaceRuleSync.patchResult.warnings) {
       warnings.push(`Workspace rule file: ${warning}`);
     }
@@ -2610,9 +2934,9 @@ async function syncRulesForPlatform({ platform, scope, cwd = process.cwd(), dryR
       ? {
           filePath: workspaceRuleSync.workspaceRuleFile,
           action: workspaceRuleSync.patchResult.action,
-          warnings: workspaceRuleSync.patchResult.warnings
+          warnings: workspaceRuleSync.patchResult.warnings,
         }
-      : null
+      : null,
   };
 }
 
@@ -2626,7 +2950,12 @@ async function safeRemove(targetPath, dryRun = false) {
   return false;
 }
 
-async function copyArtifact({ source, destination, overwrite, dryRun = false }) {
+async function copyArtifact({
+  source,
+  destination,
+  overwrite,
+  dryRun = false,
+}) {
   const exists = await pathExists(destination);
   if (exists && !overwrite) {
     return { action: dryRun ? "would-skip" : "skipped", path: destination };
@@ -2642,12 +2971,19 @@ async function copyArtifact({ source, destination, overwrite, dryRun = false }) 
   }
 
   if (dryRun) {
-    return { action: exists ? "would-replace" : "would-install", path: destination };
+    return {
+      action: exists ? "would-replace" : "would-install",
+      path: destination,
+    };
   }
   return { action: exists ? "replaced" : "installed", path: destination };
 }
 
-async function writeGeneratedArtifact({ destination, content, dryRun = false }) {
+async function writeGeneratedArtifact({
+  destination,
+  content,
+  dryRun = false,
+}) {
   const exists = await pathExists(destination);
 
   if (!dryRun) {
@@ -2656,7 +2992,10 @@ async function writeGeneratedArtifact({ destination, content, dryRun = false }) 
   }
 
   if (dryRun) {
-    return { action: exists ? "would-replace" : "would-install", path: destination };
+    return {
+      action: exists ? "would-replace" : "would-install",
+      path: destination,
+    };
   }
 
   return { action: exists ? "replaced" : "installed", path: destination };
@@ -2686,7 +3025,7 @@ async function assertNoLegacyOnlyPostmanConfig({ scope, cwd = process.cwd() }) {
   if (!(await pathExists(legacyPath))) return;
 
   throw new Error(
-    `Legacy Postman config detected at ${legacyPath}. Create ${configPath} first (for example: cbx workflows config --scope ${scope} --clear-workspace-id).`
+    `Legacy Postman config detected at ${legacyPath}. Create ${configPath} first (for example: cbx workflows config --scope ${scope} --clear-workspace-id).`,
   );
 }
 
@@ -2698,15 +3037,30 @@ function resolveMcpRootPath({ scope, cwd = process.cwd() }) {
   return path.join(workspaceRoot, ".cbx", "mcp");
 }
 
-function resolvePostmanMcpDefinitionPath({ platform, scope, cwd = process.cwd() }) {
-  return path.join(resolveMcpRootPath({ scope, cwd }), platform, `${POSTMAN_SKILL_ID}.json`);
+function resolvePostmanMcpDefinitionPath({
+  platform,
+  scope,
+  cwd = process.cwd(),
+}) {
+  return path.join(
+    resolveMcpRootPath({ scope, cwd }),
+    platform,
+    `${POSTMAN_SKILL_ID}.json`,
+  );
 }
 
 function resolveStitchMcpDefinitionPath({ scope, cwd = process.cwd() }) {
-  return path.join(resolveMcpRootPath({ scope, cwd }), "antigravity", "stitch.json");
+  return path.join(
+    resolveMcpRootPath({ scope, cwd }),
+    "antigravity",
+    "stitch.json",
+  );
 }
 
-function buildPostmanAuthHeader({ apiKey = null, apiKeyEnvVar = POSTMAN_API_KEY_ENV_VAR }) {
+function buildPostmanAuthHeader({
+  apiKey = null,
+  apiKeyEnvVar = POSTMAN_API_KEY_ENV_VAR,
+}) {
   return apiKey ? `Bearer ${apiKey}` : `Bearer \${${apiKeyEnvVar}}`;
 }
 
@@ -2717,7 +3071,7 @@ function buildStitchApiHeader({ apiKey = null }) {
 function buildPostmanMcpDefinition({
   apiKey = null,
   apiKeyEnvVar = POSTMAN_API_KEY_ENV_VAR,
-  mcpUrl = POSTMAN_MCP_URL
+  mcpUrl = POSTMAN_MCP_URL,
 }) {
   return {
     schemaVersion: 1,
@@ -2725,15 +3079,12 @@ function buildPostmanMcpDefinition({
     transport: "http",
     url: mcpUrl,
     headers: {
-      Authorization: buildPostmanAuthHeader({ apiKey, apiKeyEnvVar })
-    }
+      Authorization: buildPostmanAuthHeader({ apiKey, apiKeyEnvVar }),
+    },
   };
 }
 
-function buildStitchMcpDefinition({
-  apiKey = null,
-  mcpUrl = STITCH_MCP_URL
-}) {
+function buildStitchMcpDefinition({ apiKey = null, mcpUrl = STITCH_MCP_URL }) {
   return {
     schemaVersion: 1,
     server: STITCH_MCP_SERVER_ID,
@@ -2744,43 +3095,40 @@ function buildStitchMcpDefinition({
       "mcp-remote",
       mcpUrl,
       "--header",
-      buildStitchApiHeader({ apiKey })
+      buildStitchApiHeader({ apiKey }),
     ],
-    env: {}
+    env: {},
   };
 }
 
 function buildVsCodePostmanServer({
   apiKey = null,
   apiKeyEnvVar = POSTMAN_API_KEY_ENV_VAR,
-  mcpUrl = POSTMAN_MCP_URL
+  mcpUrl = POSTMAN_MCP_URL,
 }) {
   return {
     type: "sse",
     url: mcpUrl,
     headers: {
-      Authorization: buildPostmanAuthHeader({ apiKey, apiKeyEnvVar })
-    }
+      Authorization: buildPostmanAuthHeader({ apiKey, apiKeyEnvVar }),
+    },
   };
 }
 
 function buildGeminiPostmanServer({
   apiKey = null,
   apiKeyEnvVar = POSTMAN_API_KEY_ENV_VAR,
-  mcpUrl = POSTMAN_MCP_URL
+  mcpUrl = POSTMAN_MCP_URL,
 }) {
   return {
     httpUrl: mcpUrl,
     headers: {
-      Authorization: buildPostmanAuthHeader({ apiKey, apiKeyEnvVar })
-    }
+      Authorization: buildPostmanAuthHeader({ apiKey, apiKeyEnvVar }),
+    },
   };
 }
 
-function buildGeminiStitchServer({
-  apiKey = null,
-  mcpUrl = STITCH_MCP_URL
-}) {
+function buildGeminiStitchServer({ apiKey = null, mcpUrl = STITCH_MCP_URL }) {
   return {
     $typeName: "exa.cascade_plugins_pb.CascadePluginCommandTemplate",
     command: "npx",
@@ -2789,9 +3137,9 @@ function buildGeminiStitchServer({
       "mcp-remote",
       mcpUrl,
       "--header",
-      buildStitchApiHeader({ apiKey })
+      buildStitchApiHeader({ apiKey }),
     ],
-    env: {}
+    env: {},
   };
 }
 
@@ -2813,19 +3161,23 @@ function normalizePostmanApiKey(value) {
   return normalized || null;
 }
 
-function parseStoredCredentialServiceConfig({
-  service,
-  rawService
-}) {
-  if (!rawService || typeof rawService !== "object" || Array.isArray(rawService)) {
+function parseStoredCredentialServiceConfig({ service, rawService }) {
+  if (
+    !rawService ||
+    typeof rawService !== "object" ||
+    Array.isArray(rawService)
+  ) {
     return null;
   }
 
   const defaultEnvVar = defaultEnvVarForCredentialService(service);
   const defaultMcpUrl = defaultMcpUrlForCredentialService(service);
-  const mcpUrl = String(rawService.mcpUrl || defaultMcpUrl).trim() || defaultMcpUrl;
+  const mcpUrl =
+    String(rawService.mcpUrl || defaultMcpUrl).trim() || defaultMcpUrl;
   const profiles = [];
-  const rawProfiles = Array.isArray(rawService.profiles) ? rawService.profiles : [];
+  const rawProfiles = Array.isArray(rawService.profiles)
+    ? rawService.profiles
+    : [];
 
   for (const rawProfile of rawProfiles) {
     const name = normalizeCredentialProfileName(rawProfile?.name);
@@ -2841,24 +3193,30 @@ function parseStoredCredentialServiceConfig({
           name: DEFAULT_CREDENTIAL_PROFILE_NAME,
           apiKey: rawService.apiKey,
           apiKeyEnvVar: rawService.apiKeyEnvVar,
-          workspaceId: service === "postman" ? rawService.defaultWorkspaceId : null
+          workspaceId:
+            service === "postman" ? rawService.defaultWorkspaceId : null,
         },
-        DEFAULT_CREDENTIAL_PROFILE_NAME
-      )
+        DEFAULT_CREDENTIAL_PROFILE_NAME,
+      ),
     );
   }
 
   const dedupedProfiles = dedupeCredentialProfiles(profiles);
   const activeProfileNameCandidate =
-    normalizeCredentialProfileName(rawService.activeProfileName) || dedupedProfiles[0].name;
+    normalizeCredentialProfileName(rawService.activeProfileName) ||
+    dedupedProfiles[0].name;
   const activeProfile =
     dedupedProfiles.find(
-      (profile) => credentialProfileNameKey(profile.name) === credentialProfileNameKey(activeProfileNameCandidate)
+      (profile) =>
+        credentialProfileNameKey(profile.name) ===
+        credentialProfileNameKey(activeProfileNameCandidate),
     ) || dedupedProfiles[0];
   const activeProfileName = activeProfile.name;
 
   if (service === "postman" && activeProfile.workspaceId === null) {
-    const legacyWorkspaceId = normalizePostmanWorkspaceId(rawService.defaultWorkspaceId);
+    const legacyWorkspaceId = normalizePostmanWorkspaceId(
+      rawService.defaultWorkspaceId,
+    );
     if (legacyWorkspaceId) {
       activeProfile.workspaceId = legacyWorkspaceId;
     }
@@ -2870,21 +3228,32 @@ function parseStoredCredentialServiceConfig({
     activeProfileName,
     activeProfile,
     apiKey: normalizePostmanApiKey(activeProfile.apiKey),
-    apiKeyEnvVar: String(activeProfile.apiKeyEnvVar || defaultEnvVar).trim() || defaultEnvVar,
-    defaultWorkspaceId: service === "postman" ? normalizePostmanWorkspaceId(activeProfile.workspaceId) : null
+    apiKeyEnvVar:
+      String(activeProfile.apiKeyEnvVar || defaultEnvVar).trim() ||
+      defaultEnvVar,
+    defaultWorkspaceId:
+      service === "postman"
+        ? normalizePostmanWorkspaceId(activeProfile.workspaceId)
+        : null,
   };
 }
 
 function parseStoredPostmanConfig(raw) {
   if (!raw || typeof raw !== "object") return null;
-  const source = raw.postman && typeof raw.postman === "object" ? raw.postman : raw;
-  return parseStoredCredentialServiceConfig({ service: "postman", rawService: source });
+  const source =
+    raw.postman && typeof raw.postman === "object" ? raw.postman : raw;
+  return parseStoredCredentialServiceConfig({
+    service: "postman",
+    rawService: source,
+  });
 }
 
 function parseStoredStitchConfig(raw) {
   if (!raw || typeof raw !== "object") return null;
-  const source = raw.stitch && typeof raw.stitch === "object" ? raw.stitch : raw;
-  if (!source || typeof source !== "object" || Array.isArray(source)) return null;
+  const source =
+    raw.stitch && typeof raw.stitch === "object" ? raw.stitch : raw;
+  if (!source || typeof source !== "object" || Array.isArray(source))
+    return null;
   const hasStitchShape =
     source.profiles !== undefined ||
     source.apiKey !== undefined ||
@@ -2892,14 +3261,26 @@ function parseStoredStitchConfig(raw) {
     source.mcpUrl !== undefined ||
     source.activeProfileName !== undefined;
   if (!hasStitchShape) return null;
-  return parseStoredCredentialServiceConfig({ service: "stitch", rawService: source, allowMissing: true });
+  return parseStoredCredentialServiceConfig({
+    service: "stitch",
+    rawService: source,
+    allowMissing: true,
+  });
 }
 
 function upsertNormalizedPostmanConfig(target, postmanState) {
-  const next = target && typeof target === "object" && !Array.isArray(target) ? target : {};
+  const next =
+    target && typeof target === "object" && !Array.isArray(target)
+      ? target
+      : {};
   const existingPostman =
-    next.postman && typeof next.postman === "object" && !Array.isArray(next.postman) ? next.postman : {};
-  const serviceConfig = postmanState || parseStoredPostmanConfig({ postman: existingPostman });
+    next.postman &&
+    typeof next.postman === "object" &&
+    !Array.isArray(next.postman)
+      ? next.postman
+      : {};
+  const serviceConfig =
+    postmanState || parseStoredPostmanConfig({ postman: existingPostman });
   if (!serviceConfig) return next;
 
   next.postman = {
@@ -2910,19 +3291,30 @@ function upsertNormalizedPostmanConfig(target, postmanState) {
     apiKeyEnvVar: serviceConfig.apiKeyEnvVar,
     apiKeySource: storedCredentialSource(serviceConfig.activeProfile),
     defaultWorkspaceId: serviceConfig.defaultWorkspaceId,
-    mcpUrl: serviceConfig.mcpUrl
+    mcpUrl: serviceConfig.mcpUrl,
   };
   return next;
 }
 
 function upsertNormalizedStitchConfig(target, stitchState) {
-  const next = target && typeof target === "object" && !Array.isArray(target) ? target : {};
+  const next =
+    target && typeof target === "object" && !Array.isArray(target)
+      ? target
+      : {};
   const existingStitch =
-    next.stitch && typeof next.stitch === "object" && !Array.isArray(next.stitch) ? next.stitch : {};
+    next.stitch &&
+    typeof next.stitch === "object" &&
+    !Array.isArray(next.stitch)
+      ? next.stitch
+      : {};
   const serviceConfig =
     stitchState ||
     parseStoredStitchConfig({ stitch: existingStitch }) ||
-    parseStoredCredentialServiceConfig({ service: "stitch", rawService: existingStitch, allowMissing: true });
+    parseStoredCredentialServiceConfig({
+      service: "stitch",
+      rawService: existingStitch,
+      allowMissing: true,
+    });
   if (!serviceConfig) return next;
 
   next.stitch = {
@@ -2933,7 +3325,7 @@ function upsertNormalizedStitchConfig(target, stitchState) {
     apiKey: serviceConfig.apiKey,
     apiKeyEnvVar: serviceConfig.apiKeyEnvVar,
     apiKeySource: storedCredentialSource(serviceConfig.activeProfile),
-    mcpUrl: serviceConfig.mcpUrl
+    mcpUrl: serviceConfig.mcpUrl,
   };
   return next;
 }
@@ -2941,13 +3333,16 @@ function upsertNormalizedStitchConfig(target, stitchState) {
 function resolveCredentialEffectiveStatus({
   service,
   serviceConfig,
-  env = process.env
+  env = process.env,
 }) {
   if (!serviceConfig) return null;
   const defaultEnvVar = defaultEnvVarForCredentialService(service);
-  const activeProfile = serviceConfig.activeProfile || serviceConfig.profiles?.[0] || null;
+  const activeProfile =
+    serviceConfig.activeProfile || serviceConfig.profiles?.[0] || null;
   const apiKey = normalizePostmanApiKey(activeProfile?.apiKey);
-  const apiKeyEnvVar = String(activeProfile?.apiKeyEnvVar || defaultEnvVar).trim() || defaultEnvVar;
+  const apiKeyEnvVar =
+    String(activeProfile?.apiKeyEnvVar || defaultEnvVar).trim() ||
+    defaultEnvVar;
   const envApiKey = normalizePostmanApiKey(env?.[apiKeyEnvVar]);
   const storedSource = storedCredentialSource(activeProfile);
   const effectiveSource =
@@ -2959,19 +3354,24 @@ function resolveCredentialEffectiveStatus({
     service,
     activeProfileName: serviceConfig.activeProfileName,
     activeProfile,
-    profileCount: Array.isArray(serviceConfig.profiles) ? serviceConfig.profiles.length : 0,
+    profileCount: Array.isArray(serviceConfig.profiles)
+      ? serviceConfig.profiles.length
+      : 0,
     storedSource,
     effectiveSource,
     effectiveEnvVar: apiKeyEnvVar,
     envVarPresent: Boolean(envApiKey),
-    workspaceId: service === "postman" ? normalizePostmanWorkspaceId(activeProfile?.workspaceId) : null
+    workspaceId:
+      service === "postman"
+        ? normalizePostmanWorkspaceId(activeProfile?.workspaceId)
+        : null,
   };
 }
 
 async function fetchPostmanWorkspaces({
   apiKey,
   apiBaseUrl = POSTMAN_API_BASE_URL,
-  timeoutMs = 12000
+  timeoutMs = 12000,
 }) {
   if (!apiKey) return [];
 
@@ -2984,9 +3384,9 @@ async function fetchPostmanWorkspaces({
       method: "GET",
       headers: {
         "X-Api-Key": apiKey,
-        Accept: "application/json"
+        Accept: "application/json",
       },
-      signal: controller.signal
+      signal: controller.signal,
     });
 
     const payload = await response.json().catch(() => null);
@@ -2998,7 +3398,9 @@ async function fetchPostmanWorkspaces({
       throw new Error(message);
     }
 
-    const workspaces = Array.isArray(payload?.workspaces) ? payload.workspaces : [];
+    const workspaces = Array.isArray(payload?.workspaces)
+      ? payload.workspaces
+      : [];
     return workspaces
       .map((workspace) => {
         const id = normalizePostmanWorkspaceId(workspace?.id);
@@ -3024,26 +3426,26 @@ function parseJsonLenient(raw) {
     return {
       ok: true,
       value: JSON.parse(raw),
-      mode: "json"
+      mode: "json",
     };
   } catch (jsonError) {
     const errors = [];
     const value = parseJsonc(raw, errors, {
       allowTrailingComma: true,
       disallowComments: false,
-      allowEmptyContent: false
+      allowEmptyContent: false,
     });
     if (errors.length === 0) {
       return {
         ok: true,
         value,
-        mode: "jsonc"
+        mode: "jsonc",
       };
     }
     return {
       ok: false,
       value: null,
-      error: jsonError
+      error: jsonError,
     };
   }
 }
@@ -3072,14 +3474,24 @@ async function upsertJsonObjectFile({ targetPath, updater, dryRun = false }) {
       const raw = await readFile(targetPath, "utf8");
       const decoded = parseJsonLenient(raw);
       if (!decoded.ok) {
-        warnings.push(`Existing JSON at ${targetPath} could not be parsed. Resetting structure.`);
-      } else if (decoded.value && typeof decoded.value === "object" && !Array.isArray(decoded.value)) {
+        warnings.push(
+          `Existing JSON at ${targetPath} could not be parsed. Resetting structure.`,
+        );
+      } else if (
+        decoded.value &&
+        typeof decoded.value === "object" &&
+        !Array.isArray(decoded.value)
+      ) {
         parsed = decoded.value;
       } else {
-        warnings.push(`Existing JSON at ${targetPath} was not an object. Resetting structure.`);
+        warnings.push(
+          `Existing JSON at ${targetPath} was not an object. Resetting structure.`,
+        );
       }
     } catch {
-      warnings.push(`Existing JSON at ${targetPath} could not be parsed. Resetting structure.`);
+      warnings.push(
+        `Existing JSON at ${targetPath} could not be parsed. Resetting structure.`,
+      );
     }
   }
 
@@ -3088,13 +3500,13 @@ async function upsertJsonObjectFile({ targetPath, updater, dryRun = false }) {
   const writeResult = await writeGeneratedArtifact({
     destination: targetPath,
     content,
-    dryRun
+    dryRun,
   });
 
   return {
     action: writeResult.action,
     filePath: targetPath,
-    warnings
+    warnings,
   };
 }
 
@@ -3103,7 +3515,7 @@ async function removeGeneratedArtifactIfExists({ targetPath, dryRun = false }) {
   if (!exists) {
     return {
       action: "missing",
-      path: targetPath
+      path: targetPath,
     };
   }
 
@@ -3113,7 +3525,7 @@ async function removeGeneratedArtifactIfExists({ targetPath, dryRun = false }) {
 
   return {
     action: dryRun ? "would-remove" : "removed",
-    path: targetPath
+    path: targetPath,
   };
 }
 
@@ -3127,7 +3539,7 @@ async function applyPostmanMcpForPlatform({
   stitchMcpUrl,
   includeStitchMcp = false,
   dryRun = false,
-  cwd = process.cwd()
+  cwd = process.cwd(),
 }) {
   const workspaceRoot = findWorkspaceRoot(cwd);
   const warnings = [];
@@ -3142,31 +3554,33 @@ async function applyPostmanMcpForPlatform({
       updater: (existing) => {
         const next = { ...existing };
         const mcpServers =
-          next.mcpServers && typeof next.mcpServers === "object" && !Array.isArray(next.mcpServers)
+          next.mcpServers &&
+          typeof next.mcpServers === "object" &&
+          !Array.isArray(next.mcpServers)
             ? { ...next.mcpServers }
             : {};
         mcpServers[POSTMAN_SKILL_ID] = buildGeminiPostmanServer({
           apiKey,
           apiKeyEnvVar,
-          mcpUrl
+          mcpUrl,
         });
         if (includeStitchMcp) {
           mcpServers[STITCH_MCP_SERVER_ID] = buildGeminiStitchServer({
             apiKey: stitchApiKey,
-            mcpUrl: stitchMcpUrl
+            mcpUrl: stitchMcpUrl,
           });
         }
         next.mcpServers = mcpServers;
         return next;
       },
-      dryRun
+      dryRun,
     });
     return {
       kind: "gemini-settings",
       scope: mcpScope,
       path: settingsPath,
       action: result.action,
-      warnings: [...warnings, ...result.warnings]
+      warnings: [...warnings, ...result.warnings],
     };
   }
 
@@ -3180,25 +3594,27 @@ async function applyPostmanMcpForPlatform({
       updater: (existing) => {
         const next = { ...existing };
         const servers =
-          next.servers && typeof next.servers === "object" && !Array.isArray(next.servers)
+          next.servers &&
+          typeof next.servers === "object" &&
+          !Array.isArray(next.servers)
             ? { ...next.servers }
             : {};
         servers[POSTMAN_SKILL_ID] = buildVsCodePostmanServer({
           apiKey,
           apiKeyEnvVar,
-          mcpUrl
+          mcpUrl,
         });
         next.servers = servers;
         return next;
       },
-      dryRun
+      dryRun,
     });
     return {
       kind: mcpScope === "global" ? "copilot-cli-mcp" : "vscode-mcp",
       scope: mcpScope,
       path: configPath,
       action: result.action,
-      warnings: [...warnings, ...result.warnings]
+      warnings: [...warnings, ...result.warnings],
     };
   }
 
@@ -3210,25 +3626,27 @@ async function applyPostmanMcpForPlatform({
         updater: (existing) => {
           const next = { ...existing };
           const servers =
-            next.servers && typeof next.servers === "object" && !Array.isArray(next.servers)
+            next.servers &&
+            typeof next.servers === "object" &&
+            !Array.isArray(next.servers)
               ? { ...next.servers }
               : {};
           servers[POSTMAN_SKILL_ID] = buildVsCodePostmanServer({
             apiKey,
             apiKeyEnvVar,
-            mcpUrl
+            mcpUrl,
           });
           next.servers = servers;
           return next;
         },
-        dryRun
+        dryRun,
       });
       return {
         kind: "vscode-mcp",
         scope: mcpScope,
         path: vscodePath,
         action: result.action,
-        warnings: [...warnings, ...result.warnings]
+        warnings: [...warnings, ...result.warnings],
       };
     }
 
@@ -3239,7 +3657,7 @@ async function applyPostmanMcpForPlatform({
         scope: mcpScope,
         path: codexConfigPath,
         action: "would-patch",
-        warnings
+        warnings,
       };
     }
 
@@ -3259,26 +3677,26 @@ async function applyPostmanMcpForPlatform({
           "--url",
           mcpUrl,
           "--bearer-token-env-var",
-          apiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR
+          apiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR,
         ],
-        { cwd }
+        { cwd },
       );
     } catch (error) {
       warnings.push(
-        `Failed to register Postman MCP via Codex CLI. Ensure 'codex' is installed and rerun. (${error.message})`
+        `Failed to register Postman MCP via Codex CLI. Ensure 'codex' is installed and rerun. (${error.message})`,
       );
       return {
         kind: "codex-cli",
         scope: mcpScope,
         path: codexConfigPath,
         action: "failed",
-        warnings
+        warnings,
       };
     }
 
     if (apiKey) {
       warnings.push(
-        "Codex global MCP uses bearer token env vars. Inline apiKey in cbx_config.json is not directly used by Codex."
+        "Codex global MCP uses bearer token env vars. Inline apiKey in cbx_config.json is not directly used by Codex.",
       );
     }
 
@@ -3287,7 +3705,7 @@ async function applyPostmanMcpForPlatform({
       scope: mcpScope,
       path: codexConfigPath,
       action: "patched",
-      warnings
+      warnings,
     };
   }
 
@@ -3296,15 +3714,13 @@ async function applyPostmanMcpForPlatform({
     scope: mcpScope,
     path: null,
     action: "skipped",
-    warnings: [`Unsupported platform '${platform}' for Postman MCP installation.`]
+    warnings: [
+      `Unsupported platform '${platform}' for Postman MCP installation.`,
+    ],
   };
 }
 
-async function ensureGitIgnoreEntry({
-  filePath,
-  entry,
-  dryRun = false
-}) {
+async function ensureGitIgnoreEntry({ filePath, entry, dryRun = false }) {
   const exists = await pathExists(filePath);
   const original = exists ? await readFile(filePath, "utf8") : "";
   const lines = original.split(/\r?\n/).map((line) => line.trim());
@@ -3317,7 +3733,7 @@ async function ensureGitIgnoreEntry({
   if (dryRun) {
     return {
       action: exists ? "would-patch" : "would-create",
-      filePath
+      filePath,
     };
   }
 
@@ -3327,7 +3743,7 @@ async function ensureGitIgnoreEntry({
   await writeFile(filePath, nextContent, "utf8");
   return {
     action: exists ? "patched" : "created",
-    filePath
+    filePath,
   };
 }
 
@@ -3335,15 +3751,21 @@ async function resolvePostmanInstallSelection({
   platform,
   scope,
   options,
-  cwd = process.cwd()
+  cwd = process.cwd(),
 }) {
   const hasApiKeyOption = options.postmanApiKey !== undefined;
   const hasWorkspaceOption = options.postmanWorkspaceId !== undefined;
   const hasStitchApiKeyOption = options.stitchApiKey !== undefined;
-  const enabled = Boolean(options.postman) || hasApiKeyOption || hasWorkspaceOption || hasStitchApiKeyOption;
+  const enabled =
+    Boolean(options.postman) ||
+    hasApiKeyOption ||
+    hasWorkspaceOption ||
+    hasStitchApiKeyOption;
   if (!enabled) return { enabled: false };
 
-  const explicitApiKey = hasApiKeyOption ? String(options.postmanApiKey || "").trim() : "";
+  const explicitApiKey = hasApiKeyOption
+    ? String(options.postmanApiKey || "").trim()
+    : "";
   let apiKey = explicitApiKey || null;
   const envApiKey = String(process.env[POSTMAN_API_KEY_ENV_VAR] || "").trim();
   let defaultWorkspaceId = hasWorkspaceOption
@@ -3356,16 +3778,20 @@ async function resolvePostmanInstallSelection({
   let mcpScope = requestedMcpScope || normalizeMcpScope(scope, "project");
   const warnings = [];
   const stitchEnabled = platform === "antigravity";
-  let stitchApiKey = hasStitchApiKeyOption ? normalizePostmanApiKey(options.stitchApiKey) : null;
-  const envStitchApiKey = normalizePostmanApiKey(process.env[STITCH_API_KEY_ENV_VAR]);
+  let stitchApiKey = hasStitchApiKeyOption
+    ? normalizePostmanApiKey(options.stitchApiKey)
+    : null;
+  const envStitchApiKey = normalizePostmanApiKey(
+    process.env[STITCH_API_KEY_ENV_VAR],
+  );
 
   const canPrompt = !options.yes && process.stdin.isTTY;
   if (canPrompt && !hasApiKeyOption && !apiKey && !envApiKey) {
     const promptedApiKey = String(
       await input({
         message: `Postman API key (optional, leave blank to keep ${POSTMAN_API_KEY_ENV_VAR} env mode):`,
-        default: ""
-      })
+        default: "",
+      }),
     ).trim();
     if (promptedApiKey) {
       apiKey = promptedApiKey;
@@ -3380,47 +3806,59 @@ async function resolvePostmanInstallSelection({
     if (selectableApiKey) {
       try {
         const fetchedWorkspaces = await fetchPostmanWorkspaces({
-          apiKey: selectableApiKey
+          apiKey: selectableApiKey,
         });
         if (fetchedWorkspaces.length > 0) {
           usedWorkspaceSelector = true;
-          const sortedWorkspaces = [...fetchedWorkspaces].sort((a, b) => a.name.localeCompare(b.name));
+          const sortedWorkspaces = [...fetchedWorkspaces].sort((a, b) =>
+            a.name.localeCompare(b.name),
+          );
           const workspaceChoice = await select({
             message: "Choose default Postman workspace for this install:",
             choices: [
               { name: "No default workspace (null)", value: null },
               ...sortedWorkspaces.map((workspace) => {
-                const details = [workspace.type, workspace.visibility].filter(Boolean).join(", ");
+                const details = [workspace.type, workspace.visibility]
+                  .filter(Boolean)
+                  .join(", ");
                 const suffix = details ? ` - ${details}` : "";
                 return {
                   name: `${workspace.name} (${workspace.id})${suffix}`,
-                  value: workspace.id
+                  value: workspace.id,
                 };
               }),
-              { name: "Enter workspace ID manually", value: POSTMAN_WORKSPACE_MANUAL_CHOICE }
+              {
+                name: "Enter workspace ID manually",
+                value: POSTMAN_WORKSPACE_MANUAL_CHOICE,
+              },
             ],
-            default: null
+            default: null,
           });
 
           if (workspaceChoice === POSTMAN_WORKSPACE_MANUAL_CHOICE) {
             const promptedWorkspaceId = await input({
-              message: "Default Postman workspace ID (optional, leave blank for null):",
-              default: ""
+              message:
+                "Default Postman workspace ID (optional, leave blank for null):",
+              default: "",
             });
-            selectedWorkspaceId = normalizePostmanWorkspaceId(promptedWorkspaceId);
+            selectedWorkspaceId =
+              normalizePostmanWorkspaceId(promptedWorkspaceId);
           } else {
             selectedWorkspaceId = normalizePostmanWorkspaceId(workspaceChoice);
           }
         }
       } catch (error) {
-        warnings.push(`Could not load Postman workspaces for selection: ${error.message}`);
+        warnings.push(
+          `Could not load Postman workspaces for selection: ${error.message}`,
+        );
       }
     }
 
     if (!usedWorkspaceSelector) {
       const promptedWorkspaceId = await input({
-        message: "Default Postman workspace ID (optional, leave blank for null):",
-        default: ""
+        message:
+          "Default Postman workspace ID (optional, leave blank for null):",
+        default: "",
       });
       selectedWorkspaceId = normalizePostmanWorkspaceId(promptedWorkspaceId);
     }
@@ -3429,12 +3867,18 @@ async function resolvePostmanInstallSelection({
     workspaceSelectionSource = "interactive";
   }
 
-  if (canPrompt && stitchEnabled && !hasStitchApiKeyOption && !stitchApiKey && !envStitchApiKey) {
+  if (
+    canPrompt &&
+    stitchEnabled &&
+    !hasStitchApiKeyOption &&
+    !stitchApiKey &&
+    !envStitchApiKey
+  ) {
     const promptedStitchApiKey = String(
       await input({
         message: `Google Stitch API key (optional, leave blank to keep ${STITCH_API_KEY_ENV_VAR} env mode):`,
-        default: ""
-      })
+        default: "",
+      }),
     ).trim();
     if (promptedStitchApiKey) {
       stitchApiKey = promptedStitchApiKey;
@@ -3445,10 +3889,16 @@ async function resolvePostmanInstallSelection({
     mcpScope = await select({
       message: "Install MCP config in workspace or global scope?",
       choices: [
-        { name: scope === "global" ? "Global (recommended)" : "Global", value: "global" },
-        { name: scope === "project" ? "Workspace (recommended)" : "Workspace", value: "project" }
+        {
+          name: scope === "global" ? "Global (recommended)" : "Global",
+          value: "global",
+        },
+        {
+          name: scope === "project" ? "Workspace (recommended)" : "Workspace",
+          value: "project",
+        },
       ],
-      default: mcpScope
+      default: mcpScope,
     });
   }
 
@@ -3458,7 +3908,10 @@ async function resolvePostmanInstallSelection({
   }
 
   const stitchApiKeySource = stitchEnabled
-    ? getStitchApiKeySource({ apiKey: stitchApiKey, envApiKey: envStitchApiKey })
+    ? getStitchApiKeySource({
+        apiKey: stitchApiKey,
+        envApiKey: envStitchApiKey,
+      })
     : null;
   if (stitchEnabled && stitchApiKeySource === "unset") {
     warnings.push(STITCH_API_KEY_MISSING_WARNING);
@@ -3472,7 +3925,7 @@ async function resolvePostmanInstallSelection({
     name: DEFAULT_CREDENTIAL_PROFILE_NAME,
     apiKey: apiKey || null,
     apiKeyEnvVar: POSTMAN_API_KEY_ENV_VAR,
-    workspaceId: defaultWorkspaceId ?? null
+    workspaceId: defaultWorkspaceId ?? null,
   });
   const cbxConfig = {
     schemaVersion: 1,
@@ -3481,7 +3934,7 @@ async function resolvePostmanInstallSelection({
     mcp: {
       scope: mcpScope,
       server: POSTMAN_SKILL_ID,
-      platform
+      platform,
     },
     postman: {
       profiles: [defaultProfile],
@@ -3490,14 +3943,14 @@ async function resolvePostmanInstallSelection({
       apiKeyEnvVar: defaultProfile.apiKeyEnvVar,
       apiKeySource: storedCredentialSource(defaultProfile),
       defaultWorkspaceId: defaultProfile.workspaceId,
-      mcpUrl: POSTMAN_MCP_URL
-    }
+      mcpUrl: POSTMAN_MCP_URL,
+    },
   };
   if (stitchEnabled) {
     const defaultStitchProfile = normalizeCredentialProfileRecord("stitch", {
       name: DEFAULT_CREDENTIAL_PROFILE_NAME,
       apiKey: stitchApiKey || null,
-      apiKeyEnvVar: STITCH_API_KEY_ENV_VAR
+      apiKeyEnvVar: STITCH_API_KEY_ENV_VAR,
     });
     cbxConfig.stitch = {
       server: STITCH_MCP_SERVER_ID,
@@ -3506,7 +3959,7 @@ async function resolvePostmanInstallSelection({
       apiKey: defaultStitchProfile.apiKey,
       apiKeyEnvVar: defaultStitchProfile.apiKeyEnvVar,
       apiKeySource: storedCredentialSource(defaultStitchProfile),
-      mcpUrl: STITCH_MCP_URL
+      mcpUrl: STITCH_MCP_URL,
     };
   }
 
@@ -3522,7 +3975,7 @@ async function resolvePostmanInstallSelection({
     mcpScope,
     warnings,
     cbxConfig,
-    cbxConfigPath
+    cbxConfigPath,
   };
 }
 
@@ -3533,91 +3986,127 @@ async function configurePostmanInstallArtifacts({
   postmanSelection,
   overwrite = false,
   dryRun = false,
-  cwd = process.cwd()
+  cwd = process.cwd(),
 }) {
   if (!postmanSelection?.enabled) return null;
 
   let warnings = postmanSelection.warnings.filter(
-    (warning) => warning !== POSTMAN_API_KEY_MISSING_WARNING && warning !== STITCH_API_KEY_MISSING_WARNING
+    (warning) =>
+      warning !== POSTMAN_API_KEY_MISSING_WARNING &&
+      warning !== STITCH_API_KEY_MISSING_WARNING,
   );
-  await assertNoLegacyOnlyPostmanConfig({ scope: postmanSelection.mcpScope, cwd });
+  await assertNoLegacyOnlyPostmanConfig({
+    scope: postmanSelection.mcpScope,
+    cwd,
+  });
   const cbxConfigContent = `${JSON.stringify(postmanSelection.cbxConfig, null, 2)}\n`;
   const cbxConfigResult = await writeTextFile({
     targetPath: postmanSelection.cbxConfigPath,
     content: cbxConfigContent,
     overwrite,
-    dryRun
+    dryRun,
   });
 
-  const installPostmanConfig = parseStoredPostmanConfig(postmanSelection.cbxConfig);
+  const installPostmanConfig = parseStoredPostmanConfig(
+    postmanSelection.cbxConfig,
+  );
   let effectiveApiKey = normalizePostmanApiKey(installPostmanConfig?.apiKey);
-  let effectiveApiKeyEnvVar = String(installPostmanConfig?.apiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR).trim();
-  let effectiveDefaultWorkspaceId = installPostmanConfig?.defaultWorkspaceId ?? postmanSelection.defaultWorkspaceId ?? null;
+  let effectiveApiKeyEnvVar = String(
+    installPostmanConfig?.apiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR,
+  ).trim();
+  let effectiveDefaultWorkspaceId =
+    installPostmanConfig?.defaultWorkspaceId ??
+    postmanSelection.defaultWorkspaceId ??
+    null;
   let effectiveMcpUrl = installPostmanConfig?.mcpUrl || POSTMAN_MCP_URL;
   const shouldInstallStitch = Boolean(postmanSelection.stitchEnabled);
-  const installStitchConfig = shouldInstallStitch ? parseStoredStitchConfig(postmanSelection.cbxConfig) : null;
+  const installStitchConfig = shouldInstallStitch
+    ? parseStoredStitchConfig(postmanSelection.cbxConfig)
+    : null;
   let effectiveStitchApiKey = shouldInstallStitch
     ? normalizePostmanApiKey(installStitchConfig?.apiKey)
     : null;
   let effectiveStitchApiKeyEnvVar = shouldInstallStitch
-    ? String(installStitchConfig?.apiKeyEnvVar || STITCH_API_KEY_ENV_VAR).trim() || STITCH_API_KEY_ENV_VAR
+    ? String(
+        installStitchConfig?.apiKeyEnvVar || STITCH_API_KEY_ENV_VAR,
+      ).trim() || STITCH_API_KEY_ENV_VAR
     : STITCH_API_KEY_ENV_VAR;
   let effectiveStitchMcpUrl = shouldInstallStitch
     ? installStitchConfig?.mcpUrl || STITCH_MCP_URL
     : STITCH_MCP_URL;
 
-  if (cbxConfigResult.action === "skipped" || cbxConfigResult.action === "would-skip") {
-    const existingCbxConfig = await readJsonFileIfExists(postmanSelection.cbxConfigPath);
-    const storedPostmanConfig = parseStoredPostmanConfig(existingCbxConfig.value);
-    const storedStitchConfig = shouldInstallStitch ? parseStoredStitchConfig(existingCbxConfig.value) : null;
+  if (
+    cbxConfigResult.action === "skipped" ||
+    cbxConfigResult.action === "would-skip"
+  ) {
+    const existingCbxConfig = await readJsonFileIfExists(
+      postmanSelection.cbxConfigPath,
+    );
+    const storedPostmanConfig = parseStoredPostmanConfig(
+      existingCbxConfig.value,
+    );
+    const storedStitchConfig = shouldInstallStitch
+      ? parseStoredStitchConfig(existingCbxConfig.value)
+      : null;
 
     if (storedPostmanConfig) {
       effectiveApiKey = storedPostmanConfig.apiKey;
-      effectiveApiKeyEnvVar = storedPostmanConfig.apiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR;
+      effectiveApiKeyEnvVar =
+        storedPostmanConfig.apiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR;
       effectiveDefaultWorkspaceId = storedPostmanConfig.defaultWorkspaceId;
       effectiveMcpUrl = storedPostmanConfig.mcpUrl || POSTMAN_MCP_URL;
     } else {
       warnings.push(
-        `Existing ${CBX_CONFIG_FILENAME} could not be parsed. Using install-time Postman values for MCP config.`
+        `Existing ${CBX_CONFIG_FILENAME} could not be parsed. Using install-time Postman values for MCP config.`,
       );
     }
 
     if (storedStitchConfig) {
       effectiveStitchApiKey = storedStitchConfig.apiKey;
       effectiveStitchApiKeyEnvVar =
-        String(storedStitchConfig.apiKeyEnvVar || STITCH_API_KEY_ENV_VAR).trim() || STITCH_API_KEY_ENV_VAR;
+        String(
+          storedStitchConfig.apiKeyEnvVar || STITCH_API_KEY_ENV_VAR,
+        ).trim() || STITCH_API_KEY_ENV_VAR;
       effectiveStitchMcpUrl = storedStitchConfig.mcpUrl || STITCH_MCP_URL;
     }
 
-    if (postmanSelection.workspaceSelectionSource && postmanSelection.workspaceSelectionSource !== "none") {
+    if (
+      postmanSelection.workspaceSelectionSource &&
+      postmanSelection.workspaceSelectionSource !== "none"
+    ) {
       const requestedWorkspaceId = postmanSelection.defaultWorkspaceId ?? null;
       const persistedWorkspaceId = effectiveDefaultWorkspaceId ?? null;
       if (requestedWorkspaceId !== persistedWorkspaceId) {
-        const configScope = postmanSelection.mcpScope === "global" ? "global" : "project";
+        const configScope =
+          postmanSelection.mcpScope === "global" ? "global" : "project";
         const configHint =
           requestedWorkspaceId === null
             ? `cbx workflows config --scope ${configScope} --clear-workspace-id`
             : `cbx workflows config --scope ${configScope} --workspace-id \"${requestedWorkspaceId}\"`;
         warnings.push(
-          `Selected Postman workspace (${requestedWorkspaceId === null ? "null" : requestedWorkspaceId}) was not saved because ${CBX_CONFIG_FILENAME} already exists. Re-run with --overwrite or run '${configHint}'.`
+          `Selected Postman workspace (${requestedWorkspaceId === null ? "null" : requestedWorkspaceId}) was not saved because ${CBX_CONFIG_FILENAME} already exists. Re-run with --overwrite or run '${configHint}'.`,
         );
       }
     }
   }
 
-  const envApiKey = normalizePostmanApiKey(process.env[effectiveApiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR]);
+  const envApiKey = normalizePostmanApiKey(
+    process.env[effectiveApiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR],
+  );
   const effectiveApiKeySource = getPostmanApiKeySource({
     apiKey: effectiveApiKey,
-    envApiKey
+    envApiKey,
   });
   if (effectiveApiKeySource === "unset") {
     warnings.push(POSTMAN_API_KEY_MISSING_WARNING);
   }
-  const envStitchApiKey = normalizePostmanApiKey(process.env[effectiveStitchApiKeyEnvVar]);
+  const envStitchApiKey = normalizePostmanApiKey(
+    process.env[effectiveStitchApiKeyEnvVar],
+  );
   const effectiveStitchApiKeySource = shouldInstallStitch
     ? getStitchApiKeySource({
         apiKey: effectiveStitchApiKey,
-        envApiKey: envStitchApiKey
+        envApiKey: envStitchApiKey,
       })
     : null;
   if (shouldInstallStitch && effectiveStitchApiKeySource === "unset") {
@@ -3631,14 +4120,14 @@ async function configurePostmanInstallArtifacts({
     const configIgnore = await ensureGitIgnoreEntry({
       filePath: gitIgnorePath,
       entry: CBX_CONFIG_FILENAME,
-      dryRun
+      dryRun,
     });
     gitIgnoreResults.push(configIgnore);
 
     const mcpIgnore = await ensureGitIgnoreEntry({
       filePath: gitIgnorePath,
       entry: ".cbx/mcp/",
-      dryRun
+      dryRun,
     });
     gitIgnoreResults.push(mcpIgnore);
   }
@@ -3646,41 +4135,41 @@ async function configurePostmanInstallArtifacts({
   const mcpDefinitionPath = resolvePostmanMcpDefinitionPath({
     platform,
     scope: postmanSelection.mcpScope,
-    cwd
+    cwd,
   });
   const mcpDefinitionContent = `${JSON.stringify(
     buildPostmanMcpDefinition({
       apiKey: effectiveApiKey,
       apiKeyEnvVar: effectiveApiKeyEnvVar,
-      mcpUrl: effectiveMcpUrl
+      mcpUrl: effectiveMcpUrl,
     }),
     null,
-    2
+    2,
   )}\n`;
   const mcpDefinitionResult = await writeGeneratedArtifact({
     destination: mcpDefinitionPath,
     content: mcpDefinitionContent,
-    dryRun
+    dryRun,
   });
   let stitchMcpDefinitionPath = null;
   let stitchMcpDefinitionResult = null;
   if (shouldInstallStitch) {
     stitchMcpDefinitionPath = resolveStitchMcpDefinitionPath({
       scope: postmanSelection.mcpScope,
-      cwd
+      cwd,
     });
     const stitchMcpDefinitionContent = `${JSON.stringify(
       buildStitchMcpDefinition({
         apiKey: effectiveStitchApiKey,
-        mcpUrl: effectiveStitchMcpUrl
+        mcpUrl: effectiveStitchMcpUrl,
       }),
       null,
-      2
+      2,
     )}\n`;
     stitchMcpDefinitionResult = await writeGeneratedArtifact({
       destination: stitchMcpDefinitionPath,
       content: stitchMcpDefinitionContent,
-      dryRun
+      dryRun,
     });
   }
 
@@ -3694,13 +4183,13 @@ async function configurePostmanInstallArtifacts({
     stitchMcpUrl: effectiveStitchMcpUrl,
     includeStitchMcp: shouldInstallStitch,
     dryRun,
-    cwd
+    cwd,
   });
   warnings.push(...(mcpRuntimeResult.warnings || []));
 
   const legacySkillMcpCleanup = await removeGeneratedArtifactIfExists({
     targetPath: path.join(profilePaths.skillsDir, POSTMAN_SKILL_ID, "mcp.json"),
-    dryRun
+    dryRun,
   });
 
   return {
@@ -3718,14 +4207,14 @@ async function configurePostmanInstallArtifacts({
     stitchMcpDefinitionPath,
     stitchMcpDefinitionResult,
     mcpRuntimeResult,
-    legacySkillMcpCleanup
+    legacySkillMcpCleanup,
   };
 }
 
 async function installAntigravityTerminalIntegrationArtifacts({
   profilePaths,
   provider,
-  dryRun = false
+  dryRun = false,
 }) {
   const integrationDir = getAntigravityTerminalIntegrationDir(profilePaths);
   const configPath = path.join(integrationDir, "config.json");
@@ -3741,7 +4230,7 @@ async function installAntigravityTerminalIntegrationArtifacts({
   const configContent = `${JSON.stringify(
     buildAntigravityTerminalIntegrationConfig({ provider }),
     null,
-    2
+    2,
   )}\n`;
   const scriptPs1 = buildAntigravityTerminalIntegrationPowerShellScript();
   const scriptSh = buildAntigravityTerminalIntegrationBashScript();
@@ -3749,14 +4238,38 @@ async function installAntigravityTerminalIntegrationArtifacts({
     provider,
     configPath,
     scriptPsPath: powerShellScriptPath,
-    scriptShPath: bashScriptPath
+    scriptShPath: bashScriptPath,
   });
 
   const writes = [];
-  writes.push(await writeGeneratedArtifact({ destination: configPath, content: configContent, dryRun }));
-  writes.push(await writeGeneratedArtifact({ destination: powerShellScriptPath, content: scriptPs1, dryRun }));
-  writes.push(await writeGeneratedArtifact({ destination: bashScriptPath, content: scriptSh, dryRun }));
-  writes.push(await writeGeneratedArtifact({ destination: readmePath, content: `${readme}\n`, dryRun }));
+  writes.push(
+    await writeGeneratedArtifact({
+      destination: configPath,
+      content: configContent,
+      dryRun,
+    }),
+  );
+  writes.push(
+    await writeGeneratedArtifact({
+      destination: powerShellScriptPath,
+      content: scriptPs1,
+      dryRun,
+    }),
+  );
+  writes.push(
+    await writeGeneratedArtifact({
+      destination: bashScriptPath,
+      content: scriptSh,
+      dryRun,
+    }),
+  );
+  writes.push(
+    await writeGeneratedArtifact({
+      destination: readmePath,
+      content: `${readme}\n`,
+      dryRun,
+    }),
+  );
 
   return {
     provider,
@@ -3766,14 +4279,14 @@ async function installAntigravityTerminalIntegrationArtifacts({
     bashScriptPath,
     readmePath,
     actions: writes,
-    installedPaths: writes.map((item) => item.path)
+    installedPaths: writes.map((item) => item.path),
   };
 }
 
 async function sanitizeInstalledSkillsForPlatform({
   platform,
   skillDirs,
-  dryRun = false
+  dryRun = false,
 }) {
   if (dryRun || platform !== "copilot") return [];
 
@@ -3784,13 +4297,14 @@ async function sanitizeInstalledSkillsForPlatform({
     if (!(await pathExists(skillFile))) continue;
 
     const raw = await readFile(skillFile, "utf8");
-    const { changed, content, removedKeys } = sanitizeSkillMarkdownForCopilot(raw);
+    const { changed, content, removedKeys } =
+      sanitizeSkillMarkdownForCopilot(raw);
     if (!changed) continue;
 
     await writeFile(skillFile, content, "utf8");
     sanitized.push({
       skillId: path.basename(skillDir),
-      removedKeys
+      removedKeys,
     });
   }
 
@@ -3800,7 +4314,7 @@ async function sanitizeInstalledSkillsForPlatform({
 async function sanitizeInstalledAgentsForPlatform({
   platform,
   agentFiles,
-  dryRun = false
+  dryRun = false,
 }) {
   if (dryRun || platform !== "copilot") return [];
 
@@ -3809,14 +4323,18 @@ async function sanitizeInstalledAgentsForPlatform({
   for (const agentFile of agentFiles) {
     if (!(await pathExists(agentFile))) continue;
     const raw = await readFile(agentFile, "utf8");
-    const { changed, content, removedKeys } = sanitizeAgentMarkdownForCopilot(raw);
+    const { changed, content, removedKeys } =
+      sanitizeAgentMarkdownForCopilot(raw);
     if (!changed) continue;
 
     await writeFile(agentFile, content, "utf8");
-    const agentId = path.basename(agentFile).replace(/\.agent\.md$/i, "").replace(/\.md$/i, "");
+    const agentId = path
+      .basename(agentFile)
+      .replace(/\.agent\.md$/i, "")
+      .replace(/\.md$/i, "");
     sanitized.push({
       agentId,
-      removedKeys
+      removedKeys,
     });
   }
 
@@ -3842,7 +4360,7 @@ async function validateCopilotSkillsSchema(skillsDir) {
 
     findings.push({
       skillId: entry.name,
-      unsupportedKeys
+      unsupportedKeys,
     });
   }
 
@@ -3869,7 +4387,7 @@ async function validateCopilotAgentsSchema(agentsDir) {
 
     findings.push({
       agentId: entry.name.replace(/\.agent\.md$/i, "").replace(/\.md$/i, ""),
-      unsupportedKeys
+      unsupportedKeys,
     });
   }
 
@@ -3899,9 +4417,14 @@ async function findNestedSkillDirs(rootDir, depth = 0, nested = []) {
 async function cleanupNestedDuplicateSkills({
   skillsRootDir,
   installedSkillDirs,
-  dryRun = false
+  dryRun = false,
 }) {
-  if (!skillsRootDir || !Array.isArray(installedSkillDirs) || installedSkillDirs.length === 0) return [];
+  if (
+    !skillsRootDir ||
+    !Array.isArray(installedSkillDirs) ||
+    installedSkillDirs.length === 0
+  )
+    return [];
 
   const topLevelSkillIds = new Set();
   for (const skillDir of installedSkillDirs) {
@@ -3931,7 +4454,7 @@ async function cleanupNestedDuplicateSkills({
         nestedSkillId,
         path: nestedDir,
         ownerSkillId,
-        action: dryRun ? "would-remove" : "removed"
+        action: dryRun ? "would-remove" : "removed",
       });
     }
   }
@@ -3950,13 +4473,17 @@ async function installBundleArtifacts({
   skillProfile = DEFAULT_SKILL_PROFILE,
   terminalVerifierSelection = null,
   dryRun = false,
-  cwd = process.cwd()
+  cwd = process.cwd(),
 }) {
-  const profilePaths = profilePathsOverride || (await resolveArtifactProfilePaths(platform, scope, cwd));
+  const profilePaths =
+    profilePathsOverride ||
+    (await resolveArtifactProfilePaths(platform, scope, cwd));
   const platformSpec = manifest.platforms?.[platform];
 
   if (!platformSpec) {
-    throw new Error(`Bundle '${bundleId}' does not define platform '${platform}'.`);
+    throw new Error(
+      `Bundle '${bundleId}' does not define platform '${platform}'.`,
+    );
   }
 
   if (!dryRun) {
@@ -3965,10 +4492,18 @@ async function installBundleArtifacts({
     if (platformInstallsCustomAgents(platform)) {
       await mkdir(profilePaths.agentsDir, { recursive: true });
     }
-    if (profilePaths.commandsDir && Array.isArray(platformSpec.commands) && platformSpec.commands.length > 0) {
+    if (
+      profilePaths.commandsDir &&
+      Array.isArray(platformSpec.commands) &&
+      platformSpec.commands.length > 0
+    ) {
       await mkdir(profilePaths.commandsDir, { recursive: true });
     }
-    if (profilePaths.promptsDir && Array.isArray(platformSpec.prompts) && platformSpec.prompts.length > 0) {
+    if (
+      profilePaths.promptsDir &&
+      Array.isArray(platformSpec.prompts) &&
+      platformSpec.prompts.length > 0
+    ) {
       await mkdir(profilePaths.promptsDir, { recursive: true });
     }
   }
@@ -3978,20 +4513,37 @@ async function installBundleArtifacts({
 
   const installed = [];
   const skipped = [];
-  const artifacts = { workflows: [], agents: [], skills: [], commands: [], prompts: [] };
+  const artifacts = {
+    workflows: [],
+    agents: [],
+    skills: [],
+    commands: [],
+    prompts: [],
+  };
 
-  const workflowFiles = Array.isArray(platformSpec.workflows) ? platformSpec.workflows : [];
+  const workflowFiles = Array.isArray(platformSpec.workflows)
+    ? platformSpec.workflows
+    : [];
   for (const workflowFile of workflowFiles) {
     const source = path.join(platformRoot, "workflows", workflowFile);
-    const destination = path.join(profilePaths.workflowsDir, path.basename(workflowFile));
+    const destination = path.join(
+      profilePaths.workflowsDir,
+      path.basename(workflowFile),
+    );
 
     if (!(await pathExists(source))) {
       throw new Error(`Missing workflow source file: ${source}`);
     }
 
-    const result = await copyArtifact({ source, destination, overwrite, dryRun });
+    const result = await copyArtifact({
+      source,
+      destination,
+      overwrite,
+      dryRun,
+    });
     artifacts.workflows.push(destination);
-    if (result.action === "skipped" || result.action === "would-skip") skipped.push(destination);
+    if (result.action === "skipped" || result.action === "would-skip")
+      skipped.push(destination);
     else installed.push(destination);
   }
 
@@ -4002,53 +4554,84 @@ async function installBundleArtifacts({
     : [];
   for (const agentFile of agentFiles) {
     const source = path.join(platformRoot, "agents", agentFile);
-    const destination = path.join(profilePaths.agentsDir, path.basename(agentFile));
+    const destination = path.join(
+      profilePaths.agentsDir,
+      path.basename(agentFile),
+    );
 
     if (!(await pathExists(source))) {
       throw new Error(`Missing agent source file: ${source}`);
     }
 
-    const result = await copyArtifact({ source, destination, overwrite, dryRun });
+    const result = await copyArtifact({
+      source,
+      destination,
+      overwrite,
+      dryRun,
+    });
     artifacts.agents.push(destination);
-    if (result.action === "skipped" || result.action === "would-skip") skipped.push(destination);
+    if (result.action === "skipped" || result.action === "would-skip")
+      skipped.push(destination);
     else installed.push(destination);
   }
 
-  const commandFiles = Array.isArray(platformSpec.commands) ? platformSpec.commands : [];
+  const commandFiles = Array.isArray(platformSpec.commands)
+    ? platformSpec.commands
+    : [];
   for (const commandFile of commandFiles) {
     if (!profilePaths.commandsDir) continue;
     const source = path.join(platformRoot, "commands", commandFile);
-    const destination = path.join(profilePaths.commandsDir, path.basename(commandFile));
+    const destination = path.join(
+      profilePaths.commandsDir,
+      path.basename(commandFile),
+    );
 
     if (!(await pathExists(source))) {
       throw new Error(`Missing command source file: ${source}`);
     }
 
-    const result = await copyArtifact({ source, destination, overwrite, dryRun });
+    const result = await copyArtifact({
+      source,
+      destination,
+      overwrite,
+      dryRun,
+    });
     artifacts.commands.push(destination);
-    if (result.action === "skipped" || result.action === "would-skip") skipped.push(destination);
+    if (result.action === "skipped" || result.action === "would-skip")
+      skipped.push(destination);
     else installed.push(destination);
   }
 
-  const promptFiles = Array.isArray(platformSpec.prompts) ? platformSpec.prompts : [];
+  const promptFiles = Array.isArray(platformSpec.prompts)
+    ? platformSpec.prompts
+    : [];
   for (const promptFile of promptFiles) {
     if (!profilePaths.promptsDir) continue;
     const source = path.join(platformRoot, "prompts", promptFile);
-    const destination = path.join(profilePaths.promptsDir, path.basename(promptFile));
+    const destination = path.join(
+      profilePaths.promptsDir,
+      path.basename(promptFile),
+    );
 
     if (!(await pathExists(source))) {
       throw new Error(`Missing prompt source file: ${source}`);
     }
 
-    const result = await copyArtifact({ source, destination, overwrite, dryRun });
+    const result = await copyArtifact({
+      source,
+      destination,
+      overwrite,
+      dryRun,
+    });
     artifacts.prompts.push(destination);
-    if (result.action === "skipped" || result.action === "would-skip") skipped.push(destination);
+    if (result.action === "skipped" || result.action === "would-skip")
+      skipped.push(destination);
     else installed.push(destination);
   }
   const skillIds = await resolveInstallSkillIds({
     platformSpec,
     extraSkillIds,
-    skillProfile
+    skillProfile,
   });
   for (const skillId of skillIds) {
     const source = await resolveSkillSourceDirectory(skillId);
@@ -4056,30 +4639,40 @@ async function installBundleArtifacts({
 
     if (!source) {
       throw new Error(
-        `Missing skill source directory for '${skillId}' (checked ${workflowSkillsRoot()}).`
+        `Missing skill source directory for '${skillId}' (checked ${workflowSkillsRoot()}).`,
       );
     }
 
-    const result = await copyArtifact({ source, destination, overwrite, dryRun });
+    const result = await copyArtifact({
+      source,
+      destination,
+      overwrite,
+      dryRun,
+    });
     artifacts.skills.push(destination);
-    if (result.action === "skipped" || result.action === "would-skip") skipped.push(destination);
+    if (result.action === "skipped" || result.action === "would-skip")
+      skipped.push(destination);
     else installed.push(destination);
-  });
-      artifacts.skills.push(mcpVaultDestination);
-      if (vaultResult.action === "skipped" || vaultResult.action === "would-skip") {
-        skipped.push(mcpVaultDestination);
-      } else {
-        installed.push(mcpVaultDestination);
-      }
-    }
   }
 
   // Copy skills_index.json if it exists in the package skills root
-  const skillsIndexSource = path.join(workflowSkillsRoot(), "skills_index.json");
+  const skillsIndexSource = path.join(
+    workflowSkillsRoot(),
+    "skills_index.json",
+  );
   if (await pathExists(skillsIndexSource)) {
-    const skillsIndexDest = path.join(profilePaths.skillsDir, "skills_index.json");
-    const indexResult = await copyArtifact({ source: skillsIndexSource, destination: skillsIndexDest, overwrite, dryRun });
-    if (indexResult.action === "skipped" || indexResult.action === "would-skip") skipped.push(skillsIndexDest);
+    const skillsIndexDest = path.join(
+      profilePaths.skillsDir,
+      "skills_index.json",
+    );
+    const indexResult = await copyArtifact({
+      source: skillsIndexSource,
+      destination: skillsIndexDest,
+      overwrite,
+      dryRun,
+    });
+    if (indexResult.action === "skipped" || indexResult.action === "would-skip")
+      skipped.push(skillsIndexDest);
     else installed.push(skillsIndexDest);
   }
 
@@ -4090,7 +4683,7 @@ async function installBundleArtifacts({
       platformSpec,
       skillsDir: profilePaths.skillsDir,
       overwrite,
-      dryRun
+      dryRun,
     });
     installed.push(...wrapperResult.installed);
     skipped.push(...wrapperResult.skipped);
@@ -4103,7 +4696,7 @@ async function installBundleArtifacts({
     terminalIntegration = await installAntigravityTerminalIntegrationArtifacts({
       profilePaths,
       provider: terminalVerifierSelection.provider,
-      dryRun
+      dryRun,
     });
     installed.push(...terminalIntegration.installedPaths);
   }
@@ -4111,18 +4704,18 @@ async function installBundleArtifacts({
   const duplicateSkillCleanup = await cleanupNestedDuplicateSkills({
     skillsRootDir: profilePaths.skillsDir,
     installedSkillDirs: artifacts.skills,
-    dryRun
+    dryRun,
   });
 
   const sanitizedSkills = await sanitizeInstalledSkillsForPlatform({
     platform,
     skillDirs: artifacts.skills,
-    dryRun
+    dryRun,
   });
   const sanitizedAgents = await sanitizeInstalledAgentsForPlatform({
     platform,
     agentFiles: artifacts.agents,
-    dryRun
+    dryRun,
   });
 
   return {
@@ -4134,7 +4727,7 @@ async function installBundleArtifacts({
     generatedWrapperSkills,
     duplicateSkillCleanup,
     sanitizedSkills,
-    sanitizedAgents
+    sanitizedAgents,
   };
 }
 
@@ -4143,13 +4736,15 @@ async function installCodexProjectWorkflowTemplates({
   manifest,
   overwrite,
   dryRun = false,
-  cwd = process.cwd()
+  cwd = process.cwd(),
 }) {
   const platform = "codex";
   const platformSpec = manifest.platforms?.[platform];
   if (!platformSpec) return { installed: [], skipped: [] };
 
-  const workflowFiles = Array.isArray(platformSpec.workflows) ? platformSpec.workflows : [];
+  const workflowFiles = Array.isArray(platformSpec.workflows)
+    ? platformSpec.workflows
+    : [];
   if (workflowFiles.length === 0) return { installed: [], skipped: [] };
 
   const profilePaths = await resolveProfilePaths(platform, "project", cwd);
@@ -4164,14 +4759,23 @@ async function installCodexProjectWorkflowTemplates({
 
   for (const workflowFile of workflowFiles) {
     const source = path.join(platformRoot, "workflows", workflowFile);
-    const destination = path.join(profilePaths.workflowsDir, path.basename(workflowFile));
+    const destination = path.join(
+      profilePaths.workflowsDir,
+      path.basename(workflowFile),
+    );
 
     if (!(await pathExists(source))) {
       throw new Error(`Missing workflow source file: ${source}`);
     }
 
-    const result = await copyArtifact({ source, destination, overwrite, dryRun });
-    if (result.action === "skipped" || result.action === "would-skip") skipped.push(destination);
+    const result = await copyArtifact({
+      source,
+      destination,
+      overwrite,
+      dryRun,
+    });
+    if (result.action === "skipped" || result.action === "would-skip")
+      skipped.push(destination);
     else installed.push(destination);
   }
 
@@ -4185,18 +4789,26 @@ async function seedRuleFileFromTemplateIfMissing({
   scope,
   overwrite = false,
   dryRun = false,
-  cwd = process.cwd()
+  cwd = process.cwd(),
 }) {
   const platformSpec = manifest.platforms?.[platform];
-  if (!platformSpec || !platformSpec.rulesTemplate) return { ruleFilePath: null, action: "none" };
+  if (!platformSpec || !platformSpec.rulesTemplate)
+    return { ruleFilePath: null, action: "none" };
 
   const profilePaths = await resolveProfilePaths(platform, scope, cwd);
   const ruleFilePath = profilePaths.ruleFilesByPriority[0];
   if (!ruleFilePath) return { ruleFilePath: null, action: "none" };
-  if (await pathExists(ruleFilePath) && !overwrite) return { ruleFilePath, action: "exists" };
+  if ((await pathExists(ruleFilePath)) && !overwrite)
+    return { ruleFilePath, action: "exists" };
 
-  const templatePath = path.join(agentAssetsRoot(), "workflows", bundleId, platformSpec.rulesTemplate);
-  if (!(await pathExists(templatePath))) return { ruleFilePath, action: "missing-template" };
+  const templatePath = path.join(
+    agentAssetsRoot(),
+    "workflows",
+    bundleId,
+    platformSpec.rulesTemplate,
+  );
+  if (!(await pathExists(templatePath)))
+    return { ruleFilePath, action: "missing-template" };
 
   if (!dryRun) {
     await mkdir(path.dirname(ruleFilePath), { recursive: true });
@@ -4209,7 +4821,11 @@ async function seedRuleFileFromTemplateIfMissing({
 
 function commandToFilename(command) {
   if (!command) return null;
-  const normalized = command.trim().replace(/^\//, "").replace(/\s+/g, "-").toLowerCase();
+  const normalized = command
+    .trim()
+    .replace(/^\//, "")
+    .replace(/\s+/g, "-")
+    .toLowerCase();
   if (!normalized) return null;
   return `${normalized}.md`;
 }
@@ -4232,7 +4848,11 @@ async function findWorkflowFileByTarget(workflowsDir, target) {
     if (!entry.isFile() || !entry.name.endsWith(".md")) continue;
     const fullPath = path.join(workflowsDir, entry.name);
     const metadata = await parseWorkflowMetadata(fullPath);
-    if (metadata.command === target || metadata.id === target || metadata.name === target) {
+    if (
+      metadata.command === target ||
+      metadata.id === target ||
+      metadata.name === target
+    ) {
       return fullPath;
     }
   }
@@ -4247,44 +4867,61 @@ async function removeBundleArtifacts({
   scope,
   profilePathsOverride = null,
   dryRun = false,
-  cwd = process.cwd()
+  cwd = process.cwd(),
 }) {
-  const profilePaths = profilePathsOverride || (await resolveArtifactProfilePaths(platform, scope, cwd));
+  const profilePaths =
+    profilePathsOverride ||
+    (await resolveArtifactProfilePaths(platform, scope, cwd));
   const platformSpec = manifest.platforms?.[platform];
-  if (!platformSpec) throw new Error(`Bundle '${bundleId}' does not define platform '${platform}'.`);
+  if (!platformSpec)
+    throw new Error(
+      `Bundle '${bundleId}' does not define platform '${platform}'.`,
+    );
 
   const removed = [];
 
   for (const workflowFile of platformSpec.workflows || []) {
-    const destination = path.join(profilePaths.workflowsDir, path.basename(workflowFile));
+    const destination = path.join(
+      profilePaths.workflowsDir,
+      path.basename(workflowFile),
+    );
     if (await safeRemove(destination, dryRun)) removed.push(destination);
   }
 
   for (const agentFile of platformSpec.agents || []) {
-    const destination = path.join(profilePaths.agentsDir, path.basename(agentFile));
+    const destination = path.join(
+      profilePaths.agentsDir,
+      path.basename(agentFile),
+    );
     if (await safeRemove(destination, dryRun)) removed.push(destination);
   }
 
   for (const commandFile of platformSpec.commands || []) {
     if (!profilePaths.commandsDir) continue;
-    const destination = path.join(profilePaths.commandsDir, path.basename(commandFile));
+    const destination = path.join(
+      profilePaths.commandsDir,
+      path.basename(commandFile),
+    );
     if (await safeRemove(destination, dryRun)) removed.push(destination);
   }
 
   for (const promptFile of platformSpec.prompts || []) {
     if (!profilePaths.promptsDir) continue;
-    const destination = path.join(profilePaths.promptsDir, path.basename(promptFile));
+    const destination = path.join(
+      profilePaths.promptsDir,
+      path.basename(promptFile),
+    );
     if (await safeRemove(destination, dryRun)) removed.push(destination);
   }
 
-  const skillIds = await resolveInstallSkillIds({ platformSpec, extraSkillIds: [] });
+  const skillIds = await resolveInstallSkillIds({
+    platformSpec,
+    extraSkillIds: [],
+  });
   for (const skillId of skillIds) {
     const destination = path.join(profilePaths.skillsDir, skillId);
     if (await safeRemove(destination, dryRun)) removed.push(destination);
   }
-
-  const mcpVaultDestination = path.join(profilePaths.skillsDir, ".mcp-vault");
-  if (await safeRemove(mcpVaultDestination, dryRun)) removed.push(mcpVaultDestination);
 
   if (platform === "codex") {
     const wrapperSkillIds = buildCodexWrapperSkillIds(platformSpec);
@@ -4305,29 +4942,47 @@ function printPlatforms() {
     console.log(`- ${profile.id} (${profile.label})`);
     console.log(`  project workflows: ${profile.project.workflowDirs[0]}`);
     console.log(
-      `  project agents:    ${agentsEnabled ? profile.project.agentDirs[0] : "(disabled for this platform)"}`
+      `  project agents:    ${agentsEnabled ? profile.project.agentDirs[0] : "(disabled for this platform)"}`,
     );
     console.log(`  project skills:    ${profile.project.skillDirs[0]}`);
-    if (Array.isArray(profile.project.commandDirs) && profile.project.commandDirs.length > 0) {
+    if (
+      Array.isArray(profile.project.commandDirs) &&
+      profile.project.commandDirs.length > 0
+    ) {
       console.log(`  project commands:  ${profile.project.commandDirs[0]}`);
     }
-    if (Array.isArray(profile.project.promptDirs) && profile.project.promptDirs.length > 0) {
+    if (
+      Array.isArray(profile.project.promptDirs) &&
+      profile.project.promptDirs.length > 0
+    ) {
       console.log(`  project prompts:   ${profile.project.promptDirs[0]}`);
     }
-    console.log(`  project rules:     ${profile.project.ruleFilesByPriority.join(" | ")}`);
+    console.log(
+      `  project rules:     ${profile.project.ruleFilesByPriority.join(" | ")}`,
+    );
     console.log(`  global workflows:  ${profile.global.workflowDirs[0]}`);
     console.log(
-      `  global agents:     ${agentsEnabled ? profile.global.agentDirs[0] : "(disabled for this platform)"}`
+      `  global agents:     ${agentsEnabled ? profile.global.agentDirs[0] : "(disabled for this platform)"}`,
     );
     console.log(`  global skills:     ${profile.global.skillDirs[0]}`);
-    if (Array.isArray(profile.global.commandDirs) && profile.global.commandDirs.length > 0) {
+    if (
+      Array.isArray(profile.global.commandDirs) &&
+      profile.global.commandDirs.length > 0
+    ) {
       console.log(`  global commands:   ${profile.global.commandDirs[0]}`);
     }
-    if (Array.isArray(profile.global.promptDirs) && profile.global.promptDirs.length > 0) {
+    if (
+      Array.isArray(profile.global.promptDirs) &&
+      profile.global.promptDirs.length > 0
+    ) {
       console.log(`  global prompts:    ${profile.global.promptDirs[0]}`);
     }
-    console.log(`  global rules:      ${profile.global.ruleFilesByPriority.join(" | ")}`);
-    console.log("  default install:   workflows/agents/commands/prompts -> project, skills -> global");
+    console.log(
+      `  global rules:      ${profile.global.ruleFilesByPriority.join(" | ")}`,
+    );
+    console.log(
+      "  default install:   workflows/agents/commands/prompts -> project, skills -> global",
+    );
   }
 }
 
@@ -4342,8 +4997,12 @@ function printRuleSyncResult(result) {
   console.log(`- Action: ${result.action}`);
   console.log(`- Workflows indexed: ${result.workflowsCount}`);
   if (result.workspaceRuleSync) {
-    console.log(`- Workspace precedence file: ${result.workspaceRuleSync.filePath}`);
-    console.log(`- Workspace precedence action: ${result.workspaceRuleSync.action}`);
+    console.log(
+      `- Workspace precedence file: ${result.workspaceRuleSync.filePath}`,
+    );
+    console.log(
+      `- Workspace precedence action: ${result.workspaceRuleSync.action}`,
+    );
   }
 
   if (result.warnings.length > 0) {
@@ -4366,7 +5025,7 @@ function printInstallSummary({
   sanitizedAgents = [],
   terminalIntegration = null,
   terminalIntegrationRules = null,
-  dryRun = false
+  dryRun = false,
 }) {
   console.log(`\nPlatform: ${platform}`);
   console.log(`Scope: ${scope}`);
@@ -4376,14 +5035,20 @@ function printInstallSummary({
   }
 
   if (installed.length > 0) {
-    console.log(`\n${dryRun ? "Would install/replace" : "Installed"} (${installed.length}):`);
+    console.log(
+      `\n${dryRun ? "Would install/replace" : "Installed"} (${installed.length}):`,
+    );
     for (const item of installed) console.log(`- ${item}`);
   }
 
   if (skipped.length > 0) {
-    console.log(`\n${dryRun ? "Would skip existing" : "Skipped existing"} (${skipped.length}):`);
+    console.log(
+      `\n${dryRun ? "Would skip existing" : "Skipped existing"} (${skipped.length}):`,
+    );
     for (const item of skipped) console.log(`- ${item}`);
-    console.log(`\nTip: rerun with --overwrite to ${dryRun ? "preview replacements" : "replace skipped files"}.`);
+    console.log(
+      `\nTip: rerun with --overwrite to ${dryRun ? "preview replacements" : "replace skipped files"}.`,
+    );
   }
 
   if (installed.length === 0 && skipped.length === 0) {
@@ -4391,10 +5056,14 @@ function printInstallSummary({
   }
 
   if (generatedWrapperSkills.length > 0) {
-    const workflowCount = generatedWrapperSkills.filter((item) => item.kind === "workflow").length;
-    const agentCount = generatedWrapperSkills.filter((item) => item.kind === "agent").length;
+    const workflowCount = generatedWrapperSkills.filter(
+      (item) => item.kind === "workflow",
+    ).length;
+    const agentCount = generatedWrapperSkills.filter(
+      (item) => item.kind === "agent",
+    ).length;
     console.log(
-      `\nCodex callable wrapper skills: ${generatedWrapperSkills.length} (workflow=${workflowCount}, agent=${agentCount})`
+      `\nCodex callable wrapper skills: ${generatedWrapperSkills.length} (workflow=${workflowCount}, agent=${agentCount})`,
     );
     console.log("Invoke these with $workflow-... or $agent-... in Codex.");
   }
@@ -4404,30 +5073,42 @@ function printInstallSummary({
     console.log(`- Provider: ${terminalIntegration.provider}`);
     console.log(`- Directory: ${terminalIntegration.integrationDir}`);
     if (terminalIntegrationRules?.primaryRule) {
-      console.log(`- Rule block (${terminalIntegrationRules.primaryRule.filePath}): ${terminalIntegrationRules.primaryRule.action}`);
+      console.log(
+        `- Rule block (${terminalIntegrationRules.primaryRule.filePath}): ${terminalIntegrationRules.primaryRule.action}`,
+      );
     }
     if (terminalIntegrationRules?.workspaceRule) {
-      console.log(`- Workspace precedence rule (${terminalIntegrationRules.workspaceRule.filePath}): ${terminalIntegrationRules.workspaceRule.action}`);
+      console.log(
+        `- Workspace precedence rule (${terminalIntegrationRules.workspaceRule.filePath}): ${terminalIntegrationRules.workspaceRule.action}`,
+      );
     }
   }
 
   if (duplicateSkillCleanup.length > 0) {
-    console.log(`\nNested duplicate skill cleanup (${duplicateSkillCleanup.length}):`);
+    console.log(
+      `\nNested duplicate skill cleanup (${duplicateSkillCleanup.length}):`,
+    );
     for (const item of duplicateSkillCleanup.slice(0, 10)) {
       console.log(
-        `- ${item.path}: ${item.action} duplicate skill '${item.nestedSkillId}' nested under '${item.ownerSkillId}'`
+        `- ${item.path}: ${item.action} duplicate skill '${item.nestedSkillId}' nested under '${item.ownerSkillId}'`,
       );
     }
     if (duplicateSkillCleanup.length > 10) {
-      console.log(`- ...and ${duplicateSkillCleanup.length - 10} more duplicate skill folder(s).`);
+      console.log(
+        `- ...and ${duplicateSkillCleanup.length - 10} more duplicate skill folder(s).`,
+      );
     }
   }
 
   if (!dryRun && sanitizedSkills.length > 0) {
-    console.log(`\nCopilot skill schema normalization (${sanitizedSkills.length}):`);
+    console.log(
+      `\nCopilot skill schema normalization (${sanitizedSkills.length}):`,
+    );
     for (const item of sanitizedSkills.slice(0, 8)) {
       const keys = item.removedKeys.join(", ");
-      console.log(`- ${item.skillId}: removed unsupported top-level keys (${keys})`);
+      console.log(
+        `- ${item.skillId}: removed unsupported top-level keys (${keys})`,
+      );
     }
     if (sanitizedSkills.length > 8) {
       console.log(`- ...and ${sanitizedSkills.length - 8} more skill(s).`);
@@ -4435,10 +5116,14 @@ function printInstallSummary({
   }
 
   if (!dryRun && sanitizedAgents.length > 0) {
-    console.log(`\nCopilot agent schema normalization (${sanitizedAgents.length}):`);
+    console.log(
+      `\nCopilot agent schema normalization (${sanitizedAgents.length}):`,
+    );
     for (const item of sanitizedAgents.slice(0, 8)) {
       const keys = item.removedKeys.join(", ");
-      console.log(`- ${item.agentId}: removed unsupported top-level keys (${keys})`);
+      console.log(
+        `- ${item.agentId}: removed unsupported top-level keys (${keys})`,
+      );
     }
     if (sanitizedAgents.length > 8) {
       console.log(`- ...and ${sanitizedAgents.length - 8} more agent file(s).`);
@@ -4451,33 +5136,40 @@ function printPostmanSetupSummary({ postmanSetup }) {
 
   console.log("\nPostman setup:");
   console.log(`- MCP scope: ${postmanSetup.mcpScope}`);
-  console.log(`- Config file: ${postmanSetup.cbxConfigResult.action} (${postmanSetup.cbxConfigPath})`);
+  console.log(
+    `- Config file: ${postmanSetup.cbxConfigResult.action} (${postmanSetup.cbxConfigPath})`,
+  );
   console.log(`- Postman API key source: ${postmanSetup.apiKeySource}`);
   if (postmanSetup.stitchApiKeySource) {
     console.log(`- Stitch API key source: ${postmanSetup.stitchApiKeySource}`);
   }
   console.log(
-    `- Default workspace ID: ${postmanSetup.defaultWorkspaceId === null ? "null" : postmanSetup.defaultWorkspaceId}`
+    `- Default workspace ID: ${postmanSetup.defaultWorkspaceId === null ? "null" : postmanSetup.defaultWorkspaceId}`,
   );
   for (const ignoreResult of postmanSetup.gitIgnoreResults || []) {
-    console.log(`- .gitignore (${ignoreResult.filePath}): ${ignoreResult.action}`);
+    console.log(
+      `- .gitignore (${ignoreResult.filePath}): ${ignoreResult.action}`,
+    );
   }
   console.log(
-    `- Managed MCP definition (${postmanSetup.mcpDefinitionPath}): ${postmanSetup.mcpDefinitionResult.action}`
+    `- Managed MCP definition (${postmanSetup.mcpDefinitionPath}): ${postmanSetup.mcpDefinitionResult.action}`,
   );
-  if (postmanSetup.stitchMcpDefinitionPath && postmanSetup.stitchMcpDefinitionResult) {
+  if (
+    postmanSetup.stitchMcpDefinitionPath &&
+    postmanSetup.stitchMcpDefinitionResult
+  ) {
     console.log(
-      `- Managed Stitch MCP definition (${postmanSetup.stitchMcpDefinitionPath}): ${postmanSetup.stitchMcpDefinitionResult.action}`
+      `- Managed Stitch MCP definition (${postmanSetup.stitchMcpDefinitionPath}): ${postmanSetup.stitchMcpDefinitionResult.action}`,
     );
   }
   if (postmanSetup.mcpRuntimeResult) {
     console.log(
-      `- Platform MCP target (${postmanSetup.mcpRuntimeResult.path || "n/a"}): ${postmanSetup.mcpRuntimeResult.action}`
+      `- Platform MCP target (${postmanSetup.mcpRuntimeResult.path || "n/a"}): ${postmanSetup.mcpRuntimeResult.action}`,
     );
   }
   if (postmanSetup.legacySkillMcpCleanup) {
     console.log(
-      `- Legacy skill mcp.json cleanup (${postmanSetup.legacySkillMcpCleanup.path}): ${postmanSetup.legacySkillMcpCleanup.action}`
+      `- Legacy skill mcp.json cleanup (${postmanSetup.legacySkillMcpCleanup.path}): ${postmanSetup.legacySkillMcpCleanup.action}`,
     );
   }
 
@@ -4495,7 +5187,7 @@ function printRemoveSummary({
   target,
   removed,
   terminalIntegrationCleanup = null,
-  dryRun = false
+  dryRun = false,
 }) {
   console.log(`\nPlatform: ${platform}`);
   console.log(`Scope: ${scope}`);
@@ -4505,25 +5197,29 @@ function printRemoveSummary({
   }
 
   if (removed.length > 0) {
-    console.log(`\n${dryRun ? "Would remove" : "Removed"} (${removed.length}):`);
+    console.log(
+      `\n${dryRun ? "Would remove" : "Removed"} (${removed.length}):`,
+    );
     for (const item of removed) console.log(`- ${item}`);
   } else {
-    console.log(`\nNo files were ${dryRun ? "selected for removal" : "removed"}.`);
+    console.log(
+      `\nNo files were ${dryRun ? "selected for removal" : "removed"}.`,
+    );
   }
 
   if (terminalIntegrationCleanup) {
     console.log("\nAntigravity terminal verification cleanup:");
     console.log(
-      `- Integration directory (${terminalIntegrationCleanup.integrationDir}): ${terminalIntegrationCleanup.dirRemoved ? (dryRun ? "would-remove" : "removed") : "unchanged"}`
+      `- Integration directory (${terminalIntegrationCleanup.integrationDir}): ${terminalIntegrationCleanup.dirRemoved ? (dryRun ? "would-remove" : "removed") : "unchanged"}`,
     );
     if (terminalIntegrationCleanup.primaryRule?.filePath) {
       console.log(
-        `- Rule block (${terminalIntegrationCleanup.primaryRule.filePath}): ${terminalIntegrationCleanup.primaryRule.action}`
+        `- Rule block (${terminalIntegrationCleanup.primaryRule.filePath}): ${terminalIntegrationCleanup.primaryRule.action}`,
       );
     }
     if (terminalIntegrationCleanup.workspaceRule?.filePath) {
       console.log(
-        `- Workspace precedence rule (${terminalIntegrationCleanup.workspaceRule.filePath}): ${terminalIntegrationCleanup.workspaceRule.action}`
+        `- Workspace precedence rule (${terminalIntegrationCleanup.workspaceRule.filePath}): ${terminalIntegrationCleanup.workspaceRule.action}`,
       );
     }
   }
@@ -4538,27 +5234,31 @@ async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
   const pathStatus = {
     workflows: {
       path: artifactPaths.workflowsDir,
-      exists: await pathExists(artifactPaths.workflowsDir)
+      exists: await pathExists(artifactPaths.workflowsDir),
     },
     agents: {
       path: artifactPaths.agentsDir,
       enabled: agentsEnabled,
-      exists: agentsEnabled ? await pathExists(artifactPaths.agentsDir) : null
+      exists: agentsEnabled ? await pathExists(artifactPaths.agentsDir) : null,
     },
     skills: {
       path: artifactPaths.skillsDir,
-      exists: await pathExists(artifactPaths.skillsDir)
+      exists: await pathExists(artifactPaths.skillsDir),
     },
     commands: {
       path: artifactPaths.commandsDir,
       enabled: Boolean(artifactPaths.commandsDir),
-      exists: artifactPaths.commandsDir ? await pathExists(artifactPaths.commandsDir) : null
+      exists: artifactPaths.commandsDir
+        ? await pathExists(artifactPaths.commandsDir)
+        : null,
     },
     prompts: {
       path: artifactPaths.promptsDir,
       enabled: Boolean(artifactPaths.promptsDir),
-      exists: artifactPaths.promptsDir ? await pathExists(artifactPaths.promptsDir) : null
-    }
+      exists: artifactPaths.promptsDir
+        ? await pathExists(artifactPaths.promptsDir)
+        : null,
+    },
   };
 
   let activeRuleFile = null;
@@ -4611,7 +5311,7 @@ async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
       configPath,
       configExists,
       provider,
-      ruleBlockStatus
+      ruleBlockStatus,
     };
   }
 
@@ -4620,19 +5320,19 @@ async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
 
   if (!activeRuleFile) {
     recommendations.push(
-      `No instruction file found. Run 'cbx workflows sync-rules --platform ${platform} --scope ${scope}' to create ${profile.ruleHintName}.`
+      `No instruction file found. Run 'cbx workflows sync-rules --platform ${platform} --scope ${scope}' to create ${profile.ruleHintName}.`,
     );
   }
 
   if (activeRuleFile && managedBlockStatus === "absent") {
     recommendations.push(
-      `Instruction file exists but lacks CBX managed block. Run 'cbx workflows sync-rules --platform ${platform} --scope ${scope}'.`
+      `Instruction file exists but lacks CBX managed block. Run 'cbx workflows sync-rules --platform ${platform} --scope ${scope}'.`,
     );
   }
 
   if (managedBlockStatus === "multiple" || managedBlockStatus === "malformed") {
     recommendations.push(
-      `Managed block is not clean. Run 'cbx workflows sync-rules --platform ${platform} --scope ${scope}' to normalize it.`
+      `Managed block is not clean. Run 'cbx workflows sync-rules --platform ${platform} --scope ${scope}' to normalize it.`,
     );
   }
 
@@ -4643,28 +5343,38 @@ async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
     !(pathStatus.commands.enabled && pathStatus.commands.exists) &&
     !(pathStatus.prompts.enabled && pathStatus.prompts.exists)
   ) {
-    recommendations.push("No workflow/agent/skill/command/prompt directories found in this scope.");
+    recommendations.push(
+      "No workflow/agent/skill/command/prompt directories found in this scope.",
+    );
   }
 
   if (platform === "codex" && scope === "project") {
     const legacyCodexSkills = path.join(cwd, ".codex", "skills");
     if (await pathExists(legacyCodexSkills)) {
-      warnings.push("Legacy path ./.codex/skills detected. Recommended path is ./.agents/skills.");
+      warnings.push(
+        "Legacy path ./.codex/skills detected. Recommended path is ./.agents/skills.",
+      );
       recommendations.push(
-        "Migrate legacy Codex skills path: move ./.codex/skills to ./.agents/skills to align with official defaults."
+        "Migrate legacy Codex skills path: move ./.codex/skills to ./.agents/skills to align with official defaults.",
       );
     }
   }
 
   if (scope === "global") {
-    const workspaceRule = await resolveWorkspaceRuleFileForGlobalScope(platform, cwd);
+    const workspaceRule = await resolveWorkspaceRuleFileForGlobalScope(
+      platform,
+      cwd,
+    );
     if (workspaceRule) {
-      const globalRulePath = expandPath(WORKFLOW_PROFILES[platform].global.ruleFilesByPriority[0], cwd);
+      const globalRulePath = expandPath(
+        WORKFLOW_PROFILES[platform].global.ruleFilesByPriority[0],
+        cwd,
+      );
       warnings.push(
-        `Workspace rule file detected at ${workspaceRule}. In this workspace, it has higher precedence than global ${globalRulePath}.`
+        `Workspace rule file detected at ${workspaceRule}. In this workspace, it has higher precedence than global ${globalRulePath}.`,
       );
       recommendations.push(
-        `Use 'cbx workflows sync-rules --platform ${platform} --scope global' from this workspace to sync the managed block to both global and workspace rule files.`
+        `Use 'cbx workflows sync-rules --platform ${platform} --scope global' from this workspace to sync the managed block to both global and workspace rule files.`,
       );
     }
   }
@@ -4674,22 +5384,31 @@ async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
     if (await pathExists(gitignorePath)) {
       const gitignore = await readFile(gitignorePath, "utf8");
       const lines = gitignore.split(/\r?\n/).map((line) => line.trim());
-      const hasAgentIgnore = lines.some((line) => line === ".agent" || line === ".agent/" || line === "/.agent/");
+      const hasAgentIgnore = lines.some(
+        (line) =>
+          line === ".agent" || line === ".agent/" || line === "/.agent/",
+      );
       if (hasAgentIgnore) {
-        warnings.push(".agent/ is ignored in .gitignore; this can hide team workflow/rule updates.");
+        warnings.push(
+          ".agent/ is ignored in .gitignore; this can hide team workflow/rule updates.",
+        );
         recommendations.push(
-          "Prefer tracking .agent/ in git. For local-only excludes, use '.git/info/exclude' instead of .gitignore."
+          "Prefer tracking .agent/ in git. For local-only excludes, use '.git/info/exclude' instead of .gitignore.",
         );
       }
     }
   }
 
-  if (platform === "antigravity" && terminalIntegration?.exists && !terminalIntegration.configExists) {
+  if (
+    platform === "antigravity" &&
+    terminalIntegration?.exists &&
+    !terminalIntegration.configExists
+  ) {
     warnings.push(
-      `Antigravity terminal integration directory exists without config: ${terminalIntegration.configPath}.`
+      `Antigravity terminal integration directory exists without config: ${terminalIntegration.configPath}.`,
     );
     recommendations.push(
-      "Reinstall with terminal integration enabled to restore config and scripts."
+      "Reinstall with terminal integration enabled to restore config and scripts.",
     );
   }
 
@@ -4698,23 +5417,39 @@ async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
     terminalIntegration?.exists &&
     terminalIntegration.ruleBlockStatus === "absent"
   ) {
-    warnings.push("Antigravity terminal integration exists but no terminal verification rule block was found.");
+    warnings.push(
+      "Antigravity terminal integration exists but no terminal verification rule block was found.",
+    );
     recommendations.push(
-      "Re-run install with terminal integration flags (use --overwrite if files already exist)."
+      "Re-run install with terminal integration flags (use --overwrite if files already exist).",
     );
   }
 
-  if (platform === "antigravity" && pathStatus.workflows.exists && pathStatus.commands.enabled && !pathStatus.commands.exists) {
-    warnings.push("Antigravity workflows are present but .gemini/commands is missing.");
+  if (
+    platform === "antigravity" &&
+    pathStatus.workflows.exists &&
+    pathStatus.commands.enabled &&
+    !pathStatus.commands.exists
+  ) {
+    warnings.push(
+      "Antigravity workflows are present but .gemini/commands is missing.",
+    );
     recommendations.push(
-      `Reinstall to generate command files: cbx workflows install --platform antigravity --bundle agent-environment-setup --scope ${scope} --overwrite`
+      `Reinstall to generate command files: cbx workflows install --platform antigravity --bundle agent-environment-setup --scope ${scope} --overwrite`,
     );
   }
 
-  if (platform === "copilot" && pathStatus.workflows.exists && pathStatus.prompts.enabled && !pathStatus.prompts.exists) {
-    warnings.push("Copilot workflows are present but prompts directory is missing.");
+  if (
+    platform === "copilot" &&
+    pathStatus.workflows.exists &&
+    pathStatus.prompts.enabled &&
+    !pathStatus.prompts.exists
+  ) {
+    warnings.push(
+      "Copilot workflows are present but prompts directory is missing.",
+    );
     recommendations.push(
-      `Reinstall to generate prompt files: cbx workflows install --platform copilot --bundle agent-environment-setup --scope ${scope} --overwrite`
+      `Reinstall to generate prompt files: cbx workflows install --platform copilot --bundle agent-environment-setup --scope ${scope} --overwrite`,
     );
   }
 
@@ -4726,10 +5461,10 @@ async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
         .map((item) => `${item.skillId}(${item.unsupportedKeys.join(",")})`)
         .join("; ");
       warnings.push(
-        `Unsupported top-level Copilot skill attributes detected in ${findings.length} skill(s): ${preview}${findings.length > 5 ? "; ..." : ""}`
+        `Unsupported top-level Copilot skill attributes detected in ${findings.length} skill(s): ${preview}${findings.length > 5 ? "; ..." : ""}`,
       );
       recommendations.push(
-        `Normalize Copilot skill frontmatter by reinstalling with overwrite: cbx workflows install --platform copilot --bundle agent-environment-setup --scope ${scope} --overwrite`
+        `Normalize Copilot skill frontmatter by reinstalling with overwrite: cbx workflows install --platform copilot --bundle agent-environment-setup --scope ${scope} --overwrite`,
       );
     }
   }
@@ -4742,10 +5477,10 @@ async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
         .map((item) => `${item.agentId}(${item.unsupportedKeys.join(",")})`)
         .join("; ");
       warnings.push(
-        `Unsupported top-level Copilot agent attributes detected in ${findings.length} agent file(s): ${preview}${findings.length > 5 ? "; ..." : ""}`
+        `Unsupported top-level Copilot agent attributes detected in ${findings.length} agent file(s): ${preview}${findings.length > 5 ? "; ..." : ""}`,
       );
       recommendations.push(
-        `Normalize Copilot agent frontmatter by reinstalling with overwrite: cbx workflows install --platform copilot --bundle agent-environment-setup --scope ${scope} --overwrite`
+        `Normalize Copilot agent frontmatter by reinstalling with overwrite: cbx workflows install --platform copilot --bundle agent-environment-setup --scope ${scope} --overwrite`,
       );
     }
   }
@@ -4756,14 +5491,14 @@ async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
     ruleFileStatus: {
       active: activeRuleFile,
       preferred: ruleFileToCheck,
-      exists: Boolean(activeRuleFile)
+      exists: Boolean(activeRuleFile),
     },
     paths: pathStatus,
     managedBlockStatus,
     managedBlockCounts,
     terminalIntegration,
     warnings,
-    recommendations
+    recommendations,
   };
 }
 
@@ -4776,36 +5511,56 @@ function printDoctorReport(report) {
   console.log(`- Preferred: ${report.ruleFileStatus.preferred}`);
 
   console.log("\nPaths:");
-  console.log(`- Workflows: ${report.paths.workflows.path} : ${report.paths.workflows.exists ? "exists" : "missing"}`);
+  console.log(
+    `- Workflows: ${report.paths.workflows.path} : ${report.paths.workflows.exists ? "exists" : "missing"}`,
+  );
   if (report.paths.agents.enabled === false) {
     console.log(`- Agents: ${report.paths.agents.path} : disabled`);
   } else {
-    console.log(`- Agents: ${report.paths.agents.path} : ${report.paths.agents.exists ? "exists" : "missing"}`);
+    console.log(
+      `- Agents: ${report.paths.agents.path} : ${report.paths.agents.exists ? "exists" : "missing"}`,
+    );
   }
-  console.log(`- Skills: ${report.paths.skills.path} : ${report.paths.skills.exists ? "exists" : "missing"}`);
+  console.log(
+    `- Skills: ${report.paths.skills.path} : ${report.paths.skills.exists ? "exists" : "missing"}`,
+  );
   if (report.paths.commands.enabled === false) {
     console.log(`- Commands: (disabled)`);
   } else {
-    console.log(`- Commands: ${report.paths.commands.path} : ${report.paths.commands.exists ? "exists" : "missing"}`);
+    console.log(
+      `- Commands: ${report.paths.commands.path} : ${report.paths.commands.exists ? "exists" : "missing"}`,
+    );
   }
   if (report.paths.prompts.enabled === false) {
     console.log(`- Prompts: (disabled)`);
   } else {
-    console.log(`- Prompts: ${report.paths.prompts.path} : ${report.paths.prompts.exists ? "exists" : "missing"}`);
+    console.log(
+      `- Prompts: ${report.paths.prompts.path} : ${report.paths.prompts.exists ? "exists" : "missing"}`,
+    );
   }
 
   console.log("\nManaged block:");
   console.log(`- Status: ${report.managedBlockStatus}`);
-  console.log(`- Markers: start=${report.managedBlockCounts.starts}, end=${report.managedBlockCounts.ends}`);
+  console.log(
+    `- Markers: start=${report.managedBlockCounts.starts}, end=${report.managedBlockCounts.ends}`,
+  );
 
   if (report.terminalIntegration) {
     console.log("\nTerminal integration:");
     console.log(`- Path: ${report.terminalIntegration.path}`);
-    console.log(`- Exists: ${report.terminalIntegration.exists ? "yes" : "no"}`);
+    console.log(
+      `- Exists: ${report.terminalIntegration.exists ? "yes" : "no"}`,
+    );
     console.log(`- Config: ${report.terminalIntegration.configPath}`);
-    console.log(`- Config present: ${report.terminalIntegration.configExists ? "yes" : "no"}`);
-    console.log(`- Provider: ${report.terminalIntegration.provider || "(unknown)"}`);
-    console.log(`- Rule block status: ${report.terminalIntegration.ruleBlockStatus}`);
+    console.log(
+      `- Config present: ${report.terminalIntegration.configExists ? "yes" : "no"}`,
+    );
+    console.log(
+      `- Provider: ${report.terminalIntegration.provider || "(unknown)"}`,
+    );
+    console.log(
+      `- Rule block status: ${report.terminalIntegration.ruleBlockStatus}`,
+    );
   }
 
   if (report.warnings.length > 0) {
@@ -4817,7 +5572,8 @@ function printDoctorReport(report) {
   if (report.recommendations.length === 0) {
     console.log("- No issues detected.");
   } else {
-    for (const recommendation of report.recommendations) console.log(`- ${recommendation}`);
+    for (const recommendation of report.recommendations)
+      console.log(`- ${recommendation}`);
   }
 }
 
@@ -4831,40 +5587,43 @@ function withInstallOptions(command) {
   return command
     .option("-p, --platform <platform>", "target platform id")
     .option("--scope <scope>", "target scope: project|global", "global")
-    .option("-b, --bundle <bundle>", "bundle id (default: agent-environment-setup)")
+    .option(
+      "-b, --bundle <bundle>",
+      "bundle id (default: agent-environment-setup)",
+    )
     .option("--overwrite", "overwrite existing files")
     .option(
       "--postman",
-      "optional: install Postman skill and generate cbx_config.json"
+      "optional: install Postman skill and generate cbx_config.json",
     )
     .option(
       "--postman-api-key <key>",
-      "optional: set Postman API key inline for generated cbx_config.json and installed Postman MCP config"
+      "optional: set Postman API key inline for generated cbx_config.json and installed Postman MCP config",
     )
     .option(
       "--postman-workspace-id <id|null>",
-      "optional: set default Postman workspace ID (use 'null' for no default)"
+      "optional: set default Postman workspace ID (use 'null' for no default)",
     )
     .option(
       "--stitch-api-key <key>",
-      "optional: Antigravity only. Set Google Stitch API key inline for StitchMCP config"
+      "optional: Antigravity only. Set Google Stitch API key inline for StitchMCP config",
     )
     .option(
       "--mcp-scope <scope>",
-      "optional: MCP config scope for --postman (project|workspace|global|user)"
+      "optional: MCP config scope for --postman (project|workspace|global|user)",
     )
     .option(
       "--terminal-integration",
-      "Antigravity only: enable terminal verification integration (prompts for verifier when interactive)"
+      "Antigravity only: enable terminal verification integration (prompts for verifier when interactive)",
     )
     .option(
       "--terminal-verifier <provider>",
-      "Antigravity only: verifier provider (codex|gemini). Implies --terminal-integration."
+      "Antigravity only: verifier provider (codex|gemini). Implies --terminal-integration.",
     )
     .option(
       "--skill-profile <profile>",
       "skill install profile: core|web-backend|full (default: core)",
-      DEFAULT_SKILL_PROFILE
+      DEFAULT_SKILL_PROFILE,
     )
     .option("--all-skills", "alias for --skill-profile full")
     .option("--dry-run", "preview install without writing files")
@@ -4872,10 +5631,15 @@ function withInstallOptions(command) {
 }
 
 function printSkillsDeprecation() {
-  console.log("[deprecation] 'cbx skills ...' is now an alias. Use 'cbx workflows ...'.");
+  console.log(
+    "[deprecation] 'cbx skills ...' is now an alias. Use 'cbx workflows ...'.",
+  );
 }
 
-function registerConfigKeysSubcommands(configCommand, { aliasMode = false } = {}) {
+function registerConfigKeysSubcommands(
+  configCommand,
+  { aliasMode = false } = {},
+) {
   const wrap = (handler) =>
     aliasMode
       ? async (options) => {
@@ -4886,13 +5650,19 @@ function registerConfigKeysSubcommands(configCommand, { aliasMode = false } = {}
 
   const keysCommand = configCommand
     .command("keys")
-    .description("Manage named key profiles in cbx_config.json for Postman/Stitch");
+    .description(
+      "Manage named key profiles in cbx_config.json for Postman/Stitch",
+    );
 
   keysCommand
     .command("list")
     .description("List key profiles")
     .option("--service <service>", "postman|stitch|all", "all")
-    .option("--scope <scope>", "config scope: project|workspace|global|user", "global")
+    .option(
+      "--scope <scope>",
+      "config scope: project|workspace|global|user",
+      "global",
+    )
     .action(wrap(runWorkflowConfigKeysList));
 
   keysCommand
@@ -4901,8 +5671,15 @@ function registerConfigKeysSubcommands(configCommand, { aliasMode = false } = {}
     .option("--service <service>", "postman|stitch", "postman")
     .requiredOption("--name <profile>", "profile name")
     .requiredOption("--env-var <envVar>", "environment variable alias")
-    .option("--workspace-id <id|null>", "optional: Postman profile workspace ID")
-    .option("--scope <scope>", "config scope: project|workspace|global|user", "global")
+    .option(
+      "--workspace-id <id|null>",
+      "optional: Postman profile workspace ID",
+    )
+    .option(
+      "--scope <scope>",
+      "config scope: project|workspace|global|user",
+      "global",
+    )
     .option("--dry-run", "preview changes without writing files")
     .action(wrap(runWorkflowConfigKeysAdd));
 
@@ -4911,7 +5688,11 @@ function registerConfigKeysSubcommands(configCommand, { aliasMode = false } = {}
     .description("Set active key profile")
     .option("--service <service>", "postman|stitch", "postman")
     .requiredOption("--name <profile>", "profile name")
-    .option("--scope <scope>", "config scope: project|workspace|global|user", "global")
+    .option(
+      "--scope <scope>",
+      "config scope: project|workspace|global|user",
+      "global",
+    )
     .option("--dry-run", "preview changes without writing files")
     .action(wrap(runWorkflowConfigKeysUse));
 
@@ -4920,25 +5701,34 @@ function registerConfigKeysSubcommands(configCommand, { aliasMode = false } = {}
     .description("Remove key profile")
     .option("--service <service>", "postman|stitch", "postman")
     .requiredOption("--name <profile>", "profile name")
-    .option("--scope <scope>", "config scope: project|workspace|global|user", "global")
+    .option(
+      "--scope <scope>",
+      "config scope: project|workspace|global|user",
+      "global",
+    )
     .option("--dry-run", "preview changes without writing files")
     .action(wrap(runWorkflowConfigKeysRemove));
 }
 
-async function resolveAntigravityTerminalVerifierSelection({ platform, options }) {
+async function resolveAntigravityTerminalVerifierSelection({
+  platform,
+  options,
+}) {
   const verifierRaw = options.terminalVerifier;
   const hasTerminalIntegrationFlag = Boolean(options.terminalIntegration);
   const normalizedVerifier = normalizeTerminalVerifier(verifierRaw);
 
   if (verifierRaw && !normalizedVerifier) {
     throw new Error(
-      `Unsupported --terminal-verifier value '${verifierRaw}'. Allowed: ${TERMINAL_VERIFIER_PROVIDERS.join(", ")}.`
+      `Unsupported --terminal-verifier value '${verifierRaw}'. Allowed: ${TERMINAL_VERIFIER_PROVIDERS.join(", ")}.`,
     );
   }
 
   if (platform !== "antigravity") {
     if (hasTerminalIntegrationFlag || verifierRaw) {
-      throw new Error("--terminal-integration and --terminal-verifier are only supported for platform 'antigravity'.");
+      throw new Error(
+        "--terminal-integration and --terminal-verifier are only supported for platform 'antigravity'.",
+      );
     }
     return null;
   }
@@ -4950,7 +5740,7 @@ async function resolveAntigravityTerminalVerifierSelection({ platform, options }
   if (!enabled && !provider && canPrompt) {
     enabled = await confirm({
       message: "Enable Antigravity terminal verification integration?",
-      default: false
+      default: false,
     });
   }
 
@@ -4962,8 +5752,8 @@ async function resolveAntigravityTerminalVerifierSelection({ platform, options }
         message: "Select terminal verifier provider:",
         choices: [
           { name: "Codex CLI", value: "codex" },
-          { name: "Gemini CLI", value: "gemini" }
-        ]
+          { name: "Gemini CLI", value: "gemini" },
+        ],
       });
     } else {
       provider = DEFAULT_TERMINAL_VERIFIER;
@@ -4977,7 +5767,7 @@ async function upsertTerminalVerificationForInstall({
   scope,
   cwd,
   terminalIntegration,
-  dryRun = false
+  dryRun = false,
 }) {
   if (!terminalIntegration) return null;
 
@@ -4989,20 +5779,29 @@ async function upsertTerminalVerificationForInstall({
     provider: terminalIntegration.provider,
     powerShellScriptPath: terminalIntegration.powerShellScriptPath,
     bashScriptPath: terminalIntegration.bashScriptPath,
-    dryRun
+    dryRun,
   });
 
   let workspace = null;
   if (scope === "global") {
-    const workspaceRuleFile = await resolveWorkspaceRuleFileForGlobalScope("antigravity", cwd);
-    const globalRuleFile = expandPath(WORKFLOW_PROFILES.antigravity.global.ruleFilesByPriority[0], cwd);
-    if (workspaceRuleFile && path.resolve(workspaceRuleFile) !== path.resolve(globalRuleFile)) {
+    const workspaceRuleFile = await resolveWorkspaceRuleFileForGlobalScope(
+      "antigravity",
+      cwd,
+    );
+    const globalRuleFile = expandPath(
+      WORKFLOW_PROFILES.antigravity.global.ruleFilesByPriority[0],
+      cwd,
+    );
+    if (
+      workspaceRuleFile &&
+      path.resolve(workspaceRuleFile) !== path.resolve(globalRuleFile)
+    ) {
       workspace = await upsertTerminalVerificationBlock({
         ruleFilePath: workspaceRuleFile,
         provider: terminalIntegration.provider,
         powerShellScriptPath: terminalIntegration.powerShellScriptPath,
         bashScriptPath: terminalIntegration.bashScriptPath,
-        dryRun
+        dryRun,
       });
     }
   }
@@ -5011,16 +5810,20 @@ async function upsertTerminalVerificationForInstall({
     provider: terminalIntegration.provider,
     primaryRule: primary,
     workspaceRule: workspace,
-    integrationDir: terminalIntegration.integrationDir
+    integrationDir: terminalIntegration.integrationDir,
   };
 }
 
 async function cleanupAntigravityTerminalIntegration({
   scope,
   cwd,
-  dryRun = false
+  dryRun = false,
 }) {
-  const profilePaths = await resolveArtifactProfilePaths("antigravity", scope, cwd);
+  const profilePaths = await resolveArtifactProfilePaths(
+    "antigravity",
+    scope,
+    cwd,
+  );
   const integrationDir = getAntigravityTerminalIntegrationDir(profilePaths);
   const dirRemoved = await safeRemove(integrationDir, dryRun);
 
@@ -5031,10 +5834,22 @@ async function cleanupAntigravityTerminalIntegration({
 
   let workspaceRule = null;
   if (scope === "global") {
-    const workspaceRuleFile = await resolveWorkspaceRuleFileForGlobalScope("antigravity", cwd);
-    const globalRuleFile = expandPath(WORKFLOW_PROFILES.antigravity.global.ruleFilesByPriority[0], cwd);
-    if (workspaceRuleFile && path.resolve(workspaceRuleFile) !== path.resolve(globalRuleFile)) {
-      workspaceRule = await removeTerminalVerificationBlock(workspaceRuleFile, dryRun);
+    const workspaceRuleFile = await resolveWorkspaceRuleFileForGlobalScope(
+      "antigravity",
+      cwd,
+    );
+    const globalRuleFile = expandPath(
+      WORKFLOW_PROFILES.antigravity.global.ruleFilesByPriority[0],
+      cwd,
+    );
+    if (
+      workspaceRuleFile &&
+      path.resolve(workspaceRuleFile) !== path.resolve(globalRuleFile)
+    ) {
+      workspaceRule = await removeTerminalVerificationBlock(
+        workspaceRuleFile,
+        dryRun,
+      );
     }
   }
 
@@ -5042,7 +5857,7 @@ async function cleanupAntigravityTerminalIntegration({
     integrationDir,
     dirRemoved,
     primaryRule,
-    workspaceRule
+    workspaceRule,
   };
 }
 
@@ -5053,14 +5868,18 @@ async function runWorkflowInstall(options) {
     const ruleScope = scope === "global" ? "project" : scope;
     const dryRun = Boolean(options.dryRun);
     const platform = await resolvePlatform(options.platform, scope, cwd);
-    const artifactProfilePaths = await resolveArtifactProfilePaths(platform, scope, cwd);
+    const artifactProfilePaths = await resolveArtifactProfilePaths(
+      platform,
+      scope,
+      cwd,
+    );
     const bundleId = await chooseBundle(options.bundle);
     const manifest = await readBundleManifest(bundleId);
 
     if (!dryRun && !options.yes && process.stdin.isTTY) {
       const proceed = await confirm({
         message: `Install bundle '${bundleId}' for ${platform} (${scope})?`,
-        default: true
+        default: true,
       });
       if (!proceed) {
         console.log("Cancelled.");
@@ -5068,15 +5887,16 @@ async function runWorkflowInstall(options) {
       }
     }
 
-    const terminalVerifierSelection = await resolveAntigravityTerminalVerifierSelection({
-      platform,
-      options
-    });
+    const terminalVerifierSelection =
+      await resolveAntigravityTerminalVerifierSelection({
+        platform,
+        options,
+      });
     const postmanSelection = await resolvePostmanInstallSelection({
       platform,
       scope,
       options,
-      cwd
+      cwd,
     });
     const skillInstallOptions = resolveWorkflowSkillInstallOptions(options);
 
@@ -5091,19 +5911,27 @@ async function runWorkflowInstall(options) {
       skillProfile: skillInstallOptions.skillProfile,
       terminalVerifierSelection,
       dryRun,
-      cwd
+      cwd,
     });
 
     if (platform === "codex" && scope === "global") {
-      const codexProjectPaths = await resolveProfilePaths("codex", "project", cwd);
-      if (path.resolve(artifactProfilePaths.workflowsDir) !== path.resolve(codexProjectPaths.workflowsDir)) {
-        const codexProjectWorkflows = await installCodexProjectWorkflowTemplates({
-          bundleId,
-          manifest,
-          overwrite: Boolean(options.overwrite),
-          dryRun,
-          cwd
-        });
+      const codexProjectPaths = await resolveProfilePaths(
+        "codex",
+        "project",
+        cwd,
+      );
+      if (
+        path.resolve(artifactProfilePaths.workflowsDir) !==
+        path.resolve(codexProjectPaths.workflowsDir)
+      ) {
+        const codexProjectWorkflows =
+          await installCodexProjectWorkflowTemplates({
+            bundleId,
+            manifest,
+            overwrite: Boolean(options.overwrite),
+            dryRun,
+            cwd,
+          });
         installResult.installed.push(...codexProjectWorkflows.installed);
         installResult.skipped.push(...codexProjectWorkflows.skipped);
       }
@@ -5116,14 +5944,14 @@ async function runWorkflowInstall(options) {
       scope: ruleScope,
       overwrite: Boolean(options.overwrite),
       dryRun,
-      cwd
+      cwd,
     });
 
     const syncResult = await syncRulesForPlatform({
       platform,
       scope: ruleScope,
       dryRun,
-      cwd
+      cwd,
     });
     const engineeringArtifactsResult = await upsertEngineeringArtifacts({
       platform,
@@ -5131,7 +5959,7 @@ async function runWorkflowInstall(options) {
       overwrite: false,
       dryRun,
       skipTech: false,
-      cwd
+      cwd,
     });
     const postmanSetupResult = await configurePostmanInstallArtifacts({
       platform,
@@ -5140,7 +5968,7 @@ async function runWorkflowInstall(options) {
       postmanSelection,
       overwrite: Boolean(options.overwrite),
       dryRun,
-      cwd
+      cwd,
     });
 
     const terminalVerificationRuleResult =
@@ -5149,7 +5977,7 @@ async function runWorkflowInstall(options) {
             scope: ruleScope,
             cwd,
             terminalIntegration: installResult.terminalIntegration,
-            dryRun
+            dryRun,
           })
         : null;
 
@@ -5160,7 +5988,7 @@ async function runWorkflowInstall(options) {
         bundleId,
         artifacts: installResult.artifacts,
         ruleFilePath: syncResult.filePath,
-        cwd
+        cwd,
       });
     }
 
@@ -5176,20 +6004,28 @@ async function runWorkflowInstall(options) {
       sanitizedAgents: installResult.sanitizedAgents,
       terminalIntegration: installResult.terminalIntegration,
       terminalIntegrationRules: terminalVerificationRuleResult,
-      dryRun
+      dryRun,
     });
     printRuleSyncResult(syncResult);
     printInstallEngineeringSummary({
       engineeringResults: engineeringArtifactsResult.engineeringResults,
-      techResult: engineeringArtifactsResult.techResult
+      techResult: engineeringArtifactsResult.techResult,
     });
     printPostmanSetupSummary({
-      postmanSetup: postmanSetupResult
+      postmanSetup: postmanSetupResult,
     });
     if (dryRun) {
-      console.log("\nDry-run complete. Re-run without `--dry-run` to apply changes.");
+      console.log(
+        "\nDry-run complete. Re-run without `--dry-run` to apply changes.",
+      );
     } else {
-      console.log("\nTip: run `cbx workflows doctor --platform " + platform + " --scope " + ruleScope + "`.");
+      console.log(
+        "\nTip: run `cbx workflows doctor --platform " +
+          platform +
+          " --scope " +
+          ruleScope +
+          "`.",
+      );
     }
   } catch (error) {
     if (error?.name === "ExitPromptError") {
@@ -5216,9 +6052,12 @@ async function listInstalledTopLevelSkillDirs(skillsDir) {
 }
 
 function isProtectedInstalledSkillId(skillId) {
-  const normalized = String(skillId || "").trim().toLowerCase();
+  const normalized = String(skillId || "")
+    .trim()
+    .toLowerCase();
   if (!normalized) return true;
-  if (normalized.startsWith("workflow-") || normalized.startsWith("agent-")) return true;
+  if (normalized.startsWith("workflow-") || normalized.startsWith("agent-"))
+    return true;
   return normalized.startsWith(".");
 }
 
@@ -5228,15 +6067,28 @@ async function runWorkflowPruneSkills(options) {
     const scope = normalizeScope(options.scope);
     const dryRun = Boolean(options.dryRun);
     const platform = await resolvePlatform(options.platform, scope, cwd);
-    const profilePaths = await resolveArtifactProfilePaths(platform, scope, cwd);
-    const bundleId = await chooseBundle(options.bundle || "agent-environment-setup");
+    const profilePaths = await resolveArtifactProfilePaths(
+      platform,
+      scope,
+      cwd,
+    );
+    const bundleId = await chooseBundle(
+      options.bundle || "agent-environment-setup",
+    );
     const manifest = await readBundleManifest(bundleId);
     const platformSpec = manifest.platforms?.[platform];
     if (!platformSpec) {
-      throw new Error(`Bundle '${bundleId}' does not define platform '${platform}'.`);
+      throw new Error(
+        `Bundle '${bundleId}' does not define platform '${platform}'.`,
+      );
     }
-    if (!profilePaths.skillsDir || !(await pathExists(profilePaths.skillsDir))) {
-      console.log(`No skills directory found at ${profilePaths.skillsDir || "(unset)"}. Nothing to prune.`);
+    if (
+      !profilePaths.skillsDir ||
+      !(await pathExists(profilePaths.skillsDir))
+    ) {
+      console.log(
+        `No skills directory found at ${profilePaths.skillsDir || "(unset)"}. Nothing to prune.`,
+      );
       return;
     }
 
@@ -5244,16 +6096,22 @@ async function runWorkflowPruneSkills(options) {
     const desiredSkillIds = await resolveInstallSkillIds({
       platformSpec,
       extraSkillIds: [],
-      skillProfile: skillInstallOptions.skillProfile
+      skillProfile: skillInstallOptions.skillProfile,
     });
-    const desiredSet = new Set(desiredSkillIds.map((skillId) => String(skillId).toLowerCase()));
+    const desiredSet = new Set(
+      desiredSkillIds.map((skillId) => String(skillId).toLowerCase()),
+    );
 
-    const installedSkillDirs = await listInstalledTopLevelSkillDirs(profilePaths.skillsDir);
-    const installedSkillIds = installedSkillDirs.map((dirPath) => path.basename(dirPath));
+    const installedSkillDirs = await listInstalledTopLevelSkillDirs(
+      profilePaths.skillsDir,
+    );
+    const installedSkillIds = installedSkillDirs.map((dirPath) =>
+      path.basename(dirPath),
+    );
     const nestedPlan = await cleanupNestedDuplicateSkills({
       skillsRootDir: profilePaths.skillsDir,
       installedSkillDirs,
-      dryRun: true
+      dryRun: true,
     });
 
     const removeOutOfProfile = installedSkillIds
@@ -5263,17 +6121,17 @@ async function runWorkflowPruneSkills(options) {
 
     const hasWork = nestedPlan.length > 0 || removeOutOfProfile.length > 0;
     if (!hasWork) {
-      console.log("No stale skills found. Installed set already matches selected profile.");
       console.log(
-        `Profile: ${skillInstallOptions.skillProfile}`
+        "No stale skills found. Installed set already matches selected profile.",
       );
+      console.log(`Profile: ${skillInstallOptions.skillProfile}`);
       return;
     }
 
     if (!dryRun && !options.yes && process.stdin.isTTY) {
       const proceed = await confirm({
         message: `Prune ${nestedPlan.length + removeOutOfProfile.length} stale skill path(s) for ${platform} (${scope})?`,
-        default: true
+        default: true,
       });
       if (!proceed) {
         console.log("Cancelled.");
@@ -5284,7 +6142,7 @@ async function runWorkflowPruneSkills(options) {
     const nestedResult = await cleanupNestedDuplicateSkills({
       skillsRootDir: profilePaths.skillsDir,
       installedSkillDirs,
-      dryRun
+      dryRun,
     });
 
     const removedOutOfProfile = [];
@@ -5296,7 +6154,7 @@ async function runWorkflowPruneSkills(options) {
       removedOutOfProfile.push({
         skillId,
         path: targetDir,
-        action: dryRun ? "would-remove" : "removed"
+        action: dryRun ? "would-remove" : "removed",
       });
     }
 
@@ -5308,9 +6166,7 @@ async function runWorkflowPruneSkills(options) {
     console.log("Skill prune summary:");
     console.log(`- Platform/scope: ${platform}/${scope}`);
     console.log(`- Bundle: ${bundleId}`);
-    console.log(
-      `- Profile: ${skillInstallOptions.skillProfile}`
-    );
+    console.log(`- Profile: ${skillInstallOptions.skillProfile}`);
     console.log(`- Installed before: ${beforeCount}`);
     console.log(`- Nested duplicates: ${nestedResult.length}`);
     console.log(`- Out-of-profile: ${removedOutOfProfile.length}`);
@@ -5329,7 +6185,9 @@ async function runWorkflowPruneSkills(options) {
       }
     }
     if (dryRun) {
-      console.log("\nDry-run complete. Re-run without `--dry-run` to apply changes.");
+      console.log(
+        "\nDry-run complete. Re-run without `--dry-run` to apply changes.",
+      );
     }
   } catch (error) {
     if (error?.name === "ExitPromptError") {
@@ -5344,7 +6202,9 @@ async function runWorkflowPruneSkills(options) {
 async function runWorkflowRemove(target, options) {
   try {
     if (!target) {
-      throw new Error("Missing <bundle-or-workflow>. Usage: cbx workflows remove <bundle-or-workflow>");
+      throw new Error(
+        "Missing <bundle-or-workflow>. Usage: cbx workflows remove <bundle-or-workflow>",
+      );
     }
 
     const cwd = process.cwd();
@@ -5352,7 +6212,11 @@ async function runWorkflowRemove(target, options) {
     const ruleScope = scope === "global" ? "project" : scope;
     const dryRun = Boolean(options.dryRun);
     const platform = await resolvePlatform(options.platform, scope, cwd);
-    const artifactProfilePaths = await resolveArtifactProfilePaths(platform, scope, cwd);
+    const artifactProfilePaths = await resolveArtifactProfilePaths(
+      platform,
+      scope,
+      cwd,
+    );
     const bundleIds = await listBundleIds();
 
     let removed = [];
@@ -5366,7 +6230,7 @@ async function runWorkflowRemove(target, options) {
       if (!dryRun && !options.yes && process.stdin.isTTY) {
         const proceed = await confirm({
           message: `Remove bundle '${target}' from ${platform} (${scope})?`,
-          default: true
+          default: true,
         });
         if (!proceed) {
           console.log("Cancelled.");
@@ -5381,32 +6245,38 @@ async function runWorkflowRemove(target, options) {
         scope,
         profilePathsOverride: artifactProfilePaths,
         dryRun,
-        cwd
+        cwd,
       });
 
       removed = removeResult.removed;
 
       if (platform === "antigravity") {
-        terminalIntegrationCleanup = await cleanupAntigravityTerminalIntegration({
-          scope,
-          cwd,
-          dryRun
-        });
+        terminalIntegrationCleanup =
+          await cleanupAntigravityTerminalIntegration({
+            scope,
+            cwd,
+            dryRun,
+          });
         if (terminalIntegrationCleanup.dirRemoved) {
           removed.push(terminalIntegrationCleanup.integrationDir);
         }
       }
     } else {
-      const workflowFile = await findWorkflowFileByTarget(artifactProfilePaths.workflowsDir, target);
+      const workflowFile = await findWorkflowFileByTarget(
+        artifactProfilePaths.workflowsDir,
+        target,
+      );
 
       if (!workflowFile) {
-        throw new Error(`Could not find workflow or bundle '${target}' in platform '${platform}'.`);
+        throw new Error(
+          `Could not find workflow or bundle '${target}' in platform '${platform}'.`,
+        );
       }
 
       if (!dryRun && !options.yes && process.stdin.isTTY) {
         const proceed = await confirm({
           message: `Remove workflow '${path.basename(workflowFile)}' from ${platform} (${scope})?`,
-          default: true
+          default: true,
         });
         if (!proceed) {
           console.log("Cancelled.");
@@ -5423,7 +6293,7 @@ async function runWorkflowRemove(target, options) {
       platform,
       scope: ruleScope,
       dryRun,
-      cwd
+      cwd,
     });
 
     if (!dryRun && removedType === "bundle") {
@@ -5432,7 +6302,7 @@ async function runWorkflowRemove(target, options) {
         platform,
         bundleId: target,
         ruleFilePath: syncResult.filePath,
-        cwd
+        cwd,
       });
     }
 
@@ -5442,11 +6312,13 @@ async function runWorkflowRemove(target, options) {
       target,
       removed,
       terminalIntegrationCleanup,
-      dryRun
+      dryRun,
     });
     printRuleSyncResult(syncResult);
     if (dryRun) {
-      console.log("\nDry-run complete. Re-run without `--dry-run` to apply changes.");
+      console.log(
+        "\nDry-run complete. Re-run without `--dry-run` to apply changes.",
+      );
     }
   } catch (error) {
     if (error?.name === "ExitPromptError") {
@@ -5462,8 +6334,17 @@ async function runWorkflowSyncRules(options) {
   try {
     const scope = normalizeScope(options.scope);
     const dryRun = Boolean(options.dryRun);
-    const platform = await resolvePlatform(options.platform, scope, process.cwd());
-    const syncResult = await syncRulesForPlatform({ platform, scope, dryRun, cwd: process.cwd() });
+    const platform = await resolvePlatform(
+      options.platform,
+      scope,
+      process.cwd(),
+    );
+    const syncResult = await syncRulesForPlatform({
+      platform,
+      scope,
+      dryRun,
+      cwd: process.cwd(),
+    });
 
     if (options.json) {
       console.log(JSON.stringify(syncResult, null, 2));
@@ -5472,7 +6353,9 @@ async function runWorkflowSyncRules(options) {
 
     printRuleSyncResult(syncResult);
     if (dryRun) {
-      console.log("\nDry-run complete. Re-run without `--dry-run` to apply changes.");
+      console.log(
+        "\nDry-run complete. Re-run without `--dry-run` to apply changes.",
+      );
     }
   } catch (error) {
     if (error?.name === "ExitPromptError") {
@@ -5487,8 +6370,16 @@ async function runWorkflowSyncRules(options) {
 async function runWorkflowDoctor(platformArg, options) {
   try {
     const scope = normalizeScope(options.scope);
-    const platform = await resolvePlatform(platformArg || options.platform, scope, process.cwd());
-    const report = await createDoctorReport({ platform, scope, cwd: process.cwd() });
+    const platform = await resolvePlatform(
+      platformArg || options.platform,
+      scope,
+      process.cwd(),
+    );
+    const report = await createDoctorReport({
+      platform,
+      scope,
+      cwd: process.cwd(),
+    });
 
     if (options.json) {
       console.log(JSON.stringify(report, null, 2));
@@ -5545,10 +6436,12 @@ function hasCliFlag(optionName) {
 
 function prepareConfigDocument(existingValue, { scope, generatedBy }) {
   const next = cloneJsonObject(existingValue);
-  if (!next.schemaVersion || typeof next.schemaVersion !== "number") next.schemaVersion = 1;
+  if (!next.schemaVersion || typeof next.schemaVersion !== "number")
+    next.schemaVersion = 1;
   next.generatedBy = generatedBy;
   next.generatedAt = new Date().toISOString();
-  if (!next.mcp || typeof next.mcp !== "object" || Array.isArray(next.mcp)) next.mcp = {};
+  if (!next.mcp || typeof next.mcp !== "object" || Array.isArray(next.mcp))
+    next.mcp = {};
   next.mcp.scope = scope;
   if (!next.mcp.server) next.mcp.server = POSTMAN_SKILL_ID;
   return next;
@@ -5556,10 +6449,14 @@ function prepareConfigDocument(existingValue, { scope, generatedBy }) {
 
 function ensureCredentialServiceState(configValue, service) {
   if (service === "postman") {
-    return parseStoredPostmanConfig(configValue) || parseStoredCredentialServiceConfig({ service, rawService: {} });
+    return (
+      parseStoredPostmanConfig(configValue) ||
+      parseStoredCredentialServiceConfig({ service, rawService: {} })
+    );
   }
   return (
-    parseStoredStitchConfig(configValue) || parseStoredCredentialServiceConfig({ service: "stitch", rawService: {} })
+    parseStoredStitchConfig(configValue) ||
+    parseStoredCredentialServiceConfig({ service: "stitch", rawService: {} })
   );
 }
 
@@ -5583,13 +6480,13 @@ function buildConfigShowPayload(rawConfig) {
   payload.status = {
     postman: resolveCredentialEffectiveStatus({
       service: "postman",
-      serviceConfig: postmanState
-    })
+      serviceConfig: postmanState,
+    }),
   };
   if (stitchState) {
     payload.status.stitch = resolveCredentialEffectiveStatus({
       service: "stitch",
-      serviceConfig: stitchState
+      serviceConfig: stitchState,
     });
   }
 
@@ -5601,7 +6498,11 @@ function normalizeProfileNameOrThrow(name) {
   if (!normalizedName) {
     throw new Error("Missing required profile name. Use --name <profile>.");
   }
-  if (RESERVED_CREDENTIAL_PROFILE_NAMES.has(credentialProfileNameKey(normalizedName))) {
+  if (
+    RESERVED_CREDENTIAL_PROFILE_NAMES.has(
+      credentialProfileNameKey(normalizedName),
+    )
+  ) {
     throw new Error(`Profile name '${normalizedName}' is reserved.`);
   }
   return normalizedName;
@@ -5609,7 +6510,11 @@ function normalizeProfileNameOrThrow(name) {
 
 function findProfileByName(profiles, profileName) {
   const key = credentialProfileNameKey(profileName);
-  return profiles.find((profile) => credentialProfileNameKey(profile.name) === key) || null;
+  return (
+    profiles.find(
+      (profile) => credentialProfileNameKey(profile.name) === key,
+    ) || null
+  );
 }
 
 async function loadConfigForScope({ scope, cwd = process.cwd() }) {
@@ -5617,20 +6522,37 @@ async function loadConfigForScope({ scope, cwd = process.cwd() }) {
   await assertNoLegacyOnlyPostmanConfig({ scope, cwd });
   const existing = await readJsonFileIfExists(configPath);
   const existingValue =
-    existing.value && typeof existing.value === "object" && !Array.isArray(existing.value) ? existing.value : null;
+    existing.value &&
+    typeof existing.value === "object" &&
+    !Array.isArray(existing.value)
+      ? existing.value
+      : null;
   if (existing.exists && !existingValue) {
-    throw new Error(`Existing config at ${configPath} is not valid JSON object.`);
+    throw new Error(
+      `Existing config at ${configPath} is not valid JSON object.`,
+    );
   }
   return { configPath, existing, existingValue };
 }
 
-async function writeConfigFile({ configPath, nextConfig, existingExists, dryRun }) {
+async function writeConfigFile({
+  configPath,
+  nextConfig,
+  existingExists,
+  dryRun,
+}) {
   const content = `${JSON.stringify(nextConfig, null, 2)}\n`;
   if (!dryRun) {
     await mkdir(path.dirname(configPath), { recursive: true });
     await writeFile(configPath, content, "utf8");
   }
-  return dryRun ? (existingExists ? "would-update" : "would-create") : existingExists ? "updated" : "created";
+  return dryRun
+    ? existingExists
+      ? "would-update"
+      : "would-create"
+    : existingExists
+      ? "updated"
+      : "created";
 }
 
 async function runWorkflowConfigKeysList(options) {
@@ -5639,8 +6561,13 @@ async function runWorkflowConfigKeysList(options) {
     const cwd = process.cwd();
     const scopeArg = readCliOptionFromArgv("--scope");
     const scope = normalizeMcpScope(scopeArg ?? opts.scope, "global");
-    const service = normalizeCredentialService(opts.service, { allowAll: true });
-    const { configPath, existing, existingValue } = await loadConfigForScope({ scope, cwd });
+    const service = normalizeCredentialService(opts.service, {
+      allowAll: true,
+    });
+    const { configPath, existing, existingValue } = await loadConfigForScope({
+      scope,
+      cwd,
+    });
 
     console.log(`Config file: ${configPath}`);
     if (!existing.exists) {
@@ -5650,26 +6577,37 @@ async function runWorkflowConfigKeysList(options) {
 
     const services = service === "all" ? ["postman", "stitch"] : [service];
     for (const serviceId of services) {
-      const serviceState = ensureCredentialServiceState(existingValue, serviceId);
+      const serviceState = ensureCredentialServiceState(
+        existingValue,
+        serviceId,
+      );
       if (serviceId === "stitch" && !parseStoredStitchConfig(existingValue)) {
         console.log(`\n${serviceId}: not configured`);
         continue;
       }
       const effective = resolveCredentialEffectiveStatus({
         service: serviceId,
-        serviceConfig: serviceState
+        serviceConfig: serviceState,
       });
-      console.log(`\n${serviceId}: active=${serviceState.activeProfileName} profiles=${serviceState.profiles.length}`);
+      console.log(
+        `\n${serviceId}: active=${serviceState.activeProfileName} profiles=${serviceState.profiles.length}`,
+      );
       console.log(`- Stored source: ${effective.storedSource}`);
       console.log(`- Effective source: ${effective.effectiveSource}`);
       console.log(`- Effective env var: ${effective.effectiveEnvVar}`);
       for (const profile of serviceState.profiles) {
-        const marker = credentialProfileNameKey(profile.name) === credentialProfileNameKey(serviceState.activeProfileName) ? "*" : " ";
+        const marker =
+          credentialProfileNameKey(profile.name) ===
+          credentialProfileNameKey(serviceState.activeProfileName)
+            ? "*"
+            : " ";
         const workspaceSuffix =
           serviceId === "postman"
             ? ` workspace=${normalizePostmanWorkspaceId(profile.workspaceId) ?? "null"}`
             : "";
-        console.log(`  ${marker} ${profile.name} env=${profile.apiKeyEnvVar}${workspaceSuffix}`);
+        console.log(
+          `  ${marker} ${profile.name} env=${profile.apiKeyEnvVar}${workspaceSuffix}`,
+        );
       }
     }
   } catch (error) {
@@ -5693,29 +6631,42 @@ async function runWorkflowConfigKeysAdd(options) {
     const profileName = normalizeProfileNameOrThrow(opts.name);
     const envVar = normalizePostmanApiKey(opts.envVar);
     if (!envVar || !isCredentialServiceEnvVar(envVar)) {
-      throw new Error("Missing or invalid --env-var. Example: --env-var POSTMAN_API_KEY");
+      throw new Error(
+        "Missing or invalid --env-var. Example: --env-var POSTMAN_API_KEY",
+      );
     }
 
-    const { configPath, existing, existingValue } = await loadConfigForScope({ scope, cwd });
+    const { configPath, existing, existingValue } = await loadConfigForScope({
+      scope,
+      cwd,
+    });
     const next = prepareConfigDocument(existingValue, {
       scope,
-      generatedBy: "cbx workflows config keys add"
+      generatedBy: "cbx workflows config keys add",
     });
 
     const serviceState = ensureCredentialServiceState(next, service);
     if (findProfileByName(serviceState.profiles, profileName)) {
-      throw new Error(`Profile '${profileName}' already exists for ${service}.`);
+      throw new Error(
+        `Profile '${profileName}' already exists for ${service}.`,
+      );
     }
 
     const newProfile = normalizeCredentialProfileRecord(service, {
       name: profileName,
       apiKey: null,
       apiKeyEnvVar: envVar,
-      workspaceId: service === "postman" ? normalizePostmanWorkspaceId(opts.workspaceId) : undefined
+      workspaceId:
+        service === "postman"
+          ? normalizePostmanWorkspaceId(opts.workspaceId)
+          : undefined,
     });
     const updatedServiceState = {
       ...serviceState,
-      profiles: dedupeCredentialProfiles([...serviceState.profiles, newProfile])
+      profiles: dedupeCredentialProfiles([
+        ...serviceState.profiles,
+        newProfile,
+      ]),
     };
     upsertCredentialServiceConfig(next, service, updatedServiceState);
 
@@ -5723,12 +6674,16 @@ async function runWorkflowConfigKeysAdd(options) {
       configPath,
       nextConfig: next,
       existingExists: existing.exists,
-      dryRun
+      dryRun,
     });
     console.log(`Config file: ${configPath}`);
     console.log(`Action: ${action}`);
-    console.log(`Added profile '${profileName}' for ${service} (env var ${envVar}).`);
-    console.log(`Active profile remains '${updatedServiceState.activeProfileName}'.`);
+    console.log(
+      `Added profile '${profileName}' for ${service} (env var ${envVar}).`,
+    );
+    console.log(
+      `Active profile remains '${updatedServiceState.activeProfileName}'.`,
+    );
   } catch (error) {
     if (error?.name === "ExitPromptError") {
       console.error("\nCancelled.");
@@ -5749,24 +6704,32 @@ async function runWorkflowConfigKeysUse(options) {
     const service = normalizeCredentialService(opts.service);
     const profileName = normalizeProfileNameOrThrow(opts.name);
 
-    const { configPath, existing, existingValue } = await loadConfigForScope({ scope, cwd });
+    const { configPath, existing, existingValue } = await loadConfigForScope({
+      scope,
+      cwd,
+    });
     if (!existing.exists) {
       throw new Error(`Config file is missing at ${configPath}.`);
     }
 
     const next = prepareConfigDocument(existingValue, {
       scope,
-      generatedBy: "cbx workflows config keys use"
+      generatedBy: "cbx workflows config keys use",
     });
     const serviceState = ensureCredentialServiceState(next, service);
-    const selectedProfile = findProfileByName(serviceState.profiles, profileName);
+    const selectedProfile = findProfileByName(
+      serviceState.profiles,
+      profileName,
+    );
     if (!selectedProfile) {
-      throw new Error(`Profile '${profileName}' does not exist for ${service}.`);
+      throw new Error(
+        `Profile '${profileName}' does not exist for ${service}.`,
+      );
     }
 
     const updatedServiceState = {
       ...serviceState,
-      activeProfileName: selectedProfile.name
+      activeProfileName: selectedProfile.name,
     };
     upsertCredentialServiceConfig(next, service, updatedServiceState);
 
@@ -5774,7 +6737,7 @@ async function runWorkflowConfigKeysUse(options) {
       configPath,
       nextConfig: next,
       existingExists: existing.exists,
-      dryRun
+      dryRun,
     });
     console.log(`Config file: ${configPath}`);
     console.log(`Action: ${action}`);
@@ -5799,32 +6762,45 @@ async function runWorkflowConfigKeysRemove(options) {
     const service = normalizeCredentialService(opts.service);
     const profileName = normalizeProfileNameOrThrow(opts.name);
 
-    const { configPath, existing, existingValue } = await loadConfigForScope({ scope, cwd });
+    const { configPath, existing, existingValue } = await loadConfigForScope({
+      scope,
+      cwd,
+    });
     if (!existing.exists) {
       throw new Error(`Config file is missing at ${configPath}.`);
     }
 
     const next = prepareConfigDocument(existingValue, {
       scope,
-      generatedBy: "cbx workflows config keys remove"
+      generatedBy: "cbx workflows config keys remove",
     });
     const serviceState = ensureCredentialServiceState(next, service);
-    const selectedProfile = findProfileByName(serviceState.profiles, profileName);
+    const selectedProfile = findProfileByName(
+      serviceState.profiles,
+      profileName,
+    );
     if (!selectedProfile) {
-      throw new Error(`Profile '${profileName}' does not exist for ${service}.`);
+      throw new Error(
+        `Profile '${profileName}' does not exist for ${service}.`,
+      );
     }
     if (
-      credentialProfileNameKey(serviceState.activeProfileName) === credentialProfileNameKey(selectedProfile.name)
+      credentialProfileNameKey(serviceState.activeProfileName) ===
+      credentialProfileNameKey(selectedProfile.name)
     ) {
-      throw new Error(`Cannot remove active profile '${selectedProfile.name}'. Switch active profile first.`);
+      throw new Error(
+        `Cannot remove active profile '${selectedProfile.name}'. Switch active profile first.`,
+      );
     }
 
     const updatedProfiles = serviceState.profiles.filter(
-      (profile) => credentialProfileNameKey(profile.name) !== credentialProfileNameKey(selectedProfile.name)
+      (profile) =>
+        credentialProfileNameKey(profile.name) !==
+        credentialProfileNameKey(selectedProfile.name),
     );
     const updatedServiceState = {
       ...serviceState,
-      profiles: updatedProfiles
+      profiles: updatedProfiles,
     };
     upsertCredentialServiceConfig(next, service, updatedServiceState);
 
@@ -5832,7 +6808,7 @@ async function runWorkflowConfigKeysRemove(options) {
       configPath,
       nextConfig: next,
       existingExists: existing.exists,
-      dryRun
+      dryRun,
     });
     console.log(`Config file: ${configPath}`);
     console.log(`Action: ${action}`);
@@ -5859,12 +6835,18 @@ async function runWorkflowConfig(options) {
     const wantsInteractiveEdit = Boolean(opts.edit);
 
     if (hasWorkspaceIdOption && wantsClearWorkspaceId) {
-      throw new Error("Use either --workspace-id or --clear-workspace-id, not both.");
+      throw new Error(
+        "Use either --workspace-id or --clear-workspace-id, not both.",
+      );
     }
 
-    const wantsMutation = hasWorkspaceIdOption || wantsClearWorkspaceId || wantsInteractiveEdit;
+    const wantsMutation =
+      hasWorkspaceIdOption || wantsClearWorkspaceId || wantsInteractiveEdit;
     const showOnly = Boolean(opts.show) || !wantsMutation;
-    const { configPath, existing, existingValue } = await loadConfigForScope({ scope, cwd });
+    const { configPath, existing, existingValue } = await loadConfigForScope({
+      scope,
+      cwd,
+    });
 
     if (showOnly) {
       console.log(`Config file: ${configPath}`);
@@ -5880,7 +6862,7 @@ async function runWorkflowConfig(options) {
 
     const next = prepareConfigDocument(existingValue, {
       scope,
-      generatedBy: "cbx workflows config"
+      generatedBy: "cbx workflows config",
     });
 
     const postmanState = ensureCredentialServiceState(next, "postman");
@@ -5889,8 +6871,9 @@ async function runWorkflowConfig(options) {
 
     if (wantsInteractiveEdit) {
       const promptedWorkspaceId = await input({
-        message: "Postman default workspace ID (optional, leave blank or 'null' to clear):",
-        default: workspaceId || ""
+        message:
+          "Postman default workspace ID (optional, leave blank or 'null' to clear):",
+        default: workspaceId || "",
       });
       workspaceId = normalizePostmanWorkspaceId(promptedWorkspaceId);
     }
@@ -5903,18 +6886,21 @@ async function runWorkflowConfig(options) {
 
     activeProfile.workspaceId = workspaceId;
     const updatedProfiles = postmanState.profiles.map((profile) =>
-      credentialProfileNameKey(profile.name) === credentialProfileNameKey(postmanState.activeProfileName)
+      credentialProfileNameKey(profile.name) ===
+      credentialProfileNameKey(postmanState.activeProfileName)
         ? activeProfile
-        : profile
+        : profile,
     );
     const updatedPostmanState = parseStoredCredentialServiceConfig({
       service: "postman",
       rawService: {
-        ...(next.postman && typeof next.postman === "object" ? next.postman : {}),
+        ...(next.postman && typeof next.postman === "object"
+          ? next.postman
+          : {}),
         profiles: updatedProfiles,
         activeProfileName: postmanState.activeProfileName,
-        mcpUrl: postmanState.mcpUrl
-      }
+        mcpUrl: postmanState.mcpUrl,
+      },
     });
     upsertNormalizedPostmanConfig(next, updatedPostmanState);
 
@@ -5926,12 +6912,14 @@ async function runWorkflowConfig(options) {
       configPath,
       nextConfig: next,
       existingExists: existing.exists,
-      dryRun
+      dryRun,
     });
 
     console.log(`Config file: ${configPath}`);
     console.log(`Action: ${action}`);
-    console.log(`postman.defaultWorkspaceId: ${workspaceId === null ? "null" : workspaceId}`);
+    console.log(
+      `postman.defaultWorkspaceId: ${workspaceId === null ? "null" : workspaceId}`,
+    );
     if (Boolean(opts.showAfter)) {
       const payload = buildConfigShowPayload(next);
       console.log(JSON.stringify(payload, null, 2));
@@ -5951,7 +6939,7 @@ function printRulesInitSummary({
   scope,
   dryRun,
   engineeringResults,
-  techResult
+  techResult,
 }) {
   console.log(`Platform: ${platform}`);
   console.log(`Scope: ${scope}`);
@@ -5962,7 +6950,9 @@ function printRulesInitSummary({
   console.log("\nEngineering rules:");
   for (const item of engineeringResults) {
     console.log(`- Rule file: ${item.ruleFilePath}`);
-    console.log(`  - ENGINEERING_RULES.md: ${item.rulesFileResult.action} (${item.rulesFilePath})`);
+    console.log(
+      `  - ENGINEERING_RULES.md: ${item.rulesFileResult.action} (${item.rulesFilePath})`,
+    );
     console.log(`  - Managed block: ${item.blockResult.action}`);
     if (item.blockResult.warnings.length > 0) {
       for (const warning of item.blockResult.warnings) {
@@ -5982,8 +6972,12 @@ function printRulesInitSummary({
 function printInstallEngineeringSummary({ engineeringResults, techResult }) {
   console.log("\nEngineering artifacts:");
   for (const item of engineeringResults) {
-    console.log(`- ENGINEERING_RULES.md: ${item.rulesFileResult.action} (${item.rulesFilePath})`);
-    console.log(`- Managed engineering block (${item.ruleFilePath}): ${item.blockResult.action}`);
+    console.log(
+      `- ENGINEERING_RULES.md: ${item.rulesFileResult.action} (${item.rulesFilePath})`,
+    );
+    console.log(
+      `- Managed engineering block (${item.ruleFilePath}): ${item.blockResult.action}`,
+    );
     if (item.blockResult.warnings.length > 0) {
       for (const warning of item.blockResult.warnings) {
         console.log(`  - warning: ${warning}`);
@@ -6003,19 +6997,29 @@ async function upsertEngineeringArtifacts({
   overwrite = false,
   skipTech = false,
   dryRun = false,
-  cwd = process.cwd()
+  cwd = process.cwd(),
 }) {
   const ruleFilePath = await resolveRuleFilePath(platform, scope, cwd);
-  if (!ruleFilePath) throw new Error(`No rule file configured for platform '${platform}'.`);
+  if (!ruleFilePath)
+    throw new Error(`No rule file configured for platform '${platform}'.`);
 
   const workspaceRoot = findWorkspaceRoot(cwd);
   const techMdPath = path.join(workspaceRoot, "TECH.md");
   const targets = [{ ruleFilePath }];
 
   if (scope === "global") {
-    const workspaceRuleFile = await resolveWorkspaceRuleFileForGlobalScope(platform, cwd);
-    const globalRuleFile = expandPath(WORKFLOW_PROFILES[platform].global.ruleFilesByPriority[0], cwd);
-    if (workspaceRuleFile && path.resolve(workspaceRuleFile) !== path.resolve(globalRuleFile)) {
+    const workspaceRuleFile = await resolveWorkspaceRuleFileForGlobalScope(
+      platform,
+      cwd,
+    );
+    const globalRuleFile = expandPath(
+      WORKFLOW_PROFILES[platform].global.ruleFilesByPriority[0],
+      cwd,
+    );
+    if (
+      workspaceRuleFile &&
+      path.resolve(workspaceRuleFile) !== path.resolve(globalRuleFile)
+    ) {
       targets.push({ ruleFilePath: workspaceRuleFile });
     }
   }
@@ -6023,25 +7027,28 @@ async function upsertEngineeringArtifacts({
   const template = buildEngineeringRulesTemplate();
   const engineeringResults = [];
   for (const target of targets) {
-    const rulesFilePath = path.join(path.dirname(target.ruleFilePath), "ENGINEERING_RULES.md");
+    const rulesFilePath = path.join(
+      path.dirname(target.ruleFilePath),
+      "ENGINEERING_RULES.md",
+    );
     const rulesFileResult = await writeTextFile({
       targetPath: rulesFilePath,
       content: `${template}\n`,
       overwrite,
-      dryRun
+      dryRun,
     });
     const blockResult = await upsertEngineeringRulesBlock({
       ruleFilePath: target.ruleFilePath,
       platform,
       engineeringRulesFilePath: rulesFilePath,
       techMdFilePath: techMdPath,
-      dryRun
+      dryRun,
     });
     engineeringResults.push({
       ruleFilePath: target.ruleFilePath,
       rulesFilePath,
       rulesFileResult,
-      blockResult
+      blockResult,
     });
   }
 
@@ -6053,17 +7060,17 @@ async function upsertEngineeringArtifacts({
       targetPath: techMdPath,
       content: `${content}\n`,
       overwrite,
-      dryRun
+      dryRun,
     });
     techResult = {
       ...fileResult,
-      snapshot
+      snapshot,
     };
   }
 
   return {
     engineeringResults,
-    techResult
+    techResult,
   };
 }
 
@@ -6080,7 +7087,7 @@ async function runRulesInit(options) {
       overwrite,
       skipTech: Boolean(options.skipTech),
       dryRun,
-      cwd
+      cwd,
     });
 
     printRulesInitSummary({
@@ -6088,11 +7095,13 @@ async function runRulesInit(options) {
       scope,
       dryRun,
       engineeringResults: initResult.engineeringResults,
-      techResult: initResult.techResult
+      techResult: initResult.techResult,
     });
 
     if (dryRun) {
-      console.log("\nDry-run complete. Re-run without `--dry-run` to apply changes.");
+      console.log(
+        "\nDry-run complete. Re-run without `--dry-run` to apply changes.",
+      );
     }
   } catch (error) {
     if (error?.name === "ExitPromptError") {
@@ -6111,14 +7120,16 @@ async function runRulesTechMd(options) {
     const compact = Boolean(options.compact);
     const cwd = process.cwd();
     const workspaceRoot = findWorkspaceRoot(cwd);
-    const outputPath = options.output ? expandPath(options.output, cwd) : path.join(workspaceRoot, "TECH.md");
+    const outputPath = options.output
+      ? expandPath(options.output, cwd)
+      : path.join(workspaceRoot, "TECH.md");
     const snapshot = await collectTechSnapshot(workspaceRoot);
     const content = buildTechMd(snapshot, { compact });
     const result = await writeTextFile({
       targetPath: outputPath,
       content: `${content}\n`,
       overwrite,
-      dryRun
+      dryRun,
     });
 
     console.log(`TECH.md action: ${result.action}`);
@@ -6127,7 +7138,9 @@ async function runRulesTechMd(options) {
     console.log(`Files scanned: ${snapshot.scannedFiles}`);
     console.log(`Mode: ${compact ? "compact" : "full"}`);
     if (dryRun) {
-      console.log("\nDry-run complete. Re-run without `--dry-run` to apply changes.");
+      console.log(
+        "\nDry-run complete. Re-run without `--dry-run` to apply changes.",
+      );
     }
   } catch (error) {
     console.error(`\nError: ${error.message}`);
@@ -6144,16 +7157,23 @@ program
 
 const workflowsCommand = program
   .command("workflows")
-  .description("Install and manage workflow bundles for Antigravity, Codex, and Copilot");
+  .description(
+    "Install and manage workflow bundles for Antigravity, Codex, and Copilot",
+  );
 
-workflowsCommand.command("platforms").description("List workflow platform ids and defaults").action(printPlatforms);
+workflowsCommand
+  .command("platforms")
+  .description("List workflow platform ids and defaults")
+  .action(printPlatforms);
 
 withInstallOptions(
-  workflowsCommand.command("install").description("Install a workflow bundle into the selected platform")
+  workflowsCommand
+    .command("install")
+    .description("Install a workflow bundle into the selected platform"),
 ).action(runWorkflowInstall);
 
 withInstallOptions(
-  workflowsCommand.command("init").description("Alias for 'workflows install'")
+  workflowsCommand.command("init").description("Alias for 'workflows install'"),
 ).action(runWorkflowInstall);
 
 withWorkflowBaseOptions(
@@ -6161,43 +7181,54 @@ withWorkflowBaseOptions(
     .command("remove <bundle-or-workflow>")
     .description("Remove an installed bundle or workflow and sync rules")
     .option("--dry-run", "preview remove and sync without writing files")
-    .option("-y, --yes", "skip interactive confirmation")
+    .option("-y, --yes", "skip interactive confirmation"),
 ).action(runWorkflowRemove);
 
 withWorkflowBaseOptions(
   workflowsCommand
     .command("prune-skills")
     .description("Prune nested duplicates and out-of-profile installed skills")
-    .option("-b, --bundle <bundle>", "bundle id (default: agent-environment-setup)")
+    .option(
+      "-b, --bundle <bundle>",
+      "bundle id (default: agent-environment-setup)",
+    )
     .option(
       "--skill-profile <profile>",
       "skill prune profile: core|web-backend|full (default: core)",
-      DEFAULT_SKILL_PROFILE
+      DEFAULT_SKILL_PROFILE,
     )
-    .option("--all-skills", "alias for --skill-profile full --include-mcp")
+    .option("--all-skills", "alias for --skill-profile full")
     .option("--dry-run", "preview prune operations without deleting files")
-    .option("-y, --yes", "skip interactive confirmation")
+    .option("-y, --yes", "skip interactive confirmation"),
 ).action(runWorkflowPruneSkills);
 
 withWorkflowBaseOptions(
   workflowsCommand
     .command("sync-rules")
-    .description("Rebuild the managed workflow routing block for the selected platform")
+    .description(
+      "Rebuild the managed workflow routing block for the selected platform",
+    )
     .option("--dry-run", "preview managed rule sync without writing files")
-    .option("--json", "output JSON")
+    .option("--json", "output JSON"),
 ).action(runWorkflowSyncRules);
 
 withWorkflowBaseOptions(
   workflowsCommand
     .command("doctor [platform]")
-    .description("Validate workflow paths, rule file status, and managed block health")
-    .option("--json", "output JSON")
+    .description(
+      "Validate workflow paths, rule file status, and managed block health",
+    )
+    .option("--json", "output JSON"),
 ).action(runWorkflowDoctor);
 
 const workflowsConfigCommand = workflowsCommand
   .command("config")
   .description("View or edit cbx_config.json from terminal")
-  .option("--scope <scope>", "config scope: project|workspace|global|user", "global")
+  .option(
+    "--scope <scope>",
+    "config scope: project|workspace|global|user",
+    "global",
+  )
   .option("--show", "show current config (default when no edit flags)")
   .option("--edit", "edit Postman default workspace ID interactively")
   .option("--workspace-id <id|null>", "set postman.defaultWorkspaceId")
@@ -6215,31 +7246,34 @@ const skillsCommand = program
   .command("skills")
   .description("Deprecated alias for 'workflows' (kept for one minor release)");
 
-skillsCommand.command("platforms").description("Alias for workflows platforms").action(() => {
-  printSkillsDeprecation();
-  printPlatforms();
-});
+skillsCommand
+  .command("platforms")
+  .description("Alias for workflows platforms")
+  .action(() => {
+    printSkillsDeprecation();
+    printPlatforms();
+  });
 
 withInstallOptions(
-  skillsCommand.command("install").description("Alias for workflows install")
+  skillsCommand.command("install").description("Alias for workflows install"),
 ).action(async (options) => {
   printSkillsDeprecation();
   await runWorkflowInstall(options);
 });
 
-withInstallOptions(skillsCommand.command("init").description("Alias for workflows install")).action(
-  async (options) => {
-    printSkillsDeprecation();
-    await runWorkflowInstall(options);
-  }
-);
+withInstallOptions(
+  skillsCommand.command("init").description("Alias for workflows install"),
+).action(async (options) => {
+  printSkillsDeprecation();
+  await runWorkflowInstall(options);
+});
 
 withWorkflowBaseOptions(
   skillsCommand
     .command("remove <bundle-or-workflow>")
     .description("Alias for workflows remove")
     .option("--dry-run", "preview remove and sync without writing files")
-    .option("-y, --yes", "skip interactive confirmation")
+    .option("-y, --yes", "skip interactive confirmation"),
 ).action(async (target, options) => {
   printSkillsDeprecation();
   await runWorkflowRemove(target, options);
@@ -6249,15 +7283,18 @@ withWorkflowBaseOptions(
   skillsCommand
     .command("prune-skills")
     .description("Alias for workflows prune-skills")
-    .option("-b, --bundle <bundle>", "bundle id (default: agent-environment-setup)")
+    .option(
+      "-b, --bundle <bundle>",
+      "bundle id (default: agent-environment-setup)",
+    )
     .option(
       "--skill-profile <profile>",
       "skill prune profile: core|web-backend|full (default: core)",
-      DEFAULT_SKILL_PROFILE
+      DEFAULT_SKILL_PROFILE,
     )
-    .option("--all-skills", "alias for --skill-profile full --include-mcp")
+    .option("--all-skills", "alias for --skill-profile full")
     .option("--dry-run", "preview prune operations without deleting files")
-    .option("-y, --yes", "skip interactive confirmation")
+    .option("-y, --yes", "skip interactive confirmation"),
 ).action(async (options) => {
   printSkillsDeprecation();
   await runWorkflowPruneSkills(options);
@@ -6268,7 +7305,7 @@ withWorkflowBaseOptions(
     .command("sync-rules")
     .description("Alias for workflows sync-rules")
     .option("--dry-run", "preview managed rule sync without writing files")
-    .option("--json", "output JSON")
+    .option("--json", "output JSON"),
 ).action(async (options) => {
   printSkillsDeprecation();
   await runWorkflowSyncRules(options);
@@ -6278,7 +7315,7 @@ withWorkflowBaseOptions(
   skillsCommand
     .command("doctor [platform]")
     .description("Alias for workflows doctor")
-    .option("--json", "output JSON")
+    .option("--json", "output JSON"),
 ).action(async (platform, options) => {
   printSkillsDeprecation();
   await runWorkflowDoctor(platform, options);
@@ -6287,7 +7324,11 @@ withWorkflowBaseOptions(
 const skillsConfigCommand = skillsCommand
   .command("config")
   .description("Alias for workflows config")
-  .option("--scope <scope>", "config scope: project|workspace|global|user", "global")
+  .option(
+    "--scope <scope>",
+    "config scope: project|workspace|global|user",
+    "global",
+  )
   .option("--show", "show current config (default when no edit flags)")
   .option("--edit", "edit Postman default workspace ID interactively")
   .option("--workspace-id <id|null>", "set postman.defaultWorkspaceId")
@@ -6307,12 +7348,14 @@ skillsCommand.action(() => {
 
 const rulesCommand = program
   .command("rules")
-  .description("Create and sync strict engineering rules and generated TECH.md");
+  .description(
+    "Create and sync strict engineering rules and generated TECH.md",
+  );
 
 rulesCommand
   .command("init")
   .description(
-    "Create/update ENGINEERING_RULES.md, patch active platform rule file with managed guardrail block, and generate TECH.md"
+    "Create/update ENGINEERING_RULES.md, patch active platform rule file with managed guardrail block, and generate TECH.md",
   )
   .option("-p, --platform <platform>", "target platform id")
   .option("--scope <scope>", "target scope: project|global", "project")
@@ -6334,7 +7377,9 @@ rulesCommand.action(() => {
   rulesCommand.help();
 });
 
-const agentsCommand = program.command("agents").description("Cubis Agent Bot commands");
+const agentsCommand = program
+  .command("agents")
+  .description("Cubis Agent Bot commands");
 
 agentsCommand
   .command("status")
@@ -6353,13 +7398,13 @@ program
   .description("Legacy alias for workflows platforms")
   .action(printPlatforms);
 
-withInstallOptions(program.command("install").description("Legacy alias for workflows install")).action(
-  runWorkflowInstall
-);
+withInstallOptions(
+  program.command("install").description("Legacy alias for workflows install"),
+).action(runWorkflowInstall);
 
-withInstallOptions(program.command("init").description("Legacy alias for workflows install")).action(
-  runWorkflowInstall
-);
+withInstallOptions(
+  program.command("init").description("Legacy alias for workflows install"),
+).action(runWorkflowInstall);
 
 if (process.argv.length <= 2) {
   program.outputHelp();

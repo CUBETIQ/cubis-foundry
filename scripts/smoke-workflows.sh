@@ -65,8 +65,7 @@ if (!root) {
   process.exit(1);
 }
 const canonicalRoots = [
-  path.join(root, 'workflows', 'skills'),
-  path.join(root, 'mcp', 'skills')
+  path.join(root, 'workflows', 'skills')
 ];
 const mirrors = {
   copilot: path.join(root, 'workflows', 'workflows', 'agent-environment-setup', 'platforms', 'copilot', 'skills'),
@@ -269,8 +268,7 @@ if (!root || !installedRoot) {
   process.exit(1);
 }
 const canonicalRoots = [
-  path.join(root, 'workflows', 'skills'),
-  path.join(root, 'mcp', 'skills')
+  path.join(root, 'workflows', 'skills')
 ];
 const canonicalSet = new Set();
 for (const canonicalRoot of canonicalRoots) {

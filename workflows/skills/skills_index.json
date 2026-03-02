@@ -100,16 +100,6 @@
     "triggers": []
   },
   {
-    "id": "building-mcp-server-on-cloudflare",
-    "name": "building-mcp-server-on-cloudflare",
-    "canonical_id": "building-mcp-server-on-cloudflare",
-    "deprecated": false,
-    "replaced_by": null,
-    "path": ".agents/skills/building-mcp-server-on-cloudflare/SKILL.md",
-    "description": "MCP pointer for Cloudflare-hosted MCP server build/deploy guidance from the hidden vault.",
-    "triggers": []
-  },
-  {
     "id": "changelog-generator",
     "name": "changelog-generator",
     "canonical_id": "changelog-generator",
@@ -230,16 +220,6 @@
       "sharding",
       "cache"
     ]
-  },
-  {
-    "id": "datadog-automation",
-    "name": "datadog-automation",
-    "canonical_id": "datadog-automation",
-    "deprecated": false,
-    "replaced_by": null,
-    "path": ".agents/skills/datadog-automation/SKILL.md",
-    "description": "MCP pointer for Datadog automation. Loads the full workflow from the hidden MCP vault.",
-    "triggers": []
   },
   {
     "id": "debugging-wizard",
@@ -578,36 +558,6 @@
     "triggers": []
   },
   {
-    "id": "mcp-builder",
-    "name": "mcp-builder",
-    "canonical_id": "mcp-builder",
-    "deprecated": false,
-    "replaced_by": null,
-    "path": ".agents/skills/mcp-builder/SKILL.md",
-    "description": "MCP pointer for server-building patterns. Loads complete guidance from the hidden MCP vault.",
-    "triggers": []
-  },
-  {
-    "id": "mcp-catalog",
-    "name": "mcp-catalog",
-    "canonical_id": "mcp-catalog",
-    "deprecated": false,
-    "replaced_by": null,
-    "path": ".agents/skills/mcp-catalog/SKILL.md",
-    "description": "MCP category pointer. Use this to discover MCP vault skills on demand with file tools instead of preloading everything.",
-    "triggers": []
-  },
-  {
-    "id": "mcp-developer",
-    "name": "mcp-developer",
-    "canonical_id": "mcp-developer",
-    "deprecated": false,
-    "replaced_by": null,
-    "path": ".agents/skills/mcp-developer/SKILL.md",
-    "description": "MCP pointer for implementation/debugging workflows. Loads the full MCP developer guide from the vault.",
-    "triggers": []
-  },
-  {
     "id": "microservices-architect",
     "name": "microservices-architect",
     "canonical_id": "microservices-architect",
@@ -790,16 +740,6 @@
       "UI testing",
       "visual testing"
     ]
-  },
-  {
-    "id": "postman",
-    "name": "postman",
-    "canonical_id": "postman",
-    "deprecated": false,
-    "replaced_by": null,
-    "path": ".agents/skills/postman/SKILL.md",
-    "description": "MCP pointer for Postman automation. Loads detailed guidance from the hidden MCP vault on demand.",
-    "triggers": []
   },
   {
     "id": "powershell-windows",

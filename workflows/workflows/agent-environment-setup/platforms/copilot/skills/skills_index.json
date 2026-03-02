@@ -70,29 +70,6 @@
     "triggers": []
   },
   {
-    "id": "atlassian-mcp",
-    "name": "atlassian-mcp",
-    "canonical_id": "atlassian-mcp",
-    "deprecated": false,
-    "replaced_by": null,
-    "path": ".github/skills/atlassian-mcp/SKILL.md",
-    "description": "Use when querying Jira issues, searching Confluence pages, creating tickets, updating documentation, or integrating Atlassian tools via MCP protocol.",
-    "triggers": [
-      "Jira",
-      "Confluence",
-      "Atlassian",
-      "MCP",
-      "tickets",
-      "issues",
-      "wiki",
-      "JQL",
-      "CQL",
-      "sprint",
-      "backlog",
-      "project management"
-    ]
-  },
-  {
     "id": "bash-linux",
     "name": "bash-linux",
     "canonical_id": "bash-linux",
@@ -120,16 +97,6 @@
     "replaced_by": null,
     "path": ".github/skills/brainstorming/SKILL.md",
     "description": "Socratic questioning protocol + user communication. MANDATORY for complex requests, new features, or unclear requirements. Includes progress reporting and error handling.",
-    "triggers": []
-  },
-  {
-    "id": "building-mcp-server-on-cloudflare",
-    "name": "building-mcp-server-on-cloudflare",
-    "canonical_id": "building-mcp-server-on-cloudflare",
-    "deprecated": false,
-    "replaced_by": null,
-    "path": ".github/skills/building-mcp-server-on-cloudflare/SKILL.md",
-    "description": "Build and deploy remote MCP servers on Cloudflare Workers with tools, OAuth authentication, and production configuration.",
     "triggers": []
   },
   {
@@ -253,16 +220,6 @@
       "sharding",
       "cache"
     ]
-  },
-  {
-    "id": "datadog-automation",
-    "name": "datadog-automation",
-    "canonical_id": "datadog-automation",
-    "deprecated": false,
-    "replaced_by": null,
-    "path": ".github/skills/datadog-automation/SKILL.md",
-    "description": "Automate Datadog tasks via Rube MCP (Composio): query metrics, search logs, manage monitors/dashboards, create events and downtimes. Always search tools first for current schemas.",
-    "triggers": []
   },
   {
     "id": "debugging-wizard",
@@ -482,16 +439,6 @@
     "triggers": []
   },
   {
-    "id": "github-automation",
-    "name": "github-automation",
-    "canonical_id": "github-automation",
-    "deprecated": false,
-    "replaced_by": null,
-    "path": ".github/skills/github-automation/SKILL.md",
-    "description": "Automate GitHub repositories, issues, pull requests, branches, CI/CD, and permissions via Rube MCP (Composio). Manage code workflows, review PRs, search code, and handle deployments programmatically.",
-    "triggers": []
-  },
-  {
     "id": "golang-pro",
     "name": "golang-pro",
     "canonical_id": "golang-pro",
@@ -609,35 +556,6 @@
     "path": ".github/skills/lint-and-validate/SKILL.md",
     "description": "Automatic quality control, linting, and static analysis procedures. Use after every code modification to ensure syntax correctness and project standards. Triggers: lint, format, check, validate, types, static analysis.",
     "triggers": []
-  },
-  {
-    "id": "mcp-builder",
-    "name": "mcp-builder",
-    "canonical_id": "mcp-builder",
-    "deprecated": false,
-    "replaced_by": null,
-    "path": ".github/skills/mcp-builder/SKILL.md",
-    "description": "MCP (Model Context Protocol) server building principles. Tool design, resource patterns, best practices.",
-    "triggers": []
-  },
-  {
-    "id": "mcp-developer",
-    "name": "mcp-developer",
-    "canonical_id": "mcp-developer",
-    "deprecated": false,
-    "replaced_by": null,
-    "path": ".github/skills/mcp-developer/SKILL.md",
-    "description": "Use for implementing, debugging, and maintaining MCP servers/clients with SDKs, protocol compliance, transports, schemas, and security hardening.",
-    "triggers": [
-      "MCP",
-      "Model Context Protocol",
-      "MCP server",
-      "MCP client",
-      "Claude integration",
-      "AI tools",
-      "context protocol",
-      "JSON-RPC"
-    ]
   },
   {
     "id": "microservices-architect",
@@ -824,16 +742,6 @@
     ]
   },
   {
-    "id": "postman",
-    "name": "postman",
-    "canonical_id": "postman",
-    "deprecated": false,
-    "replaced_by": null,
-    "path": ".github/skills/postman/SKILL.md",
-    "description": "Automate API testing and collection management with Postman - create workspaces, collections, environments, and run tests programmatically",
-    "triggers": []
-  },
-  {
     "id": "powershell-windows",
     "name": "powershell-windows",
     "canonical_id": "powershell-windows",
@@ -1002,16 +910,6 @@
     "replaced_by": null,
     "path": ".github/skills/semgrep/SKILL.md",
     "description": "Run Semgrep static analysis scan on a codebase using parallel subagents. Automatically",
-    "triggers": []
-  },
-  {
-    "id": "sentry-automation",
-    "name": "sentry-automation",
-    "canonical_id": "sentry-automation",
-    "deprecated": false,
-    "replaced_by": null,
-    "path": ".github/skills/sentry-automation/SKILL.md",
-    "description": "Automate Sentry tasks via Rube MCP (Composio): manage issues/events, configure alerts, track releases, monitor projects and teams. Always search tools first for current schemas.",
     "triggers": []
   },
   {

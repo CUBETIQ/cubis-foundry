@@ -20,13 +20,8 @@ const ROOT_PAIRS = [
   {
     label: "workflows",
     skillsRoot: path.join(ROOT, "workflows", "skills"),
-    powersRoot: path.join(ROOT, "workflows", "powers")
+    powersRoot: path.join(ROOT, "workflows", "powers"),
   },
-  {
-    label: "mcp",
-    skillsRoot: path.join(ROOT, "mcp", "skills"),
-    powersRoot: path.join(ROOT, "mcp", "powers")
-  }
 ];
 
 const ARGS = new Set(process.argv.slice(2));
@@ -36,7 +31,7 @@ const FROM_SKILLS = ARGS.has("--from-skills");
 const SYNC_SKILLS = ARGS.has("--sync-skills");
 
 const KIRO_REQUIRED_KEYS = {
-  inclusion: "manual"
+  inclusion: "manual",
 };
 
 async function pathExists(p) {
@@ -85,7 +80,7 @@ function parseFrontmatter(markdown) {
   if (!match) return null;
   return {
     frontmatterRaw: match[1],
-    body: match[2]
+    body: match[2],
   };
 }
 
@@ -138,7 +133,7 @@ async function processPowerDir(pair, powerName) {
       name: powerName,
       result: "skip",
       reason: "no SKILL.md found in skills/ or powers/",
-      pair: pair.label
+      pair: pair.label,
     };
   }
 
@@ -148,7 +143,7 @@ async function processPowerDir(pair, powerName) {
       name: powerName,
       result: "skip",
       reason: "POWER.md already exists (use --force to overwrite)",
-      pair: pair.label
+      pair: pair.label,
     };
   }
 
@@ -160,7 +155,7 @@ async function processPowerDir(pair, powerName) {
     name: powerName,
     result: powerExists ? "updated" : "created",
     source: path.relative(ROOT, skillSource),
-    pair: pair.label
+    pair: pair.label,
   };
 }
 
@@ -169,7 +164,8 @@ async function syncFromSkills(pair) {
   const created = [];
 
   for (const name of skillDirs) {
-    if (name.startsWith(".") || name.endsWith(".json") || name.endsWith(".md")) continue;
+    if (name.startsWith(".") || name.endsWith(".json") || name.endsWith(".md"))
+      continue;
 
     const powerDir = path.join(pair.powersRoot, name);
     const skillDir = path.join(pair.skillsRoot, name);
@@ -214,7 +210,9 @@ async function syncSkillsToPowers(pair) {
     }
 
     const canonicalContent = await readUtf8(canonicalSkill);
-    const existingContent = (await pathExists(powerSkill)) ? await readUtf8(powerSkill) : null;
+    const existingContent = (await pathExists(powerSkill))
+      ? await readUtf8(powerSkill)
+      : null;
 
     if (existingContent === canonicalContent) {
       unchanged.push(name);
@@ -232,14 +230,19 @@ async function main() {
   const pairResults = [];
 
   for (const pair of ROOT_PAIRS) {
-    if (!(await pathExists(pair.skillsRoot)) && !(await pathExists(pair.powersRoot))) {
+    if (
+      !(await pathExists(pair.skillsRoot)) &&
+      !(await pathExists(pair.powersRoot))
+    ) {
       continue;
     }
 
     if (FROM_SKILLS) {
       const created = await syncFromSkills(pair);
       if (created.length > 0) {
-        console.log(`${DRY_RUN ? "[dry-run] " : ""}Created ${created.length} missing powers from ${pair.label}/skills:`);
+        console.log(
+          `${DRY_RUN ? "[dry-run] " : ""}Created ${created.length} missing powers from ${pair.label}/skills:`,
+        );
         for (const name of created) {
           console.log(`  + ${pair.label}/${name}`);
         }
@@ -249,10 +252,14 @@ async function main() {
     if (SYNC_SKILLS) {
       const syncResult = await syncSkillsToPowers(pair);
       if (syncResult.synced.length > 0) {
-        console.log(`${DRY_RUN ? "[dry-run] " : ""}Synced ${syncResult.synced.length} SKILL.md files from ${pair.label}/skills to ${pair.label}/powers`);
+        console.log(
+          `${DRY_RUN ? "[dry-run] " : ""}Synced ${syncResult.synced.length} SKILL.md files from ${pair.label}/skills to ${pair.label}/powers`,
+        );
       }
       if (syncResult.missing.length > 0) {
-        console.log(`Skipping ${syncResult.missing.length} ${pair.label}/powers entries with no canonical ${pair.label}/skills source.`);
+        console.log(
+          `Skipping ${syncResult.missing.length} ${pair.label}/powers entries with no canonical ${pair.label}/skills source.`,
+        );
       }
     }
 
@@ -282,7 +289,9 @@ async function main() {
   console.log(`  Skipped: ${skipped.length}`);
 
   for (const result of [...created, ...updated]) {
-    console.log(`  ${result.result === "created" ? "+" : "~"} [${result.pair}] ${result.name} (${result.source})`);
+    console.log(
+      `  ${result.result === "created" ? "+" : "~"} [${result.pair}] ${result.name} (${result.source})`,
+    );
   }
 
   if (skipped.length > 0) {

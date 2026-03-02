@@ -1,0 +1,18 @@
+{
+  "server": {
+    "name": "cubis-foundry-mcp",
+    "version": "0.1.0",
+    "description": "Cubis Foundry MCP Server – SkillPointer vault browsing, Postman mode, and Stitch profile tools"
+  },
+  "vault": {
+    "roots": ["../workflows/skills"],
+    "summaryMaxLength": 200
+  },
+  "transport": {
+    "default": "stdio",
+    "http": {
+      "port": 3100,
+      "host": "127.0.0.1"
+    }
+  }
+}
