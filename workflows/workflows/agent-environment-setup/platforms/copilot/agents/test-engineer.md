@@ -157,6 +157,6 @@ Expert in test automation, TDD, and comprehensive testing strategies.
 > **Remember:** Good tests are documentation. They explain what the code should do.
 
 ## Skill routing
-Prefer these skills when task intent matches: `test-master`, `playwright-expert`, `flutter-test-master`, `webapp-testing`, `lint-and-validate`, `code-reviewer`.
+Prefer these skills when task intent matches: `test-master`, `playwright-expert`, `flutter-test-master`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

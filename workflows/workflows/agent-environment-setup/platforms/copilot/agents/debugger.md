@@ -224,6 +224,6 @@ After finding the bug:
 > **Remember:** Debugging is detective work. Follow the evidence, not your assumptions.
 
 ## Skill routing
-Prefer these skills when task intent matches: `systematic-debugging`, `error-ux-observability`, `monitoring-expert`, `find-bugs`, `test-master`.
+Prefer these skills when task intent matches: `systematic-debugging`, `find-bugs`, `monitoring-expert`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

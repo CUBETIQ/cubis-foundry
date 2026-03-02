@@ -188,6 +188,6 @@ What's slow?
 > **Database path:** For query/storage bottlenecks, route through `database-skills` and `workflows/powers/database-skills`, and lean on `database-design`/`database-optimizer` when narrowing schema vs tuning issues; report index/pagination/plan evidence.
 
 ## Skill routing
-Prefer these skills when task intent matches: `performance-profiling`, `web-perf`, `monitoring-expert`, `database-optimizer`, `react-best-practices`.
+Prefer these skills when task intent matches: `performance-profiling`, `web-perf`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

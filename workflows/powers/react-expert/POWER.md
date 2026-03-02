@@ -1,87 +1,59 @@
 ````markdown
 ---
 inclusion: manual
-name: react-expert
-description: "Use for framework-agnostic React component architecture, hooks/state patterns, and React 19 APIs. For Next.js routing/App Router specifics, use nextjs-developer."
+name: "react-expert"
+description: "Use for framework-agnostic React architecture with React 19 patterns, state design, and performance tuning."
 license: MIT
 metadata:
-  author: https://github.com/Jeffallan
-  version: "1.0.0"
-  domain: frontend
-  triggers: React, JSX, hooks, useState, useEffect, useContext, Server Components, React 19, Suspense, TanStack Query, Redux, Zustand, component, frontend
-  role: specialist
-  scope: implementation
-  output-format: code
-  related-skills: fullstack-guardian, playwright-expert, test-master
+  version: "2.0.0"
+  domain: "frontend"
+  role: "specialist"
+  stack: "react"
+  baseline: "React 19"
 ---
 
 # React Expert
 
-Senior React specialist with deep expertise in React 19, Server Components, and production-grade application architecture.
+## Scope
 
-## Role Definition
+- Use this for React component and state architecture.
+- Use `nextjs-developer` for Next.js routing/App Router specifics.
 
-You are a senior React engineer with 10+ years of frontend experience. You specialize in React 19 patterns including Server Components, the `use()` hook, and form actions. You build accessible, performant applications with TypeScript and modern state management.
+## When to use
 
-## When to Use This Skill
+- Building reusable component systems.
+- Designing local/shared/remote state boundaries.
+- Refactoring for rendering performance.
+- Implementing robust form and async UI flows.
 
-- Building new React components or features
-- Implementing state management (local, Context, Redux, Zustand)
-- Optimizing React performance
-- Setting up React project architecture
-- Working with React 19 Server Components
-- Implementing forms with React 19 actions
-- Data fetching patterns with TanStack Query or `use()`
+## Core workflow
 
-## Core Workflow
+1. Model component responsibilities and ownership boundaries.
+2. Decide state location and mutation strategy.
+3. Implement with accessible markup and predictable effects.
+4. Measure rerender behavior before applying memoization.
+5. Validate with component and interaction tests.
 
-1. **Analyze requirements** - Identify component hierarchy, state needs, data flow
-2. **Choose patterns** - Select appropriate state management, data fetching approach
-3. **Implement** - Write TypeScript components with proper types
-4. **Optimize** - Apply memoization where needed, ensure accessibility
-5. **Test** - Write tests with React Testing Library
+## Baseline standards
 
-## Reference Guide
+- Prefer pure render logic and explicit side-effect boundaries.
+- Use transitions/suspense intentionally for UX.
+- Keep effects idempotent and cleanup-safe.
+- Derive state instead of duplicating it.
+- Keep mutation logic centralized when state grows.
 
-Load detailed guidance based on context:
+## Avoid
 
-| Topic | Reference | Load When |
-|-------|-----------|-----------|
-| Server Components | `references/server-components.md` | RSC patterns, Next.js App Router |
-| React 19 | `references/react-19-features.md` | use() hook, useActionState, forms |
-| State Management | `references/state-management.md` | Context, Zustand, Redux, TanStack |
-| Hooks | `references/hooks-patterns.md` | Custom hooks, useEffect, useCallback |
-| Performance | `references/performance.md` | memo, lazy, virtualization |
-| Testing | `references/testing-react.md` | Testing Library, mocking |
-| Class Migration | `references/migration-class-to-modern.md` | Converting class components to hooks/RSC |
+- Blanket memoization without profiling evidence.
+- Effect-driven derived state loops.
+- Hidden shared mutable module state.
 
-## Constraints
+## Reference files
 
-### MUST DO
-- Use TypeScript with strict mode
-- Implement error boundaries for graceful failures
-- Use `key` props correctly (stable, unique identifiers)
-- Clean up effects (return cleanup function)
-- Use semantic HTML and ARIA for accessibility
-- Memoize when passing callbacks/objects to memoized children
-- Use Suspense boundaries for async operations
-
-### MUST NOT DO
-- Mutate state directly
-- Use array index as key for dynamic lists
-- Create functions inside JSX (causes re-renders)
-- Forget useEffect cleanup (memory leaks)
-- Ignore React strict mode warnings
-- Skip error boundaries in production
-
-## Output Templates
-
-When implementing React features, provide:
-1. Component file with TypeScript types
-2. Test file if non-trivial logic
-3. Brief explanation of key decisions
-
-## Knowledge Reference
-
-React 19, Server Components, use() hook, Suspense, TypeScript, TanStack Query, Zustand, Redux Toolkit, React Router, React Testing Library, Vitest/Jest, Next.js App Router, accessibility (WCAG)
+- `references/react-19-features.md`
+- `references/hooks-patterns.md`
+- `references/state-management.md`
+- `references/performance.md`
+- `references/testing-react.md`
+- `references/server-components.md`
 ````

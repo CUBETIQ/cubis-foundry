@@ -234,6 +234,6 @@ After database changes:
 > **Note:** Use `database-skills` as primary hub. Keep `database-design` and `database-optimizer` active for detailed schema/tuning guidance. Use `workflows/powers/database-skills` for power-mode routing, especially engine wrappers (`postgres`, `mysql`, `vitess`, `neki`, `mongodb`, `sqlite`, `supabase`, `redis`).
 
 ## Skill routing
-Prefer these skills when task intent matches: `database-skills`, `database-design`, `database-optimizer`, `test-master`.
+Prefer these skills when task intent matches: `database-skills`, `database-design`, `database-optimizer`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

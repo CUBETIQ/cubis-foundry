@@ -111,6 +111,6 @@ When handing off to engineering:
 *   Writing documentation for non-technical stakeholders
 
 ## Skill routing
-Prefer these skills when task intent matches: `feature-forge`, `plan-writing`, `architecture-designer`, `prompt-engineer`, `code-documenter`.
+Prefer these skills when task intent matches: `feature-forge`, `plan-writing`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

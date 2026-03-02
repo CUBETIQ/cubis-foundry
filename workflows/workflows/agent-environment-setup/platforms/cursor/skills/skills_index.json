@@ -193,6 +193,16 @@
     "triggers": []
   },
   {
+    "id": "csharp-pro",
+    "name": "csharp-pro",
+    "canonical_id": "csharp-pro",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".cursor/skills/csharp-pro/SKILL.md",
+    "description": "Use for modern C# backend/application engineering with C# 14 and .NET 10-era production practices.",
+    "triggers": []
+  },
+  {
     "id": "database-design",
     "name": "database-design",
     "canonical_id": "database-design",
@@ -488,18 +498,8 @@
     "deprecated": false,
     "replaced_by": null,
     "path": ".cursor/skills/golang-pro/SKILL.md",
-    "description": "Use when building Go applications requiring concurrent programming, microservices architecture, or high-performance systems. Invoke for goroutines, channels, Go generics, gRPC integration.",
-    "triggers": [
-      "Go",
-      "Golang",
-      "goroutines",
-      "channels",
-      "gRPC",
-      "microservices Go",
-      "Go generics",
-      "concurrent programming",
-      "Go interfaces"
-    ]
+    "description": "Use for modern Go services and tooling with Go 1.26-era language/runtime patterns, concurrency safety, and production operations.",
+    "triggers": []
   },
   {
     "id": "gorouter-restoration",
@@ -552,24 +552,34 @@
     "triggers": []
   },
   {
+    "id": "java-pro",
+    "name": "java-pro",
+    "canonical_id": "java-pro",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".cursor/skills/java-pro/SKILL.md",
+    "description": "Use for modern Java backend and platform engineering with Java 25-era language/runtime practices.",
+    "triggers": []
+  },
+  {
     "id": "javascript-pro",
     "name": "javascript-pro",
     "canonical_id": "javascript-pro",
     "deprecated": false,
     "replaced_by": null,
     "path": ".cursor/skills/javascript-pro/SKILL.md",
-    "description": "Use when building JavaScript applications with modern ES2023+ features, async patterns, or Node.js development. Invoke for vanilla JavaScript, browser APIs, performance optimization, module systems.",
-    "triggers": [
-      "JavaScript",
-      "ES2023",
-      "async await",
-      "Node.js",
-      "vanilla JavaScript",
-      "Web Workers",
-      "Fetch API",
-      "browser API",
-      "module system"
-    ]
+    "description": "Use for modern JavaScript architecture and implementation across browser, Node, and edge runtimes with ES2025+ practices.",
+    "triggers": []
+  },
+  {
+    "id": "kotlin-pro",
+    "name": "kotlin-pro",
+    "canonical_id": "kotlin-pro",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".cursor/skills/kotlin-pro/SKILL.md",
+    "description": "Use for modern Kotlin backend/mobile/shared code with Kotlin 2.3-era language tooling and production patterns.",
+    "triggers": []
   },
   {
     "id": "legacy-modernizer",
@@ -722,7 +732,7 @@
     "deprecated": false,
     "replaced_by": null,
     "path": ".cursor/skills/nextjs-developer/SKILL.md",
-    "description": "Use for implementing/refactoring Next.js App Router features, Server Components/Actions, SEO, and production architecture. Not for version migration workflows or cache-components-only tuning.",
+    "description": "Use for implementing/refactoring Next.js App Router features, React Server Components/Actions, SEO, and production architecture.",
     "triggers": []
   },
   {
@@ -742,7 +752,7 @@
     "deprecated": false,
     "replaced_by": null,
     "path": ".cursor/skills/nodejs-best-practices/SKILL.md",
-    "description": "Node.js development principles and decision-making. Framework selection, async patterns, security, and architecture. Teaches thinking, not copying.",
+    "description": "Decision framework for modern Node.js backend architecture, operations, and security using current LTS-era practices.",
     "triggers": []
   },
   {
@@ -860,17 +870,8 @@
     "deprecated": false,
     "replaced_by": null,
     "path": ".cursor/skills/python-pro/SKILL.md",
-    "description": "Use when building Python 3.11+ applications requiring type safety, async programming, or production-grade patterns. Invoke for type hints, pytest, async/await, dataclasses, mypy configuration.",
-    "triggers": [
-      "Python development",
-      "type hints",
-      "async Python",
-      "pytest",
-      "mypy",
-      "dataclasses",
-      "Python best practices",
-      "Pythonic code"
-    ]
+    "description": "Use for production Python with 3.14-era typing, async, packaging, and testing standards.",
+    "triggers": []
   },
   {
     "id": "react-best-practices",
@@ -879,7 +880,7 @@
     "deprecated": false,
     "replaced_by": null,
     "path": ".cursor/skills/react-best-practices/SKILL.md",
-    "description": "Performance-focused React/Next.js review checklist from Vercel. Use for optimization/refactor passes, not as the primary implementation skill.",
+    "description": "Performance-focused React/Next.js review checklist. Use for audits and optimization passes, not as primary implementation skill.",
     "triggers": []
   },
   {
@@ -889,23 +890,8 @@
     "deprecated": false,
     "replaced_by": null,
     "path": ".cursor/skills/react-expert/SKILL.md",
-    "description": "Use for framework-agnostic React component architecture, hooks/state patterns, and React 19 APIs. For Next.js routing/App Router specifics, use nextjs-developer.",
-    "triggers": [
-      "React",
-      "JSX",
-      "hooks",
-      "useState",
-      "useEffect",
-      "useContext",
-      "Server Components",
-      "React 19",
-      "Suspense",
-      "TanStack Query",
-      "Redux",
-      "Zustand",
-      "component",
-      "frontend"
-    ]
+    "description": "Use for framework-agnostic React architecture with React 19 patterns, state design, and performance tuning.",
+    "triggers": []
   },
   {
     "id": "red-team-tactics",
@@ -954,7 +940,7 @@
     "deprecated": false,
     "replaced_by": null,
     "path": ".cursor/skills/rust-pro/SKILL.md",
-    "description": "Master Rust 1.75+ with modern async patterns, advanced type system",
+    "description": "Use for modern Rust systems/services with stable 1.91-era patterns, async correctness, and performance-focused design.",
     "triggers": []
   },
   {
@@ -1194,7 +1180,7 @@
     "deprecated": false,
     "replaced_by": null,
     "path": ".cursor/skills/typescript-pro/SKILL.md",
-    "description": "Use when building TypeScript applications requiring advanced type systems, generics, or full-stack type safety. Invoke for type guards, utility types, tRPC integration, monorepo setup.",
+    "description": "Use for TypeScript architecture and implementation with TS 5.9+ production baselines and TS 6/7 transition readiness.",
     "triggers": []
   },
   {

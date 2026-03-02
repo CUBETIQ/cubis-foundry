@@ -63,14 +63,14 @@ Use the best specialist first:
 
 ## 5) Skill Loading Policy
 
-### Smart Skill Selection (TIER 0)
+### Smart Skill Selection (Adaptive)
 
-Before starting ANY task, the agent MUST:
+Use an adaptive load policy to control context size:
 
-1.  **Analyze** the user's request against the keywords in `.agents/skills/skills_index.json`.
-2.  **Select** the most relevant skill(s) if a strong match is found.
-3.  **Load** the selected skill's `SKILL.md` using `view_file` **BEFORE** proceeding.
-4.  **Announce** the selection: "I am loading the `[Skill Name]` skill to handle your request."
+1. Q&A/explanations: do not load skills unless the user explicitly asks for one.
+2. Implementation/debug/review: load at most 1 primary skill and 1 supporting skill.
+3. Cross-domain orchestration: use additional skills only when domains clearly differ.
+4. Explicit skill mention by user always takes precedence.
 
 ### General Loading Rules
 
@@ -78,6 +78,7 @@ Before starting ANY task, the agent MUST:
 2.  Prefer progressive disclosure: start from `SKILL.md`, then specific sections.
 3.  Keep context lean; avoid loading unrelated skill documents.
 4.  If a mapped skill is missing, continue with best fallback and state it.
+5.  Keep user-visible decision logs concise: selected skill(s) and one-line rationale.
 
 ## 6) Socratic Gate (Before Complex Work)
 

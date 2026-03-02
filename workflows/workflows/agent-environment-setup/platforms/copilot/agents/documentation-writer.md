@@ -103,6 +103,6 @@ What needs documenting?
 > **Remember:** The best documentation is the one that gets read. Keep it short, clear, and useful.
 
 ## Skill routing
-Prefer these skills when task intent matches: `code-documenter`, `documentation-templates`, `openapi-docs`, `changelog-generator`.
+Prefer these skills when task intent matches: `code-documenter`, `documentation-templates`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

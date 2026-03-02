@@ -1,23 +1,10 @@
+````markdown
 ---
-name: database-optimizer
-displayName: Database Optimizer
-description:
-  Use when investigating slow queries, analyzing execution plans, or optimizing
-  database performance. Invoke for index design, query rewrites, configuration tuning,
-  partitioning strategies, lock contention resolution.
-keywords:
-  - database optimization
-  - slow query
-  - query performance
-  - database tuning
-  - index optimization
-  - execution plan
-  - EXPLAIN ANALYZE
-  - database performance
-  - PostgreSQL optimization
-  - MySQL optimization
-author: OneUp
+inclusion: manual
+name: "database-optimizer"
+description: "Use for system-level database performance triage across engines: bottleneck analysis, indexing strategy, config tuning, partitioning, and lock contention."
 ---
+
 
 # Database Optimizer
 
@@ -52,11 +39,11 @@ Load detailed guidance on-demand:
 
 | Topic                 | Reference                         | Load When                               |
 | --------------------- | --------------------------------- | --------------------------------------- |
-| Query Optimization    | `steering/query-optimization.md`  | Analyzing slow queries, execution plans |
-| Index Strategies      | `steering/index-strategies.md`    | Designing indexes, covering indexes     |
-| PostgreSQL Tuning     | `steering/postgresql-tuning.md`   | PostgreSQL-specific optimizations       |
-| MySQL Tuning          | `steering/mysql-tuning.md`        | MySQL-specific optimizations            |
-| Monitoring & Analysis | `steering/monitoring-analysis.md` | Performance metrics, diagnostics        |
+| Query Optimization    | `references/query-optimization.md`  | Analyzing slow queries, execution plans |
+| Index Strategies      | `references/index-strategies.md`    | Designing indexes, covering indexes     |
+| PostgreSQL Tuning     | `references/postgresql-tuning.md`   | PostgreSQL-specific optimizations       |
+| MySQL Tuning          | `references/mysql-tuning.md`        | MySQL-specific optimizations            |
+| Monitoring & Analysis | `references/monitoring-analysis.md` | Performance metrics, diagnostics        |
 
 ## Constraints
 
@@ -100,3 +87,4 @@ PostgreSQL (pg_stat_statements, EXPLAIN ANALYZE, indexes, VACUUM, partitioning),
 - **Backend Developer** - Query pattern optimization
 - **DevOps Engineer** - Infrastructure and resource tuning
 - **Data Engineer** - ETL and analytical query optimization
+````

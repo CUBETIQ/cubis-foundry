@@ -8,7 +8,7 @@ import { promises as fs } from "node:fs";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 
-const CANONICAL_ROOT = path.join(ROOT, "workflows", "skills");
+const CANONICAL_ROOTS = [path.join(ROOT, "workflows", "skills"), path.join(ROOT, "mcp", "skills")];
 const MIRRORS = {
   copilot: path.join(
     ROOT,
@@ -50,15 +50,6 @@ function parseArgs(argv) {
   };
 }
 
-async function listSkillDirs(rootDir) {
-  const entries = await fs.readdir(rootDir, { withFileTypes: true });
-  return entries
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name)
-    .filter((name) => !name.startsWith("."))
-    .sort((a, b) => a.localeCompare(b));
-}
-
 async function pathExists(target) {
   try {
     await fs.stat(target);
@@ -68,10 +59,39 @@ async function pathExists(target) {
   }
 }
 
-async function syncMirror({ label, mirrorRoot, canonicalSkillIds, dryRun, deleteMissing }) {
+async function listSkillDirs(rootDir) {
+  if (!(await pathExists(rootDir))) return [];
+  const entries = await fs.readdir(rootDir, { withFileTypes: true });
+  return entries
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .filter((name) => !name.startsWith("."))
+    .sort((a, b) => a.localeCompare(b));
+}
+
+async function buildCanonicalSkillSourceMap() {
+  const sourceById = new Map();
+
+  for (const root of CANONICAL_ROOTS) {
+    if (!(await pathExists(root))) continue;
+    const ids = await listSkillDirs(root);
+    for (const skillId of ids) {
+      const source = path.join(root, skillId);
+      const skillFile = path.join(source, "SKILL.md");
+      if (!(await pathExists(skillFile))) continue;
+      // Later roots override earlier roots (mcp canonical preferred).
+      sourceById.set(skillId.toLowerCase(), { id: skillId, source });
+    }
+  }
+
+  return sourceById;
+}
+
+async function syncMirror({ label, mirrorRoot, canonicalById, dryRun, deleteMissing }) {
   await fs.mkdir(mirrorRoot, { recursive: true });
   const mirrorSkillIds = await listSkillDirs(mirrorRoot);
-  const canonicalSet = new Set(canonicalSkillIds.map((id) => id.toLowerCase()));
+  const canonicalIds = [...canonicalById.values()].map((item) => item.id);
+  const canonicalSet = new Set(canonicalIds.map((id) => id.toLowerCase()));
 
   const removed = [];
   if (deleteMissing) {
@@ -87,16 +107,13 @@ async function syncMirror({ label, mirrorRoot, canonicalSkillIds, dryRun, delete
   }
 
   const synced = [];
-  for (const skillId of canonicalSkillIds) {
-    const source = path.join(CANONICAL_ROOT, skillId);
-    const destination = path.join(mirrorRoot, skillId);
-    if (!(await pathExists(source))) continue;
-
+  for (const item of [...canonicalById.values()].sort((a, b) => a.id.localeCompare(b.id))) {
+    const destination = path.join(mirrorRoot, item.id);
     if (!dryRun) {
       await fs.rm(destination, { recursive: true, force: true });
-      await fs.cp(source, destination, { recursive: true });
+      await fs.cp(item.source, destination, { recursive: true });
     }
-    synced.push(skillId);
+    synced.push(item.id);
   }
 
   return {
@@ -111,11 +128,11 @@ async function syncMirror({ label, mirrorRoot, canonicalSkillIds, dryRun, delete
 async function main() {
   const { dryRun, deleteMissing, only } = parseArgs(process.argv);
 
-  if (!(await pathExists(CANONICAL_ROOT))) {
-    throw new Error(`Canonical skills root not found: ${CANONICAL_ROOT}`);
+  const canonicalById = await buildCanonicalSkillSourceMap();
+  if (canonicalById.size === 0) {
+    throw new Error(`No canonical skills found in roots: ${CANONICAL_ROOTS.join(", ")}`);
   }
 
-  const canonicalSkillIds = await listSkillDirs(CANONICAL_ROOT);
   const targets =
     only === "all"
       ? Object.entries(MIRRORS)
@@ -129,7 +146,7 @@ async function main() {
     const result = await syncMirror({
       label,
       mirrorRoot,
-      canonicalSkillIds,
+      canonicalById,
       dryRun,
       deleteMissing
     });

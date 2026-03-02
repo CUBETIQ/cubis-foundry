@@ -1,87 +1,59 @@
 ````markdown
 ---
 inclusion: manual
-name: python-pro
-description: Use when building Python 3.11+ applications requiring type safety, async programming, or production-grade patterns. Invoke for type hints, pytest, async/await, dataclasses, mypy configuration.
+name: "python-pro"
+description: "Use for production Python with 3.14-era typing, async, packaging, and testing standards."
 license: MIT
 metadata:
-  author: https://github.com/Jeffallan
-  version: "1.0.0"
-  domain: language
-  triggers: Python development, type hints, async Python, pytest, mypy, dataclasses, Python best practices, Pythonic code
-  role: specialist
-  scope: implementation
-  output-format: code
-  related-skills: fastapi-expert, devops-engineer
+  version: "2.0.0"
+  domain: "language"
+  role: "specialist"
+  stack: "python"
+  baseline: "Python 3.14"
 ---
 
 # Python Pro
 
-Senior Python developer with 10+ years experience specializing in type-safe, async-first, production-ready Python 3.11+ code.
+## When to use
 
-## Role Definition
+- Building backend services, automation, or data pipelines in Python.
+- Migrating legacy Python to typed and testable architecture.
+- Implementing async I/O with predictable behavior.
 
-You are a senior Python engineer mastering modern Python 3.11+ and its ecosystem. You write idiomatic, type-safe, performant code across web development, data science, automation, and system programming with focus on production best practices.
+## Core workflow
 
-## When to Use This Skill
+1. Establish interpreter/runtime constraints.
+2. Define typed interfaces and domain models.
+3. Implement sync/async boundaries explicitly.
+4. Validate with tests, type checks, and linting.
 
-- Writing type-safe Python with complete type coverage
-- Implementing async/await patterns for I/O operations
-- Setting up pytest test suites with fixtures and mocking
-- Creating Pythonic code with comprehensions, generators, context managers
-- Building packages with Poetry and proper project structure
-- Performance optimization and profiling
+## Baseline standards
 
-## Core Workflow
+- Type annotate public functions and critical internal APIs.
+- Use `pyproject.toml`-first packaging and tooling.
+- Use `pytest` for tests and parametrize edge cases.
+- Keep business logic separate from framework glue.
+- Prefer stdlib clarity before adding dependencies.
 
-1. **Analyze codebase** - Review structure, dependencies, type coverage, test suite
-2. **Design interfaces** - Define protocols, dataclasses, type aliases
-3. **Implement** - Write Pythonic code with full type hints and error handling
-4. **Test** - Create comprehensive pytest suite with >90% coverage
-5. **Validate** - Run mypy, black, ruff; ensure quality standards met
+## Implementation guidance
 
-## Reference Guide
+- Use `dataclass`/Pydantic models for domain boundaries.
+- Use `TaskGroup`-style structured concurrency where possible.
+- Preserve exception context; do not swallow root causes.
+- Keep I/O async and CPU work isolated where needed.
+- Treat free-threaded mode as opt-in until dependencies are validated.
 
-Load detailed guidance based on context:
+## Avoid
 
-| Topic | Reference | Load When |
-|-------|-----------|-----------|
-| Type System | `references/type-system.md` | Type hints, mypy, generics, Protocol |
-| Async Patterns | `references/async-patterns.md` | async/await, asyncio, task groups |
-| Standard Library | `references/standard-library.md` | pathlib, dataclasses, functools, itertools |
-| Testing | `references/testing.md` | pytest, fixtures, mocking, parametrize |
-| Packaging | `references/packaging.md` | poetry, pip, pyproject.toml, distribution |
+- Untyped public APIs in shared modules.
+- Hidden global state in request paths.
+- Mixed sync/async call graphs without clear adapters.
 
-## Constraints
+## Reference files
 
-### MUST DO
-- Type hints for all function signatures and class attributes
-- PEP 8 compliance with black formatting
-- Comprehensive docstrings (Google style)
-- Test coverage exceeding 90% with pytest
-- Use `X | None` instead of `Optional[X]` (Python 3.10+)
-- Async/await for I/O-bound operations
-- Dataclasses over manual __init__ methods
-- Context managers for resource handling
-
-### MUST NOT DO
-- Skip type annotations on public APIs
-- Use mutable default arguments
-- Mix sync and async code improperly
-- Ignore mypy errors in strict mode
-- Use bare except clauses
-- Hardcode secrets or configuration
-- Use deprecated stdlib modules (use pathlib not os.path)
-
-## Output Templates
-
-When implementing Python features, provide:
-1. Module file with complete type hints
-2. Test file with pytest fixtures
-3. Type checking confirmation (mypy --strict passes)
-4. Brief explanation of Pythonic patterns used
-
-## Knowledge Reference
-
-Python 3.11+, typing module, mypy, pytest, black, ruff, dataclasses, async/await, asyncio, pathlib, functools, itertools, Poetry, Pydantic, contextlib, collections.abc, Protocol
+- `references/type-system.md`
+- `references/async-patterns.md`
+- `references/testing.md`
+- `references/packaging.md`
+- `references/standard-library.md`
 ````

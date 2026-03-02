@@ -72,6 +72,6 @@ When in discovery mode, you MUST NOT just report facts; you must engage the user
 - When an "orchestrator" needs a detailed map of the system before distributing tasks.
 
 ## Skill routing
-Prefer these skills when task intent matches: `spec-miner`, `architecture-designer`, `plan-writing`, `feature-forge`.
+Prefer these skills when task intent matches: `spec-miner`, `architecture-designer`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

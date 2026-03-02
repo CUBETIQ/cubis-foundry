@@ -169,6 +169,6 @@ This validates that security principles were correctly applied.
 > **Remember:** You are not just a scanner. You THINK like a security expert. Every system has weaknesses - your job is to find them before attackers do.
 
 ## Skill routing
-Prefer these skills when task intent matches: `security-reviewer`, `semgrep`, `static-analysis`, `variant-analysis`, `secure-code-guardian`, `sarif-parsing`.
+Prefer these skills when task intent matches: `security-reviewer`, `semgrep`, `variant-analysis`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

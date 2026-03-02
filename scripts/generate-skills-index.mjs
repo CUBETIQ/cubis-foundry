@@ -10,20 +10,22 @@ const ROOT = path.resolve(__dirname, "..");
 
 const DEFAULT_TARGETS = {
   canonical: {
-    skillsRoot: path.join(ROOT, "workflows", "skills"),
+    roots: [path.join(ROOT, "workflows", "skills"), path.join(ROOT, "mcp", "skills")],
     outFile: path.join(ROOT, "workflows", "skills", "skills_index.json"),
     indexPathPrefix: ".agents/skills"
   },
   copilot: {
-    skillsRoot: path.join(
-      ROOT,
-      "workflows",
-      "workflows",
-      "agent-environment-setup",
-      "platforms",
-      "copilot",
-      "skills"
-    ),
+    roots: [
+      path.join(
+        ROOT,
+        "workflows",
+        "workflows",
+        "agent-environment-setup",
+        "platforms",
+        "copilot",
+        "skills"
+      )
+    ],
     outFile: path.join(
       ROOT,
       "workflows",
@@ -37,15 +39,17 @@ const DEFAULT_TARGETS = {
     indexPathPrefix: ".github/skills"
   },
   cursor: {
-    skillsRoot: path.join(
-      ROOT,
-      "workflows",
-      "workflows",
-      "agent-environment-setup",
-      "platforms",
-      "cursor",
-      "skills"
-    ),
+    roots: [
+      path.join(
+        ROOT,
+        "workflows",
+        "workflows",
+        "agent-environment-setup",
+        "platforms",
+        "cursor",
+        "skills"
+      )
+    ],
     outFile: path.join(
       ROOT,
       "workflows",
@@ -59,15 +63,17 @@ const DEFAULT_TARGETS = {
     indexPathPrefix: ".cursor/skills"
   },
   windsurf: {
-    skillsRoot: path.join(
-      ROOT,
-      "workflows",
-      "workflows",
-      "agent-environment-setup",
-      "platforms",
-      "windsurf",
-      "skills"
-    ),
+    roots: [
+      path.join(
+        ROOT,
+        "workflows",
+        "workflows",
+        "agent-environment-setup",
+        "platforms",
+        "windsurf",
+        "skills"
+      )
+    ],
     outFile: path.join(
       ROOT,
       "workflows",
@@ -183,42 +189,46 @@ function normalizeBoolean(value) {
   return normalized === "true" || normalized === "yes" || normalized === "1";
 }
 
-async function collectSkillsIndexEntries(skillsRoot, indexPathPrefix) {
-  if (!(await pathExists(skillsRoot))) return [];
+async function collectSkillsIndexEntries(roots, indexPathPrefix) {
+  const rowById = new Map();
 
-  const entries = await fs.readdir(skillsRoot, { withFileTypes: true });
-  const rows = [];
+  for (const skillsRoot of roots) {
+    if (!(await pathExists(skillsRoot))) continue;
 
-  for (const entry of entries) {
-    if (!entry.isDirectory() || entry.name.startsWith(".")) continue;
-    const skillId = entry.name;
-    const skillFile = path.join(skillsRoot, skillId, "SKILL.md");
-    if (!(await pathExists(skillFile))) continue;
+    const entries = await fs.readdir(skillsRoot, { withFileTypes: true });
+    for (const entry of entries) {
+      if (!entry.isDirectory() || entry.name.startsWith(".")) continue;
+      const skillId = entry.name;
+      const skillFile = path.join(skillsRoot, skillId, "SKILL.md");
+      if (!(await pathExists(skillFile))) continue;
 
-    const raw = await fs.readFile(skillFile, "utf8");
-    const fm = parseFrontmatter(raw);
-    const metadata = getMetadataBlock(fm.raw);
+      const raw = await fs.readFile(skillFile, "utf8");
+      const fm = parseFrontmatter(raw);
+      const metadata = getMetadataBlock(fm.raw);
 
-    const id = skillId;
-    const name = getScalar(fm.raw, "name") || id;
-    const description = getScalar(fm.raw, "description") || "";
-    const triggers = getAllTriggerValues(fm.raw);
-    const deprecated = normalizeBoolean(metadata.deprecated);
-    const replacedBy = metadata.replaced_by ? String(metadata.replaced_by).trim() : null;
-    const canonicalId = replacedBy || id;
+      const id = skillId;
+      const name = getScalar(fm.raw, "name") || id;
+      const description = getScalar(fm.raw, "description") || "";
+      const triggers = getAllTriggerValues(fm.raw);
+      const deprecated = normalizeBoolean(metadata.deprecated);
+      const replacedBy = metadata.replaced_by ? String(metadata.replaced_by).trim() : null;
+      const canonicalId = replacedBy || id;
 
-    rows.push({
-      id,
-      name,
-      canonical_id: canonicalId,
-      deprecated,
-      replaced_by: replacedBy,
-      path: `${indexPathPrefix}/${id}/SKILL.md`,
-      description,
-      triggers
-    });
+      // Later roots override earlier roots for same id (MCP canonical preferred).
+      rowById.set(String(id).toLowerCase(), {
+        id,
+        name,
+        canonical_id: canonicalId,
+        deprecated,
+        replaced_by: replacedBy,
+        path: `${indexPathPrefix}/${id}/SKILL.md`,
+        description,
+        triggers
+      });
+    }
   }
 
+  const rows = [...rowById.values()];
   rows.sort((a, b) => {
     const nameCmp = a.name.localeCompare(b.name);
     if (nameCmp !== 0) return nameCmp;
@@ -256,10 +266,8 @@ function ensureUniqueIds(rows, label) {
   }
 }
 
-async function writeIndex({ label, skillsRoot, outFile, dryRun }) {
-  const target = DEFAULT_TARGETS[label];
-  const indexPathPrefix = target?.indexPathPrefix || ".agents/skills";
-  const rows = await collectSkillsIndexEntries(skillsRoot, indexPathPrefix);
+async function writeIndex({ label, roots, outFile, indexPathPrefix, dryRun }) {
+  const rows = await collectSkillsIndexEntries(roots, indexPathPrefix);
   ensureUniqueNames(rows, label);
   ensureUniqueIds(rows, label);
 

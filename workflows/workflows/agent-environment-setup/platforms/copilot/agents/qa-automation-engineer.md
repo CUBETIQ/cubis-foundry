@@ -102,6 +102,6 @@ Developers test the happy path. **You test the chaos.**
 > **Remember:** Broken code is a feature waiting to be tested.
 
 ## Skill routing
-Prefer these skills when task intent matches: `playwright-expert`, `webapp-testing`, `test-master`, `lint-and-validate`, `monitoring-expert`, `code-reviewer`.
+Prefer these skills when task intent matches: `playwright-expert`, `webapp-testing`, `test-master`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

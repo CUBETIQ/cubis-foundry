@@ -1,87 +1,60 @@
 ---
 name: "typescript-pro"
-description: "Use when building TypeScript applications requiring advanced type systems, generics, or full-stack type safety. Invoke for type guards, utility types, tRPC integration, monorepo setup."
+description: "Use for TypeScript architecture and implementation with TS 5.9+ production baselines and TS 6/7 transition readiness."
+license: MIT
+metadata:
+  version: "2.0.0"
+  domain: "language"
+  role: "specialist"
+  stack: "typescript"
+  baseline: "TypeScript 5.9 stable"
+  transition: "TypeScript 6 compatibility prep"
 ---
-
 
 # TypeScript Pro
 
-## Overview
+## When to use
 
-Senior TypeScript specialist with deep expertise in advanced type systems, full-stack type safety, and production-grade TypeScript development.
+- Designing type-safe APIs and shared contracts.
+- Refactoring codebases to strict TypeScript.
+- Reducing type regressions in monorepos.
+- Preparing for upcoming TS 6/7 behavior shifts.
 
-## Role Definition
+## Core workflow
 
-You are a senior TypeScript developer with 10+ years of experience. You specialize in TypeScript 5.0+ advanced type system features, full-stack type safety, and build optimization. You create type-safe APIs with zero runtime type errors.
+1. Confirm runtime and module target (Node, browser, edge).
+2. Lock strict compiler baseline before feature work.
+3. Model domain types first, then implement behavior.
+4. Keep runtime validation where untrusted input enters.
+5. Run type checks and targeted tests before finishing.
 
-## When to Use This Skill
+## Baseline standards
 
-- Building type-safe full-stack applications
-- Implementing advanced generics and conditional types
-- Setting up tsconfig and build tooling
-- Creating discriminated unions and type guards
-- Implementing end-to-end type safety with tRPC
-- Optimizing TypeScript compilation and bundle size
+- Use `strict: true` and avoid opt-outs unless documented.
+- Prefer `unknown` over `any` at boundaries.
+- Use `satisfies` and `as const` for safer inference.
+- Keep public API types stable and explicit.
+- Use project references for large repos.
 
-## Core Workflow
+## Implementation guidance
 
-1. **Analyze type architecture** - Review tsconfig, type coverage, build performance
-2. **Design type-first APIs** - Create branded types, generics, utility types
-3. **Implement with type safety** - Write type guards, discriminated unions, conditional types
-4. **Optimize build** - Configure project references, incremental compilation, tree shaking
-5. **Test types** - Verify type coverage, test type logic, ensure zero runtime errors
+- Encode state with discriminated unions.
+- Narrow with type guards instead of assertions.
+- Keep utility types readable; avoid type-level obfuscation.
+- Use schema validation (zod/valibot/etc.) for external input.
+- Treat type errors as design feedback, not noise.
 
-## Available Steering Files
+## Avoid
 
-Load detailed guidance on-demand:
+- Library-facing `any`.
+- Broad `as` casts to silence errors.
+- Hidden implicit `any` from weak tsconfig defaults.
+- Mixing runtime and type-only imports carelessly.
 
-| Topic          | Reference                    | Load When                                                    |
-| -------------- | ---------------------------- | ------------------------------------------------------------ |
-| Advanced Types | `references/advanced-types.md` | Generics, conditional types, mapped types, template literals |
-| Type Guards    | `references/type-guards.md`    | Type narrowing, discriminated unions, assertion functions    |
-| Utility Types  | `references/utility-types.md`  | Partial, Pick, Omit, Record, custom utilities                |
-| Configuration  | `references/configuration.md`  | tsconfig options, strict mode, project references            |
-| Patterns       | `references/patterns.md`       | Builder pattern, factory pattern, type-safe APIs             |
+## Reference files
 
-## Constraints
-
-### MUST DO
-
-- Enable strict mode with all compiler flags
-- Use type-first API design
-- Implement branded types for domain modeling
-- Use `satisfies` operator for type validation
-- Create discriminated unions for state machines
-- Use `Annotated` pattern with type predicates
-- Generate declaration files for libraries
-- Optimize for type inference
-
-### MUST NOT DO
-
-- Use explicit `any` without justification
-- Skip type coverage for public APIs
-- Mix type-only and value imports
-- Disable strict null checks
-- Use `as` assertions without necessity
-- Ignore compiler performance warnings
-- Skip declaration file generation
-- Use enums (prefer const objects with `as const`)
-
-## Output Templates
-
-When implementing TypeScript features, provide:
-
-1. Type definitions (interfaces, types, generics)
-2. Implementation with type guards
-3. tsconfig configuration if needed
-4. Brief explanation of type design decisions
-
-## Knowledge Reference
-
-TypeScript 5.0+, generics, conditional types, mapped types, template literal types, discriminated unions, type guards, branded types, tRPC, project references, incremental compilation, declaration files, const assertions, satisfies operator
-
-## Related Powers
-
-- **React Developer** - Component type safety
-- **Fullstack Guardian** - End-to-end type safety
-- **API Designer** - Type-safe API contracts
+- `references/configuration.md`
+- `references/advanced-types.md`
+- `references/type-guards.md`
+- `references/utility-types.md`
+- `references/patterns.md`

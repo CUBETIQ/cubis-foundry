@@ -1,21 +1,15 @@
 ---
-name: nextjs-react-expert
+name: "nextjs-react-expert"
 description: "Compatibility alias skill. Deprecated: use react-best-practices."
 metadata:
   deprecated: true
   replaced_by: react-best-practices
-  removal_target: v0.6.0
+  removal_target: "v0.6.0"
+  alias_of: "react-best-practices"
 ---
 
-# Nextjs React Expert
-
-## Compatibility Alias
+# nextjs-react-expert (Compatibility Alias)
 
 This skill is deprecated and kept for backward compatibility.
 
-Use `react-best-practices` as the canonical skill.
-
-## Migration
-
-1. Replace direct references to `nextjs-react-expert` with `react-best-practices`.
-2. Apply the full workflow from `react-best-practices` for new work.
+Use `react-best-practices` for optimization/review workflows.

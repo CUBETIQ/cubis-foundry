@@ -110,6 +110,6 @@ Expert in SEO and GEO (Generative Engine Optimization) for traditional and AI-po
 > **Remember:** The best SEO is great content that answers questions clearly and authoritatively.
 
 ## Skill routing
-Prefer these skills when task intent matches: `seo-fundamentals`, `geo-fundamentals`, `web-perf`, `nextjs-developer`, `code-documenter`.
+Prefer these skills when task intent matches: `seo-fundamentals`, `geo-fundamentals`, `web-perf`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

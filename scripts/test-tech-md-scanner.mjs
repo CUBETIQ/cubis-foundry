@@ -37,8 +37,10 @@ async function createWorkspace(baseDir, name, files) {
   return workspaceDir;
 }
 
-async function generateTechMd(workspaceDir) {
-  await execFile(process.execPath, [cliPath, "rules", "tech-md", "--overwrite"], {
+async function generateTechMd(workspaceDir, { compact = false } = {}) {
+  const args = [cliPath, "rules", "tech-md", "--overwrite"];
+  if (compact) args.push("--compact");
+  await execFile(process.execPath, args, {
     cwd: workspaceDir,
     env: process.env
   });
@@ -280,8 +282,47 @@ const testCases = [
     },
     includes: ["### JavaScript / TypeScript (package.json)"],
     notIncludes: ["`totally-fake-framework`"]
+  },
+  {
+    name: "compact-mode-with-mcp-signal",
+    description: "Compact mode should keep context budget sections and omit verbose package/tooling sections.",
+    compact: true,
+    files: {
+      "package.json": JSON.stringify(
+        {
+          name: "compact-next-app",
+          private: true,
+          dependencies: {
+            next: "15.0.0",
+            react: "19.0.0"
+          }
+        },
+        null,
+        2
+      ),
+      ".vscode/mcp.json": JSON.stringify(
+        {
+          servers: {
+            postman: {
+              url: "https://mcp.postman.com/minimal"
+            }
+          }
+        },
+        null,
+        2
+      )
+    },
+    includes: ["Mode: compact.", "`.vscode/mcp.json`", "- Suggested MCP inclusion: `--include-mcp`"],
+    notIncludes: [
+      "## Package Signals",
+      "## Tooling and Lockfiles",
+      "## Key Scripts",
+      "## Important Top-Level Paths"
+    ]
   }
 ];
+
+const COMMON_INCLUDES = ["## Recommended Skills", "## MCP Footprint", "## Context Budget Notes"];
 
 async function run() {
   const startedAt = nowIso();
@@ -303,8 +344,8 @@ async function run() {
       };
 
       try {
-        const techContent = await generateTechMd(workspaceDir);
-        result.missing = assertIncludes(techContent, testCase.includes || []);
+        const techContent = await generateTechMd(workspaceDir, { compact: Boolean(testCase.compact) });
+        result.missing = assertIncludes(techContent, [...COMMON_INCLUDES, ...(testCase.includes || [])]);
         result.unexpected = assertNotIncludes(techContent, testCase.notIncludes || []);
         if (result.missing.length > 0 || result.unexpected.length > 0) {
           result.status = "FAIL";

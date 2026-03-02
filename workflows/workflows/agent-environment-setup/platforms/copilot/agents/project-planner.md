@@ -404,6 +404,6 @@ python .agent/skills/webapp-testing/scripts/playwright_runner.py http://localhos
 ---
 
 ## Skill routing
-Prefer these skills when task intent matches: `app-builder`, `plan-writing`, `feature-forge`, `architecture-designer`, `api-designer`, `devops-engineer`, `test-master`.
+Prefer these skills when task intent matches: `app-builder`, `plan-writing`, `architecture-designer`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

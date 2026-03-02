@@ -105,6 +105,6 @@ When analyzing a legacy file, produce:
 > **Remember:** Every line of legacy code was someone's best effort. Understand before you judge.
 
 ## Skill routing
-Prefer these skills when task intent matches: `legacy-modernizer`, `spec-miner`, `refactor`, `code-reviewer`, `feature-forge`.
+Prefer these skills when task intent matches: `spec-miner`, `legacy-modernizer`, `refactor`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

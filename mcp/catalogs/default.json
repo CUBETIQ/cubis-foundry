@@ -1,0 +1,14 @@
+{
+  "profile": "mcp-default",
+  "version": 1,
+  "skills": [
+    "postman",
+    "atlassian-mcp",
+    "github-automation",
+    "sentry-automation",
+    "datadog-automation",
+    "mcp-builder",
+    "mcp-developer",
+    "building-mcp-server-on-cloudflare"
+  ]
+}

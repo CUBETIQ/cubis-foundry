@@ -16,6 +16,7 @@ const MANIFEST_PATH = path.join(BUNDLE_ROOT, "manifest.json");
 const GENERATE_PLATFORM_ASSETS_SCRIPT = path.join(ROOT, "scripts", "generate-platform-assets.mjs");
 const SKILLS_INDEX_PATH = path.join(ASSETS_ROOT, "skills", "skills_index.json");
 const CANONICAL_SKILLS_ROOT = path.join(ASSETS_ROOT, "skills");
+const MCP_SKILLS_ROOT = path.join(ROOT, "mcp", "skills");
 const MIRROR_SKILL_ROOTS = {
   copilot: path.join(BUNDLE_ROOT, "platforms", "copilot", "skills"),
   cursor: path.join(BUNDLE_ROOT, "platforms", "cursor", "skills"),
@@ -204,7 +205,7 @@ function extractSkillIdFromIndexPath(indexPathValue) {
   return normalizedSkillId || null;
 }
 
-async function resolveIndexedTopLevelSkillIds(skillRoot) {
+async function resolveIndexedTopLevelSkillIds(canonicalMap) {
   if (!(await pathExists(SKILLS_INDEX_PATH))) return [];
   const raw = await readUtf8(SKILLS_INDEX_PATH);
   const parsed = JSON.parse(raw);
@@ -229,12 +230,9 @@ async function resolveIndexedTopLevelSkillIds(skillRoot) {
     if (!candidate || candidate.startsWith(".")) continue;
     const key = candidate.toLowerCase();
     if (seen.has(key)) continue;
-    const skillDir = path.join(skillRoot, candidate);
-    const skillFile = path.join(skillDir, "SKILL.md");
-    if (!(await pathExists(skillDir))) continue;
-    if (!(await pathExists(skillFile))) continue;
+    if (canonicalMap && !canonicalMap.has(key)) continue;
     seen.add(key);
-    out.push(candidate);
+    out.push(canonicalMap?.get(key)?.id || candidate);
   }
 
   return out.sort((a, b) => a.localeCompare(b));
@@ -247,6 +245,20 @@ async function listTopLevelSkillIds(skillsRoot) {
     .filter((entry) => entry.isDirectory() && !entry.name.startsWith("."))
     .map((entry) => entry.name)
     .sort((a, b) => a.localeCompare(b));
+}
+
+async function buildCanonicalSkillMap() {
+  const map = new Map();
+  for (const root of [CANONICAL_SKILLS_ROOT, MCP_SKILLS_ROOT]) {
+    if (!(await pathExists(root))) continue;
+    const ids = await listTopLevelSkillIds(root);
+    for (const skillId of ids) {
+      const skillFile = path.join(root, skillId, "SKILL.md");
+      if (!(await pathExists(skillFile))) continue;
+      map.set(skillId.toLowerCase(), { id: skillId, root });
+    }
+  }
+  return map;
 }
 
 async function findDuplicateSkillNamesInIndex() {
@@ -362,7 +374,7 @@ async function validateWorkflowFile(filePath, errors) {
   validateWorkflowRequiredSections(fm.body, filePath, errors);
 }
 
-async function validateSkillFile({ filePath, platform, errors, notes }) {
+async function validateSkillFile({ filePath, platform, errors, notes, canonicalMap }) {
   const raw = await readUtf8(filePath);
   const fm = parseFrontmatter(raw);
   if (!fm) {
@@ -386,8 +398,8 @@ async function validateSkillFile({ filePath, platform, errors, notes }) {
       error(errors, filePath, "deprecated skill missing metadata.removal_target");
     }
     if (metadata.replaced_by) {
-      const replacement = path.join(CANONICAL_SKILLS_ROOT, metadata.replaced_by, "SKILL.md");
-      if (!(await pathExists(replacement))) {
+      const replacement = canonicalMap?.get(String(metadata.replaced_by).toLowerCase());
+      if (!replacement) {
         error(errors, filePath, `deprecated skill replacement missing: ${metadata.replaced_by}`);
       }
     }
@@ -460,7 +472,7 @@ async function validateAgentFile({ filePath, platform, skillSet, errors, notes }
 
   const referencedSkills = getList(fm.raw, "skills");
   for (const skillId of referencedSkills) {
-    if (skillSet.has(skillId)) continue;
+    if (skillSet.has(String(skillId || "").toLowerCase())) continue;
     if (skillId.includes("/")) {
       note(
         notes,
@@ -473,12 +485,13 @@ async function validateAgentFile({ filePath, platform, skillSet, errors, notes }
   }
 }
 
-async function validateCanonicalSkillsStructure({ errors }) {
-  const canonicalIds = await listTopLevelSkillIds(CANONICAL_SKILLS_ROOT);
+async function validateCanonicalSkillsStructure({ errors, canonicalMap }) {
+  const canonicalIds = [...canonicalMap.values()].map((item) => item.id).sort((a, b) => a.localeCompare(b));
   const canonicalSet = new Set(canonicalIds.map((id) => id.toLowerCase()));
 
   for (const skillId of canonicalIds) {
-    const skillFile = path.join(CANONICAL_SKILLS_ROOT, skillId, "SKILL.md");
+    const source = canonicalMap.get(skillId.toLowerCase())?.root || CANONICAL_SKILLS_ROOT;
+    const skillFile = path.join(source, skillId, "SKILL.md");
     if (!(await pathExists(skillFile))) {
       error(errors, skillFile, `top-level canonical skill '${skillId}' is missing SKILL.md`);
     }
@@ -661,8 +674,9 @@ async function main() {
   }
 
   const manifest = JSON.parse(await readUtf8(MANIFEST_PATH));
-  const indexedSkillIds = await resolveIndexedTopLevelSkillIds(CANONICAL_SKILLS_ROOT);
-  const indexedSkillSet = new Set(indexedSkillIds);
+  const canonicalMap = await buildCanonicalSkillMap();
+  const indexedSkillIds = await resolveIndexedTopLevelSkillIds(canonicalMap);
+  const indexedSkillSet = new Set(indexedSkillIds.map((id) => String(id).toLowerCase()));
   if (indexedSkillSet.size === 0) {
     error(errors, SKILLS_INDEX_PATH, "no indexed top-level skills resolved");
   }
@@ -737,12 +751,13 @@ async function main() {
     }
 
     for (const skillId of skills) {
-      const skillDir = path.join(CANONICAL_SKILLS_ROOT, skillId);
-      const skillFile = path.join(skillDir, "SKILL.md");
-      if (!(await pathExists(skillDir))) {
-        error(errors, skillDir, `skill listed in manifest for ${platformId} is missing`);
+      const canonicalSkill = canonicalMap.get(String(skillId).toLowerCase());
+      if (!canonicalSkill) {
+        error(errors, MANIFEST_PATH, `skill '${skillId}' listed in manifest for ${platformId} is missing`);
         continue;
       }
+      const skillDir = path.join(canonicalSkill.root, canonicalSkill.id);
+      const skillFile = path.join(skillDir, "SKILL.md");
       if (!(await pathExists(skillFile))) {
         error(errors, skillFile, `SKILL.md missing for skill '${skillId}'`);
         continue;
@@ -752,7 +767,8 @@ async function main() {
         filePath: skillFile,
         platform: platformId,
         errors,
-        notes
+        notes,
+        canonicalMap
       });
     }
 
@@ -767,7 +783,7 @@ async function main() {
   }
 
   await validateSharedSourceAndGeneratedParity({ manifest, errors, notes });
-  await validateCanonicalSkillsStructure({ errors });
+  await validateCanonicalSkillsStructure({ errors, canonicalMap });
 
   const summary = {
     manifest: MANIFEST_PATH,

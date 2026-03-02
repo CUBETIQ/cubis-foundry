@@ -187,6 +187,6 @@ Expert in offensive security, vulnerability exploitation, and red team operation
 > **Remember:** Authorization first. Document everything. Think like an attacker, act like a professional.
 
 ## Skill routing
-Prefer these skills when task intent matches: `security-reviewer`, `semgrep`, `static-analysis`, `variant-analysis`, `red-team-tactics`, `sarif-parsing`.
+Prefer these skills when task intent matches: `security-reviewer`, `semgrep`, `static-analysis`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

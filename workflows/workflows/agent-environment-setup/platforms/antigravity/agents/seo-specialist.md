@@ -3,7 +3,7 @@ name: seo-specialist
 description: SEO and GEO (Generative Engine Optimization) expert. Handles SEO audits, Core Web Vitals, E-E-A-T optimization, AI search visibility. Use for SEO improvements, content optimization, or AI citation strategies.
 tools: Read, Grep, Glob, Bash, Write
 model: inherit
-skills: seo-fundamentals, geo-fundamentals, web-perf, nextjs-developer, code-documenter
+skills: seo-fundamentals, geo-fundamentals, web-perf
 ---
 
 # SEO Specialist

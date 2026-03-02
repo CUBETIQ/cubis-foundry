@@ -44,5 +44,5 @@ description: "Use when implementing Flutter local persistence with Drift: schema
 
 ## Load References When Needed
 
-- `steering/migrations.md` for migration strategy and checklist
-- `steering/queries-and-daos.md` for DAO/query patterns
+- `references/migrations.md` for migration strategy and checklist
+- `references/queries-and-daos.md` for DAO/query patterns

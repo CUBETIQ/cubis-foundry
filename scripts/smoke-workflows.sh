@@ -64,19 +64,29 @@ if (!root) {
   console.error('[FAIL] ROOT_DIR env is required for parity precheck');
   process.exit(1);
 }
-const canonicalRoot = path.join(root, 'workflows', 'skills');
+const canonicalRoots = [
+  path.join(root, 'workflows', 'skills'),
+  path.join(root, 'mcp', 'skills')
+];
 const mirrors = {
   copilot: path.join(root, 'workflows', 'workflows', 'agent-environment-setup', 'platforms', 'copilot', 'skills'),
   cursor: path.join(root, 'workflows', 'workflows', 'agent-environment-setup', 'platforms', 'cursor', 'skills'),
   windsurf: path.join(root, 'workflows', 'workflows', 'agent-environment-setup', 'platforms', 'windsurf', 'skills')
 };
 function listDirs(dir) {
+  if (!fs.existsSync(dir)) return [];
   return fs.readdirSync(dir, { withFileTypes: true })
-    .filter((d) => d.isDirectory() && !d.name.startsWith('.'))
+    .filter((d) => d.isDirectory() && !d.name.startsWith('.') && fs.existsSync(path.join(dir, d.name, 'SKILL.md')))
     .map((d) => d.name)
     .sort();
 }
-const canonical = listDirs(canonicalRoot);
+const canonicalAccumulator = new Set();
+for (const rootDir of canonicalRoots) {
+  for (const id of listDirs(rootDir)) {
+    canonicalAccumulator.add(id);
+  }
+}
+const canonical = [...canonicalAccumulator].sort();
 const canonicalSet = new Set(canonical);
 for (const [label, mirrorRoot] of Object.entries(mirrors)) {
   const mirror = listDirs(mirrorRoot);
@@ -218,7 +228,7 @@ log_ok "Dry-run did not write Codex files"
 
 log_step "C2 Codex apply + doctor"
 mkdir -p .codex/skills
-node "$CLI" workflows install --platform codex --bundle agent-environment-setup --overwrite --yes >/tmp/cbx-c2.log
+node "$CLI" workflows install --platform codex --bundle agent-environment-setup --all-skills --overwrite --yes >/tmp/cbx-c2.log
 [ -f AGENTS.md ]
 [ -f .agents/workflows/backend.md ]
 [ -f .agents/workflows/orchestrate.md ]
@@ -258,10 +268,20 @@ if (!root || !installedRoot) {
   console.error('[FAIL] ROOT_DIR and CODEX_GLOBAL_SKILLS env vars are required');
   process.exit(1);
 }
-const canonicalRoot = path.join(root, 'workflows', 'skills');
-const canonical = fs.readdirSync(canonicalRoot, { withFileTypes: true })
-  .filter((d) => d.isDirectory() && !d.name.startsWith('.'))
-  .map((d) => d.name);
+const canonicalRoots = [
+  path.join(root, 'workflows', 'skills'),
+  path.join(root, 'mcp', 'skills')
+];
+const canonicalSet = new Set();
+for (const canonicalRoot of canonicalRoots) {
+  if (!fs.existsSync(canonicalRoot)) continue;
+  for (const entry of fs.readdirSync(canonicalRoot, { withFileTypes: true })) {
+    if (!entry.isDirectory() || entry.name.startsWith('.')) continue;
+    if (!fs.existsSync(path.join(canonicalRoot, entry.name, 'SKILL.md'))) continue;
+    canonicalSet.add(entry.name);
+  }
+}
+const canonical = [...canonicalSet];
 for (const id of canonical) {
   const skillFile = path.join(installedRoot, id, 'SKILL.md');
   if (!fs.existsSync(skillFile)) {

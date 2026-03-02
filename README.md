@@ -9,6 +9,11 @@ Last updated: 2026-02-27.
 - Antigravity (Gemini)
 - GitHub Copilot
 
+Skill install default is profile-based:
+- default profile: `core`
+- add `--skill-profile web-backend` for broader web/backend stack
+- add `--all-skills` for full workflow + MCP catalog install
+
 ## Table of Contents
 
 - [What This CLI Manages](#what-this-cli-manages)
@@ -241,8 +246,25 @@ Copilot:
 ```bash
 cbx workflows install --platform <codex|antigravity|copilot> --bundle agent-environment-setup
 cbx workflows remove <bundle-or-workflow> --platform <platform>
+cbx workflows prune-skills --platform <platform> --scope <project|global> --skill-profile <core|web-backend|full> [--include-mcp] [--dry-run]
 cbx workflows doctor --platform <platform> --scope <project|global>
 cbx workflows sync-rules --platform <platform> --scope <project|global>
+```
+
+Install profile flags:
+
+```bash
+# default core profile (workflow skills only)
+cbx workflows install --platform codex --bundle agent-environment-setup
+
+# expanded workflow profile
+cbx workflows install --platform codex --bundle agent-environment-setup --skill-profile web-backend
+
+# include MCP catalog with profile
+cbx workflows install --platform codex --bundle agent-environment-setup --skill-profile web-backend --include-mcp
+
+# full workflow + MCP catalogs
+cbx workflows install --platform codex --bundle agent-environment-setup --all-skills
 ```
 
 ### Config commands
@@ -268,6 +290,7 @@ cbx workflows config --scope global --clear-workspace-id
 ```bash
 cbx rules init --platform <platform> --scope project --overwrite
 cbx rules tech-md --overwrite
+cbx rules tech-md --overwrite --compact
 ```
 
 ### Legacy alias

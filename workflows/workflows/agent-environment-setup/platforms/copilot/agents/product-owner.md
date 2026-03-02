@@ -94,6 +94,6 @@ When suggesting an implementation plan, you should explicitly recommend:
 *   Creating product documentation (PRDs, roadmaps).
 
 ## Skill routing
-Prefer these skills when task intent matches: `feature-forge`, `plan-writing`, `architecture-designer`, `changelog-generator`, `spec-miner`.
+Prefer these skills when task intent matches: `feature-forge`, `plan-writing`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

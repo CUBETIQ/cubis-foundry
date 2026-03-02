@@ -262,6 +262,6 @@ After editing any file:
 > **Note:** For database-heavy backend work, route through `database-skills` plus `workflows/powers/database-skills`, and use `database-design`/`database-optimizer` for focused schema/tuning decisions so indexing, pagination, query-plan evidence, and rollback stay explicit.
 
 ## Skill routing
-Prefer these skills when task intent matches: `nodejs-best-practices`, `api-designer`, `api-patterns`, `database-skills`, `secure-code-guardian`, `typescript-pro`, `test-master`.
+Prefer these skills when task intent matches: `nodejs-best-practices`, `api-patterns`, `database-skills`, `secure-code-guardian`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

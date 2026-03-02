@@ -37,11 +37,11 @@ Load detailed guidance on-demand:
 
 | Topic                 | Reference                         | Load When                               |
 | --------------------- | --------------------------------- | --------------------------------------- |
-| Query Optimization    | `steering/query-optimization.md`  | Analyzing slow queries, execution plans |
-| Index Strategies      | `steering/index-strategies.md`    | Designing indexes, covering indexes     |
-| PostgreSQL Tuning     | `steering/postgresql-tuning.md`   | PostgreSQL-specific optimizations       |
-| MySQL Tuning          | `steering/mysql-tuning.md`        | MySQL-specific optimizations            |
-| Monitoring & Analysis | `steering/monitoring-analysis.md` | Performance metrics, diagnostics        |
+| Query Optimization    | `references/query-optimization.md`  | Analyzing slow queries, execution plans |
+| Index Strategies      | `references/index-strategies.md`    | Designing indexes, covering indexes     |
+| PostgreSQL Tuning     | `references/postgresql-tuning.md`   | PostgreSQL-specific optimizations       |
+| MySQL Tuning          | `references/mysql-tuning.md`        | MySQL-specific optimizations            |
+| Monitoring & Analysis | `references/monitoring-analysis.md` | Performance metrics, diagnostics        |
 
 ## Constraints
 
