@@ -1,6 +1,6 @@
 # Cubis Foundry MCP Server
 
-Standalone MCP (Model Context Protocol) server for the Cubis Foundry skill vault, Postman mode switching, and Stitch profile management.
+Standalone MCP (Model Context Protocol) server for the Cubis Foundry skill vault, config tools, and dynamic Postman/Stitch passthrough tool namespaces.
 
 ## Table of Contents
 
@@ -20,13 +20,15 @@ Standalone MCP (Model Context Protocol) server for the Cubis Foundry skill vault
 
 ## Overview
 
-This server exposes 10 MCP tools organized into three domains:
+This server exposes built-in tools plus dynamic passthrough tools discovered from upstream Postman/Stitch MCP servers:
 
 | Domain      | Tools | Purpose                                                       |
 | ----------- | ----- | ------------------------------------------------------------- |
-| **Skills**  | 4     | Browse, search, and retrieve skill definitions from the vault |
-| **Postman** | 3     | Read/write Postman MCP mode in `cbx_config.json`              |
-| **Stitch**  | 3     | Read/write Stitch active profile in `cbx_config.json`         |
+| **Skills**               | 4        | Browse, search, and retrieve skill definitions from the vault      |
+| **Postman config**       | 3        | Read/write Postman MCP mode in `cbx_config.json`                   |
+| **Stitch config**        | 3        | Read/write Stitch active profile in `cbx_config.json`              |
+| **Postman passthrough**  | dynamic  | `postman.<tool_name>` for all discovered upstream Postman tools    |
+| **Stitch passthrough**   | dynamic  | `stitch.<tool_name>` for all discovered upstream Stitch tools       |
 
 The skill vault uses a **lazy content model**: startup only scans metadata (category/name/path). Full `SKILL.md` content is loaded on-demand via `skill_get` only.
 
@@ -55,8 +57,11 @@ mcp/
 │   │   ├── types.ts       # CbxConfig, PostmanConfig, StitchConfig
 │   │   ├── paths.ts       # Config path resolution
 │   │   ├── reader.ts      # Read + merge configs
+│   │   ├── serviceConfig.ts # Profile-array/object-map normalization
 │   │   ├── writer.ts      # Atomic writes
 │   │   └── index.ts       # Barrel export
+│   ├── upstream/
+│   │   └── passthrough.ts # Upstream discovery + tool call proxy
 │   ├── tools/
 │   │   ├── index.ts       # Tool registry
 │   │   ├── skillListCategories.ts
@@ -397,22 +402,41 @@ Full Stitch configuration status.
     {
       "name": "production",
       "url": "https://stitch.example.com/api",
-      "hasApiKey": true,
+      "apiKeyEnvVar": "STITCH_API_KEY_PROD",
+      "hasInlineApiKey": false,
       "isActive": true
     },
     {
       "name": "staging",
       "url": "https://stitch-staging.example.com/api",
-      "hasApiKey": false,
+      "apiKeyEnvVar": "STITCH_API_KEY_STAGING",
+      "hasInlineApiKey": false,
       "isActive": false
     }
   ],
   "totalProfiles": 2,
   "scope": "global",
   "configPath": "~/.cbx/cbx_config.json",
-  "note": "API keys are never exposed. 'hasApiKey' indicates if one is configured."
+  "note": "API keys are never exposed. Env-var aliases are reported for runtime configuration."
 }
 ```
+
+### Dynamic Passthrough Tools
+
+On startup, the server discovers upstream tools and registers namespaced passthrough tools:
+
+- `postman.<tool_name>`
+- `stitch.<tool_name>`
+
+Examples:
+- `postman.getAuthenticatedUser`
+- `postman.getWorkspaces`
+- `stitch.list_tools`
+- `stitch.get_screen_code`
+
+Discovered non-secret catalogs are persisted to:
+- Global config: `~/.cbx/mcp/catalog/postman.json` and `~/.cbx/mcp/catalog/stitch.json`
+- Project config: `<workspace>/.cbx/mcp/catalog/postman.json` and `<workspace>/.cbx/mcp/catalog/stitch.json`
 
 ## Token Savings
 
@@ -484,9 +508,9 @@ Start the server with `--transport http` first.
 
 ## Security
 
-- **Credentials managed by cbx, never by this server.** The server never reads, logs, or returns `apiKey` values from `cbx_config.json`.
+- **Credentials managed by cbx, never by this server.** Env-var aliases are read from config, while secret values are resolved from process environment at runtime.
 - `config.json` (server config) rejects any credential fields at startup.
-- Stitch tools report `hasApiKey: true/false` without revealing the key.
+- Stitch/Postman passthrough calls fail with actionable env-var errors when keys are missing.
 - `redactConfig()` strips all credential fields before any logging.
 - HTTP transport binds to `127.0.0.1` by default to prevent DNS rebinding attacks.
 - All log output goes to stderr to keep stdio transport clean.

@@ -46,8 +46,8 @@ npm install -g @cubis/foundry
 Recommended environment setup:
 
 ```bash
-export POSTMAN_API_KEY="<your-postman-api-key>"
-export STITCH_API_KEY="<your-stitch-api-key>" # Antigravity StitchMCP only
+export POSTMAN_API_KEY_DEFAULT="<your-postman-api-key>"
+export STITCH_API_KEY_DEFAULT="<your-stitch-api-key>" # Antigravity StitchMCP only
 ```
 
 ## Quickstarts
@@ -124,8 +124,7 @@ Postman and Stitch now support multiple named profiles with active selection.
     "profiles": [
       {
         "name": "default",
-        "apiKey": null,
-        "apiKeyEnvVar": "POSTMAN_API_KEY",
+        "apiKeyEnvVar": "POSTMAN_API_KEY_DEFAULT",
         "workspaceId": null
       }
     ],
@@ -136,17 +135,27 @@ Postman and Stitch now support multiple named profiles with active selection.
     "profiles": [
       {
         "name": "default",
-        "apiKey": null,
-        "apiKeyEnvVar": "STITCH_API_KEY"
+        "apiKeyEnvVar": "STITCH_API_KEY_DEFAULT"
       }
     ],
     "activeProfileName": "default",
     "mcpUrl": "https://stitch.googleapis.com/mcp"
+  },
+  "mcp": {
+    "runtime": "docker",
+    "fallback": "local",
+    "docker": {
+      "image": "ghcr.io/cubis/foundry-mcp:0.1.0",
+      "updatePolicy": "pinned"
+    },
+    "catalog": {
+      "toolSync": true
+    }
   }
 }
 ```
 
-Compatibility fields (`apiKey`, `apiKeyEnvVar`, `apiKeySource`, `defaultWorkspaceId`) are still mirrored for older consumers, but profile fields are authoritative.
+Inline keys are no longer allowed. Use env-var aliases only.
 
 ### List/Add/Use/Remove profiles
 
@@ -163,6 +172,12 @@ cbx workflows config keys use --service postman --name team-a --scope global
 
 # Remove non-active profile
 cbx workflows config keys remove --service postman --name old-profile --scope global
+
+# Migrate legacy inline keys to env aliases
+cbx workflows config keys migrate-inline --scope global --redact
+
+# Doctor check for inline keys / unsafe headers
+cbx workflows config keys doctor --scope global
 ```
 
 Alias commands are also available:
@@ -176,7 +191,7 @@ Alias commands are also available:
 cbx workflows install --platform codex --bundle agent-environment-setup --postman
 ```
 
-If `POSTMAN_API_KEY` is available and `--yes` is not used, installer can show workspace chooser and save selected `workspaceId` in active Postman profile.
+If active Postman env var (for example `POSTMAN_API_KEY_DEFAULT`) is available and `--yes` is not used, installer can show workspace chooser and save selected `workspaceId` in active Postman profile.
 
 ### Manual workspace ID
 
@@ -212,7 +227,7 @@ Default managed command template:
       "mcp-remote",
       "https://stitch.googleapis.com/mcp",
       "--header",
-      "X-Goog-Api-Key: ur stitch key"
+      "X-Goog-Api-Key: ${STITCH_API_KEY_DEFAULT}"
     ],
     "env": {}
   }
@@ -249,6 +264,36 @@ cbx workflows remove <bundle-or-workflow> --platform <platform>
 cbx workflows prune-skills --platform <platform> --scope <project|global> --skill-profile <core|web-backend|full> [--include-mcp] [--dry-run]
 cbx workflows doctor --platform <platform> --scope <project|global>
 cbx workflows sync-rules --platform <platform> --scope <project|global>
+```
+
+MCP runtime flags (install):
+
+```bash
+cbx workflows install --platform codex --bundle agent-environment-setup --postman \
+  --mcp-runtime docker \
+  --mcp-fallback local \
+  --mcp-image ghcr.io/cubis/foundry-mcp:0.1.0 \
+  --mcp-update-policy pinned
+```
+
+MCP tool catalog commands:
+
+```bash
+cbx mcp tools sync --service all --scope global
+cbx mcp tools list --service postman --scope global
+cbx mcp tools list --service stitch --scope global
+```
+
+Docker E2E MCP check (single command):
+
+```bash
+npm run test:mcp:docker
+```
+
+Optional strict key mode:
+
+```bash
+CBX_MCP_REQUIRE_KEYS=1 npm run test:mcp:docker
 ```
 
 Install profile flags:
@@ -299,14 +344,14 @@ cbx rules tech-md --overwrite --compact
 
 ## Troubleshooting
 
-### `MCP startup failed: Environment variable POSTMAN_API_KEY ... is not set`
+### `MCP startup failed: Environment variable POSTMAN_API_KEY_* ... is not set`
 
 Cause:
 - Active profile uses env alias but variable is not exported in current shell/process.
 
 Fix:
 ```bash
-export POSTMAN_API_KEY="<key>"
+export POSTMAN_API_KEY_DEFAULT="<key>"
 cbx workflows config --scope global --show
 ```
 

@@ -15,11 +15,10 @@ import {
 import { logger } from "../utils/logger.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-// In dev (src/config/), go up 2 levels. In dist (dist/), go up 1 level.
-// Detect by checking if __dirname ends with 'dist'.
-const PKG_ROOT = __dirname.endsWith("dist")
-  ? path.resolve(__dirname, "..")
-  : path.resolve(__dirname, "../..");
+const PKG_ROOT =
+  path.basename(__dirname) === "config"
+    ? path.resolve(__dirname, "../..")
+    : path.resolve(__dirname, "..");
 const DEFAULT_CONFIG_PATH = path.resolve(PKG_ROOT, "config.json");
 
 export function loadServerConfig(configPath?: string): ServerConfig {

@@ -154,15 +154,19 @@ const POSTMAN_SKILL_ID = "postman";
 const STITCH_MCP_SERVER_ID = "StitchMCP";
 const STITCH_API_KEY_ENV_VAR = "STITCH_API_KEY";
 const STITCH_MCP_URL = "https://stitch.googleapis.com/mcp";
-const STITCH_API_KEY_PLACEHOLDER = "ur stitch key";
 const POSTMAN_WORKSPACE_MANUAL_CHOICE = "__postman_workspace_manual__";
 const CBX_CONFIG_FILENAME = "cbx_config.json";
 const LEGACY_POSTMAN_CONFIG_FILENAME = ["postman", "setting.json"].join("_");
 const DEFAULT_CREDENTIAL_PROFILE_NAME = "default";
 const RESERVED_CREDENTIAL_PROFILE_NAMES = new Set(["all"]);
 const CREDENTIAL_SERVICES = new Set(["postman", "stitch"]);
-const POSTMAN_API_KEY_MISSING_WARNING = `Postman API key is not configured. Set ${POSTMAN_API_KEY_ENV_VAR} or update ${CBX_CONFIG_FILENAME}.`;
-const STITCH_API_KEY_MISSING_WARNING = `Google Stitch API key is not configured. Set ${STITCH_API_KEY_ENV_VAR} or update ${CBX_CONFIG_FILENAME}.`;
+const MCP_RUNTIMES = new Set(["docker", "local"]);
+const MCP_FALLBACKS = new Set(["local", "fail", "skip"]);
+const MCP_UPDATE_POLICIES = new Set(["pinned", "latest"]);
+const DEFAULT_MCP_RUNTIME = "docker";
+const DEFAULT_MCP_FALLBACK = "local";
+const DEFAULT_MCP_UPDATE_POLICY = "pinned";
+const DEFAULT_MCP_DOCKER_IMAGE = "ghcr.io/cubis/foundry-mcp:0.1.0";
 const TECH_SCAN_MAX_FILES = 5000;
 const TECH_SCAN_IGNORED_DIRS = new Set([
   ".git",
@@ -364,6 +368,42 @@ function normalizeMcpScope(value, fallback = "project") {
   );
 }
 
+function normalizeMcpRuntime(value, fallback = DEFAULT_MCP_RUNTIME) {
+  const normalized = String(value || fallback)
+    .trim()
+    .toLowerCase();
+  if (!MCP_RUNTIMES.has(normalized)) {
+    throw new Error(
+      `Unknown MCP runtime '${value}'. Use docker|local.`,
+    );
+  }
+  return normalized;
+}
+
+function normalizeMcpFallback(value, fallback = DEFAULT_MCP_FALLBACK) {
+  const normalized = String(value || fallback)
+    .trim()
+    .toLowerCase();
+  if (!MCP_FALLBACKS.has(normalized)) {
+    throw new Error(
+      `Unknown MCP fallback '${value}'. Use local|fail|skip.`,
+    );
+  }
+  return normalized;
+}
+
+function normalizeMcpUpdatePolicy(value, fallback = DEFAULT_MCP_UPDATE_POLICY) {
+  const normalized = String(value || fallback)
+    .trim()
+    .toLowerCase();
+  if (!MCP_UPDATE_POLICIES.has(normalized)) {
+    throw new Error(
+      `Unknown MCP update policy '${value}'. Use pinned|latest.`,
+    );
+  }
+  return normalized;
+}
+
 function isPathInsideRoot(targetPath, rootPath) {
   const target = path.resolve(targetPath);
   const root = path.resolve(rootPath);
@@ -437,7 +477,6 @@ function normalizeCredentialProfileRecord(
       ? rawProfile
       : {};
   const name = normalizeCredentialProfileName(source.name) || fallbackName;
-  const apiKey = normalizePostmanApiKey(source.apiKey);
   const envVarCandidate =
     normalizePostmanApiKey(source.apiKeyEnvVar) || defaultEnvVar;
   const apiKeyEnvVar = isCredentialServiceEnvVar(envVarCandidate)
@@ -445,7 +484,7 @@ function normalizeCredentialProfileRecord(
     : defaultEnvVar;
   const profile = {
     name,
-    apiKey,
+    apiKey: null,
     apiKeyEnvVar,
   };
   if (service === "postman") {
@@ -3057,19 +3096,15 @@ function resolveStitchMcpDefinitionPath({ scope, cwd = process.cwd() }) {
   );
 }
 
-function buildPostmanAuthHeader({
-  apiKey = null,
-  apiKeyEnvVar = POSTMAN_API_KEY_ENV_VAR,
-}) {
-  return apiKey ? `Bearer ${apiKey}` : `Bearer \${${apiKeyEnvVar}}`;
+function buildPostmanAuthHeader({ apiKeyEnvVar = POSTMAN_API_KEY_ENV_VAR }) {
+  return `Bearer \${${apiKeyEnvVar}}`;
 }
 
-function buildStitchApiHeader({ apiKey = null }) {
-  return `X-Goog-Api-Key: ${apiKey || STITCH_API_KEY_PLACEHOLDER}`;
+function buildStitchApiHeader({ apiKeyEnvVar = STITCH_API_KEY_ENV_VAR }) {
+  return `X-Goog-Api-Key: \${${apiKeyEnvVar}}`;
 }
 
 function buildPostmanMcpDefinition({
-  apiKey = null,
   apiKeyEnvVar = POSTMAN_API_KEY_ENV_VAR,
   mcpUrl = POSTMAN_MCP_URL,
 }) {
@@ -3079,12 +3114,15 @@ function buildPostmanMcpDefinition({
     transport: "http",
     url: mcpUrl,
     headers: {
-      Authorization: buildPostmanAuthHeader({ apiKey, apiKeyEnvVar }),
+      Authorization: buildPostmanAuthHeader({ apiKeyEnvVar }),
     },
   };
 }
 
-function buildStitchMcpDefinition({ apiKey = null, mcpUrl = STITCH_MCP_URL }) {
+function buildStitchMcpDefinition({
+  apiKeyEnvVar = STITCH_API_KEY_ENV_VAR,
+  mcpUrl = STITCH_MCP_URL,
+}) {
   return {
     schemaVersion: 1,
     server: STITCH_MCP_SERVER_ID,
@@ -3095,14 +3133,13 @@ function buildStitchMcpDefinition({ apiKey = null, mcpUrl = STITCH_MCP_URL }) {
       "mcp-remote",
       mcpUrl,
       "--header",
-      buildStitchApiHeader({ apiKey }),
+      buildStitchApiHeader({ apiKeyEnvVar }),
     ],
     env: {},
   };
 }
 
 function buildVsCodePostmanServer({
-  apiKey = null,
   apiKeyEnvVar = POSTMAN_API_KEY_ENV_VAR,
   mcpUrl = POSTMAN_MCP_URL,
 }) {
@@ -3110,25 +3147,27 @@ function buildVsCodePostmanServer({
     type: "sse",
     url: mcpUrl,
     headers: {
-      Authorization: buildPostmanAuthHeader({ apiKey, apiKeyEnvVar }),
+      Authorization: buildPostmanAuthHeader({ apiKeyEnvVar }),
     },
   };
 }
 
 function buildGeminiPostmanServer({
-  apiKey = null,
   apiKeyEnvVar = POSTMAN_API_KEY_ENV_VAR,
   mcpUrl = POSTMAN_MCP_URL,
 }) {
   return {
     httpUrl: mcpUrl,
     headers: {
-      Authorization: buildPostmanAuthHeader({ apiKey, apiKeyEnvVar }),
+      Authorization: buildPostmanAuthHeader({ apiKeyEnvVar }),
     },
   };
 }
 
-function buildGeminiStitchServer({ apiKey = null, mcpUrl = STITCH_MCP_URL }) {
+function buildGeminiStitchServer({
+  apiKeyEnvVar = STITCH_API_KEY_ENV_VAR,
+  mcpUrl = STITCH_MCP_URL,
+}) {
   return {
     $typeName: "exa.cascade_plugins_pb.CascadePluginCommandTemplate",
     command: "npx",
@@ -3137,7 +3176,7 @@ function buildGeminiStitchServer({ apiKey = null, mcpUrl = STITCH_MCP_URL }) {
       "mcp-remote",
       mcpUrl,
       "--header",
-      buildStitchApiHeader({ apiKey }),
+      buildStitchApiHeader({ apiKeyEnvVar }),
     ],
     env: {},
   };
@@ -3175,9 +3214,24 @@ function parseStoredCredentialServiceConfig({ service, rawService }) {
   const mcpUrl =
     String(rawService.mcpUrl || defaultMcpUrl).trim() || defaultMcpUrl;
   const profiles = [];
-  const rawProfiles = Array.isArray(rawService.profiles)
-    ? rawService.profiles
-    : [];
+  const rawProfiles = [];
+  if (Array.isArray(rawService.profiles)) {
+    rawProfiles.push(...rawService.profiles);
+  } else if (
+    service === "stitch" &&
+    rawService.profiles &&
+    typeof rawService.profiles === "object"
+  ) {
+    for (const [profileName, profileValue] of Object.entries(
+      rawService.profiles,
+    )) {
+      if (!profileValue || typeof profileValue !== "object") continue;
+      rawProfiles.push({
+        ...profileValue,
+        name: profileValue.name || profileName,
+      });
+    }
+  }
 
   for (const rawProfile of rawProfiles) {
     const name = normalizeCredentialProfileName(rawProfile?.name);
@@ -3191,7 +3245,6 @@ function parseStoredCredentialServiceConfig({ service, rawService }) {
         service,
         {
           name: DEFAULT_CREDENTIAL_PROFILE_NAME,
-          apiKey: rawService.apiKey,
           apiKeyEnvVar: rawService.apiKeyEnvVar,
           workspaceId:
             service === "postman" ? rawService.defaultWorkspaceId : null,
@@ -3227,7 +3280,6 @@ function parseStoredCredentialServiceConfig({ service, rawService }) {
     profiles: dedupedProfiles,
     activeProfileName,
     activeProfile,
-    apiKey: normalizePostmanApiKey(activeProfile.apiKey),
     apiKeyEnvVar:
       String(activeProfile.apiKeyEnvVar || defaultEnvVar).trim() ||
       defaultEnvVar,
@@ -3279,15 +3331,16 @@ function upsertNormalizedPostmanConfig(target, postmanState) {
     !Array.isArray(next.postman)
       ? next.postman
       : {};
+  const { apiKey: _legacyPostmanApiKey, ...existingPostmanSafe } =
+    existingPostman;
   const serviceConfig =
     postmanState || parseStoredPostmanConfig({ postman: existingPostman });
   if (!serviceConfig) return next;
 
   next.postman = {
-    ...existingPostman,
+    ...existingPostmanSafe,
     profiles: serviceConfig.profiles,
     activeProfileName: serviceConfig.activeProfileName,
-    apiKey: serviceConfig.apiKey,
     apiKeyEnvVar: serviceConfig.apiKeyEnvVar,
     apiKeySource: storedCredentialSource(serviceConfig.activeProfile),
     defaultWorkspaceId: serviceConfig.defaultWorkspaceId,
@@ -3307,6 +3360,7 @@ function upsertNormalizedStitchConfig(target, stitchState) {
     !Array.isArray(next.stitch)
       ? next.stitch
       : {};
+  const { apiKey: _legacyStitchApiKey, ...existingStitchSafe } = existingStitch;
   const serviceConfig =
     stitchState ||
     parseStoredStitchConfig({ stitch: existingStitch }) ||
@@ -3318,11 +3372,10 @@ function upsertNormalizedStitchConfig(target, stitchState) {
   if (!serviceConfig) return next;
 
   next.stitch = {
-    ...existingStitch,
+    ...existingStitchSafe,
     server: existingStitch.server || STITCH_MCP_SERVER_ID,
     profiles: serviceConfig.profiles,
     activeProfileName: serviceConfig.activeProfileName,
-    apiKey: serviceConfig.apiKey,
     apiKeyEnvVar: serviceConfig.apiKeyEnvVar,
     apiKeySource: storedCredentialSource(serviceConfig.activeProfile),
     mcpUrl: serviceConfig.mcpUrl,
@@ -3339,16 +3392,14 @@ function resolveCredentialEffectiveStatus({
   const defaultEnvVar = defaultEnvVarForCredentialService(service);
   const activeProfile =
     serviceConfig.activeProfile || serviceConfig.profiles?.[0] || null;
-  const apiKey = normalizePostmanApiKey(activeProfile?.apiKey);
   const apiKeyEnvVar =
     String(activeProfile?.apiKeyEnvVar || defaultEnvVar).trim() ||
     defaultEnvVar;
   const envApiKey = normalizePostmanApiKey(env?.[apiKeyEnvVar]);
-  const storedSource = storedCredentialSource(activeProfile);
-  const effectiveSource =
-    service === "stitch"
-      ? getStitchApiKeySource({ apiKey, envApiKey })
-      : getPostmanApiKeySource({ apiKey, envApiKey });
+  const storedSource = normalizePostmanApiKey(activeProfile?.apiKeyEnvVar)
+    ? "env"
+    : "unset";
+  const effectiveSource = envApiKey ? "env" : "unset";
 
   return {
     service,
@@ -3532,10 +3583,9 @@ async function removeGeneratedArtifactIfExists({ targetPath, dryRun = false }) {
 async function applyPostmanMcpForPlatform({
   platform,
   mcpScope,
-  apiKey,
   apiKeyEnvVar,
   mcpUrl,
-  stitchApiKey,
+  stitchApiKeyEnvVar,
   stitchMcpUrl,
   includeStitchMcp = false,
   dryRun = false,
@@ -3560,13 +3610,12 @@ async function applyPostmanMcpForPlatform({
             ? { ...next.mcpServers }
             : {};
         mcpServers[POSTMAN_SKILL_ID] = buildGeminiPostmanServer({
-          apiKey,
           apiKeyEnvVar,
           mcpUrl,
         });
         if (includeStitchMcp) {
           mcpServers[STITCH_MCP_SERVER_ID] = buildGeminiStitchServer({
-            apiKey: stitchApiKey,
+            apiKeyEnvVar: stitchApiKeyEnvVar,
             mcpUrl: stitchMcpUrl,
           });
         }
@@ -3600,7 +3649,6 @@ async function applyPostmanMcpForPlatform({
             ? { ...next.servers }
             : {};
         servers[POSTMAN_SKILL_ID] = buildVsCodePostmanServer({
-          apiKey,
           apiKeyEnvVar,
           mcpUrl,
         });
@@ -3632,7 +3680,6 @@ async function applyPostmanMcpForPlatform({
               ? { ...next.servers }
               : {};
           servers[POSTMAN_SKILL_ID] = buildVsCodePostmanServer({
-            apiKey,
             apiKeyEnvVar,
             mcpUrl,
           });
@@ -3694,12 +3741,6 @@ async function applyPostmanMcpForPlatform({
       };
     }
 
-    if (apiKey) {
-      warnings.push(
-        "Codex global MCP uses bearer token env vars. Inline apiKey in cbx_config.json is not directly used by Codex.",
-      );
-    }
-
     return {
       kind: "codex-cli",
       scope: mcpScope,
@@ -3753,21 +3794,19 @@ async function resolvePostmanInstallSelection({
   options,
   cwd = process.cwd(),
 }) {
-  const hasApiKeyOption = options.postmanApiKey !== undefined;
   const hasWorkspaceOption = options.postmanWorkspaceId !== undefined;
-  const hasStitchApiKeyOption = options.stitchApiKey !== undefined;
-  const enabled =
-    Boolean(options.postman) ||
-    hasApiKeyOption ||
-    hasWorkspaceOption ||
-    hasStitchApiKeyOption;
+  const hasInlinePostmanApiKeyOption = options.postmanApiKey !== undefined;
+  const hasInlineStitchApiKeyOption = options.stitchApiKey !== undefined;
+  if (hasInlinePostmanApiKeyOption || hasInlineStitchApiKeyOption) {
+    throw new Error(
+      "Inline API keys are no longer allowed. Use environment variables and --env-var profiles (for example POSTMAN_API_KEY_* and STITCH_API_KEY_*).",
+    );
+  }
+
+  const enabled = Boolean(options.postman) || hasWorkspaceOption;
   if (!enabled) return { enabled: false };
 
-  const explicitApiKey = hasApiKeyOption
-    ? String(options.postmanApiKey || "").trim()
-    : "";
-  let apiKey = explicitApiKey || null;
-  const envApiKey = String(process.env[POSTMAN_API_KEY_ENV_VAR] || "").trim();
+  const envApiKey = normalizePostmanApiKey(process.env[POSTMAN_API_KEY_ENV_VAR]);
   let defaultWorkspaceId = hasWorkspaceOption
     ? normalizePostmanWorkspaceId(options.postmanWorkspaceId)
     : null;
@@ -3778,28 +3817,28 @@ async function resolvePostmanInstallSelection({
   let mcpScope = requestedMcpScope || normalizeMcpScope(scope, "project");
   const warnings = [];
   const stitchEnabled = platform === "antigravity";
-  let stitchApiKey = hasStitchApiKeyOption
-    ? normalizePostmanApiKey(options.stitchApiKey)
-    : null;
   const envStitchApiKey = normalizePostmanApiKey(
     process.env[STITCH_API_KEY_ENV_VAR],
   );
+  const requestedRuntime = normalizeMcpRuntime(
+    options.mcpRuntime,
+    DEFAULT_MCP_RUNTIME,
+  );
+  const requestedFallback = normalizeMcpFallback(
+    options.mcpFallback,
+    DEFAULT_MCP_FALLBACK,
+  );
+  const requestedImage =
+    normalizePostmanApiKey(options.mcpImage) || DEFAULT_MCP_DOCKER_IMAGE;
+  const requestedUpdatePolicy = normalizeMcpUpdatePolicy(
+    options.mcpUpdatePolicy,
+    DEFAULT_MCP_UPDATE_POLICY,
+  );
+  const mcpToolSync = options.mcpToolSync !== false;
 
   const canPrompt = !options.yes && process.stdin.isTTY;
-  if (canPrompt && !hasApiKeyOption && !apiKey && !envApiKey) {
-    const promptedApiKey = String(
-      await input({
-        message: `Postman API key (optional, leave blank to keep ${POSTMAN_API_KEY_ENV_VAR} env mode):`,
-        default: "",
-      }),
-    ).trim();
-    if (promptedApiKey) {
-      apiKey = promptedApiKey;
-    }
-  }
-
   if (canPrompt && !hasWorkspaceOption) {
-    const selectableApiKey = normalizePostmanApiKey(apiKey || envApiKey);
+    const selectableApiKey = normalizePostmanApiKey(envApiKey);
     let usedWorkspaceSelector = false;
     let selectedWorkspaceId = defaultWorkspaceId;
 
@@ -3867,24 +3906,6 @@ async function resolvePostmanInstallSelection({
     workspaceSelectionSource = "interactive";
   }
 
-  if (
-    canPrompt &&
-    stitchEnabled &&
-    !hasStitchApiKeyOption &&
-    !stitchApiKey &&
-    !envStitchApiKey
-  ) {
-    const promptedStitchApiKey = String(
-      await input({
-        message: `Google Stitch API key (optional, leave blank to keep ${STITCH_API_KEY_ENV_VAR} env mode):`,
-        default: "",
-      }),
-    ).trim();
-    if (promptedStitchApiKey) {
-      stitchApiKey = promptedStitchApiKey;
-    }
-  }
-
   if (canPrompt && !requestedMcpScope) {
     mcpScope = await select({
       message: "Install MCP config in workspace or global scope?",
@@ -3902,29 +3923,58 @@ async function resolvePostmanInstallSelection({
     });
   }
 
-  const apiKeySource = getPostmanApiKeySource({ apiKey, envApiKey });
-  if (apiKeySource === "unset") {
-    warnings.push(POSTMAN_API_KEY_MISSING_WARNING);
+  let effectiveRuntime = requestedRuntime;
+  let runtimeSkipped = false;
+  if (requestedRuntime === "docker") {
+    let dockerAvailable = false;
+    try {
+      await execFile("docker", ["ps"], { cwd });
+      dockerAvailable = true;
+    } catch {
+      dockerAvailable = false;
+    }
+    if (!dockerAvailable) {
+      if (requestedFallback === "fail") {
+        throw new Error(
+          "Docker runtime requested but Docker is unavailable. Install/start Docker, or use --mcp-fallback local|skip.",
+        );
+      }
+      if (requestedFallback === "skip") {
+        runtimeSkipped = true;
+        warnings.push(
+          "Docker runtime unavailable; skipping MCP runtime patch because --mcp-fallback=skip.",
+        );
+      } else {
+        effectiveRuntime = "local";
+        warnings.push(
+          "Docker runtime unavailable; falling back to local runtime (--mcp-fallback=local).",
+        );
+      }
+    }
   }
 
-  const stitchApiKeySource = stitchEnabled
-    ? getStitchApiKeySource({
-        apiKey: stitchApiKey,
-        envApiKey: envStitchApiKey,
-      })
-    : null;
-  if (stitchEnabled && stitchApiKeySource === "unset") {
-    warnings.push(STITCH_API_KEY_MISSING_WARNING);
+  const apiKeySource = envApiKey ? "env" : "unset";
+  if (apiKeySource === "unset") {
+    warnings.push(
+      `Postman API key is not configured. Set ${profileEnvVarAlias("postman", DEFAULT_CREDENTIAL_PROFILE_NAME)}.`,
+    );
   }
-  if (!stitchEnabled && hasStitchApiKeyOption) {
-    warnings.push("--stitch-api-key is only used for --platform antigravity.");
+
+  const stitchApiKeySource = stitchEnabled ? (envStitchApiKey ? "env" : "unset") : null;
+  if (stitchEnabled && stitchApiKeySource === "unset") {
+    warnings.push(
+      `Google Stitch API key is not configured. Set ${profileEnvVarAlias("stitch", DEFAULT_CREDENTIAL_PROFILE_NAME)}.`,
+    );
   }
 
   const cbxConfigPath = resolveCbxConfigPath({ scope: mcpScope, cwd });
+  const defaultPostmanEnvVar = profileEnvVarAlias(
+    "postman",
+    DEFAULT_CREDENTIAL_PROFILE_NAME,
+  );
   const defaultProfile = normalizeCredentialProfileRecord("postman", {
     name: DEFAULT_CREDENTIAL_PROFILE_NAME,
-    apiKey: apiKey || null,
-    apiKeyEnvVar: POSTMAN_API_KEY_ENV_VAR,
+    apiKeyEnvVar: defaultPostmanEnvVar,
     workspaceId: defaultWorkspaceId ?? null,
   });
   const cbxConfig = {
@@ -3935,11 +3985,20 @@ async function resolvePostmanInstallSelection({
       scope: mcpScope,
       server: POSTMAN_SKILL_ID,
       platform,
+      runtime: requestedRuntime,
+      fallback: requestedFallback,
+      effectiveRuntime: runtimeSkipped ? null : effectiveRuntime,
+      docker: {
+        image: requestedImage,
+        updatePolicy: requestedUpdatePolicy,
+      },
+      catalog: {
+        toolSync: mcpToolSync,
+      },
     },
     postman: {
       profiles: [defaultProfile],
       activeProfileName: defaultProfile.name,
-      apiKey: defaultProfile.apiKey,
       apiKeyEnvVar: defaultProfile.apiKeyEnvVar,
       apiKeySource: storedCredentialSource(defaultProfile),
       defaultWorkspaceId: defaultProfile.workspaceId,
@@ -3947,16 +4006,18 @@ async function resolvePostmanInstallSelection({
     },
   };
   if (stitchEnabled) {
+    const defaultStitchEnvVar = profileEnvVarAlias(
+      "stitch",
+      DEFAULT_CREDENTIAL_PROFILE_NAME,
+    );
     const defaultStitchProfile = normalizeCredentialProfileRecord("stitch", {
       name: DEFAULT_CREDENTIAL_PROFILE_NAME,
-      apiKey: stitchApiKey || null,
-      apiKeyEnvVar: STITCH_API_KEY_ENV_VAR,
+      apiKeyEnvVar: defaultStitchEnvVar,
     });
     cbxConfig.stitch = {
       server: STITCH_MCP_SERVER_ID,
       profiles: [defaultStitchProfile],
       activeProfileName: defaultStitchProfile.name,
-      apiKey: defaultStitchProfile.apiKey,
       apiKeyEnvVar: defaultStitchProfile.apiKeyEnvVar,
       apiKeySource: storedCredentialSource(defaultStitchProfile),
       mcpUrl: STITCH_MCP_URL,
@@ -3965,11 +4026,16 @@ async function resolvePostmanInstallSelection({
 
   return {
     enabled: true,
-    apiKey,
     apiKeySource,
     stitchEnabled,
-    stitchApiKey,
     stitchApiKeySource,
+    mcpRuntime: requestedRuntime,
+    effectiveMcpRuntime: runtimeSkipped ? null : effectiveRuntime,
+    mcpFallback: requestedFallback,
+    mcpImage: requestedImage,
+    mcpUpdatePolicy: requestedUpdatePolicy,
+    mcpToolSync,
+    runtimeSkipped,
     defaultWorkspaceId: defaultWorkspaceId ?? null,
     workspaceSelectionSource,
     mcpScope,
@@ -3990,11 +4056,7 @@ async function configurePostmanInstallArtifacts({
 }) {
   if (!postmanSelection?.enabled) return null;
 
-  let warnings = postmanSelection.warnings.filter(
-    (warning) =>
-      warning !== POSTMAN_API_KEY_MISSING_WARNING &&
-      warning !== STITCH_API_KEY_MISSING_WARNING,
-  );
+  let warnings = [...postmanSelection.warnings];
   await assertNoLegacyOnlyPostmanConfig({
     scope: postmanSelection.mcpScope,
     cwd,
@@ -4010,7 +4072,6 @@ async function configurePostmanInstallArtifacts({
   const installPostmanConfig = parseStoredPostmanConfig(
     postmanSelection.cbxConfig,
   );
-  let effectiveApiKey = normalizePostmanApiKey(installPostmanConfig?.apiKey);
   let effectiveApiKeyEnvVar = String(
     installPostmanConfig?.apiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR,
   ).trim();
@@ -4022,9 +4083,6 @@ async function configurePostmanInstallArtifacts({
   const shouldInstallStitch = Boolean(postmanSelection.stitchEnabled);
   const installStitchConfig = shouldInstallStitch
     ? parseStoredStitchConfig(postmanSelection.cbxConfig)
-    : null;
-  let effectiveStitchApiKey = shouldInstallStitch
-    ? normalizePostmanApiKey(installStitchConfig?.apiKey)
     : null;
   let effectiveStitchApiKeyEnvVar = shouldInstallStitch
     ? String(
@@ -4042,6 +4100,26 @@ async function configurePostmanInstallArtifacts({
     const existingCbxConfig = await readJsonFileIfExists(
       postmanSelection.cbxConfigPath,
     );
+    if (
+      existingCbxConfig.value &&
+      typeof existingCbxConfig.value === "object" &&
+      !Array.isArray(existingCbxConfig.value)
+    ) {
+      const migration = migrateInlineCredentialsInConfig(existingCbxConfig.value);
+      if (migration.findings.length > 0) {
+        warnings.push(
+          `Detected ${migration.findings.length} inline key field(s) in existing ${CBX_CONFIG_FILENAME}; migrated to env-var aliases.`,
+        );
+        if (!dryRun) {
+          await writeFile(
+            postmanSelection.cbxConfigPath,
+            `${JSON.stringify(migration.next, null, 2)}\n`,
+            "utf8",
+          );
+        }
+        existingCbxConfig.value = migration.next;
+      }
+    }
     const storedPostmanConfig = parseStoredPostmanConfig(
       existingCbxConfig.value,
     );
@@ -4050,7 +4128,6 @@ async function configurePostmanInstallArtifacts({
       : null;
 
     if (storedPostmanConfig) {
-      effectiveApiKey = storedPostmanConfig.apiKey;
       effectiveApiKeyEnvVar =
         storedPostmanConfig.apiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR;
       effectiveDefaultWorkspaceId = storedPostmanConfig.defaultWorkspaceId;
@@ -4062,7 +4139,6 @@ async function configurePostmanInstallArtifacts({
     }
 
     if (storedStitchConfig) {
-      effectiveStitchApiKey = storedStitchConfig.apiKey;
       effectiveStitchApiKeyEnvVar =
         String(
           storedStitchConfig.apiKeyEnvVar || STITCH_API_KEY_ENV_VAR,
@@ -4093,24 +4169,24 @@ async function configurePostmanInstallArtifacts({
   const envApiKey = normalizePostmanApiKey(
     process.env[effectiveApiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR],
   );
-  const effectiveApiKeySource = getPostmanApiKeySource({
-    apiKey: effectiveApiKey,
-    envApiKey,
-  });
+  const effectiveApiKeySource = envApiKey ? "env" : "unset";
   if (effectiveApiKeySource === "unset") {
-    warnings.push(POSTMAN_API_KEY_MISSING_WARNING);
+    warnings.push(
+      `Postman API key is not configured. Set ${effectiveApiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR}.`,
+    );
   }
   const envStitchApiKey = normalizePostmanApiKey(
     process.env[effectiveStitchApiKeyEnvVar],
   );
   const effectiveStitchApiKeySource = shouldInstallStitch
-    ? getStitchApiKeySource({
-        apiKey: effectiveStitchApiKey,
-        envApiKey: envStitchApiKey,
-      })
+    ? envStitchApiKey
+      ? "env"
+      : "unset"
     : null;
   if (shouldInstallStitch && effectiveStitchApiKeySource === "unset") {
-    warnings.push(STITCH_API_KEY_MISSING_WARNING);
+    warnings.push(
+      `Google Stitch API key is not configured. Set ${effectiveStitchApiKeyEnvVar || STITCH_API_KEY_ENV_VAR}.`,
+    );
   }
 
   const gitIgnoreResults = [];
@@ -4139,7 +4215,6 @@ async function configurePostmanInstallArtifacts({
   });
   const mcpDefinitionContent = `${JSON.stringify(
     buildPostmanMcpDefinition({
-      apiKey: effectiveApiKey,
       apiKeyEnvVar: effectiveApiKeyEnvVar,
       mcpUrl: effectiveMcpUrl,
     }),
@@ -4160,7 +4235,7 @@ async function configurePostmanInstallArtifacts({
     });
     const stitchMcpDefinitionContent = `${JSON.stringify(
       buildStitchMcpDefinition({
-        apiKey: effectiveStitchApiKey,
+        apiKeyEnvVar: effectiveStitchApiKeyEnvVar,
         mcpUrl: effectiveStitchMcpUrl,
       }),
       null,
@@ -4173,19 +4248,43 @@ async function configurePostmanInstallArtifacts({
     });
   }
 
-  const mcpRuntimeResult = await applyPostmanMcpForPlatform({
-    platform,
-    mcpScope: postmanSelection.mcpScope,
-    apiKey: effectiveApiKey,
-    apiKeyEnvVar: effectiveApiKeyEnvVar,
-    mcpUrl: effectiveMcpUrl,
-    stitchApiKey: effectiveStitchApiKey,
-    stitchMcpUrl: effectiveStitchMcpUrl,
-    includeStitchMcp: shouldInstallStitch,
-    dryRun,
-    cwd,
-  });
+  const mcpRuntimeResult = postmanSelection.runtimeSkipped
+    ? {
+        kind: "platform-mcp",
+        scope: postmanSelection.mcpScope,
+        path: null,
+        action: "skipped",
+        warnings: [],
+      }
+    : await applyPostmanMcpForPlatform({
+        platform,
+        mcpScope: postmanSelection.mcpScope,
+        apiKeyEnvVar: effectiveApiKeyEnvVar,
+        mcpUrl: effectiveMcpUrl,
+        stitchApiKeyEnvVar: effectiveStitchApiKeyEnvVar,
+        stitchMcpUrl: effectiveStitchMcpUrl,
+        includeStitchMcp: shouldInstallStitch,
+        dryRun,
+        cwd,
+      });
   warnings.push(...(mcpRuntimeResult.warnings || []));
+
+  let mcpCatalogSyncResults = [];
+  if (postmanSelection.mcpToolSync && !dryRun) {
+    try {
+      const currentConfig = await readJsonFileIfExists(postmanSelection.cbxConfigPath);
+      const services = shouldInstallStitch ? ["postman", "stitch"] : ["postman"];
+      mcpCatalogSyncResults = await syncMcpToolCatalogs({
+        scope: postmanSelection.mcpScope,
+        services,
+        configValue: currentConfig.value || postmanSelection.cbxConfig,
+        cwd,
+        dryRun: false,
+      });
+    } catch (error) {
+      warnings.push(`MCP tool catalog sync failed: ${error.message}`);
+    }
+  }
 
   const legacySkillMcpCleanup = await removeGeneratedArtifactIfExists({
     targetPath: path.join(profilePaths.skillsDir, POSTMAN_SKILL_ID, "mcp.json"),
@@ -4195,6 +4294,12 @@ async function configurePostmanInstallArtifacts({
   return {
     enabled: true,
     mcpScope: postmanSelection.mcpScope,
+    mcpRuntime: postmanSelection.mcpRuntime,
+    effectiveMcpRuntime: postmanSelection.effectiveMcpRuntime,
+    mcpFallback: postmanSelection.mcpFallback,
+    mcpImage: postmanSelection.mcpImage,
+    mcpUpdatePolicy: postmanSelection.mcpUpdatePolicy,
+    mcpToolSync: postmanSelection.mcpToolSync,
     apiKeySource: effectiveApiKeySource,
     stitchApiKeySource: effectiveStitchApiKeySource,
     defaultWorkspaceId: effectiveDefaultWorkspaceId,
@@ -4207,6 +4312,7 @@ async function configurePostmanInstallArtifacts({
     stitchMcpDefinitionPath,
     stitchMcpDefinitionResult,
     mcpRuntimeResult,
+    mcpCatalogSyncResults,
     legacySkillMcpCleanup,
   };
 }
@@ -5139,6 +5245,14 @@ function printPostmanSetupSummary({ postmanSetup }) {
   console.log(
     `- Config file: ${postmanSetup.cbxConfigResult.action} (${postmanSetup.cbxConfigPath})`,
   );
+  console.log(`- MCP runtime (requested): ${postmanSetup.mcpRuntime}`);
+  console.log(
+    `- MCP runtime (effective): ${postmanSetup.effectiveMcpRuntime || "skipped"}`,
+  );
+  console.log(`- MCP fallback: ${postmanSetup.mcpFallback}`);
+  console.log(`- MCP image: ${postmanSetup.mcpImage}`);
+  console.log(`- MCP update policy: ${postmanSetup.mcpUpdatePolicy}`);
+  console.log(`- MCP tool sync: ${postmanSetup.mcpToolSync ? "enabled" : "disabled"}`);
   console.log(`- Postman API key source: ${postmanSetup.apiKeySource}`);
   if (postmanSetup.stitchApiKeySource) {
     console.log(`- Stitch API key source: ${postmanSetup.stitchApiKeySource}`);
@@ -5166,6 +5280,17 @@ function printPostmanSetupSummary({ postmanSetup }) {
     console.log(
       `- Platform MCP target (${postmanSetup.mcpRuntimeResult.path || "n/a"}): ${postmanSetup.mcpRuntimeResult.action}`,
     );
+  }
+  if (Array.isArray(postmanSetup.mcpCatalogSyncResults)) {
+    for (const syncItem of postmanSetup.mcpCatalogSyncResults) {
+      if (syncItem.action === "skipped") {
+        console.log(`- MCP catalog ${syncItem.service}: skipped (${syncItem.reason})`);
+      } else {
+        console.log(
+          `- MCP catalog ${syncItem.service}: ${syncItem.action} (${syncItem.toolCount} tools)`,
+        );
+      }
+    }
   }
   if (postmanSetup.legacySkillMcpCleanup) {
     console.log(
@@ -5598,7 +5723,7 @@ function withInstallOptions(command) {
     )
     .option(
       "--postman-api-key <key>",
-      "optional: set Postman API key inline for generated cbx_config.json and installed Postman MCP config",
+      "deprecated: inline key mode is disabled. Use env vars + profiles.",
     )
     .option(
       "--postman-workspace-id <id|null>",
@@ -5606,12 +5731,33 @@ function withInstallOptions(command) {
     )
     .option(
       "--stitch-api-key <key>",
-      "optional: Antigravity only. Set Google Stitch API key inline for StitchMCP config",
+      "deprecated: inline key mode is disabled. Use env vars + profiles.",
     )
     .option(
       "--mcp-scope <scope>",
       "optional: MCP config scope for --postman (project|workspace|global|user)",
     )
+    .option(
+      "--mcp-runtime <runtime>",
+      "MCP runtime: docker|local",
+      DEFAULT_MCP_RUNTIME,
+    )
+    .option(
+      "--mcp-fallback <fallback>",
+      "When docker runtime is unavailable: local|fail|skip",
+      DEFAULT_MCP_FALLBACK,
+    )
+    .option(
+      "--mcp-image <image:tag>",
+      "Docker image for MCP runtime",
+      DEFAULT_MCP_DOCKER_IMAGE,
+    )
+    .option(
+      "--mcp-update-policy <policy>",
+      "MCP image update policy: pinned|latest",
+      DEFAULT_MCP_UPDATE_POLICY,
+    )
+    .option("--no-mcp-tool-sync", "disable automatic MCP tool catalog sync")
     .option(
       "--terminal-integration",
       "Antigravity only: enable terminal verification integration (prompts for verifier when interactive)",
@@ -5708,6 +5854,32 @@ function registerConfigKeysSubcommands(
     )
     .option("--dry-run", "preview changes without writing files")
     .action(wrap(runWorkflowConfigKeysRemove));
+
+  keysCommand
+    .command("migrate-inline")
+    .description(
+      "Migrate legacy inline API keys to env-var aliases and rewrite config safely",
+    )
+    .option(
+      "--scope <scope>",
+      "config scope: project|workspace|global|user",
+      "global",
+    )
+    .option("--redact", "accepted for compatibility; output is always redacted")
+    .option("--dry-run", "preview changes without writing files")
+    .action(wrap(runWorkflowConfigKeysMigrateInline));
+
+  keysCommand
+    .command("doctor")
+    .description(
+      "Check config and generated MCP artifacts for unsafe inline credential usage",
+    )
+    .option(
+      "--scope <scope>",
+      "config scope: project|workspace|global|user",
+      "global",
+    )
+    .action(wrap(runWorkflowConfigKeysDoctor));
 }
 
 async function resolveAntigravityTerminalVerifierSelection({
@@ -6555,6 +6727,152 @@ async function writeConfigFile({
       : "created";
 }
 
+function toProfileEnvSuffix(profileName) {
+  const normalized =
+    normalizeCredentialProfileName(profileName) || DEFAULT_CREDENTIAL_PROFILE_NAME;
+  const suffix = normalized
+    .replace(/[^A-Za-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .toUpperCase();
+  return suffix || "DEFAULT";
+}
+
+function profileEnvVarAlias(service, profileName) {
+  const prefix = service === "stitch" ? "STITCH_API_KEY_" : "POSTMAN_API_KEY_";
+  return `${prefix}${toProfileEnvSuffix(profileName)}`;
+}
+
+function collectInlineCredentialFindings(configValue) {
+  const findings = [];
+  const record =
+    configValue && typeof configValue === "object" && !Array.isArray(configValue)
+      ? configValue
+      : {};
+
+  const scanService = (serviceId) => {
+    const section = record[serviceId];
+    if (!section || typeof section !== "object" || Array.isArray(section)) return;
+
+    if (normalizePostmanApiKey(section.apiKey)) {
+      findings.push({
+        service: serviceId,
+        path: `${serviceId}.apiKey`,
+      });
+    }
+
+    if (Array.isArray(section.profiles)) {
+      section.profiles.forEach((profile, index) => {
+        if (!profile || typeof profile !== "object" || Array.isArray(profile)) return;
+        if (normalizePostmanApiKey(profile.apiKey)) {
+          findings.push({
+            service: serviceId,
+            profileName: normalizeCredentialProfileName(profile.name) || null,
+            path: `${serviceId}.profiles[${index}].apiKey`,
+          });
+        }
+      });
+      return;
+    }
+
+    if (
+      serviceId === "stitch" &&
+      section.profiles &&
+      typeof section.profiles === "object" &&
+      !Array.isArray(section.profiles)
+    ) {
+      for (const [profileName, profile] of Object.entries(section.profiles)) {
+        if (!profile || typeof profile !== "object" || Array.isArray(profile)) continue;
+        if (normalizePostmanApiKey(profile.apiKey)) {
+          findings.push({
+            service: serviceId,
+            profileName,
+            path: `${serviceId}.profiles.${profileName}.apiKey`,
+          });
+        }
+      }
+    }
+  };
+
+  scanService("postman");
+  scanService("stitch");
+  return findings;
+}
+
+function migrateInlineCredentialsInConfig(configValue) {
+  const next =
+    configValue && typeof configValue === "object" && !Array.isArray(configValue)
+      ? cloneJsonObject(configValue)
+      : {};
+  const findings = collectInlineCredentialFindings(next);
+  const requiredEnvVars = new Set();
+
+  const normalizeSection = (serviceId) => {
+    const serviceState = ensureCredentialServiceState(next, serviceId);
+    const profiles = serviceState.profiles.map((profile) => {
+      const envVar = isCredentialServiceEnvVar(profile.apiKeyEnvVar)
+        ? profile.apiKeyEnvVar
+        : profileEnvVarAlias(serviceId, profile.name);
+      requiredEnvVars.add(envVar);
+      return {
+        ...profile,
+        apiKey: null,
+        apiKeyEnvVar: envVar,
+      };
+    });
+
+    const updatedServiceState = {
+      ...serviceState,
+      profiles,
+      activeProfileName:
+        findProfileByName(profiles, serviceState.activeProfileName)?.name ||
+        profiles[0]?.name ||
+        DEFAULT_CREDENTIAL_PROFILE_NAME,
+    };
+    upsertCredentialServiceConfig(next, serviceId, updatedServiceState);
+  };
+
+  const hasPostmanSection =
+    next.postman && typeof next.postman === "object" && !Array.isArray(next.postman);
+  const hasStitchSection =
+    next.stitch && typeof next.stitch === "object" && !Array.isArray(next.stitch);
+
+  if (hasPostmanSection) normalizeSection("postman");
+  if (hasStitchSection) normalizeSection("stitch");
+
+  return {
+    next,
+    findings,
+    requiredEnvVars: [...requiredEnvVars].sort(),
+    changed: JSON.stringify(next) !== JSON.stringify(configValue || {}),
+  };
+}
+
+async function collectInlineHeaderFindings({
+  scope,
+  cwd = process.cwd(),
+}) {
+  const findings = [];
+  const stitchDefinitionPath = resolveStitchMcpDefinitionPath({ scope, cwd });
+  const geminiSettingsPath =
+    scope === "global"
+      ? path.join(os.homedir(), ".gemini", "settings.json")
+      : path.join(findWorkspaceRoot(cwd), ".gemini", "settings.json");
+
+  const scanFile = async (filePath) => {
+    if (!(await pathExists(filePath))) return;
+    const raw = await readFile(filePath, "utf8");
+    const unsafeStitchHeader = /X-Goog-Api-Key:\s*(?!\$\{)[^"\n]+/i;
+    const unsafeBearerHeader = /"Authorization"\s*:\s*"Bearer\s+(?!\$\{)[^"]+/i;
+    if (unsafeStitchHeader.test(raw) || unsafeBearerHeader.test(raw)) {
+      findings.push(filePath);
+    }
+  };
+
+  await scanFile(stitchDefinitionPath);
+  await scanFile(geminiSettingsPath);
+  return findings;
+}
+
 async function runWorkflowConfigKeysList(options) {
   try {
     const opts = resolveActionOptions(options);
@@ -6823,6 +7141,111 @@ async function runWorkflowConfigKeysRemove(options) {
   }
 }
 
+async function runWorkflowConfigKeysMigrateInline(options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const cwd = process.cwd();
+    const scopeArg = readCliOptionFromArgv("--scope");
+    const scope = normalizeMcpScope(scopeArg ?? opts.scope, "global");
+    const dryRun = hasCliFlag("--dry-run") || Boolean(opts.dryRun);
+
+    const { configPath, existing, existingValue } = await loadConfigForScope({
+      scope,
+      cwd,
+    });
+    if (!existing.exists) {
+      throw new Error(`Config file is missing at ${configPath}.`);
+    }
+
+    const result = migrateInlineCredentialsInConfig(existingValue);
+    const action = await writeConfigFile({
+      configPath,
+      nextConfig: result.next,
+      existingExists: existing.exists,
+      dryRun,
+    });
+
+    console.log(`Config file: ${configPath}`);
+    console.log(`Action: ${action}`);
+    console.log(`Inline key fields found: ${result.findings.length}`);
+    if (result.findings.length > 0) {
+      for (const finding of result.findings) {
+        console.log(`- migrated ${finding.path}`);
+      }
+    }
+    if (result.requiredEnvVars.length > 0) {
+      console.log("Required env vars:");
+      for (const envVar of result.requiredEnvVars) {
+        console.log(`- ${envVar}`);
+      }
+    }
+  } catch (error) {
+    if (error?.name === "ExitPromptError") {
+      console.error("\nCancelled.");
+      process.exit(130);
+    }
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+async function runWorkflowConfigKeysDoctor(options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const cwd = process.cwd();
+    const scopeArg = readCliOptionFromArgv("--scope");
+    const scope = normalizeMcpScope(scopeArg ?? opts.scope, "global");
+    const { configPath, existing, existingValue } = await loadConfigForScope({
+      scope,
+      cwd,
+    });
+
+    console.log(`Config file: ${configPath}`);
+    if (!existing.exists) {
+      console.log("Status: missing");
+      return;
+    }
+
+    const configFindings = collectInlineCredentialFindings(existingValue);
+    const artifactFindings = await collectInlineHeaderFindings({ scope, cwd });
+    const migrationPreview = migrateInlineCredentialsInConfig(existingValue);
+
+    console.log(`Inline key findings: ${configFindings.length}`);
+    for (const finding of configFindings) {
+      console.log(`- ${finding.path}`);
+    }
+
+    console.log(`Unsafe header findings: ${artifactFindings.length}`);
+    for (const filePath of artifactFindings) {
+      console.log(`- ${filePath}`);
+    }
+
+    if (migrationPreview.requiredEnvVars.length > 0) {
+      console.log("Expected env vars:");
+      for (const envVar of migrationPreview.requiredEnvVars) {
+        console.log(`- ${envVar}`);
+      }
+    }
+
+    if (configFindings.length === 0 && artifactFindings.length === 0) {
+      console.log("Doctor result: clean");
+    } else {
+      console.log(
+        "Doctor result: issues detected. Run `cbx workflows config keys migrate-inline --scope " +
+          scope +
+          "` and reinstall with `--overwrite`.",
+      );
+    }
+  } catch (error) {
+    if (error?.name === "ExitPromptError") {
+      console.error("\nCancelled.");
+      process.exit(130);
+    }
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
 async function runWorkflowConfig(options) {
   try {
     const opts = resolveActionOptions(options);
@@ -6929,6 +7352,364 @@ async function runWorkflowConfig(options) {
       console.error("\nCancelled.");
       process.exit(130);
     }
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+function resolveMcpCatalogDir({ scope, cwd = process.cwd() }) {
+  return path.join(resolveMcpRootPath({ scope, cwd }), "catalog");
+}
+
+function resolveMcpCatalogPath({ service, scope, cwd = process.cwd() }) {
+  return path.join(resolveMcpCatalogDir({ scope, cwd }), `${service}.json`);
+}
+
+function parseMcpJsonRpcResponse(raw) {
+  const trimmed = String(raw || "").trim();
+  if (!trimmed) return null;
+  try {
+    return JSON.parse(trimmed);
+  } catch {
+    const lines = trimmed.split(/\r?\n/);
+    const dataLines = lines
+      .filter((line) => line.startsWith("data:"))
+      .map((line) => line.slice(5).trim())
+      .filter(Boolean)
+      .filter((line) => line !== "[DONE]");
+    for (let i = dataLines.length - 1; i >= 0; i -= 1) {
+      try {
+        return JSON.parse(dataLines[i]);
+      } catch {
+        // continue
+      }
+    }
+  }
+  return null;
+}
+
+async function sendMcpJsonRpcRequest({
+  url,
+  method,
+  params = undefined,
+  id = null,
+  headers = {},
+  sessionId = null,
+}) {
+  const requestHeaders = {
+    "content-type": "application/json",
+    accept: "application/json, text/event-stream",
+    ...headers,
+  };
+  if (sessionId) {
+    requestHeaders["mcp-session-id"] = sessionId;
+  }
+  const payload =
+    id === null
+      ? { jsonrpc: "2.0", method, params }
+      : { jsonrpc: "2.0", id, method, params };
+  const response = await fetch(url, {
+    method: "POST",
+    headers: requestHeaders,
+    body: JSON.stringify(payload),
+  });
+  const text = await response.text();
+  if (!response.ok) {
+    throw new Error(
+      `MCP request failed (${method}): HTTP ${response.status} ${response.statusText}`,
+    );
+  }
+  const parsed = parseMcpJsonRpcResponse(text);
+  return {
+    parsed,
+    sessionId:
+      response.headers.get("mcp-session-id") ||
+      response.headers.get("Mcp-Session-Id") ||
+      sessionId,
+  };
+}
+
+async function discoverUpstreamTools({
+  service,
+  url,
+  headers,
+}) {
+  let sessionId = null;
+  const init = await sendMcpJsonRpcRequest({
+    url,
+    method: "initialize",
+    id: `cbx-init-${Date.now()}`,
+    params: {
+      protocolVersion: "2025-06-18",
+      capabilities: {},
+      clientInfo: {
+        name: "cbx",
+        version: CLI_VERSION,
+      },
+    },
+    headers,
+    sessionId,
+  });
+  sessionId = init.sessionId;
+
+  await sendMcpJsonRpcRequest({
+    url,
+    method: "notifications/initialized",
+    params: {},
+    headers,
+    sessionId,
+  });
+
+  const listed = await sendMcpJsonRpcRequest({
+    url,
+    method: "tools/list",
+    id: `cbx-tools-${Date.now()}`,
+    params: {},
+    headers,
+    sessionId,
+  });
+  const tools = Array.isArray(listed.parsed?.result?.tools)
+    ? listed.parsed.result.tools
+    : [];
+  const meta = {};
+
+  if (service === "postman") {
+    const toolNames = new Set(tools.map((tool) => tool?.name).filter(Boolean));
+    if (toolNames.has("getEnabledTools")) {
+      const enabled = await sendMcpJsonRpcRequest({
+        url,
+        method: "tools/call",
+        id: `cbx-enabled-tools-${Date.now()}`,
+        params: {
+          name: "getEnabledTools",
+          arguments: {},
+        },
+        headers,
+        sessionId,
+      });
+      meta.getEnabledTools = enabled.parsed?.result ?? null;
+    }
+    if (toolNames.has("listTools")) {
+      const listedTools = await sendMcpJsonRpcRequest({
+        url,
+        method: "tools/call",
+        id: `cbx-list-tools-${Date.now()}`,
+        params: {
+          name: "listTools",
+          arguments: {},
+        },
+        headers,
+        sessionId,
+      });
+      meta.listTools = listedTools.parsed?.result ?? null;
+    }
+  } else if (service === "stitch") {
+    const hasListTools = tools.some((tool) => tool?.name === "list_tools");
+    if (hasListTools) {
+      const listedTools = await sendMcpJsonRpcRequest({
+        url,
+        method: "tools/call",
+        id: `cbx-stitch-list-tools-${Date.now()}`,
+        params: {
+          name: "list_tools",
+          arguments: {},
+        },
+        headers,
+        sessionId,
+      });
+      meta.list_tools = listedTools.parsed?.result ?? null;
+    }
+  }
+
+  if (sessionId) {
+    try {
+      await fetch(url, {
+        method: "DELETE",
+        headers: {
+          ...headers,
+          "mcp-session-id": sessionId,
+        },
+      });
+    } catch {
+      // best effort
+    }
+  }
+
+  return { tools, meta };
+}
+
+function resolveServiceDiscoveryConfig({
+  service,
+  configValue,
+  scope,
+}) {
+  const normalized = normalizeCredentialService(service);
+  const serviceState = ensureCredentialServiceState(configValue, normalized);
+  const activeProfile =
+    serviceState.activeProfile ||
+    findProfileByName(serviceState.profiles, serviceState.activeProfileName) ||
+    serviceState.profiles[0] ||
+    null;
+  const envVar =
+    normalizePostmanApiKey(activeProfile?.apiKeyEnvVar) ||
+    defaultEnvVarForCredentialService(normalized);
+  const token = normalizePostmanApiKey(process.env[envVar]);
+  const url =
+    normalized === "postman"
+      ? serviceState.mcpUrl || POSTMAN_MCP_URL
+      : serviceState.mcpUrl || STITCH_MCP_URL;
+
+  if (!token) {
+    throw new Error(
+      `${normalized} API key env var is missing. Set ${envVar} and retry.`,
+    );
+  }
+
+  const headers =
+    normalized === "postman"
+      ? { Authorization: `Bearer ${token}` }
+      : { "X-Goog-Api-Key": token };
+
+  return {
+    service: normalized,
+    url,
+    envVar,
+    activeProfileName: serviceState.activeProfileName,
+    headers,
+    scope,
+  };
+}
+
+async function syncMcpToolCatalogs({
+  scope,
+  services,
+  configValue,
+  cwd = process.cwd(),
+  dryRun = false,
+}) {
+  const syncResults = [];
+  for (const serviceId of services) {
+    if (
+      serviceId === "stitch" &&
+      (!configValue?.stitch ||
+        typeof configValue.stitch !== "object" ||
+        Array.isArray(configValue.stitch))
+    ) {
+      syncResults.push({
+        service: serviceId,
+        action: "skipped",
+        reason: "stitch is not configured",
+      });
+      continue;
+    }
+    const discoveryConfig = resolveServiceDiscoveryConfig({
+      service: serviceId,
+      configValue,
+      scope,
+    });
+    const discovered = await discoverUpstreamTools({
+      service: serviceId,
+      url: discoveryConfig.url,
+      headers: discoveryConfig.headers,
+    });
+    const catalogPath = resolveMcpCatalogPath({
+      service: serviceId,
+      scope,
+      cwd,
+    });
+    const catalog = {
+      schemaVersion: 1,
+      generatedAt: new Date().toISOString(),
+      generatedBy: "cbx mcp tools sync",
+      scope,
+      service: serviceId,
+      mcpUrl: discoveryConfig.url,
+      activeProfileName: discoveryConfig.activeProfileName,
+      envVar: discoveryConfig.envVar,
+      toolCount: discovered.tools.length,
+      tools: discovered.tools,
+      discoveryMeta: discovered.meta,
+    };
+    if (!dryRun) {
+      await mkdir(path.dirname(catalogPath), { recursive: true });
+      await writeFile(catalogPath, `${JSON.stringify(catalog, null, 2)}\n`, "utf8");
+    }
+    syncResults.push({
+      service: serviceId,
+      action: dryRun ? "would-sync" : "synced",
+      toolCount: discovered.tools.length,
+      catalogPath,
+    });
+  }
+  return syncResults;
+}
+
+async function runMcpToolsSync(options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const cwd = process.cwd();
+    const scope = normalizeMcpScope(opts.scope, "global");
+    const service = normalizeCredentialService(opts.service || "all", {
+      allowAll: true,
+    });
+    const services = service === "all" ? ["postman", "stitch"] : [service];
+    const { configPath, existing, existingValue } = await loadConfigForScope({
+      scope,
+      cwd,
+    });
+    if (!existing.exists) {
+      throw new Error(`Config file is missing at ${configPath}.`);
+    }
+
+    const syncResults = await syncMcpToolCatalogs({
+      scope,
+      services,
+      configValue: existingValue,
+      cwd,
+      dryRun: Boolean(opts.dryRun),
+    });
+
+    for (const item of syncResults) {
+      if (item.action === "skipped") {
+        console.log(`${item.service}: skipped (${item.reason})`);
+      } else {
+        console.log(
+          `${item.service}: ${item.action} (${item.toolCount} tools) -> ${item.catalogPath}`,
+        );
+      }
+    }
+  } catch (error) {
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+async function runMcpToolsList(options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const cwd = process.cwd();
+    const scope = normalizeMcpScope(opts.scope, "global");
+    const service = normalizeCredentialService(opts.service);
+    const catalogPath = resolveMcpCatalogPath({ service, scope, cwd });
+    const catalog = await readJsonFileIfExists(catalogPath);
+    if (!catalog.exists || !catalog.value) {
+      throw new Error(
+        `Catalog not found at ${catalogPath}. Run 'cbx mcp tools sync --service ${service} --scope ${scope}' first.`,
+      );
+    }
+    const tools = Array.isArray(catalog.value.tools) ? catalog.value.tools : [];
+    console.log(`Service: ${service}`);
+    console.log(`Scope: ${scope}`);
+    console.log(`Catalog: ${catalogPath}`);
+    console.log(`Generated: ${catalog.value.generatedAt || "(unknown)"}`);
+    console.log(`Tools: ${tools.length}`);
+    for (const tool of tools) {
+      if (!tool || typeof tool !== "object") continue;
+      const name = normalizePostmanApiKey(tool.name);
+      if (!name) continue;
+      console.log(`- ${name}`);
+    }
+  } catch (error) {
     console.error(`\nError: ${error.message}`);
     process.exit(1);
   }
@@ -7344,6 +8125,41 @@ registerConfigKeysSubcommands(skillsConfigCommand, { aliasMode: true });
 skillsCommand.action(() => {
   printSkillsDeprecation();
   skillsCommand.help();
+});
+
+const mcpCommand = program
+  .command("mcp")
+  .description("Manage Cubis MCP runtime catalogs and tool discovery");
+
+const mcpToolsCommand = mcpCommand
+  .command("tools")
+  .description("Discover and inspect upstream MCP tool catalogs");
+
+mcpToolsCommand
+  .command("sync")
+  .description("Discover upstream tools and persist local non-secret catalogs")
+  .option("--service <service>", "postman|stitch|all", "all")
+  .option(
+    "--scope <scope>",
+    "config scope: project|workspace|global|user",
+    "global",
+  )
+  .option("--dry-run", "preview sync without writing catalog files")
+  .action(runMcpToolsSync);
+
+mcpToolsCommand
+  .command("list")
+  .description("List cached tool names from local MCP catalog")
+  .requiredOption("--service <service>", "postman|stitch")
+  .option(
+    "--scope <scope>",
+    "config scope: project|workspace|global|user",
+    "global",
+  )
+  .action(runMcpToolsList);
+
+mcpCommand.action(() => {
+  mcpCommand.help();
 });
 
 const rulesCommand = program

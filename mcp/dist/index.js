@@ -103,7 +103,7 @@ var logger = {
 
 // src/config/index.ts
 var __dirname = path.dirname(fileURLToPath(import.meta.url));
-var PKG_ROOT = __dirname.endsWith("dist") ? path.resolve(__dirname, "..") : path.resolve(__dirname, "../..");
+var PKG_ROOT = path.basename(__dirname) === "config" ? path.resolve(__dirname, "../..") : path.resolve(__dirname, "..");
 var DEFAULT_CONFIG_PATH = path.resolve(PKG_ROOT, "config.json");
 function loadServerConfig(configPath) {
   const resolved = configPath ?? DEFAULT_CONFIG_PATH;
@@ -290,6 +290,7 @@ async function enrichWithDescriptions(skills, maxLength) {
 
 // src/server.ts
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { z as z12 } from "zod";
 
 // src/tools/skillListCategories.ts
 import { z as z2 } from "zod";
@@ -568,6 +569,120 @@ function writeConfigField(fieldPath, value, scope, workspaceRoot) {
   return { writtenPath: configPath, scope: resolved.scope };
 }
 
+// src/cbxConfig/serviceConfig.ts
+var DEFAULT_POSTMAN_URL = "https://mcp.postman.com/minimal";
+var DEFAULT_STITCH_URL = "https://stitch.googleapis.com/mcp";
+var DEFAULT_PROFILE_NAME = "default";
+var DEFAULT_POSTMAN_ENV_VAR = "POSTMAN_API_KEY";
+var DEFAULT_STITCH_ENV_VAR = "STITCH_API_KEY";
+function asRecord(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  return value;
+}
+function normalizeName(value, fallback = DEFAULT_PROFILE_NAME) {
+  const normalized = typeof value === "string" ? value.trim() : "";
+  return normalized || fallback;
+}
+function normalizeEnvVar(value, fallback) {
+  const normalized = typeof value === "string" ? value.trim() : "";
+  return normalized || fallback;
+}
+function normalizeOptionalString(value) {
+  if (value === null || value === void 0) return null;
+  const normalized = String(value).trim();
+  return normalized || null;
+}
+function parsePostmanState(config) {
+  const section = asRecord(config.postman) ?? {};
+  const mcpUrl = normalizeOptionalString(section.mcpUrl) ?? DEFAULT_POSTMAN_URL;
+  const fallbackEnvVar = normalizeEnvVar(
+    section.apiKeyEnvVar,
+    DEFAULT_POSTMAN_ENV_VAR
+  );
+  const rawProfiles = Array.isArray(section.profiles) ? section.profiles : [];
+  const profiles = [];
+  for (const rawProfile of rawProfiles) {
+    const profile = asRecord(rawProfile);
+    if (!profile) continue;
+    profiles.push({
+      name: normalizeName(profile.name, DEFAULT_PROFILE_NAME),
+      apiKeyEnvVar: normalizeEnvVar(profile.apiKeyEnvVar, fallbackEnvVar),
+      workspaceId: normalizeOptionalString(
+        profile.workspaceId ?? profile.defaultWorkspaceId
+      ),
+      hasInlineApiKey: typeof profile.apiKey === "string" && profile.apiKey.trim().length > 0
+    });
+  }
+  if (profiles.length === 0) {
+    profiles.push({
+      name: DEFAULT_PROFILE_NAME,
+      apiKeyEnvVar: fallbackEnvVar,
+      workspaceId: normalizeOptionalString(section.defaultWorkspaceId),
+      hasInlineApiKey: typeof section.apiKey === "string" && section.apiKey.trim().length > 0
+    });
+  }
+  const requestedActive = normalizeOptionalString(section.activeProfileName);
+  const activeProfile = profiles.find((profile) => profile.name === requestedActive) ?? profiles[0];
+  return {
+    mcpUrl,
+    activeProfileName: activeProfile?.name ?? null,
+    activeProfile: activeProfile ?? null,
+    profiles
+  };
+}
+function parseStitchState(config) {
+  const section = asRecord(config.stitch) ?? {};
+  const mcpUrl = normalizeOptionalString(section.mcpUrl) ?? DEFAULT_STITCH_URL;
+  const fallbackEnvVar = normalizeEnvVar(
+    section.apiKeyEnvVar,
+    DEFAULT_STITCH_ENV_VAR
+  );
+  const rawProfiles = section.profiles;
+  const profiles = [];
+  if (Array.isArray(rawProfiles)) {
+    for (const rawProfile of rawProfiles) {
+      const profile = asRecord(rawProfile);
+      if (!profile) continue;
+      profiles.push({
+        name: normalizeName(profile.name, DEFAULT_PROFILE_NAME),
+        apiKeyEnvVar: normalizeEnvVar(profile.apiKeyEnvVar, fallbackEnvVar),
+        url: normalizeOptionalString(profile.url),
+        hasInlineApiKey: typeof profile.apiKey === "string" && profile.apiKey.trim().length > 0
+      });
+    }
+  } else if (asRecord(rawProfiles)) {
+    for (const [profileName, rawProfile] of Object.entries(
+      rawProfiles
+    )) {
+      const profile = asRecord(rawProfile);
+      if (!profile) continue;
+      profiles.push({
+        name: normalizeName(profileName, DEFAULT_PROFILE_NAME),
+        apiKeyEnvVar: normalizeEnvVar(profile.apiKeyEnvVar, fallbackEnvVar),
+        url: normalizeOptionalString(profile.url),
+        hasInlineApiKey: typeof profile.apiKey === "string" && profile.apiKey.trim().length > 0
+      });
+    }
+  }
+  if (profiles.length === 0) {
+    profiles.push({
+      name: DEFAULT_PROFILE_NAME,
+      apiKeyEnvVar: fallbackEnvVar,
+      url: normalizeOptionalString(section.url) ?? mcpUrl,
+      hasInlineApiKey: typeof section.apiKey === "string" && section.apiKey.trim().length > 0
+    });
+  }
+  const requestedActive = normalizeOptionalString(section.activeProfileName);
+  const activeProfile = profiles.find((profile) => profile.name === requestedActive) ?? profiles[0];
+  return {
+    mcpUrl,
+    activeProfileName: activeProfile?.name ?? null,
+    activeProfile: activeProfile ?? null,
+    profiles,
+    useSystemGcloud: Boolean(section.useSystemGcloud)
+  };
+}
+
 // src/tools/postmanModes.ts
 var POSTMAN_MODES = {
   minimal: "https://mcp.postman.com/minimal",
@@ -601,7 +716,8 @@ function handlePostmanGetMode(args) {
   if (!effective) {
     configNotFound();
   }
-  const url = effective.config.postman?.mcpUrl;
+  const postmanState = parsePostmanState(effective.config);
+  const url = postmanState.mcpUrl;
   if (!url) {
     return {
       content: [
@@ -703,8 +819,9 @@ function handlePostmanGetStatus(args) {
   if (!effective) {
     configNotFound();
   }
-  const postman = effective.config.postman;
-  const url = postman?.mcpUrl ?? null;
+  const postman = parsePostmanState(effective.config);
+  const activeProfile = postman.activeProfile;
+  const url = postman.mcpUrl ?? null;
   const mode = url ? urlToMode(url) ?? "unknown" : null;
   return {
     content: [
@@ -715,7 +832,10 @@ function handlePostmanGetStatus(args) {
             configured: !!url,
             mode,
             url,
-            defaultWorkspaceId: postman?.defaultWorkspaceId ?? null,
+            defaultWorkspaceId: activeProfile?.workspaceId ?? null,
+            activeProfileName: postman.activeProfileName,
+            profileCount: postman.profiles.length,
+            apiKeyEnvVar: activeProfile?.apiKeyEnvVar ?? null,
             scope: effective.scope,
             configPath: effective.path,
             availableModes: Object.keys(POSTMAN_MODES)
@@ -743,14 +863,10 @@ function handleStitchGetMode(args) {
   if (!effective) {
     configNotFound();
   }
-  const stitch = effective.config.stitch;
-  const activeProfileName = stitch?.activeProfileName ?? null;
-  const profiles = stitch?.profiles ?? {};
-  const profileNames = Object.keys(profiles);
-  let activeUrl = null;
-  if (activeProfileName && profiles[activeProfileName]) {
-    activeUrl = profiles[activeProfileName].url ?? null;
-  }
+  const stitch = parseStitchState(effective.config);
+  const activeProfileName = stitch.activeProfileName;
+  const profileNames = stitch.profiles.map((profile) => profile.name);
+  const activeUrl = stitch.activeProfile?.url ?? null;
   return {
     content: [
       {
@@ -788,9 +904,10 @@ function handleStitchSetProfile(args) {
   if (!effective) {
     configNotFound();
   }
-  const profiles = effective.config.stitch?.profiles ?? {};
-  const profileNames = Object.keys(profiles);
-  if (!profiles[profileName]) {
+  const stitch = parseStitchState(effective.config);
+  const profileNames = stitch.profiles.map((profile) => profile.name);
+  const targetProfile = stitch.profiles.find((profile) => profile.name === profileName) ?? null;
+  if (!targetProfile) {
     invalidInput(
       `Stitch profile "${profileName}" not found. Available profiles: ${profileNames.join(", ") || "(none)"}`
     );
@@ -807,7 +924,7 @@ function handleStitchSetProfile(args) {
         text: JSON.stringify(
           {
             activeProfileName: profileName,
-            url: profiles[profileName].url ?? null,
+            url: targetProfile.url ?? null,
             scope: result.scope,
             writtenPath: result.writtenPath,
             note: "Stitch active profile updated. Restart your MCP client to pick up the change."
@@ -835,14 +952,15 @@ function handleStitchGetStatus(args) {
   if (!effective) {
     configNotFound();
   }
-  const stitch = effective.config.stitch;
-  const activeProfileName = stitch?.activeProfileName ?? null;
-  const profiles = stitch?.profiles ?? {};
-  const profileSummaries = Object.entries(profiles).map(([name, profile]) => ({
-    name,
+  const stitch = parseStitchState(effective.config);
+  const activeProfileName = stitch.activeProfileName;
+  const profileSummaries = stitch.profiles.map((profile) => ({
+    name: profile.name,
     url: profile.url ?? null,
-    hasApiKey: !!profile.apiKey,
-    isActive: name === activeProfileName
+    apiKeyEnvVar: profile.apiKeyEnvVar,
+    hasApiKey: profile.hasInlineApiKey,
+    hasInlineApiKey: profile.hasInlineApiKey,
+    isActive: profile.name === activeProfileName
   }));
   return {
     content: [
@@ -854,9 +972,11 @@ function handleStitchGetStatus(args) {
             activeProfileName,
             profiles: profileSummaries,
             totalProfiles: profileSummaries.length,
+            mcpUrl: stitch.mcpUrl,
+            useSystemGcloud: Boolean(stitch.useSystemGcloud),
             scope: effective.scope,
             configPath: effective.path,
-            note: "API keys are never exposed. 'hasApiKey' indicates if one is configured."
+            note: "API keys are never exposed. Env-var aliases are reported for runtime configuration."
           },
           null,
           2
@@ -866,8 +986,238 @@ function handleStitchGetStatus(args) {
   };
 }
 
+// src/upstream/passthrough.ts
+import { mkdir, writeFile } from "fs/promises";
+import path5 from "path";
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+function resolveCatalogDir(configPath) {
+  const configDir = path5.dirname(configPath);
+  if (path5.basename(configDir) === ".cbx") {
+    return path5.join(configDir, "mcp", "catalog");
+  }
+  return path5.join(configDir, ".cbx", "mcp", "catalog");
+}
+function getServiceAuth(config, service) {
+  if (service === "postman") {
+    const state2 = parsePostmanState(config);
+    const activeProfile2 = state2.activeProfile;
+    const envVar2 = activeProfile2?.apiKeyEnvVar ?? "POSTMAN_API_KEY";
+    const token2 = process.env[envVar2]?.trim();
+    if (!token2) {
+      return {
+        mcpUrl: state2.mcpUrl,
+        activeProfileName: state2.activeProfileName,
+        envVar: envVar2,
+        headers: {},
+        configured: false,
+        error: `Missing Postman key env var: ${envVar2}`
+      };
+    }
+    return {
+      mcpUrl: state2.mcpUrl,
+      activeProfileName: state2.activeProfileName,
+      envVar: envVar2,
+      headers: { Authorization: `Bearer ${token2}` },
+      configured: Boolean(state2.mcpUrl)
+    };
+  }
+  const state = parseStitchState(config);
+  const activeProfile = state.activeProfile;
+  const envVar = activeProfile?.apiKeyEnvVar ?? "STITCH_API_KEY";
+  const token = process.env[envVar]?.trim();
+  if (!token && !state.useSystemGcloud) {
+    return {
+      mcpUrl: state.mcpUrl,
+      activeProfileName: state.activeProfileName,
+      envVar,
+      headers: {},
+      configured: false,
+      error: `Missing Stitch key env var: ${envVar}`
+    };
+  }
+  return {
+    mcpUrl: state.mcpUrl,
+    activeProfileName: state.activeProfileName,
+    envVar,
+    headers: token ? { "X-Goog-Api-Key": token } : {},
+    configured: Boolean(state.mcpUrl)
+  };
+}
+async function withUpstreamClient({
+  url,
+  headers,
+  fn
+}) {
+  const client = new Client(
+    {
+      name: "cubis-foundry-mcp-passthrough",
+      version: "0.1.0"
+    },
+    {
+      capabilities: {}
+    }
+  );
+  const transport = new StreamableHTTPClientTransport(new URL(url), {
+    requestInit: { headers }
+  });
+  await client.connect(transport);
+  try {
+    return await fn(client);
+  } finally {
+    await client.close();
+  }
+}
+async function persistCatalog(catalog) {
+  if (!catalog.configPath) return;
+  const catalogDir = resolveCatalogDir(catalog.configPath);
+  const catalogPath = path5.join(catalogDir, `${catalog.service}.json`);
+  const payload = {
+    schemaVersion: 1,
+    generatedAt: (/* @__PURE__ */ new Date()).toISOString(),
+    generatedBy: "cubis-foundry-mcp startup discovery",
+    service: catalog.service,
+    scope: catalog.scope,
+    mcpUrl: catalog.mcpUrl,
+    activeProfileName: catalog.activeProfileName,
+    envVar: catalog.envVar,
+    toolCount: catalog.toolCount,
+    tools: catalog.tools.map((tool) => ({
+      name: tool.name,
+      description: tool.description ?? null,
+      inputSchema: tool.inputSchema ?? null,
+      outputSchema: tool.outputSchema ?? null
+    })),
+    discoveryError: catalog.discoveryError ?? null
+  };
+  await mkdir(catalogDir, { recursive: true });
+  await writeFile(catalogPath, `${JSON.stringify(payload, null, 2)}
+`, "utf8");
+}
+async function discoverUpstreamCatalogs() {
+  const effective = readEffectiveConfig("auto");
+  if (!effective) {
+    const missing = {
+      service: "postman",
+      configured: false,
+      mcpUrl: null,
+      activeProfileName: null,
+      envVar: null,
+      scope: null,
+      configPath: null,
+      toolCount: 0,
+      tools: [],
+      discoveryError: "cbx_config.json not found"
+    };
+    const missingStitch = { ...missing, service: "stitch" };
+    return {
+      postman: missing,
+      stitch: missingStitch
+    };
+  }
+  const baseInfo = {
+    scope: effective.scope,
+    configPath: effective.path
+  };
+  const discoverOne = async (service) => {
+    const auth = getServiceAuth(effective.config, service);
+    const catalog = {
+      service,
+      configured: auth.configured,
+      mcpUrl: auth.mcpUrl,
+      activeProfileName: auth.activeProfileName,
+      envVar: auth.envVar,
+      scope: baseInfo.scope,
+      configPath: baseInfo.configPath,
+      toolCount: 0,
+      tools: [],
+      discoveryError: auth.error
+    };
+    if (!auth.configured || !auth.mcpUrl || auth.error) {
+      await persistCatalog(catalog);
+      return catalog;
+    }
+    try {
+      const listed = await withUpstreamClient({
+        url: auth.mcpUrl,
+        headers: auth.headers,
+        fn: async (client) => client.listTools()
+      });
+      const rawTools = Array.isArray(listed.tools) ? listed.tools : [];
+      catalog.tools = rawTools.map((tool) => {
+        const name = typeof tool?.name === "string" ? tool.name.trim() : "";
+        if (!name) return null;
+        return {
+          name,
+          namespacedName: `${service}.${name}`,
+          description: typeof tool?.description === "string" ? tool.description : void 0,
+          inputSchema: tool?.inputSchema ?? void 0,
+          outputSchema: tool?.outputSchema ?? void 0
+        };
+      }).filter((tool) => Boolean(tool));
+      catalog.toolCount = catalog.tools.length;
+    } catch (error) {
+      catalog.discoveryError = `Tool discovery failed: ${String(error)}`;
+    }
+    await persistCatalog(catalog);
+    return catalog;
+  };
+  return {
+    postman: await discoverOne("postman"),
+    stitch: await discoverOne("stitch")
+  };
+}
+async function callUpstreamTool({
+  service,
+  name,
+  argumentsValue
+}) {
+  const effective = readEffectiveConfig("auto");
+  if (!effective) {
+    throw new Error("cbx_config.json not found");
+  }
+  const auth = getServiceAuth(effective.config, service);
+  if (!auth.configured || !auth.mcpUrl) {
+    throw new Error(auth.error || `${service} is not configured`);
+  }
+  if (auth.error) {
+    throw new Error(auth.error);
+  }
+  return withUpstreamClient({
+    url: auth.mcpUrl,
+    headers: auth.headers,
+    fn: async (client) => client.callTool({
+      name,
+      arguments: argumentsValue
+    })
+  });
+}
+
 // src/server.ts
-function createServer({
+function toolCallErrorResult({
+  service,
+  namespacedName,
+  error
+}) {
+  return {
+    isError: true,
+    content: [
+      {
+        type: "text",
+        text: JSON.stringify(
+          {
+            service,
+            tool: namespacedName,
+            error: String(error)
+          },
+          null,
+          2
+        )
+      }
+    ]
+  };
+}
+async function createServer({
   config,
   manifest
 }) {
@@ -936,6 +1286,38 @@ function createServer({
     stitchGetStatusSchema.shape,
     async (args) => handleStitchGetStatus(args)
   );
+  const upstreamCatalogs = await discoverUpstreamCatalogs();
+  const dynamicArgsShape = z12.object({}).passthrough().shape;
+  for (const catalog of [upstreamCatalogs.postman, upstreamCatalogs.stitch]) {
+    for (const tool of catalog.tools) {
+      const namespaced = tool.namespacedName;
+      server.tool(
+        namespaced,
+        `[${catalog.service} passthrough] ${tool.description || tool.name}`,
+        dynamicArgsShape,
+        async (args) => {
+          try {
+            const result = await callUpstreamTool({
+              service: catalog.service,
+              name: tool.name,
+              argumentsValue: args && typeof args === "object" ? args : {}
+            });
+            return {
+              content: result.content ?? [],
+              structuredContent: result.structuredContent,
+              isError: Boolean(result.isError)
+            };
+          } catch (error) {
+            return toolCallErrorResult({
+              service: catalog.service,
+              namespacedName: namespaced,
+              error
+            });
+          }
+        }
+      );
+    }
+  }
   return server;
 }
 
@@ -970,9 +1352,9 @@ function createStreamableHttpTransport(options) {
 }
 
 // src/index.ts
-import path5 from "path";
+import path6 from "path";
 import { fileURLToPath as fileURLToPath2 } from "url";
-var __dirname2 = path5.dirname(fileURLToPath2(import.meta.url));
+var __dirname2 = path6.dirname(fileURLToPath2(import.meta.url));
 function parseArgs(argv) {
   let transport = "stdio";
   let scanOnly = false;
@@ -1020,16 +1402,18 @@ function printConfigStatus() {
       return;
     }
     const config = effective.config;
-    const postmanUrl = config.postman?.mcpUrl;
+    const postmanState = parsePostmanState(config);
+    const postmanUrl = postmanState.mcpUrl;
     if (postmanUrl) {
       const mode = urlToMode(postmanUrl) ?? "unknown";
       logger.info(`Postman mode: ${mode} (${postmanUrl})`);
     } else {
       logger.info("Postman: not configured");
     }
-    const stitchProfile = config.stitch?.activeProfileName;
-    if (stitchProfile && config.stitch?.profiles?.[stitchProfile]) {
-      const url = config.stitch.profiles[stitchProfile].url ?? "(no URL)";
+    const stitchState = parseStitchState(config);
+    const stitchProfile = stitchState.activeProfileName;
+    if (stitchProfile && stitchState.activeProfile?.url) {
+      const url = stitchState.activeProfile.url ?? "(no URL)";
       logger.info(`Stitch profile: ${stitchProfile} (${url})`);
     } else {
       logger.info("Stitch: not configured");
@@ -1045,7 +1429,7 @@ async function main() {
     setLogLevel("debug");
   }
   const serverConfig = loadServerConfig(args.configPath);
-  const basePath = __dirname2.endsWith("dist") ? path5.resolve(__dirname2, "..") : path5.resolve(__dirname2, "../..");
+  const basePath = path6.resolve(__dirname2, "..");
   const skills = await scanVaultRoots(serverConfig.vault.roots, basePath);
   const manifest = buildManifest(skills);
   await enrichWithDescriptions(
@@ -1069,7 +1453,7 @@ async function main() {
     transportName
   );
   printConfigStatus();
-  const mcpServer = createServer({ config: serverConfig, manifest });
+  const mcpServer = await createServer({ config: serverConfig, manifest });
   if (args.transport === "http") {
     const httpOpts = {
       port: serverConfig.transport.http?.port ?? 3100,

@@ -4,19 +4,31 @@
 
 export type ConfigScope = "global" | "project";
 
+export interface ServiceProfile {
+  name?: string;
+  mcpUrl?: string;
+  url?: string;
+  workspaceId?: string | null;
+  defaultWorkspaceId?: string | null;
+  apiKey?: string;
+  apiKeyEnvVar?: string;
+  tokenEnvVar?: string;
+}
+
 export interface PostmanConfig {
   mcpUrl?: string;
   defaultWorkspaceId?: string | null;
-}
-
-export interface StitchProfile {
-  url?: string;
-  apiKey?: string;
+  activeProfileName?: string;
+  apiKeyEnvVar?: string;
+  tokenEnvVar?: string;
+  profiles?: ServiceProfile[] | Record<string, ServiceProfile>;
 }
 
 export interface StitchConfig {
+  mcpUrl?: string;
   activeProfileName?: string;
-  profiles?: Record<string, StitchProfile>;
+  apiKeyEnvVar?: string;
+  profiles?: ServiceProfile[] | Record<string, ServiceProfile>;
 }
 
 export interface CbxConfig {

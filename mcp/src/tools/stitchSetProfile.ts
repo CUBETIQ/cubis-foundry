@@ -6,7 +6,11 @@
  */
 
 import { z } from "zod";
-import { readEffectiveConfig, writeConfigField } from "../cbxConfig/index.js";
+import {
+  parseStitchState,
+  readEffectiveConfig,
+  writeConfigField,
+} from "../cbxConfig/index.js";
 import type { ConfigScope } from "../cbxConfig/types.js";
 import { configNotFound, invalidInput } from "../utils/errors.js";
 
@@ -40,10 +44,12 @@ export function handleStitchSetProfile(
     configNotFound();
   }
 
-  const profiles = effective.config.stitch?.profiles ?? {};
-  const profileNames = Object.keys(profiles);
+  const stitch = parseStitchState(effective.config);
+  const profileNames = stitch.profiles.map((profile) => profile.name);
+  const targetProfile =
+    stitch.profiles.find((profile) => profile.name === profileName) ?? null;
 
-  if (!profiles[profileName]) {
+  if (!targetProfile) {
     invalidInput(
       `Stitch profile "${profileName}" not found. Available profiles: ${profileNames.join(", ") || "(none)"}`,
     );
@@ -62,7 +68,7 @@ export function handleStitchSetProfile(
         text: JSON.stringify(
           {
             activeProfileName: profileName,
-            url: profiles[profileName].url ?? null,
+            url: targetProfile.url ?? null,
             scope: result.scope,
             writtenPath: result.writtenPath,
             note: "Stitch active profile updated. Restart your MCP client to pick up the change.",

@@ -6,7 +6,7 @@
  */
 
 import { z } from "zod";
-import { readEffectiveConfig } from "../cbxConfig/index.js";
+import { parseStitchState, readEffectiveConfig } from "../cbxConfig/index.js";
 import type { ConfigScope } from "../cbxConfig/types.js";
 import { configNotFound } from "../utils/errors.js";
 
@@ -34,16 +34,15 @@ export function handleStitchGetStatus(
     configNotFound();
   }
 
-  const stitch = effective.config.stitch;
-  const activeProfileName = stitch?.activeProfileName ?? null;
-  const profiles = stitch?.profiles ?? {};
-
-  // Build profile summaries (redact apiKey)
-  const profileSummaries = Object.entries(profiles).map(([name, profile]) => ({
-    name,
+  const stitch = parseStitchState(effective.config);
+  const activeProfileName = stitch.activeProfileName;
+  const profileSummaries = stitch.profiles.map((profile) => ({
+    name: profile.name,
     url: profile.url ?? null,
-    hasApiKey: !!profile.apiKey,
-    isActive: name === activeProfileName,
+    apiKeyEnvVar: profile.apiKeyEnvVar,
+    hasApiKey: profile.hasInlineApiKey,
+    hasInlineApiKey: profile.hasInlineApiKey,
+    isActive: profile.name === activeProfileName,
   }));
 
   return {
@@ -56,9 +55,11 @@ export function handleStitchGetStatus(
             activeProfileName,
             profiles: profileSummaries,
             totalProfiles: profileSummaries.length,
+            mcpUrl: stitch.mcpUrl,
+            useSystemGcloud: Boolean(stitch.useSystemGcloud),
             scope: effective.scope,
             configPath: effective.path,
-            note: "API keys are never exposed. 'hasApiKey' indicates if one is configured.",
+            note: "API keys are never exposed. Env-var aliases are reported for runtime configuration.",
           },
           null,
           2,

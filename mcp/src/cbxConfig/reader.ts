@@ -106,13 +106,40 @@ export function readEffectiveConfig(
  */
 export function redactConfig(config: CbxConfig): CbxConfig {
   const redacted = JSON.parse(JSON.stringify(config)) as CbxConfig;
+  if (redacted.postman && typeof redacted.postman === "object") {
+    const postman = redacted.postman as Record<string, unknown>;
+    if (typeof postman.apiKey === "string") {
+      postman.apiKey = "***REDACTED***";
+    }
+    if (Array.isArray(postman.profiles)) {
+      for (const rawProfile of postman.profiles) {
+        if (!rawProfile || typeof rawProfile !== "object") continue;
+        const profile = rawProfile as Record<string, unknown>;
+        if (typeof profile.apiKey === "string") {
+          profile.apiKey = "***REDACTED***";
+        }
+      }
+    }
+  }
+
   if (redacted.stitch && typeof redacted.stitch === "object") {
     const stitch = redacted.stitch as Record<string, unknown>;
-    if (stitch.profiles && typeof stitch.profiles === "object") {
+    if (typeof stitch.apiKey === "string") {
+      stitch.apiKey = "***REDACTED***";
+    }
+    if (Array.isArray(stitch.profiles)) {
+      for (const rawProfile of stitch.profiles) {
+        if (!rawProfile || typeof rawProfile !== "object") continue;
+        const profile = rawProfile as Record<string, unknown>;
+        if (typeof profile.apiKey === "string") {
+          profile.apiKey = "***REDACTED***";
+        }
+      }
+    } else if (stitch.profiles && typeof stitch.profiles === "object") {
       for (const profile of Object.values(
         stitch.profiles as Record<string, Record<string, unknown>>,
       )) {
-        if (profile.apiKey) {
+        if (typeof profile.apiKey === "string") {
           profile.apiKey = "***REDACTED***";
         }
       }

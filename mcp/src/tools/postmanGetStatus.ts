@@ -5,7 +5,7 @@
  */
 
 import { z } from "zod";
-import { readEffectiveConfig, redactConfig } from "../cbxConfig/index.js";
+import { parsePostmanState, readEffectiveConfig } from "../cbxConfig/index.js";
 import type { ConfigScope } from "../cbxConfig/types.js";
 import { configNotFound } from "../utils/errors.js";
 import { urlToMode, POSTMAN_MODES } from "./postmanModes.js";
@@ -34,8 +34,9 @@ export function handlePostmanGetStatus(
     configNotFound();
   }
 
-  const postman = effective.config.postman;
-  const url = postman?.mcpUrl ?? null;
+  const postman = parsePostmanState(effective.config);
+  const activeProfile = postman.activeProfile;
+  const url = postman.mcpUrl ?? null;
   const mode = url ? (urlToMode(url) ?? "unknown") : null;
 
   return {
@@ -47,7 +48,10 @@ export function handlePostmanGetStatus(
             configured: !!url,
             mode,
             url,
-            defaultWorkspaceId: postman?.defaultWorkspaceId ?? null,
+            defaultWorkspaceId: activeProfile?.workspaceId ?? null,
+            activeProfileName: postman.activeProfileName,
+            profileCount: postman.profiles.length,
+            apiKeyEnvVar: activeProfile?.apiKeyEnvVar ?? null,
             scope: effective.scope,
             configPath: effective.path,
             availableModes: Object.keys(POSTMAN_MODES),

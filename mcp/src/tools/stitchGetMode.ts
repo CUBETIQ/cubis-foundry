@@ -6,7 +6,7 @@
  */
 
 import { z } from "zod";
-import { readEffectiveConfig, redactConfig } from "../cbxConfig/index.js";
+import { parseStitchState, readEffectiveConfig } from "../cbxConfig/index.js";
 import type { ConfigScope } from "../cbxConfig/types.js";
 import { configNotFound } from "../utils/errors.js";
 
@@ -32,15 +32,10 @@ export function handleStitchGetMode(args: z.infer<typeof stitchGetModeSchema>) {
     configNotFound();
   }
 
-  const stitch = effective.config.stitch;
-  const activeProfileName = stitch?.activeProfileName ?? null;
-  const profiles = stitch?.profiles ?? {};
-  const profileNames = Object.keys(profiles);
-
-  let activeUrl: string | null = null;
-  if (activeProfileName && profiles[activeProfileName]) {
-    activeUrl = profiles[activeProfileName].url ?? null;
-  }
+  const stitch = parseStitchState(effective.config);
+  const activeProfileName = stitch.activeProfileName;
+  const profileNames = stitch.profiles.map((profile) => profile.name);
+  const activeUrl = stitch.activeProfile?.url ?? null;
 
   return {
     content: [

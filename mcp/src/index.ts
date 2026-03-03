@@ -16,7 +16,11 @@ import { createServer } from "./server.js";
 import { createStdioTransport } from "./transports/stdio.js";
 import { createStreamableHttpTransport } from "./transports/streamableHttp.js";
 import { logger, setLogLevel } from "./utils/logger.js";
-import { readEffectiveConfig, redactConfig } from "./cbxConfig/index.js";
+import {
+  parsePostmanState,
+  parseStitchState,
+  readEffectiveConfig,
+} from "./cbxConfig/index.js";
 import { urlToMode } from "./tools/postmanModes.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -90,7 +94,8 @@ function printConfigStatus(): void {
     const config = effective.config;
 
     // Postman status
-    const postmanUrl = config.postman?.mcpUrl;
+    const postmanState = parsePostmanState(config);
+    const postmanUrl = postmanState.mcpUrl;
     if (postmanUrl) {
       const mode = urlToMode(postmanUrl) ?? "unknown";
       logger.info(`Postman mode: ${mode} (${postmanUrl})`);
@@ -99,9 +104,10 @@ function printConfigStatus(): void {
     }
 
     // Stitch status
-    const stitchProfile = config.stitch?.activeProfileName;
-    if (stitchProfile && config.stitch?.profiles?.[stitchProfile]) {
-      const url = config.stitch.profiles[stitchProfile].url ?? "(no URL)";
+    const stitchState = parseStitchState(config);
+    const stitchProfile = stitchState.activeProfileName;
+    if (stitchProfile && stitchState.activeProfile?.url) {
+      const url = stitchState.activeProfile.url ?? "(no URL)";
       logger.info(`Stitch profile: ${stitchProfile} (${url})`);
     } else {
       logger.info("Stitch: not configured");
@@ -125,10 +131,9 @@ async function main(): Promise<void> {
   // Load server config
   const serverConfig = loadServerConfig(args.configPath);
 
-  // Resolve vault roots relative to the mcp package root
-  const basePath = __dirname.endsWith("dist")
-    ? path.resolve(__dirname, "..")
-    : path.resolve(__dirname, "../..");
+  // Resolve vault roots relative to the mcp package root.
+  // `index.ts` is in `<pkg>/src` during dev and `<pkg>/dist` after build.
+  const basePath = path.resolve(__dirname, "..");
   const skills = await scanVaultRoots(serverConfig.vault.roots, basePath);
   const manifest = buildManifest(skills);
 
@@ -163,7 +168,7 @@ async function main(): Promise<void> {
   printConfigStatus();
 
   // Create MCP server
-  const mcpServer = createServer({ config: serverConfig, manifest });
+  const mcpServer = await createServer({ config: serverConfig, manifest });
 
   // Connect transport
   if (args.transport === "http") {

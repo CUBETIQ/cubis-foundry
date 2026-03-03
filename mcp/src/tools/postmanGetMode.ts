@@ -5,7 +5,7 @@
  */
 
 import { z } from "zod";
-import { readEffectiveConfig, redactConfig } from "../cbxConfig/index.js";
+import { parsePostmanState, readEffectiveConfig } from "../cbxConfig/index.js";
 import type { ConfigScope } from "../cbxConfig/types.js";
 import { configNotFound, unknownPostmanMode } from "../utils/errors.js";
 import { urlToMode, POSTMAN_MODES } from "./postmanModes.js";
@@ -34,7 +34,8 @@ export function handlePostmanGetMode(
     configNotFound();
   }
 
-  const url = effective.config.postman?.mcpUrl;
+  const postmanState = parsePostmanState(effective.config);
+  const url = postmanState.mcpUrl;
   if (!url) {
     return {
       content: [
