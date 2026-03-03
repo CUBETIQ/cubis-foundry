@@ -110,7 +110,13 @@ If Antigravity script harness exists, prefer:
 Use these commands to keep this setup healthy:
 
 - Install/update bundle:
-  `cbx workflows install --platform antigravity --bundle agent-environment-setup --scope global --overwrite`
+  `cbx workflows install --platform antigravity --bundle agent-environment-setup --scope global --overwrite --postman --stitch --mcp-runtime docker --mcp-fallback local --mcp-tool-sync`
+- Start MCP Docker runtime:
+  `cbx mcp runtime up --scope global --name cbx-mcp --port 3310 --replace`
+- Check MCP Docker runtime:
+  `cbx mcp runtime status --scope global --name cbx-mcp`
+- Stop MCP Docker runtime:
+  `cbx mcp runtime down --name cbx-mcp`
 - Rebuild managed routing block:
   `cbx workflows sync-rules --platform antigravity --scope project`
 - Diagnose setup issues:

@@ -2,9 +2,23 @@ name: publish-mcp-docker
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Image version tag (example: 0.3.39). Defaults to package.json version."
+        required: false
+        type: string
+      push_latest:
+        description: "Also publish :latest"
+        required: false
+        default: true
+        type: boolean
   push:
     tags:
       - "v*"
+
+concurrency:
+  group: mcp-docker-publish-${{ github.workflow }}-${{ github.ref_name || github.run_id }}
+  cancel-in-progress: false
 
 jobs:
   publish:
@@ -14,6 +28,47 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v4
+
+      - name: Resolve publish tags
+        id: vars
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ "${GITHUB_EVENT_NAME}" = "push" ]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+            PUSH_LATEST="true"
+          else
+            INPUT_VERSION="${{ inputs.version }}"
+            if [ -n "${INPUT_VERSION}" ]; then
+              VERSION="${INPUT_VERSION}"
+            else
+              VERSION="$(node -p "require('./package.json').version")"
+            fi
+            PUSH_LATEST="${{ inputs.push_latest }}"
+          fi
+
+          if ! [[ "${VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+([.-][A-Za-z0-9.-]+)?$ ]]; then
+            echo "Invalid version: ${VERSION}"
+            exit 1
+          fi
+
+          IMAGE="ghcr.io/${{ github.repository_owner }}/foundry-mcp"
+          echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
+          echo "image=${IMAGE}" >> "${GITHUB_OUTPUT}"
+          echo "push_latest=${PUSH_LATEST}" >> "${GITHUB_OUTPUT}"
+
+      - name: Verify tag matches package version
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG_VERSION="${{ steps.vars.outputs.version }}"
+          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+          if [ "${TAG_VERSION}" != "${PACKAGE_VERSION}" ]; then
+            echo "Tag version (${TAG_VERSION}) does not match package.json (${PACKAGE_VERSION})."
+            exit 1
+          fi
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -32,10 +87,11 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository_owner }}/foundry-mcp
+          images: ${{ steps.vars.outputs.image }}
           tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
-            type=ref,event=tag
+            type=raw,value=${{ steps.vars.outputs.version }}
+            type=raw,value=v${{ steps.vars.outputs.version }}
+            type=raw,value=latest,enable=${{ steps.vars.outputs.push_latest == 'true' }}
 
       - name: Build and push
         uses: docker/build-push-action@v6
