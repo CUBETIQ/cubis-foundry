@@ -303,6 +303,10 @@ cbx mcp tools list --service postman --scope global
 cbx mcp tools list --service stitch --scope global
 ```
 
+Notes:
+- `cbx mcp tools sync` requires `POSTMAN_API_KEY_DEFAULT`.
+- For `--service stitch` or `--service all`, it also requires `STITCH_API_KEY_DEFAULT`.
+
 Foundry local serve command (canonical entrypoint for MCP client registration):
 
 ```bash
@@ -336,6 +340,12 @@ Docker E2E MCP check (single command):
 
 ```bash
 npm run test:mcp:docker
+```
+
+If port `3310` is already in use (for example by an existing `cbx-mcp` runtime), use a different port:
+
+```bash
+CBX_MCP_PORT=3999 npm run test:mcp:docker
 ```
 
 Optional strict key mode:
