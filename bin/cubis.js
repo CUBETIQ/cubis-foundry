@@ -177,7 +177,7 @@ const MCP_UPDATE_POLICIES = new Set(["pinned", "latest"]);
 const DEFAULT_MCP_RUNTIME = "docker";
 const DEFAULT_MCP_FALLBACK = "local";
 const DEFAULT_MCP_UPDATE_POLICY = "pinned";
-const DEFAULT_MCP_DOCKER_IMAGE = "ghcr.io/cubis/foundry-mcp:0.1.0";
+const DEFAULT_MCP_DOCKER_IMAGE = `ghcr.io/cubetiq/foundry-mcp:${CLI_VERSION}`;
 const DEFAULT_MCP_DOCKER_CONTAINER_NAME = "cbx-mcp";
 const DEFAULT_MCP_DOCKER_HOST_PORT = 3310;
 const MCP_DOCKER_CONTAINER_PORT = 3100;
@@ -2512,7 +2512,7 @@ function escapeRegExp(value) {
 
 function rewriteCodexWorkflowAgentReferences(sourceBody, agentIds) {
   if (!sourceBody || !Array.isArray(agentIds) || agentIds.length === 0)
-    return sourceBody;
+    return normalizeCodexWrapperMentions(sourceBody);
 
   let rewritten = sourceBody;
   const sortedAgentIds = unique(agentIds.filter(Boolean)).sort(
@@ -2530,14 +2530,23 @@ function rewriteCodexWorkflowAgentReferences(sourceBody, agentIds) {
     );
   }
 
-  return rewritten;
+  return normalizeCodexWrapperMentions(rewritten);
 }
 
 function rewriteCodexAgentSkillReferences(sourceBody) {
   if (!sourceBody) return sourceBody;
   // Agent source files live under platforms/*/agents, but wrapper skills live
   // under .agents/skills/agent-*. Rebase ../skills/<id> links accordingly.
-  return sourceBody.replace(/\(\.\.\/skills\//g, "(../");
+  const rebased = sourceBody.replace(/\(\.\.\/skills\//g, "(../");
+  return normalizeCodexWrapperMentions(rebased);
+}
+
+function normalizeCodexWrapperMentions(sourceBody) {
+  if (!sourceBody) return sourceBody;
+  return sourceBody.replace(
+    /`\$(workflow|agent)-([A-Za-z0-9_-]+|\*)`/g,
+    (_match, kind, id) => `$${kind}-${id}`,
+  );
 }
 
 async function parseWorkflowMetadata(filePath) {

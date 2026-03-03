@@ -32,7 +32,7 @@ Skill install default is profile-based:
 
 - Workflow files (`/plan`, `/create`, etc.)
 - Skill folders
-- Codex callable wrapper skills (`$workflow-*`, `$agent-*`)
+- Codex callable wrapper skills ($workflow-*, $agent-*)
 - Platform rule files (`AGENTS.md`, `GEMINI.md`, etc.)
 - Engineering artifacts in workspace (`ENGINEERING_RULES.md`, `TECH.md`)
 - Managed MCP config for Postman and Stitch
@@ -145,7 +145,7 @@ Postman and Stitch now support multiple named profiles with active selection.
     "runtime": "docker",
     "fallback": "local",
     "docker": {
-      "image": "ghcr.io/cubis/foundry-mcp:0.1.0",
+      "image": "ghcr.io/cubetiq/foundry-mcp:<package-version>",
       "updatePolicy": "pinned"
     },
     "catalog": {
@@ -286,7 +286,7 @@ MCP runtime flags (install):
 cbx workflows install --platform codex --bundle agent-environment-setup --postman \
   --mcp-runtime docker \
   --mcp-fallback local \
-  --mcp-image ghcr.io/cubis/foundry-mcp:0.1.0 \
+  --mcp-image ghcr.io/cubetiq/foundry-mcp:<package-version> \
   --mcp-update-policy pinned \
   --mcp-build-local   # optional: build image locally instead of docker pull
 ```

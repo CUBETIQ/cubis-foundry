@@ -13,6 +13,7 @@ jobs:
   tag:
     runs-on: ubuntu-latest
     permissions:
+      actions: write
       contents: write
 
     steps:
@@ -60,6 +61,14 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git tag -a "${TAG}" -m "release: ${TAG}"
           git push origin "${TAG}"
+
+      - name: Trigger MCP Docker publish
+        if: steps.tagcheck.outputs.exists != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${{ steps.release.outputs.version }}"
+          gh workflow run publish-mcp-docker.yml --ref main -f version="${VERSION}" -f push_latest=true
 
       - name: Check if version already exists on npm
         id: npmcheck
