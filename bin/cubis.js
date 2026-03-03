@@ -7913,51 +7913,25 @@ async function waitForMcpEndpointReady({
   let lastError = null;
 
   while (Date.now() - startedAt < timeoutMs) {
-    let sessionId = null;
     try {
-      const init = await sendMcpJsonRpcRequest({
-        url,
-        method: "initialize",
-        id: `cbx-runtime-init-${Date.now()}`,
-        params: {
-          protocolVersion: "2025-06-18",
-          capabilities: {},
-          clientInfo: {
-            name: "cbx-runtime",
-            version: CLI_VERSION,
-          },
-        },
-        headers,
-      });
-      sessionId = init.sessionId;
       await sendMcpJsonRpcRequest({
         url,
-        method: "notifications/initialized",
+        method: "tools/list",
+        id: `cbx-runtime-ready-${Date.now()}`,
         params: {},
         headers,
-        sessionId,
       });
       return true;
     } catch (error) {
       const message = String(error?.message || "").toLowerCase();
-      if (message.includes("already initialized")) {
+      if (
+        message.includes("server not initialized") ||
+        message.includes("mcp-session-id header is required") ||
+        message.includes("already initialized")
+      ) {
         return true;
       }
       lastError = error;
-    } finally {
-      if (sessionId) {
-        try {
-          await fetch(url, {
-            method: "DELETE",
-            headers: {
-              ...headers,
-              "mcp-session-id": sessionId,
-            },
-          });
-        } catch {
-          // best effort
-        }
-      }
     }
     await sleepMs(intervalMs);
   }
