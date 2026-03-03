@@ -6,6 +6,8 @@
  *   cubis-mcp                          # stdio (default)
  *   cubis-mcp --transport stdio        # explicit stdio
  *   cubis-mcp --transport http         # Streamable HTTP
+ *   cubis-mcp --scope global           # default config scope for built-in config tools
+ *   cubis-mcp --host 0.0.0.0 --port 3100
  *   cubis-mcp --scan-only              # scan vault and exit
  */
 
@@ -31,13 +33,19 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function parseArgs(argv: string[]): {
   transport: "stdio" | "http";
+  scope: "auto" | "global" | "project";
   scanOnly: boolean;
   debug: boolean;
+  port?: number;
+  host?: string;
   configPath?: string;
 } {
   let transport: "stdio" | "http" = "stdio";
+  let scope: "auto" | "global" | "project" = "auto";
   let scanOnly = false;
   let debug = false;
+  let port: number | undefined;
+  let host: string | undefined;
   let configPath: string | undefined;
 
   for (let i = 2; i < argv.length; i++) {
@@ -52,6 +60,23 @@ function parseArgs(argv: string[]): {
         logger.error(`Unknown transport: ${val}. Use "stdio" or "http".`);
         process.exit(1);
       }
+    } else if (arg === "--scope" && argv[i + 1]) {
+      const val = argv[++i];
+      if (val === "auto" || val === "global" || val === "project") {
+        scope = val;
+      } else {
+        logger.error(`Unknown scope: ${val}. Use "auto", "global", or "project".`);
+        process.exit(1);
+      }
+    } else if (arg === "--port" && argv[i + 1]) {
+      const val = Number.parseInt(argv[++i], 10);
+      if (!Number.isInteger(val) || val <= 0 || val > 65535) {
+        logger.error(`Invalid port: ${argv[i]}. Use an integer from 1 to 65535.`);
+        process.exit(1);
+      }
+      port = val;
+    } else if (arg === "--host" && argv[i + 1]) {
+      host = argv[++i];
     } else if (arg === "--scan-only") {
       scanOnly = true;
     } else if (arg === "--debug") {
@@ -61,7 +86,7 @@ function parseArgs(argv: string[]): {
     }
   }
 
-  return { transport, scanOnly, debug, configPath };
+  return { transport, scope, scanOnly, debug, port, host, configPath };
 }
 
 // ─── Startup banner ──────────────────────────────────────────
@@ -81,9 +106,9 @@ function printStartupBanner(
   logger.raw("└──────────────────────────────────────────────┘");
 }
 
-function printConfigStatus(): void {
+function printConfigStatus(scope: "auto" | "global" | "project"): void {
   try {
-    const effective = readEffectiveConfig("auto");
+    const effective = readEffectiveConfig(scope);
     if (!effective) {
       logger.warn(
         "cbx_config.json not found. Postman/Stitch tools will return config-not-found errors.",
@@ -135,7 +160,8 @@ async function main(): Promise<void> {
   // `index.ts` is in `<pkg>/src` during dev and `<pkg>/dist` after build.
   const basePath = path.resolve(__dirname, "..");
   const skills = await scanVaultRoots(serverConfig.vault.roots, basePath);
-  const manifest = buildManifest(skills);
+  const charsPerToken = serverConfig.telemetry.charsPerToken;
+  const manifest = buildManifest(skills, charsPerToken);
 
   // Enrich with descriptions for faster browse/search at runtime
   await enrichWithDescriptions(
@@ -156,25 +182,30 @@ async function main(): Promise<void> {
   }
 
   // Print startup banner
+  const resolvedHttpPort = args.port ?? serverConfig.transport.http?.port ?? 3100;
   const transportName =
     args.transport === "http"
-      ? `Streamable HTTP :${serverConfig.transport.http?.port ?? 3100}`
+      ? `Streamable HTTP :${resolvedHttpPort}`
       : "stdio";
   printStartupBanner(
     manifest.skills.length,
     manifest.categories.length,
     transportName,
   );
-  printConfigStatus();
+  printConfigStatus(args.scope);
 
   // Create MCP server
-  const mcpServer = await createServer({ config: serverConfig, manifest });
+  const mcpServer = await createServer({
+    config: serverConfig,
+    manifest,
+    defaultConfigScope: args.scope,
+  });
 
   // Connect transport
   if (args.transport === "http") {
     const httpOpts = {
-      port: serverConfig.transport.http?.port ?? 3100,
-      host: serverConfig.transport.http?.host ?? "127.0.0.1",
+      port: resolvedHttpPort,
+      host: args.host ?? serverConfig.transport.http?.host ?? "127.0.0.1",
     };
     const { transport, httpServer } = createStreamableHttpTransport(httpOpts);
     await mcpServer.connect(transport);

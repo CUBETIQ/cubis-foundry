@@ -7,6 +7,8 @@
  * 1) initialize handshake works
  * 2) notifications/initialized accepted
  * 3) tools/list returns expected built-in tools
+ * 4) skill tools expose telemetry metrics in structuredContent
+ * 5) skill_budget_report returns consolidated skill log + context budget
  */
 
 const endpoint = process.argv[2] || "http://127.0.0.1:3100/mcp";
@@ -73,6 +75,58 @@ async function sendRpc({
   };
 }
 
+function parseToolTextPayload(result) {
+  const textBlock = Array.isArray(result?.content)
+    ? result.content.find((item) => item && item.type === "text")
+    : null;
+  if (!textBlock || typeof textBlock.text !== "string") {
+    throw new Error("Tool result is missing text content");
+  }
+  return JSON.parse(textBlock.text);
+}
+
+async function callTool({ endpointUrl, sessionId, name, args = {} }) {
+  const response = await sendRpc({
+    endpointUrl,
+    method: "tools/call",
+    id: `smoke-call-${name}-${Date.now()}`,
+    params: {
+      name,
+      arguments: args,
+    },
+    sessionId,
+  });
+
+  const result = response.parsed?.result;
+  if (!result) {
+    throw new Error(`Tool ${name} returned no result payload`);
+  }
+  if (result.isError) {
+    throw new Error(`Tool ${name} returned isError=true`);
+  }
+  return result;
+}
+
+function assertMetricShape(name, metrics, extraKeys = []) {
+  if (!metrics || typeof metrics !== "object") {
+    throw new Error(`${name} did not return structuredContent.metrics`);
+  }
+  const required = [
+    "estimatorVersion",
+    "charsPerToken",
+    "fullCatalogEstimatedTokens",
+    "responseEstimatedTokens",
+    "estimatedSavingsVsFullCatalog",
+    "estimatedSavingsVsFullCatalogPercent",
+    ...extraKeys,
+  ];
+  for (const key of required) {
+    if (!(key in metrics)) {
+      throw new Error(`${name} metrics missing required key '${key}'`);
+    }
+  }
+}
+
 async function main() {
   const initialize = await sendRpc({
     endpointUrl: endpoint,
@@ -117,6 +171,10 @@ async function main() {
 
   const required = [
     "skill_list_categories",
+    "skill_browse_category",
+    "skill_search",
+    "skill_get",
+    "skill_budget_report",
     "postman_get_mode",
     "stitch_get_mode",
   ];
@@ -135,11 +193,116 @@ async function main() {
     String(name).startsWith("stitch."),
   ).length;
 
+  const listCategoriesResult = await callTool({
+    endpointUrl: endpoint,
+    sessionId,
+    name: "skill_list_categories",
+    args: {},
+  });
+  const listCategoriesPayload = parseToolTextPayload(listCategoriesResult);
+  assertMetricShape(
+    "skill_list_categories",
+    listCategoriesResult.structuredContent?.metrics,
+  );
+
+  const searchResult = await callTool({
+    endpointUrl: endpoint,
+    sessionId,
+    name: "skill_search",
+    args: { query: "skill" },
+  });
+  assertMetricShape(
+    "skill_search",
+    searchResult.structuredContent?.metrics,
+    ["selectedSkillsEstimatedTokens"],
+  );
+
+  const totalSkills = Number(listCategoriesPayload.totalSkills || 0);
+  const categories = Array.isArray(listCategoriesPayload.categories)
+    ? listCategoriesPayload.categories
+    : [];
+  let selectedSkillIds = [];
+  let loadedSkillIds = [];
+
+  if (categories.length > 0) {
+    const firstCategory = categories[0]?.category;
+    if (firstCategory) {
+      const browseResult = await callTool({
+        endpointUrl: endpoint,
+        sessionId,
+        name: "skill_browse_category",
+        args: { category: firstCategory },
+      });
+      const browsePayload = parseToolTextPayload(browseResult);
+      assertMetricShape(
+        "skill_browse_category",
+        browseResult.structuredContent?.metrics,
+        ["selectedSkillsEstimatedTokens"],
+      );
+      const skills = Array.isArray(browsePayload.skills) ? browsePayload.skills : [];
+      if (skills.length > 0 && skills[0]?.id) {
+        selectedSkillIds = [skills[0].id];
+        const skillGetResult = await callTool({
+          endpointUrl: endpoint,
+          sessionId,
+          name: "skill_get",
+          args: { id: skills[0].id },
+        });
+        if (
+          !Array.isArray(skillGetResult.content) ||
+          typeof skillGetResult.content[0]?.text !== "string"
+        ) {
+          throw new Error("skill_get did not return full skill text content");
+        }
+        assertMetricShape(
+          "skill_get",
+          skillGetResult.structuredContent?.metrics,
+          ["loadedSkillEstimatedTokens"],
+        );
+        loadedSkillIds = [skills[0].id];
+      }
+    }
+  }
+
+  const budgetReportResult = await callTool({
+    endpointUrl: endpoint,
+    sessionId,
+    name: "skill_budget_report",
+    args: {
+      selectedSkillIds,
+      loadedSkillIds,
+    },
+  });
+  const budgetReportPayload = parseToolTextPayload(budgetReportResult);
+  const contextBudget = budgetReportPayload?.contextBudget;
+  const skillLog = budgetReportPayload?.skillLog;
+  if (!contextBudget || typeof contextBudget !== "object") {
+    throw new Error("skill_budget_report missing contextBudget block");
+  }
+  if (!skillLog || typeof skillLog !== "object") {
+    throw new Error("skill_budget_report missing skillLog block");
+  }
+  for (const key of [
+    "fullCatalogEstimatedTokens",
+    "selectedSkillsEstimatedTokens",
+    "loadedSkillsEstimatedTokens",
+    "estimatedSavingsTokens",
+    "estimatedSavingsPercent",
+    "estimated",
+  ]) {
+    if (!(key in contextBudget)) {
+      throw new Error(`skill_budget_report.contextBudget missing '${key}'`);
+    }
+  }
+
   console.log(`endpoint=${endpoint}`);
   console.log(`sessionId=${sessionId}`);
   console.log(`tools.total=${toolNames.length}`);
   console.log(`tools.postman.namespaced=${namespacedPostman}`);
   console.log(`tools.stitch.namespaced=${namespacedStitch}`);
+  console.log(`skills.total=${totalSkills}`);
+  console.log(`skills.categories=${categories.length}`);
+  console.log(`skill_budget_report.estimated=${contextBudget.estimated}`);
 }
 
 main().catch((error) => {

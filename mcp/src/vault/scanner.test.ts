@@ -52,6 +52,7 @@ describe("scanVaultRoots", () => {
     expect(byId["react-expert"]).toBe("frontend");
     expect(byId["database-design"]).toBe("data");
     expect(byId["custom-skill"]).toBe("general");
+    expect(skills.every((skill) => skill.fileBytes > 0)).toBe(true);
   });
 
   it("skips missing roots and continues scanning valid roots", async () => {

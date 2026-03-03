@@ -14,12 +14,13 @@ This file defines mandatory behavior for Codex projects installed via `cbx workf
 Before executing workflows, agents, or code edits, publish a short `Decision Log` that is visible to the user:
 
 1. Rule file(s) read at startup (at minimum `AGENTS.md`, plus any additional rule files loaded).
-2. Workflow decision (`$workflow-*` or direct mode) and why it was chosen.
-3. Agent routing decision (`$agent-*` or direct mode) and why it was chosen.
+2. Workflow decision ($workflow-* or direct mode) and why it was chosen.
+3. Agent routing decision ($agent-* or direct mode) and why it was chosen.
 4. Skill loading decision (skill names loaded) and why they were chosen.
 
 If routing changes during the task, publish a `Decision Update` before continuing.
 Keep this user-visible summary concise and factual; do not expose private chain-of-thought.
+When mentioning wrappers in user-visible logs, use raw $workflow-* and $agent-* tokens (no backticks) so Codex can render icon/blue mention styling.
 
 ## 2) Skill-Based Workflow
 
@@ -63,6 +64,32 @@ Use the best specialist first:
 
 ## 5) Skill Loading Policy
 
+## MCP-first Skill Discovery Order (Required)
+
+1. Use `skill_search` first to narrow candidate skills.
+2. Use `skill_browse_category` second to inspect category-level candidates.
+3. Use `skill_get` only for final selected skills that must be loaded.
+4. Keep pointer-first flow; avoid loading full skill text prematurely.
+
+## Skill Log Completion Block (Required)
+
+After finishing skill selection/loading, publish:
+
+- `selected_skills`: skill IDs selected for the task
+- `loaded_skills`: skill IDs loaded via `skill_get`
+- `skipped_skills`: considered but not loaded
+
+## Context Budget Block (Required, Estimated)
+
+Immediately after the Skill Log block, publish estimated budget fields:
+
+- `full_catalog_est_tokens`
+- `loaded_est_tokens`
+- `estimated_savings_tokens`
+- `estimated_savings_percent`
+
+Mark all context/token values as deterministic estimates (not provider metering).
+
 ### Smart Skill Selection (Adaptive)
 
 Use an adaptive load policy to control context size:
@@ -79,6 +106,8 @@ Use an adaptive load policy to control context size:
 3.  Keep context lean; avoid loading unrelated skill documents.
 4.  If a mapped skill is missing, continue with best fallback and state it.
 5.  Keep user-visible decision logs concise: selected skill(s) and one-line rationale.
+
+After the skill log is complete, append the Context Budget block in the same response/update.
 
 ## 6) Socratic Gate (Before Complex Work)
 

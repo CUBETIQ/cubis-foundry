@@ -8,6 +8,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import type { ServerConfig } from "./config/schema.js";
+import type { ConfigScope } from "./cbxConfig/types.js";
 import type { VaultManifest } from "./vault/types.js";
 import {
   // Skill tools
@@ -27,6 +28,10 @@ import {
   skillGetDescription,
   skillGetSchema,
   handleSkillGet,
+  skillBudgetReportName,
+  skillBudgetReportDescription,
+  skillBudgetReportSchema,
+  handleSkillBudgetReport,
   // Postman tools
   postmanGetModeName,
   postmanGetModeDescription,
@@ -62,6 +67,7 @@ import {
 export interface CreateServerOptions {
   config: ServerConfig;
   manifest: VaultManifest;
+  defaultConfigScope?: ConfigScope | "auto";
 }
 
 function toolCallErrorResult({
@@ -95,6 +101,7 @@ function toolCallErrorResult({
 export async function createServer({
   config,
   manifest,
+  defaultConfigScope = "auto",
 }: CreateServerOptions): McpServer {
   const server = new McpServer({
     name: config.server.name,
@@ -102,6 +109,17 @@ export async function createServer({
   });
 
   const maxLen = config.vault.summaryMaxLength;
+  const charsPerToken = config.telemetry?.charsPerToken ?? 4;
+  const withDefaultScope = (
+    args: Record<string, unknown> | undefined,
+  ): Record<string, unknown> => {
+    const safeArgs = args ?? {};
+    return {
+      ...safeArgs,
+      scope:
+        typeof safeArgs.scope === "string" ? safeArgs.scope : defaultConfigScope,
+    };
+  };
 
   // ─── Skill vault tools ───────────────────────────────────────
 
@@ -109,28 +127,36 @@ export async function createServer({
     skillListCategoriesName,
     skillListCategoriesDescription,
     skillListCategoriesSchema.shape,
-    async () => handleSkillListCategories(manifest),
+    async () => handleSkillListCategories(manifest, charsPerToken),
   );
 
   server.tool(
     skillBrowseCategoryName,
     skillBrowseCategoryDescription,
     skillBrowseCategorySchema.shape,
-    async (args) => handleSkillBrowseCategory(args, manifest, maxLen),
+    async (args) =>
+      handleSkillBrowseCategory(args, manifest, maxLen, charsPerToken),
   );
 
   server.tool(
     skillSearchName,
     skillSearchDescription,
     skillSearchSchema.shape,
-    async (args) => handleSkillSearch(args, manifest, maxLen),
+    async (args) => handleSkillSearch(args, manifest, maxLen, charsPerToken),
   );
 
   server.tool(
     skillGetName,
     skillGetDescription,
     skillGetSchema.shape,
-    async (args) => handleSkillGet(args, manifest),
+    async (args) => handleSkillGet(args, manifest, charsPerToken),
+  );
+
+  server.tool(
+    skillBudgetReportName,
+    skillBudgetReportDescription,
+    skillBudgetReportSchema.shape,
+    async (args) => handleSkillBudgetReport(args, manifest, charsPerToken),
   );
 
   // ─── Postman tools ──────────────────────────────────────────
@@ -139,21 +165,36 @@ export async function createServer({
     postmanGetModeName,
     postmanGetModeDescription,
     postmanGetModeSchema.shape,
-    async (args) => handlePostmanGetMode(args),
+    async (args) =>
+      handlePostmanGetMode(
+        withDefaultScope(args as Record<string, unknown>) as z.infer<
+          typeof postmanGetModeSchema
+        >,
+      ),
   );
 
   server.tool(
     postmanSetModeName,
     postmanSetModeDescription,
     postmanSetModeSchema.shape,
-    async (args) => handlePostmanSetMode(args),
+    async (args) =>
+      handlePostmanSetMode(
+        withDefaultScope(args as Record<string, unknown>) as z.infer<
+          typeof postmanSetModeSchema
+        >,
+      ),
   );
 
   server.tool(
     postmanGetStatusName,
     postmanGetStatusDescription,
     postmanGetStatusSchema.shape,
-    async (args) => handlePostmanGetStatus(args),
+    async (args) =>
+      handlePostmanGetStatus(
+        withDefaultScope(args as Record<string, unknown>) as z.infer<
+          typeof postmanGetStatusSchema
+        >,
+      ),
   );
 
   // ─── Stitch tools ──────────────────────────────────────────
@@ -162,21 +203,36 @@ export async function createServer({
     stitchGetModeName,
     stitchGetModeDescription,
     stitchGetModeSchema.shape,
-    async (args) => handleStitchGetMode(args),
+    async (args) =>
+      handleStitchGetMode(
+        withDefaultScope(args as Record<string, unknown>) as z.infer<
+          typeof stitchGetModeSchema
+        >,
+      ),
   );
 
   server.tool(
     stitchSetProfileName,
     stitchSetProfileDescription,
     stitchSetProfileSchema.shape,
-    async (args) => handleStitchSetProfile(args),
+    async (args) =>
+      handleStitchSetProfile(
+        withDefaultScope(args as Record<string, unknown>) as z.infer<
+          typeof stitchSetProfileSchema
+        >,
+      ),
   );
 
   server.tool(
     stitchGetStatusName,
     stitchGetStatusDescription,
     stitchGetStatusSchema.shape,
-    async (args) => handleStitchGetStatus(args),
+    async (args) =>
+      handleStitchGetStatus(
+        withDefaultScope(args as Record<string, unknown>) as z.infer<
+          typeof stitchGetStatusSchema
+        >,
+      ),
   );
 
   // ─── Dynamic upstream passthrough tools ────────────────────

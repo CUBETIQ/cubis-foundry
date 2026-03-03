@@ -8,6 +8,9 @@
     "roots": ["../workflows/skills"],
     "summaryMaxLength": 200
   },
+  "telemetry": {
+    "charsPerToken": 4
+  },
   "transport": {
     "default": "stdio",
     "http": {

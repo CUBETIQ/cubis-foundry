@@ -193,6 +193,17 @@ cbx workflows install --platform codex --bundle agent-environment-setup --postma
 
 If active Postman env var (for example `POSTMAN_API_KEY_DEFAULT`) is available and `--yes` is not used, installer can show workspace chooser and save selected `workspaceId` in active Postman profile.
 
+`--postman` now installs side-by-side MCP topology by default:
+- direct Postman MCP server (`postman`)
+- direct Stitch MCP server where applicable (`StitchMCP` for Antigravity)
+- local Foundry MCP command server (`cubis-foundry` via `cbx mcp serve --transport stdio --scope auto`)
+
+To opt out of Foundry MCP registration during install:
+
+```bash
+cbx workflows install --platform codex --bundle agent-environment-setup --postman --no-foundry-mcp
+```
+
 ### Manual workspace ID
 
 ```bash
@@ -245,14 +256,17 @@ Runtime target patching:
 Codex:
 - Global MCP runtime target: `~/.codex/config.toml` (via `codex mcp add/remove`)
 - Project MCP runtime target: `<workspace>/.vscode/mcp.json`
+- Foundry side-by-side server id: `cubis-foundry` (command: `cbx mcp serve --transport stdio --scope auto`)
 
 Antigravity:
 - Global runtime target: `~/.gemini/settings.json` (`mcpServers`)
 - Project runtime target: `<workspace>/.gemini/settings.json` (`mcpServers`)
+- Foundry side-by-side server id: `cubis-foundry` (command template)
 
 Copilot:
 - Global runtime target: `~/.copilot/mcp-config.json` (`servers`)
 - Project runtime target: `<workspace>/.vscode/mcp.json` (`servers`)
+- Foundry side-by-side server id: `cubis-foundry` (stdio command server)
 
 ## Command Reference
 
@@ -289,6 +303,19 @@ cbx mcp tools list --service postman --scope global
 cbx mcp tools list --service stitch --scope global
 ```
 
+Foundry local serve command (canonical entrypoint for MCP client registration):
+
+```bash
+# stdio (default)
+cbx mcp serve --transport stdio --scope auto
+
+# http for local smoke/debug
+cbx mcp serve --transport http --scope auto --host 127.0.0.1 --port 3100
+
+# verify vault only
+cbx mcp serve --scan-only
+```
+
 MCP Docker runtime commands:
 
 ```bash
@@ -316,6 +343,18 @@ Optional strict key mode:
 ```bash
 CBX_MCP_REQUIRE_KEYS=1 npm run test:mcp:docker
 ```
+
+Context budget reporting (from MCP skill tools):
+
+- Skill tools now include `structuredContent.metrics` with deterministic estimates.
+- Metrics include:
+  - `fullCatalogEstimatedTokens`
+  - `responseEstimatedTokens`
+  - `selectedSkillsEstimatedTokens` or `loadedSkillEstimatedTokens`
+  - `estimatedSavingsVsFullCatalog`
+  - `estimatedSavingsVsFullCatalogPercent`
+- New rollup tool: `skill_budget_report` for consolidated Skill Log + Context Budget.
+- All token values are estimates using `ceil(char_count / charsPerToken)` (default `charsPerToken=4`), not provider billing tokens.
 
 Install profile flags:
 
@@ -397,6 +436,31 @@ If stored source is env but effective source is unset, your env var alias is mis
 If installer says config was skipped:
 - Re-run with `--overwrite`, or
 - Use `cbx workflows config` / `cbx workflows config keys ...` to mutate existing config.
+
+### Docker runtime starts but skill discovery is zero
+
+Cause:
+- Runtime container has no skill mount at `/workflows/skills`.
+
+Fix:
+```bash
+# Ensure host skill vault exists
+ls ~/.agents/skills
+
+# Recreate runtime
+cbx mcp runtime up --scope global --name cbx-mcp --replace
+
+# Check mount hint
+cbx mcp runtime status --scope global --name cbx-mcp
+```
+
+If `~/.agents/skills` is missing, runtime still starts but will warn and skill discovery may return zero.
+
+### Docker vs stdio behavior
+
+- `cbx mcp runtime up` runs HTTP transport in Docker for shared local endpoint (`http://127.0.0.1:<port>/mcp`).
+- `cbx mcp serve --transport stdio` runs local stdio transport for command-based MCP clients.
+- Prefer stdio command server entries (`cubis-foundry`) for direct client integrations; use Docker runtime for explicit HTTP endpoint use cases.
 
 ### Duplicate skills shown in UI after older installs
 

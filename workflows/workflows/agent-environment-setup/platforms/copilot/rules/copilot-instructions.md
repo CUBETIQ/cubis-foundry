@@ -72,6 +72,32 @@ When authoring custom Copilot assets, keep frontmatter schema compatible:
 
 ## 6) Skill Loading Policy
 
+## MCP-first Skill Discovery Order (Required)
+
+1. Use `skill_search` first to narrow candidate skills.
+2. Use `skill_browse_category` second to inspect category-level candidates.
+3. Use `skill_get` only for final selected skills that must be loaded.
+4. Keep pointer-first flow; avoid loading full skill text prematurely.
+
+## Skill Log Completion Block (Required)
+
+After finishing skill selection/loading, publish:
+
+- `selected_skills`: skill IDs selected for the task
+- `loaded_skills`: skill IDs loaded via `skill_get`
+- `skipped_skills`: considered but not loaded
+
+## Context Budget Block (Required, Estimated)
+
+Immediately after the Skill Log block, publish estimated budget fields:
+
+- `full_catalog_est_tokens`
+- `loaded_est_tokens`
+- `estimated_savings_tokens`
+- `estimated_savings_percent`
+
+Mark all context/token values as deterministic estimates (not provider metering).
+
 ### Smart Skill Selection (TIER 0)
 
 Before starting ANY task, the agent MUST:
@@ -87,6 +113,8 @@ Before starting ANY task, the agent MUST:
 2.  Prefer progressive disclosure: start from `SKILL.md`, then specific sections.
 3.  Keep context lean; avoid loading unrelated skill documents.
 4.  If a mapped skill is missing, continue with best fallback and state it.
+
+After the skill log is complete, append the Context Budget block in the same response/update.
 
 ## 7) Socratic Gate (Before Complex Work)
 

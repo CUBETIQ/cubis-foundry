@@ -46,6 +46,7 @@ export async function scanVaultRoots(
         id: entry,
         category: deriveCategory(entry),
         path: skillFile,
+        fileBytes: skillStat.size,
       });
     }
   }

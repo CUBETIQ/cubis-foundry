@@ -8,6 +8,11 @@ import { z } from "zod";
 import type { VaultManifest } from "../vault/types.js";
 import { enrichWithDescriptions } from "../vault/manifest.js";
 import { notFound } from "../utils/errors.js";
+import {
+  buildSkillToolMetrics,
+  estimateTokensFromBytes,
+  estimateTokensFromText,
+} from "../telemetry/tokenBudget.js";
 
 export const skillBrowseCategoryName = "skill_browse_category";
 
@@ -24,6 +29,7 @@ export async function handleSkillBrowseCategory(
   args: z.infer<typeof skillBrowseCategorySchema>,
   manifest: VaultManifest,
   summaryMaxLength: number,
+  charsPerToken: number,
 ) {
   const { category } = args;
 
@@ -38,17 +44,28 @@ export async function handleSkillBrowseCategory(
     id: s.id,
     description: s.description ?? "(no description)",
   }));
+  const payload = { category, skills, count: skills.length };
+  const text = JSON.stringify(payload, null, 2);
+  const selectedSkillsEstimatedTokens = matching.reduce(
+    (sum, skill) => sum + estimateTokensFromBytes(skill.fileBytes, charsPerToken),
+    0,
+  );
+  const metrics = buildSkillToolMetrics({
+    charsPerToken,
+    fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
+    responseEstimatedTokens: estimateTokensFromText(text, charsPerToken),
+    selectedSkillsEstimatedTokens,
+  });
 
   return {
     content: [
       {
         type: "text" as const,
-        text: JSON.stringify(
-          { category, skills, count: skills.length },
-          null,
-          2,
-        ),
+        text,
       },
     ],
+    structuredContent: {
+      metrics,
+    },
   };
 }

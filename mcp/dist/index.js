@@ -17,6 +17,9 @@ var ServerConfigSchema = z.object({
     roots: z.array(z.string()).min(1),
     summaryMaxLength: z.number().int().positive().default(200)
   }),
+  telemetry: z.object({
+    charsPerToken: z.number().positive().default(4)
+  }).default({ charsPerToken: 4 }),
   transport: z.object({
     default: z.enum(["stdio", "streamable-http"]).default("stdio"),
     http: z.object({
@@ -148,7 +151,8 @@ async function scanVaultRoots(roots, basePath) {
       skills.push({
         id: entry,
         category: deriveCategory(entry),
-        path: skillFile
+        path: skillFile,
+        fileBytes: skillStat.size
       });
     }
   }
@@ -241,14 +245,80 @@ function deriveCategory(skillId) {
 
 // src/vault/manifest.ts
 import { readFile } from "fs/promises";
-function buildManifest(skills) {
+
+// src/telemetry/tokenBudget.ts
+var TOKEN_ESTIMATOR_VERSION = "char-estimator-v1";
+function normalizeCharsPerToken(value) {
+  if (!Number.isFinite(value) || value <= 0) return 4;
+  return value;
+}
+function estimateTokensFromCharCount(charCount, charsPerToken) {
+  const safeChars = Math.max(0, Math.ceil(charCount));
+  const ratio = normalizeCharsPerToken(charsPerToken);
+  return Math.ceil(safeChars / ratio);
+}
+function estimateTokensFromText(text, charsPerToken) {
+  return estimateTokensFromCharCount(text.length, charsPerToken);
+}
+function estimateTokensFromBytes(byteCount, charsPerToken) {
+  return estimateTokensFromCharCount(byteCount, charsPerToken);
+}
+function estimateSavings(fullCatalogEstimatedTokens, usedEstimatedTokens) {
+  const full = Math.max(0, Math.ceil(fullCatalogEstimatedTokens));
+  const used = Math.max(0, Math.ceil(usedEstimatedTokens));
+  if (full <= 0) {
+    return {
+      estimatedSavingsTokens: 0,
+      estimatedSavingsPercent: 0
+    };
+  }
+  const estimatedSavingsTokens = Math.max(0, full - used);
+  const estimatedSavingsPercent = Number(
+    (estimatedSavingsTokens / full * 100).toFixed(2)
+  );
+  return {
+    estimatedSavingsTokens,
+    estimatedSavingsPercent
+  };
+}
+function buildSkillToolMetrics({
+  charsPerToken,
+  fullCatalogEstimatedTokens,
+  responseEstimatedTokens,
+  selectedSkillsEstimatedTokens = null,
+  loadedSkillEstimatedTokens = null
+}) {
+  const usedEstimatedTokens = loadedSkillEstimatedTokens ?? selectedSkillsEstimatedTokens ?? responseEstimatedTokens;
+  const savings = estimateSavings(fullCatalogEstimatedTokens, usedEstimatedTokens);
+  return {
+    estimatorVersion: TOKEN_ESTIMATOR_VERSION,
+    charsPerToken: normalizeCharsPerToken(charsPerToken),
+    fullCatalogEstimatedTokens: Math.max(0, fullCatalogEstimatedTokens),
+    responseEstimatedTokens: Math.max(0, responseEstimatedTokens),
+    selectedSkillsEstimatedTokens: selectedSkillsEstimatedTokens === null ? null : Math.max(0, selectedSkillsEstimatedTokens),
+    loadedSkillEstimatedTokens: loadedSkillEstimatedTokens === null ? null : Math.max(0, loadedSkillEstimatedTokens),
+    estimatedSavingsVsFullCatalog: savings.estimatedSavingsTokens,
+    estimatedSavingsVsFullCatalogPercent: savings.estimatedSavingsPercent,
+    estimated: true
+  };
+}
+
+// src/vault/manifest.ts
+function buildManifest(skills, charsPerToken) {
   const categorySet = /* @__PURE__ */ new Set();
+  let fullCatalogBytes = 0;
   for (const skill of skills) {
     categorySet.add(skill.category);
+    fullCatalogBytes += skill.fileBytes;
   }
   return {
     categories: [...categorySet].sort(),
-    skills
+    skills,
+    fullCatalogBytes,
+    fullCatalogEstimatedTokens: estimateTokensFromBytes(
+      fullCatalogBytes,
+      charsPerToken
+    )
   };
 }
 async function extractDescription(skillPath, maxLength) {
@@ -290,14 +360,14 @@ async function enrichWithDescriptions(skills, maxLength) {
 
 // src/server.ts
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z as z12 } from "zod";
+import { z as z13 } from "zod";
 
 // src/tools/skillListCategories.ts
 import { z as z2 } from "zod";
 var skillListCategoriesName = "skill_list_categories";
 var skillListCategoriesDescription = "List all skill categories available in the vault. Returns category names and skill counts.";
 var skillListCategoriesSchema = z2.object({});
-function handleSkillListCategories(manifest) {
+function handleSkillListCategories(manifest, charsPerToken) {
   const categoryCounts = {};
   for (const skill of manifest.skills) {
     categoryCounts[skill.category] = (categoryCounts[skill.category] ?? 0) + 1;
@@ -306,17 +376,23 @@ function handleSkillListCategories(manifest) {
     category: cat,
     skillCount: categoryCounts[cat] ?? 0
   }));
+  const payload = { categories, totalSkills: manifest.skills.length };
+  const text = JSON.stringify(payload, null, 2);
+  const metrics = buildSkillToolMetrics({
+    charsPerToken,
+    fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
+    responseEstimatedTokens: estimateTokensFromText(text, charsPerToken)
+  });
   return {
     content: [
       {
         type: "text",
-        text: JSON.stringify(
-          { categories, totalSkills: manifest.skills.length },
-          null,
-          2
-        )
+        text
       }
-    ]
+    ],
+    structuredContent: {
+      metrics
+    }
   };
 }
 
@@ -350,7 +426,7 @@ var skillBrowseCategoryDescription = "Browse skills within a specific category. 
 var skillBrowseCategorySchema = z3.object({
   category: z3.string().describe("The category name to browse (from skill_list_categories)")
 });
-async function handleSkillBrowseCategory(args, manifest, summaryMaxLength) {
+async function handleSkillBrowseCategory(args, manifest, summaryMaxLength, charsPerToken) {
   const { category } = args;
   if (!manifest.categories.includes(category)) {
     notFound("Category", category);
@@ -361,17 +437,28 @@ async function handleSkillBrowseCategory(args, manifest, summaryMaxLength) {
     id: s.id,
     description: s.description ?? "(no description)"
   }));
+  const payload = { category, skills, count: skills.length };
+  const text = JSON.stringify(payload, null, 2);
+  const selectedSkillsEstimatedTokens = matching.reduce(
+    (sum, skill) => sum + estimateTokensFromBytes(skill.fileBytes, charsPerToken),
+    0
+  );
+  const metrics = buildSkillToolMetrics({
+    charsPerToken,
+    fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
+    responseEstimatedTokens: estimateTokensFromText(text, charsPerToken),
+    selectedSkillsEstimatedTokens
+  });
   return {
     content: [
       {
         type: "text",
-        text: JSON.stringify(
-          { category, skills, count: skills.length },
-          null,
-          2
-        )
+        text
       }
-    ]
+    ],
+    structuredContent: {
+      metrics
+    }
   };
 }
 
@@ -384,7 +471,7 @@ var skillSearchSchema = z4.object({
     "Search keyword or phrase to match against skill IDs and descriptions"
   )
 });
-async function handleSkillSearch(args, manifest, summaryMaxLength) {
+async function handleSkillSearch(args, manifest, summaryMaxLength, charsPerToken) {
   const { query } = args;
   const lower = query.toLowerCase();
   let matches = manifest.skills.filter(
@@ -406,17 +493,28 @@ async function handleSkillSearch(args, manifest, summaryMaxLength) {
     category: s.category,
     description: s.description ?? "(no description)"
   }));
+  const payload = { query, results, count: results.length };
+  const text = JSON.stringify(payload, null, 2);
+  const selectedSkillsEstimatedTokens = matches.reduce(
+    (sum, skill) => sum + estimateTokensFromBytes(skill.fileBytes, charsPerToken),
+    0
+  );
+  const metrics = buildSkillToolMetrics({
+    charsPerToken,
+    fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
+    responseEstimatedTokens: estimateTokensFromText(text, charsPerToken),
+    selectedSkillsEstimatedTokens
+  });
   return {
     content: [
       {
         type: "text",
-        text: JSON.stringify(
-          { query, results, count: results.length },
-          null,
-          2
-        )
+        text
       }
-    ]
+    ],
+    structuredContent: {
+      metrics
+    }
   };
 }
 
@@ -427,25 +525,121 @@ var skillGetDescription = "Get the full content of a specific skill by ID. Retur
 var skillGetSchema = z5.object({
   id: z5.string().describe("The skill ID (directory name) to retrieve")
 });
-async function handleSkillGet(args, manifest) {
+async function handleSkillGet(args, manifest, charsPerToken) {
   const { id } = args;
   const skill = manifest.skills.find((s) => s.id === id);
   if (!skill) {
     notFound("Skill", id);
   }
   const content = await readFullSkillContent(skill.path);
+  const loadedSkillEstimatedTokens = estimateTokensFromText(
+    content,
+    charsPerToken
+  );
+  const metrics = buildSkillToolMetrics({
+    charsPerToken,
+    fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
+    responseEstimatedTokens: loadedSkillEstimatedTokens,
+    loadedSkillEstimatedTokens
+  });
   return {
     content: [
       {
         type: "text",
         text: content
       }
-    ]
+    ],
+    structuredContent: {
+      metrics
+    }
+  };
+}
+
+// src/tools/skillBudgetReport.ts
+import { z as z6 } from "zod";
+var skillBudgetReportName = "skill_budget_report";
+var skillBudgetReportDescription = "Report estimated context/token budget for selected and loaded skills compared to the full skill catalog.";
+var skillBudgetReportSchema = z6.object({
+  selectedSkillIds: z6.array(z6.string()).default([]).describe("Skill IDs selected after search/browse."),
+  loadedSkillIds: z6.array(z6.string()).default([]).describe("Skill IDs loaded via skill_get.")
+});
+function uniqueStrings(values) {
+  return [...new Set(values.map((value) => String(value)))];
+}
+function handleSkillBudgetReport(args, manifest, charsPerToken) {
+  const selectedSkillIds = uniqueStrings(args.selectedSkillIds ?? []);
+  const loadedSkillIds = uniqueStrings(args.loadedSkillIds ?? []);
+  const skillById = new Map(manifest.skills.map((skill) => [skill.id, skill]));
+  const selectedSkills = selectedSkillIds.map((id) => {
+    const skill = skillById.get(id);
+    if (!skill) return null;
+    return {
+      id: skill.id,
+      category: skill.category,
+      estimatedTokens: estimateTokensFromBytes(skill.fileBytes, charsPerToken)
+    };
+  }).filter((item) => Boolean(item));
+  const loadedSkills = loadedSkillIds.map((id) => {
+    const skill = skillById.get(id);
+    if (!skill) return null;
+    return {
+      id: skill.id,
+      category: skill.category,
+      estimatedTokens: estimateTokensFromBytes(skill.fileBytes, charsPerToken)
+    };
+  }).filter((item) => Boolean(item));
+  const unknownSelectedSkillIds = selectedSkillIds.filter(
+    (id) => !skillById.has(id)
+  );
+  const unknownLoadedSkillIds = loadedSkillIds.filter((id) => !skillById.has(id));
+  const selectedSkillsEstimatedTokens = selectedSkills.reduce(
+    (sum, skill) => sum + skill.estimatedTokens,
+    0
+  );
+  const loadedSkillsEstimatedTokens = loadedSkills.reduce(
+    (sum, skill) => sum + skill.estimatedTokens,
+    0
+  );
+  const usedEstimatedTokens = loadedSkills.length > 0 ? loadedSkillsEstimatedTokens : selectedSkillsEstimatedTokens;
+  const savings = estimateSavings(
+    manifest.fullCatalogEstimatedTokens,
+    usedEstimatedTokens
+  );
+  const selectedIdSet = new Set(selectedSkills.map((skill) => skill.id));
+  const loadedIdSet = new Set(loadedSkills.map((skill) => skill.id));
+  const skippedSkills = manifest.skills.filter((skill) => !selectedIdSet.has(skill.id) && !loadedIdSet.has(skill.id)).map((skill) => skill.id).sort((a, b) => a.localeCompare(b));
+  const payload = {
+    skillLog: {
+      selectedSkills,
+      loadedSkills,
+      skippedSkills,
+      unknownSelectedSkillIds,
+      unknownLoadedSkillIds
+    },
+    contextBudget: {
+      estimatorVersion: TOKEN_ESTIMATOR_VERSION,
+      charsPerToken,
+      fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
+      selectedSkillsEstimatedTokens,
+      loadedSkillsEstimatedTokens,
+      estimatedSavingsTokens: savings.estimatedSavingsTokens,
+      estimatedSavingsPercent: savings.estimatedSavingsPercent,
+      estimated: true
+    }
+  };
+  return {
+    content: [
+      {
+        type: "text",
+        text: JSON.stringify(payload, null, 2)
+      }
+    ],
+    structuredContent: payload
   };
 }
 
 // src/tools/postmanGetMode.ts
-import { z as z6 } from "zod";
+import { z as z7 } from "zod";
 
 // src/cbxConfig/paths.ts
 import path3 from "path";
@@ -705,8 +899,8 @@ function isValidMode(mode) {
 // src/tools/postmanGetMode.ts
 var postmanGetModeName = "postman_get_mode";
 var postmanGetModeDescription = "Get the current Postman MCP mode from cbx_config.json. Returns the friendly mode name and URL.";
-var postmanGetModeSchema = z6.object({
-  scope: z6.enum(["global", "project", "auto"]).optional().describe(
+var postmanGetModeSchema = z7.object({
+  scope: z7.enum(["global", "project", "auto"]).optional().describe(
     "Config scope to read. Default: auto (project if exists, else global)"
   )
 });
@@ -761,12 +955,12 @@ function handlePostmanGetMode(args) {
 }
 
 // src/tools/postmanSetMode.ts
-import { z as z7 } from "zod";
+import { z as z8 } from "zod";
 var postmanSetModeName = "postman_set_mode";
 var postmanSetModeDescription = "Set the Postman MCP mode in cbx_config.json. Modes: minimal, code, full.";
-var postmanSetModeSchema = z7.object({
-  mode: z7.enum(["minimal", "code", "full"]).describe("Postman MCP mode to set: minimal, code, or full"),
-  scope: z7.enum(["global", "project", "auto"]).optional().describe(
+var postmanSetModeSchema = z8.object({
+  mode: z8.enum(["minimal", "code", "full"]).describe("Postman MCP mode to set: minimal, code, or full"),
+  scope: z8.enum(["global", "project", "auto"]).optional().describe(
     "Config scope to write. Default: auto (project if exists, else global)"
   )
 });
@@ -805,11 +999,11 @@ function handlePostmanSetMode(args) {
 }
 
 // src/tools/postmanGetStatus.ts
-import { z as z8 } from "zod";
+import { z as z9 } from "zod";
 var postmanGetStatusName = "postman_get_status";
 var postmanGetStatusDescription = "Get full Postman configuration status including mode, URL, and workspace ID.";
-var postmanGetStatusSchema = z8.object({
-  scope: z8.enum(["global", "project", "auto"]).optional().describe(
+var postmanGetStatusSchema = z9.object({
+  scope: z9.enum(["global", "project", "auto"]).optional().describe(
     "Config scope to read. Default: auto (project if exists, else global)"
   )
 });
@@ -849,11 +1043,11 @@ function handlePostmanGetStatus(args) {
 }
 
 // src/tools/stitchGetMode.ts
-import { z as z9 } from "zod";
+import { z as z10 } from "zod";
 var stitchGetModeName = "stitch_get_mode";
 var stitchGetModeDescription = "Get the active Stitch profile name and URL from cbx_config.json. Never exposes API keys.";
-var stitchGetModeSchema = z9.object({
-  scope: z9.enum(["global", "project", "auto"]).optional().describe(
+var stitchGetModeSchema = z10.object({
+  scope: z10.enum(["global", "project", "auto"]).optional().describe(
     "Config scope to read. Default: auto (project if exists, else global)"
   )
 });
@@ -888,12 +1082,12 @@ function handleStitchGetMode(args) {
 }
 
 // src/tools/stitchSetProfile.ts
-import { z as z10 } from "zod";
+import { z as z11 } from "zod";
 var stitchSetProfileName = "stitch_set_profile";
 var stitchSetProfileDescription = "Set the active Stitch profile in cbx_config.json. The profile must already exist in the config.";
-var stitchSetProfileSchema = z10.object({
-  profileName: z10.string().min(1).describe("Name of the Stitch profile to activate"),
-  scope: z10.enum(["global", "project", "auto"]).optional().describe(
+var stitchSetProfileSchema = z11.object({
+  profileName: z11.string().min(1).describe("Name of the Stitch profile to activate"),
+  scope: z11.enum(["global", "project", "auto"]).optional().describe(
     "Config scope to write. Default: auto (project if exists, else global)"
   )
 });
@@ -938,11 +1132,11 @@ function handleStitchSetProfile(args) {
 }
 
 // src/tools/stitchGetStatus.ts
-import { z as z11 } from "zod";
+import { z as z12 } from "zod";
 var stitchGetStatusName = "stitch_get_status";
 var stitchGetStatusDescription = "Get full Stitch configuration status including active profile, all profile names, and URLs. Never exposes API keys.";
-var stitchGetStatusSchema = z11.object({
-  scope: z11.enum(["global", "project", "auto"]).optional().describe(
+var stitchGetStatusSchema = z12.object({
+  scope: z12.enum(["global", "project", "auto"]).optional().describe(
     "Config scope to read. Default: auto (project if exists, else global)"
   )
 });
@@ -1219,75 +1413,102 @@ function toolCallErrorResult({
 }
 async function createServer({
   config,
-  manifest
+  manifest,
+  defaultConfigScope = "auto"
 }) {
   const server = new McpServer({
     name: config.server.name,
     version: config.server.version
   });
   const maxLen = config.vault.summaryMaxLength;
+  const charsPerToken = config.telemetry?.charsPerToken ?? 4;
+  const withDefaultScope = (args) => {
+    const safeArgs = args ?? {};
+    return {
+      ...safeArgs,
+      scope: typeof safeArgs.scope === "string" ? safeArgs.scope : defaultConfigScope
+    };
+  };
   server.tool(
     skillListCategoriesName,
     skillListCategoriesDescription,
     skillListCategoriesSchema.shape,
-    async () => handleSkillListCategories(manifest)
+    async () => handleSkillListCategories(manifest, charsPerToken)
   );
   server.tool(
     skillBrowseCategoryName,
     skillBrowseCategoryDescription,
     skillBrowseCategorySchema.shape,
-    async (args) => handleSkillBrowseCategory(args, manifest, maxLen)
+    async (args) => handleSkillBrowseCategory(args, manifest, maxLen, charsPerToken)
   );
   server.tool(
     skillSearchName,
     skillSearchDescription,
     skillSearchSchema.shape,
-    async (args) => handleSkillSearch(args, manifest, maxLen)
+    async (args) => handleSkillSearch(args, manifest, maxLen, charsPerToken)
   );
   server.tool(
     skillGetName,
     skillGetDescription,
     skillGetSchema.shape,
-    async (args) => handleSkillGet(args, manifest)
+    async (args) => handleSkillGet(args, manifest, charsPerToken)
+  );
+  server.tool(
+    skillBudgetReportName,
+    skillBudgetReportDescription,
+    skillBudgetReportSchema.shape,
+    async (args) => handleSkillBudgetReport(args, manifest, charsPerToken)
   );
   server.tool(
     postmanGetModeName,
     postmanGetModeDescription,
     postmanGetModeSchema.shape,
-    async (args) => handlePostmanGetMode(args)
+    async (args) => handlePostmanGetMode(
+      withDefaultScope(args)
+    )
   );
   server.tool(
     postmanSetModeName,
     postmanSetModeDescription,
     postmanSetModeSchema.shape,
-    async (args) => handlePostmanSetMode(args)
+    async (args) => handlePostmanSetMode(
+      withDefaultScope(args)
+    )
   );
   server.tool(
     postmanGetStatusName,
     postmanGetStatusDescription,
     postmanGetStatusSchema.shape,
-    async (args) => handlePostmanGetStatus(args)
+    async (args) => handlePostmanGetStatus(
+      withDefaultScope(args)
+    )
   );
   server.tool(
     stitchGetModeName,
     stitchGetModeDescription,
     stitchGetModeSchema.shape,
-    async (args) => handleStitchGetMode(args)
+    async (args) => handleStitchGetMode(
+      withDefaultScope(args)
+    )
   );
   server.tool(
     stitchSetProfileName,
     stitchSetProfileDescription,
     stitchSetProfileSchema.shape,
-    async (args) => handleStitchSetProfile(args)
+    async (args) => handleStitchSetProfile(
+      withDefaultScope(args)
+    )
   );
   server.tool(
     stitchGetStatusName,
     stitchGetStatusDescription,
     stitchGetStatusSchema.shape,
-    async (args) => handleStitchGetStatus(args)
+    async (args) => handleStitchGetStatus(
+      withDefaultScope(args)
+    )
   );
   const upstreamCatalogs = await discoverUpstreamCatalogs();
-  const dynamicArgsShape = z12.object({}).passthrough().shape;
+  const dynamicArgsShape = z13.object({}).passthrough().shape;
   for (const catalog of [upstreamCatalogs.postman, upstreamCatalogs.stitch]) {
     for (const tool of catalog.tools) {
       const namespaced = tool.namespacedName;
@@ -1357,8 +1578,11 @@ import { fileURLToPath as fileURLToPath2 } from "url";
 var __dirname2 = path6.dirname(fileURLToPath2(import.meta.url));
 function parseArgs(argv) {
   let transport = "stdio";
+  let scope = "auto";
   let scanOnly = false;
   let debug = false;
+  let port;
+  let host;
   let configPath;
   for (let i = 2; i < argv.length; i++) {
     const arg = argv[i];
@@ -1372,6 +1596,23 @@ function parseArgs(argv) {
         logger.error(`Unknown transport: ${val}. Use "stdio" or "http".`);
         process.exit(1);
       }
+    } else if (arg === "--scope" && argv[i + 1]) {
+      const val = argv[++i];
+      if (val === "auto" || val === "global" || val === "project") {
+        scope = val;
+      } else {
+        logger.error(`Unknown scope: ${val}. Use "auto", "global", or "project".`);
+        process.exit(1);
+      }
+    } else if (arg === "--port" && argv[i + 1]) {
+      const val = Number.parseInt(argv[++i], 10);
+      if (!Number.isInteger(val) || val <= 0 || val > 65535) {
+        logger.error(`Invalid port: ${argv[i]}. Use an integer from 1 to 65535.`);
+        process.exit(1);
+      }
+      port = val;
+    } else if (arg === "--host" && argv[i + 1]) {
+      host = argv[++i];
     } else if (arg === "--scan-only") {
       scanOnly = true;
     } else if (arg === "--debug") {
@@ -1380,7 +1621,7 @@ function parseArgs(argv) {
       configPath = argv[++i];
     }
   }
-  return { transport, scanOnly, debug, configPath };
+  return { transport, scope, scanOnly, debug, port, host, configPath };
 }
 function printStartupBanner(skillCount, categoryCount, transportName) {
   logger.raw("\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510");
@@ -1392,9 +1633,9 @@ function printStartupBanner(skillCount, categoryCount, transportName) {
   logger.raw(`\u2502  Transport: ${transportName.padEnd(33)}\u2502`);
   logger.raw("\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518");
 }
-function printConfigStatus() {
+function printConfigStatus(scope) {
   try {
-    const effective = readEffectiveConfig("auto");
+    const effective = readEffectiveConfig(scope);
     if (!effective) {
       logger.warn(
         "cbx_config.json not found. Postman/Stitch tools will return config-not-found errors."
@@ -1431,7 +1672,8 @@ async function main() {
   const serverConfig = loadServerConfig(args.configPath);
   const basePath = path6.resolve(__dirname2, "..");
   const skills = await scanVaultRoots(serverConfig.vault.roots, basePath);
-  const manifest = buildManifest(skills);
+  const charsPerToken = serverConfig.telemetry.charsPerToken;
+  const manifest = buildManifest(skills, charsPerToken);
   await enrichWithDescriptions(
     manifest.skills,
     serverConfig.vault.summaryMaxLength
@@ -1446,18 +1688,23 @@ async function main() {
     }
     process.exit(0);
   }
-  const transportName = args.transport === "http" ? `Streamable HTTP :${serverConfig.transport.http?.port ?? 3100}` : "stdio";
+  const resolvedHttpPort = args.port ?? serverConfig.transport.http?.port ?? 3100;
+  const transportName = args.transport === "http" ? `Streamable HTTP :${resolvedHttpPort}` : "stdio";
   printStartupBanner(
     manifest.skills.length,
     manifest.categories.length,
     transportName
   );
-  printConfigStatus();
-  const mcpServer = await createServer({ config: serverConfig, manifest });
+  printConfigStatus(args.scope);
+  const mcpServer = await createServer({
+    config: serverConfig,
+    manifest,
+    defaultConfigScope: args.scope
+  });
   if (args.transport === "http") {
     const httpOpts = {
-      port: serverConfig.transport.http?.port ?? 3100,
-      host: serverConfig.transport.http?.host ?? "127.0.0.1"
+      port: resolvedHttpPort,
+      host: args.host ?? serverConfig.transport.http?.host ?? "127.0.0.1"
     };
     const { transport, httpServer } = createStreamableHttpTransport(httpOpts);
     await mcpServer.connect(transport);

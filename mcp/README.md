@@ -24,7 +24,7 @@ This server exposes built-in tools plus dynamic passthrough tools discovered fro
 
 | Domain      | Tools | Purpose                                                       |
 | ----------- | ----- | ------------------------------------------------------------- |
-| **Skills**               | 4        | Browse, search, and retrieve skill definitions from the vault      |
+| **Skills**               | 5        | Browse/search/get + budget reporting for skill definitions          |
 | **Postman config**       | 3        | Read/write Postman MCP mode in `cbx_config.json`                   |
 | **Stitch config**        | 3        | Read/write Stitch active profile in `cbx_config.json`              |
 | **Postman passthrough**  | dynamic  | `postman.<tool_name>` for all discovered upstream Postman tools    |
@@ -68,6 +68,7 @@ mcp/
 │   │   ├── skillBrowseCategory.ts
 │   │   ├── skillSearch.ts
 │   │   ├── skillGet.ts
+│   │   ├── skillBudgetReport.ts
 │   │   ├── postmanModes.ts    # Mode ↔ URL mapping
 │   │   ├── postmanGetMode.ts
 │   │   ├── postmanSetMode.ts
@@ -78,9 +79,11 @@ mcp/
 │   │   └── future/
 │   │       ├── index.ts
 │   │       └── README.md
-│   └── utils/
+│   ├── utils/
 │       ├── logger.ts      # stderr-only logger
 │       └── errors.ts      # MCP error helpers
+│   └── telemetry/
+│       └── tokenBudget.ts # Deterministic token estimator
 ```
 
 ## Prerequisites
@@ -114,6 +117,9 @@ Controls vault roots, transport defaults, and summary truncation:
     "roots": ["../workflows/skills"],
     "summaryMaxLength": 200
   },
+  "telemetry": {
+    "charsPerToken": 4
+  },
   "transport": {
     "default": "stdio",
     "http": { "port": 3100, "host": "127.0.0.1" }
@@ -146,6 +152,12 @@ npm start
 # Streamable HTTP transport
 node dist/index.js --transport http
 
+# Scoped config defaults for built-in config tools
+node dist/index.js --scope global
+
+# HTTP host/port override
+node dist/index.js --transport http --host 0.0.0.0 --port 3100
+
 # Scan vault and exit (verify skill discovery)
 npm run scan
 
@@ -154,6 +166,14 @@ npm run mcp:inspect
 
 # Debug mode (verbose logging)
 node dist/index.js --debug
+```
+
+From the root CLI, the canonical local entrypoint is:
+
+```bash
+cbx mcp serve --transport stdio --scope auto
+cbx mcp serve --transport http --scope auto --host 127.0.0.1 --port 3100
+cbx mcp serve --scan-only
 ```
 
 ### Startup Banner
@@ -176,6 +196,8 @@ Followed by Postman/Stitch config status (or a warning if `cbx_config.json` is m
 ## Tool Reference
 
 ### Skills Tools
+
+All skill tools include `structuredContent.metrics` with deterministic estimated token/context budget fields.
 
 #### `skill_list_categories`
 
@@ -258,6 +280,44 @@ Get the full SKILL.md content for a specific skill.
 ```
 
 **Output**: Full markdown content of the skill file (as `type: "text"` content block).
+`structuredContent.metrics` includes `loadedSkillEstimatedTokens` and estimated savings vs full catalog.
+
+#### `skill_budget_report`
+
+Consolidated Skill Log + Context Budget report for selected/loaded skill IDs.
+
+**Input**:
+
+```json
+{
+  "selectedSkillIds": ["react-expert"],
+  "loadedSkillIds": ["react-expert"]
+}
+```
+
+**Output**:
+
+```json
+{
+  "skillLog": {
+    "selectedSkills": [{ "id": "react-expert", "category": "frontend", "estimatedTokens": 123 }],
+    "loadedSkills": [{ "id": "react-expert", "category": "frontend", "estimatedTokens": 123 }],
+    "skippedSkills": ["fastapi-expert"],
+    "unknownSelectedSkillIds": [],
+    "unknownLoadedSkillIds": []
+  },
+  "contextBudget": {
+    "estimatorVersion": "char-estimator-v1",
+    "charsPerToken": 4,
+    "fullCatalogEstimatedTokens": 80160,
+    "selectedSkillsEstimatedTokens": 123,
+    "loadedSkillsEstimatedTokens": 123,
+    "estimatedSavingsTokens": 80037,
+    "estimatedSavingsPercent": 99.85,
+    "estimated": true
+  }
+}
+```
 
 ### Postman Tools
 
@@ -459,6 +519,9 @@ The vault's lazy content model dramatically reduces token usage:
 
 **Fixed banner values**: `2004/35/~245/~80,160/99.7%`
 
+All token values are deterministic estimates, not provider-native metering.
+Estimator formula: `estimated_tokens = ceil(char_count / charsPerToken)` where `charsPerToken` defaults to `4`.
+
 ## MCP Client Configuration
 
 ### Codex / Antigravity
@@ -467,9 +530,8 @@ The vault's lazy content model dramatically reduces token usage:
 {
   "mcpServers": {
     "cubis-foundry": {
-      "command": "node",
-      "args": ["path/to/cubis-foundry/mcp/dist/index.js"],
-      "transport": "stdio"
+      "command": "cbx",
+      "args": ["mcp", "serve", "--transport", "stdio", "--scope", "auto"]
     }
   }
 }
@@ -483,13 +545,15 @@ Add to `.vscode/mcp.json`:
 {
   "servers": {
     "cubis-foundry": {
-      "command": "node",
-      "args": ["${workspaceFolder}/mcp/dist/index.js"],
-      "transport": "stdio"
+      "type": "stdio",
+      "command": "cbx",
+      "args": ["mcp", "serve", "--transport", "stdio", "--scope", "auto"]
     }
   }
 }
 ```
+
+Side-by-side topology is supported: keep direct `postman`/`StitchMCP` entries and add `cubis-foundry`.
 
 ### Streamable HTTP (any client)
 

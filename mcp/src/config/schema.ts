@@ -16,6 +16,11 @@ export const ServerConfigSchema = z.object({
     roots: z.array(z.string()).min(1),
     summaryMaxLength: z.number().int().positive().default(200),
   }),
+  telemetry: z
+    .object({
+      charsPerToken: z.number().positive().default(4),
+    })
+    .default({ charsPerToken: 4 }),
   transport: z.object({
     default: z.enum(["stdio", "streamable-http"]).default("stdio"),
     http: z

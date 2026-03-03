@@ -8,6 +8,11 @@
 import { z } from "zod";
 import type { VaultManifest } from "../vault/types.js";
 import { enrichWithDescriptions } from "../vault/manifest.js";
+import {
+  buildSkillToolMetrics,
+  estimateTokensFromBytes,
+  estimateTokensFromText,
+} from "../telemetry/tokenBudget.js";
 
 export const skillSearchName = "skill_search";
 
@@ -27,6 +32,7 @@ export async function handleSkillSearch(
   args: z.infer<typeof skillSearchSchema>,
   manifest: VaultManifest,
   summaryMaxLength: number,
+  charsPerToken: number,
 ) {
   const { query } = args;
   const lower = query.toLowerCase();
@@ -56,17 +62,28 @@ export async function handleSkillSearch(
     category: s.category,
     description: s.description ?? "(no description)",
   }));
+  const payload = { query, results, count: results.length };
+  const text = JSON.stringify(payload, null, 2);
+  const selectedSkillsEstimatedTokens = matches.reduce(
+    (sum, skill) => sum + estimateTokensFromBytes(skill.fileBytes, charsPerToken),
+    0,
+  );
+  const metrics = buildSkillToolMetrics({
+    charsPerToken,
+    fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
+    responseEstimatedTokens: estimateTokensFromText(text, charsPerToken),
+    selectedSkillsEstimatedTokens,
+  });
 
   return {
     content: [
       {
         type: "text" as const,
-        text: JSON.stringify(
-          { query, results, count: results.length },
-          null,
-          2,
-        ),
+        text,
       },
     ],
+    structuredContent: {
+      metrics,
+    },
   };
 }

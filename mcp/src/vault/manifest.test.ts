@@ -3,6 +3,7 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import {
+  buildManifest,
   enrichWithDescriptions,
   extractDescription,
   parseDescriptionFromFrontmatter,
@@ -109,11 +110,12 @@ describe("manifest enrichment", () => {
 
     const enriched = await enrichWithDescriptions(
       [
-        { id: "alpha", category: "general", path: fileA },
+        { id: "alpha", category: "general", path: fileA, fileBytes: 64 },
         {
           id: "beta",
           category: "general",
           path: fileB,
+          fileBytes: 64,
           description: "Already populated",
         },
       ],
@@ -122,5 +124,21 @@ describe("manifest enrichment", () => {
 
     expect(enriched[0].description).toBe("Alpha description");
     expect(enriched[1].description).toBe("Already populated");
+  });
+});
+
+describe("buildManifest", () => {
+  it("computes full catalog byte and token totals", () => {
+    const manifest = buildManifest(
+      [
+        { id: "a", category: "general", path: "/tmp/a.md", fileBytes: 20 },
+        { id: "b", category: "frontend", path: "/tmp/b.md", fileBytes: 12 },
+      ],
+      4,
+    );
+
+    expect(manifest.categories).toEqual(["frontend", "general"]);
+    expect(manifest.fullCatalogBytes).toBe(32);
+    expect(manifest.fullCatalogEstimatedTokens).toBe(8);
   });
 });

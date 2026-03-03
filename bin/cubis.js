@@ -14,7 +14,7 @@ import {
   writeFile,
 } from "node:fs/promises";
 import { createRequire } from "node:module";
-import { execFile as execFileCallback } from "node:child_process";
+import { spawn, execFile as execFileCallback } from "node:child_process";
 import os from "node:os";
 import path from "node:path";
 import process from "node:process";
@@ -151,6 +151,16 @@ const POSTMAN_API_KEY_ENV_VAR = "POSTMAN_API_KEY";
 const POSTMAN_MCP_URL = "https://mcp.postman.com/minimal";
 const POSTMAN_API_BASE_URL = "https://api.getpostman.com";
 const POSTMAN_SKILL_ID = "postman";
+const FOUNDRY_MCP_SERVER_ID = "cubis-foundry";
+const FOUNDRY_MCP_COMMAND = "cbx";
+const FOUNDRY_MCP_DEFAULT_ARGS = [
+  "mcp",
+  "serve",
+  "--transport",
+  "stdio",
+  "--scope",
+  "auto",
+];
 const STITCH_SKILL_ID = "stitch";
 const STITCH_MCP_SERVER_ID = "StitchMCP";
 const STITCH_API_KEY_ENV_VAR = "STITCH_API_KEY";
@@ -538,6 +548,23 @@ async function resolveDockerContainerHostPort({
     return match ? Number.parseInt(match[1], 10) : null;
   } catch {
     return null;
+  }
+}
+
+async function inspectDockerContainerMounts({
+  name,
+  cwd = process.cwd(),
+}) {
+  try {
+    const { stdout } = await execFile(
+      "docker",
+      ["inspect", "--format", "{{json .Mounts}}", name],
+      { cwd },
+    );
+    const parsed = JSON.parse(String(stdout || "").trim());
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
   }
 }
 
@@ -2821,8 +2848,11 @@ function buildManagedWorkflowBlock(platformId, workflows) {
   lines.push("## CBX Workflow Routing (auto-managed)");
   if (platformId === "codex") {
     lines.push("Use Codex callable wrappers:");
-    lines.push("- Workflows: `$workflow-<name>`");
-    lines.push("- Agents: `$agent-<name>`");
+    lines.push("- Workflows: $workflow-<name>");
+    lines.push("- Agents: $agent-<name>");
+    lines.push(
+      "- Use raw $workflow-* / $agent-* tokens (no backticks) so Codex can render icons.",
+    );
     lines.push("");
 
     if (workflows.length === 0) {
@@ -2832,18 +2862,16 @@ function buildManagedWorkflowBlock(platformId, workflows) {
         const triggerPreview = workflow.triggers.slice(0, 2).join(", ");
         const hint = triggerPreview ? ` (${triggerPreview})` : "";
         lines.push(
-          `- \`${workflow.command}\` -> \`$${CODEX_WORKFLOW_SKILL_PREFIX}${workflow.id}\`${hint}`,
+          `- ${workflow.command} -> $${CODEX_WORKFLOW_SKILL_PREFIX}${workflow.id}${hint}`,
         );
       }
     }
 
     lines.push("");
     lines.push("Selection policy:");
-    lines.push("1. If user names a `$workflow-*`, use it directly.");
+    lines.push("1. If user names a $workflow-*, use it directly.");
     lines.push("2. Else map intent to one primary workflow.");
-    lines.push(
-      "3. Use `$agent-*` wrappers only when role specialization is needed.",
-    );
+    lines.push("3. Use $agent-* wrappers only when role specialization is needed.");
     lines.push("");
     lines.push("<!-- cbx:workflows:auto:end -->");
     return lines.join("\n");
@@ -3316,6 +3344,47 @@ function buildVsCodePostmanServer({
   };
 }
 
+function buildFoundryServeArgs({ scope = "auto" } = {}) {
+  const normalizedScope =
+    scope === "global" || scope === "project" || scope === "auto"
+      ? scope
+      : "auto";
+  return ["mcp", "serve", "--transport", "stdio", "--scope", normalizedScope];
+}
+
+function buildVsCodeFoundryServer({ scope = "auto" } = {}) {
+  return {
+    type: "stdio",
+    command: FOUNDRY_MCP_COMMAND,
+    args: buildFoundryServeArgs({ scope }),
+    env: {},
+  };
+}
+
+function buildCopilotCliPostmanServer({
+  apiKeyEnvVar = POSTMAN_API_KEY_ENV_VAR,
+  mcpUrl = POSTMAN_MCP_URL,
+}) {
+  return {
+    type: "http",
+    url: mcpUrl,
+    headers: {
+      Authorization: buildPostmanAuthHeader({ apiKeyEnvVar }),
+    },
+    tools: ["*"],
+  };
+}
+
+function buildCopilotCliFoundryServer({ scope = "auto" } = {}) {
+  return {
+    type: "stdio",
+    command: FOUNDRY_MCP_COMMAND,
+    args: buildFoundryServeArgs({ scope }),
+    env: {},
+    tools: ["*"],
+  };
+}
+
 function buildGeminiPostmanServer({
   apiKeyEnvVar = POSTMAN_API_KEY_ENV_VAR,
   mcpUrl = POSTMAN_MCP_URL,
@@ -3328,12 +3397,19 @@ function buildGeminiPostmanServer({
   };
 }
 
+function buildGeminiFoundryServer({ scope = "auto" } = {}) {
+  return {
+    command: FOUNDRY_MCP_COMMAND,
+    args: buildFoundryServeArgs({ scope }),
+    env: {},
+  };
+}
+
 function buildGeminiStitchServer({
   apiKeyEnvVar = STITCH_API_KEY_ENV_VAR,
   mcpUrl = STITCH_MCP_URL,
 }) {
   return {
-    $typeName: "exa.cascade_plugins_pb.CascadePluginCommandTemplate",
     command: "npx",
     args: [
       "-y",
@@ -3752,6 +3828,7 @@ async function applyPostmanMcpForPlatform({
   stitchApiKeyEnvVar,
   stitchMcpUrl,
   includeStitchMcp = false,
+  includeFoundryMcp = true,
   dryRun = false,
   cwd = process.cwd(),
 }) {
@@ -3777,6 +3854,13 @@ async function applyPostmanMcpForPlatform({
           apiKeyEnvVar,
           mcpUrl,
         });
+        if (includeFoundryMcp) {
+          mcpServers[FOUNDRY_MCP_SERVER_ID] = buildGeminiFoundryServer({
+            scope: "auto",
+          });
+        } else {
+          delete mcpServers[FOUNDRY_MCP_SERVER_ID];
+        }
         if (includeStitchMcp) {
           mcpServers[STITCH_MCP_SERVER_ID] = buildGeminiStitchServer({
             apiKeyEnvVar: stitchApiKeyEnvVar,
@@ -3806,6 +3890,28 @@ async function applyPostmanMcpForPlatform({
       targetPath: configPath,
       updater: (existing) => {
         const next = { ...existing };
+        if (mcpScope === "global") {
+          const mcpServers =
+            next.mcpServers &&
+            typeof next.mcpServers === "object" &&
+            !Array.isArray(next.mcpServers)
+              ? { ...next.mcpServers }
+              : {};
+          mcpServers[POSTMAN_SKILL_ID] = buildCopilotCliPostmanServer({
+            apiKeyEnvVar,
+            mcpUrl,
+          });
+          if (includeFoundryMcp) {
+            mcpServers[FOUNDRY_MCP_SERVER_ID] = buildCopilotCliFoundryServer({
+              scope: "auto",
+            });
+          } else {
+            delete mcpServers[FOUNDRY_MCP_SERVER_ID];
+          }
+          next.mcpServers = mcpServers;
+          return next;
+        }
+
         const servers =
           next.servers &&
           typeof next.servers === "object" &&
@@ -3816,6 +3922,13 @@ async function applyPostmanMcpForPlatform({
           apiKeyEnvVar,
           mcpUrl,
         });
+        if (includeFoundryMcp) {
+          servers[FOUNDRY_MCP_SERVER_ID] = buildVsCodeFoundryServer({
+            scope: "auto",
+          });
+        } else {
+          delete servers[FOUNDRY_MCP_SERVER_ID];
+        }
         next.servers = servers;
         return next;
       },
@@ -3847,6 +3960,13 @@ async function applyPostmanMcpForPlatform({
             apiKeyEnvVar,
             mcpUrl,
           });
+          if (includeFoundryMcp) {
+            servers[FOUNDRY_MCP_SERVER_ID] = buildVsCodeFoundryServer({
+              scope: "auto",
+            });
+          } else {
+            delete servers[FOUNDRY_MCP_SERVER_ID];
+          }
           next.servers = servers;
           return next;
         },
@@ -3877,6 +3997,13 @@ async function applyPostmanMcpForPlatform({
     } catch {
       // Best effort. Add will still run and becomes source of truth.
     }
+    try {
+      await execFile("codex", ["mcp", "remove", FOUNDRY_MCP_SERVER_ID], {
+        cwd,
+      });
+    } catch {
+      // Best effort. Add will still run and becomes source of truth.
+    }
 
     try {
       await execFile(
@@ -3903,6 +4030,27 @@ async function applyPostmanMcpForPlatform({
         action: "failed",
         warnings,
       };
+    }
+
+    if (includeFoundryMcp) {
+      try {
+        await execFile(
+          "codex",
+          [
+            "mcp",
+            "add",
+            FOUNDRY_MCP_SERVER_ID,
+            "--",
+            FOUNDRY_MCP_COMMAND,
+            ...FOUNDRY_MCP_DEFAULT_ARGS,
+          ],
+          { cwd },
+        );
+      } catch (error) {
+        warnings.push(
+          `Failed to register ${FOUNDRY_MCP_SERVER_ID} MCP via Codex CLI. Ensure 'cbx' and 'codex' are installed and rerun. (${error.message})`,
+        );
+      }
     }
 
     return {
@@ -4001,6 +4149,7 @@ async function resolvePostmanInstallSelection({
   );
   const mcpBuildLocal = Boolean(options.mcpBuildLocal);
   const mcpToolSync = options.mcpToolSync !== false;
+  const foundryMcpEnabled = options.foundryMcp !== false;
 
   const canPrompt = !options.yes && process.stdin.isTTY;
   if (canPrompt && !hasWorkspaceOption) {
@@ -4228,6 +4377,7 @@ async function resolvePostmanInstallSelection({
     mcpBuildLocal,
     dockerImageAction,
     mcpToolSync,
+    foundryMcpEnabled,
     runtimeSkipped,
     defaultWorkspaceId: defaultWorkspaceId ?? null,
     workspaceSelectionSource,
@@ -4457,6 +4607,7 @@ async function configurePostmanInstallArtifacts({
         stitchApiKeyEnvVar: effectiveStitchApiKeyEnvVar,
         stitchMcpUrl: effectiveStitchMcpUrl,
         includeStitchMcp: shouldInstallStitch,
+        includeFoundryMcp: postmanSelection.foundryMcpEnabled,
         dryRun,
         cwd,
       });
@@ -4495,6 +4646,7 @@ async function configurePostmanInstallArtifacts({
     mcpBuildLocal: postmanSelection.mcpBuildLocal,
     dockerImageAction: postmanSelection.dockerImageAction,
     mcpToolSync: postmanSelection.mcpToolSync,
+    foundryMcpEnabled: postmanSelection.foundryMcpEnabled,
     apiKeySource: effectiveApiKeySource,
     stitchApiKeySource: effectiveStitchApiKeySource,
     defaultWorkspaceId: effectiveDefaultWorkspaceId,
@@ -5454,6 +5606,9 @@ function printPostmanSetupSummary({ postmanSetup }) {
   console.log(`- MCP build local: ${postmanSetup.mcpBuildLocal ? "yes" : "no"}`);
   console.log(`- MCP image prepare: ${postmanSetup.dockerImageAction}`);
   console.log(`- MCP tool sync: ${postmanSetup.mcpToolSync ? "enabled" : "disabled"}`);
+  console.log(
+    `- Foundry MCP side-by-side: ${postmanSetup.foundryMcpEnabled ? "enabled" : "disabled"}`,
+  );
   console.log(`- Postman API key source: ${postmanSetup.apiKeySource}`);
   if (postmanSetup.stitchApiKeySource) {
     console.log(`- Stitch API key source: ${postmanSetup.stitchApiKeySource}`);
@@ -5971,6 +6126,10 @@ function withInstallOptions(command) {
       "enable automatic MCP tool catalog sync (default: enabled)",
     )
     .option("--no-mcp-tool-sync", "disable automatic MCP tool catalog sync")
+    .option(
+      "--no-foundry-mcp",
+      "disable side-by-side cubis-foundry MCP registration during --postman setup",
+    )
     .option(
       "--terminal-integration",
       "Antigravity only: enable terminal verification integration (prompts for verifier when interactive)",
@@ -7933,6 +8092,111 @@ async function runMcpToolsList(options) {
   }
 }
 
+function normalizeMcpServeTransport(value, fallback = "stdio") {
+  const normalized = String(value || fallback)
+    .trim()
+    .toLowerCase();
+  if (normalized === "stdio") return "stdio";
+  if (normalized === "http" || normalized === "streamable-http") return "http";
+  throw new Error(
+    `Unknown MCP transport '${value}'. Use stdio|http.`,
+  );
+}
+
+function normalizeMcpServeScope(value, fallback = "auto") {
+  const normalized = String(value || fallback)
+    .trim()
+    .toLowerCase();
+  if (
+    normalized === "auto" ||
+    normalized === "global" ||
+    normalized === "project"
+  ) {
+    return normalized;
+  }
+  throw new Error(
+    `Unknown MCP scope '${value}'. Use auto|global|project.`,
+  );
+}
+
+function resolveBundledMcpEntryPath() {
+  return path.join(packageRoot(), "mcp", "dist", "index.js");
+}
+
+async function runMcpServe(options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const cwd = process.cwd();
+    const entryPath = resolveBundledMcpEntryPath();
+    if (!(await pathExists(entryPath))) {
+      throw new Error(
+        `Bundled MCP server not found at ${entryPath}. Install @cubis/foundry with bundled mcp/dist assets.`,
+      );
+    }
+
+    const transport = normalizeMcpServeTransport(opts.transport, "stdio");
+    const scope = normalizeMcpServeScope(opts.scope, "auto");
+    const args = [entryPath, "--transport", transport, "--scope", scope];
+
+    if (opts.host) {
+      args.push("--host", String(opts.host));
+    }
+    if (opts.port !== undefined && opts.port !== null && opts.port !== "") {
+      args.push("--port", String(normalizePortNumber(opts.port, 3100)));
+    }
+    if (opts.scanOnly) {
+      args.push("--scan-only");
+    }
+    if (opts.config) {
+      args.push("--config", expandPath(String(opts.config), cwd));
+    }
+    if (opts.debug) {
+      args.push("--debug");
+    }
+
+    await new Promise((resolve, reject) => {
+      const child = spawn(process.execPath, args, {
+        cwd,
+        stdio: "inherit",
+        env: process.env,
+      });
+
+      const forwardSignal = (signal) => {
+        if (!child.killed) {
+          child.kill(signal);
+        }
+      };
+      const onSigInt = () => forwardSignal("SIGINT");
+      const onSigTerm = () => forwardSignal("SIGTERM");
+      process.on("SIGINT", onSigInt);
+      process.on("SIGTERM", onSigTerm);
+
+      child.once("error", (error) => {
+        process.off("SIGINT", onSigInt);
+        process.off("SIGTERM", onSigTerm);
+        reject(error);
+      });
+
+      child.once("exit", (code, signal) => {
+        process.off("SIGINT", onSigInt);
+        process.off("SIGTERM", onSigTerm);
+        if (signal) {
+          reject(new Error(`MCP server terminated by signal ${signal}.`));
+          return;
+        }
+        if (code && code !== 0) {
+          reject(new Error(`MCP server exited with status ${code}.`));
+          return;
+        }
+        resolve(null);
+      });
+    });
+  } catch (error) {
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
 function resolveCbxRootPath({ scope, cwd = process.cwd() }) {
   if (scope === "global") {
     return path.join(os.homedir(), ".cbx");
@@ -7998,6 +8262,8 @@ async function runMcpRuntimeStatus(options) {
     const container = dockerAvailable
       ? await inspectDockerContainerByName({ name: containerName, cwd })
       : null;
+    const skillsRoot = path.join(os.homedir(), ".agents", "skills");
+    const skillsRootExists = await pathExists(skillsRoot);
 
     console.log(`Scope: ${scope}`);
     console.log(`Config file: ${defaults.configPath}`);
@@ -8007,6 +8273,9 @@ async function runMcpRuntimeStatus(options) {
     console.log(`Configured image: ${defaults.defaults.image}`);
     console.log(`Configured update policy: ${defaults.defaults.updatePolicy}`);
     console.log(`Configured build local: ${defaults.defaults.buildLocal ? "yes" : "no"}`);
+    console.log(
+      `Host skills root: ${skillsRoot} (${skillsRootExists ? "present" : "missing"})`,
+    );
     console.log(`Docker available: ${dockerAvailable ? "yes" : "no"}`);
     console.log(`Container name: ${containerName}`);
     if (!dockerAvailable) {
@@ -8015,11 +8284,34 @@ async function runMcpRuntimeStatus(options) {
     }
     if (!container) {
       console.log("Container status: not found");
+      if (!skillsRootExists) {
+        console.log(
+          "Hint: ~/.agents/skills is missing. Create/populate it before starting runtime to enable vault discovery.",
+        );
+      }
       return;
     }
     const isRunning = container.status.toLowerCase().startsWith("up ");
     console.log(`Container status: ${container.status}`);
     console.log(`Container image: ${container.image}`);
+    const mounts = await inspectDockerContainerMounts({ name: containerName, cwd });
+    const skillsMount = mounts.find(
+      (mount) => String(mount.Destination || "") === "/workflows/skills",
+    );
+    if (skillsMount) {
+      const source = String(skillsMount.Source || "(unknown)");
+      console.log(`Skills mount: ${source} -> /workflows/skills`);
+      if (!(await pathExists(source))) {
+        console.log(
+          "Hint: mounted skill source path is missing on host; vault discovery may return zero skills.",
+        );
+      }
+    } else {
+      console.log("Skills mount: missing");
+      console.log(
+        "Hint: recreate runtime with a skills mount (host ~/.agents/skills -> /workflows/skills).",
+      );
+    }
     if (isRunning) {
       const hostPort =
         (await resolveDockerContainerHostPort({
@@ -8082,22 +8374,32 @@ async function runMcpRuntimeUp(options) {
     }
 
     const cbxRoot = resolveCbxRootPath({ scope, cwd });
+    const skillsRoot = path.join(os.homedir(), ".agents", "skills");
+    const skillsRootExists = await pathExists(skillsRoot);
+    const runtimeWarnings = [];
+    if (!skillsRootExists) {
+      runtimeWarnings.push(
+        `Skill mount source is missing: ${skillsRoot}. Runtime will start without /workflows/skills and vault discovery can return zero skills.`,
+      );
+    }
     await mkdir(cbxRoot, { recursive: true });
+    const dockerArgs = [
+      "run",
+      "-d",
+      "--name",
+      containerName,
+      "-p",
+      `${hostPort}:${MCP_DOCKER_CONTAINER_PORT}`,
+      "-v",
+      `${cbxRoot}:/root/.cbx`,
+    ];
+    if (skillsRootExists) {
+      dockerArgs.push("-v", `${skillsRoot}:/workflows/skills:ro`);
+    }
+    dockerArgs.push("-e", "CBX_MCP_TRANSPORT=streamable-http", image);
     await execFile(
       "docker",
-      [
-        "run",
-        "-d",
-        "--name",
-        containerName,
-        "-p",
-        `${hostPort}:${MCP_DOCKER_CONTAINER_PORT}`,
-        "-v",
-        `${cbxRoot}:/root/.cbx`,
-        "-e",
-        "CBX_MCP_TRANSPORT=streamable-http",
-        image,
-      ],
+      dockerArgs,
       { cwd },
     );
 
@@ -8112,9 +8414,20 @@ async function runMcpRuntimeUp(options) {
     console.log(`Update policy: ${updatePolicy}`);
     console.log(`Build local: ${buildLocal ? "yes" : "no"}`);
     console.log(`Mount: ${cbxRoot} -> /root/.cbx`);
+    if (skillsRootExists) {
+      console.log(`Mount: ${skillsRoot} -> /workflows/skills (ro)`);
+    } else {
+      console.log("Mount: /workflows/skills (not mounted - source missing)");
+    }
     console.log(`Port: ${hostPort}:${MCP_DOCKER_CONTAINER_PORT}`);
     console.log(`Status: ${running ? running.status : "started"}`);
     console.log(`Endpoint: http://127.0.0.1:${hostPort}/mcp`);
+    if (runtimeWarnings.length > 0) {
+      console.log("Warnings:");
+      for (const warning of runtimeWarnings) {
+        console.log(`- ${warning}`);
+      }
+    }
   } catch (error) {
     console.error(`\nError: ${error.message}`);
     process.exit(1);
@@ -8562,6 +8875,18 @@ skillsCommand.action(() => {
 const mcpCommand = program
   .command("mcp")
   .description("Manage Cubis MCP runtime catalogs and tool discovery");
+
+mcpCommand
+  .command("serve")
+  .description("Launch bundled Cubis Foundry MCP server (canonical local entrypoint)")
+  .option("--transport <transport>", "stdio|http", "stdio")
+  .option("--scope <scope>", "auto|global|project", "auto")
+  .option("--port <port>", "HTTP port override")
+  .option("--host <host>", "HTTP host override")
+  .option("--scan-only", "scan vault and exit")
+  .option("--config <path>", "explicit MCP server config file path")
+  .option("--debug", "enable debug logging in MCP server")
+  .action(runMcpServe);
 
 const mcpToolsCommand = mcpCommand
   .command("tools")

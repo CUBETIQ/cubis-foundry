@@ -8,19 +8,30 @@
 import { readFile } from "node:fs/promises";
 import type { SkillPointer, VaultManifest } from "./types.js";
 import { logger } from "../utils/logger.js";
+import { estimateTokensFromBytes } from "../telemetry/tokenBudget.js";
 
 /**
  * Build a VaultManifest from scanned skill pointers.
  * Categories are derived from the pointers.
  */
-export function buildManifest(skills: SkillPointer[]): VaultManifest {
+export function buildManifest(
+  skills: SkillPointer[],
+  charsPerToken: number,
+): VaultManifest {
   const categorySet = new Set<string>();
+  let fullCatalogBytes = 0;
   for (const skill of skills) {
     categorySet.add(skill.category);
+    fullCatalogBytes += skill.fileBytes;
   }
   return {
     categories: [...categorySet].sort(),
     skills,
+    fullCatalogBytes,
+    fullCatalogEstimatedTokens: estimateTokensFromBytes(
+      fullCatalogBytes,
+      charsPerToken,
+    ),
   };
 }
 

@@ -95,6 +95,17 @@ cat >"$TMP_HOME/.cbx/cbx_config.json" <<'JSON'
 JSON
 log_ok "temp config ready at $TMP_HOME/.cbx/cbx_config.json"
 
+log_step "Prepare temp skill vault"
+mkdir -p "$TMP_HOME/skills/sample-smoke-skill"
+cat >"$TMP_HOME/skills/sample-smoke-skill/SKILL.md" <<'MD'
+---
+name: sample-smoke-skill
+description: Sample skill used for docker smoke validation.
+---
+# Sample Smoke Skill
+MD
+log_ok "temp skills ready at $TMP_HOME/skills"
+
 cat >"$TMP_HOME/.cbx/mcp-config.json" <<'JSON'
 {
   "server": {
@@ -103,8 +114,11 @@ cat >"$TMP_HOME/.cbx/mcp-config.json" <<'JSON'
     "description": "Cubis Foundry MCP Server (docker smoke config)"
   },
   "vault": {
-    "roots": ["./workflows/skills"],
+    "roots": ["/workflows/skills"],
     "summaryMaxLength": 200
+  },
+  "telemetry": {
+    "charsPerToken": 4
   },
   "transport": {
     "default": "streamable-http",
@@ -135,6 +149,7 @@ docker run -d \
   -e POSTMAN_API_KEY_DEFAULT \
   -e STITCH_API_KEY_DEFAULT \
   -v "$TMP_HOME/.cbx:/root/.cbx" \
+  -v "$TMP_HOME/skills:/workflows/skills:ro" \
   "$IMAGE_NAME" \
   --config /root/.cbx/mcp-config.json >/tmp/cbx-mcp-docker-run.log 2>&1 || {
   cat /tmp/cbx-mcp-docker-run.log >&2 || true
@@ -159,6 +174,12 @@ if [ "$ready" -ne 1 ]; then
   fail_with_diagnostics "MCP smoke handshake failed"
 fi
 cat /tmp/cbx-mcp-smoke.log
+
+SKILL_TOTAL="$(awk -F= '/^skills.total=/{print $2}' /tmp/cbx-mcp-smoke.log | tail -1)"
+if [ -z "$SKILL_TOTAL" ] || [ "$SKILL_TOTAL" -le 0 ]; then
+  fail_with_diagnostics "Expected skills.total > 0 when /workflows/skills mount is present"
+fi
+log_ok "skills.total > 0 ($SKILL_TOTAL)"
 
 log_step "Container logs (tail 80)"
 docker logs "$CONTAINER_NAME" --tail 80 || true

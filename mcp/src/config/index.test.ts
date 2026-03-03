@@ -40,6 +40,7 @@ describe("config loading", () => {
     const config = loadServerConfig(configPath);
     expect(config.server.name).toBe("cubis-foundry-mcp");
     expect(config.vault.summaryMaxLength).toBe(200);
+    expect(config.telemetry.charsPerToken).toBe(4);
   });
 
   it("throws for a missing config file", () => {
