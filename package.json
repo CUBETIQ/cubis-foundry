@@ -1,6 +1,6 @@
 {
   "name": "@cubis/foundry",
-  "version": "0.3.37",
+  "version": "0.3.38",
   "description": "Cubis Foundry CLI for workflow-first AI agent environments",
   "type": "module",
   "bin": {
@@ -14,6 +14,7 @@
     "mcp/dist",
     "mcp/config.json",
     "mcp/package.json",
+    "mcp/package-lock.json",
     "mcp/README.md",
     "mcp/Dockerfile",
     "mcp/.dockerignore",
