@@ -7,8 +7,8 @@
 
 import { z } from "zod";
 import type { VaultManifest } from "../vault/types.js";
-import { readFullSkillContent } from "../vault/manifest.js";
-import { notFound } from "../utils/errors.js";
+import { readSkillContentWithReferences } from "../vault/manifest.js";
+import { invalidInput, notFound } from "../utils/errors.js";
 import {
   buildSkillToolMetrics,
   estimateTokensFromText,
@@ -17,10 +17,16 @@ import {
 export const skillGetName = "skill_get";
 
 export const skillGetDescription =
-  "Get the full content of a specific skill by ID. Returns the complete SKILL.md file content.";
+  "Get full content of a specific skill by ID. Returns SKILL.md content and optionally direct referenced markdown files.";
 
 export const skillGetSchema = z.object({
   id: z.string().describe("The skill ID (directory name) to retrieve"),
+  includeReferences: z
+    .boolean()
+    .optional()
+    .describe(
+      "Whether to include direct local markdown references from SKILL.md (default: true)",
+    ),
 });
 
 export async function handleSkillGet(
@@ -28,14 +34,38 @@ export async function handleSkillGet(
   manifest: VaultManifest,
   charsPerToken: number,
 ) {
-  const { id } = args;
+  const { id, includeReferences = true } = args;
+
+  if (id.startsWith("workflow-") || id.startsWith("agent-")) {
+    invalidInput(
+      `Skill id "${id}" appears to be a wrapper id. Use workflow/agent routing (for example $workflow-implement-track or $agent-backend-specialist) and call skill_get only for concrete skill ids.`,
+    );
+  }
 
   const skill = manifest.skills.find((s) => s.id === id);
   if (!skill) {
     notFound("Skill", id);
   }
 
-  const content = await readFullSkillContent(skill.path);
+  const { skillContent, references } = await readSkillContentWithReferences(
+    skill.path,
+    includeReferences,
+  );
+  const referenceSection =
+    references.length > 0
+      ? [
+          "",
+          "## Referenced Files",
+          "",
+          ...references.flatMap((ref) => [
+            `### ${ref.relativePath}`,
+            "",
+            ref.content.trimEnd(),
+            "",
+          ]),
+        ].join("\n")
+      : "";
+  const content = `${skillContent}${referenceSection}`;
   const loadedSkillEstimatedTokens = estimateTokensFromText(
     content,
     charsPerToken,
@@ -55,6 +85,7 @@ export async function handleSkillGet(
       },
     ],
     structuredContent: {
+      references: references.map((ref) => ({ path: ref.relativePath })),
       metrics,
     },
   };

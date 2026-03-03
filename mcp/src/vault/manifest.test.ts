@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import {
@@ -8,6 +8,7 @@ import {
   extractDescription,
   parseDescriptionFromFrontmatter,
   readFullSkillContent,
+  readSkillContentWithReferences,
 } from "./manifest.js";
 
 const tempDirs: string[] = [];
@@ -89,6 +90,75 @@ describe("skill content IO", () => {
     writeFileSync(file, body, "utf8");
 
     await expect(readFullSkillContent(file)).resolves.toBe(body);
+  });
+
+  it("loads direct local markdown references from SKILL.md", async () => {
+    const dir = createTempDir("mcp-refs-read-");
+    const file = path.join(dir, "SKILL.md");
+    const refsDir = path.join(dir, "references");
+    const refFile = path.join(refsDir, "guide.md");
+    const nestedRefFile = path.join(dir, "notes.md");
+
+    writeFileSync(
+      file,
+      [
+        "---",
+        "name: ref-read",
+        "description: Read refs",
+        "---",
+        "# Skill",
+        "See [Guide](references/guide.md).",
+        "See [Notes](notes.md#section).",
+        "Ignore [External](https://example.com).",
+      ].join("\n"),
+      "utf8",
+    );
+    mkdirSync(refsDir, { recursive: true });
+    writeFileSync(refFile, "# Guide\nReference body", "utf8");
+    writeFileSync(nestedRefFile, "# Notes\nMore details", "utf8");
+
+    const result = await readSkillContentWithReferences(file, true);
+    expect(result.skillContent).toContain("# Skill");
+    expect(result.references).toEqual([
+      { relativePath: "references/guide.md", content: "# Guide\nReference body" },
+      { relativePath: "notes.md", content: "# Notes\nMore details" },
+    ]);
+  });
+
+  it("skips references when includeReferences is false", async () => {
+    const dir = createTempDir("mcp-refs-skip-");
+    const file = path.join(dir, "SKILL.md");
+    const refFile = path.join(dir, "reference.md");
+    writeFileSync(
+      file,
+      ["---", "name: skip", "description: skip", "---", "[Ref](reference.md)"].join(
+        "\n",
+      ),
+      "utf8",
+    );
+    writeFileSync(refFile, "ref", "utf8");
+
+    const result = await readSkillContentWithReferences(file, false);
+    expect(result.references).toEqual([]);
+  });
+
+  it("falls back to sibling markdown files when SKILL.md has no links", async () => {
+    const dir = createTempDir("mcp-refs-fallback-");
+    const file = path.join(dir, "SKILL.md");
+    const siblingRef = path.join(dir, "overview.md");
+    writeFileSync(
+      file,
+      ["---", "name: fallback", "description: fallback", "---", "# Skill"].join(
+        "\n",
+      ),
+      "utf8",
+    );
+    writeFileSync(siblingRef, "# Overview\nSibling content", "utf8");
+
+    const result = await readSkillContentWithReferences(file, true);
+    expect(result.references).toEqual([
+      { relativePath: "overview.md", content: "# Overview\nSibling content" },
+    ]);
   });
 });
 

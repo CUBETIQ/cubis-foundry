@@ -87,6 +87,12 @@ After finishing skill selection/loading, publish:
 - `loaded_skills`: skill IDs loaded via `skill_get`
 - `skipped_skills`: considered but not loaded
 
+Workflow boundary for this block:
+
+- `selected_skills` / `loaded_skills` must never include workflow IDs.
+- IDs like `workflow-implement-track` are workflow routes, not skills.
+- Never call `skill_get` with `workflow-*`; keep workflow mentions in workflow decisions (`/workflow`) and keep skill logs skill-only.
+
 ## Context Budget Block (Required, Estimated)
 
 Immediately after the Skill Log block, publish estimated budget fields:

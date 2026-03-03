@@ -89,6 +89,13 @@ Use an adaptive load policy to control context size:
 4.  If a mapped skill is missing, continue with best fallback and state it.
 5.  Keep user-visible decision logs concise: selected skill(s) and one-line rationale.
 
+### Workflow vs Skill Boundary (Required)
+
+1. Workflow IDs and skill IDs are different namespaces.
+2. Do not call `skill_search`/`skill_get` with workflow IDs such as `workflow-implement-track`.
+3. Do not include workflow IDs inside `selected_skills` or `loaded_skills`; those fields are skill IDs only.
+4. Keep workflow selection in the workflow log (`/workflow` decision) and keep MCP skill logs strictly skill-scoped.
+
 ## 7) Socratic Gate (Before Complex Work)
 
 Before multi-file or architecture-impacting changes, ask targeted questions when requirements are unclear:

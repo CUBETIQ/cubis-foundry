@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { mkdtempSync, statSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, statSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import type { VaultManifest } from "../vault/types.js";
@@ -147,11 +147,153 @@ describe("skill tools", () => {
     expect(toolMetrics.loadedSkillEstimatedTokens).toBeGreaterThan(0);
   });
 
+  it("includes referenced markdown files in skill_get by default", async () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), "mcp-skill-ref-default-"));
+    const skillFile = path.join(dir, "SKILL.md");
+    const referencesDir = path.join(dir, "references");
+    mkdirSync(referencesDir, { recursive: true });
+    writeFileSync(
+      skillFile,
+      [
+        "---",
+        "name: referenced-skill",
+        "description: skill with refs",
+        "---",
+        "# Skill",
+        "See [Guide](references/guide.md).",
+      ].join("\n"),
+      "utf8",
+    );
+    writeFileSync(
+      path.join(referencesDir, "guide.md"),
+      "# Guide\nReferenced content",
+      "utf8",
+    );
+
+    const skillBytes = statSync(skillFile).size;
+    const manifest: VaultManifest = {
+      categories: ["general"],
+      skills: [
+        {
+          id: "referenced-skill",
+          category: "general",
+          path: skillFile,
+          fileBytes: skillBytes,
+        },
+      ],
+      fullCatalogBytes: skillBytes,
+      fullCatalogEstimatedTokens: Math.ceil(skillBytes / 4),
+    };
+
+    const result = await handleSkillGet({ id: "referenced-skill" }, manifest, 4);
+    expect(result.content[0].text).toContain("## Referenced Files");
+    expect(result.content[0].text).toContain("### references/guide.md");
+    expect(result.content[0].text).toContain("Referenced content");
+  });
+
+  it("skips referenced markdown files when includeReferences is false", async () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), "mcp-skill-ref-skip-"));
+    const skillFile = path.join(dir, "SKILL.md");
+    const referencesDir = path.join(dir, "references");
+    mkdirSync(referencesDir, { recursive: true });
+    writeFileSync(
+      skillFile,
+      [
+        "---",
+        "name: referenced-skill-no-refs",
+        "description: skill with refs",
+        "---",
+        "# Skill",
+        "See [Guide](references/guide.md).",
+      ].join("\n"),
+      "utf8",
+    );
+    writeFileSync(path.join(referencesDir, "guide.md"), "# Guide", "utf8");
+
+    const skillBytes = statSync(skillFile).size;
+    const manifest: VaultManifest = {
+      categories: ["general"],
+      skills: [
+        {
+          id: "referenced-skill-no-refs",
+          category: "general",
+          path: skillFile,
+          fileBytes: skillBytes,
+        },
+      ],
+      fullCatalogBytes: skillBytes,
+      fullCatalogEstimatedTokens: Math.ceil(skillBytes / 4),
+    };
+
+    const result = await handleSkillGet(
+      { id: "referenced-skill-no-refs", includeReferences: false },
+      manifest,
+      4,
+    );
+    expect(result.content[0].text).not.toContain("## Referenced Files");
+    expect(result.content[0].text).not.toContain("### references/guide.md");
+  });
+
+  it("loads sibling markdown files when SKILL.md has no explicit links", async () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), "mcp-skill-ref-fallback-"));
+    const skillFile = path.join(dir, "SKILL.md");
+    writeFileSync(
+      skillFile,
+      [
+        "---",
+        "name: sibling-fallback-skill",
+        "description: fallback sibling",
+        "---",
+        "# Skill",
+      ].join("\n"),
+      "utf8",
+    );
+    writeFileSync(path.join(dir, "overview.md"), "# Overview\nSibling", "utf8");
+
+    const skillBytes = statSync(skillFile).size;
+    const manifest: VaultManifest = {
+      categories: ["general"],
+      skills: [
+        {
+          id: "sibling-fallback-skill",
+          category: "general",
+          path: skillFile,
+          fileBytes: skillBytes,
+        },
+      ],
+      fullCatalogBytes: skillBytes,
+      fullCatalogEstimatedTokens: Math.ceil(skillBytes / 4),
+    };
+
+    const result = await handleSkillGet(
+      { id: "sibling-fallback-skill" },
+      manifest,
+      4,
+    );
+    expect(result.content[0].text).toContain("## Referenced Files");
+    expect(result.content[0].text).toContain("### overview.md");
+    expect(result.content[0].text).toContain("Sibling");
+  });
+
   it("throws when skill_get cannot find the requested skill", async () => {
     const manifest = createManifest();
     await expect(handleSkillGet({ id: "missing" }, manifest, 4)).rejects.toThrow(
       'Skill not found: "missing"',
     );
+  });
+
+  it("throws a wrapper guidance error when skill_get receives workflow id", async () => {
+    const manifest = createManifest();
+    await expect(
+      handleSkillGet({ id: "workflow-implement-track" }, manifest, 4),
+    ).rejects.toThrow("appears to be a wrapper id");
+  });
+
+  it("throws a wrapper guidance error when skill_get receives agent id", async () => {
+    const manifest = createManifest();
+    await expect(
+      handleSkillGet({ id: "agent-backend-specialist" }, manifest, 4),
+    ).rejects.toThrow("appears to be a wrapper id");
   });
 
   it("returns consolidated budget rollup for selected and loaded skills", () => {

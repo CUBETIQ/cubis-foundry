@@ -193,6 +193,20 @@ function normalizeBoolean(value) {
   return normalized === "true" || normalized === "yes" || normalized === "1";
 }
 
+function normalizeLower(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function isCodexWrapperSkill(id, metadata) {
+  const lowerId = normalizeLower(id);
+  if (lowerId.startsWith("workflow-") || lowerId.startsWith("agent-")) {
+    return true;
+  }
+
+  const wrapperKind = normalizeLower(metadata.wrapper);
+  return wrapperKind === "workflow" || wrapperKind === "agent";
+}
+
 async function collectSkillsIndexEntries(roots, indexPathPrefix) {
   const rowById = new Map();
 
@@ -209,6 +223,10 @@ async function collectSkillsIndexEntries(roots, indexPathPrefix) {
       const raw = await fs.readFile(skillFile, "utf8");
       const fm = parseFrontmatter(raw);
       const metadata = getMetadataBlock(fm.raw);
+
+      if (isCodexWrapperSkill(skillId, metadata)) {
+        continue;
+      }
 
       const id = skillId;
       const name = getScalar(fm.raw, "name") || id;

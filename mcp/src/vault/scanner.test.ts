@@ -22,6 +22,12 @@ function createSkill(root: string, id: string): void {
   );
 }
 
+function createSkillFromContent(root: string, id: string, content: string): void {
+  const skillDir = path.join(root, id);
+  mkdirSync(skillDir, { recursive: true });
+  writeFileSync(path.join(skillDir, "SKILL.md"), content, "utf8");
+}
+
 afterEach(() => {
   while (tempDirs.length > 0) {
     const dir = tempDirs.pop();
@@ -67,5 +73,34 @@ describe("scanVaultRoots", () => {
     expect(skills).toHaveLength(1);
     expect(skills[0].id).toBe("qa-automation-engineer");
     expect(skills[0].category).toBe("testing");
+  });
+
+  it("excludes codex wrapper skills from vault discovery", async () => {
+    const root = createTempDir("mcp-vault-wrapper-");
+
+    createSkill(root, "lint-and-validate");
+    createSkill(root, "tdd-workflow");
+    createSkill(root, "workflow-implement-track");
+    createSkill(root, "agent-backend-specialist");
+    createSkillFromContent(
+      root,
+      "custom-wrapper-id",
+      [
+        "---",
+        "name: custom-wrapper-id",
+        "description: Wrapper by metadata only",
+        "metadata:",
+        "  wrapper: workflow",
+        "---",
+        "",
+        "# wrapper",
+        "",
+      ].join("\n"),
+    );
+
+    const skills = await scanVaultRoots([root], "/unused");
+    const ids = skills.map((s) => s.id).sort();
+
+    expect(ids).toEqual(["lint-and-validate", "tdd-workflow"]);
   });
 });

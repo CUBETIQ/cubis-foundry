@@ -5,7 +5,7 @@
  * Description extraction is deferred to browse/search operations.
  */
 
-import { readdir, stat } from "node:fs/promises";
+import { open, readdir, stat } from "node:fs/promises";
 import path from "node:path";
 import { logger } from "../utils/logger.js";
 import type { SkillPointer } from "./types.js";
@@ -40,6 +40,14 @@ export async function scanVaultRoots(
       const skillStat = await stat(skillFile).catch(() => null);
       if (!skillStat?.isFile()) continue;
 
+      const wrapperKind = await detectWrapperKind(entry, skillFile);
+      if (wrapperKind) {
+        logger.debug(
+          `Skipping wrapper skill ${entry} (${wrapperKind}) at ${skillFile}`,
+        );
+        continue;
+      }
+
       // Derive category from the skill's frontmatter or default to "general"
       // At scan time we only store the path; category is derived from directory structure
       skills.push({
@@ -53,6 +61,88 @@ export async function scanVaultRoots(
 
   logger.info(`Vault scan complete: ${skills.length} skills discovered`);
   return skills;
+}
+
+const WRAPPER_PREFIXES = ["workflow-", "agent-"] as const;
+const WRAPPER_KINDS = new Set(["workflow", "agent"]);
+const FRONTMATTER_PREVIEW_BYTES = 8192;
+
+function extractWrapperKindFromId(skillId: string): "workflow" | "agent" | null {
+  const lower = skillId.toLowerCase();
+  if (lower.startsWith(WRAPPER_PREFIXES[0])) return "workflow";
+  if (lower.startsWith(WRAPPER_PREFIXES[1])) return "agent";
+  return null;
+}
+
+async function readFrontmatterPreview(skillFile: string): Promise<string | null> {
+  const handle = await open(skillFile, "r").catch(() => null);
+  if (!handle) return null;
+
+  try {
+    // Read only a small head chunk; wrapper metadata lives in frontmatter.
+    const buffer = Buffer.alloc(FRONTMATTER_PREVIEW_BYTES);
+    const { bytesRead } = await handle.read(
+      buffer,
+      0,
+      FRONTMATTER_PREVIEW_BYTES,
+      0,
+    );
+    return buffer.toString("utf8", 0, bytesRead);
+  } finally {
+    await handle.close();
+  }
+}
+
+function parseFrontmatter(rawPreview: string): string | null {
+  const match = rawPreview.match(/^---\s*\n([\s\S]*?)\n---/);
+  return match?.[1] ?? null;
+}
+
+function extractMetadataWrapper(frontmatter: string): string | null {
+  const lines = frontmatter.split(/\r?\n/);
+  let inMetadata = false;
+
+  for (const line of lines) {
+    if (!inMetadata) {
+      if (/^\s*metadata\s*:\s*$/.test(line)) {
+        inMetadata = true;
+      }
+      continue;
+    }
+
+    if (!line.trim()) continue;
+    if (!/^\s+/.test(line)) break;
+
+    const match = line.match(/^\s+wrapper\s*:\s*(.+)\s*$/);
+    if (!match) continue;
+
+    const value = match[1].trim().replace(/^['"]|['"]$/g, "").toLowerCase();
+    if (WRAPPER_KINDS.has(value)) {
+      return value;
+    }
+  }
+
+  return null;
+}
+
+async function detectWrapperKind(
+  skillId: string,
+  skillFile: string,
+): Promise<"workflow" | "agent" | null> {
+  const byId = extractWrapperKindFromId(skillId);
+  if (byId) return byId;
+
+  const rawPreview = await readFrontmatterPreview(skillFile);
+  if (!rawPreview) return null;
+  const frontmatter = parseFrontmatter(rawPreview);
+  if (!frontmatter) return null;
+
+  const byMetadata = extractMetadataWrapper(frontmatter);
+  if (byMetadata === "workflow" || byMetadata === "agent") {
+    return byMetadata;
+  }
+
+  return null;
 }
 
 /**
