@@ -2506,6 +2506,13 @@ function rewriteCodexWorkflowAgentReferences(sourceBody, agentIds) {
   return rewritten;
 }
 
+function rewriteCodexAgentSkillReferences(sourceBody) {
+  if (!sourceBody) return sourceBody;
+  // Agent source files live under platforms/*/agents, but wrapper skills live
+  // under .agents/skills/agent-*. Rebase ../skills/<id> links accordingly.
+  return sourceBody.replace(/\(\.\.\/skills\//g, "(../");
+}
+
 async function parseWorkflowMetadata(filePath) {
   const raw = await readFile(filePath, "utf8");
   const { frontmatter, body } = extractFrontmatter(raw);
@@ -2730,11 +2737,15 @@ async function generateCodexWrapperSkills({
     }
 
     const metadata = await parseAgentMetadata(source);
+    const rewrittenBody = rewriteCodexAgentSkillReferences(metadata.body);
     const wrapperSkillId = `${CODEX_AGENT_SKILL_PREFIX}${metadata.id}`;
     const destinationDir = path.join(skillsDir, wrapperSkillId);
     const content = buildCodexAgentWrapperSkillMarkdown(
       wrapperSkillId,
-      metadata,
+      {
+        ...metadata,
+        body: rewrittenBody,
+      },
     );
 
     const result = await writeGeneratedSkillArtifact({
@@ -2757,6 +2768,22 @@ async function generateCodexWrapperSkills({
     artifacts,
     generated,
   };
+}
+
+async function resolvePlatformAgentSkillDependencies({
+  platformRoot,
+  platformSpec,
+}) {
+  const dependencyIds = [];
+
+  for (const agentFile of platformSpec.agents || []) {
+    const source = path.join(platformRoot, "agents", agentFile);
+    if (!(await pathExists(source))) continue;
+    const metadata = await parseAgentMetadata(source);
+    dependencyIds.push(...metadata.skills);
+  }
+
+  return unique(dependencyIds.filter(Boolean));
 }
 
 async function collectInstalledWorkflows(
@@ -4902,9 +4929,13 @@ async function installBundleArtifacts({
       skipped.push(destination);
     else installed.push(destination);
   }
+  const agentSkillDependencies = await resolvePlatformAgentSkillDependencies({
+    platformRoot,
+    platformSpec,
+  });
   const skillIds = await resolveInstallSkillIds({
     platformSpec,
-    extraSkillIds,
+    extraSkillIds: [...extraSkillIds, ...agentSkillDependencies],
     skillProfile,
   });
   for (const skillId of skillIds) {
@@ -7047,7 +7078,8 @@ async function collectInlineHeaderFindings({
   const scanFile = async (filePath) => {
     if (!(await pathExists(filePath))) return;
     const raw = await readFile(filePath, "utf8");
-    const unsafeStitchHeader = /X-Goog-Api-Key:\s*(?!\$\{)[^"\n]+/i;
+    const unsafeStitchHeader =
+      /X-Goog-Api-Key:(?!\s*\$\{[A-Za-z_][A-Za-z0-9_]*\})\s*[^"\n]+/i;
     const unsafeBearerHeader = /"Authorization"\s*:\s*"Bearer\s+(?!\$\{)[^"]+/i;
     if (unsafeStitchHeader.test(raw) || unsafeBearerHeader.test(raw)) {
       findings.push(filePath);
