@@ -273,8 +273,13 @@ cbx workflows install --platform codex --bundle agent-environment-setup --postma
   --mcp-runtime docker \
   --mcp-fallback local \
   --mcp-image ghcr.io/cubis/foundry-mcp:0.1.0 \
-  --mcp-update-policy pinned
+  --mcp-update-policy pinned \
+  --mcp-build-local   # optional: build image locally instead of docker pull
 ```
+
+When `--mcp-runtime docker` is selected and Docker is available, install now prepares the image automatically:
+- Pulls the image by default (`docker pull`)
+- Or builds locally when `--mcp-build-local` is set
 
 MCP tool catalog commands:
 
@@ -282,6 +287,22 @@ MCP tool catalog commands:
 cbx mcp tools sync --service all --scope global
 cbx mcp tools list --service postman --scope global
 cbx mcp tools list --service stitch --scope global
+```
+
+MCP Docker runtime commands:
+
+```bash
+# Inspect runtime/container state
+cbx mcp runtime status --scope global --name cbx-mcp
+
+# Start runtime container (pull/build image first as needed)
+cbx mcp runtime up --scope global --name cbx-mcp --port 3310
+
+# Recreate existing container
+cbx mcp runtime up --scope global --name cbx-mcp --replace
+
+# Stop/remove runtime container
+cbx mcp runtime down --name cbx-mcp
 ```
 
 Docker E2E MCP check (single command):

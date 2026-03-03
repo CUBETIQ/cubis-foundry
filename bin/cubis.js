@@ -168,6 +168,9 @@ const DEFAULT_MCP_RUNTIME = "docker";
 const DEFAULT_MCP_FALLBACK = "local";
 const DEFAULT_MCP_UPDATE_POLICY = "pinned";
 const DEFAULT_MCP_DOCKER_IMAGE = "ghcr.io/cubis/foundry-mcp:0.1.0";
+const DEFAULT_MCP_DOCKER_CONTAINER_NAME = "cbx-mcp";
+const DEFAULT_MCP_DOCKER_HOST_PORT = 3310;
+const MCP_DOCKER_CONTAINER_PORT = 3100;
 const TECH_SCAN_MAX_FILES = 5000;
 const TECH_SCAN_IGNORED_DIRS = new Set([
   ".git",
@@ -403,6 +406,139 @@ function normalizeMcpUpdatePolicy(value, fallback = DEFAULT_MCP_UPDATE_POLICY) {
     );
   }
   return normalized;
+}
+
+function normalizePortNumber(value, fallback = DEFAULT_MCP_DOCKER_HOST_PORT) {
+  if (value === undefined || value === null || value === "") return fallback;
+  const parsed = Number.parseInt(String(value).trim(), 10);
+  if (!Number.isInteger(parsed) || parsed <= 0 || parsed > 65535) {
+    throw new Error(
+      `Invalid port '${value}'. Use an integer between 1 and 65535.`,
+    );
+  }
+  return parsed;
+}
+
+function parseDockerPsRow(line) {
+  const [id, image, status, names] = String(line || "").split("\t");
+  if (!id || !names) return null;
+  return {
+    id: id.trim(),
+    image: String(image || "").trim(),
+    status: String(status || "").trim(),
+    name: String(names || "").trim(),
+  };
+}
+
+async function checkDockerAvailable({ cwd = process.cwd() } = {}) {
+  try {
+    await execFile("docker", ["ps"], { cwd });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function checkDockerImageExists({ image, cwd = process.cwd() }) {
+  try {
+    await execFile("docker", ["image", "inspect", image], { cwd });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function pullMcpDockerImage({ image, cwd = process.cwd() }) {
+  await execFile("docker", ["pull", image], { cwd });
+  return {
+    action: "pulled",
+    image,
+  };
+}
+
+async function buildMcpDockerImageLocal({ image, cwd = process.cwd() }) {
+  const dockerContext = path.join(packageRoot(), "mcp");
+  if (!(await pathExists(path.join(dockerContext, "Dockerfile")))) {
+    throw new Error(`MCP Dockerfile is missing at ${dockerContext}.`);
+  }
+  await execFile("docker", ["build", "-t", image, dockerContext], { cwd });
+  return {
+    action: "built-local",
+    image,
+    context: dockerContext,
+  };
+}
+
+async function ensureMcpDockerImage({
+  image,
+  updatePolicy,
+  buildLocal = false,
+  cwd = process.cwd(),
+}) {
+  if (buildLocal) {
+    return buildMcpDockerImageLocal({ image, cwd });
+  }
+  if (updatePolicy === "pinned") {
+    const exists = await checkDockerImageExists({ image, cwd });
+    if (exists) {
+      return {
+        action: "already-present",
+        image,
+      };
+    }
+  }
+  return pullMcpDockerImage({ image, cwd });
+}
+
+async function inspectDockerContainerByName({
+  name,
+  cwd = process.cwd(),
+}) {
+  try {
+    const { stdout } = await execFile(
+      "docker",
+      [
+        "ps",
+        "-a",
+        "--filter",
+        `name=^/${name}$`,
+        "--format",
+        "{{.ID}}\t{{.Image}}\t{{.Status}}\t{{.Names}}",
+      ],
+      { cwd },
+    );
+    const row = String(stdout || "")
+      .trim()
+      .split(/\r?\n/)
+      .map((line) => parseDockerPsRow(line))
+      .find(Boolean);
+    if (!row || row.name !== name) return null;
+    return row;
+  } catch {
+    return null;
+  }
+}
+
+async function resolveDockerContainerHostPort({
+  name,
+  containerPort = MCP_DOCKER_CONTAINER_PORT,
+  cwd = process.cwd(),
+}) {
+  try {
+    const { stdout } = await execFile(
+      "docker",
+      ["port", name, `${containerPort}/tcp`],
+      { cwd },
+    );
+    const line = String(stdout || "")
+      .trim()
+      .split(/\r?\n/)[0];
+    if (!line) return null;
+    const match = line.match(/:(\d+)\s*$/);
+    return match ? Number.parseInt(match[1], 10) : null;
+  } catch {
+    return null;
+  }
 }
 
 function isPathInsideRoot(targetPath, rootPath) {
@@ -3836,6 +3972,7 @@ async function resolvePostmanInstallSelection({
     options.mcpUpdatePolicy,
     DEFAULT_MCP_UPDATE_POLICY,
   );
+  const mcpBuildLocal = Boolean(options.mcpBuildLocal);
   const mcpToolSync = options.mcpToolSync !== false;
 
   const canPrompt = !options.yes && process.stdin.isTTY;
@@ -3927,14 +4064,9 @@ async function resolvePostmanInstallSelection({
 
   let effectiveRuntime = requestedRuntime;
   let runtimeSkipped = false;
+  let dockerImageAction = "not-requested";
   if (requestedRuntime === "docker") {
-    let dockerAvailable = false;
-    try {
-      await execFile("docker", ["ps"], { cwd });
-      dockerAvailable = true;
-    } catch {
-      dockerAvailable = false;
-    }
+    const dockerAvailable = await checkDockerAvailable({ cwd });
     if (!dockerAvailable) {
       if (requestedFallback === "fail") {
         throw new Error(
@@ -3951,6 +4083,35 @@ async function resolvePostmanInstallSelection({
         warnings.push(
           "Docker runtime unavailable; falling back to local runtime (--mcp-fallback=local).",
         );
+      }
+    } else {
+      try {
+        const ensured = await ensureMcpDockerImage({
+          image: requestedImage,
+          updatePolicy: requestedUpdatePolicy,
+          buildLocal: mcpBuildLocal,
+          cwd,
+        });
+        dockerImageAction = ensured.action;
+      } catch (error) {
+        if (requestedFallback === "fail") {
+          throw new Error(
+            `Docker runtime requested but MCP image preparation failed (${error.message}).`,
+          );
+        }
+        if (requestedFallback === "skip") {
+          runtimeSkipped = true;
+          dockerImageAction = "failed";
+          warnings.push(
+            `MCP Docker image preparation failed; skipping MCP runtime patch because --mcp-fallback=skip. (${error.message})`,
+          );
+        } else {
+          effectiveRuntime = "local";
+          dockerImageAction = "failed";
+          warnings.push(
+            `MCP Docker image preparation failed; falling back to local runtime (--mcp-fallback=local). (${error.message})`,
+          );
+        }
       }
     }
   }
@@ -3993,6 +4154,7 @@ async function resolvePostmanInstallSelection({
       docker: {
         image: requestedImage,
         updatePolicy: requestedUpdatePolicy,
+        buildLocal: mcpBuildLocal,
       },
       catalog: {
         toolSync: mcpToolSync,
@@ -4036,6 +4198,8 @@ async function resolvePostmanInstallSelection({
     mcpFallback: requestedFallback,
     mcpImage: requestedImage,
     mcpUpdatePolicy: requestedUpdatePolicy,
+    mcpBuildLocal,
+    dockerImageAction,
     mcpToolSync,
     runtimeSkipped,
     defaultWorkspaceId: defaultWorkspaceId ?? null,
@@ -4301,6 +4465,8 @@ async function configurePostmanInstallArtifacts({
     mcpFallback: postmanSelection.mcpFallback,
     mcpImage: postmanSelection.mcpImage,
     mcpUpdatePolicy: postmanSelection.mcpUpdatePolicy,
+    mcpBuildLocal: postmanSelection.mcpBuildLocal,
+    dockerImageAction: postmanSelection.dockerImageAction,
     mcpToolSync: postmanSelection.mcpToolSync,
     apiKeySource: effectiveApiKeySource,
     stitchApiKeySource: effectiveStitchApiKeySource,
@@ -5254,6 +5420,8 @@ function printPostmanSetupSummary({ postmanSetup }) {
   console.log(`- MCP fallback: ${postmanSetup.mcpFallback}`);
   console.log(`- MCP image: ${postmanSetup.mcpImage}`);
   console.log(`- MCP update policy: ${postmanSetup.mcpUpdatePolicy}`);
+  console.log(`- MCP build local: ${postmanSetup.mcpBuildLocal ? "yes" : "no"}`);
+  console.log(`- MCP image prepare: ${postmanSetup.dockerImageAction}`);
   console.log(`- MCP tool sync: ${postmanSetup.mcpToolSync ? "enabled" : "disabled"}`);
   console.log(`- Postman API key source: ${postmanSetup.apiKeySource}`);
   if (postmanSetup.stitchApiKeySource) {
@@ -5762,6 +5930,10 @@ function withInstallOptions(command) {
       "--mcp-update-policy <policy>",
       "MCP image update policy: pinned|latest",
       DEFAULT_MCP_UPDATE_POLICY,
+    )
+    .option(
+      "--mcp-build-local",
+      "build MCP Docker image from local package mcp/ directory instead of pulling",
     )
     .option(
       "--mcp-tool-sync",
@@ -7729,6 +7901,220 @@ async function runMcpToolsList(options) {
   }
 }
 
+function resolveCbxRootPath({ scope, cwd = process.cwd() }) {
+  if (scope === "global") {
+    return path.join(os.homedir(), ".cbx");
+  }
+  const workspaceRoot = findWorkspaceRoot(cwd);
+  return path.join(workspaceRoot, ".cbx");
+}
+
+function resolveMcpRuntimeDefaultsFromConfig(configValue) {
+  const mcp =
+    configValue && typeof configValue.mcp === "object" && !Array.isArray(configValue.mcp)
+      ? configValue.mcp
+      : {};
+  const docker =
+    mcp && typeof mcp.docker === "object" && !Array.isArray(mcp.docker)
+      ? mcp.docker
+      : {};
+
+  const runtime = normalizeMcpRuntime(mcp.runtime, DEFAULT_MCP_RUNTIME);
+  const fallback = normalizeMcpFallback(mcp.fallback, DEFAULT_MCP_FALLBACK);
+  const image =
+    normalizePostmanApiKey(docker.image) || DEFAULT_MCP_DOCKER_IMAGE;
+  const updatePolicy = normalizeMcpUpdatePolicy(
+    docker.updatePolicy,
+    DEFAULT_MCP_UPDATE_POLICY,
+  );
+  const buildLocal = Boolean(docker.buildLocal);
+
+  return {
+    runtime,
+    fallback,
+    image,
+    updatePolicy,
+    buildLocal,
+  };
+}
+
+async function loadMcpRuntimeDefaults({ scope, cwd = process.cwd() }) {
+  const configPath = resolveCbxConfigPath({ scope, cwd });
+  const existing = await readJsonFileIfExists(configPath);
+  const configValue =
+    existing.value &&
+    typeof existing.value === "object" &&
+    !Array.isArray(existing.value)
+      ? existing.value
+      : {};
+  return {
+    configPath,
+    defaults: resolveMcpRuntimeDefaultsFromConfig(configValue),
+    hasConfig: existing.exists,
+  };
+}
+
+async function runMcpRuntimeStatus(options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const cwd = process.cwd();
+    const scope = normalizeMcpScope(opts.scope, "global");
+    const defaults = await loadMcpRuntimeDefaults({ scope, cwd });
+    const containerName =
+      normalizePostmanApiKey(opts.name) || DEFAULT_MCP_DOCKER_CONTAINER_NAME;
+    const dockerAvailable = await checkDockerAvailable({ cwd });
+    const container = dockerAvailable
+      ? await inspectDockerContainerByName({ name: containerName, cwd })
+      : null;
+
+    console.log(`Scope: ${scope}`);
+    console.log(`Config file: ${defaults.configPath}`);
+    console.log(`Config present: ${defaults.hasConfig ? "yes" : "no"}`);
+    console.log(`Configured runtime: ${defaults.defaults.runtime}`);
+    console.log(`Configured fallback: ${defaults.defaults.fallback}`);
+    console.log(`Configured image: ${defaults.defaults.image}`);
+    console.log(`Configured update policy: ${defaults.defaults.updatePolicy}`);
+    console.log(`Configured build local: ${defaults.defaults.buildLocal ? "yes" : "no"}`);
+    console.log(`Docker available: ${dockerAvailable ? "yes" : "no"}`);
+    console.log(`Container name: ${containerName}`);
+    if (!dockerAvailable) {
+      console.log("Container status: unavailable (docker not reachable)");
+      return;
+    }
+    if (!container) {
+      console.log("Container status: not found");
+      return;
+    }
+    const isRunning = container.status.toLowerCase().startsWith("up ");
+    console.log(`Container status: ${container.status}`);
+    console.log(`Container image: ${container.image}`);
+    if (isRunning) {
+      const hostPort =
+        (await resolveDockerContainerHostPort({
+          name: containerName,
+          containerPort: MCP_DOCKER_CONTAINER_PORT,
+          cwd,
+        })) || DEFAULT_MCP_DOCKER_HOST_PORT;
+      console.log(
+        `Endpoint: http://127.0.0.1:${hostPort}/mcp`,
+      );
+    }
+  } catch (error) {
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+async function runMcpRuntimeUp(options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const cwd = process.cwd();
+    const scope = normalizeMcpScope(opts.scope, "global");
+    const defaults = await loadMcpRuntimeDefaults({ scope, cwd });
+    const containerName =
+      normalizePostmanApiKey(opts.name) || DEFAULT_MCP_DOCKER_CONTAINER_NAME;
+    const image =
+      normalizePostmanApiKey(opts.image) || defaults.defaults.image;
+    const updatePolicy = normalizeMcpUpdatePolicy(
+      opts.updatePolicy,
+      defaults.defaults.updatePolicy,
+    );
+    const buildLocal = hasCliFlag("--build-local")
+      ? true
+      : defaults.defaults.buildLocal;
+    const hostPort = normalizePortNumber(opts.port, DEFAULT_MCP_DOCKER_HOST_PORT);
+    const replace = Boolean(opts.replace);
+    const dockerAvailable = await checkDockerAvailable({ cwd });
+    if (!dockerAvailable) {
+      throw new Error("Docker is unavailable. Start OrbStack/Docker and retry.");
+    }
+
+    const prepared = await ensureMcpDockerImage({
+      image,
+      updatePolicy,
+      buildLocal,
+      cwd,
+    });
+
+    const existing = await inspectDockerContainerByName({
+      name: containerName,
+      cwd,
+    });
+    if (existing && !replace) {
+      throw new Error(
+        `Container '${containerName}' already exists (${existing.status}). Use --replace to recreate it.`,
+      );
+    }
+    if (existing && replace) {
+      await execFile("docker", ["rm", "-f", containerName], { cwd });
+    }
+
+    const cbxRoot = resolveCbxRootPath({ scope, cwd });
+    await mkdir(cbxRoot, { recursive: true });
+    await execFile(
+      "docker",
+      [
+        "run",
+        "-d",
+        "--name",
+        containerName,
+        "-p",
+        `${hostPort}:${MCP_DOCKER_CONTAINER_PORT}`,
+        "-v",
+        `${cbxRoot}:/root/.cbx`,
+        "-e",
+        "CBX_MCP_TRANSPORT=streamable-http",
+        image,
+      ],
+      { cwd },
+    );
+
+    const running = await inspectDockerContainerByName({
+      name: containerName,
+      cwd,
+    });
+    console.log(`Scope: ${scope}`);
+    console.log(`Container: ${containerName}`);
+    console.log(`Image: ${image}`);
+    console.log(`Image prepare: ${prepared.action}`);
+    console.log(`Update policy: ${updatePolicy}`);
+    console.log(`Build local: ${buildLocal ? "yes" : "no"}`);
+    console.log(`Mount: ${cbxRoot} -> /root/.cbx`);
+    console.log(`Port: ${hostPort}:${MCP_DOCKER_CONTAINER_PORT}`);
+    console.log(`Status: ${running ? running.status : "started"}`);
+    console.log(`Endpoint: http://127.0.0.1:${hostPort}/mcp`);
+  } catch (error) {
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+async function runMcpRuntimeDown(options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const cwd = process.cwd();
+    const containerName =
+      normalizePostmanApiKey(opts.name) || DEFAULT_MCP_DOCKER_CONTAINER_NAME;
+    const dockerAvailable = await checkDockerAvailable({ cwd });
+    if (!dockerAvailable) {
+      throw new Error("Docker is unavailable. Start OrbStack/Docker and retry.");
+    }
+    const existing = await inspectDockerContainerByName({
+      name: containerName,
+      cwd,
+    });
+    if (!existing) {
+      console.log(`Container '${containerName}' is not present.`);
+      return;
+    }
+    await execFile("docker", ["rm", "-f", containerName], { cwd });
+    console.log(`Removed container '${containerName}'.`);
+  } catch (error) {
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
 function printRulesInitSummary({
   platform,
   scope,
@@ -8171,6 +8557,62 @@ mcpToolsCommand
     "global",
   )
   .action(runMcpToolsList);
+
+const mcpRuntimeCommand = mcpCommand
+  .command("runtime")
+  .description("Manage local Docker runtime container for Cubis MCP gateway");
+
+mcpRuntimeCommand
+  .command("status")
+  .description("Show Docker runtime status and configured MCP runtime defaults")
+  .option(
+    "--scope <scope>",
+    "config scope: project|workspace|global|user",
+    "global",
+  )
+  .option(
+    "--name <name>",
+    "container name",
+    DEFAULT_MCP_DOCKER_CONTAINER_NAME,
+  )
+  .action(runMcpRuntimeStatus);
+
+mcpRuntimeCommand
+  .command("up")
+  .description("Start Docker runtime container for Cubis MCP gateway")
+  .option(
+    "--scope <scope>",
+    "config scope: project|workspace|global|user",
+    "global",
+  )
+  .option(
+    "--name <name>",
+    "container name",
+    DEFAULT_MCP_DOCKER_CONTAINER_NAME,
+  )
+  .option("--image <image:tag>", "docker image to run")
+  .option("--update-policy <policy>", "pinned|latest")
+  .option(
+    "--build-local",
+    "build MCP Docker image from local package mcp/ directory instead of pulling",
+  )
+  .option("--port <port>", "host port to map to container :3100")
+  .option("--replace", "remove existing container with same name before start")
+  .action(runMcpRuntimeUp);
+
+mcpRuntimeCommand
+  .command("down")
+  .description("Stop and remove Docker runtime container")
+  .option(
+    "--name <name>",
+    "container name",
+    DEFAULT_MCP_DOCKER_CONTAINER_NAME,
+  )
+  .action(runMcpRuntimeDown);
+
+mcpRuntimeCommand.action(() => {
+  mcpRuntimeCommand.help();
+});
 
 mcpCommand.action(() => {
   mcpCommand.help();
