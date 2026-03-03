@@ -11,7 +11,13 @@
   "files": [
     "bin",
     "workflows",
-    "mcp",
+    "mcp/dist",
+    "mcp/config.json",
+    "mcp/package.json",
+    "mcp/README.md",
+    "mcp/Dockerfile",
+    "mcp/.dockerignore",
+    "mcp/src",
     "README.md",
     "CHANGELOG.md"
   ],

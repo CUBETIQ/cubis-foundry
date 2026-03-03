@@ -1,0 +1,5 @@
+mcp/node_modules
+mcp/.vite
+mcp/coverage
+mcp/*.tsbuildinfo
+**/.DS_Store
