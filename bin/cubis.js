@@ -7112,6 +7112,49 @@ async function writeConfigFile({
       : "created";
 }
 
+async function persistMcpRuntimePreference({
+  scope,
+  runtime,
+  fallback = null,
+  cwd = process.cwd(),
+  generatedBy = "cbx mcp runtime up",
+}) {
+  const { configPath, existing, existingValue } = await loadConfigForScope({
+    scope,
+    cwd,
+  });
+  if (!existing.exists || !existingValue) {
+    return {
+      action: "skipped",
+      configPath,
+      reason: "config-missing",
+    };
+  }
+  const next = prepareConfigDocument(existingValue, {
+    scope,
+    generatedBy,
+  });
+  if (!next.mcp || typeof next.mcp !== "object" || Array.isArray(next.mcp)) {
+    next.mcp = {};
+  }
+  next.mcp.runtime = runtime;
+  next.mcp.effectiveRuntime = runtime;
+  if (fallback) {
+    next.mcp.fallback = fallback;
+  }
+  const action = await writeConfigFile({
+    configPath,
+    nextConfig: next,
+    existingExists: existing.exists,
+    dryRun: false,
+  });
+  return {
+    action,
+    configPath,
+    reason: null,
+  };
+}
+
 function toProfileEnvSuffix(profileName) {
   const normalized =
     normalizeCredentialProfileName(profileName) || DEFAULT_CREDENTIAL_PROFILE_NAME;
@@ -7642,6 +7685,8 @@ async function runWorkflowConfig(options) {
     const hasWorkspaceIdOption = opts.workspaceId !== undefined;
     const wantsClearWorkspaceId = Boolean(opts.clearWorkspaceId);
     const wantsInteractiveEdit = Boolean(opts.edit);
+    const hasMcpRuntimeOption = opts.mcpRuntime !== undefined;
+    const hasMcpFallbackOption = opts.mcpFallback !== undefined;
 
     if (hasWorkspaceIdOption && wantsClearWorkspaceId) {
       throw new Error(
@@ -7650,7 +7695,11 @@ async function runWorkflowConfig(options) {
     }
 
     const wantsMutation =
-      hasWorkspaceIdOption || wantsClearWorkspaceId || wantsInteractiveEdit;
+      hasWorkspaceIdOption ||
+      wantsClearWorkspaceId ||
+      wantsInteractiveEdit ||
+      hasMcpRuntimeOption ||
+      hasMcpFallbackOption;
     const showOnly = Boolean(opts.show) || !wantsMutation;
     const { configPath, existing, existingValue } = await loadConfigForScope({
       scope,
@@ -7692,6 +7741,18 @@ async function runWorkflowConfig(options) {
     if (wantsClearWorkspaceId) {
       workspaceId = null;
     }
+    const mcpRuntime = hasMcpRuntimeOption
+      ? normalizeMcpRuntime(
+          opts.mcpRuntime,
+          normalizeMcpRuntime(next.mcp?.runtime, DEFAULT_MCP_RUNTIME),
+        )
+      : null;
+    const mcpFallback = hasMcpFallbackOption
+      ? normalizeMcpFallback(
+          opts.mcpFallback,
+          normalizeMcpFallback(next.mcp?.fallback, DEFAULT_MCP_FALLBACK),
+        )
+      : null;
 
     activeProfile.workspaceId = workspaceId;
     const updatedProfiles = postmanState.profiles.map((profile) =>
@@ -7713,6 +7774,17 @@ async function runWorkflowConfig(options) {
     });
     upsertNormalizedPostmanConfig(next, updatedPostmanState);
 
+    if (!next.mcp || typeof next.mcp !== "object" || Array.isArray(next.mcp)) {
+      next.mcp = {};
+    }
+    if (hasMcpRuntimeOption) {
+      next.mcp.runtime = mcpRuntime;
+      next.mcp.effectiveRuntime = mcpRuntime;
+    }
+    if (hasMcpFallbackOption) {
+      next.mcp.fallback = mcpFallback;
+    }
+
     if (parseStoredStitchConfig(next)) {
       upsertNormalizedStitchConfig(next, parseStoredStitchConfig(next));
     }
@@ -7729,6 +7801,13 @@ async function runWorkflowConfig(options) {
     console.log(
       `postman.defaultWorkspaceId: ${workspaceId === null ? "null" : workspaceId}`,
     );
+    if (hasMcpRuntimeOption) {
+      console.log(`mcp.runtime: ${mcpRuntime}`);
+      console.log(`mcp.effectiveRuntime: ${mcpRuntime}`);
+    }
+    if (hasMcpFallbackOption) {
+      console.log(`mcp.fallback: ${mcpFallback}`);
+    }
     if (Boolean(opts.showAfter)) {
       const payload = buildConfigShowPayload(next);
       console.log(JSON.stringify(payload, null, 2));
@@ -7801,8 +7880,13 @@ async function sendMcpJsonRpcRequest({
   });
   const text = await response.text();
   if (!response.ok) {
+    const parsedError = parseMcpJsonRpcResponse(text);
+    const serverMessage =
+      normalizePostmanApiKey(parsedError?.error?.message) ||
+      normalizePostmanApiKey(parsedError?.message);
+    const detail = serverMessage ? ` (${serverMessage})` : "";
     throw new Error(
-      `MCP request failed (${method}): HTTP ${response.status} ${response.statusText}`,
+      `MCP request failed (${method}): HTTP ${response.status} ${response.statusText}${detail}`,
     );
   }
   const parsed = parseMcpJsonRpcResponse(text);
@@ -7813,6 +7897,75 @@ async function sendMcpJsonRpcRequest({
       response.headers.get("Mcp-Session-Id") ||
       sessionId,
   };
+}
+
+function sleepMs(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function waitForMcpEndpointReady({
+  url,
+  headers = {},
+  timeoutMs = 15000,
+  intervalMs = 500,
+}) {
+  const startedAt = Date.now();
+  let lastError = null;
+
+  while (Date.now() - startedAt < timeoutMs) {
+    let sessionId = null;
+    try {
+      const init = await sendMcpJsonRpcRequest({
+        url,
+        method: "initialize",
+        id: `cbx-runtime-init-${Date.now()}`,
+        params: {
+          protocolVersion: "2025-06-18",
+          capabilities: {},
+          clientInfo: {
+            name: "cbx-runtime",
+            version: CLI_VERSION,
+          },
+        },
+        headers,
+      });
+      sessionId = init.sessionId;
+      await sendMcpJsonRpcRequest({
+        url,
+        method: "notifications/initialized",
+        params: {},
+        headers,
+        sessionId,
+      });
+      return true;
+    } catch (error) {
+      const message = String(error?.message || "").toLowerCase();
+      if (message.includes("already initialized")) {
+        return true;
+      }
+      lastError = error;
+    } finally {
+      if (sessionId) {
+        try {
+          await fetch(url, {
+            method: "DELETE",
+            headers: {
+              ...headers,
+              "mcp-session-id": sessionId,
+            },
+          });
+        } catch {
+          // best effort
+        }
+      }
+    }
+    await sleepMs(intervalMs);
+  }
+
+  const suffix = lastError ? ` (${lastError.message})` : "";
+  throw new Error(
+    `MCP endpoint readiness check timed out after ${timeoutMs}ms${suffix}`,
+  );
 }
 
 async function discoverUpstreamTools({
@@ -8328,9 +8481,23 @@ async function runMcpRuntimeStatus(options) {
           containerPort: MCP_DOCKER_CONTAINER_PORT,
           cwd,
         })) || DEFAULT_MCP_DOCKER_HOST_PORT;
-      console.log(
-        `Endpoint: http://127.0.0.1:${hostPort}/mcp`,
-      );
+      const endpoint = `http://127.0.0.1:${hostPort}/mcp`;
+      console.log(`Endpoint: ${endpoint}`);
+      try {
+        await waitForMcpEndpointReady({
+          url: endpoint,
+          timeoutMs: 5000,
+          intervalMs: 500,
+        });
+        console.log("Endpoint health: ready");
+      } catch (error) {
+        console.log(`Endpoint health: unreachable (${error.message})`);
+        if (defaults.defaults.fallback === "local") {
+          console.log(
+            `Hint: switch config to local runtime: cbx workflows config --scope ${scope} --mcp-runtime local`,
+          );
+        }
+      }
     }
   } catch (error) {
     console.error(`\nError: ${error.message}`);
@@ -8351,6 +8518,10 @@ async function runMcpRuntimeUp(options) {
     const updatePolicy = normalizeMcpUpdatePolicy(
       opts.updatePolicy,
       defaults.defaults.updatePolicy,
+    );
+    const fallback = normalizeMcpFallback(
+      opts.fallback,
+      defaults.defaults.fallback,
     );
     const buildLocal = hasCliFlag("--build-local")
       ? true
@@ -8405,7 +8576,17 @@ async function runMcpRuntimeUp(options) {
     if (skillsRootExists) {
       dockerArgs.push("-v", `${skillsRoot}:/workflows/skills:ro`);
     }
-    dockerArgs.push("-e", "CBX_MCP_TRANSPORT=streamable-http", image);
+    dockerArgs.push(
+      image,
+      "--transport",
+      "http",
+      "--host",
+      "0.0.0.0",
+      "--port",
+      String(MCP_DOCKER_CONTAINER_PORT),
+      "--scope",
+      "global",
+    );
     await execFile(
       "docker",
       dockerArgs,
@@ -8421,6 +8602,7 @@ async function runMcpRuntimeUp(options) {
     console.log(`Image: ${image}`);
     console.log(`Image prepare: ${prepared.action}`);
     console.log(`Update policy: ${updatePolicy}`);
+    console.log(`Fallback: ${fallback}`);
     console.log(`Build local: ${buildLocal ? "yes" : "no"}`);
     console.log(`Mount: ${cbxRoot} -> /root/.cbx`);
     if (skillsRootExists) {
@@ -8430,7 +8612,51 @@ async function runMcpRuntimeUp(options) {
     }
     console.log(`Port: ${hostPort}:${MCP_DOCKER_CONTAINER_PORT}`);
     console.log(`Status: ${running ? running.status : "started"}`);
-    console.log(`Endpoint: http://127.0.0.1:${hostPort}/mcp`);
+    const endpoint = `http://127.0.0.1:${hostPort}/mcp`;
+    console.log(`Endpoint: ${endpoint}`);
+    try {
+      await waitForMcpEndpointReady({
+        url: endpoint,
+        timeoutMs: 20000,
+        intervalMs: 500,
+      });
+      console.log("Endpoint health: ready");
+    } catch (error) {
+      if (fallback === "skip") {
+        runtimeWarnings.push(
+          `Endpoint health check failed but continuing because --fallback=skip. (${error.message})`,
+        );
+      } else if (fallback === "local") {
+        await execFile("docker", ["rm", "-f", containerName], { cwd }).catch(
+          () => {},
+        );
+        runtimeWarnings.push(
+          `Docker endpoint was unreachable and runtime fell back to local. (${error.message})`,
+        );
+        const persisted = await persistMcpRuntimePreference({
+          scope,
+          runtime: "local",
+          fallback,
+          cwd,
+          generatedBy: "cbx mcp runtime up",
+        });
+        if (persisted.reason === "config-missing") {
+          runtimeWarnings.push(
+            `No cbx config found at ${persisted.configPath}; runtime preference was not persisted.`,
+          );
+        } else {
+          runtimeWarnings.push(
+            `Updated runtime preference in ${persisted.configPath} (${persisted.action}).`,
+          );
+        }
+        console.log("Endpoint health: fallback-to-local");
+        console.log("Local command: cbx mcp serve --transport stdio --scope auto");
+      } else {
+        throw new Error(
+          `MCP endpoint is unreachable at ${endpoint}. ${error.message}`,
+        );
+      }
+    }
     if (runtimeWarnings.length > 0) {
       console.log("Warnings:");
       for (const warning of runtimeWarnings) {
@@ -8768,6 +8994,8 @@ const workflowsConfigCommand = workflowsCommand
   .option("--edit", "edit Postman default workspace ID interactively")
   .option("--workspace-id <id|null>", "set postman.defaultWorkspaceId")
   .option("--clear-workspace-id", "set postman.defaultWorkspaceId to null")
+  .option("--mcp-runtime <runtime>", "set mcp.runtime: docker|local")
+  .option("--mcp-fallback <fallback>", "set mcp.fallback: local|fail|skip")
   .option("--show-after", "print JSON after update")
   .option("--dry-run", "preview changes without writing files")
   .action(runWorkflowConfig);
@@ -8868,6 +9096,8 @@ const skillsConfigCommand = skillsCommand
   .option("--edit", "edit Postman default workspace ID interactively")
   .option("--workspace-id <id|null>", "set postman.defaultWorkspaceId")
   .option("--clear-workspace-id", "set postman.defaultWorkspaceId to null")
+  .option("--mcp-runtime <runtime>", "set mcp.runtime: docker|local")
+  .option("--mcp-fallback <fallback>", "set mcp.fallback: local|fail|skip")
   .option("--show-after", "print JSON after update")
   .option("--dry-run", "preview changes without writing files")
   .action(async (options) => {
@@ -8958,6 +9188,10 @@ mcpRuntimeCommand
   )
   .option("--image <image:tag>", "docker image to run")
   .option("--update-policy <policy>", "pinned|latest")
+  .option(
+    "--fallback <fallback>",
+    "when endpoint is unreachable: local|fail|skip",
+  )
   .option(
     "--build-local",
     "build MCP Docker image from local package mcp/ directory instead of pulling",

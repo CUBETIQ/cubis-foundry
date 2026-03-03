@@ -323,10 +323,10 @@ MCP Docker runtime commands:
 cbx mcp runtime status --scope global --name cbx-mcp
 
 # Start runtime container (pull/build image first as needed)
-cbx mcp runtime up --scope global --name cbx-mcp --port 3310
+cbx mcp runtime up --scope global --name cbx-mcp --port 3310 --fallback local
 
 # Recreate existing container
-cbx mcp runtime up --scope global --name cbx-mcp --replace
+cbx mcp runtime up --scope global --name cbx-mcp --replace --fallback local
 
 # Stop/remove runtime container
 cbx mcp runtime down --name cbx-mcp
@@ -382,6 +382,10 @@ cbx workflows config --scope global --show
 cbx workflows config --scope global --edit
 cbx workflows config --scope global --workspace-id "<workspace-id>"
 cbx workflows config --scope global --clear-workspace-id
+
+# Switch MCP runtime preference quickly
+cbx workflows config --scope project --mcp-runtime local
+cbx workflows config --scope project --mcp-runtime docker --mcp-fallback local
 ```
 
 `--show` now includes computed `status`:
@@ -461,6 +465,21 @@ If `~/.agents/skills` is missing, runtime still starts but will warn and skill d
 - `cbx mcp runtime up` runs HTTP transport in Docker for shared local endpoint (`http://127.0.0.1:<port>/mcp`).
 - `cbx mcp serve --transport stdio` runs local stdio transport for command-based MCP clients.
 - Prefer stdio command server entries (`cubis-foundry`) for direct client integrations; use Docker runtime for explicit HTTP endpoint use cases.
+
+### Docker endpoint resets at `127.0.0.1:<port>/mcp`
+
+If Docker runtime starts but MCP endpoint is unreachable:
+
+```bash
+# Check health and hints
+cbx mcp runtime status --scope project --name cbx-mcp
+
+# Switch this project to local runtime
+cbx workflows config --scope project --mcp-runtime local
+
+# Use direct local server path
+cbx mcp serve --transport stdio --scope auto
+```
 
 ### Duplicate skills shown in UI after older installs
 
