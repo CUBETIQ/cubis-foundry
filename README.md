@@ -2,7 +2,7 @@
 
 Workflow-first installer for multi-platform AI agent environments.
 
-Last updated: 2026-02-27.
+Last updated: 2026-03-03.
 
 `cbx` installs workflows, skills, wrappers, and rule files for:
 - Codex
