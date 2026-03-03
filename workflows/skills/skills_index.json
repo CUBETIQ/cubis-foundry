@@ -742,6 +742,16 @@
     ]
   },
   {
+    "id": "postman",
+    "name": "postman",
+    "canonical_id": "postman",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".agents/skills/postman/SKILL.md",
+    "description": "Automate API testing and collection management with Postman MCP. Use for workspace, collection, environment, and mock operations.",
+    "triggers": []
+  },
+  {
     "id": "powershell-windows",
     "name": "powershell-windows",
     "canonical_id": "powershell-windows",
@@ -978,6 +988,16 @@
     "replaced_by": null,
     "path": ".agents/skills/static-analysis/SKILL.md",
     "description": "Runs CodeQL-based static security analysis (database build, query pack selection, and SARIF results) for vulnerability discovery and audits. Not for custom QL authoring or CI/CD setup.",
+    "triggers": []
+  },
+  {
+    "id": "stitch",
+    "name": "stitch",
+    "canonical_id": "stitch",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".agents/skills/stitch/SKILL.md",
+    "description": "Automate Stitch workflows through Stitch MCP using mcp-remote transport.",
     "triggers": []
   },
   {

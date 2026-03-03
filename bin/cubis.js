@@ -151,6 +151,7 @@ const POSTMAN_API_KEY_ENV_VAR = "POSTMAN_API_KEY";
 const POSTMAN_MCP_URL = "https://mcp.postman.com/minimal";
 const POSTMAN_API_BASE_URL = "https://api.getpostman.com";
 const POSTMAN_SKILL_ID = "postman";
+const STITCH_SKILL_ID = "stitch";
 const STITCH_MCP_SERVER_ID = "StitchMCP";
 const STITCH_API_KEY_ENV_VAR = "STITCH_API_KEY";
 const STITCH_MCP_URL = "https://stitch.googleapis.com/mcp";
@@ -3803,7 +3804,8 @@ async function resolvePostmanInstallSelection({
     );
   }
 
-  const enabled = Boolean(options.postman) || hasWorkspaceOption;
+  const stitchRequested = Boolean(options.stitch);
+  const enabled = Boolean(options.postman) || hasWorkspaceOption || stitchRequested;
   if (!enabled) return { enabled: false };
 
   const envApiKey = normalizePostmanApiKey(process.env[POSTMAN_API_KEY_ENV_VAR]);
@@ -3816,7 +3818,7 @@ async function resolvePostmanInstallSelection({
     : null;
   let mcpScope = requestedMcpScope || normalizeMcpScope(scope, "project");
   const warnings = [];
-  const stitchEnabled = platform === "antigravity";
+  const stitchEnabled = platform === "antigravity" || stitchRequested;
   const envStitchApiKey = normalizePostmanApiKey(
     process.env[STITCH_API_KEY_ENV_VAR],
   );
@@ -5722,6 +5724,10 @@ function withInstallOptions(command) {
       "optional: install Postman skill and generate cbx_config.json",
     )
     .option(
+      "--stitch",
+      "optional: include Stitch MCP profile/config alongside Postman",
+    )
+    .option(
       "--postman-api-key <key>",
       "deprecated: inline key mode is disabled. Use env vars + profiles.",
     )
@@ -5756,6 +5762,10 @@ function withInstallOptions(command) {
       "--mcp-update-policy <policy>",
       "MCP image update policy: pinned|latest",
       DEFAULT_MCP_UPDATE_POLICY,
+    )
+    .option(
+      "--mcp-tool-sync",
+      "enable automatic MCP tool catalog sync (default: enabled)",
     )
     .option("--no-mcp-tool-sync", "disable automatic MCP tool catalog sync")
     .option(
@@ -6079,7 +6089,11 @@ async function runWorkflowInstall(options) {
       scope,
       overwrite: Boolean(options.overwrite),
       profilePathsOverride: artifactProfilePaths,
-      extraSkillIds: postmanSelection.enabled ? [POSTMAN_SKILL_ID] : [],
+      extraSkillIds: postmanSelection.enabled
+        ? postmanSelection.stitchEnabled
+          ? [POSTMAN_SKILL_ID, STITCH_SKILL_ID]
+          : [POSTMAN_SKILL_ID]
+        : [],
       skillProfile: skillInstallOptions.skillProfile,
       terminalVerifierSelection,
       dryRun,
