@@ -198,6 +198,11 @@ If active Postman env var (for example `POSTMAN_API_KEY_DEFAULT`) is available a
 - direct Stitch MCP server where applicable (`StitchMCP` for Antigravity)
 - local Foundry MCP command server (`cubis-foundry` via `cbx mcp serve --transport stdio --scope auto`)
 
+`--postman` also installs the `postman` skill. Managed platform rules then treat Postman intent as skill-first:
+- run `skill_search "postman"`
+- load `skill_get "postman"` before workflow/agent routing
+- prefer Postman MCP tools over Newman/CLI fallback unless explicitly requested
+
 To opt out of Foundry MCP registration during install:
 
 ```bash

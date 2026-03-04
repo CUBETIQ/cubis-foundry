@@ -1,12 +1,12 @@
 {
   "$schema": "cubis-foundry-mcp-manifest-v1",
-  "generatedAt": "2026-03-04T02:53:10.627Z",
-  "contentHash": "345c91e59f6e1441",
+  "generatedAt": "2026-03-04T07:50:57.618Z",
+  "contentHash": "0e874edf5db4cf1b",
   "summary": {
     "totalSkills": 123,
     "totalCategories": 22,
-    "totalBytes": 433950,
-    "estimatedTokens": 108488
+    "totalBytes": 436265,
+    "estimatedTokens": 109067
   },
   "categories": [
     {
@@ -1117,11 +1117,11 @@
       "id": "postman",
       "name": "postman",
       "displayName": null,
-      "description": "Automate API testing and collection management with Postman MCP. Use for workspace, collection, environment, and mock operations.",
+      "description": "Use Postman MCP tools for workspace, collection, environment, and run workflows with explicit default-workspace handling.",
       "category": "general",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 523,
+      "fileBytes": 2838,
       "warnings": [
         "no keywords or triggers"
       ]

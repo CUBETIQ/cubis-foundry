@@ -98,6 +98,15 @@ Stop at the earliest step that gives enough signal. Do not jump ahead.
 4. `skill_get <id>` — load full skill content; only when committed to using it
 5. `skill_budget_report` — verify token cost after loading; triggers the compact ctx stamp
 
+### Postman Intent Trigger (Required)
+
+When user intent includes Postman workflows (for example: workspace, collection, environment, runCollection, monitor, mock, or "run Postman tests"):
+
+1. Run `skill_search "postman"` first.
+2. If `postman` skill exists, load `skill_get "postman"` before workflow/agent routing.
+3. Prefer Postman MCP tools (`postman.*`) over Newman/CLI fallback unless the user explicitly asks for fallback.
+4. If `--postman` was installed but `postman` skill cannot be found, report installation drift and suggest reinstall with `cbx workflows install ... --postman`.
+
 **Hard rules:**
 
 - Never call `skill_get` without a prior `skill_search` or `skill_browse_category`
@@ -257,7 +266,7 @@ The Foundry MCP server provides progressive-disclosure skill discovery and integ
 ### Skill Vault
 
 - **123** skills across **22** categories
-- Estimated full catalog: ~108,488 tokens
+- Estimated full catalog: ~109,067 tokens
 
 Categories:
 - `ai`: 1 skill(s)
