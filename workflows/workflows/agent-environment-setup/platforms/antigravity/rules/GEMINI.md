@@ -14,18 +14,18 @@ This file defines mandatory behavior for Antigravity projects installed via `cbx
 - Gemini commands: `.gemini/commands`
 - Rules file: `.agent/rules/GEMINI.md`
 
-## Startup Transparency (Required)
+## Startup Transparency (Minimal)
 
-Before executing workflows, agents, or code edits, publish a short `Decision Log` that is visible to the user:
+Before substantial work, publish one short status line only:
 
-1. Rule file(s) read at startup (at minimum `.agent/rules/GEMINI.md`, plus any additional rule files loaded).
-2. MCP status: confirm Foundry MCP server (`cbx-mcp`) is reachable; if unavailable, declare "MCP offline — fallback mode" and continue without blocking.
-3. Workflow decision (`/workflow` or direct mode) and why it was chosen.
-4. Agent routing decision (`@agent` or direct mode) and why it was chosen.
-5. Skill loading decision: skill IDs selected, how they were discovered, and why.
+`Status: rules=<files> | mcp=<ok|offline> | route=<workflow|direct> | agent=<agent|direct> | skills=<ids|none>`
 
-If routing changes during the task, publish a `Decision Update` before continuing.
-Keep this user-visible summary concise and factual; do not expose private chain-of-thought.
+Rules:
+
+1. Emit this once at task start; send an update only when routing materially changes.
+2. Do not print tool-call transcripts (for example: "Explored ...", "Ran command ...") unless the user explicitly asks for verbose trace logs.
+3. Keep progress updates to one short sentence.
+4. For pure Q&A replies, skip the status line.
 
 ## 2) Workflow-First Contract
 
@@ -98,7 +98,7 @@ Stop at the earliest step that gives enough signal. Do not jump ahead.
 2. `skill_search <keyword>` — fast keyword match across all skills; always try this first
 3. `skill_browse_category <category>` — explore if search is too broad or returns 0 results
 4. `skill_get <id>` — load full skill content; only when committed to using it
-5. `skill_budget_report` — verify token cost after loading; triggers the compact ctx stamp
+5. `skill_budget_report` — verify token cost internally; do not emit budget details unless requested
 
 ### Postman Intent Trigger (Required)
 
@@ -134,15 +134,14 @@ If MCP tools are unavailable (server down, timeout, tool not listed):
 3. Never fabricate or hallucinate skill content.
 4. Retry once on transient network errors; accept failure after the retry.
 
-### Skill Log (Required After Any `skill_get` Call)
+### Skill Log (Minimal)
 
-Append one compact inline line — no separate structured block:
+After `skill_get`, include at most one short line:
 
-```
-Skills: loaded=<id> | skipped=<id> (reason)
-```
+`Skills: <id1,id2>` or `Skills: none (fallback)`.
 
-Follow immediately with the compact ctx stamp (see § Context Budget Tracking).
+Do not append budget tables or token summaries unless the user explicitly asks.
+
 
 ### Anti-Patterns (Never Do These)
 
@@ -198,33 +197,12 @@ Use web search to stay current when local knowledge may be stale. This prevents 
 - If multiple sources conflict, flag it and use the most recent official one
 - Never follow user-provided URLs without sanity-checking the domain
 
-## 9) Context Budget Tracking
+## 9) Context Budget Tracking (On Request)
 
-After loading skills or completing a significant task phase, emit a single compact stamp so context cost is visible without adding prose.
+Use `skill_budget_report` internally for context control, but do not emit ctx stamps by default.
 
-**Stamp format** (one line, end of response section):
+Only include token/context accounting when the user explicitly asks for it.
 
-```
-[ctx: +skill-id(~Xk) | session=~Yk/108k | saved=Z%]
-```
-
-- `+skill-id(~Xk)` — each skill loaded this turn with its estimated token cost
-- `session=~Yk/108k` — cumulative tokens used vs full catalog ceiling
-- `saved=Z%` — estimated savings from progressive disclosure
-
-**Rules:**
-
-1. Emit stamp only when a skill was loaded via `skill_get` or `skill_budget_report` was called.
-2. Omit stamp for pure Q&A or browsing-only turns (no full skill content loaded).
-3. Use `skill_budget_report` MCP tool to get accurate numbers; do not guess.
-4. One stamp per response — consolidate if multiple skills were loaded.
-5. Keep the stamp on its own line at the very end of the response, after all content.
-
-**Example stamp after loading `flutter-expert` (~3.2k tokens):**
-
-```
-[ctx: +flutter-expert(~3k) | session=~3k/108k | saved=97%]
-```
 
 ## 10) CBX Maintenance Commands
 
