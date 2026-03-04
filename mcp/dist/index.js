@@ -1539,7 +1539,7 @@ var TOOL_REGISTRY = [
 ];
 
 // src/upstream/passthrough.ts
-import { mkdir, writeFile } from "fs/promises";
+import { mkdir, readFile as readFile2, writeFile } from "fs/promises";
 import path6 from "path";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
@@ -1549,6 +1549,45 @@ function resolveCatalogDir(configPath) {
     return path6.join(configDir, "mcp", "catalog");
   }
   return path6.join(configDir, ".cbx", "mcp", "catalog");
+}
+function buildPassthroughAliasName(service, toolName) {
+  const normalizedTool = String(toolName || "").trim().replace(/([a-z0-9])([A-Z])/g, "$1_$2").replace(/[^A-Za-z0-9]+/g, "_").replace(/^_+|_+$/g, "").replace(/_+/g, "_").toLowerCase();
+  if (!normalizedTool) return `${service}_tool`;
+  return `${service}_${normalizedTool}`;
+}
+function buildUpstreamToolInfo(service, tool) {
+  const name = typeof tool?.name === "string" ? tool.name.trim() : "";
+  if (!name) return null;
+  const namespacedName = `${service}.${name}`;
+  const aliasNames = [buildPassthroughAliasName(service, name)];
+  return {
+    name,
+    namespacedName,
+    aliasNames,
+    description: typeof tool?.description === "string" ? tool.description : void 0,
+    inputSchema: tool?.inputSchema ?? void 0,
+    outputSchema: tool?.outputSchema ?? void 0
+  };
+}
+async function loadCachedCatalogTools({
+  service,
+  scope,
+  configPath
+}) {
+  if (!configPath) return [];
+  const catalogDir = resolveCatalogDir(configPath);
+  const catalogPath = path6.join(catalogDir, `${service}.json`);
+  try {
+    const raw = await readFile2(catalogPath, "utf8");
+    const parsed = JSON.parse(raw);
+    if (scope && typeof parsed.scope === "string" && parsed.scope.trim() && parsed.scope !== scope) {
+      return [];
+    }
+    const tools = Array.isArray(parsed.tools) ? parsed.tools : [];
+    return tools.map((tool) => buildUpstreamToolInfo(service, tool)).filter((tool) => Boolean(tool));
+  } catch {
+    return [];
+  }
 }
 function getServiceAuth(config, service) {
   if (service === "postman") {
@@ -1646,8 +1685,8 @@ async function persistCatalog(catalog) {
   await writeFile(catalogPath, `${JSON.stringify(payload, null, 2)}
 `, "utf8");
 }
-async function discoverUpstreamCatalogs() {
-  const effective = readEffectiveConfig("auto");
+async function discoverUpstreamCatalogs(scope = "auto") {
+  const effective = readEffectiveConfig(scope);
   if (!effective) {
     const missing = {
       service: "postman",
@@ -1686,6 +1725,16 @@ async function discoverUpstreamCatalogs() {
       discoveryError: auth.error
     };
     if (!auth.configured || !auth.mcpUrl || auth.error) {
+      const cachedTools = await loadCachedCatalogTools({
+        service,
+        scope: baseInfo.scope,
+        configPath: baseInfo.configPath
+      });
+      if (cachedTools.length > 0) {
+        catalog.tools = cachedTools;
+        catalog.toolCount = cachedTools.length;
+        catalog.discoveryError = auth.error ? `${auth.error} (using cached tool catalog)` : "Upstream not configured; using cached tool catalog";
+      }
       await persistCatalog(catalog);
       return catalog;
     }
@@ -1696,20 +1745,20 @@ async function discoverUpstreamCatalogs() {
         fn: async (client) => client.listTools()
       });
       const rawTools = Array.isArray(listed.tools) ? listed.tools : [];
-      catalog.tools = rawTools.map((tool) => {
-        const name = typeof tool?.name === "string" ? tool.name.trim() : "";
-        if (!name) return null;
-        return {
-          name,
-          namespacedName: `${service}.${name}`,
-          description: typeof tool?.description === "string" ? tool.description : void 0,
-          inputSchema: tool?.inputSchema ?? void 0,
-          outputSchema: tool?.outputSchema ?? void 0
-        };
-      }).filter((tool) => Boolean(tool));
+      catalog.tools = rawTools.map((tool) => buildUpstreamToolInfo(service, tool || {})).filter((tool) => Boolean(tool));
       catalog.toolCount = catalog.tools.length;
     } catch (error) {
       catalog.discoveryError = `Tool discovery failed: ${String(error)}`;
+      const cachedTools = await loadCachedCatalogTools({
+        service,
+        scope: baseInfo.scope,
+        configPath: baseInfo.configPath
+      });
+      if (cachedTools.length > 0) {
+        catalog.tools = cachedTools;
+        catalog.toolCount = cachedTools.length;
+        catalog.discoveryError = `${catalog.discoveryError} (using cached tool catalog)`;
+      }
     }
     await persistCatalog(catalog);
     return catalog;
@@ -1722,9 +1771,10 @@ async function discoverUpstreamCatalogs() {
 async function callUpstreamTool({
   service,
   name,
-  argumentsValue
+  argumentsValue,
+  scope = "auto"
 }) {
-  const effective = readEffectiveConfig("auto");
+  const effective = readEffectiveConfig(scope);
   if (!effective) {
     throw new Error("cbx_config.json not found");
   }
@@ -1799,40 +1849,52 @@ async function createServer({
   logger.debug(
     `Registered ${TOOL_REGISTRY.length} built-in tools from registry`
   );
-  const upstreamCatalogs = await discoverUpstreamCatalogs();
+  const upstreamCatalogs = await discoverUpstreamCatalogs(defaultConfigScope);
   const dynamicSchema = z13.object({}).passthrough();
+  const registeredDynamicToolNames = /* @__PURE__ */ new Set();
   for (const catalog of [upstreamCatalogs.postman, upstreamCatalogs.stitch]) {
     for (const tool of catalog.tools) {
-      const namespaced = tool.namespacedName;
-      server.registerTool(
-        namespaced,
-        {
-          description: `[${catalog.service} passthrough] ${tool.description || tool.name}`,
-          inputSchema: dynamicSchema,
-          annotations: {}
-        },
-        async (args) => {
-          try {
-            const result = await callUpstreamTool({
-              service: catalog.service,
-              name: tool.name,
-              argumentsValue: args && typeof args === "object" ? args : {}
-            });
-            return {
-              // SDK content is typed broadly; cast to the expected array shape.
-              content: result.content ?? [],
-              structuredContent: result.structuredContent,
-              isError: Boolean(result.isError)
-            };
-          } catch (error) {
-            return toolCallErrorResult({
-              service: catalog.service,
-              namespacedName: namespaced,
-              error
-            });
-          }
+      const registrationNames = [tool.namespacedName, ...tool.aliasNames || []];
+      const uniqueRegistrationNames = [...new Set(registrationNames)];
+      for (const registrationName of uniqueRegistrationNames) {
+        if (registeredDynamicToolNames.has(registrationName)) {
+          logger.warn(
+            `Skipping duplicate dynamic tool registration name '${registrationName}' from ${catalog.service}.${tool.name}`
+          );
+          continue;
         }
-      );
+        registeredDynamicToolNames.add(registrationName);
+        server.registerTool(
+          registrationName,
+          {
+            description: `[${catalog.service} passthrough] ${tool.description || tool.name}`,
+            inputSchema: dynamicSchema,
+            annotations: {}
+          },
+          async (args) => {
+            try {
+              const result = await callUpstreamTool({
+                service: catalog.service,
+                name: tool.name,
+                argumentsValue: args && typeof args === "object" ? args : {},
+                scope: defaultConfigScope
+              });
+              return {
+                // SDK content is typed broadly; cast to the expected array shape.
+                content: result.content ?? [],
+                structuredContent: result.structuredContent,
+                isError: Boolean(result.isError)
+              };
+            } catch (error) {
+              return toolCallErrorResult({
+                service: catalog.service,
+                namespacedName: registrationName,
+                error
+              });
+            }
+          }
+        );
+      }
     }
   }
   return server;
