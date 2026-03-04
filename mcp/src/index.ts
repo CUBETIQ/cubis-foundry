@@ -16,7 +16,10 @@ import { scanVaultRoots } from "./vault/scanner.js";
 import { buildManifest, enrichWithDescriptions } from "./vault/manifest.js";
 import { createServer } from "./server.js";
 import { createStdioTransport } from "./transports/stdio.js";
-import { createStreamableHttpTransport } from "./transports/streamableHttp.js";
+import {
+  createMultiSessionHttpServer,
+  type McpServerFactory,
+} from "./transports/streamableHttp.js";
 import { logger, setLogLevel } from "./utils/logger.js";
 import {
   parsePostmanState,
@@ -65,13 +68,17 @@ function parseArgs(argv: string[]): {
       if (val === "auto" || val === "global" || val === "project") {
         scope = val;
       } else {
-        logger.error(`Unknown scope: ${val}. Use "auto", "global", or "project".`);
+        logger.error(
+          `Unknown scope: ${val}. Use "auto", "global", or "project".`,
+        );
         process.exit(1);
       }
     } else if (arg === "--port" && argv[i + 1]) {
       const val = Number.parseInt(argv[++i], 10);
       if (!Number.isInteger(val) || val <= 0 || val > 65535) {
-        logger.error(`Invalid port: ${argv[i]}. Use an integer from 1 to 65535.`);
+        logger.error(
+          `Invalid port: ${argv[i]}. Use an integer from 1 to 65535.`,
+        );
         process.exit(1);
       }
       port = val;
@@ -182,7 +189,8 @@ async function main(): Promise<void> {
   }
 
   // Print startup banner
-  const resolvedHttpPort = args.port ?? serverConfig.transport.http?.port ?? 3100;
+  const resolvedHttpPort =
+    args.port ?? serverConfig.transport.http?.port ?? 3100;
   const transportName =
     args.transport === "http"
       ? `Streamable HTTP :${resolvedHttpPort}`
@@ -194,32 +202,46 @@ async function main(): Promise<void> {
   );
   printConfigStatus(args.scope);
 
-  // Create MCP server
-  const mcpServer = await createServer({
-    config: serverConfig,
-    manifest,
-    defaultConfigScope: args.scope,
-  });
-
   // Connect transport
   if (args.transport === "http") {
     const httpOpts = {
       port: resolvedHttpPort,
       host: args.host ?? serverConfig.transport.http?.host ?? "127.0.0.1",
     };
-    const { transport, httpServer } = createStreamableHttpTransport(httpOpts);
-    await mcpServer.connect(transport);
+
+    // Multi-session architecture: the factory is called once per initialize
+    // handshake. Vault/manifest/config are shared; only McpServer + tools
+    // registration is per-session (lightweight).
+    const serverFactory: McpServerFactory = async (transport) => {
+      const server = await createServer({
+        config: serverConfig,
+        manifest,
+        defaultConfigScope: args.scope,
+      });
+      await server.connect(transport);
+      return server;
+    };
+
+    const { httpServer, closeAll } = createMultiSessionHttpServer(
+      httpOpts,
+      serverFactory,
+    );
 
     // Graceful shutdown
     const shutdown = async () => {
       logger.info("Shutting down HTTP transport...");
-      httpServer.close();
-      await mcpServer.close();
+      await closeAll();
       process.exit(0);
     };
     process.on("SIGINT", shutdown);
     process.on("SIGTERM", shutdown);
   } else {
+    // stdio is single-session; create one McpServer directly.
+    const mcpServer = await createServer({
+      config: serverConfig,
+      manifest,
+      defaultConfigScope: args.scope,
+    });
     const transport = createStdioTransport();
     await mcpServer.connect(transport);
 

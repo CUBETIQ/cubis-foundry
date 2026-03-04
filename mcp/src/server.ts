@@ -72,14 +72,17 @@ export async function createServer({
 
   for (const entry of TOOL_REGISTRY) {
     const handler = entry.createHandler(runtimeCtx);
-    // Cast is safe: registry handler signatures are compatible at runtime.
-    // The overload ambiguity arises because an empty ZodRawShape `{}`
-    // is structurally assignable to the annotations object overload.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (server as any).tool(
+    // Use registerTool() with explicit config object — avoids the
+    // overload ambiguity in the deprecated tool() where empty `{}`
+    // schemas can be misinterpreted as annotations, causing tools
+    // to appear "not exposed" on some clients (e.g. Codex, Gemini).
+    server.registerTool(
       entry.name,
-      entry.description,
-      entry.schema.shape,
+      {
+        description: entry.description,
+        inputSchema: entry.schema,
+        annotations: {},
+      },
       handler,
     );
   }
@@ -90,16 +93,18 @@ export async function createServer({
 
   // ─── Dynamic upstream passthrough tools ────────────────────
   const upstreamCatalogs = await discoverUpstreamCatalogs();
-  const dynamicArgsShape = z.object({}).passthrough().shape;
+  const dynamicSchema = z.object({}).passthrough();
 
   for (const catalog of [upstreamCatalogs.postman, upstreamCatalogs.stitch]) {
     for (const tool of catalog.tools) {
       const namespaced = tool.namespacedName;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (server as any).tool(
+      server.registerTool(
         namespaced,
-        `[${catalog.service} passthrough] ${tool.description || tool.name}`,
-        dynamicArgsShape,
+        {
+          description: `[${catalog.service} passthrough] ${tool.description || tool.name}`,
+          inputSchema: dynamicSchema,
+          annotations: {},
+        },
         async (args: Record<string, unknown>) => {
           try {
             const result = await callUpstreamTool({

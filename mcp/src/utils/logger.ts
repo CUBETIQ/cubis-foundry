@@ -13,7 +13,11 @@ const LEVEL_ORDER: Record<LogLevel, number> = {
   error: 3,
 };
 
-let currentLevel: LogLevel = "info";
+let currentLevel: LogLevel =
+  (process.env.LOG_LEVEL?.toLowerCase() as LogLevel) || "info";
+if (!LEVEL_ORDER[currentLevel]) {
+  currentLevel = "info";
+}
 
 export function setLogLevel(level: LogLevel): void {
   currentLevel = level;

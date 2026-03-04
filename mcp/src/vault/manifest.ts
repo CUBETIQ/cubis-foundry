@@ -182,18 +182,35 @@ async function readReferencedMarkdownFiles(
   return references;
 }
 
-async function collectSiblingMarkdownTargets(skillDir: string): Promise<string[]> {
+async function collectSiblingMarkdownTargets(
+  skillDir: string,
+): Promise<string[]> {
   const entries = await readdir(skillDir, { withFileTypes: true }).catch(
     () => [],
   );
   const targets: string[] = [];
 
   for (const entry of entries) {
-    if (!entry.isFile()) continue;
     if (entry.name.startsWith(".")) continue;
-    if (!entry.name.toLowerCase().endsWith(".md")) continue;
-    if (entry.name.toLowerCase() === "skill.md") continue;
-    targets.push(entry.name);
+
+    if (entry.isDirectory()) {
+      // One level deep: scan subdirectories like references/, steering/, parts/
+      const subEntries = await readdir(path.join(skillDir, entry.name), {
+        withFileTypes: true,
+      }).catch(() => []);
+      for (const sub of subEntries) {
+        if (!sub.isFile()) continue;
+        if (sub.name.startsWith(".")) continue;
+        if (!sub.name.toLowerCase().endsWith(".md")) continue;
+        targets.push(`${entry.name}/${sub.name}`);
+        if (targets.length >= MAX_REFERENCED_FILES) break;
+      }
+    } else if (entry.isFile()) {
+      if (!entry.name.toLowerCase().endsWith(".md")) continue;
+      if (entry.name.toLowerCase() === "skill.md") continue;
+      targets.push(entry.name);
+    }
+
     if (targets.length >= MAX_REFERENCED_FILES) break;
   }
 

@@ -37,6 +37,7 @@ export function handleSkillListCategories(
     charsPerToken,
     fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
     responseEstimatedTokens: estimateTokensFromText(text, charsPerToken),
+    responseCharacterCount: text.length,
   });
 
   return {
@@ -47,6 +48,9 @@ export function handleSkillListCategories(
       },
     ],
     structuredContent: {
+      metrics,
+    },
+    _meta: {
       metrics,
     },
   };

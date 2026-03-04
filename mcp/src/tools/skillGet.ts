@@ -66,6 +66,13 @@ export async function handleSkillGet(
         ].join("\n")
       : "";
   const content = `${skillContent}${referenceSection}`;
+
+  if (content.trim().length === 0) {
+    invalidInput(
+      `Skill "${id}" has empty content (SKILL.md is empty or whitespace-only). This skill may be corrupt or incomplete.`,
+    );
+  }
+
   const loadedSkillEstimatedTokens = estimateTokensFromText(
     content,
     charsPerToken,
@@ -75,6 +82,7 @@ export async function handleSkillGet(
     fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
     responseEstimatedTokens: loadedSkillEstimatedTokens,
     loadedSkillEstimatedTokens,
+    responseCharacterCount: content.length,
   });
 
   return {
@@ -85,6 +93,10 @@ export async function handleSkillGet(
       },
     ],
     structuredContent: {
+      references: references.map((ref) => ({ path: ref.relativePath })),
+      metrics,
+    },
+    _meta: {
       references: references.map((ref) => ({ path: ref.relativePath })),
       metrics,
     },

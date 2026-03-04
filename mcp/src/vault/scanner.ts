@@ -40,6 +40,12 @@ export async function scanVaultRoots(
       const skillStat = await stat(skillFile).catch(() => null);
       if (!skillStat?.isFile()) continue;
 
+      // Skip empty SKILL.md files — they provide no instructions
+      if (skillStat.size === 0) {
+        logger.warn(`Skipping empty SKILL.md: ${skillFile}`);
+        continue;
+      }
+
       const wrapperKind = await detectWrapperKind(entry, skillFile);
       if (wrapperKind) {
         logger.debug(
@@ -67,14 +73,18 @@ const WRAPPER_PREFIXES = ["workflow-", "agent-"] as const;
 const WRAPPER_KINDS = new Set(["workflow", "agent"]);
 const FRONTMATTER_PREVIEW_BYTES = 8192;
 
-function extractWrapperKindFromId(skillId: string): "workflow" | "agent" | null {
+function extractWrapperKindFromId(
+  skillId: string,
+): "workflow" | "agent" | null {
   const lower = skillId.toLowerCase();
   if (lower.startsWith(WRAPPER_PREFIXES[0])) return "workflow";
   if (lower.startsWith(WRAPPER_PREFIXES[1])) return "agent";
   return null;
 }
 
-async function readFrontmatterPreview(skillFile: string): Promise<string | null> {
+async function readFrontmatterPreview(
+  skillFile: string,
+): Promise<string | null> {
   const handle = await open(skillFile, "r").catch(() => null);
   if (!handle) return null;
 
@@ -116,7 +126,10 @@ function extractMetadataWrapper(frontmatter: string): string | null {
     const match = line.match(/^\s+wrapper\s*:\s*(.+)\s*$/);
     if (!match) continue;
 
-    const value = match[1].trim().replace(/^['"]|['"]$/g, "").toLowerCase();
+    const value = match[1]
+      .trim()
+      .replace(/^['"]|['"]$/g, "")
+      .toLowerCase();
     if (WRAPPER_KINDS.has(value)) {
       return value;
     }

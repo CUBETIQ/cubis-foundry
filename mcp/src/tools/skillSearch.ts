@@ -65,7 +65,8 @@ export async function handleSkillSearch(
   const payload = { query, results, count: results.length };
   const text = JSON.stringify(payload, null, 2);
   const selectedSkillsEstimatedTokens = matches.reduce(
-    (sum, skill) => sum + estimateTokensFromBytes(skill.fileBytes, charsPerToken),
+    (sum, skill) =>
+      sum + estimateTokensFromBytes(skill.fileBytes, charsPerToken),
     0,
   );
   const metrics = buildSkillToolMetrics({
@@ -73,6 +74,7 @@ export async function handleSkillSearch(
     fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
     responseEstimatedTokens: estimateTokensFromText(text, charsPerToken),
     selectedSkillsEstimatedTokens,
+    responseCharacterCount: text.length,
   });
 
   return {
@@ -83,6 +85,9 @@ export async function handleSkillSearch(
       },
     ],
     structuredContent: {
+      metrics,
+    },
+    _meta: {
       metrics,
     },
   };

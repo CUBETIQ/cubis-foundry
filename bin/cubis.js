@@ -11,6 +11,7 @@ import {
   readFile,
   rm,
   stat,
+  symlink,
   writeFile,
 } from "node:fs/promises";
 import { createRequire } from "node:module";
@@ -387,9 +388,7 @@ function normalizeMcpRuntime(value, fallback = DEFAULT_MCP_RUNTIME) {
     .trim()
     .toLowerCase();
   if (!MCP_RUNTIMES.has(normalized)) {
-    throw new Error(
-      `Unknown MCP runtime '${value}'. Use docker|local.`,
-    );
+    throw new Error(`Unknown MCP runtime '${value}'. Use docker|local.`);
   }
   return normalized;
 }
@@ -399,9 +398,7 @@ function normalizeMcpFallback(value, fallback = DEFAULT_MCP_FALLBACK) {
     .trim()
     .toLowerCase();
   if (!MCP_FALLBACKS.has(normalized)) {
-    throw new Error(
-      `Unknown MCP fallback '${value}'. Use local|fail|skip.`,
-    );
+    throw new Error(`Unknown MCP fallback '${value}'. Use local|fail|skip.`);
   }
   return normalized;
 }
@@ -411,9 +408,7 @@ function normalizeMcpUpdatePolicy(value, fallback = DEFAULT_MCP_UPDATE_POLICY) {
     .trim()
     .toLowerCase();
   if (!MCP_UPDATE_POLICIES.has(normalized)) {
-    throw new Error(
-      `Unknown MCP update policy '${value}'. Use pinned|latest.`,
-    );
+    throw new Error(`Unknown MCP update policy '${value}'. Use pinned|latest.`);
   }
   return normalized;
 }
@@ -500,10 +495,7 @@ async function ensureMcpDockerImage({
   return pullMcpDockerImage({ image, cwd });
 }
 
-async function inspectDockerContainerByName({
-  name,
-  cwd = process.cwd(),
-}) {
+async function inspectDockerContainerByName({ name, cwd = process.cwd() }) {
   try {
     const { stdout } = await execFile(
       "docker",
@@ -551,10 +543,7 @@ async function resolveDockerContainerHostPort({
   }
 }
 
-async function inspectDockerContainerMounts({
-  name,
-  cwd = process.cwd(),
-}) {
+async function inspectDockerContainerMounts({ name, cwd = process.cwd() }) {
   try {
     const { stdout } = await execFile(
       "docker",
@@ -1498,6 +1487,152 @@ async function collectTechSnapshot(rootDir) {
     }
   }
 
+  // --- Entry-point detection ---
+  const entryPoints = [];
+  try {
+    const rootPkg = JSON.parse(await readFile(rootPackageJsonPath, "utf8"));
+    if (rootPkg.bin) {
+      const bins =
+        typeof rootPkg.bin === "string"
+          ? { [rootPkg.name || "bin"]: rootPkg.bin }
+          : rootPkg.bin;
+      for (const [name, target] of Object.entries(bins)) {
+        entryPoints.push(`bin: ${name} → ${target}`);
+      }
+    }
+    if (rootPkg.main) entryPoints.push(`main: ${rootPkg.main}`);
+    if (rootPkg.module) entryPoints.push(`module: ${rootPkg.module}`);
+    if (rootPkg.exports) entryPoints.push("package exports field present");
+  } catch {
+    // no root package.json or malformed
+  }
+  if (fileExists("Dockerfile") || fileExists("mcp/Dockerfile")) {
+    try {
+      const dockerfilePath = fileExists("Dockerfile")
+        ? path.join(rootDir, "Dockerfile")
+        : path.join(rootDir, "mcp/Dockerfile");
+      const dockerContent = await readFile(dockerfilePath, "utf8");
+      const entrypointMatch = dockerContent.match(
+        /^(?:ENTRYPOINT|CMD)\s+(.+)$/m,
+      );
+      if (entrypointMatch) {
+        entryPoints.push(`docker: ${entrypointMatch[0].slice(0, 80).trim()}`);
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  // --- README excerpt (first 3 non-empty lines for project overview) ---
+  let readmeExcerpt = "";
+  for (const readmeName of ["README.md", "readme.md", "Readme.md"]) {
+    if (fileExists(readmeName)) {
+      try {
+        const readmeContent = await readFile(
+          path.join(rootDir, readmeName),
+          "utf8",
+        );
+        const readmeLines = readmeContent.split("\n").filter((l) => {
+          const trimmed = l.trim();
+          return trimmed.length > 0 && !trimmed.startsWith("![");
+        });
+        readmeExcerpt = readmeLines.slice(0, 3).join("\n");
+      } catch {
+        // ignore
+      }
+      break;
+    }
+  }
+
+  // --- Monorepo detection ---
+  const isMonorepo = packageJsonFiles.length > 1;
+  let workspaceRoots = [];
+  if (isMonorepo) {
+    try {
+      const rootPkg = JSON.parse(await readFile(rootPackageJsonPath, "utf8"));
+      if (Array.isArray(rootPkg.workspaces)) {
+        workspaceRoots = rootPkg.workspaces;
+      } else if (rootPkg.workspaces?.packages) {
+        workspaceRoots = rootPkg.workspaces.packages;
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  // --- MCP server detection (is this project itself an MCP server?) ---
+  const isMcpServer =
+    javascriptPackages.has("@modelcontextprotocol/sdk") ||
+    dartPackages.has("mcp_dart") ||
+    pythonPackages.has("mcp");
+
+  // --- CI/CD detection ---
+  const cicdSignals = [];
+  const ciPaths = [
+    [".github/workflows", "GitHub Actions"],
+    ["Jenkinsfile", "Jenkins"],
+    [".gitlab-ci.yml", "GitLab CI"],
+    [".circleci", "CircleCI"],
+    ["azure-pipelines.yml", "Azure Pipelines"],
+    [".travis.yml", "Travis CI"],
+    ["bitbucket-pipelines.yml", "Bitbucket Pipelines"],
+    [".buildkite", "Buildkite"],
+    ["vercel.json", "Vercel"],
+    ["netlify.toml", "Netlify"],
+    ["fly.toml", "Fly.io"],
+    ["render.yaml", "Render"],
+    ["railway.json", "Railway"],
+  ];
+  for (const [ciPath, ciName] of ciPaths) {
+    if (fileExists(ciPath)) cicdSignals.push(ciName);
+  }
+
+  // --- Directory purpose annotations ---
+  const DIR_PURPOSES = new Map([
+    ["src", "source"],
+    ["lib", "library"],
+    ["bin", "executables"],
+    ["scripts", "automation"],
+    ["test", "tests"],
+    ["tests", "tests"],
+    ["__tests__", "tests"],
+    ["spec", "tests"],
+    ["docs", "documentation"],
+    ["doc", "documentation"],
+    ["mcp", "MCP server"],
+    ["api", "API layer"],
+    ["app", "application"],
+    ["pages", "routes (pages)"],
+    ["routes", "routes"],
+    ["components", "UI components"],
+    ["public", "static assets"],
+    ["static", "static assets"],
+    ["assets", "assets"],
+    ["config", "configuration"],
+    ["generated", "generated code"],
+    ["migrations", "DB migrations"],
+    ["prisma", "Prisma schema"],
+    ["workflows", "CI/CD or automation"],
+    ["packages", "monorepo packages"],
+    ["apps", "monorepo apps"],
+    ["tools", "tooling"],
+    ["utils", "utilities"],
+    ["helpers", "helpers"],
+    ["middleware", "middleware"],
+    ["services", "services"],
+    ["models", "data models"],
+    ["controllers", "controllers"],
+    ["views", "views"],
+    ["templates", "templates"],
+    ["fixtures", "test fixtures"],
+    ["e2e", "end-to-end tests"],
+    ["integration", "integration tests"],
+  ]);
+  const annotatedDirs = sortedTopDirs.map((dir) => ({
+    name: dir,
+    purpose: DIR_PURPOSES.get(dir.toLowerCase()) || null,
+  }));
+
   return {
     rootDir,
     scannedFiles: discoveredFiles.length,
@@ -1505,6 +1640,7 @@ async function collectTechSnapshot(rootDir) {
     frameworks: sortedFrameworks,
     lockfiles: sortedLockfiles,
     topDirs: sortedTopDirs,
+    annotatedDirs,
     keyScripts,
     packageSignals: {
       javascript: toSortedArray(javascriptPackages),
@@ -1514,6 +1650,12 @@ async function collectTechSnapshot(rootDir) {
       rust: toSortedArray(rustCrates),
     },
     mcpSignals: toSortedArray(mcpSignals),
+    entryPoints,
+    readmeExcerpt,
+    isMonorepo,
+    workspaceRoots,
+    isMcpServer,
+    cicdSignals,
   };
 }
 
@@ -1538,6 +1680,7 @@ function appendTechPackageSection(lines, heading, packages) {
 function inferRecommendedSkills(snapshot) {
   const recommended = new Set();
   const hasFramework = (name) => snapshot.frameworks.includes(name);
+  const hasJsPkg = (name) => snapshot.packageSignals.javascript.includes(name);
 
   if (hasFramework("Next.js")) {
     recommended.add("nextjs-developer");
@@ -1565,6 +1708,56 @@ function inferRecommendedSkills(snapshot) {
     recommended.add("flutter-expert");
     recommended.add("mobile-design");
   }
+
+  // Language-level signals when no framework match already added the skill
+  const hasLanguage = (lang) => snapshot.languages.some(([l]) => l === lang);
+  if (hasLanguage("TypeScript") && !recommended.has("typescript-pro")) {
+    recommended.add("typescript-pro");
+  }
+  if (
+    (hasLanguage("JavaScript") || hasLanguage("TypeScript")) &&
+    !recommended.has("nodejs-best-practices") &&
+    !recommended.has("nextjs-developer") &&
+    !recommended.has("nestjs-expert")
+  ) {
+    recommended.add("nodejs-best-practices");
+  }
+  if (hasLanguage("Python") && !recommended.has("python-pro")) {
+    recommended.add("python-pro");
+  }
+
+  // MCP server detection
+  if (snapshot.isMcpServer) {
+    recommended.add("api-patterns");
+  }
+
+  // Docker / DevOps signals
+  if (
+    snapshot.cicdSignals.length > 0 ||
+    snapshot.entryPoints.some((ep) => ep.startsWith("docker:"))
+  ) {
+    recommended.add("devops-engineer");
+  }
+
+  // Testing signals
+  if (hasFramework("Playwright")) {
+    recommended.add("playwright-expert");
+  }
+  if (hasFramework("Vitest") || hasFramework("Jest")) {
+    recommended.add("test-master");
+  }
+
+  // Database signals
+  if (
+    hasFramework("Prisma") ||
+    hasFramework("Drizzle ORM") ||
+    hasFramework("TypeORM") ||
+    hasFramework("Mongoose") ||
+    hasFramework("SQLAlchemy")
+  ) {
+    recommended.add("database-skills");
+  }
+
   if (recommended.size === 0) {
     recommended.add("clean-code");
     recommended.add("plan-writing");
@@ -1585,7 +1778,9 @@ function inferContextBudget(snapshot) {
   const webBackendDetected = snapshot.frameworks.some((framework) =>
     webBackendSignals.has(framework),
   );
-  const suggestedProfile = webBackendDetected ? "web-backend" : "core";
+  const hasMcp = snapshot.isMcpServer || snapshot.mcpSignals.length > 0;
+  const suggestedProfile =
+    webBackendDetected || hasMcp ? "web-backend" : "core";
   return {
     suggestedProfile,
   };
@@ -1606,6 +1801,39 @@ function buildTechMd(snapshot, { compact = false } = {}) {
   lines.push(`Mode: ${compact ? "compact" : "full"}.`);
   lines.push("");
 
+  // --- Project Overview ---
+  lines.push("## Project Overview");
+  if (snapshot.readmeExcerpt) {
+    lines.push("");
+    lines.push(snapshot.readmeExcerpt);
+  }
+  lines.push("");
+  if (snapshot.isMonorepo) {
+    lines.push("**Monorepo** — multiple package.json files detected.");
+    if (snapshot.workspaceRoots.length > 0) {
+      lines.push(
+        `Workspace roots: ${snapshot.workspaceRoots.map((r) => `\`${r}\``).join(", ")}`,
+      );
+    }
+    lines.push("");
+  }
+  if (snapshot.isMcpServer) {
+    lines.push(
+      "**MCP Server** — this project exposes tools via the Model Context Protocol.",
+    );
+    lines.push("");
+  }
+
+  // --- Architecture: Entry Points ---
+  if (snapshot.entryPoints.length > 0) {
+    lines.push("## Entry Points");
+    for (const ep of snapshot.entryPoints) {
+      lines.push(`- ${ep}`);
+    }
+    lines.push("");
+  }
+
+  // --- Stack Snapshot ---
   lines.push("## Stack Snapshot");
   if (snapshot.frameworks.length === 0) {
     lines.push("- No major framework signal detected.");
@@ -1631,6 +1859,15 @@ function buildTechMd(snapshot, { compact = false } = {}) {
     lines.push(`- \`${skillId}\``);
   }
   lines.push("");
+
+  // --- CI/CD & Deployment ---
+  if (snapshot.cicdSignals.length > 0) {
+    lines.push("## CI/CD & Deployment");
+    for (const signal of snapshot.cicdSignals) {
+      lines.push(`- ${signal}`);
+    }
+    lines.push("");
+  }
 
   lines.push("## MCP Footprint");
   if (!snapshot.mcpSignals || snapshot.mcpSignals.length === 0) {
@@ -1687,7 +1924,7 @@ function buildTechMd(snapshot, { compact = false } = {}) {
     }
     lines.push("");
 
-    lines.push("## Key Scripts");
+    lines.push("## Development Commands");
     if (snapshot.keyScripts.length === 0) {
       lines.push("- No common scripts detected.");
     } else {
@@ -1697,8 +1934,13 @@ function buildTechMd(snapshot, { compact = false } = {}) {
     }
     lines.push("");
 
-    lines.push("## Important Top-Level Paths");
-    if (snapshot.topDirs.length === 0) {
+    lines.push("## Codebase Map");
+    if (snapshot.annotatedDirs && snapshot.annotatedDirs.length > 0) {
+      for (const { name, purpose } of snapshot.annotatedDirs) {
+        const suffix = purpose ? ` — ${purpose}` : "";
+        lines.push(`- \`${name}/\`${suffix}`);
+      }
+    } else if (snapshot.topDirs.length === 0) {
       lines.push("- No significant top-level directories detected.");
     } else {
       for (const dir of snapshot.topDirs) {
@@ -2776,13 +3018,10 @@ async function generateCodexWrapperSkills({
     const rewrittenBody = rewriteCodexAgentSkillReferences(metadata.body);
     const wrapperSkillId = `${CODEX_AGENT_SKILL_PREFIX}${metadata.id}`;
     const destinationDir = path.join(skillsDir, wrapperSkillId);
-    const content = buildCodexAgentWrapperSkillMarkdown(
-      wrapperSkillId,
-      {
-        ...metadata,
-        body: rewrittenBody,
-      },
-    );
+    const content = buildCodexAgentWrapperSkillMarkdown(wrapperSkillId, {
+      ...metadata,
+      body: rewrittenBody,
+    });
 
     const result = await writeGeneratedSkillArtifact({
       destinationDir,
@@ -2880,7 +3119,9 @@ function buildManagedWorkflowBlock(platformId, workflows) {
     lines.push("Selection policy:");
     lines.push("1. If user names a $workflow-*, use it directly.");
     lines.push("2. Else map intent to one primary workflow.");
-    lines.push("3. Use $agent-* wrappers only when role specialization is needed.");
+    lines.push(
+      "3. Use $agent-* wrappers only when role specialization is needed.",
+    );
     lines.push("");
     lines.push("<!-- cbx:workflows:auto:end -->");
     return lines.join("\n");
@@ -3195,6 +3436,7 @@ async function copyArtifact({
   destination,
   overwrite,
   dryRun = false,
+  useSymlinks = false,
 }) {
   const exists = await pathExists(destination);
   if (exists && !overwrite) {
@@ -3207,16 +3449,36 @@ async function copyArtifact({
 
   if (!dryRun) {
     await mkdir(path.dirname(destination), { recursive: true });
-    await cp(source, destination, { recursive: true, force: true });
+    if (useSymlinks) {
+      const absSource = path.resolve(source);
+      await symlink(absSource, destination);
+    } else {
+      await cp(source, destination, { recursive: true, force: true });
+    }
   }
 
   if (dryRun) {
     return {
-      action: exists ? "would-replace" : "would-install",
+      action: exists
+        ? useSymlinks
+          ? "would-replace (link)"
+          : "would-replace"
+        : useSymlinks
+          ? "would-link"
+          : "would-install",
       path: destination,
     };
   }
-  return { action: exists ? "replaced" : "installed", path: destination };
+  return {
+    action: exists
+      ? useSymlinks
+        ? "linked (replaced)"
+        : "replaced"
+      : useSymlinks
+        ? "linked"
+        : "installed",
+    path: destination,
+  };
 }
 
 async function writeGeneratedArtifact({
@@ -4125,10 +4387,13 @@ async function resolvePostmanInstallSelection({
   }
 
   const stitchRequested = Boolean(options.stitch);
-  const enabled = Boolean(options.postman) || hasWorkspaceOption || stitchRequested;
+  const enabled =
+    Boolean(options.postman) || hasWorkspaceOption || stitchRequested;
   if (!enabled) return { enabled: false };
 
-  const envApiKey = normalizePostmanApiKey(process.env[POSTMAN_API_KEY_ENV_VAR]);
+  const envApiKey = normalizePostmanApiKey(
+    process.env[POSTMAN_API_KEY_ENV_VAR],
+  );
   let defaultWorkspaceId = hasWorkspaceOption
     ? normalizePostmanWorkspaceId(options.postmanWorkspaceId)
     : null;
@@ -4308,7 +4573,11 @@ async function resolvePostmanInstallSelection({
     );
   }
 
-  const stitchApiKeySource = stitchEnabled ? (envStitchApiKey ? "env" : "unset") : null;
+  const stitchApiKeySource = stitchEnabled
+    ? envStitchApiKey
+      ? "env"
+      : "unset"
+    : null;
   if (stitchEnabled && stitchApiKeySource === "unset") {
     warnings.push(
       `Google Stitch API key is not configured. Set ${profileEnvVarAlias("stitch", DEFAULT_CREDENTIAL_PROFILE_NAME)}.`,
@@ -4457,7 +4726,9 @@ async function configurePostmanInstallArtifacts({
       typeof existingCbxConfig.value === "object" &&
       !Array.isArray(existingCbxConfig.value)
     ) {
-      const migration = migrateInlineCredentialsInConfig(existingCbxConfig.value);
+      const migration = migrateInlineCredentialsInConfig(
+        existingCbxConfig.value,
+      );
       if (migration.findings.length > 0) {
         warnings.push(
           `Detected ${migration.findings.length} inline key field(s) in existing ${CBX_CONFIG_FILENAME}; migrated to env-var aliases.`,
@@ -4625,8 +4896,12 @@ async function configurePostmanInstallArtifacts({
   let mcpCatalogSyncResults = [];
   if (postmanSelection.mcpToolSync && !dryRun) {
     try {
-      const currentConfig = await readJsonFileIfExists(postmanSelection.cbxConfigPath);
-      const services = shouldInstallStitch ? ["postman", "stitch"] : ["postman"];
+      const currentConfig = await readJsonFileIfExists(
+        postmanSelection.cbxConfigPath,
+      );
+      const services = shouldInstallStitch
+        ? ["postman", "stitch"]
+        : ["postman"];
       mcpCatalogSyncResults = await syncMcpToolCatalogs({
         scope: postmanSelection.mcpScope,
         services,
@@ -4934,6 +5209,7 @@ async function installBundleArtifacts({
   extraSkillIds = [],
   skillProfile = DEFAULT_SKILL_PROFILE,
   terminalVerifierSelection = null,
+  useSymlinks = false,
   dryRun = false,
   cwd = process.cwd(),
 }) {
@@ -4983,6 +5259,9 @@ async function installBundleArtifacts({
     prompts: [],
   };
 
+  // Bind useSymlinks into copyArtifact so every call site inherits it
+  const copyArt = (args) => copyArtifact({ ...args, useSymlinks });
+
   const workflowFiles = Array.isArray(platformSpec.workflows)
     ? platformSpec.workflows
     : [];
@@ -4997,7 +5276,7 @@ async function installBundleArtifacts({
       throw new Error(`Missing workflow source file: ${source}`);
     }
 
-    const result = await copyArtifact({
+    const result = await copyArt({
       source,
       destination,
       overwrite,
@@ -5025,7 +5304,7 @@ async function installBundleArtifacts({
       throw new Error(`Missing agent source file: ${source}`);
     }
 
-    const result = await copyArtifact({
+    const result = await copyArt({
       source,
       destination,
       overwrite,
@@ -5052,7 +5331,7 @@ async function installBundleArtifacts({
       throw new Error(`Missing command source file: ${source}`);
     }
 
-    const result = await copyArtifact({
+    const result = await copyArt({
       source,
       destination,
       overwrite,
@@ -5079,7 +5358,7 @@ async function installBundleArtifacts({
       throw new Error(`Missing prompt source file: ${source}`);
     }
 
-    const result = await copyArtifact({
+    const result = await copyArt({
       source,
       destination,
       overwrite,
@@ -5109,7 +5388,7 @@ async function installBundleArtifacts({
       );
     }
 
-    const result = await copyArtifact({
+    const result = await copyArt({
       source,
       destination,
       overwrite,
@@ -5131,7 +5410,7 @@ async function installBundleArtifacts({
       profilePaths.skillsDir,
       "skills_index.json",
     );
-    const indexResult = await copyArtifact({
+    const indexResult = await copyArt({
       source: skillsIndexSource,
       destination: skillsIndexDest,
       overwrite,
@@ -5612,9 +5891,13 @@ function printPostmanSetupSummary({ postmanSetup }) {
   console.log(`- MCP fallback: ${postmanSetup.mcpFallback}`);
   console.log(`- MCP image: ${postmanSetup.mcpImage}`);
   console.log(`- MCP update policy: ${postmanSetup.mcpUpdatePolicy}`);
-  console.log(`- MCP build local: ${postmanSetup.mcpBuildLocal ? "yes" : "no"}`);
+  console.log(
+    `- MCP build local: ${postmanSetup.mcpBuildLocal ? "yes" : "no"}`,
+  );
   console.log(`- MCP image prepare: ${postmanSetup.dockerImageAction}`);
-  console.log(`- MCP tool sync: ${postmanSetup.mcpToolSync ? "enabled" : "disabled"}`);
+  console.log(
+    `- MCP tool sync: ${postmanSetup.mcpToolSync ? "enabled" : "disabled"}`,
+  );
   console.log(
     `- Foundry MCP side-by-side: ${postmanSetup.foundryMcpEnabled ? "enabled" : "disabled"}`,
   );
@@ -5649,7 +5932,9 @@ function printPostmanSetupSummary({ postmanSetup }) {
   if (Array.isArray(postmanSetup.mcpCatalogSyncResults)) {
     for (const syncItem of postmanSetup.mcpCatalogSyncResults) {
       if (syncItem.action === "skipped") {
-        console.log(`- MCP catalog ${syncItem.service}: skipped (${syncItem.reason})`);
+        console.log(
+          `- MCP catalog ${syncItem.service}: skipped (${syncItem.reason})`,
+        );
       } else {
         console.log(
           `- MCP catalog ${syncItem.service}: ${syncItem.action} (${syncItem.toolCount} tools)`,
@@ -6153,6 +6438,14 @@ function withInstallOptions(command) {
       DEFAULT_SKILL_PROFILE,
     )
     .option("--all-skills", "alias for --skill-profile full")
+    .option(
+      "--target <path>",
+      "install into target project directory instead of cwd",
+    )
+    .option(
+      "--link",
+      "create symlinks instead of copies (edits in source are instantly reflected)",
+    )
     .option("--dry-run", "preview install without writing files")
     .option("-y, --yes", "skip interactive confirmation");
 }
@@ -6416,7 +6709,14 @@ async function cleanupAntigravityTerminalIntegration({
 
 async function runWorkflowInstall(options) {
   try {
-    const cwd = process.cwd();
+    const cwd = options.target ? path.resolve(options.target) : process.cwd();
+    if (options.target) {
+      const targetExists = await pathExists(cwd);
+      if (!targetExists) {
+        throw new Error(`Target directory does not exist: ${cwd}`);
+      }
+    }
+    const useSymlinks = Boolean(options.link);
     const scope = normalizeScope(options.scope);
     const ruleScope = scope === "global" ? "project" : scope;
     const dryRun = Boolean(options.dryRun);
@@ -6467,6 +6767,7 @@ async function runWorkflowInstall(options) {
         : [],
       skillProfile: skillInstallOptions.skillProfile,
       terminalVerifierSelection,
+      useSymlinks,
       dryRun,
       cwd,
     });
@@ -7157,7 +7458,8 @@ async function persistMcpRuntimePreference({
 
 function toProfileEnvSuffix(profileName) {
   const normalized =
-    normalizeCredentialProfileName(profileName) || DEFAULT_CREDENTIAL_PROFILE_NAME;
+    normalizeCredentialProfileName(profileName) ||
+    DEFAULT_CREDENTIAL_PROFILE_NAME;
   const suffix = normalized
     .replace(/[^A-Za-z0-9]+/g, "_")
     .replace(/^_+|_+$/g, "")
@@ -7173,13 +7475,16 @@ function profileEnvVarAlias(service, profileName) {
 function collectInlineCredentialFindings(configValue) {
   const findings = [];
   const record =
-    configValue && typeof configValue === "object" && !Array.isArray(configValue)
+    configValue &&
+    typeof configValue === "object" &&
+    !Array.isArray(configValue)
       ? configValue
       : {};
 
   const scanService = (serviceId) => {
     const section = record[serviceId];
-    if (!section || typeof section !== "object" || Array.isArray(section)) return;
+    if (!section || typeof section !== "object" || Array.isArray(section))
+      return;
 
     if (normalizePostmanApiKey(section.apiKey)) {
       findings.push({
@@ -7190,7 +7495,8 @@ function collectInlineCredentialFindings(configValue) {
 
     if (Array.isArray(section.profiles)) {
       section.profiles.forEach((profile, index) => {
-        if (!profile || typeof profile !== "object" || Array.isArray(profile)) return;
+        if (!profile || typeof profile !== "object" || Array.isArray(profile))
+          return;
         if (normalizePostmanApiKey(profile.apiKey)) {
           findings.push({
             service: serviceId,
@@ -7209,7 +7515,8 @@ function collectInlineCredentialFindings(configValue) {
       !Array.isArray(section.profiles)
     ) {
       for (const [profileName, profile] of Object.entries(section.profiles)) {
-        if (!profile || typeof profile !== "object" || Array.isArray(profile)) continue;
+        if (!profile || typeof profile !== "object" || Array.isArray(profile))
+          continue;
         if (normalizePostmanApiKey(profile.apiKey)) {
           findings.push({
             service: serviceId,
@@ -7228,7 +7535,9 @@ function collectInlineCredentialFindings(configValue) {
 
 function migrateInlineCredentialsInConfig(configValue) {
   const next =
-    configValue && typeof configValue === "object" && !Array.isArray(configValue)
+    configValue &&
+    typeof configValue === "object" &&
+    !Array.isArray(configValue)
       ? cloneJsonObject(configValue)
       : {};
   const findings = collectInlineCredentialFindings(next);
@@ -7260,9 +7569,13 @@ function migrateInlineCredentialsInConfig(configValue) {
   };
 
   const hasPostmanSection =
-    next.postman && typeof next.postman === "object" && !Array.isArray(next.postman);
+    next.postman &&
+    typeof next.postman === "object" &&
+    !Array.isArray(next.postman);
   const hasStitchSection =
-    next.stitch && typeof next.stitch === "object" && !Array.isArray(next.stitch);
+    next.stitch &&
+    typeof next.stitch === "object" &&
+    !Array.isArray(next.stitch);
 
   if (hasPostmanSection) normalizeSection("postman");
   if (hasStitchSection) normalizeSection("stitch");
@@ -7275,10 +7588,7 @@ function migrateInlineCredentialsInConfig(configValue) {
   };
 }
 
-async function collectInlineHeaderFindings({
-  scope,
-  cwd = process.cwd(),
-}) {
+async function collectInlineHeaderFindings({ scope, cwd = process.cwd() }) {
   const findings = [];
   const stitchDefinitionPath = resolveStitchMcpDefinitionPath({ scope, cwd });
   const geminiSettingsPath =
@@ -7942,11 +8252,7 @@ async function waitForMcpEndpointReady({
   );
 }
 
-async function discoverUpstreamTools({
-  service,
-  url,
-  headers,
-}) {
+async function discoverUpstreamTools({ service, url, headers }) {
   let sessionId = null;
   const init = await sendMcpJsonRpcRequest({
     url,
@@ -8051,11 +8357,7 @@ async function discoverUpstreamTools({
   return { tools, meta };
 }
 
-function resolveServiceDiscoveryConfig({
-  service,
-  configValue,
-  scope,
-}) {
+function resolveServiceDiscoveryConfig({ service, configValue, scope }) {
   const normalized = normalizeCredentialService(service);
   const serviceState = ensureCredentialServiceState(configValue, normalized);
   const activeProfile =
@@ -8145,7 +8447,11 @@ async function syncMcpToolCatalogs({
     };
     if (!dryRun) {
       await mkdir(path.dirname(catalogPath), { recursive: true });
-      await writeFile(catalogPath, `${JSON.stringify(catalog, null, 2)}\n`, "utf8");
+      await writeFile(
+        catalogPath,
+        `${JSON.stringify(catalog, null, 2)}\n`,
+        "utf8",
+      );
     }
     syncResults.push({
       service: serviceId,
@@ -8234,9 +8540,7 @@ function normalizeMcpServeTransport(value, fallback = "stdio") {
     .toLowerCase();
   if (normalized === "stdio") return "stdio";
   if (normalized === "http" || normalized === "streamable-http") return "http";
-  throw new Error(
-    `Unknown MCP transport '${value}'. Use stdio|http.`,
-  );
+  throw new Error(`Unknown MCP transport '${value}'. Use stdio|http.`);
 }
 
 function normalizeMcpServeScope(value, fallback = "auto") {
@@ -8250,9 +8554,7 @@ function normalizeMcpServeScope(value, fallback = "auto") {
   ) {
     return normalized;
   }
-  throw new Error(
-    `Unknown MCP scope '${value}'. Use auto|global|project.`,
-  );
+  throw new Error(`Unknown MCP scope '${value}'. Use auto|global|project.`);
 }
 
 function resolveBundledMcpEntryPath() {
@@ -8401,7 +8703,9 @@ async function resolveMcpSkillRoot({
 
 function resolveMcpRuntimeDefaultsFromConfig(configValue) {
   const mcp =
-    configValue && typeof configValue.mcp === "object" && !Array.isArray(configValue.mcp)
+    configValue &&
+    typeof configValue.mcp === "object" &&
+    !Array.isArray(configValue.mcp)
       ? configValue.mcp
       : {};
   const docker =
@@ -8472,7 +8776,9 @@ async function runMcpRuntimeStatus(options) {
     console.log(`Configured fallback: ${defaults.defaults.fallback}`);
     console.log(`Configured image: ${defaults.defaults.image}`);
     console.log(`Configured update policy: ${defaults.defaults.updatePolicy}`);
-    console.log(`Configured build local: ${defaults.defaults.buildLocal ? "yes" : "no"}`);
+    console.log(
+      `Configured build local: ${defaults.defaults.buildLocal ? "yes" : "no"}`,
+    );
     console.log(`Requested skills root: ${explicitSkillsRoot || "(auto)"}`);
     if (skillsRootExists) {
       console.log(`Resolved host skills root: ${skillsRoot} (present)`);
@@ -8498,7 +8804,10 @@ async function runMcpRuntimeStatus(options) {
     const isRunning = container.status.toLowerCase().startsWith("up ");
     console.log(`Container status: ${container.status}`);
     console.log(`Container image: ${container.image}`);
-    const mounts = await inspectDockerContainerMounts({ name: containerName, cwd });
+    const mounts = await inspectDockerContainerMounts({
+      name: containerName,
+      cwd,
+    });
     const skillsMount = mounts.find(
       (mount) => String(mount.Destination || "") === "/workflows/skills",
     );
@@ -8556,8 +8865,7 @@ async function runMcpRuntimeUp(options) {
     const defaults = await loadMcpRuntimeDefaults({ scope, cwd });
     const containerName =
       normalizePostmanApiKey(opts.name) || DEFAULT_MCP_DOCKER_CONTAINER_NAME;
-    const image =
-      normalizePostmanApiKey(opts.image) || defaults.defaults.image;
+    const image = normalizePostmanApiKey(opts.image) || defaults.defaults.image;
     const updatePolicy = normalizeMcpUpdatePolicy(
       opts.updatePolicy,
       defaults.defaults.updatePolicy,
@@ -8569,11 +8877,16 @@ async function runMcpRuntimeUp(options) {
     const buildLocal = hasCliFlag("--build-local")
       ? true
       : defaults.defaults.buildLocal;
-    const hostPort = normalizePortNumber(opts.port, DEFAULT_MCP_DOCKER_HOST_PORT);
+    const hostPort = normalizePortNumber(
+      opts.port,
+      DEFAULT_MCP_DOCKER_HOST_PORT,
+    );
     const replace = Boolean(opts.replace);
     const dockerAvailable = await checkDockerAvailable({ cwd });
     if (!dockerAvailable) {
-      throw new Error("Docker is unavailable. Start OrbStack/Docker and retry.");
+      throw new Error(
+        "Docker is unavailable. Start OrbStack/Docker and retry.",
+      );
     }
 
     const prepared = await ensureMcpDockerImage({
@@ -8611,6 +8924,58 @@ async function runMcpRuntimeUp(options) {
       );
     }
     await mkdir(cbxRoot, { recursive: true });
+
+    // Forward configured API key env vars to Docker container
+    const envVarsToForward = [];
+    try {
+      const cfgPath = resolveCbxConfigPath({ scope, cwd });
+      const cfgData = await readJsonFileIfExists(cfgPath);
+      if (cfgData.value && typeof cfgData.value === "object") {
+        const postmanEnv = cfgData.value.postman?.apiKeyEnvVar;
+        const stitchProfiles = cfgData.value.stitch?.profiles;
+        if (postmanEnv && process.env[postmanEnv]) {
+          envVarsToForward.push({
+            name: postmanEnv,
+            value: process.env[postmanEnv],
+          });
+        }
+        if (Array.isArray(stitchProfiles)) {
+          for (const profile of stitchProfiles) {
+            const envName = profile?.apiKeyEnvVar;
+            if (
+              envName &&
+              process.env[envName] &&
+              !envVarsToForward.some((e) => e.name === envName)
+            ) {
+              envVarsToForward.push({
+                name: envName,
+                value: process.env[envName],
+              });
+            }
+          }
+        }
+        // Also check common env var patterns
+        for (const envName of [
+          "POSTMAN_API_KEY",
+          "POSTMAN_API_KEY_DEFAULT",
+          "STITCH_API_KEY",
+          "STITCH_API_KEY_DEFAULT",
+        ]) {
+          if (
+            process.env[envName] &&
+            !envVarsToForward.some((e) => e.name === envName)
+          ) {
+            envVarsToForward.push({
+              name: envName,
+              value: process.env[envName],
+            });
+          }
+        }
+      }
+    } catch {
+      // Config read failure is non-fatal for env var forwarding
+    }
+
     const dockerArgs = [
       "run",
       "-d",
@@ -8624,6 +8989,9 @@ async function runMcpRuntimeUp(options) {
     if (skillsRootExists) {
       dockerArgs.push("-v", `${skillsRoot}:/workflows/skills:ro`);
     }
+    for (const envEntry of envVarsToForward) {
+      dockerArgs.push("-e", `${envEntry.name}=${envEntry.value}`);
+    }
     dockerArgs.push(
       image,
       "--transport",
@@ -8635,11 +9003,7 @@ async function runMcpRuntimeUp(options) {
       "--scope",
       "global",
     );
-    await execFile(
-      "docker",
-      dockerArgs,
-      { cwd },
-    );
+    await execFile("docker", dockerArgs, { cwd });
 
     const running = await inspectDockerContainerByName({
       name: containerName,
@@ -8658,6 +9022,11 @@ async function runMcpRuntimeUp(options) {
       console.log(`Mount: ${skillsRoot} -> /workflows/skills (ro)`);
     } else {
       console.log("Mount: /workflows/skills (not mounted - source missing)");
+    }
+    if (envVarsToForward.length > 0) {
+      console.log(
+        `Env vars forwarded: ${envVarsToForward.map((e) => e.name).join(", ")}`,
+      );
     }
     console.log(`Port: ${hostPort}:${MCP_DOCKER_CONTAINER_PORT}`);
     console.log(`Status: ${running ? running.status : "started"}`);
@@ -8699,7 +9068,9 @@ async function runMcpRuntimeUp(options) {
           );
         }
         console.log("Endpoint health: fallback-to-local");
-        console.log("Local command: cbx mcp serve --transport stdio --scope auto");
+        console.log(
+          "Local command: cbx mcp serve --transport stdio --scope auto",
+        );
       } else {
         throw new Error(
           `MCP endpoint is unreachable at ${endpoint}. ${error.message}`,
@@ -8726,7 +9097,9 @@ async function runMcpRuntimeDown(options) {
       normalizePostmanApiKey(opts.name) || DEFAULT_MCP_DOCKER_CONTAINER_NAME;
     const dockerAvailable = await checkDockerAvailable({ cwd });
     if (!dockerAvailable) {
-      throw new Error("Docker is unavailable. Start OrbStack/Docker and retry.");
+      throw new Error(
+        "Docker is unavailable. Start OrbStack/Docker and retry.",
+      );
     }
     const existing = await inspectDockerContainerByName({
       name: containerName,
@@ -9166,7 +9539,9 @@ const mcpCommand = program
 
 mcpCommand
   .command("serve")
-  .description("Launch bundled Cubis Foundry MCP server (canonical local entrypoint)")
+  .description(
+    "Launch bundled Cubis Foundry MCP server (canonical local entrypoint)",
+  )
   .option("--transport <transport>", "stdio|http", "stdio")
   .option("--scope <scope>", "auto|global|project", "auto")
   .option("--port <port>", "HTTP port override")
@@ -9215,11 +9590,7 @@ mcpRuntimeCommand
     "config scope: project|workspace|global|user",
     "global",
   )
-  .option(
-    "--name <name>",
-    "container name",
-    DEFAULT_MCP_DOCKER_CONTAINER_NAME,
-  )
+  .option("--name <name>", "container name", DEFAULT_MCP_DOCKER_CONTAINER_NAME)
   .option(
     "--skills-root <path>",
     "host skills directory to resolve/mount (default: auto-detect)",
@@ -9234,11 +9605,7 @@ mcpRuntimeCommand
     "config scope: project|workspace|global|user",
     "global",
   )
-  .option(
-    "--name <name>",
-    "container name",
-    DEFAULT_MCP_DOCKER_CONTAINER_NAME,
-  )
+  .option("--name <name>", "container name", DEFAULT_MCP_DOCKER_CONTAINER_NAME)
   .option("--image <image:tag>", "docker image to run")
   .option("--update-policy <policy>", "pinned|latest")
   .option(
@@ -9260,11 +9627,7 @@ mcpRuntimeCommand
 mcpRuntimeCommand
   .command("down")
   .description("Stop and remove Docker runtime container")
-  .option(
-    "--name <name>",
-    "container name",
-    DEFAULT_MCP_DOCKER_CONTAINER_NAME,
-  )
+  .option("--name <name>", "container name", DEFAULT_MCP_DOCKER_CONTAINER_NAME)
   .action(runMcpRuntimeDown);
 
 mcpRuntimeCommand.action(() => {

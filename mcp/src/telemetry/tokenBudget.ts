@@ -67,6 +67,7 @@ export interface SkillToolMetrics {
   charsPerToken: number;
   fullCatalogEstimatedTokens: number;
   responseEstimatedTokens: number;
+  responseCharacterCount: number;
   selectedSkillsEstimatedTokens: number | null;
   loadedSkillEstimatedTokens: number | null;
   estimatedSavingsVsFullCatalog: number;
@@ -80,24 +81,30 @@ export function buildSkillToolMetrics({
   responseEstimatedTokens,
   selectedSkillsEstimatedTokens = null,
   loadedSkillEstimatedTokens = null,
+  responseCharacterCount = 0,
 }: {
   charsPerToken: number;
   fullCatalogEstimatedTokens: number;
   responseEstimatedTokens: number;
   selectedSkillsEstimatedTokens?: number | null;
   loadedSkillEstimatedTokens?: number | null;
+  responseCharacterCount?: number;
 }): SkillToolMetrics {
   const usedEstimatedTokens =
     loadedSkillEstimatedTokens ??
     selectedSkillsEstimatedTokens ??
     responseEstimatedTokens;
-  const savings = estimateSavings(fullCatalogEstimatedTokens, usedEstimatedTokens);
+  const savings = estimateSavings(
+    fullCatalogEstimatedTokens,
+    usedEstimatedTokens,
+  );
 
   return {
     estimatorVersion: TOKEN_ESTIMATOR_VERSION,
     charsPerToken: normalizeCharsPerToken(charsPerToken),
     fullCatalogEstimatedTokens: Math.max(0, fullCatalogEstimatedTokens),
     responseEstimatedTokens: Math.max(0, responseEstimatedTokens),
+    responseCharacterCount: Math.max(0, responseCharacterCount),
     selectedSkillsEstimatedTokens:
       selectedSkillsEstimatedTokens === null
         ? null
@@ -111,4 +118,3 @@ export function buildSkillToolMetrics({
     estimated: true,
   };
 }
-

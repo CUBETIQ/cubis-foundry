@@ -7,11 +7,17 @@
  * 1) initialize handshake works
  * 2) notifications/initialized accepted
  * 3) tools/list returns expected built-in tools
- * 4) skill tools expose telemetry metrics in structuredContent
+ * 4) skill tools expose telemetry metrics in _meta
  * 5) skill_budget_report returns consolidated skill log + context budget
  */
 
 const endpoint = process.argv[2] || "http://127.0.0.1:3100/mcp";
+
+// ── Wire token tracking ──────────────────────────────────
+const CHARS_PER_TOKEN = 3.5;
+let wireRequestCount = 0;
+let wireRequestBytes = 0;
+let wireResponseBytes = 0;
 
 function parseMcpResponse(text) {
   const trimmed = String(text || "").trim();
@@ -54,12 +60,17 @@ async function sendRpc({
       ? { jsonrpc: "2.0", method, params }
       : { jsonrpc: "2.0", id, method, params };
 
+  const bodyStr = JSON.stringify(payload);
+  wireRequestCount++;
+  wireRequestBytes += bodyStr.length;
+
   const res = await fetch(endpointUrl, {
     method: "POST",
     headers,
-    body: JSON.stringify(payload),
+    body: bodyStr,
   });
   const body = await res.text();
+  wireResponseBytes += body.length;
 
   if (!res.ok) {
     throw new Error(
@@ -102,20 +113,23 @@ async function callTool({ endpointUrl, sessionId, name, args = {} }) {
     throw new Error(`Tool ${name} returned no result payload`);
   }
   if (result.isError) {
-    throw new Error(`Tool ${name} returned isError=true`);
+    const errText =
+      result.content?.map((c) => c.text).join("\n") || "no content";
+    throw new Error(`Tool ${name} returned isError=true: ${errText}`);
   }
   return result;
 }
 
 function assertMetricShape(name, metrics, extraKeys = []) {
   if (!metrics || typeof metrics !== "object") {
-    throw new Error(`${name} did not return structuredContent.metrics`);
+    throw new Error(`${name} did not return _meta.metrics`);
   }
   const required = [
     "estimatorVersion",
     "charsPerToken",
     "fullCatalogEstimatedTokens",
     "responseEstimatedTokens",
+    "responseCharacterCount",
     "estimatedSavingsVsFullCatalog",
     "estimatedSavingsVsFullCatalogPercent",
     ...extraKeys,
@@ -200,10 +214,10 @@ async function main() {
     args: {},
   });
   const listCategoriesPayload = parseToolTextPayload(listCategoriesResult);
-  const listCategoriesMetrics = listCategoriesResult.structuredContent?.metrics || {};
+  const listCategoriesMetrics = listCategoriesResult._meta?.metrics || {};
   assertMetricShape(
     "skill_list_categories",
-    listCategoriesResult.structuredContent?.metrics,
+    listCategoriesResult._meta?.metrics,
   );
 
   const searchResult = await callTool({
@@ -212,12 +226,10 @@ async function main() {
     name: "skill_search",
     args: { query: "skill" },
   });
-  const searchMetrics = searchResult.structuredContent?.metrics || {};
-  assertMetricShape(
-    "skill_search",
-    searchResult.structuredContent?.metrics,
-    ["selectedSkillsEstimatedTokens"],
-  );
+  const searchMetrics = searchResult._meta?.metrics || {};
+  assertMetricShape("skill_search", searchResult._meta?.metrics, [
+    "selectedSkillsEstimatedTokens",
+  ]);
 
   const totalSkills = Number(listCategoriesPayload.totalSkills || 0);
   const categories = Array.isArray(listCategoriesPayload.categories)
@@ -237,12 +249,12 @@ async function main() {
         args: { category: firstCategory },
       });
       const browsePayload = parseToolTextPayload(browseResult);
-      assertMetricShape(
-        "skill_browse_category",
-        browseResult.structuredContent?.metrics,
-        ["selectedSkillsEstimatedTokens"],
-      );
-      const skills = Array.isArray(browsePayload.skills) ? browsePayload.skills : [];
+      assertMetricShape("skill_browse_category", browseResult._meta?.metrics, [
+        "selectedSkillsEstimatedTokens",
+      ]);
+      const skills = Array.isArray(browsePayload.skills)
+        ? browsePayload.skills
+        : [];
       if (skills.length > 0 && skills[0]?.id) {
         selectedSkillIds = [skills[0].id];
         const skillGetResult = await callTool({
@@ -257,13 +269,11 @@ async function main() {
         ) {
           throw new Error("skill_get did not return full skill text content");
         }
-        assertMetricShape(
-          "skill_get",
-          skillGetResult.structuredContent?.metrics,
-          ["loadedSkillEstimatedTokens"],
-        );
+        assertMetricShape("skill_get", skillGetResult._meta?.metrics, [
+          "loadedSkillEstimatedTokens",
+        ]);
         loadedSkillEstimatedTokens =
-          skillGetResult.structuredContent?.metrics?.loadedSkillEstimatedTokens ?? null;
+          skillGetResult._meta?.metrics?.loadedSkillEstimatedTokens ?? null;
         loadedSkillIds = [skills[0].id];
       }
     }
@@ -317,9 +327,7 @@ async function main() {
   console.log(
     `token.loaded=${contextBudget.loadedSkillsEstimatedTokens ?? "n/a"}`,
   );
-  console.log(
-    `token.savings=${contextBudget.estimatedSavingsTokens ?? "n/a"}`,
-  );
+  console.log(`token.savings=${contextBudget.estimatedSavingsTokens ?? "n/a"}`);
   console.log(
     `token.savings_percent=${contextBudget.estimatedSavingsPercent ?? "n/a"}`,
   );
@@ -333,6 +341,19 @@ async function main() {
     `token.search.selected=${searchMetrics.selectedSkillsEstimatedTokens ?? "n/a"}`,
   );
   console.log(`token.get.loaded=${loadedSkillEstimatedTokens ?? "n/a"}`);
+
+  // ── Wire usage summary ───────────────────────────────
+  const wireTotalBytes = wireRequestBytes + wireResponseBytes;
+  const wireTokensEstimate = Math.round(wireTotalBytes / CHARS_PER_TOKEN);
+  const fmt = (n) => n.toLocaleString("en-US");
+  console.log(`wire.requests=${wireRequestCount}`);
+  console.log(`wire.requestBytes=${wireRequestBytes}`);
+  console.log(`wire.responseBytes=${wireResponseBytes}`);
+  console.log(`wire.totalBytes=${wireTotalBytes}`);
+  console.log(`wire.estimatedTokens=${wireTokensEstimate}`);
+  console.log(
+    `wire.summary: ${wireRequestCount} requests, ${fmt(wireTotalBytes)} characters (token usage: ~${fmt(wireTokensEstimate)} tokens)`,
+  );
 }
 
 main().catch((error) => {

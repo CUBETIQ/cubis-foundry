@@ -54,7 +54,10 @@ var LEVEL_ORDER = {
   warn: 2,
   error: 3
 };
-var currentLevel = "info";
+var currentLevel = process.env.LOG_LEVEL?.toLowerCase() || "info";
+if (!LEVEL_ORDER[currentLevel]) {
+  currentLevel = "info";
+}
 function setLogLevel(level) {
   currentLevel = level;
 }
@@ -148,6 +151,10 @@ async function scanVaultRoots(roots, basePath) {
       const skillFile = path2.join(entryPath, "SKILL.md");
       const skillStat = await stat(skillFile).catch(() => null);
       if (!skillStat?.isFile()) continue;
+      if (skillStat.size === 0) {
+        logger.warn(`Skipping empty SKILL.md: ${skillFile}`);
+        continue;
+      }
       const wrapperKind = await detectWrapperKind(entry, skillFile);
       if (wrapperKind) {
         logger.debug(
@@ -357,15 +364,20 @@ function buildSkillToolMetrics({
   fullCatalogEstimatedTokens,
   responseEstimatedTokens,
   selectedSkillsEstimatedTokens = null,
-  loadedSkillEstimatedTokens = null
+  loadedSkillEstimatedTokens = null,
+  responseCharacterCount = 0
 }) {
   const usedEstimatedTokens = loadedSkillEstimatedTokens ?? selectedSkillsEstimatedTokens ?? responseEstimatedTokens;
-  const savings = estimateSavings(fullCatalogEstimatedTokens, usedEstimatedTokens);
+  const savings = estimateSavings(
+    fullCatalogEstimatedTokens,
+    usedEstimatedTokens
+  );
   return {
     estimatorVersion: TOKEN_ESTIMATOR_VERSION,
     charsPerToken: normalizeCharsPerToken(charsPerToken),
     fullCatalogEstimatedTokens: Math.max(0, fullCatalogEstimatedTokens),
     responseEstimatedTokens: Math.max(0, responseEstimatedTokens),
+    responseCharacterCount: Math.max(0, responseCharacterCount),
     selectedSkillsEstimatedTokens: selectedSkillsEstimatedTokens === null ? null : Math.max(0, selectedSkillsEstimatedTokens),
     loadedSkillEstimatedTokens: loadedSkillEstimatedTokens === null ? null : Math.max(0, loadedSkillEstimatedTokens),
     estimatedSavingsVsFullCatalog: savings.estimatedSavingsTokens,
@@ -485,11 +497,23 @@ async function collectSiblingMarkdownTargets(skillDir) {
   );
   const targets = [];
   for (const entry of entries) {
-    if (!entry.isFile()) continue;
     if (entry.name.startsWith(".")) continue;
-    if (!entry.name.toLowerCase().endsWith(".md")) continue;
-    if (entry.name.toLowerCase() === "skill.md") continue;
-    targets.push(entry.name);
+    if (entry.isDirectory()) {
+      const subEntries = await readdir2(path3.join(skillDir, entry.name), {
+        withFileTypes: true
+      }).catch(() => []);
+      for (const sub of subEntries) {
+        if (!sub.isFile()) continue;
+        if (sub.name.startsWith(".")) continue;
+        if (!sub.name.toLowerCase().endsWith(".md")) continue;
+        targets.push(`${entry.name}/${sub.name}`);
+        if (targets.length >= MAX_REFERENCED_FILES) break;
+      }
+    } else if (entry.isFile()) {
+      if (!entry.name.toLowerCase().endsWith(".md")) continue;
+      if (entry.name.toLowerCase() === "skill.md") continue;
+      targets.push(entry.name);
+    }
     if (targets.length >= MAX_REFERENCED_FILES) break;
   }
   targets.sort((a, b) => a.localeCompare(b));
@@ -536,7 +560,8 @@ function handleSkillListCategories(manifest, charsPerToken) {
   const metrics = buildSkillToolMetrics({
     charsPerToken,
     fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
-    responseEstimatedTokens: estimateTokensFromText(text, charsPerToken)
+    responseEstimatedTokens: estimateTokensFromText(text, charsPerToken),
+    responseCharacterCount: text.length
   });
   return {
     content: [
@@ -546,6 +571,9 @@ function handleSkillListCategories(manifest, charsPerToken) {
       }
     ],
     structuredContent: {
+      metrics
+    },
+    _meta: {
       metrics
     }
   };
@@ -602,7 +630,8 @@ async function handleSkillBrowseCategory(args, manifest, summaryMaxLength, chars
     charsPerToken,
     fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
     responseEstimatedTokens: estimateTokensFromText(text, charsPerToken),
-    selectedSkillsEstimatedTokens
+    selectedSkillsEstimatedTokens,
+    responseCharacterCount: text.length
   });
   return {
     content: [
@@ -612,6 +641,9 @@ async function handleSkillBrowseCategory(args, manifest, summaryMaxLength, chars
       }
     ],
     structuredContent: {
+      metrics
+    },
+    _meta: {
       metrics
     }
   };
@@ -658,7 +690,8 @@ async function handleSkillSearch(args, manifest, summaryMaxLength, charsPerToken
     charsPerToken,
     fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
     responseEstimatedTokens: estimateTokensFromText(text, charsPerToken),
-    selectedSkillsEstimatedTokens
+    selectedSkillsEstimatedTokens,
+    responseCharacterCount: text.length
   });
   return {
     content: [
@@ -668,6 +701,9 @@ async function handleSkillSearch(args, manifest, summaryMaxLength, charsPerToken
       }
     ],
     structuredContent: {
+      metrics
+    },
+    _meta: {
       metrics
     }
   };
@@ -710,6 +746,11 @@ async function handleSkillGet(args, manifest, charsPerToken) {
     ])
   ].join("\n") : "";
   const content = `${skillContent}${referenceSection}`;
+  if (content.trim().length === 0) {
+    invalidInput(
+      `Skill "${id}" has empty content (SKILL.md is empty or whitespace-only). This skill may be corrupt or incomplete.`
+    );
+  }
   const loadedSkillEstimatedTokens = estimateTokensFromText(
     content,
     charsPerToken
@@ -718,7 +759,8 @@ async function handleSkillGet(args, manifest, charsPerToken) {
     charsPerToken,
     fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
     responseEstimatedTokens: loadedSkillEstimatedTokens,
-    loadedSkillEstimatedTokens
+    loadedSkillEstimatedTokens,
+    responseCharacterCount: content.length
   });
   return {
     content: [
@@ -728,6 +770,10 @@ async function handleSkillGet(args, manifest, charsPerToken) {
       }
     ],
     structuredContent: {
+      references: references.map((ref) => ({ path: ref.relativePath })),
+      metrics
+    },
+    _meta: {
       references: references.map((ref) => ({ path: ref.relativePath })),
       metrics
     }
@@ -755,7 +801,10 @@ function handleSkillBudgetReport(args, manifest, charsPerToken) {
     return {
       id: skill.id,
       category: skill.category,
-      estimatedTokens: estimateTokensFromBytes(skill.fileBytes, charsPerToken)
+      estimatedTokens: estimateTokensFromBytes(
+        skill.fileBytes,
+        charsPerToken
+      )
     };
   }).filter((item) => Boolean(item));
   const loadedSkills = loadedSkillIds.map((id) => {
@@ -764,13 +813,18 @@ function handleSkillBudgetReport(args, manifest, charsPerToken) {
     return {
       id: skill.id,
       category: skill.category,
-      estimatedTokens: estimateTokensFromBytes(skill.fileBytes, charsPerToken)
+      estimatedTokens: estimateTokensFromBytes(
+        skill.fileBytes,
+        charsPerToken
+      )
     };
   }).filter((item) => Boolean(item));
   const unknownSelectedSkillIds = selectedSkillIds.filter(
     (id) => !skillById.has(id)
   );
-  const unknownLoadedSkillIds = loadedSkillIds.filter((id) => !skillById.has(id));
+  const unknownLoadedSkillIds = loadedSkillIds.filter(
+    (id) => !skillById.has(id)
+  );
   const selectedSkillsEstimatedTokens = selectedSkills.reduce(
     (sum, skill) => sum + skill.estimatedTokens,
     0
@@ -786,7 +840,9 @@ function handleSkillBudgetReport(args, manifest, charsPerToken) {
   );
   const selectedIdSet = new Set(selectedSkills.map((skill) => skill.id));
   const loadedIdSet = new Set(loadedSkills.map((skill) => skill.id));
-  const skippedSkills = manifest.skills.filter((skill) => !selectedIdSet.has(skill.id) && !loadedIdSet.has(skill.id)).map((skill) => skill.id).sort((a, b) => a.localeCompare(b));
+  const skippedSkills = manifest.skills.filter(
+    (skill) => !selectedIdSet.has(skill.id) && !loadedIdSet.has(skill.id)
+  ).map((skill) => skill.id).sort((a, b) => a.localeCompare(b));
   const payload = {
     skillLog: {
       selectedSkills,
@@ -806,14 +862,16 @@ function handleSkillBudgetReport(args, manifest, charsPerToken) {
       estimated: true
     }
   };
+  const text = JSON.stringify(payload, null, 2);
   return {
     content: [
       {
         type: "text",
-        text: JSON.stringify(payload, null, 2)
+        text
       }
     ],
-    structuredContent: payload
+    structuredContent: payload,
+    _meta: payload
   };
 }
 
@@ -1728,10 +1786,13 @@ async function createServer({
   };
   for (const entry of TOOL_REGISTRY) {
     const handler = entry.createHandler(runtimeCtx);
-    server.tool(
+    server.registerTool(
       entry.name,
-      entry.description,
-      entry.schema.shape,
+      {
+        description: entry.description,
+        inputSchema: entry.schema,
+        annotations: {}
+      },
       handler
     );
   }
@@ -1739,14 +1800,17 @@ async function createServer({
     `Registered ${TOOL_REGISTRY.length} built-in tools from registry`
   );
   const upstreamCatalogs = await discoverUpstreamCatalogs();
-  const dynamicArgsShape = z13.object({}).passthrough().shape;
+  const dynamicSchema = z13.object({}).passthrough();
   for (const catalog of [upstreamCatalogs.postman, upstreamCatalogs.stitch]) {
     for (const tool of catalog.tools) {
       const namespaced = tool.namespacedName;
-      server.tool(
+      server.registerTool(
         namespaced,
-        `[${catalog.service} passthrough] ${tool.description || tool.name}`,
-        dynamicArgsShape,
+        {
+          description: `[${catalog.service} passthrough] ${tool.description || tool.name}`,
+          inputSchema: dynamicSchema,
+          annotations: {}
+        },
         async (args) => {
           try {
             const result = await callUpstreamTool({
@@ -1781,27 +1845,177 @@ function createStdioTransport() {
 }
 
 // src/transports/streamableHttp.ts
-import { createServer as createServer2 } from "http";
+import {
+  createServer as createServer2
+} from "http";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
-function createStreamableHttpTransport(options) {
-  const transport = new StreamableHTTPServerTransport({
-    sessionIdGenerator: () => crypto.randomUUID()
+var SESSION_TTL_MS = 30 * 60 * 1e3;
+var CLEANUP_INTERVAL_MS = 5 * 60 * 1e3;
+function readBody(req) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    req.on("data", (c) => chunks.push(c));
+    req.on("end", () => resolve(Buffer.concat(chunks).toString("utf-8")));
+    req.on("error", reject);
   });
-  const httpServer = createServer2(async (req, res) => {
-    const url = new URL(req.url ?? "/", `http://${req.headers.host}`);
-    if (url.pathname !== "/mcp") {
-      res.writeHead(404, { "Content-Type": "text/plain" });
-      res.end("Not Found");
-      return;
+}
+function createMultiSessionHttpServer(options, serverFactory) {
+  const sessions = /* @__PURE__ */ new Map();
+  const cleanupTimer = setInterval(() => {
+    const now = Date.now();
+    for (const [id, entry] of sessions) {
+      if (now - entry.lastActivity > SESSION_TTL_MS) {
+        logger.info(
+          `Session ${id.slice(0, 8)} expired after idle (active: ${sessions.size - 1})`
+        );
+        entry.transport.close().catch(() => {
+        });
+        entry.server.close().catch(() => {
+        });
+        sessions.delete(id);
+      }
     }
-    await transport.handleRequest(req, res);
-  });
+  }, CLEANUP_INTERVAL_MS);
+  cleanupTimer.unref();
+  const httpServer = createServer2(
+    async (req, res) => {
+      const url = new URL(req.url ?? "/", `http://${req.headers.host}`);
+      if (url.pathname !== "/mcp") {
+        res.writeHead(404, { "Content-Type": "text/plain" });
+        res.end("Not Found");
+        return;
+      }
+      if (req.method === "DELETE") {
+        const sid = req.headers["mcp-session-id"];
+        if (sid && sessions.has(sid)) {
+          const entry = sessions.get(sid);
+          await entry.transport.close().catch(() => {
+          });
+          await entry.server.close().catch(() => {
+          });
+          sessions.delete(sid);
+          logger.info(
+            `Session ${sid.slice(0, 8)} terminated (active: ${sessions.size})`
+          );
+          res.writeHead(200, { "Content-Type": "text/plain" });
+          res.end("Session closed");
+        } else {
+          res.writeHead(404, { "Content-Type": "text/plain" });
+          res.end("Session not found");
+        }
+        return;
+      }
+      if (req.method === "GET") {
+        const sid = req.headers["mcp-session-id"];
+        if (sid && sessions.has(sid)) {
+          const entry = sessions.get(sid);
+          entry.lastActivity = Date.now();
+          await entry.transport.handleRequest(req, res);
+        } else {
+          res.writeHead(400, { "Content-Type": "text/plain" });
+          res.end("Missing or invalid mcp-session-id");
+        }
+        return;
+      }
+      if (req.method === "POST") {
+        const sid = req.headers["mcp-session-id"];
+        if (sid && sessions.has(sid)) {
+          const entry = sessions.get(sid);
+          entry.lastActivity = Date.now();
+          await entry.transport.handleRequest(req, res);
+          return;
+        }
+        const rawBody = await readBody(req);
+        let parsed;
+        try {
+          parsed = JSON.parse(rawBody);
+        } catch {
+          logger.warn(`Bad JSON in POST from ${req.socket.remoteAddress}`);
+          res.writeHead(400, { "Content-Type": "application/json" });
+          res.end(
+            JSON.stringify({
+              jsonrpc: "2.0",
+              error: { code: -32700, message: "Parse error" },
+              id: null
+            })
+          );
+          return;
+        }
+        const isInit = parsed && typeof parsed === "object" && "method" in parsed && parsed.method === "initialize";
+        if (!isInit) {
+          logger.warn(
+            `POST without session: method=${parsed?.method ?? "unknown"}`
+          );
+          res.writeHead(400, { "Content-Type": "application/json" });
+          res.end(
+            JSON.stringify({
+              jsonrpc: "2.0",
+              error: {
+                code: -32600,
+                message: "Invalid Request: missing or unknown mcp-session-id"
+              },
+              id: parsed?.id ?? null
+            })
+          );
+          return;
+        }
+        const transport = new StreamableHTTPServerTransport({
+          sessionIdGenerator: () => crypto.randomUUID()
+        });
+        try {
+          const server = await serverFactory(transport);
+          await transport.handleRequest(req, res, parsed);
+          const sessionId = transport.sessionId;
+          if (sessionId) {
+            sessions.set(sessionId, {
+              transport,
+              server,
+              lastActivity: Date.now()
+            });
+            logger.info(
+              `New session ${sessionId.slice(0, 8)} (active: ${sessions.size})`
+            );
+          }
+        } catch (error) {
+          logger.error(`Failed to create MCP session: ${error}`);
+          if (!res.headersSent) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(
+              JSON.stringify({
+                jsonrpc: "2.0",
+                error: {
+                  code: -32603,
+                  message: "Internal error creating session"
+                },
+                id: parsed?.id ?? null
+              })
+            );
+          }
+        }
+        return;
+      }
+      res.writeHead(405, { "Content-Type": "text/plain" });
+      res.end("Method Not Allowed");
+    }
+  );
   httpServer.listen(options.port, options.host, () => {
     logger.info(
-      `Streamable HTTP transport listening on http://${options.host}:${options.port}/mcp`
+      `Streamable HTTP transport listening on http://${options.host}:${options.port}/mcp (multi-session)`
     );
   });
-  return { transport, httpServer };
+  async function closeAll() {
+    clearInterval(cleanupTimer);
+    for (const [id, entry] of sessions) {
+      await entry.transport.close().catch(() => {
+      });
+      await entry.server.close().catch(() => {
+      });
+      sessions.delete(id);
+      logger.debug(`Closed session ${id} during shutdown`);
+    }
+    httpServer.close();
+  }
+  return { httpServer, closeAll };
 }
 
 // src/index.ts
@@ -1833,13 +2047,17 @@ function parseArgs(argv) {
       if (val === "auto" || val === "global" || val === "project") {
         scope = val;
       } else {
-        logger.error(`Unknown scope: ${val}. Use "auto", "global", or "project".`);
+        logger.error(
+          `Unknown scope: ${val}. Use "auto", "global", or "project".`
+        );
         process.exit(1);
       }
     } else if (arg === "--port" && argv[i + 1]) {
       const val = Number.parseInt(argv[++i], 10);
       if (!Number.isInteger(val) || val <= 0 || val > 65535) {
-        logger.error(`Invalid port: ${argv[i]}. Use an integer from 1 to 65535.`);
+        logger.error(
+          `Invalid port: ${argv[i]}. Use an integer from 1 to 65535.`
+        );
         process.exit(1);
       }
       port = val;
@@ -1928,27 +2146,37 @@ async function main() {
     transportName
   );
   printConfigStatus(args.scope);
-  const mcpServer = await createServer({
-    config: serverConfig,
-    manifest,
-    defaultConfigScope: args.scope
-  });
   if (args.transport === "http") {
     const httpOpts = {
       port: resolvedHttpPort,
       host: args.host ?? serverConfig.transport.http?.host ?? "127.0.0.1"
     };
-    const { transport, httpServer } = createStreamableHttpTransport(httpOpts);
-    await mcpServer.connect(transport);
+    const serverFactory = async (transport) => {
+      const server = await createServer({
+        config: serverConfig,
+        manifest,
+        defaultConfigScope: args.scope
+      });
+      await server.connect(transport);
+      return server;
+    };
+    const { httpServer, closeAll } = createMultiSessionHttpServer(
+      httpOpts,
+      serverFactory
+    );
     const shutdown = async () => {
       logger.info("Shutting down HTTP transport...");
-      httpServer.close();
-      await mcpServer.close();
+      await closeAll();
       process.exit(0);
     };
     process.on("SIGINT", shutdown);
     process.on("SIGTERM", shutdown);
   } else {
+    const mcpServer = await createServer({
+      config: serverConfig,
+      manifest,
+      defaultConfigScope: args.scope
+    });
     const transport = createStdioTransport();
     await mcpServer.connect(transport);
     const shutdown = async () => {

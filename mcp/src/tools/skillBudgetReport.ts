@@ -49,7 +49,10 @@ export function handleSkillBudgetReport(
       return {
         id: skill.id,
         category: skill.category,
-        estimatedTokens: estimateTokensFromBytes(skill.fileBytes, charsPerToken),
+        estimatedTokens: estimateTokensFromBytes(
+          skill.fileBytes,
+          charsPerToken,
+        ),
       };
     })
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
@@ -61,7 +64,10 @@ export function handleSkillBudgetReport(
       return {
         id: skill.id,
         category: skill.category,
-        estimatedTokens: estimateTokensFromBytes(skill.fileBytes, charsPerToken),
+        estimatedTokens: estimateTokensFromBytes(
+          skill.fileBytes,
+          charsPerToken,
+        ),
       };
     })
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
@@ -69,7 +75,9 @@ export function handleSkillBudgetReport(
   const unknownSelectedSkillIds = selectedSkillIds.filter(
     (id) => !skillById.has(id),
   );
-  const unknownLoadedSkillIds = loadedSkillIds.filter((id) => !skillById.has(id));
+  const unknownLoadedSkillIds = loadedSkillIds.filter(
+    (id) => !skillById.has(id),
+  );
 
   const selectedSkillsEstimatedTokens = selectedSkills.reduce(
     (sum, skill) => sum + skill.estimatedTokens,
@@ -92,7 +100,9 @@ export function handleSkillBudgetReport(
   const selectedIdSet = new Set(selectedSkills.map((skill) => skill.id));
   const loadedIdSet = new Set(loadedSkills.map((skill) => skill.id));
   const skippedSkills = manifest.skills
-    .filter((skill) => !selectedIdSet.has(skill.id) && !loadedIdSet.has(skill.id))
+    .filter(
+      (skill) => !selectedIdSet.has(skill.id) && !loadedIdSet.has(skill.id),
+    )
     .map((skill) => skill.id)
     .sort((a, b) => a.localeCompare(b));
 
@@ -116,13 +126,16 @@ export function handleSkillBudgetReport(
     },
   };
 
+  const text = JSON.stringify(payload, null, 2);
+
   return {
     content: [
       {
         type: "text" as const,
-        text: JSON.stringify(payload, null, 2),
+        text,
       },
     ],
     structuredContent: payload,
+    _meta: payload,
   };
 }

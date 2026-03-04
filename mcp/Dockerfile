@@ -16,4 +16,5 @@ COPY --from=build /app/dist ./dist
 COPY --from=build /app/config.json ./config.json
 
 EXPOSE 3100
+ENV LOG_LEVEL=info
 ENTRYPOINT ["node", "dist/index.js", "--transport", "http"]

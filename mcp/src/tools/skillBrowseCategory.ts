@@ -47,7 +47,8 @@ export async function handleSkillBrowseCategory(
   const payload = { category, skills, count: skills.length };
   const text = JSON.stringify(payload, null, 2);
   const selectedSkillsEstimatedTokens = matching.reduce(
-    (sum, skill) => sum + estimateTokensFromBytes(skill.fileBytes, charsPerToken),
+    (sum, skill) =>
+      sum + estimateTokensFromBytes(skill.fileBytes, charsPerToken),
     0,
   );
   const metrics = buildSkillToolMetrics({
@@ -55,6 +56,7 @@ export async function handleSkillBrowseCategory(
     fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
     responseEstimatedTokens: estimateTokensFromText(text, charsPerToken),
     selectedSkillsEstimatedTokens,
+    responseCharacterCount: text.length,
   });
 
   return {
@@ -65,6 +67,9 @@ export async function handleSkillBrowseCategory(
       },
     ],
     structuredContent: {
+      metrics,
+    },
+    _meta: {
       metrics,
     },
   };
