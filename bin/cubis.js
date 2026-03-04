@@ -8341,6 +8341,64 @@ function resolveCbxRootPath({ scope, cwd = process.cwd() }) {
   return path.join(workspaceRoot, ".cbx");
 }
 
+function dedupePaths(paths) {
+  const seen = new Set();
+  const out = [];
+  for (const value of paths) {
+    const normalized = path.resolve(value);
+    if (seen.has(normalized)) continue;
+    seen.add(normalized);
+    out.push(normalized);
+  }
+  return out;
+}
+
+function resolveMcpSkillRootCandidates({
+  scope,
+  cwd = process.cwd(),
+  explicitSkillsRoot = null,
+}) {
+  if (explicitSkillsRoot) {
+    return dedupePaths([path.resolve(cwd, explicitSkillsRoot)]);
+  }
+
+  const workspaceRoot = findWorkspaceRoot(cwd);
+  const workspaceCandidates = [
+    path.join(workspaceRoot, ".agents", "skills"),
+    path.join(workspaceRoot, ".github", "skills"),
+    path.join(workspaceRoot, ".agent", "skills"),
+  ];
+  const homeCandidates = [
+    path.join(os.homedir(), ".agents", "skills"),
+    path.join(os.homedir(), ".copilot", "skills"),
+    path.join(os.homedir(), ".gemini", "antigravity", "skills"),
+  ];
+
+  return dedupePaths(
+    scope === "global"
+      ? [...homeCandidates, ...workspaceCandidates]
+      : [...workspaceCandidates, ...homeCandidates],
+  );
+}
+
+async function resolveMcpSkillRoot({
+  scope,
+  cwd = process.cwd(),
+  explicitSkillsRoot = null,
+}) {
+  const candidates = resolveMcpSkillRootCandidates({
+    scope,
+    cwd,
+    explicitSkillsRoot,
+  });
+  for (const candidate of candidates) {
+    if (await pathExists(candidate)) {
+      return { resolvedPath: candidate, candidates };
+    }
+  }
+  return { resolvedPath: null, candidates };
+}
+
 function resolveMcpRuntimeDefaultsFromConfig(configValue) {
   const mcp =
     configValue && typeof configValue.mcp === "object" && !Array.isArray(configValue.mcp)
@@ -8391,15 +8449,21 @@ async function runMcpRuntimeStatus(options) {
     const opts = resolveActionOptions(options);
     const cwd = process.cwd();
     const scope = normalizeMcpScope(opts.scope, "global");
+    const explicitSkillsRoot = normalizePostmanApiKey(opts.skillsRoot);
     const defaults = await loadMcpRuntimeDefaults({ scope, cwd });
     const containerName =
       normalizePostmanApiKey(opts.name) || DEFAULT_MCP_DOCKER_CONTAINER_NAME;
     const dockerAvailable = await checkDockerAvailable({ cwd });
+    const { resolvedPath: skillsRoot, candidates: skillRootCandidates } =
+      await resolveMcpSkillRoot({
+        scope,
+        cwd,
+        explicitSkillsRoot,
+      });
     const container = dockerAvailable
       ? await inspectDockerContainerByName({ name: containerName, cwd })
       : null;
-    const skillsRoot = path.join(os.homedir(), ".agents", "skills");
-    const skillsRootExists = await pathExists(skillsRoot);
+    const skillsRootExists = Boolean(skillsRoot);
 
     console.log(`Scope: ${scope}`);
     console.log(`Config file: ${defaults.configPath}`);
@@ -8409,9 +8473,13 @@ async function runMcpRuntimeStatus(options) {
     console.log(`Configured image: ${defaults.defaults.image}`);
     console.log(`Configured update policy: ${defaults.defaults.updatePolicy}`);
     console.log(`Configured build local: ${defaults.defaults.buildLocal ? "yes" : "no"}`);
-    console.log(
-      `Host skills root: ${skillsRoot} (${skillsRootExists ? "present" : "missing"})`,
-    );
+    console.log(`Requested skills root: ${explicitSkillsRoot || "(auto)"}`);
+    if (skillsRootExists) {
+      console.log(`Resolved host skills root: ${skillsRoot} (present)`);
+    } else {
+      console.log("Resolved host skills root: not found");
+      console.log(`Skill root candidates: ${skillRootCandidates.join(", ")}`);
+    }
     console.log(`Docker available: ${dockerAvailable ? "yes" : "no"}`);
     console.log(`Container name: ${containerName}`);
     if (!dockerAvailable) {
@@ -8422,7 +8490,7 @@ async function runMcpRuntimeStatus(options) {
       console.log("Container status: not found");
       if (!skillsRootExists) {
         console.log(
-          "Hint: ~/.agents/skills is missing. Create/populate it before starting runtime to enable vault discovery.",
+          "Hint: no host skill directory was found from auto-detect candidates. Pass --skills-root <path> to force a mount source.",
         );
       }
       return;
@@ -8445,7 +8513,7 @@ async function runMcpRuntimeStatus(options) {
     } else {
       console.log("Skills mount: missing");
       console.log(
-        "Hint: recreate runtime with a skills mount (host ~/.agents/skills -> /workflows/skills).",
+        "Hint: recreate runtime with a skills mount (for example: cbx mcp runtime up --replace --skills-root <path>).",
       );
     }
     if (isRunning) {
@@ -8484,6 +8552,7 @@ async function runMcpRuntimeUp(options) {
     const opts = resolveActionOptions(options);
     const cwd = process.cwd();
     const scope = normalizeMcpScope(opts.scope, "global");
+    const explicitSkillsRoot = normalizePostmanApiKey(opts.skillsRoot);
     const defaults = await loadMcpRuntimeDefaults({ scope, cwd });
     const containerName =
       normalizePostmanApiKey(opts.name) || DEFAULT_MCP_DOCKER_CONTAINER_NAME;
@@ -8528,12 +8597,17 @@ async function runMcpRuntimeUp(options) {
     }
 
     const cbxRoot = resolveCbxRootPath({ scope, cwd });
-    const skillsRoot = path.join(os.homedir(), ".agents", "skills");
-    const skillsRootExists = await pathExists(skillsRoot);
+    const { resolvedPath: skillsRoot, candidates: skillRootCandidates } =
+      await resolveMcpSkillRoot({
+        scope,
+        cwd,
+        explicitSkillsRoot,
+      });
+    const skillsRootExists = Boolean(skillsRoot);
     const runtimeWarnings = [];
     if (!skillsRootExists) {
       runtimeWarnings.push(
-        `Skill mount source is missing: ${skillsRoot}. Runtime will start without /workflows/skills and vault discovery can return zero skills.`,
+        `No skill mount source found from candidates (${skillRootCandidates.join(", ")}). Runtime will start without /workflows/skills and vault discovery can return zero skills.`,
       );
     }
     await mkdir(cbxRoot, { recursive: true });
@@ -8579,6 +8653,7 @@ async function runMcpRuntimeUp(options) {
     console.log(`Fallback: ${fallback}`);
     console.log(`Build local: ${buildLocal ? "yes" : "no"}`);
     console.log(`Mount: ${cbxRoot} -> /root/.cbx`);
+    console.log(`Requested skills root: ${explicitSkillsRoot || "(auto)"}`);
     if (skillsRootExists) {
       console.log(`Mount: ${skillsRoot} -> /workflows/skills (ro)`);
     } else {
@@ -9145,6 +9220,10 @@ mcpRuntimeCommand
     "container name",
     DEFAULT_MCP_DOCKER_CONTAINER_NAME,
   )
+  .option(
+    "--skills-root <path>",
+    "host skills directory to resolve/mount (default: auto-detect)",
+  )
   .action(runMcpRuntimeStatus);
 
 mcpRuntimeCommand
@@ -9171,6 +9250,10 @@ mcpRuntimeCommand
     "build MCP Docker image from local package mcp/ directory instead of pulling",
   )
   .option("--port <port>", "host port to map to container :3100")
+  .option(
+    "--skills-root <path>",
+    "host skills directory to mount into /workflows/skills (default: auto-detect)",
+  )
   .option("--replace", "remove existing container with same name before start")
   .action(runMcpRuntimeUp);
 

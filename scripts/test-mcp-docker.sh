@@ -12,6 +12,8 @@ PORT="${CBX_MCP_PORT:-3310}"
 TIMEOUT_SECONDS="${CBX_MCP_TIMEOUT_SECONDS:-30}"
 KEEP_CONTAINER="${CBX_MCP_KEEP_CONTAINER:-0}"
 REQUIRE_KEYS="${CBX_MCP_REQUIRE_KEYS:-0}"
+USE_HOST_SKILLS="${CBX_MCP_USE_HOST_SKILLS:-0}"
+HOST_SKILLS_DIR="${CBX_MCP_HOST_SKILLS_DIR:-$HOME/.agents/skills}"
 
 TMP_HOME="$(mktemp -d /tmp/cbx-mcp-docker.XXXXXX)"
 
@@ -96,15 +98,24 @@ JSON
 log_ok "temp config ready at $TMP_HOME/.cbx/cbx_config.json"
 
 log_step "Prepare temp skill vault"
-mkdir -p "$TMP_HOME/skills/sample-smoke-skill"
-cat >"$TMP_HOME/skills/sample-smoke-skill/SKILL.md" <<'MD'
+SKILLS_MOUNT_SOURCE="$TMP_HOME/skills"
+if [ "$USE_HOST_SKILLS" = "1" ]; then
+  if [ ! -d "$HOST_SKILLS_DIR" ]; then
+    fail_with_diagnostics "CBX_MCP_USE_HOST_SKILLS=1 but host skills dir not found: $HOST_SKILLS_DIR"
+  fi
+  SKILLS_MOUNT_SOURCE="$HOST_SKILLS_DIR"
+  log_ok "using host skills: $SKILLS_MOUNT_SOURCE"
+else
+  mkdir -p "$TMP_HOME/skills/sample-smoke-skill"
+  cat >"$TMP_HOME/skills/sample-smoke-skill/SKILL.md" <<'MD'
 ---
 name: sample-smoke-skill
 description: Sample skill used for docker smoke validation.
 ---
 # Sample Smoke Skill
 MD
-log_ok "temp skills ready at $TMP_HOME/skills"
+  log_ok "temp skills ready at $TMP_HOME/skills"
+fi
 
 cat >"$TMP_HOME/.cbx/mcp-config.json" <<'JSON'
 {
@@ -149,7 +160,7 @@ docker run -d \
   -e POSTMAN_API_KEY_DEFAULT \
   -e STITCH_API_KEY_DEFAULT \
   -v "$TMP_HOME/.cbx:/root/.cbx" \
-  -v "$TMP_HOME/skills:/workflows/skills:ro" \
+  -v "$SKILLS_MOUNT_SOURCE:/workflows/skills:ro" \
   "$IMAGE_NAME" \
   --config /root/.cbx/mcp-config.json >/tmp/cbx-mcp-docker-run.log 2>&1 || {
   cat /tmp/cbx-mcp-docker-run.log >&2 || true
@@ -177,7 +188,7 @@ cat /tmp/cbx-mcp-smoke.log
 
 SKILL_TOTAL="$(awk -F= '/^skills.total=/{print $2}' /tmp/cbx-mcp-smoke.log | tail -1)"
 if [ -z "$SKILL_TOTAL" ] || [ "$SKILL_TOTAL" -le 0 ]; then
-  fail_with_diagnostics "Expected skills.total > 0 when /workflows/skills mount is present"
+  fail_with_diagnostics "Expected skills.total > 0 when /workflows/skills mount is present (source: $SKILLS_MOUNT_SOURCE)"
 fi
 log_ok "skills.total > 0 ($SKILL_TOTAL)"
 

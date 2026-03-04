@@ -200,6 +200,7 @@ async function main() {
     args: {},
   });
   const listCategoriesPayload = parseToolTextPayload(listCategoriesResult);
+  const listCategoriesMetrics = listCategoriesResult.structuredContent?.metrics || {};
   assertMetricShape(
     "skill_list_categories",
     listCategoriesResult.structuredContent?.metrics,
@@ -211,6 +212,7 @@ async function main() {
     name: "skill_search",
     args: { query: "skill" },
   });
+  const searchMetrics = searchResult.structuredContent?.metrics || {};
   assertMetricShape(
     "skill_search",
     searchResult.structuredContent?.metrics,
@@ -223,6 +225,7 @@ async function main() {
     : [];
   let selectedSkillIds = [];
   let loadedSkillIds = [];
+  let loadedSkillEstimatedTokens = null;
 
   if (categories.length > 0) {
     const firstCategory = categories[0]?.category;
@@ -259,6 +262,8 @@ async function main() {
           skillGetResult.structuredContent?.metrics,
           ["loadedSkillEstimatedTokens"],
         );
+        loadedSkillEstimatedTokens =
+          skillGetResult.structuredContent?.metrics?.loadedSkillEstimatedTokens ?? null;
         loadedSkillIds = [skills[0].id];
       }
     }
@@ -303,6 +308,31 @@ async function main() {
   console.log(`skills.total=${totalSkills}`);
   console.log(`skills.categories=${categories.length}`);
   console.log(`skill_budget_report.estimated=${contextBudget.estimated}`);
+  console.log(
+    `token.full_catalog=${contextBudget.fullCatalogEstimatedTokens ?? "n/a"}`,
+  );
+  console.log(
+    `token.selected=${contextBudget.selectedSkillsEstimatedTokens ?? "n/a"}`,
+  );
+  console.log(
+    `token.loaded=${contextBudget.loadedSkillsEstimatedTokens ?? "n/a"}`,
+  );
+  console.log(
+    `token.savings=${contextBudget.estimatedSavingsTokens ?? "n/a"}`,
+  );
+  console.log(
+    `token.savings_percent=${contextBudget.estimatedSavingsPercent ?? "n/a"}`,
+  );
+  console.log(
+    `token.list.response=${listCategoriesMetrics.responseEstimatedTokens ?? "n/a"}`,
+  );
+  console.log(
+    `token.search.response=${searchMetrics.responseEstimatedTokens ?? "n/a"}`,
+  );
+  console.log(
+    `token.search.selected=${searchMetrics.selectedSkillsEstimatedTokens ?? "n/a"}`,
+  );
+  console.log(`token.get.loaded=${loadedSkillEstimatedTokens ?? "n/a"}`);
 }
 
 main().catch((error) => {

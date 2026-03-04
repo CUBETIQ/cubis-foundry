@@ -351,6 +351,9 @@ cbx mcp runtime up --scope global --name cbx-mcp --port 3310 --fallback local
 # Recreate existing container
 cbx mcp runtime up --scope global --name cbx-mcp --replace --fallback local
 
+# Force an explicit skill vault mount source
+cbx mcp runtime up --scope global --name cbx-mcp --replace --skills-root ~/.agents/skills
+
 # Stop/remove runtime container
 cbx mcp runtime down --name cbx-mcp
 ```
@@ -373,6 +376,14 @@ Optional strict key mode:
 CBX_MCP_REQUIRE_KEYS=1 npm run test:mcp:docker
 ```
 
+Use host skill vault instead of the script's isolated sample vault:
+
+```bash
+CBX_MCP_USE_HOST_SKILLS=1 npm run test:mcp:docker
+# or an explicit path
+CBX_MCP_USE_HOST_SKILLS=1 CBX_MCP_HOST_SKILLS_DIR="$PWD/.agents/skills" npm run test:mcp:docker
+```
+
 Context budget reporting (from MCP skill tools):
 
 - Skill tools now include `structuredContent.metrics` with deterministic estimates.
@@ -383,6 +394,7 @@ Context budget reporting (from MCP skill tools):
   - `estimatedSavingsVsFullCatalog`
   - `estimatedSavingsVsFullCatalogPercent`
 - New rollup tool: `skill_budget_report` for consolidated Skill Log + Context Budget.
+- Docker smoke now prints token estimate lines (`token.full_catalog`, `token.selected`, `token.loaded`, `token.savings`, etc.) for quick visibility.
 - All token values are estimates using `ceil(char_count / charsPerToken)` (default `charsPerToken=4`), not provider billing tokens.
 
 Install profile flags:
@@ -485,6 +497,9 @@ cbx mcp runtime up --scope global --name cbx-mcp --replace
 
 # Check mount hint
 cbx mcp runtime status --scope global --name cbx-mcp
+
+# Force mount from an explicit path
+cbx mcp runtime up --scope global --name cbx-mcp --replace --skills-root ~/.agents/skills
 ```
 
 If `~/.agents/skills` is missing, runtime still starts but will warn and skill discovery may return zero.
