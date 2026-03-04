@@ -1,6 +1,7 @@
-# .github/copilot-instructions.md - Cubis Foundry Copilot Protocol
+# AGENTS.md - Copilot Compatibility Bridge
 
-This file defines mandatory behavior for GitHub Copilot projects installed via `cbx workflows`.
+Primary Copilot rule file is `.github/copilot-instructions.md`.
+This `AGENTS.md` exists for cross-tool compatibility (for example Codex/Cursor style readers) and should defer to `.github/copilot-instructions.md` when both files are present.
 
 ## 1) Platform Paths
 
@@ -230,7 +231,7 @@ After loading skills or completing a significant task phase, emit a single compa
 Use these commands to keep this setup healthy:
 
 - Install/update bundle:
-  `cbx workflows install --platform copilot --bundle agent-environment-setup --scope global --overwrite --postman --stitch --mcp-runtime docker --mcp-fallback local --mcp-tool-sync`
+  `cbx workflows install --platform copilot --bundle agent-environment-setup --scope global --overwrite --postman --postman-mode full --stitch --mcp-runtime docker --mcp-fallback local --mcp-tool-sync`
 - Start MCP Docker runtime:
   `cbx mcp runtime up --scope global --name cbx-mcp --port 3310 --replace`
 - Check MCP Docker runtime:

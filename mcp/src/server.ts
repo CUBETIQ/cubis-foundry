@@ -92,49 +92,61 @@ export async function createServer({
   );
 
   // ─── Dynamic upstream passthrough tools ────────────────────
-  const upstreamCatalogs = await discoverUpstreamCatalogs();
+  const upstreamCatalogs = await discoverUpstreamCatalogs(defaultConfigScope);
   const dynamicSchema = z.object({}).passthrough();
+  const registeredDynamicToolNames = new Set<string>();
 
   for (const catalog of [upstreamCatalogs.postman, upstreamCatalogs.stitch]) {
     for (const tool of catalog.tools) {
-      const namespaced = tool.namespacedName;
-      server.registerTool(
-        namespaced,
-        {
-          description: `[${catalog.service} passthrough] ${tool.description || tool.name}`,
-          inputSchema: dynamicSchema,
-          annotations: {},
-        },
-        async (args: Record<string, unknown>) => {
-          try {
-            const result = await callUpstreamTool({
-              service: catalog.service,
-              name: tool.name,
-              argumentsValue:
-                args && typeof args === "object"
-                  ? args
-                  : ({} as Record<string, unknown>),
-            });
-            return {
-              // SDK content is typed broadly; cast to the expected array shape.
-              content: (result.content ?? []) as Array<{
-                type: string;
-                [k: string]: unknown;
-              }>,
-              structuredContent: result.structuredContent as
-                | Record<string, unknown>
-                | undefined,
-              isError: Boolean(result.isError),
-            };
-          } catch (error) {
-            return toolCallErrorResult({
-              service: catalog.service,
-              namespacedName: namespaced,
-              error,
-            });
-          }
-        },
-      );
+      const registrationNames = [tool.namespacedName, ...(tool.aliasNames || [])];
+      const uniqueRegistrationNames = [...new Set(registrationNames)];
+      for (const registrationName of uniqueRegistrationNames) {
+        if (registeredDynamicToolNames.has(registrationName)) {
+          logger.warn(
+            `Skipping duplicate dynamic tool registration name '${registrationName}' from ${catalog.service}.${tool.name}`,
+          );
+          continue;
+        }
+        registeredDynamicToolNames.add(registrationName);
+        server.registerTool(
+          registrationName,
+          {
+            description: `[${catalog.service} passthrough] ${tool.description || tool.name}`,
+            inputSchema: dynamicSchema,
+            annotations: {},
+          },
+          async (args: Record<string, unknown>) => {
+            try {
+              const result = await callUpstreamTool({
+                service: catalog.service,
+                name: tool.name,
+                argumentsValue:
+                  args && typeof args === "object"
+                    ? args
+                    : ({} as Record<string, unknown>),
+                scope: defaultConfigScope,
+              });
+              return {
+                // SDK content is typed broadly; cast to the expected array shape.
+                content: (result.content ?? []) as Array<{
+                  type: string;
+                  [k: string]: unknown;
+                }>,
+                structuredContent: result.structuredContent as
+                  | Record<string, unknown>
+                  | undefined,
+                isError: Boolean(result.isError),
+              };
+            } catch (error) {
+              return toolCallErrorResult({
+                service: catalog.service,
+                namespacedName: registrationName,
+                error,
+              });
+            }
+          },
+        );
+      }
     }
   }
 

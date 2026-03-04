@@ -80,7 +80,7 @@ cat >"$TMP_HOME/.cbx/cbx_config.json" <<'JSON'
       }
     ],
     "activeProfileName": "default",
-    "mcpUrl": "https://mcp.postman.com/minimal"
+    "mcpUrl": "https://mcp.postman.com/mcp"
   },
   "stitch": {
     "profiles": [

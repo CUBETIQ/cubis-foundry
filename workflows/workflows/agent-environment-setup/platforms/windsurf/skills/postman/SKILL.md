@@ -1,41 +1,53 @@
 ---
 name: postman
-description: Use Postman MCP tools for workspace, collection, environment, and run workflows with explicit default-workspace handling.
+description: Automate API testing and collection management with Postman MCP using full-mode defaults and workspace-aware execution.
 ---
 
-# Postman MCP
+# Postman MCP Skill
 
-Use this skill when you need to work with Postman through MCP tools.
+Use this skill when you need Postman workspace, collection, environment, or run operations through MCP.
+
+References:
+- [Full-Mode Setup](./references/full-mode-setup.md)
+- [Workspace Policy](./references/workspace-policy.md)
+- [Troubleshooting](./references/troubleshooting.md)
 
 ## MCP-First Rule
 
-- Prefer Postman MCP tools (`postman.*`) for all Postman operations.
+- Prefer Postman MCP tools for all Postman operations.
+- Accept both dynamic naming styles from clients:
+  - dotted: `postman.<tool>`
+  - alias: `postman_<tool>`
 - Do not use Newman/Postman CLI fallback unless the user explicitly asks for fallback.
-- If required Postman MCP tools are unavailable, stop and report the MCP discovery issue with remediation steps.
+- If required Postman MCP tools are unavailable, report discovery/remediation steps first.
 
-## Required Environment Variables
+## Setup Baseline
 
-- Active profile key alias must be set (typically `POSTMAN_API_KEY_DEFAULT`).
-- `POSTMAN_API_KEY_<PROFILE>` aliases are also valid if the active profile uses them.
+1. Install with Postman enabled and explicit full mode:
+   - `cbx workflows install --platform <codex|antigravity|copilot> --scope global --bundle agent-environment-setup --postman --postman-mode full --mcp-runtime docker --mcp-fallback local --mcp-tool-sync --yes`
+2. Persist env aliases once (no per-session re-export):
+   - `cbx workflows config keys persist-env --service postman --scope global`
+3. Verify mode/config:
+   - `cbx workflows config --scope global --show`
+   - `cbx mcp tools sync --service postman --scope global`
+   - `cbx mcp tools list --service postman --scope global`
 
-## Preflight Checklist
+## Preflight
 
 1. Read Postman status first:
-   - Call `postman_get_status` (`scope: auto` unless user requires a scope).
-2. Validate connectivity and mode:
-   - If not configured, report missing env alias/config and stop.
-   - If mode is not `full`, call `postman_set_mode` with `mode: full`.
+   - Call `postman_get_status`.
+2. Ensure mode is `full`:
+   - If not, call `postman_set_mode` with `mode: full`.
 3. Discover upstream tools:
-   - Prefer `postman.getEnabledTools` when available.
-   - Confirm required tool names before proceeding (for example `getWorkspaces`, `getCollections`, `runCollection`).
+   - Confirm required tools exist before execution (for example workspaces/collections/runs).
 
-## Default Workspace ID Policy
+## Default Workspace Policy
 
 Resolve workspace in this order:
 
 1. User-provided workspace ID.
 2. `postman_get_status.defaultWorkspaceId`.
-3. Auto-detect from `postman.getWorkspaces`:
+3. Auto-detect from workspace listing:
    - If exactly one workspace exists, use it and state that choice.
 4. If multiple workspaces and no default:
    - Ask user to choose one.
@@ -46,17 +58,11 @@ When a Postman tool requires a workspace argument, always pass the resolved work
 
 ## Common Workflows
 
-### List/Inspect
-
-- `postman.getWorkspaces`
-- `postman.getCollections` (with resolved workspace ID)
-- `postman.getEnvironments` (with resolved workspace ID)
-
 ### Collection Run
 
 1. Resolve workspace ID (policy above).
 2. Resolve `collectionId` and optional `environmentId`.
-3. Call `postman.runCollection`.
+3. Call Postman run tool (`postman.runCollection` or alias equivalent).
 4. Return a concise run summary:
    - total requests
    - passed/failed tests
@@ -65,7 +71,7 @@ When a Postman tool requires a workspace argument, always pass the resolved work
 
 ## Failure Handling
 
-If dynamic Postman tools are missing (only `postman_get_*` / `postman_set_mode` visible):
+If dynamic Postman tools are missing:
 
 1. Verify env alias expected by config is set.
 2. Resync catalog:

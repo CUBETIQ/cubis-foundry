@@ -533,7 +533,7 @@
         "webapp-testing",
         "wrangler"
       ],
-      "rulesTemplate": "platforms/copilot/rules/AGENTS.md",
+      "rulesTemplate": "platforms/copilot/rules/copilot-instructions.md",
       "hooks": [
         {
           "type": "conductor-reference",

@@ -206,6 +206,22 @@ async function main() {
   const namespacedStitch = toolNames.filter((name) =>
     String(name).startsWith("stitch."),
   ).length;
+  const aliasPostman = toolNames.filter((name) =>
+    String(name).startsWith("postman_"),
+  ).length;
+  const aliasStitch = toolNames.filter((name) =>
+    String(name).startsWith("stitch_"),
+  ).length;
+  if (namespacedPostman > 0 && aliasPostman === 0) {
+    throw new Error(
+      "Dynamic Postman dotted tools were found but alias tools (postman_*) were not registered",
+    );
+  }
+  if (namespacedStitch > 0 && aliasStitch === 0) {
+    throw new Error(
+      "Dynamic Stitch dotted tools were found but alias tools (stitch_*) were not registered",
+    );
+  }
 
   const listCategoriesResult = await callTool({
     endpointUrl: endpoint,
@@ -315,6 +331,8 @@ async function main() {
   console.log(`tools.total=${toolNames.length}`);
   console.log(`tools.postman.namespaced=${namespacedPostman}`);
   console.log(`tools.stitch.namespaced=${namespacedStitch}`);
+  console.log(`tools.postman.alias=${aliasPostman}`);
+  console.log(`tools.stitch.alias=${aliasStitch}`);
   console.log(`skills.total=${totalSkills}`);
   console.log(`skills.categories=${categories.length}`);
   console.log(`skill_budget_report.estimated=${contextBudget.estimated}`);

@@ -191,7 +191,7 @@ node "$CLI" rules init --platform antigravity --scope project --overwrite >/tmp/
 [ -f .agent/rules/ENGINEERING_RULES.md ]
 [ -f TECH.md ]
 rg -n 'cbx:engineering:auto:start platform=antigravity version=1' .agent/rules/GEMINI.md >/dev/null
-rg -n 'Build Only What Is Needed \(YAGNI\)' .agent/rules/ENGINEERING_RULES.md >/dev/null
+rg -n 'YAGNI' .agent/rules/ENGINEERING_RULES.md >/dev/null
 rg -n '^# TECH\.md$' TECH.md >/dev/null
 log_ok "Antigravity rules init creates ENGINEERING_RULES.md, TECH.md, and rule block"
 
@@ -325,12 +325,24 @@ rg -n 'Workspace rule file detected at' /tmp/cbx-c22.log >/dev/null
 rg -n 'Workspace rule managed block sync action:' /tmp/cbx-c22.log >/dev/null
 log_ok "Codex global sync updates workspace AGENTS.md managed block and preserves custom content"
 
+log_step "C2.2.1 Codex global sync workflow indexing count"
+node "$CLI" workflows sync-rules --platform codex --scope global --dry-run --json >/tmp/cbx-c221.json
+node - <<'NODE'
+const fs = require('fs');
+const payload = JSON.parse(fs.readFileSync('/tmp/cbx-c221.json', 'utf8'));
+if (payload.workflowsCount !== 18) {
+  console.error(`[FAIL] Expected workflowsCount=18 for codex global sync dry-run, got ${payload.workflowsCount}`);
+  process.exit(1);
+}
+NODE
+log_ok "Codex global sync dry-run reports workflowsCount=18"
+
 log_step "C2.3 Rules init (Codex)"
 node "$CLI" rules init --platform codex --scope project --overwrite >/tmp/cbx-c23.log
 [ -f ENGINEERING_RULES.md ]
 [ -f TECH.md ]
 rg -n 'cbx:engineering:auto:start platform=codex version=1' AGENTS.md >/dev/null
-rg -n 'Build Only What Is Needed \(YAGNI\)' ENGINEERING_RULES.md >/dev/null
+rg -n 'YAGNI' ENGINEERING_RULES.md >/dev/null
 rg -n '^# TECH\.md$' TECH.md >/dev/null
 log_ok "Codex rules init creates ENGINEERING_RULES.md, TECH.md, and rule block"
 
@@ -354,6 +366,7 @@ log_ok "Dry-run did not write Copilot files"
 log_step "P2 Copilot apply + doctor"
 node "$CLI" workflows install --platform copilot --bundle agent-environment-setup --yes >/tmp/cbx-p2.log
 [ -f AGENTS.md ]
+[ -f .github/copilot-instructions.md ]
 [ -f .github/copilot/workflows/backend.md ]
 [ -f .github/copilot/workflows/orchestrate.md ]
 [ -f .github/copilot/workflows/release.md ]
@@ -471,31 +484,31 @@ log_ok "Copilot workflow declares /backend and routes to @backend-specialist"
 log_step "P2.2 Copilot global precedence sync"
 node - <<'NODE'
 const fs = require('fs');
-const file = 'AGENTS.md';
+const file = '.github/copilot-instructions.md';
 const text = fs.readFileSync(file, 'utf8');
 const cleaned = text.replace(/\n?<!--\s*cbx:workflows:auto:start[\s\S]*?<!--\s*cbx:workflows:auto:end\s*-->\n?/g, '\n');
 fs.writeFileSync(file, cleaned, 'utf8');
 NODE
-echo "Custom copilot workspace rule must stay" >>AGENTS.md
-if rg -n 'cbx:workflows:auto:start' AGENTS.md >/dev/null; then
+echo "Custom copilot workspace rule must stay" >>.github/copilot-instructions.md
+if rg -n 'cbx:workflows:auto:start' .github/copilot-instructions.md >/dev/null; then
   echo "[FAIL] Failed to clear Copilot managed block before global precedence sync test" >&2
   exit 1
 fi
 node "$CLI" workflows sync-rules --platform copilot --scope global >/tmp/cbx-p22.log
-rg -n 'cbx:workflows:auto:start platform=copilot version=1' AGENTS.md >/dev/null
-rg -n 'Custom copilot workspace rule must stay' AGENTS.md >/dev/null
+rg -n 'cbx:workflows:auto:start platform=copilot version=1' .github/copilot-instructions.md >/dev/null
+rg -n 'Custom copilot workspace rule must stay' .github/copilot-instructions.md >/dev/null
 rg -n 'Workspace rule file detected at' /tmp/cbx-p22.log >/dev/null
 rg -n 'Workspace rule managed block sync action:' /tmp/cbx-p22.log >/dev/null
-log_ok "Copilot global sync updates workspace rule managed block and preserves custom content"
+log_ok "Copilot global sync updates .github/copilot-instructions.md managed block and preserves custom content"
 
 log_step "P2.3 Rules init (Copilot)"
 node "$CLI" rules init --platform copilot --scope project --overwrite >/tmp/cbx-p23.log
 [ -f ENGINEERING_RULES.md ]
 [ -f TECH.md ]
-rg -n 'cbx:engineering:auto:start platform=copilot version=1' AGENTS.md >/dev/null
-rg -n 'Build Only What Is Needed \(YAGNI\)' ENGINEERING_RULES.md >/dev/null
+rg -n 'cbx:engineering:auto:start platform=copilot version=1' .github/copilot-instructions.md >/dev/null
+rg -n 'YAGNI' ENGINEERING_RULES.md >/dev/null
 rg -n '^# TECH\.md$' TECH.md >/dev/null
-log_ok "Copilot rules init creates ENGINEERING_RULES.md, TECH.md, and rule block"
+log_ok "Copilot rules init creates ENGINEERING_RULES.md, TECH.md, and copilot-instructions rule block"
 
 log_step "P3 Sync idempotency"
 node "$CLI" workflows sync-rules --platform copilot >/tmp/cbx-p3a.log
@@ -509,8 +522,8 @@ node "$CLI" workflows remove agent-environment-setup --platform copilot --scope 
 [ ! -f .github/agents/backend-specialist.md ]
 [ ! -f .github/prompts/workflow-backend.prompt.md ]
 [ ! -d "$COPILOT_GLOBAL_SKILLS/api-designer" ]
-[ -f AGENTS.md ]
-rg -n 'No installed workflows found yet\.' AGENTS.md >/dev/null
+[ -f .github/copilot-instructions.md ]
+rg -n 'No installed workflows found yet\.' .github/copilot-instructions.md >/dev/null
 log_ok "Copilot bundle removed and managed block kept"
 
 log_step "DONE"

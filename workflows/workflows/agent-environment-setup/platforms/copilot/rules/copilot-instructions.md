@@ -230,7 +230,7 @@ After loading skills or completing a significant task phase, emit a single compa
 Use these commands to keep this setup healthy:
 
 - Install/update bundle:
-  `cbx workflows install --platform copilot --bundle agent-environment-setup --scope global --overwrite --postman --stitch --mcp-runtime docker --mcp-fallback local --mcp-tool-sync`
+  `cbx workflows install --platform copilot --bundle agent-environment-setup --scope global --overwrite --postman --postman-mode full --stitch --mcp-runtime docker --mcp-fallback local --mcp-tool-sync`
 - Start MCP Docker runtime:
   `cbx mcp runtime up --scope global --name cbx-mcp --port 3310 --replace`
 - Check MCP Docker runtime:

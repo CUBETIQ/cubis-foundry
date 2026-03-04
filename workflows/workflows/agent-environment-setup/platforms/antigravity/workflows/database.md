@@ -16,7 +16,6 @@ Use this when data modeling, query quality, migration safety, or database perfor
 - Companion skills: `database-design` (schema/migrations), `database-optimizer` (tuning/triage)
 - Mobile/local persistence companion: `drift-flutter`
 - Power bridge: `workflows/powers/database-skills`
-- Engine wrappers: `postgres`, `mysql`, `vitess`, `neki`, `mongodb`, `sqlite`, `supabase`, `redis`
 
 ## Context notes
 - This workflow file, active platform rules, and selected agents/skills guide execution.
@@ -25,6 +24,7 @@ Use this when data modeling, query quality, migration safety, or database perfor
 ## Skill Routing
 - Primary skills: `database-skills`, `database-design`
 - Supporting skills (optional): `database-optimizer`
+- Engine packs (sub-skills): `database-skills/postgres`, `database-skills/mysql`, `database-skills/vitess`, `database-skills/neki`, `database-skills/mongodb`, `database-skills/sqlite`, `database-skills/supabase`, `database-skills/redis`
 
 ## Workflow steps
 1. Confirm data shape, access patterns, and workload size.

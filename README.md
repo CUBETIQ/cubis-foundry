@@ -2,12 +2,15 @@
 
 Workflow-first installer for multi-platform AI agent environments.
 
-Last updated: 2026-03-03.
+Last updated: 2026-03-04.
 
 `cbx` installs workflows, skills, wrappers, and rule files for:
 - Codex
 - Antigravity (Gemini)
 - GitHub Copilot
+
+Official install targets: `codex`, `antigravity`, `copilot`.
+Mirror/parity artifacts are maintained for `cursor` and `windsurf`, but those are not direct install targets.
 
 Skill install default is profile-based:
 - default profile: `core`
@@ -48,6 +51,7 @@ Recommended environment setup:
 ```bash
 export POSTMAN_API_KEY_DEFAULT="<your-postman-api-key>"
 export STITCH_API_KEY_DEFAULT="<your-stitch-api-key>" # Antigravity StitchMCP only
+cbx workflows config keys persist-env --service all --scope global
 ```
 
 ## Quickstarts
@@ -55,7 +59,7 @@ export STITCH_API_KEY_DEFAULT="<your-stitch-api-key>" # Antigravity StitchMCP on
 ### Codex (recommended baseline)
 
 ```bash
-cbx workflows install --platform codex --bundle agent-environment-setup --postman
+cbx workflows install --platform codex --scope global --bundle agent-environment-setup --postman --postman-mode full
 ```
 
 Important:
@@ -65,7 +69,7 @@ Important:
 ### Antigravity
 
 ```bash
-cbx workflows install --platform antigravity --bundle agent-environment-setup --postman
+cbx workflows install --platform antigravity --scope global --bundle agent-environment-setup --postman --postman-mode full
 ```
 
 This also manages default `StitchMCP` wiring for Antigravity.
@@ -73,7 +77,7 @@ This also manages default `StitchMCP` wiring for Antigravity.
 ### Copilot
 
 ```bash
-cbx workflows install --platform copilot --bundle agent-environment-setup --postman
+cbx workflows install --platform copilot --scope global --bundle agent-environment-setup --postman --postman-mode full
 ```
 
 ## Scope Model (Global vs Project)
@@ -129,7 +133,7 @@ Postman and Stitch now support multiple named profiles with active selection.
       }
     ],
     "activeProfileName": "default",
-    "mcpUrl": "https://mcp.postman.com/minimal"
+    "mcpUrl": "https://mcp.postman.com/mcp"
   },
   "stitch": {
     "profiles": [
@@ -178,6 +182,9 @@ cbx workflows config keys migrate-inline --scope global --redact
 
 # Doctor check for inline keys / unsafe headers
 cbx workflows config keys doctor --scope global
+
+# Persist selected env aliases to ~/.cbx/credentials.env (mode 600)
+cbx workflows config keys persist-env --service all --scope global
 ```
 
 Alias commands are also available:
@@ -188,7 +195,7 @@ Alias commands are also available:
 ### Interactive Postman workspace selection
 
 ```bash
-cbx workflows install --platform codex --bundle agent-environment-setup --postman
+cbx workflows install --platform codex --scope global --bundle agent-environment-setup --postman --postman-mode full
 ```
 
 If active Postman env var (for example `POSTMAN_API_KEY_DEFAULT`) is available and `--yes` is not used, installer can show workspace chooser and save selected `workspaceId` in active Postman profile.
@@ -196,7 +203,7 @@ If active Postman env var (for example `POSTMAN_API_KEY_DEFAULT`) is available a
 `--postman` now installs side-by-side MCP topology by default:
 - direct Postman MCP server (`postman`)
 - direct Stitch MCP server where applicable (`StitchMCP` for Antigravity)
-- local Foundry MCP command server (`cubis-foundry` via `cbx mcp serve --transport stdio --scope auto`)
+- local Foundry MCP command server (`cubis-foundry` via `cbx mcp serve --transport stdio --scope global`)
 
 `--postman` also installs the `postman` skill. Managed platform rules then treat Postman intent as skill-first:
 - run `skill_search "postman"`
@@ -206,25 +213,25 @@ If active Postman env var (for example `POSTMAN_API_KEY_DEFAULT`) is available a
 To opt out of Foundry MCP registration during install:
 
 ```bash
-cbx workflows install --platform codex --bundle agent-environment-setup --postman --no-foundry-mcp
+cbx workflows install --platform codex --scope global --bundle agent-environment-setup --postman --postman-mode full --no-foundry-mcp
 ```
 
 ### Manual workspace ID
 
 ```bash
-cbx workflows install --platform codex --bundle agent-environment-setup --postman --postman-workspace-id "<workspace-id>" --yes
+cbx workflows install --platform codex --scope global --bundle agent-environment-setup --postman --postman-mode full --postman-workspace-id "<workspace-id>" --yes
 ```
 
 Clear workspace ID:
 
 ```bash
-cbx workflows install --platform codex --bundle agent-environment-setup --postman --postman-workspace-id null --yes
+cbx workflows install --platform codex --scope global --bundle agent-environment-setup --postman --postman-mode full --postman-workspace-id null --yes
 ```
 
 If config already exists and you want to overwrite saved values:
 
 ```bash
-cbx workflows install --platform codex --bundle agent-environment-setup --postman --overwrite --yes
+cbx workflows install --platform codex --scope global --bundle agent-environment-setup --postman --postman-mode full --overwrite --yes
 ```
 
 ### StitchMCP (Antigravity)
@@ -261,17 +268,20 @@ Runtime target patching:
 Codex:
 - Global MCP runtime target: `~/.codex/config.toml` (via `codex mcp add/remove`)
 - Project MCP runtime target: `<workspace>/.vscode/mcp.json`
-- Foundry side-by-side server id: `cubis-foundry` (command: `cbx mcp serve --transport stdio --scope auto`)
+- Foundry side-by-side server id: `cubis-foundry` (command: `cbx mcp serve --transport stdio --scope <global|project>`)
+  - Install now pins scope explicitly (`global` or `project`) in this command.
 
 Antigravity:
 - Global runtime target: `~/.gemini/settings.json` (`mcpServers`)
 - Project runtime target: `<workspace>/.gemini/settings.json` (`mcpServers`)
 - Foundry side-by-side server id: `cubis-foundry` (command template)
+  - Install now pins scope explicitly (`global` or `project`) in this command.
 
 Copilot:
 - Global runtime target: `~/.copilot/mcp-config.json` (`servers`)
 - Project runtime target: `<workspace>/.vscode/mcp.json` (`servers`)
 - Foundry side-by-side server id: `cubis-foundry` (stdio command server)
+  - Install now pins scope explicitly (`global` or `project`) in this command.
 
 ## Command Reference
 
@@ -289,6 +299,7 @@ MCP runtime flags (install):
 
 ```bash
 cbx workflows install --platform codex --bundle agent-environment-setup --postman \
+  --postman-mode full \
   --mcp-runtime docker \
   --mcp-fallback local \
   --mcp-image ghcr.io/cubetiq/foundry-mcp:<package-version> \
@@ -428,6 +439,9 @@ cbx workflows config --scope global --show
 cbx workflows config --scope global --edit
 cbx workflows config --scope global --workspace-id "<workspace-id>"
 cbx workflows config --scope global --clear-workspace-id
+
+# Set Postman MCP mode without jq edits (also patches MCP artifacts/targets)
+cbx workflows config --scope global --platform codex --postman-mode full
 
 # Switch MCP runtime preference quickly
 cbx workflows config --scope project --mcp-runtime local

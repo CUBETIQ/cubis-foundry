@@ -5,6 +5,7 @@ import { Command } from "commander";
 import { parse as parseJsonc } from "jsonc-parser";
 import { existsSync } from "node:fs";
 import {
+  chmod,
   cp,
   mkdir,
   readdir,
@@ -122,7 +123,7 @@ const WORKFLOW_PROFILES = {
       agentDirs: [".github/agents"],
       skillDirs: [".github/skills"],
       promptDirs: [".github/prompts"],
-      ruleFilesByPriority: ["AGENTS.md", ".github/copilot-instructions.md"],
+      ruleFilesByPriority: [".github/copilot-instructions.md", "AGENTS.md"],
     },
     global: {
       workflowDirs: ["~/.copilot/workflows"],
@@ -149,25 +150,27 @@ const CODEX_AGENT_SKILL_PREFIX = "agent-";
 const TERMINAL_VERIFIER_PROVIDERS = ["codex", "gemini"];
 const DEFAULT_TERMINAL_VERIFIER = "codex";
 const POSTMAN_API_KEY_ENV_VAR = "POSTMAN_API_KEY";
+const POSTMAN_MODE_TO_URL = Object.freeze({
+  minimal: "https://mcp.postman.com/minimal",
+  code: "https://mcp.postman.com/code",
+  full: "https://mcp.postman.com/mcp",
+});
+const POSTMAN_VALID_MODES = new Set(Object.keys(POSTMAN_MODE_TO_URL));
+const DEFAULT_POSTMAN_MODE = "minimal";
+const DEFAULT_POSTMAN_INSTALL_MODE = "full";
+const DEFAULT_POSTMAN_CONFIG_MODE = "minimal";
 const POSTMAN_MCP_URL = "https://mcp.postman.com/minimal";
 const POSTMAN_API_BASE_URL = "https://api.getpostman.com";
 const POSTMAN_SKILL_ID = "postman";
 const FOUNDRY_MCP_SERVER_ID = "cubis-foundry";
 const FOUNDRY_MCP_COMMAND = "cbx";
-const FOUNDRY_MCP_DEFAULT_ARGS = [
-  "mcp",
-  "serve",
-  "--transport",
-  "stdio",
-  "--scope",
-  "auto",
-];
 const STITCH_SKILL_ID = "stitch";
 const STITCH_MCP_SERVER_ID = "StitchMCP";
 const STITCH_API_KEY_ENV_VAR = "STITCH_API_KEY";
 const STITCH_MCP_URL = "https://stitch.googleapis.com/mcp";
 const POSTMAN_WORKSPACE_MANUAL_CHOICE = "__postman_workspace_manual__";
 const CBX_CONFIG_FILENAME = "cbx_config.json";
+const CBX_CREDENTIALS_ENV_FILENAME = "credentials.env";
 const LEGACY_POSTMAN_CONFIG_FILENAME = ["postman", "setting.json"].join("_");
 const DEFAULT_CREDENTIAL_PROFILE_NAME = "default";
 const RESERVED_CREDENTIAL_PROFILE_NAMES = new Set(["all"]);
@@ -391,6 +394,28 @@ function normalizeMcpRuntime(value, fallback = DEFAULT_MCP_RUNTIME) {
     throw new Error(`Unknown MCP runtime '${value}'. Use docker|local.`);
   }
   return normalized;
+}
+
+function normalizePostmanMode(value, fallback = DEFAULT_POSTMAN_MODE) {
+  if (value === undefined || value === null || value === "") return fallback;
+  const normalized = String(value).trim().toLowerCase();
+  if (!POSTMAN_VALID_MODES.has(normalized)) {
+    throw new Error(`Unknown Postman mode '${value}'. Use minimal|code|full.`);
+  }
+  return normalized;
+}
+
+function resolvePostmanMcpUrlForMode(mode) {
+  const normalized = normalizePostmanMode(mode, DEFAULT_POSTMAN_MODE);
+  return POSTMAN_MODE_TO_URL[normalized] || POSTMAN_MCP_URL;
+}
+
+function resolvePostmanModeFromUrl(url, fallback = DEFAULT_POSTMAN_MODE) {
+  const normalizedUrl = String(url || "").trim();
+  for (const [mode, modeUrl] of Object.entries(POSTMAN_MODE_TO_URL)) {
+    if (normalizedUrl === modeUrl) return mode;
+  }
+  return normalizePostmanMode(fallback, DEFAULT_POSTMAN_MODE);
 }
 
 function normalizeMcpFallback(value, fallback = DEFAULT_MCP_FALLBACK) {
@@ -853,65 +878,85 @@ function buildEngineeringRulesTemplate() {
   return [
     "# Engineering Rules",
     "",
-    "These rules are the default for this project.",
+    "These are the default operating rules for this project.",
+    "Goal: ship useful outcomes quickly, safely, and with maintainable code.",
     "",
-    "## 1) Build Only What Is Needed (YAGNI)",
+    "## 1) Product-First Planning (PM Lens)",
     "",
-    "- Implement only what current requirements need.",
-    '- Do not add speculative abstractions, extension points, or feature flags "for future use."',
-    "- If a helper/class is used only once and does not improve clarity, keep it inline.",
+    "- Start every change by naming the user problem, expected outcome, and success signal.",
+    "- Define in-scope and out-of-scope before implementation.",
+    "- Prefer the smallest valuable slice over big-bang delivery.",
+    "- If a change does not improve user value, reliability, or delivery speed, do not do it.",
     "",
-    "## 2) Readability First",
+    "## 2) Simplicity First (KISS + YAGNI)",
     "",
-    "- Code should be understandable in one pass.",
-    "- Prefer straightforward flow over clever tricks.",
-    "- Reduce nesting and branching where possible.",
-    "- Remove dead code and commented-out blocks.",
+    "- Keep architecture and code as simple as possible.",
+    "- Build only what current requirements need (YAGNI).",
+    '- Avoid speculative abstractions, extension points, and premature "future-proofing."',
+    "- Choose proven, understandable patterns unless complexity is clearly justified.",
     "",
-    "## 3) Precise Naming (One Look = Clear Intent)",
+    "## 3) SOLID, Used Pragmatically",
     "",
-    "- Class names must say exactly what they represent.",
-    "  - Good: `AttendanceStatisticScreen`",
-    "  - Bad: `DataScreen`, `CommonManager`",
-    "- Method names must say exactly what they do.",
-    "  - Good: `loadCurrentUserSessions`",
-    "  - Bad: `handleData`, `processThing`",
-    "- Boolean names must read as true/false facts: `isActive`, `hasError`, `canSubmit`.",
-    "- Avoid vague suffixes like `Helper`, `Util`, `Manager` unless the type has a narrow, clear responsibility.",
+    "- SRP: each module/function has one clear responsibility.",
+    "- OCP: extend behavior through composition when it prevents risky rewrites.",
+    "- LSP: child implementations must preserve parent contract behavior.",
+    "- ISP: prefer small focused interfaces over large catch-all contracts.",
+    "- DIP: depend on stable abstractions at boundaries, not concrete implementation details.",
+    "- Do not force SOLID patterns if they add ceremony without maintenance benefit.",
     "",
-    "## 4) Keep Functions and Classes Focused",
+    "## 4) Naming and Readability",
     "",
-    "- One function should do one clear job.",
-    "- One class should own one clear responsibility.",
-    "- Split when a file mixes unrelated concerns (UI + networking + mapping in one place).",
-    "- Prefer small composable units over inheritance-heavy designs.",
+    "- Use intention-revealing names for files, classes, functions, and variables.",
+    "- Avoid vague names like `Helper`, `Util`, `Manager` unless responsibility is explicit.",
+    "- Keep functions short and linear; reduce nesting and boolean complexity.",
+    "- Remove dead code, stale TODOs, and commented-out logic.",
     "",
-    "## 5) Platform Implementation Rules",
+    "## 5) Boundaries and Contracts",
     "",
-    "- Keep providers/services focused; do not let one unit fetch unrelated feature data.",
-    "- Prevent duplicate network calls (cache or in-flight dedupe) when multiple views depend on the same data.",
-    "- Route/build functions must not return placeholder content in production flows.",
+    "- Keep domain logic separate from UI/transport/framework code.",
+    "- Define API and data contracts explicitly with types/schemas at boundaries.",
+    "- Validate all external input and return actionable errors.",
+    "- Preserve backward compatibility for public contracts unless breaking change is explicit and planned.",
     "",
-    "## 6) UI Migration Rule (Required for This Project)",
+    "## 6) Testing and Verification",
     "",
-    "For each migrated screen:",
+    "- Match tests to risk: unit for logic, integration for boundaries, e2e for critical flows.",
+    "- Every behavior change should include or update tests.",
+    "- Every bug fix should add a regression test when practical.",
+    "- Do not merge with failing lint, type checks, or tests.",
     "",
-    "1. Copy legacy layout/behavior/state flow first (behavior parity).",
-    "2. Replace legacy widgets/components with your project design system while preserving behavior.",
-    "3. Replace ad-hoc sizing with design tokens (spacing, radius, typography).",
-    "4. Verify on both small and large devices.",
+    "## 7) Security and Reliability Baseline",
     "",
-    "## 7) PR / Review Checklist",
+    "- Never commit secrets, tokens, or sensitive test data.",
+    "- Enforce authentication/authorization checks at protected boundaries.",
+    "- Use structured logs with enough context for debugging, but never leak sensitive data.",
+    "- Design failure paths intentionally (timeouts, retries, fallback, rollback when needed).",
     "",
-    "Before merge, confirm:",
+    "## 8) Performance and Cost Awareness",
     "",
-    "- Naming is precise and intention-revealing.",
-    "- No speculative abstraction was added.",
-    "- Logic is simple enough for fast onboarding.",
-    "- UI uses design system tokens/components, not ad-hoc sizing.",
-    "- Lint/analyze/tests pass.",
+    "- Measure before optimizing.",
+    "- Avoid obvious waste: repeated queries, duplicate network calls, and unnecessary hot-path work.",
+    "- Set lightweight budgets for critical paths (latency, memory, bundle size where relevant).",
+    "- Prefer incremental improvements over risky rewrites.",
     "",
-    "## 8) Keep TECH.md Fresh",
+    "## 9) Delivery Discipline",
+    "",
+    "- Keep changes small, reviewable, and reversible.",
+    "- In PRs, clearly state problem, decision, tradeoffs, and validation evidence.",
+    "- For risky changes, include rollout and rollback notes.",
+    "- Documentation that affects usage or operations must be updated in the same change.",
+    "",
+    "## 10) Definition of Done",
+    "",
+    "A task is done when:",
+    "",
+    "- Acceptance criteria are met.",
+    "- Code follows the rules above.",
+    "- Validation checks pass.",
+    "- Relevant docs are updated (including `TECH.md` when stack/architecture changed).",
+    "- No placeholder behavior remains in production paths.",
+    "",
+    "## 11) Keep TECH.md Fresh",
     "",
     "- `TECH.md` is generated from current codebase reality.",
     "- Re-run `cbx rules tech-md --overwrite` after major stack or architecture changes.",
@@ -940,10 +985,11 @@ function buildEngineeringRulesManagedBlock({
     `- Project tech map: \`${techRef}\``,
     "",
     "Hard policy:",
-    "1. Build only what is needed (YAGNI).",
-    "2. Keep logic simple and readable.",
-    "3. Use precise, intention-revealing names.",
-    "4. Keep classes/functions focused on one responsibility.",
+    "1. Start from product outcomes and ship the smallest valuable slice.",
+    "2. Keep architecture simple (KISS) and avoid speculative work (YAGNI).",
+    "3. Apply SOLID pragmatically to reduce change risk, not add ceremony.",
+    "4. Use clear naming with focused responsibilities and explicit boundaries.",
+    "5. Require validation evidence (lint/types/tests) before merge.",
     "",
     "<!-- cbx:engineering:auto:end -->",
   ].join("\n");
@@ -3066,7 +3112,9 @@ async function collectInstalledWorkflows(
   scope,
   cwd = process.cwd(),
 ) {
-  const profilePaths = await resolveProfilePaths(profileId, scope, cwd);
+  // Global install mode keeps workflows/agents in workspace paths.
+  // Index using artifact-aware paths so sync-rules reflects installed workflows.
+  const profilePaths = await resolveArtifactProfilePaths(profileId, scope, cwd);
   if (!(await pathExists(profilePaths.workflowsDir))) return [];
 
   const entries = await readdir(profilePaths.workflowsDir, {
@@ -3539,6 +3587,128 @@ function resolveMcpRootPath({ scope, cwd = process.cwd() }) {
   return path.join(workspaceRoot, ".cbx", "mcp");
 }
 
+function resolveManagedCredentialsEnvPath() {
+  return path.join(os.homedir(), ".cbx", CBX_CREDENTIALS_ENV_FILENAME);
+}
+
+function parseShellEnvValue(rawValue) {
+  const value = String(rawValue || "").trim();
+  if (!value) return "";
+  if (
+    (value.startsWith('"') && value.endsWith('"')) ||
+    (value.startsWith("'") && value.endsWith("'"))
+  ) {
+    return value.slice(1, -1);
+  }
+  return value;
+}
+
+function parseEnvFileLine(line) {
+  const trimmed = String(line || "").trim();
+  if (!trimmed || trimmed.startsWith("#")) return null;
+  const normalized = trimmed.startsWith("export ")
+    ? trimmed.slice("export ".length).trim()
+    : trimmed;
+  const match = normalized.match(/^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/);
+  if (!match) return null;
+  return {
+    name: match[1],
+    value: parseShellEnvValue(match[2]),
+  };
+}
+
+async function loadManagedCredentialsEnv() {
+  const envPath = resolveManagedCredentialsEnvPath();
+  if (!(await pathExists(envPath))) {
+    return {
+      envPath,
+      loaded: [],
+      skipped: [],
+      exists: false,
+    };
+  }
+  const raw = await readFile(envPath, "utf8");
+  const loaded = [];
+  const skipped = [];
+  for (const line of raw.split(/\r?\n/)) {
+    const entry = parseEnvFileLine(line);
+    if (!entry) continue;
+    if (process.env[entry.name]) {
+      skipped.push(entry.name);
+      continue;
+    }
+    process.env[entry.name] = entry.value;
+    loaded.push(entry.name);
+  }
+  return {
+    envPath,
+    loaded,
+    skipped,
+    exists: true,
+  };
+}
+
+function quoteShellEnvValue(value) {
+  const normalized = String(value ?? "");
+  // Single-quote with POSIX-safe escaping for embedded single quotes.
+  return `'${normalized.replace(/'/g, `'\"'\"'`)}'`;
+}
+
+async function persistManagedCredentialsEnv({ envVarNames, dryRun = false }) {
+  const envPath = resolveManagedCredentialsEnvPath();
+  const existingEntries = new Map();
+  const existsBefore = await pathExists(envPath);
+
+  if (existsBefore) {
+    const raw = await readFile(envPath, "utf8");
+    for (const line of raw.split(/\r?\n/)) {
+      const entry = parseEnvFileLine(line);
+      if (!entry) continue;
+      existingEntries.set(entry.name, entry.value);
+    }
+  }
+
+  const persisted = [];
+  const missing = [];
+  for (const envName of envVarNames || []) {
+    const name = String(envName || "").trim();
+    if (!name) continue;
+    const value = normalizePostmanApiKey(process.env[name]);
+    if (!value) {
+      missing.push(name);
+      continue;
+    }
+    existingEntries.set(name, value);
+    persisted.push(name);
+  }
+
+  const orderedNames = [...existingEntries.keys()].sort((a, b) =>
+    a.localeCompare(b),
+  );
+  const body = [
+    "# Managed by cbx workflows config keys persist-env",
+    "# Stores credential env vars for future cbx sessions.",
+    ...orderedNames.map(
+      (name) => `export ${name}=${quoteShellEnvValue(existingEntries.get(name))}`,
+    ),
+    "",
+  ].join("\n");
+
+  if (!dryRun) {
+    await mkdir(path.dirname(envPath), { recursive: true });
+    await writeFile(envPath, body, "utf8");
+    await chmod(envPath, 0o600);
+  }
+
+  return {
+    envPath,
+    persisted,
+    missing,
+    dryRun,
+    action: dryRun ? "would-update" : existsBefore ? "updated" : "created",
+  };
+}
+
 function resolvePostmanMcpDefinitionPath({
   platform,
   scope,
@@ -3901,6 +4071,7 @@ function resolveCredentialEffectiveStatus({
 }) {
   if (!serviceConfig) return null;
   const defaultEnvVar = defaultEnvVarForCredentialService(service);
+  const defaultMcpUrl = defaultMcpUrlForCredentialService(service);
   const activeProfile =
     serviceConfig.activeProfile || serviceConfig.profiles?.[0] || null;
   const apiKeyEnvVar =
@@ -3926,6 +4097,14 @@ function resolveCredentialEffectiveStatus({
     workspaceId:
       service === "postman"
         ? normalizePostmanWorkspaceId(activeProfile?.workspaceId)
+        : null,
+    mcpUrl: normalizePostmanApiKey(serviceConfig.mcpUrl) || defaultMcpUrl,
+    mode:
+      service === "postman"
+        ? resolvePostmanModeFromUrl(
+            serviceConfig.mcpUrl,
+            DEFAULT_POSTMAN_CONFIG_MODE,
+          )
         : null,
   };
 }
@@ -4105,6 +4284,7 @@ async function applyPostmanMcpForPlatform({
 }) {
   const workspaceRoot = findWorkspaceRoot(cwd);
   const warnings = [];
+  const foundryScope = mcpScope === "global" ? "global" : "project";
 
   if (platform === "antigravity") {
     const settingsPath =
@@ -4127,7 +4307,7 @@ async function applyPostmanMcpForPlatform({
         });
         if (includeFoundryMcp) {
           mcpServers[FOUNDRY_MCP_SERVER_ID] = buildGeminiFoundryServer({
-            scope: "auto",
+            scope: foundryScope,
           });
         } else {
           delete mcpServers[FOUNDRY_MCP_SERVER_ID];
@@ -4174,7 +4354,7 @@ async function applyPostmanMcpForPlatform({
           });
           if (includeFoundryMcp) {
             mcpServers[FOUNDRY_MCP_SERVER_ID] = buildCopilotCliFoundryServer({
-              scope: "auto",
+              scope: foundryScope,
             });
           } else {
             delete mcpServers[FOUNDRY_MCP_SERVER_ID];
@@ -4195,7 +4375,7 @@ async function applyPostmanMcpForPlatform({
         });
         if (includeFoundryMcp) {
           servers[FOUNDRY_MCP_SERVER_ID] = buildVsCodeFoundryServer({
-            scope: "auto",
+            scope: foundryScope,
           });
         } else {
           delete servers[FOUNDRY_MCP_SERVER_ID];
@@ -4233,7 +4413,7 @@ async function applyPostmanMcpForPlatform({
           });
           if (includeFoundryMcp) {
             servers[FOUNDRY_MCP_SERVER_ID] = buildVsCodeFoundryServer({
-              scope: "auto",
+              scope: foundryScope,
             });
           } else {
             delete servers[FOUNDRY_MCP_SERVER_ID];
@@ -4313,7 +4493,7 @@ async function applyPostmanMcpForPlatform({
             FOUNDRY_MCP_SERVER_ID,
             "--",
             FOUNDRY_MCP_COMMAND,
-            ...FOUNDRY_MCP_DEFAULT_ARGS,
+            ...buildFoundryServeArgs({ scope: foundryScope }),
           ],
           { cwd },
         );
@@ -4390,6 +4570,11 @@ async function resolvePostmanInstallSelection({
   const enabled =
     Boolean(options.postman) || hasWorkspaceOption || stitchRequested;
   if (!enabled) return { enabled: false };
+  const requestedPostmanMode = normalizePostmanMode(
+    options.postmanMode,
+    DEFAULT_POSTMAN_INSTALL_MODE,
+  );
+  const requestedMcpUrl = resolvePostmanMcpUrlForMode(requestedPostmanMode);
 
   const envApiKey = normalizePostmanApiKey(
     process.env[POSTMAN_API_KEY_ENV_VAR],
@@ -4620,7 +4805,7 @@ async function resolvePostmanInstallSelection({
       apiKeyEnvVar: defaultProfile.apiKeyEnvVar,
       apiKeySource: storedCredentialSource(defaultProfile),
       defaultWorkspaceId: defaultProfile.workspaceId,
-      mcpUrl: POSTMAN_MCP_URL,
+      mcpUrl: requestedMcpUrl,
     },
   };
   if (stitchEnabled) {
@@ -4657,6 +4842,7 @@ async function resolvePostmanInstallSelection({
     mcpToolSync,
     foundryMcpEnabled,
     runtimeSkipped,
+    postmanMode: requestedPostmanMode,
     defaultWorkspaceId: defaultWorkspaceId ?? null,
     workspaceSelectionSource,
     mcpScope,
@@ -4700,7 +4886,10 @@ async function configurePostmanInstallArtifacts({
     installPostmanConfig?.defaultWorkspaceId ??
     postmanSelection.defaultWorkspaceId ??
     null;
-  let effectiveMcpUrl = installPostmanConfig?.mcpUrl || POSTMAN_MCP_URL;
+  let effectiveMcpUrl =
+    installPostmanConfig?.mcpUrl ||
+    postmanSelection.cbxConfig?.postman?.mcpUrl ||
+    POSTMAN_MCP_URL;
   const shouldInstallStitch = Boolean(postmanSelection.stitchEnabled);
   const installStitchConfig = shouldInstallStitch
     ? parseStoredStitchConfig(postmanSelection.cbxConfig)
@@ -4754,7 +4943,10 @@ async function configurePostmanInstallArtifacts({
       effectiveApiKeyEnvVar =
         storedPostmanConfig.apiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR;
       effectiveDefaultWorkspaceId = storedPostmanConfig.defaultWorkspaceId;
-      effectiveMcpUrl = storedPostmanConfig.mcpUrl || POSTMAN_MCP_URL;
+      effectiveMcpUrl =
+        storedPostmanConfig.mcpUrl ||
+        postmanSelection.cbxConfig?.postman?.mcpUrl ||
+        POSTMAN_MCP_URL;
     } else {
       warnings.push(
         `Existing ${CBX_CONFIG_FILENAME} could not be parsed. Using install-time Postman values for MCP config.`,
@@ -4931,6 +5123,11 @@ async function configurePostmanInstallArtifacts({
     dockerImageAction: postmanSelection.dockerImageAction,
     mcpToolSync: postmanSelection.mcpToolSync,
     foundryMcpEnabled: postmanSelection.foundryMcpEnabled,
+    postmanMode: resolvePostmanModeFromUrl(
+      effectiveMcpUrl,
+      DEFAULT_POSTMAN_INSTALL_MODE,
+    ),
+    postmanMcpUrl: effectiveMcpUrl,
     apiKeySource: effectiveApiKeySource,
     stitchApiKeySource: effectiveStitchApiKeySource,
     defaultWorkspaceId: effectiveDefaultWorkspaceId,
@@ -4945,6 +5142,111 @@ async function configurePostmanInstallArtifacts({
     mcpRuntimeResult,
     mcpCatalogSyncResults,
     legacySkillMcpCleanup,
+  };
+}
+
+function resolveMcpScopeFromConfigDocument(configValue, fallbackScope) {
+  try {
+    if (
+      configValue?.mcp &&
+      typeof configValue.mcp === "object" &&
+      !Array.isArray(configValue.mcp)
+    ) {
+      return normalizeMcpScope(configValue.mcp.scope, fallbackScope);
+    }
+  } catch {
+    // Fall through to fallback scope.
+  }
+  return normalizeMcpScope(fallbackScope, "global");
+}
+
+async function applyPostmanConfigArtifacts({
+  platform,
+  mcpScope,
+  configValue,
+  dryRun = false,
+  cwd = process.cwd(),
+}) {
+  const warnings = [];
+  const postmanState = ensureCredentialServiceState(configValue, "postman");
+  const stitchState = parseStoredStitchConfig(configValue);
+  const postmanApiKeyEnvVar =
+    normalizePostmanApiKey(postmanState.apiKeyEnvVar) || POSTMAN_API_KEY_ENV_VAR;
+  const postmanMcpUrl = postmanState.mcpUrl || POSTMAN_MCP_URL;
+  const stitchEnabled = Boolean(stitchState);
+  const stitchApiKeyEnvVar =
+    normalizePostmanApiKey(stitchState?.apiKeyEnvVar) || STITCH_API_KEY_ENV_VAR;
+  const stitchMcpUrl = stitchState?.mcpUrl || STITCH_MCP_URL;
+
+  const mcpDefinitionPath = resolvePostmanMcpDefinitionPath({
+    platform,
+    scope: mcpScope,
+    cwd,
+  });
+  const mcpDefinitionContent = `${JSON.stringify(
+    buildPostmanMcpDefinition({
+      apiKeyEnvVar: postmanApiKeyEnvVar,
+      mcpUrl: postmanMcpUrl,
+    }),
+    null,
+    2,
+  )}\n`;
+  const mcpDefinitionResult = await writeGeneratedArtifact({
+    destination: mcpDefinitionPath,
+    content: mcpDefinitionContent,
+    dryRun,
+  });
+
+  let stitchMcpDefinitionPath = null;
+  let stitchMcpDefinitionResult = null;
+  if (stitchEnabled) {
+    stitchMcpDefinitionPath = resolveStitchMcpDefinitionPath({
+      scope: mcpScope,
+      cwd,
+    });
+    const stitchMcpDefinitionContent = `${JSON.stringify(
+      buildStitchMcpDefinition({
+        apiKeyEnvVar: stitchApiKeyEnvVar,
+        mcpUrl: stitchMcpUrl,
+      }),
+      null,
+      2,
+    )}\n`;
+    stitchMcpDefinitionResult = await writeGeneratedArtifact({
+      destination: stitchMcpDefinitionPath,
+      content: stitchMcpDefinitionContent,
+      dryRun,
+    });
+  }
+
+  let mcpRuntimeResult = null;
+  if (!platform) {
+    warnings.push(
+      "Skipped platform runtime MCP target patch because platform could not be resolved. Re-run with --platform <codex|antigravity|copilot>.",
+    );
+  } else {
+    mcpRuntimeResult = await applyPostmanMcpForPlatform({
+      platform,
+      mcpScope,
+      apiKeyEnvVar: postmanApiKeyEnvVar,
+      mcpUrl: postmanMcpUrl,
+      stitchApiKeyEnvVar,
+      stitchMcpUrl,
+      includeStitchMcp: stitchEnabled,
+      includeFoundryMcp: true,
+      dryRun,
+      cwd,
+    });
+    warnings.push(...(mcpRuntimeResult.warnings || []));
+  }
+
+  return {
+    mcpDefinitionPath,
+    mcpDefinitionResult,
+    stitchMcpDefinitionPath,
+    stitchMcpDefinitionResult,
+    mcpRuntimeResult,
+    warnings,
   };
 }
 
@@ -5881,6 +6183,12 @@ function printPostmanSetupSummary({ postmanSetup }) {
 
   console.log("\nPostman setup:");
   console.log(`- MCP scope: ${postmanSetup.mcpScope}`);
+  if (postmanSetup.postmanMode) {
+    console.log(`- Postman mode: ${postmanSetup.postmanMode}`);
+  }
+  if (postmanSetup.postmanMcpUrl) {
+    console.log(`- Postman MCP URL: ${postmanSetup.postmanMcpUrl}`);
+  }
   console.log(
     `- Config file: ${postmanSetup.cbxConfigResult.action} (${postmanSetup.cbxConfigPath})`,
   );
@@ -6372,6 +6680,10 @@ function withInstallOptions(command) {
       "optional: install Postman skill and generate cbx_config.json",
     )
     .option(
+      "--postman-mode <mode>",
+      "Postman MCP mode for --postman: minimal|code|full (default: full)",
+    )
+    .option(
       "--stitch",
       "optional: include Stitch MCP profile/config alongside Postman",
     )
@@ -6554,6 +6866,25 @@ function registerConfigKeysSubcommands(
       "global",
     )
     .action(wrap(runWorkflowConfigKeysDoctor));
+
+  keysCommand
+    .command("persist-env")
+    .description(
+      "Persist configured credential env vars into ~/.cbx/credentials.env (mode 600)",
+    )
+    .option("--service <service>", "postman|stitch|all", "all")
+    .option("--profile <profile>", "persist only this profile name")
+    .option(
+      "--all-profiles",
+      "persist all profiles for selected service(s) instead of active profile only",
+    )
+    .option(
+      "--scope <scope>",
+      "config scope: project|workspace|global|user",
+      "global",
+    )
+    .option("--dry-run", "preview changes without writing files")
+    .action(wrap(runWorkflowConfigKeysPersistEnv));
 }
 
 async function resolveAntigravityTerminalVerifierSelection({
@@ -6710,6 +7041,7 @@ async function cleanupAntigravityTerminalIntegration({
 async function runWorkflowInstall(options) {
   try {
     const cwd = options.target ? path.resolve(options.target) : process.cwd();
+    await loadManagedCredentialsEnv();
     if (options.target) {
       const targetExists = await pathExists(cwd);
       if (!targetExists) {
@@ -7985,11 +8317,120 @@ async function runWorkflowConfigKeysDoctor(options) {
   }
 }
 
+async function runWorkflowConfigKeysPersistEnv(options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const cwd = process.cwd();
+    const scopeArg = readCliOptionFromArgv("--scope");
+    const scope = normalizeMcpScope(scopeArg ?? opts.scope, "global");
+    const dryRun = hasCliFlag("--dry-run") || Boolean(opts.dryRun);
+    const service = normalizeCredentialService(opts.service || "all", {
+      allowAll: true,
+    });
+    const requestedProfileName = normalizeCredentialProfileName(opts.profile);
+    const allProfiles = Boolean(opts.allProfiles);
+
+    if (requestedProfileName && allProfiles) {
+      throw new Error(
+        "Use either --profile <name> or --all-profiles, not both.",
+      );
+    }
+
+    await loadManagedCredentialsEnv();
+    const { configPath, existing, existingValue } = await loadConfigForScope({
+      scope,
+      cwd,
+    });
+    if (!existing.exists || !existingValue) {
+      throw new Error(`Config file is missing at ${configPath}.`);
+    }
+
+    const services = service === "all" ? ["postman", "stitch"] : [service];
+    const envVarNames = [];
+    const warnings = [];
+
+    for (const serviceId of services) {
+      const state = ensureCredentialServiceState(existingValue, serviceId);
+      let selectedProfiles = [];
+
+      if (requestedProfileName) {
+        const selected = findProfileByName(state.profiles, requestedProfileName);
+        if (!selected) {
+          warnings.push(
+            `${serviceId}: profile '${requestedProfileName}' was not found`,
+          );
+          continue;
+        }
+        selectedProfiles = [selected];
+      } else if (allProfiles) {
+        selectedProfiles = [...state.profiles];
+      } else if (state.activeProfile) {
+        selectedProfiles = [state.activeProfile];
+      }
+
+      if (selectedProfiles.length === 0) {
+        warnings.push(
+          `${serviceId}: no profile selected (service has no configured profiles)`,
+        );
+        continue;
+      }
+
+      for (const profile of selectedProfiles) {
+        const envVar = normalizePostmanApiKey(profile?.apiKeyEnvVar);
+        if (!envVar || !isCredentialServiceEnvVar(envVar)) {
+          warnings.push(
+            `${serviceId}: profile '${profile?.name || "(unknown)"}' has invalid env var alias`,
+          );
+          continue;
+        }
+        envVarNames.push(envVar);
+      }
+    }
+
+    const uniqueEnvVarNames = unique(envVarNames);
+    if (uniqueEnvVarNames.length === 0) {
+      throw new Error(
+        "No env var aliases were selected. Add profiles first or adjust --service/--profile.",
+      );
+    }
+
+    const persisted = await persistManagedCredentialsEnv({
+      envVarNames: uniqueEnvVarNames,
+      dryRun,
+    });
+
+    console.log(`Config file: ${configPath}`);
+    console.log(`Credentials env file: ${persisted.envPath}`);
+    console.log(`Action: ${persisted.action}`);
+    console.log(`Requested env vars: ${uniqueEnvVarNames.length}`);
+    console.log(
+      `Persisted env vars: ${persisted.persisted.length > 0 ? persisted.persisted.join(", ") : "(none)"}`,
+    );
+    if (persisted.missing.length > 0) {
+      console.log(`Missing in current shell: ${persisted.missing.join(", ")}`);
+    }
+    if (warnings.length > 0) {
+      console.log("Warnings:");
+      for (const warning of warnings) {
+        console.log(`- ${warning}`);
+      }
+    }
+  } catch (error) {
+    if (error?.name === "ExitPromptError") {
+      console.error("\nCancelled.");
+      process.exit(130);
+    }
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
 async function runWorkflowConfig(options) {
   try {
     const opts = resolveActionOptions(options);
     const cwd = process.cwd();
     const scopeArg = readCliOptionFromArgv("--scope");
+    await loadManagedCredentialsEnv();
     const scope = normalizeMcpScope(scopeArg ?? opts.scope, "global");
     const dryRun = Boolean(opts.dryRun);
     const hasWorkspaceIdOption = opts.workspaceId !== undefined;
@@ -7997,6 +8438,7 @@ async function runWorkflowConfig(options) {
     const wantsInteractiveEdit = Boolean(opts.edit);
     const hasMcpRuntimeOption = opts.mcpRuntime !== undefined;
     const hasMcpFallbackOption = opts.mcpFallback !== undefined;
+    const hasPostmanModeOption = opts.postmanMode !== undefined;
 
     if (hasWorkspaceIdOption && wantsClearWorkspaceId) {
       throw new Error(
@@ -8009,7 +8451,8 @@ async function runWorkflowConfig(options) {
       wantsClearWorkspaceId ||
       wantsInteractiveEdit ||
       hasMcpRuntimeOption ||
-      hasMcpFallbackOption;
+      hasMcpFallbackOption ||
+      hasPostmanModeOption;
     const showOnly = Boolean(opts.show) || !wantsMutation;
     const { configPath, existing, existingValue } = await loadConfigForScope({
       scope,
@@ -8035,6 +8478,10 @@ async function runWorkflowConfig(options) {
 
     const postmanState = ensureCredentialServiceState(next, "postman");
     const activeProfile = { ...postmanState.activeProfile };
+    const currentPostmanMode = resolvePostmanModeFromUrl(
+      postmanState.mcpUrl,
+      DEFAULT_POSTMAN_CONFIG_MODE,
+    );
     let workspaceId = normalizePostmanWorkspaceId(activeProfile.workspaceId);
 
     if (wantsInteractiveEdit) {
@@ -8063,6 +8510,11 @@ async function runWorkflowConfig(options) {
           normalizeMcpFallback(next.mcp?.fallback, DEFAULT_MCP_FALLBACK),
         )
       : null;
+    const requestedPostmanMode = hasPostmanModeOption
+      ? normalizePostmanMode(opts.postmanMode, currentPostmanMode)
+      : currentPostmanMode;
+    const requestedPostmanMcpUrl =
+      resolvePostmanMcpUrlForMode(requestedPostmanMode);
 
     activeProfile.workspaceId = workspaceId;
     const updatedProfiles = postmanState.profiles.map((profile) =>
@@ -8079,7 +8531,7 @@ async function runWorkflowConfig(options) {
           : {}),
         profiles: updatedProfiles,
         activeProfileName: postmanState.activeProfileName,
-        mcpUrl: postmanState.mcpUrl,
+        mcpUrl: requestedPostmanMcpUrl,
       },
     });
     upsertNormalizedPostmanConfig(next, updatedPostmanState);
@@ -8105,6 +8557,48 @@ async function runWorkflowConfig(options) {
       existingExists: existing.exists,
       dryRun,
     });
+    const effectivePostmanState = ensureCredentialServiceState(next, "postman");
+    const effectivePostmanMode = resolvePostmanModeFromUrl(
+      effectivePostmanState.mcpUrl,
+      DEFAULT_POSTMAN_CONFIG_MODE,
+    );
+
+    let postmanArtifacts = null;
+    if (hasPostmanModeOption) {
+      const mcpScope = resolveMcpScopeFromConfigDocument(next, scope);
+      let platform = null;
+      const explicitPlatform = normalizePlatform(opts.platform);
+      const configuredPlatform = normalizePlatform(next?.mcp?.platform);
+      if (
+        explicitPlatform &&
+        WORKFLOW_PROFILES[explicitPlatform]
+      ) {
+        platform = explicitPlatform;
+      } else if (
+        configuredPlatform &&
+        WORKFLOW_PROFILES[configuredPlatform]
+      ) {
+        platform = configuredPlatform;
+      } else {
+        try {
+          platform = await resolvePlatform(opts.platform, scope, cwd);
+        } catch (error) {
+          // Keep config mutation successful; surface patch guidance.
+          if (!dryRun) {
+            console.log(
+              `Warning: platform could not be resolved for runtime patch (${error.message})`,
+            );
+          }
+        }
+      }
+      postmanArtifacts = await applyPostmanConfigArtifacts({
+        platform,
+        mcpScope,
+        configValue: next,
+        dryRun,
+        cwd,
+      });
+    }
 
     console.log(`Config file: ${configPath}`);
     console.log(`Action: ${action}`);
@@ -8117,6 +8611,31 @@ async function runWorkflowConfig(options) {
     }
     if (hasMcpFallbackOption) {
       console.log(`mcp.fallback: ${mcpFallback}`);
+    }
+    if (hasPostmanModeOption) {
+      console.log(`postman.mode: ${effectivePostmanMode}`);
+      console.log(`postman.mcpUrl: ${effectivePostmanState.mcpUrl}`);
+      if (postmanArtifacts) {
+        console.log(
+          `postman.definition: ${postmanArtifacts.mcpDefinitionResult.action} (${postmanArtifacts.mcpDefinitionPath})`,
+        );
+        if (
+          postmanArtifacts.stitchMcpDefinitionPath &&
+          postmanArtifacts.stitchMcpDefinitionResult
+        ) {
+          console.log(
+            `stitch.definition: ${postmanArtifacts.stitchMcpDefinitionResult.action} (${postmanArtifacts.stitchMcpDefinitionPath})`,
+          );
+        }
+        if (postmanArtifacts.mcpRuntimeResult) {
+          console.log(
+            `platform.mcp.target: ${postmanArtifacts.mcpRuntimeResult.action} (${postmanArtifacts.mcpRuntimeResult.path || "n/a"})`,
+          );
+        }
+        for (const warning of postmanArtifacts.warnings) {
+          console.log(`Warning: ${warning}`);
+        }
+      }
     }
     if (Boolean(opts.showAfter)) {
       const payload = buildConfigShowPayload(next);
@@ -8213,6 +8732,72 @@ function sleepMs(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function isMcpHandshakeRelatedError(error) {
+  const message = String(error?.message || "").toLowerCase();
+  return (
+    message.includes("server not initialized") ||
+    message.includes("already initialized") ||
+    message.includes("mcp-session-id header is required") ||
+    message.includes("missing mcp-session-id") ||
+    message.includes("unknown mcp-session-id") ||
+    message.includes("invalid mcp-session-id") ||
+    message.includes("unknown session")
+  );
+}
+
+async function probeMcpEndpointReady({ url, headers = {} }) {
+  let sessionId = null;
+  let initError = null;
+
+  try {
+    const init = await sendMcpJsonRpcRequest({
+      url,
+      method: "initialize",
+      id: `cbx-ready-init-${Date.now()}`,
+      params: {
+        protocolVersion: "2025-06-18",
+        capabilities: {},
+        clientInfo: { name: "cbx-cli", version: CLI_VERSION },
+      },
+      headers,
+    });
+    sessionId = init.sessionId || null;
+    if (sessionId) {
+      // Best effort notification. Some servers ignore this safely.
+      await sendMcpJsonRpcRequest({
+        url,
+        method: "notifications/initialized",
+        id: null,
+        params: {},
+        headers,
+        sessionId,
+      }).catch(() => {});
+    }
+  } catch (error) {
+    initError = error;
+  }
+
+  try {
+    await sendMcpJsonRpcRequest({
+      url,
+      method: "tools/list",
+      id: `cbx-runtime-ready-${Date.now()}`,
+      params: {},
+      headers,
+      sessionId,
+    });
+    return;
+  } catch (toolsError) {
+    if (isMcpHandshakeRelatedError(toolsError)) {
+      return;
+    }
+    if (initError && !isMcpHandshakeRelatedError(initError)) {
+      throw initError;
+    }
+    throw toolsError;
+  }
+}
+
 async function waitForMcpEndpointReady({
   url,
   headers = {},
@@ -8224,21 +8809,10 @@ async function waitForMcpEndpointReady({
 
   while (Date.now() - startedAt < timeoutMs) {
     try {
-      await sendMcpJsonRpcRequest({
-        url,
-        method: "tools/list",
-        id: `cbx-runtime-ready-${Date.now()}`,
-        params: {},
-        headers,
-      });
+      await probeMcpEndpointReady({ url, headers });
       return true;
     } catch (error) {
-      const message = String(error?.message || "").toLowerCase();
-      if (
-        message.includes("server not initialized") ||
-        message.includes("mcp-session-id header is required") ||
-        message.includes("already initialized")
-      ) {
+      if (isMcpHandshakeRelatedError(error)) {
         return true;
       }
       lastError = error;
@@ -8467,6 +9041,7 @@ async function runMcpToolsSync(options) {
   try {
     const opts = resolveActionOptions(options);
     const cwd = process.cwd();
+    await loadManagedCredentialsEnv();
     const scope = normalizeMcpScope(opts.scope, "global");
     const service = normalizeCredentialService(opts.service || "all", {
       allowAll: true,
@@ -8565,6 +9140,7 @@ async function runMcpServe(options) {
   try {
     const opts = resolveActionOptions(options);
     const cwd = process.cwd();
+    await loadManagedCredentialsEnv();
     const entryPath = resolveBundledMcpEntryPath();
     if (!(await pathExists(entryPath))) {
       throw new Error(
@@ -8752,6 +9328,7 @@ async function runMcpRuntimeStatus(options) {
   try {
     const opts = resolveActionOptions(options);
     const cwd = process.cwd();
+    await loadManagedCredentialsEnv();
     const scope = normalizeMcpScope(opts.scope, "global");
     const explicitSkillsRoot = normalizePostmanApiKey(opts.skillsRoot);
     const defaults = await loadMcpRuntimeDefaults({ scope, cwd });
@@ -8860,6 +9437,7 @@ async function runMcpRuntimeUp(options) {
   try {
     const opts = resolveActionOptions(options);
     const cwd = process.cwd();
+    await loadManagedCredentialsEnv();
     const scope = normalizeMcpScope(opts.scope, "global");
     const explicitSkillsRoot = normalizePostmanApiKey(opts.skillsRoot);
     const defaults = await loadMcpRuntimeDefaults({ scope, cwd });
@@ -9001,7 +9579,7 @@ async function runMcpRuntimeUp(options) {
       "--port",
       String(MCP_DOCKER_CONTAINER_PORT),
       "--scope",
-      "global",
+      scope,
     );
     await execFile("docker", dockerArgs, { cwd });
 
@@ -9407,6 +9985,7 @@ withWorkflowBaseOptions(
 const workflowsConfigCommand = workflowsCommand
   .command("config")
   .description("View or edit cbx_config.json from terminal")
+  .option("-p, --platform <platform>", "target platform id for MCP target patch")
   .option(
     "--scope <scope>",
     "config scope: project|workspace|global|user",
@@ -9416,6 +9995,7 @@ const workflowsConfigCommand = workflowsCommand
   .option("--edit", "edit Postman default workspace ID interactively")
   .option("--workspace-id <id|null>", "set postman.defaultWorkspaceId")
   .option("--clear-workspace-id", "set postman.defaultWorkspaceId to null")
+  .option("--postman-mode <mode>", "set postman.mcpUrl via mode: minimal|code|full")
   .option("--mcp-runtime <runtime>", "set mcp.runtime: docker|local")
   .option("--mcp-fallback <fallback>", "set mcp.fallback: local|fail|skip")
   .option("--show-after", "print JSON after update")
@@ -9509,6 +10089,7 @@ withWorkflowBaseOptions(
 const skillsConfigCommand = skillsCommand
   .command("config")
   .description("Alias for workflows config")
+  .option("-p, --platform <platform>", "target platform id for MCP target patch")
   .option(
     "--scope <scope>",
     "config scope: project|workspace|global|user",
@@ -9518,6 +10099,7 @@ const skillsConfigCommand = skillsCommand
   .option("--edit", "edit Postman default workspace ID interactively")
   .option("--workspace-id <id|null>", "set postman.defaultWorkspaceId")
   .option("--clear-workspace-id", "set postman.defaultWorkspaceId to null")
+  .option("--postman-mode <mode>", "set postman.mcpUrl via mode: minimal|code|full")
   .option("--mcp-runtime <runtime>", "set mcp.runtime: docker|local")
   .option("--mcp-fallback <fallback>", "set mcp.fallback: local|fail|skip")
   .option("--show-after", "print JSON after update")

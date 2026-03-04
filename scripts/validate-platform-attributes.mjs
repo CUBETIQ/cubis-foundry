@@ -369,7 +369,59 @@ function validateWorkflowRequiredSections(body, filePath, errors) {
   }
 }
 
-async function validateWorkflowFile(filePath, errors) {
+function extractSkillRoutingSection(body) {
+  const headingMatch = body.match(/^##\s+Skill Routing\s*$/m);
+  if (!headingMatch || headingMatch.index === undefined) return "";
+  const start = headingMatch.index + headingMatch[0].length;
+  const tail = body.slice(start);
+  const nextHeading = tail.search(/^##\s+/m);
+  if (nextHeading === -1) return tail;
+  return tail.slice(0, nextHeading);
+}
+
+function collectBacktickSkillIds(markdownSection) {
+  const ids = [];
+  const seen = new Set();
+  const regex = /`([^`]+)`/g;
+  for (const match of markdownSection.matchAll(regex)) {
+    const raw = String(match[1] || "").trim();
+    if (!raw) continue;
+    if (raw.startsWith("@") || raw.startsWith("/")) continue;
+    if (raw.includes(" ")) continue;
+    const normalized = raw.toLowerCase();
+    if (seen.has(normalized)) continue;
+    seen.add(normalized);
+    ids.push(raw);
+  }
+  return ids;
+}
+
+function validateWorkflowSkillRoutingIds({
+  body,
+  filePath,
+  skillSet,
+  subSkillSet,
+  errors,
+}) {
+  const section = extractSkillRoutingSection(body);
+  if (!section.trim()) return;
+  const skillIds = collectBacktickSkillIds(section);
+  for (const skillId of skillIds) {
+    const key = skillId.toLowerCase();
+    if (skillSet.has(key) || subSkillSet.has(key)) continue;
+    error(
+      errors,
+      filePath,
+      `Skill Routing references missing skill '${skillId}'`,
+    );
+  }
+}
+
+async function validateWorkflowFile(
+  filePath,
+  errors,
+  { skillSet = new Set(), subSkillSet = new Set() } = {},
+) {
   const raw = await readUtf8(filePath);
   const fm = parseFrontmatter(raw);
   if (!fm) {
@@ -392,6 +444,13 @@ async function validateWorkflowFile(filePath, errors) {
   }
 
   validateWorkflowRequiredSections(fm.body, filePath, errors);
+  validateWorkflowSkillRoutingIds({
+    body: fm.body,
+    filePath,
+    skillSet,
+    subSkillSet,
+    errors,
+  });
 }
 
 async function validateSkillFile({
@@ -496,6 +555,7 @@ async function validateAgentFile({
   filePath,
   platform,
   skillSet,
+  subSkillSet,
   errors,
   notes,
 }) {
@@ -530,17 +590,28 @@ async function validateAgentFile({
 
   const referencedSkills = getList(fm.raw, "skills");
   for (const skillId of referencedSkills) {
-    if (skillSet.has(String(skillId || "").toLowerCase())) continue;
-    if (skillId.includes("/")) {
-      note(
-        notes,
-        filePath,
-        `references hierarchical skill '${skillId}' (no direct skill folder; treated as conceptual alias)`,
-      );
+    const normalizedSkillId = String(skillId || "").toLowerCase();
+    if (skillSet.has(normalizedSkillId) || subSkillSet.has(normalizedSkillId)) {
       continue;
     }
     error(errors, filePath, `references missing skill '${skillId}'`);
   }
+}
+
+async function buildCanonicalSubSkillSet(canonicalMap) {
+  const ids = new Set();
+  for (const { id: topLevelId, root } of canonicalMap.values()) {
+    const nestedRoot = path.join(root, topLevelId, "skills");
+    if (!(await pathExists(nestedRoot))) continue;
+    const nestedEntries = await fs.readdir(nestedRoot, { withFileTypes: true });
+    for (const entry of nestedEntries) {
+      if (!entry.isDirectory() || entry.name.startsWith(".")) continue;
+      const nestedSkillFile = path.join(nestedRoot, entry.name, "SKILL.md");
+      if (!(await pathExists(nestedSkillFile))) continue;
+      ids.add(`${topLevelId}/${entry.name}`.toLowerCase());
+    }
+  }
+  return ids;
 }
 
 async function validateCanonicalSkillsStructure({ errors, canonicalMap }) {
@@ -637,6 +708,8 @@ async function validateSharedSourceAndGeneratedParity({
   manifest,
   errors,
   notes,
+  skillSet,
+  subSkillSet,
 }) {
   if (!(await pathExists(SHARED_AGENTS_DIR))) {
     error(errors, SHARED_AGENTS_DIR, "shared agents directory missing");
@@ -665,6 +738,7 @@ async function validateSharedSourceAndGeneratedParity({
     await validateWorkflowFile(
       path.join(SHARED_WORKFLOWS_DIR, fileName),
       errors,
+      { skillSet, subSkillSet },
     );
   }
 
@@ -822,6 +896,7 @@ async function main() {
 
   const manifest = JSON.parse(await readUtf8(MANIFEST_PATH));
   const canonicalMap = await buildCanonicalSkillMap();
+  const canonicalSubSkillSet = await buildCanonicalSubSkillSet(canonicalMap);
   const indexedSkillIds = await resolveIndexedTopLevelSkillIds(canonicalMap);
   const indexedSkillSet = new Set(
     indexedSkillIds.map((id) => String(id).toLowerCase()),
@@ -869,7 +944,10 @@ async function main() {
         error(errors, filePath, "workflow file listed in manifest is missing");
         continue;
       }
-      await validateWorkflowFile(filePath, errors);
+      await validateWorkflowFile(filePath, errors, {
+        skillSet: indexedSkillSet,
+        subSkillSet: canonicalSubSkillSet,
+      });
     }
 
     for (const rel of agentFiles) {
@@ -882,6 +960,7 @@ async function main() {
         filePath,
         platform: platformId,
         skillSet: indexedSkillSet,
+        subSkillSet: canonicalSubSkillSet,
         errors,
         notes,
       });
@@ -967,7 +1046,13 @@ async function main() {
     }
   }
 
-  await validateSharedSourceAndGeneratedParity({ manifest, errors, notes });
+  await validateSharedSourceAndGeneratedParity({
+    manifest,
+    errors,
+    notes,
+    skillSet: indexedSkillSet,
+    subSkillSet: canonicalSubSkillSet,
+  });
   await validateCanonicalSkillsStructure({ errors, canonicalMap });
 
   const summary = {

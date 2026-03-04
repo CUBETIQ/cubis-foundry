@@ -2,7 +2,7 @@
  * Cubis Foundry MCP Server – upstream Postman/Stitch passthrough support.
  */
 
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
@@ -11,13 +11,14 @@ import {
   parseStitchState,
   readEffectiveConfig,
 } from "../cbxConfig/index.js";
-import type { CbxConfig } from "../cbxConfig/types.js";
+import type { CbxConfig, ConfigScope } from "../cbxConfig/types.js";
 
 type ServiceId = "postman" | "stitch";
 
 export interface UpstreamToolInfo {
   name: string;
   namespacedName: string;
+  aliasNames: string[];
   description?: string;
   inputSchema?: unknown;
   outputSchema?: unknown;
@@ -42,6 +43,86 @@ function resolveCatalogDir(configPath: string): string {
     return path.join(configDir, "mcp", "catalog");
   }
   return path.join(configDir, ".cbx", "mcp", "catalog");
+}
+
+export function buildPassthroughAliasName(
+  service: ServiceId,
+  toolName: string,
+): string {
+  const normalizedTool = String(toolName || "")
+    .trim()
+    .replace(/([a-z0-9])([A-Z])/g, "$1_$2")
+    .replace(/[^A-Za-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .replace(/_+/g, "_")
+    .toLowerCase();
+  if (!normalizedTool) return `${service}_tool`;
+  return `${service}_${normalizedTool}`;
+}
+
+export function buildUpstreamToolInfo(
+  service: ServiceId,
+  tool: {
+    name?: unknown;
+    description?: unknown;
+    inputSchema?: unknown;
+    outputSchema?: unknown;
+  },
+): UpstreamToolInfo | null {
+  const name = typeof tool?.name === "string" ? tool.name.trim() : "";
+  if (!name) return null;
+  const namespacedName = `${service}.${name}`;
+  const aliasNames = [buildPassthroughAliasName(service, name)];
+  return {
+    name,
+    namespacedName,
+    aliasNames,
+    description:
+      typeof tool?.description === "string" ? tool.description : undefined,
+    inputSchema: tool?.inputSchema ?? undefined,
+    outputSchema: tool?.outputSchema ?? undefined,
+  };
+}
+
+async function loadCachedCatalogTools({
+  service,
+  scope,
+  configPath,
+}: {
+  service: ServiceId;
+  scope: ConfigScope | null;
+  configPath: string | null;
+}): Promise<UpstreamToolInfo[]> {
+  if (!configPath) return [];
+  const catalogDir = resolveCatalogDir(configPath);
+  const catalogPath = path.join(catalogDir, `${service}.json`);
+  try {
+    const raw = await readFile(catalogPath, "utf8");
+    const parsed = JSON.parse(raw) as {
+      scope?: string;
+      tools?: Array<{
+        name?: unknown;
+        description?: unknown;
+        inputSchema?: unknown;
+        outputSchema?: unknown;
+      }>;
+    };
+    if (
+      scope &&
+      typeof parsed.scope === "string" &&
+      parsed.scope.trim() &&
+      parsed.scope !== scope
+    ) {
+      // Cross-scope catalogs can be stale for the active config.
+      return [];
+    }
+    const tools = Array.isArray(parsed.tools) ? parsed.tools : [];
+    return tools
+      .map((tool) => buildUpstreamToolInfo(service, tool))
+      .filter((tool): tool is UpstreamToolInfo => Boolean(tool));
+  } catch {
+    return [];
+  }
 }
 
 function getServiceAuth(config: CbxConfig, service: ServiceId): {
@@ -154,11 +235,13 @@ async function persistCatalog(catalog: UpstreamCatalog): Promise<void> {
   await writeFile(catalogPath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
 }
 
-export async function discoverUpstreamCatalogs(): Promise<{
+export async function discoverUpstreamCatalogs(
+  scope: ConfigScope | "auto" = "auto",
+): Promise<{
   postman: UpstreamCatalog;
   stitch: UpstreamCatalog;
 }> {
-  const effective = readEffectiveConfig("auto");
+  const effective = readEffectiveConfig(scope);
   if (!effective) {
     const missing: UpstreamCatalog = {
       service: "postman",
@@ -200,6 +283,18 @@ export async function discoverUpstreamCatalogs(): Promise<{
     };
 
     if (!auth.configured || !auth.mcpUrl || auth.error) {
+      const cachedTools = await loadCachedCatalogTools({
+        service,
+        scope: baseInfo.scope,
+        configPath: baseInfo.configPath,
+      });
+      if (cachedTools.length > 0) {
+        catalog.tools = cachedTools;
+        catalog.toolCount = cachedTools.length;
+        catalog.discoveryError = auth.error
+          ? `${auth.error} (using cached tool catalog)`
+          : "Upstream not configured; using cached tool catalog";
+      }
       await persistCatalog(catalog);
       return catalog;
     }
@@ -212,22 +307,21 @@ export async function discoverUpstreamCatalogs(): Promise<{
       });
       const rawTools = Array.isArray(listed.tools) ? listed.tools : [];
       catalog.tools = rawTools
-        .map((tool) => {
-          const name = typeof tool?.name === "string" ? tool.name.trim() : "";
-          if (!name) return null;
-          return {
-            name,
-            namespacedName: `${service}.${name}`,
-            description:
-              typeof tool?.description === "string" ? tool.description : undefined,
-            inputSchema: tool?.inputSchema ?? undefined,
-            outputSchema: tool?.outputSchema ?? undefined,
-          } satisfies UpstreamToolInfo;
-        })
+        .map((tool) => buildUpstreamToolInfo(service, tool || {}))
         .filter((tool): tool is UpstreamToolInfo => Boolean(tool));
       catalog.toolCount = catalog.tools.length;
     } catch (error) {
       catalog.discoveryError = `Tool discovery failed: ${String(error)}`;
+      const cachedTools = await loadCachedCatalogTools({
+        service,
+        scope: baseInfo.scope,
+        configPath: baseInfo.configPath,
+      });
+      if (cachedTools.length > 0) {
+        catalog.tools = cachedTools;
+        catalog.toolCount = cachedTools.length;
+        catalog.discoveryError = `${catalog.discoveryError} (using cached tool catalog)`;
+      }
     }
 
     await persistCatalog(catalog);
@@ -244,12 +338,14 @@ export async function callUpstreamTool({
   service,
   name,
   argumentsValue,
+  scope = "auto",
 }: {
   service: ServiceId;
   name: string;
   argumentsValue: Record<string, unknown>;
+  scope?: ConfigScope | "auto";
 }) {
-  const effective = readEffectiveConfig("auto");
+  const effective = readEffectiveConfig(scope);
   if (!effective) {
     throw new Error("cbx_config.json not found");
   }
