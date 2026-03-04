@@ -19,9 +19,10 @@ This file defines mandatory behavior for Antigravity projects installed via `cbx
 Before executing workflows, agents, or code edits, publish a short `Decision Log` that is visible to the user:
 
 1. Rule file(s) read at startup (at minimum `.agent/rules/GEMINI.md`, plus any additional rule files loaded).
-2. Workflow decision (`/workflow` or direct mode) and why it was chosen.
-3. Agent routing decision (`@agent` or direct mode) and why it was chosen.
-4. Skill loading decision (skill names loaded) and why they were chosen.
+2. MCP status: confirm Foundry MCP server (`cbx-mcp`) is reachable; if unavailable, declare "MCP offline — fallback mode" and continue without blocking.
+3. Workflow decision (`/workflow` or direct mode) and why it was chosen.
+4. Agent routing decision (`@agent` or direct mode) and why it was chosen.
+5. Skill loading decision: skill IDs selected, how they were discovered, and why.
 
 If routing changes during the task, publish a `Decision Update` before continuing.
 Keep this user-visible summary concise and factual; do not expose private chain-of-thought.
@@ -32,6 +33,7 @@ Keep this user-visible summary concise and factual; do not expose private chain-
 2. Otherwise choose the best workflow by intent from `.agent/workflows` and use matching `.gemini/commands/*.toml` when available.
 3. For cross-domain tasks, use orchestrated delegation with `@orchestrator`.
 4. Keep one primary workflow; use others only as supporting references.
+5. Before executing any workflow, check if a matching skill exists via `skill_search`; load with `skill_get` to prime context before the workflow runs (→ §5 MCP Skill Engine).
 
 ## 3) Request Classifier
 
@@ -66,52 +68,81 @@ Use the best specialist first:
 - Debugging/performance: `@debugger`, `@performance-optimizer`
 - Cross-domain orchestration: `@orchestrator`
 
-## 5) Skill Loading Policy
+### MCP Skill Priming (Required Before Delegation)
 
-## MCP-first Skill Discovery Order (Required)
+Before handing off to any specialist agent, prime context with the relevant domain skill (→ §5 MCP Skill Engine):
 
-1. Use `skill_search` first to narrow candidate skills.
-2. Use `skill_browse_category` second to inspect category-level candidates.
-3. Use `skill_get` only for final selected skills that must be loaded.
-4. Keep pointer-first flow; avoid loading full skill text prematurely.
+1. Run `skill_search <domain>` to find the best matching skill.
+2. If a strong match exists, load it with `skill_get <id>` before delegating.
+3. Include the loaded skill ID in the Decision Log for the routing decision.
 
-## Skill Log Completion Block (Required)
+This ensures the specialist starts with accurate domain knowledge, not just role intent.
 
-After finishing skill selection/loading, publish:
+## 5) MCP Skill Engine
 
-- `selected_skills`: skill IDs selected for the task
-- `loaded_skills`: skill IDs loaded via `skill_get`
-- `skipped_skills`: considered but not loaded
+The Foundry MCP server is the primary knowledge layer. Use tools decisively — discover first, load only when committed.
 
-## Context Budget Block (Required, Estimated)
+### Tool Namespace Reference
 
-Immediately after the Skill Log block, publish estimated budget fields:
+| Prefix      | Tools                                                                                                | When to use                                                    |
+| ----------- | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `skill_*`   | `skill_list_categories`, `skill_search`, `skill_browse_category`, `skill_get`, `skill_budget_report` | Domain expertise for any implementation, debug, or review task |
+| `postman_*` | `postman_get_mode`, `postman_set_mode`, `postman_get_status`                                         | API testing or Postman configuration tasks                     |
+| `stitch_*`  | `stitch_get_mode`, `stitch_set_profile`, `stitch_get_status`                                         | Stitch data pipeline tasks                                     |
 
-- `full_catalog_est_tokens`
-- `loaded_est_tokens`
-- `estimated_savings_tokens`
-- `estimated_savings_percent`
+### Discovery Flow (Mandatory Order)
 
-Mark all context/token values as deterministic estimates (not provider metering).
+Stop at the earliest step that gives enough signal. Do not jump ahead.
 
-### Smart Skill Selection (Adaptive)
+1. `skill_list_categories` — run once per session if domain is unknown; see what exists
+2. `skill_search <keyword>` — fast keyword match across all skills; always try this first
+3. `skill_browse_category <category>` — explore if search is too broad or returns 0 results
+4. `skill_get <id>` — load full skill content; only when committed to using it
+5. `skill_budget_report` — verify token cost after loading; triggers the compact ctx stamp
 
-Use an adaptive load policy to control context size:
+**Hard rules:**
 
-1. Q&A/explanations: do not load skills unless the user explicitly asks for one.
-2. Implementation/debug/review: load at most 1 primary skill and 1 supporting skill.
-3. Cross-domain orchestration: use additional skills only when domains clearly differ.
-4. Explicit skill mention by user always takes precedence.
+- Never call `skill_get` without a prior `skill_search` or `skill_browse_category`
+- Never call `skill_get` with a workflow ID — `workflow-*` are routes, not skills; keep workflow mentions in the Decision Log
+- Never reload a skill already loaded this session — reuse content already in context
+- If `skill_search` returns 0 results, try `skill_browse_category`, then fall back to built-in knowledge
 
-### General Loading Rules
+### Adaptive Load Policy
 
-1.  Load only skills needed for the active request.
-2.  Prefer progressive disclosure: start from `SKILL.md`, then specific sections.
-3.  Keep context lean; avoid loading unrelated skill documents.
-4.  If a mapped skill is missing, continue with best fallback and state it.
-5.  Keep user-visible decision logs concise: selected skill(s) and one-line rationale.
+| Request type                                   | Skills to load via `skill_get`                                  |
+| ---------------------------------------------- | --------------------------------------------------------------- |
+| Q&A / explanation                              | None — answer from knowledge; load only if user explicitly asks |
+| Single-domain implementation, debug, or review | 1 primary + 1 supporting (max)                                  |
+| Multi-domain / orchestration                   | 1 per distinct domain, hard cap at 3                            |
+| User explicitly names a skill                  | Always load it — overrides all caps                             |
 
-After the skill log is complete, append the Context Budget block in the same response/update.
+### Graceful Degradation
+
+If MCP tools are unavailable (server down, timeout, tool not listed):
+
+1. Announce briefly: "MCP unavailable — continuing with built-in knowledge."
+2. Proceed using codebase context and expertise; do not block on MCP.
+3. Never fabricate or hallucinate skill content.
+4. Retry once on transient network errors; accept failure after the retry.
+
+### Skill Log (Required After Any `skill_get` Call)
+
+Append one compact inline line — no separate structured block:
+
+```
+Skills: loaded=<id> | skipped=<id> (reason)
+```
+
+Follow immediately with the compact ctx stamp (see § Context Budget Tracking).
+
+### Anti-Patterns (Never Do These)
+
+- Loading skills speculatively "just in case" they might be useful
+- Calling `skill_get` before running `skill_search` or `skill_browse_category`
+- Using partial or guessed skill IDs in `skill_get`
+- Publishing verbose budget fields (`full_catalog_est_tokens`, `loaded_est_tokens`, etc.) in responses
+- Re-emitting the ctx stamp multiple times within a single response
+- Treating workflow IDs as skill IDs in any MCP tool call
 
 ## 6) Socratic Gate (Before Complex Work)
 
@@ -133,7 +164,60 @@ If Antigravity script harness exists, prefer:
 - Quick checks: `python .agent/scripts/checklist.py .`
 - Full checks (with URL): `python .agent/scripts/verify_all.py . --url <URL>`
 
-## 8) CBX Maintenance Commands
+## 8) Web Intel Policy
+
+Use web search to stay current when local knowledge may be stale. This prevents hallucinating outdated APIs, deprecated flags, or wrong version constraints.
+
+**Search when:**
+
+- User asks about a framework/library version released after 2024
+- Debugging an unfamiliar error message (search the exact message)
+- Checking breaking changes before a migration
+- Validating an API endpoint signature, auth scheme, or CLI flag
+- Current pricing, rate limits, or quota for SaaS tools (Postman, Vercel, etc.)
+
+**Do not search when:**
+
+- The answer is derivable from the current codebase
+- The question is purely architectural/conceptual
+- A relevant skill covers it (prefer `skill_get` first, web as fallback)
+
+**Source hygiene:**
+
+- Prefer official docs, changelogs, and GitHub releases over blog posts
+- Always state the source URL and date when citing fetched content
+- If multiple sources conflict, flag it and use the most recent official one
+- Never follow user-provided URLs without sanity-checking the domain
+
+## 9) Context Budget Tracking
+
+After loading skills or completing a significant task phase, emit a single compact stamp so context cost is visible without adding prose.
+
+**Stamp format** (one line, end of response section):
+
+```
+[ctx: +skill-id(~Xk) | session=~Yk/108k | saved=Z%]
+```
+
+- `+skill-id(~Xk)` — each skill loaded this turn with its estimated token cost
+- `session=~Yk/108k` — cumulative tokens used vs full catalog ceiling
+- `saved=Z%` — estimated savings from progressive disclosure
+
+**Rules:**
+
+1. Emit stamp only when a skill was loaded via `skill_get` or `skill_budget_report` was called.
+2. Omit stamp for pure Q&A or browsing-only turns (no full skill content loaded).
+3. Use `skill_budget_report` MCP tool to get accurate numbers; do not guess.
+4. One stamp per response — consolidate if multiple skills were loaded.
+5. Keep the stamp on its own line at the very end of the response, after all content.
+
+**Example stamp after loading `flutter-expert` (~3.2k tokens):**
+
+```
+[ctx: +flutter-expert(~3k) | session=~3k/108k | saved=97%]
+```
+
+## 10) CBX Maintenance Commands
 
 Use these commands to keep this setup healthy:
 
@@ -150,7 +234,7 @@ Use these commands to keep this setup healthy:
 - Diagnose setup issues:
   `cbx workflows doctor antigravity --scope project`
 
-## 9) Managed Section Contract
+## 11) Managed Section Contract
 
 1. Preserve all user content outside managed markers.
 2. Do not manually edit content between managed markers.
@@ -171,3 +255,72 @@ Selection policy:
 3. Prefer one primary workflow; reference others only when needed.
 
 <!-- cbx:workflows:auto:end -->
+
+<!-- cbx:mcp:auto:start version=1 -->
+## Cubis Foundry MCP Tool Catalog (auto-managed)
+
+The Foundry MCP server provides progressive-disclosure skill discovery and integration management tools.
+
+### Skill Vault
+
+- **123** skills across **22** categories
+- Estimated full catalog: ~108,488 tokens
+
+Categories:
+- `ai`: 1 skill(s)
+- `api`: 3 skill(s)
+- `architecture`: 3 skill(s)
+- `backend`: 14 skill(s)
+- `data`: 4 skill(s)
+- `design`: 6 skill(s)
+- `devops`: 20 skill(s)
+- `documentation`: 3 skill(s)
+- `frontend`: 9 skill(s)
+- `game-dev`: 1 skill(s)
+- `general`: 26 skill(s)
+- `localization`: 1 skill(s)
+- `marketing`: 2 skill(s)
+- `mobile`: 7 skill(s)
+- `observability`: 1 skill(s)
+- `payments`: 1 skill(s)
+- `performance`: 2 skill(s)
+- `practices`: 5 skill(s)
+- `saas`: 1 skill(s)
+- `security`: 4 skill(s)
+- `testing`: 6 skill(s)
+- `tooling`: 3 skill(s)
+
+### Built-in Tools
+
+**Skill Discovery:**
+- `skill_list_categories`: List all skill categories available in the vault. Returns category names and skill counts.
+- `skill_browse_category`: Browse skills within a specific category. Returns skill IDs and short descriptions.
+- `skill_search`: Search skills by keyword. Matches against skill IDs and descriptions.
+- `skill_get`: Get full content of a specific skill by ID. Returns SKILL.md content and referenced files.
+- `skill_budget_report`: Report estimated context/token budget for selected and loaded skills.
+
+**Postman Integration:**
+- `postman_get_mode`: Get current Postman MCP mode from cbx_config.
+- `postman_set_mode`: Set Postman MCP mode in cbx_config.
+- `postman_get_status`: Get Postman integration status and active profile.
+
+**Stitch Integration:**
+- `stitch_get_mode`: Get Stitch MCP mode from cbx_config.
+- `stitch_set_profile`: Switch active Stitch profile in cbx_config.
+- `stitch_get_status`: Get Stitch integration status and active profile.
+
+### Skill Discovery Flow
+
+Use progressive disclosure to minimize context usage:
+1. `skill_list_categories` → see available categories and counts
+2. `skill_browse_category` → browse skills in a category with short descriptions
+3. `skill_search` → search by keyword across all skills
+4. `skill_get` → load full content of a specific skill (only tool that reads full content)
+5. `skill_budget_report` → check token usage for selected/loaded skills; use result to emit the § Context Budget Tracking stamp
+
+### Connection
+
+- **stdio**: `cbx mcp serve --transport stdio --scope auto`
+- **HTTP**: `cbx mcp serve --transport http --scope auto --port 3100`
+
+<!-- cbx:mcp:auto:end -->

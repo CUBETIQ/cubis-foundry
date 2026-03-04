@@ -3,7 +3,21 @@
  *
  * Central registry exporting all tool metadata and handlers.
  * Used by server.ts to register tools with McpServer.
+ *
+ * The declarative registry (registry.ts) is the preferred way to register
+ * new tools. Individual tool exports are kept for backward compatibility
+ * and direct unit testing.
  */
+
+export {
+  TOOL_REGISTRY,
+  getToolsByCategory,
+  getRegisteredToolNames,
+  buildRegistrySummary,
+  type ToolCategory,
+  type ToolRegistryEntry,
+  type ToolRuntimeContext,
+} from "./registry.js";
 
 export {
   skillListCategoriesName,

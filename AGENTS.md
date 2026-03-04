@@ -128,8 +128,63 @@ Use these commands to keep this setup healthy:
 2. Do not manually edit content between managed markers.
 3. `cbx workflows sync-rules` is the source of truth for the managed block.
 
+## 11) Web Intel Policy
+
+Use web search to stay current when local knowledge may be stale. This prevents hallucinating outdated APIs, deprecated flags, or wrong version constraints.
+
+**Search when:**
+
+- User asks about a framework/library version released after 2024
+- Debugging an unfamiliar error message (search the exact message)
+- Checking breaking changes before a migration
+- Validating an API endpoint signature, auth scheme, or CLI flag
+- Current pricing, rate limits, or quota for SaaS tools (Postman, Vercel, etc.)
+
+**Do not search when:**
+
+- The answer is derivable from the current codebase
+- The question is purely architectural/conceptual
+- A relevant skill covers it (prefer `skill_get` first, web as fallback)
+
+**Source hygiene:**
+
+- Prefer official docs, changelogs, and GitHub releases over blog posts
+- Always state the source URL and date when citing fetched content
+- If multiple sources conflict, flag it and use the most recent official one
+- Never follow user-provided URLs without sanity-checking the domain
+
+## 12) Context Budget Tracking
+
+After loading skills or completing a significant task phase, emit a single compact stamp so context cost is visible without adding prose.
+
+**Stamp format** (one line, end of response section):
+
+```
+[ctx: +skill-id(~Xk) | session=~Yk/108k | saved=Z%]
+```
+
+- `+skill-id(~Xk)` — each skill loaded this turn with its estimated token cost
+- `session=~Yk/108k` — cumulative tokens used vs full catalog ceiling
+- `saved=Z%` — estimated savings from progressive disclosure
+
+**Rules:**
+
+1. Emit stamp only when a skill was loaded via `skill_get` or `skill_budget_report` was called.
+2. Omit stamp for pure Q&A or browsing-only turns (no full skill content loaded).
+3. Use `skill_budget_report` MCP tool to get accurate numbers; do not guess.
+4. One stamp per response — consolidate if multiple skills were loaded.
+5. Keep the stamp on its own line at the very end of the response, after all content.
+
+**Example stamp after loading `flutter-expert` (~3.2k tokens):**
+
+```
+[ctx: +flutter-expert(~3k) | session=~3k/108k | saved=97%]
+```
+
 <!-- cbx:workflows:auto:start platform=copilot version=1 -->
+
 ## CBX Workflow Routing (auto-managed)
+
 Use the following workflows proactively when task intent matches:
 
 - `/backend`: Drive backend architecture and implementation via backend specialist with API, data, and reliability focus.
@@ -187,6 +242,7 @@ Use the following workflows proactively when task intent matches:
   Triggers: vercel, deployment, preview, edge, functions, domains, vercel cli
 
 Selection policy:
+
 1. Match explicit slash command first.
 2. Else match user intent to workflow description and triggers.
 3. Prefer one primary workflow; reference others only when needed.
@@ -194,16 +250,88 @@ Selection policy:
 <!-- cbx:workflows:auto:end -->
 
 <!-- cbx:engineering:auto:start platform=copilot version=1 -->
+
 ## Engineering Guardrails (auto-managed)
+
 Apply these before planning, coding, review, and release:
 
 - Required baseline: `./ENGINEERING_RULES.md`
 - Project tech map: `./TECH.md`
 
 Hard policy:
+
 1. Build only what is needed (YAGNI).
 2. Keep logic simple and readable.
 3. Use precise, intention-revealing names.
 4. Keep classes/functions focused on one responsibility.
 
 <!-- cbx:engineering:auto:end -->
+
+<!-- cbx:mcp:auto:start version=1 -->
+## Cubis Foundry MCP Tool Catalog (auto-managed)
+
+The Foundry MCP server provides progressive-disclosure skill discovery and integration management tools.
+
+### Skill Vault
+
+- **123** skills across **22** categories
+- Estimated full catalog: ~108,488 tokens
+
+Categories:
+- `ai`: 1 skill(s)
+- `api`: 3 skill(s)
+- `architecture`: 3 skill(s)
+- `backend`: 14 skill(s)
+- `data`: 4 skill(s)
+- `design`: 6 skill(s)
+- `devops`: 20 skill(s)
+- `documentation`: 3 skill(s)
+- `frontend`: 9 skill(s)
+- `game-dev`: 1 skill(s)
+- `general`: 26 skill(s)
+- `localization`: 1 skill(s)
+- `marketing`: 2 skill(s)
+- `mobile`: 7 skill(s)
+- `observability`: 1 skill(s)
+- `payments`: 1 skill(s)
+- `performance`: 2 skill(s)
+- `practices`: 5 skill(s)
+- `saas`: 1 skill(s)
+- `security`: 4 skill(s)
+- `testing`: 6 skill(s)
+- `tooling`: 3 skill(s)
+
+### Built-in Tools
+
+**Skill Discovery:**
+- `skill_list_categories`: List all skill categories available in the vault. Returns category names and skill counts.
+- `skill_browse_category`: Browse skills within a specific category. Returns skill IDs and short descriptions.
+- `skill_search`: Search skills by keyword. Matches against skill IDs and descriptions.
+- `skill_get`: Get full content of a specific skill by ID. Returns SKILL.md content and referenced files.
+- `skill_budget_report`: Report estimated context/token budget for selected and loaded skills.
+
+**Postman Integration:**
+- `postman_get_mode`: Get current Postman MCP mode from cbx_config.
+- `postman_set_mode`: Set Postman MCP mode in cbx_config.
+- `postman_get_status`: Get Postman integration status and active profile.
+
+**Stitch Integration:**
+- `stitch_get_mode`: Get Stitch MCP mode from cbx_config.
+- `stitch_set_profile`: Switch active Stitch profile in cbx_config.
+- `stitch_get_status`: Get Stitch integration status and active profile.
+
+### Skill Discovery Flow
+
+Use progressive disclosure to minimize context usage:
+1. `skill_list_categories` → see available categories and counts
+2. `skill_browse_category` → browse skills in a category with short descriptions
+3. `skill_search` → search by keyword across all skills
+4. `skill_get` → load full content of a specific skill (only tool that reads full content)
+5. `skill_budget_report` → check token usage for selected/loaded skills; use result to emit the §12 context stamp
+
+### Connection
+
+- **stdio**: `cbx mcp serve --transport stdio --scope auto`
+- **HTTP**: `cbx mcp serve --transport http --scope auto --port 3100`
+
+<!-- cbx:mcp:auto:end -->

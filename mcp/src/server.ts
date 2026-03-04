@@ -1,8 +1,8 @@
 /**
  * Cubis Foundry MCP Server – server factory.
  *
- * Creates and configures the McpServer instance with built-in tools plus
- * dynamic Postman/Stitch passthrough namespaces.
+ * Creates and configures the McpServer instance with built-in tools
+ * (via declarative registry) plus dynamic Postman/Stitch passthrough namespaces.
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -10,59 +10,12 @@ import { z } from "zod";
 import type { ServerConfig } from "./config/schema.js";
 import type { ConfigScope } from "./cbxConfig/types.js";
 import type { VaultManifest } from "./vault/types.js";
-import {
-  // Skill tools
-  skillListCategoriesName,
-  skillListCategoriesDescription,
-  skillListCategoriesSchema,
-  handleSkillListCategories,
-  skillBrowseCategoryName,
-  skillBrowseCategoryDescription,
-  skillBrowseCategorySchema,
-  handleSkillBrowseCategory,
-  skillSearchName,
-  skillSearchDescription,
-  skillSearchSchema,
-  handleSkillSearch,
-  skillGetName,
-  skillGetDescription,
-  skillGetSchema,
-  handleSkillGet,
-  skillBudgetReportName,
-  skillBudgetReportDescription,
-  skillBudgetReportSchema,
-  handleSkillBudgetReport,
-  // Postman tools
-  postmanGetModeName,
-  postmanGetModeDescription,
-  postmanGetModeSchema,
-  handlePostmanGetMode,
-  postmanSetModeName,
-  postmanSetModeDescription,
-  postmanSetModeSchema,
-  handlePostmanSetMode,
-  postmanGetStatusName,
-  postmanGetStatusDescription,
-  postmanGetStatusSchema,
-  handlePostmanGetStatus,
-  // Stitch tools
-  stitchGetModeName,
-  stitchGetModeDescription,
-  stitchGetModeSchema,
-  handleStitchGetMode,
-  stitchSetProfileName,
-  stitchSetProfileDescription,
-  stitchSetProfileSchema,
-  handleStitchSetProfile,
-  stitchGetStatusName,
-  stitchGetStatusDescription,
-  stitchGetStatusSchema,
-  handleStitchGetStatus,
-} from "./tools/index.js";
+import { TOOL_REGISTRY, type ToolRuntimeContext } from "./tools/registry.js";
 import {
   callUpstreamTool,
   discoverUpstreamCatalogs,
 } from "./upstream/passthrough.js";
+import { logger } from "./utils/logger.js";
 
 export interface CreateServerOptions {
   config: ServerConfig;
@@ -102,137 +55,37 @@ export async function createServer({
   config,
   manifest,
   defaultConfigScope = "auto",
-}: CreateServerOptions): McpServer {
+}: CreateServerOptions): Promise<McpServer> {
   const server = new McpServer({
     name: config.server.name,
     version: config.server.version,
   });
 
-  const maxLen = config.vault.summaryMaxLength;
-  const charsPerToken = config.telemetry?.charsPerToken ?? 4;
-  const withDefaultScope = (
-    args: Record<string, unknown> | undefined,
-  ): Record<string, unknown> => {
-    const safeArgs = args ?? {};
-    return {
-      ...safeArgs,
-      scope:
-        typeof safeArgs.scope === "string" ? safeArgs.scope : defaultConfigScope,
-    };
+  // ─── Built-in tools from declarative registry ─────────────
+
+  const runtimeCtx: ToolRuntimeContext = {
+    manifest,
+    charsPerToken: config.telemetry?.charsPerToken ?? 4,
+    summaryMaxLength: config.vault.summaryMaxLength,
+    defaultConfigScope,
   };
 
-  // ─── Skill vault tools ───────────────────────────────────────
+  for (const entry of TOOL_REGISTRY) {
+    const handler = entry.createHandler(runtimeCtx);
+    // Cast is safe: registry handler signatures are compatible at runtime.
+    // The overload ambiguity arises because an empty ZodRawShape `{}`
+    // is structurally assignable to the annotations object overload.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (server as any).tool(
+      entry.name,
+      entry.description,
+      entry.schema.shape,
+      handler,
+    );
+  }
 
-  server.tool(
-    skillListCategoriesName,
-    skillListCategoriesDescription,
-    skillListCategoriesSchema.shape,
-    async () => handleSkillListCategories(manifest, charsPerToken),
-  );
-
-  server.tool(
-    skillBrowseCategoryName,
-    skillBrowseCategoryDescription,
-    skillBrowseCategorySchema.shape,
-    async (args) =>
-      handleSkillBrowseCategory(args, manifest, maxLen, charsPerToken),
-  );
-
-  server.tool(
-    skillSearchName,
-    skillSearchDescription,
-    skillSearchSchema.shape,
-    async (args) => handleSkillSearch(args, manifest, maxLen, charsPerToken),
-  );
-
-  server.tool(
-    skillGetName,
-    skillGetDescription,
-    skillGetSchema.shape,
-    async (args) => handleSkillGet(args, manifest, charsPerToken),
-  );
-
-  server.tool(
-    skillBudgetReportName,
-    skillBudgetReportDescription,
-    skillBudgetReportSchema.shape,
-    async (args) => handleSkillBudgetReport(args, manifest, charsPerToken),
-  );
-
-  // ─── Postman tools ──────────────────────────────────────────
-
-  server.tool(
-    postmanGetModeName,
-    postmanGetModeDescription,
-    postmanGetModeSchema.shape,
-    async (args) =>
-      handlePostmanGetMode(
-        withDefaultScope(args as Record<string, unknown>) as z.infer<
-          typeof postmanGetModeSchema
-        >,
-      ),
-  );
-
-  server.tool(
-    postmanSetModeName,
-    postmanSetModeDescription,
-    postmanSetModeSchema.shape,
-    async (args) =>
-      handlePostmanSetMode(
-        withDefaultScope(args as Record<string, unknown>) as z.infer<
-          typeof postmanSetModeSchema
-        >,
-      ),
-  );
-
-  server.tool(
-    postmanGetStatusName,
-    postmanGetStatusDescription,
-    postmanGetStatusSchema.shape,
-    async (args) =>
-      handlePostmanGetStatus(
-        withDefaultScope(args as Record<string, unknown>) as z.infer<
-          typeof postmanGetStatusSchema
-        >,
-      ),
-  );
-
-  // ─── Stitch tools ──────────────────────────────────────────
-
-  server.tool(
-    stitchGetModeName,
-    stitchGetModeDescription,
-    stitchGetModeSchema.shape,
-    async (args) =>
-      handleStitchGetMode(
-        withDefaultScope(args as Record<string, unknown>) as z.infer<
-          typeof stitchGetModeSchema
-        >,
-      ),
-  );
-
-  server.tool(
-    stitchSetProfileName,
-    stitchSetProfileDescription,
-    stitchSetProfileSchema.shape,
-    async (args) =>
-      handleStitchSetProfile(
-        withDefaultScope(args as Record<string, unknown>) as z.infer<
-          typeof stitchSetProfileSchema
-        >,
-      ),
-  );
-
-  server.tool(
-    stitchGetStatusName,
-    stitchGetStatusDescription,
-    stitchGetStatusSchema.shape,
-    async (args) =>
-      handleStitchGetStatus(
-        withDefaultScope(args as Record<string, unknown>) as z.infer<
-          typeof stitchGetStatusSchema
-        >,
-      ),
+  logger.debug(
+    `Registered ${TOOL_REGISTRY.length} built-in tools from registry`,
   );
 
   // ─── Dynamic upstream passthrough tools ────────────────────
@@ -242,21 +95,30 @@ export async function createServer({
   for (const catalog of [upstreamCatalogs.postman, upstreamCatalogs.stitch]) {
     for (const tool of catalog.tools) {
       const namespaced = tool.namespacedName;
-      server.tool(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (server as any).tool(
         namespaced,
         `[${catalog.service} passthrough] ${tool.description || tool.name}`,
         dynamicArgsShape,
-        async (args) => {
+        async (args: Record<string, unknown>) => {
           try {
             const result = await callUpstreamTool({
               service: catalog.service,
               name: tool.name,
               argumentsValue:
-                args && typeof args === "object" ? args : ({} as Record<string, unknown>),
+                args && typeof args === "object"
+                  ? args
+                  : ({} as Record<string, unknown>),
             });
             return {
-              content: result.content ?? [],
-              structuredContent: result.structuredContent,
+              // SDK content is typed broadly; cast to the expected array shape.
+              content: (result.content ?? []) as Array<{
+                type: string;
+                [k: string]: unknown;
+              }>,
+              structuredContent: result.structuredContent as
+                | Record<string, unknown>
+                | undefined,
               isError: Boolean(result.isError),
             };
           } catch (error) {

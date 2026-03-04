@@ -307,6 +307,25 @@ Notes:
 - `cbx mcp tools sync` requires `POSTMAN_API_KEY_DEFAULT`.
 - For `--service stitch` or `--service all`, it also requires `STITCH_API_KEY_DEFAULT`.
 
+MCP manifest + managed rules block maintenance:
+
+```bash
+# Generate/refresh MCP manifest snapshot
+npm run generate:mcp-manifest
+
+# Validate MCP skill catalog + rule references
+npm run validate:mcp-skills
+npm run validate:mcp-manifest
+
+# Inject/check managed MCP block in platform rule files
+npm run inject:mcp-rules:all
+npm run check:mcp-rules:all
+```
+
+Generated MCP artifacts:
+- `mcp/generated/mcp-manifest.json` (catalog snapshot used by managed rule blocks)
+- `mcp/generated/README.md` (artifact notes)
+
 Foundry local serve command (canonical entrypoint for MCP client registration):
 
 ```bash

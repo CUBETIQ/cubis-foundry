@@ -127,7 +127,7 @@ function loadServerConfig(configPath) {
 }
 
 // src/vault/scanner.ts
-import { readdir, stat } from "fs/promises";
+import { open, readdir, stat } from "fs/promises";
 import path2 from "path";
 async function scanVaultRoots(roots, basePath) {
   const skills = [];
@@ -148,6 +148,13 @@ async function scanVaultRoots(roots, basePath) {
       const skillFile = path2.join(entryPath, "SKILL.md");
       const skillStat = await stat(skillFile).catch(() => null);
       if (!skillStat?.isFile()) continue;
+      const wrapperKind = await detectWrapperKind(entry, skillFile);
+      if (wrapperKind) {
+        logger.debug(
+          `Skipping wrapper skill ${entry} (${wrapperKind}) at ${skillFile}`
+        );
+        continue;
+      }
       skills.push({
         id: entry,
         category: deriveCategory(entry),
@@ -158,6 +165,69 @@ async function scanVaultRoots(roots, basePath) {
   }
   logger.info(`Vault scan complete: ${skills.length} skills discovered`);
   return skills;
+}
+var WRAPPER_PREFIXES = ["workflow-", "agent-"];
+var WRAPPER_KINDS = /* @__PURE__ */ new Set(["workflow", "agent"]);
+var FRONTMATTER_PREVIEW_BYTES = 8192;
+function extractWrapperKindFromId(skillId) {
+  const lower = skillId.toLowerCase();
+  if (lower.startsWith(WRAPPER_PREFIXES[0])) return "workflow";
+  if (lower.startsWith(WRAPPER_PREFIXES[1])) return "agent";
+  return null;
+}
+async function readFrontmatterPreview(skillFile) {
+  const handle = await open(skillFile, "r").catch(() => null);
+  if (!handle) return null;
+  try {
+    const buffer = Buffer.alloc(FRONTMATTER_PREVIEW_BYTES);
+    const { bytesRead } = await handle.read(
+      buffer,
+      0,
+      FRONTMATTER_PREVIEW_BYTES,
+      0
+    );
+    return buffer.toString("utf8", 0, bytesRead);
+  } finally {
+    await handle.close();
+  }
+}
+function parseFrontmatter(rawPreview) {
+  const match = rawPreview.match(/^---\s*\n([\s\S]*?)\n---/);
+  return match?.[1] ?? null;
+}
+function extractMetadataWrapper(frontmatter) {
+  const lines = frontmatter.split(/\r?\n/);
+  let inMetadata = false;
+  for (const line of lines) {
+    if (!inMetadata) {
+      if (/^\s*metadata\s*:\s*$/.test(line)) {
+        inMetadata = true;
+      }
+      continue;
+    }
+    if (!line.trim()) continue;
+    if (!/^\s+/.test(line)) break;
+    const match = line.match(/^\s+wrapper\s*:\s*(.+)\s*$/);
+    if (!match) continue;
+    const value = match[1].trim().replace(/^['"]|['"]$/g, "").toLowerCase();
+    if (WRAPPER_KINDS.has(value)) {
+      return value;
+    }
+  }
+  return null;
+}
+async function detectWrapperKind(skillId, skillFile) {
+  const byId = extractWrapperKindFromId(skillId);
+  if (byId) return byId;
+  const rawPreview = await readFrontmatterPreview(skillFile);
+  if (!rawPreview) return null;
+  const frontmatter = parseFrontmatter(rawPreview);
+  if (!frontmatter) return null;
+  const byMetadata = extractMetadataWrapper(frontmatter);
+  if (byMetadata === "workflow" || byMetadata === "agent") {
+    return byMetadata;
+  }
+  return null;
 }
 function deriveCategory(skillId) {
   const categoryMap = {
@@ -244,7 +314,8 @@ function deriveCategory(skillId) {
 }
 
 // src/vault/manifest.ts
-import { readFile } from "fs/promises";
+import { readdir as readdir2, readFile } from "fs/promises";
+import path3 from "path";
 
 // src/telemetry/tokenBudget.ts
 var TOKEN_ESTIMATOR_VERSION = "char-estimator-v1";
@@ -347,6 +418,90 @@ function parseDescriptionFromFrontmatter(content, maxLength) {
 }
 async function readFullSkillContent(skillPath) {
   return readFile(skillPath, "utf8");
+}
+var MARKDOWN_LINK_RE = /\[[^\]]+\]\(([^)]+)\)/g;
+var MAX_REFERENCED_FILES = 25;
+function normalizeLinkTarget(rawTarget) {
+  let target = String(rawTarget || "").trim();
+  if (!target) return null;
+  if (target.startsWith("<") && target.endsWith(">")) {
+    target = target.slice(1, -1).trim();
+  }
+  const firstSpace = target.search(/\s/);
+  if (firstSpace > 0) {
+    target = target.slice(0, firstSpace).trim();
+  }
+  target = target.split("#")[0].split("?")[0].trim();
+  if (!target) return null;
+  if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(target)) return null;
+  if (/^[a-zA-Z]:[\\/]/.test(target)) return null;
+  if (path3.isAbsolute(target)) return null;
+  return target;
+}
+function collectReferencedMarkdownTargets(skillContent) {
+  const targets = [];
+  const seen = /* @__PURE__ */ new Set();
+  for (const match of skillContent.matchAll(MARKDOWN_LINK_RE)) {
+    const raw = match[1];
+    const normalized = normalizeLinkTarget(raw);
+    if (!normalized) continue;
+    if (!normalized.toLowerCase().endsWith(".md")) continue;
+    if (seen.has(normalized)) continue;
+    seen.add(normalized);
+    targets.push(normalized);
+    if (targets.length >= MAX_REFERENCED_FILES) break;
+  }
+  return targets;
+}
+async function readReferencedMarkdownFiles(skillPath, skillContent) {
+  const skillDir = path3.dirname(skillPath);
+  let targets = collectReferencedMarkdownTargets(skillContent);
+  if (targets.length === 0) {
+    targets = await collectSiblingMarkdownTargets(skillDir);
+  }
+  const references = [];
+  for (const target of targets) {
+    const resolved = path3.resolve(skillDir, target);
+    const relative = path3.relative(skillDir, resolved);
+    if (relative.startsWith("..") || path3.isAbsolute(relative)) {
+      continue;
+    }
+    if (path3.basename(resolved).toLowerCase() === "skill.md") continue;
+    try {
+      const content = await readFile(resolved, "utf8");
+      references.push({
+        relativePath: relative.split(path3.sep).join("/"),
+        content
+      });
+    } catch (err) {
+      logger.debug(`Failed to read referenced markdown ${resolved}: ${err}`);
+    }
+  }
+  return references;
+}
+async function collectSiblingMarkdownTargets(skillDir) {
+  const entries = await readdir2(skillDir, { withFileTypes: true }).catch(
+    () => []
+  );
+  const targets = [];
+  for (const entry of entries) {
+    if (!entry.isFile()) continue;
+    if (entry.name.startsWith(".")) continue;
+    if (!entry.name.toLowerCase().endsWith(".md")) continue;
+    if (entry.name.toLowerCase() === "skill.md") continue;
+    targets.push(entry.name);
+    if (targets.length >= MAX_REFERENCED_FILES) break;
+  }
+  targets.sort((a, b) => a.localeCompare(b));
+  return targets;
+}
+async function readSkillContentWithReferences(skillPath, includeReferences = true) {
+  const skillContent = await readFullSkillContent(skillPath);
+  if (!includeReferences) {
+    return { skillContent, references: [] };
+  }
+  const references = await readReferencedMarkdownFiles(skillPath, skillContent);
+  return { skillContent, references };
 }
 async function enrichWithDescriptions(skills, maxLength) {
   return Promise.all(
@@ -521,17 +676,40 @@ async function handleSkillSearch(args, manifest, summaryMaxLength, charsPerToken
 // src/tools/skillGet.ts
 import { z as z5 } from "zod";
 var skillGetName = "skill_get";
-var skillGetDescription = "Get the full content of a specific skill by ID. Returns the complete SKILL.md file content.";
+var skillGetDescription = "Get full content of a specific skill by ID. Returns SKILL.md content and optionally direct referenced markdown files.";
 var skillGetSchema = z5.object({
-  id: z5.string().describe("The skill ID (directory name) to retrieve")
+  id: z5.string().describe("The skill ID (directory name) to retrieve"),
+  includeReferences: z5.boolean().optional().describe(
+    "Whether to include direct local markdown references from SKILL.md (default: true)"
+  )
 });
 async function handleSkillGet(args, manifest, charsPerToken) {
-  const { id } = args;
+  const { id, includeReferences = true } = args;
+  if (id.startsWith("workflow-") || id.startsWith("agent-")) {
+    invalidInput(
+      `Skill id "${id}" appears to be a wrapper id. Use workflow/agent routing (for example $workflow-implement-track or $agent-backend-specialist) and call skill_get only for concrete skill ids.`
+    );
+  }
   const skill = manifest.skills.find((s) => s.id === id);
   if (!skill) {
     notFound("Skill", id);
   }
-  const content = await readFullSkillContent(skill.path);
+  const { skillContent, references } = await readSkillContentWithReferences(
+    skill.path,
+    includeReferences
+  );
+  const referenceSection = references.length > 0 ? [
+    "",
+    "## Referenced Files",
+    "",
+    ...references.flatMap((ref) => [
+      `### ${ref.relativePath}`,
+      "",
+      ref.content.trimEnd(),
+      ""
+    ])
+  ].join("\n") : "";
+  const content = `${skillContent}${referenceSection}`;
   const loadedSkillEstimatedTokens = estimateTokensFromText(
     content,
     charsPerToken
@@ -550,6 +728,7 @@ async function handleSkillGet(args, manifest, charsPerToken) {
       }
     ],
     structuredContent: {
+      references: references.map((ref) => ({ path: ref.relativePath })),
       metrics
     }
   };
@@ -642,15 +821,15 @@ function handleSkillBudgetReport(args, manifest, charsPerToken) {
 import { z as z7 } from "zod";
 
 // src/cbxConfig/paths.ts
-import path3 from "path";
+import path4 from "path";
 import os from "os";
 import { existsSync } from "fs";
 function globalConfigPath() {
-  return path3.join(os.homedir(), ".cbx", "cbx_config.json");
+  return path4.join(os.homedir(), ".cbx", "cbx_config.json");
 }
 function projectConfigPath(workspaceRoot) {
   const root = workspaceRoot ?? process.cwd();
-  return path3.join(root, "cbx_config.json");
+  return path4.join(root, "cbx_config.json");
 }
 function resolveConfigPath(scope, workspaceRoot) {
   if (scope === "global") {
@@ -726,7 +905,7 @@ import {
   mkdirSync,
   existsSync as existsSync3
 } from "fs";
-import path4 from "path";
+import path5 from "path";
 import { parse as parseJsonc2 } from "jsonc-parser";
 function writeConfigField(fieldPath, value, scope, workspaceRoot) {
   const resolved = resolveConfigPath(scope, workspaceRoot);
@@ -752,7 +931,7 @@ function writeConfigField(fieldPath, value, scope, workspaceRoot) {
     current = current[key];
   }
   current[parts[parts.length - 1]] = value;
-  const dir = path4.dirname(configPath);
+  const dir = path5.dirname(configPath);
   if (!existsSync3(dir)) {
     mkdirSync(dir, { recursive: true });
   }
@@ -1180,17 +1359,138 @@ function handleStitchGetStatus(args) {
   };
 }
 
+// src/tools/registry.ts
+function withDefaultScope(args, defaultScope) {
+  const safeArgs = args && typeof args === "object" ? args : {};
+  return {
+    ...safeArgs,
+    scope: typeof safeArgs.scope === "string" ? safeArgs.scope : defaultScope
+  };
+}
+var TOOL_REGISTRY = [
+  // ── Skill vault tools ─────────────────────────────────────
+  {
+    name: skillListCategoriesName,
+    description: skillListCategoriesDescription,
+    schema: skillListCategoriesSchema,
+    category: "skill",
+    createHandler: (ctx) => async () => handleSkillListCategories(ctx.manifest, ctx.charsPerToken)
+  },
+  {
+    name: skillBrowseCategoryName,
+    description: skillBrowseCategoryDescription,
+    schema: skillBrowseCategorySchema,
+    category: "skill",
+    createHandler: (ctx) => async (args) => handleSkillBrowseCategory(
+      args,
+      ctx.manifest,
+      ctx.summaryMaxLength,
+      ctx.charsPerToken
+    )
+  },
+  {
+    name: skillSearchName,
+    description: skillSearchDescription,
+    schema: skillSearchSchema,
+    category: "skill",
+    createHandler: (ctx) => async (args) => handleSkillSearch(
+      args,
+      ctx.manifest,
+      ctx.summaryMaxLength,
+      ctx.charsPerToken
+    )
+  },
+  {
+    name: skillGetName,
+    description: skillGetDescription,
+    schema: skillGetSchema,
+    category: "skill",
+    createHandler: (ctx) => async (args) => handleSkillGet(
+      args,
+      ctx.manifest,
+      ctx.charsPerToken
+    )
+  },
+  {
+    name: skillBudgetReportName,
+    description: skillBudgetReportDescription,
+    schema: skillBudgetReportSchema,
+    category: "skill",
+    createHandler: (ctx) => async (args) => handleSkillBudgetReport(
+      args,
+      ctx.manifest,
+      ctx.charsPerToken
+    )
+  },
+  // ── Postman tools ─────────────────────────────────────────
+  {
+    name: postmanGetModeName,
+    description: postmanGetModeDescription,
+    schema: postmanGetModeSchema,
+    category: "postman",
+    createHandler: (ctx) => async (args) => handlePostmanGetMode(
+      withDefaultScope(args, ctx.defaultConfigScope)
+    )
+  },
+  {
+    name: postmanSetModeName,
+    description: postmanSetModeDescription,
+    schema: postmanSetModeSchema,
+    category: "postman",
+    createHandler: (ctx) => async (args) => handlePostmanSetMode(
+      withDefaultScope(args, ctx.defaultConfigScope)
+    )
+  },
+  {
+    name: postmanGetStatusName,
+    description: postmanGetStatusDescription,
+    schema: postmanGetStatusSchema,
+    category: "postman",
+    createHandler: (ctx) => async (args) => handlePostmanGetStatus(
+      withDefaultScope(args, ctx.defaultConfigScope)
+    )
+  },
+  // ── Stitch tools ──────────────────────────────────────────
+  {
+    name: stitchGetModeName,
+    description: stitchGetModeDescription,
+    schema: stitchGetModeSchema,
+    category: "stitch",
+    createHandler: (ctx) => async (args) => handleStitchGetMode(
+      withDefaultScope(args, ctx.defaultConfigScope)
+    )
+  },
+  {
+    name: stitchSetProfileName,
+    description: stitchSetProfileDescription,
+    schema: stitchSetProfileSchema,
+    category: "stitch",
+    createHandler: (ctx) => async (args) => handleStitchSetProfile(
+      withDefaultScope(args, ctx.defaultConfigScope)
+    )
+  },
+  {
+    name: stitchGetStatusName,
+    description: stitchGetStatusDescription,
+    schema: stitchGetStatusSchema,
+    category: "stitch",
+    createHandler: (ctx) => async (args) => handleStitchGetStatus(
+      withDefaultScope(args, ctx.defaultConfigScope)
+    )
+  }
+];
+
 // src/upstream/passthrough.ts
 import { mkdir, writeFile } from "fs/promises";
-import path5 from "path";
+import path6 from "path";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 function resolveCatalogDir(configPath) {
-  const configDir = path5.dirname(configPath);
-  if (path5.basename(configDir) === ".cbx") {
-    return path5.join(configDir, "mcp", "catalog");
+  const configDir = path6.dirname(configPath);
+  if (path6.basename(configDir) === ".cbx") {
+    return path6.join(configDir, "mcp", "catalog");
   }
-  return path5.join(configDir, ".cbx", "mcp", "catalog");
+  return path6.join(configDir, ".cbx", "mcp", "catalog");
 }
 function getServiceAuth(config, service) {
   if (service === "postman") {
@@ -1265,7 +1565,7 @@ async function withUpstreamClient({
 async function persistCatalog(catalog) {
   if (!catalog.configPath) return;
   const catalogDir = resolveCatalogDir(catalog.configPath);
-  const catalogPath = path5.join(catalogDir, `${catalog.service}.json`);
+  const catalogPath = path6.join(catalogDir, `${catalog.service}.json`);
   const payload = {
     schemaVersion: 1,
     generatedAt: (/* @__PURE__ */ new Date()).toISOString(),
@@ -1420,92 +1720,23 @@ async function createServer({
     name: config.server.name,
     version: config.server.version
   });
-  const maxLen = config.vault.summaryMaxLength;
-  const charsPerToken = config.telemetry?.charsPerToken ?? 4;
-  const withDefaultScope = (args) => {
-    const safeArgs = args ?? {};
-    return {
-      ...safeArgs,
-      scope: typeof safeArgs.scope === "string" ? safeArgs.scope : defaultConfigScope
-    };
+  const runtimeCtx = {
+    manifest,
+    charsPerToken: config.telemetry?.charsPerToken ?? 4,
+    summaryMaxLength: config.vault.summaryMaxLength,
+    defaultConfigScope
   };
-  server.tool(
-    skillListCategoriesName,
-    skillListCategoriesDescription,
-    skillListCategoriesSchema.shape,
-    async () => handleSkillListCategories(manifest, charsPerToken)
-  );
-  server.tool(
-    skillBrowseCategoryName,
-    skillBrowseCategoryDescription,
-    skillBrowseCategorySchema.shape,
-    async (args) => handleSkillBrowseCategory(args, manifest, maxLen, charsPerToken)
-  );
-  server.tool(
-    skillSearchName,
-    skillSearchDescription,
-    skillSearchSchema.shape,
-    async (args) => handleSkillSearch(args, manifest, maxLen, charsPerToken)
-  );
-  server.tool(
-    skillGetName,
-    skillGetDescription,
-    skillGetSchema.shape,
-    async (args) => handleSkillGet(args, manifest, charsPerToken)
-  );
-  server.tool(
-    skillBudgetReportName,
-    skillBudgetReportDescription,
-    skillBudgetReportSchema.shape,
-    async (args) => handleSkillBudgetReport(args, manifest, charsPerToken)
-  );
-  server.tool(
-    postmanGetModeName,
-    postmanGetModeDescription,
-    postmanGetModeSchema.shape,
-    async (args) => handlePostmanGetMode(
-      withDefaultScope(args)
-    )
-  );
-  server.tool(
-    postmanSetModeName,
-    postmanSetModeDescription,
-    postmanSetModeSchema.shape,
-    async (args) => handlePostmanSetMode(
-      withDefaultScope(args)
-    )
-  );
-  server.tool(
-    postmanGetStatusName,
-    postmanGetStatusDescription,
-    postmanGetStatusSchema.shape,
-    async (args) => handlePostmanGetStatus(
-      withDefaultScope(args)
-    )
-  );
-  server.tool(
-    stitchGetModeName,
-    stitchGetModeDescription,
-    stitchGetModeSchema.shape,
-    async (args) => handleStitchGetMode(
-      withDefaultScope(args)
-    )
-  );
-  server.tool(
-    stitchSetProfileName,
-    stitchSetProfileDescription,
-    stitchSetProfileSchema.shape,
-    async (args) => handleStitchSetProfile(
-      withDefaultScope(args)
-    )
-  );
-  server.tool(
-    stitchGetStatusName,
-    stitchGetStatusDescription,
-    stitchGetStatusSchema.shape,
-    async (args) => handleStitchGetStatus(
-      withDefaultScope(args)
-    )
+  for (const entry of TOOL_REGISTRY) {
+    const handler = entry.createHandler(runtimeCtx);
+    server.tool(
+      entry.name,
+      entry.description,
+      entry.schema.shape,
+      handler
+    );
+  }
+  logger.debug(
+    `Registered ${TOOL_REGISTRY.length} built-in tools from registry`
   );
   const upstreamCatalogs = await discoverUpstreamCatalogs();
   const dynamicArgsShape = z13.object({}).passthrough().shape;
@@ -1524,6 +1755,7 @@ async function createServer({
               argumentsValue: args && typeof args === "object" ? args : {}
             });
             return {
+              // SDK content is typed broadly; cast to the expected array shape.
               content: result.content ?? [],
               structuredContent: result.structuredContent,
               isError: Boolean(result.isError)
@@ -1573,9 +1805,9 @@ function createStreamableHttpTransport(options) {
 }
 
 // src/index.ts
-import path6 from "path";
+import path7 from "path";
 import { fileURLToPath as fileURLToPath2 } from "url";
-var __dirname2 = path6.dirname(fileURLToPath2(import.meta.url));
+var __dirname2 = path7.dirname(fileURLToPath2(import.meta.url));
 function parseArgs(argv) {
   let transport = "stdio";
   let scope = "auto";
@@ -1670,7 +1902,7 @@ async function main() {
     setLogLevel("debug");
   }
   const serverConfig = loadServerConfig(args.configPath);
-  const basePath = path6.resolve(__dirname2, "..");
+  const basePath = path7.resolve(__dirname2, "..");
   const skills = await scanVaultRoots(serverConfig.vault.roots, basePath);
   const charsPerToken = serverConfig.telemetry.charsPerToken;
   const manifest = buildManifest(skills, charsPerToken);

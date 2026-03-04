@@ -16,6 +16,6 @@ When adding a new tool:
 
 1. Create `toolName.ts` in `../` (parent `tools/` directory)
 2. Export name, description, schema, and handler
-3. Register in `../index.ts` barrel export
-4. Register in `../../server.ts` with `mcpServer.tool()`
-5. Add tests in `../../__tests__/tools/`
+3. Add a `ToolRegistryEntry` in `../registry.ts` (this auto-registers the tool)
+4. Add tests in a `toolName.test.ts` file
+5. Run `npm run generate:mcp-manifest` to update the build-time manifest
