@@ -1203,6 +1203,99 @@ function parseTomlSections(content) {
   return sections;
 }
 
+function escapeTomlBasicString(value) {
+  return String(value ?? "")
+    .replace(/\\/g, "\\\\")
+    .replace(/"/g, '\\"');
+}
+
+async function patchCodexPostmanHttpHeaders({
+  configPath,
+  mcpUrl,
+  bearerToken,
+  dryRun = false,
+}) {
+  const warnings = [];
+  const normalizedToken = normalizePostmanApiKey(bearerToken);
+  if (!normalizedToken) {
+    return {
+      action: "skipped",
+      warnings: [
+        "Postman API key is unavailable in current environment. Kept bearer_token_env_var wiring in Codex config.",
+      ],
+    };
+  }
+
+  const configExists = await pathExists(configPath);
+  const original = configExists ? await readFile(configPath, "utf8") : "";
+  const lines = original.split(/\r?\n/);
+  const nextLines = [];
+
+  const headerLine =
+    `http_headers = { Authorization = "Bearer ${escapeTomlBasicString(normalizedToken)}" }`;
+  const serverHeader = "[mcp_servers.postman]";
+  let inPostmanSection = false;
+  let postmanSectionFound = false;
+  let insertedHeaders = false;
+
+  const flushPostmanHeaderIfNeeded = () => {
+    if (inPostmanSection && !insertedHeaders) {
+      nextLines.push(headerLine);
+      insertedHeaders = true;
+    }
+  };
+
+  for (const line of lines) {
+    const sectionMatch = line.match(/^\s*\[([^\]]+)\]\s*$/);
+    if (sectionMatch) {
+      flushPostmanHeaderIfNeeded();
+      const sectionName = sectionMatch[1].trim();
+      inPostmanSection = sectionName === "mcp_servers.postman";
+      if (inPostmanSection) {
+        postmanSectionFound = true;
+        insertedHeaders = false;
+      }
+      nextLines.push(line);
+      continue;
+    }
+
+    if (inPostmanSection) {
+      if (
+        /^\s*(bearer_token_env_var|http_headers|env_http_headers)\s*=/.test(
+          line,
+        )
+      ) {
+        continue;
+      }
+    }
+    nextLines.push(line);
+  }
+
+  flushPostmanHeaderIfNeeded();
+
+  if (!postmanSectionFound) {
+    if (nextLines.length > 0 && nextLines[nextLines.length - 1].trim() !== "") {
+      nextLines.push("");
+    }
+    nextLines.push(serverHeader);
+    nextLines.push(`url = "${escapeTomlBasicString(mcpUrl || POSTMAN_MCP_URL)}"`);
+    nextLines.push(headerLine);
+  }
+
+  const next = `${nextLines.join("\n").replace(/\n+$/g, "")}\n`;
+  if (next === original) {
+    return { action: "unchanged", warnings };
+  }
+  if (!dryRun) {
+    await mkdir(path.dirname(configPath), { recursive: true });
+    await writeFile(configPath, next, "utf8");
+  }
+  return {
+    action: dryRun ? "would-patch" : "patched",
+    warnings,
+  };
+}
+
 function parsePubspecDependencyNames(content) {
   const packages = new Set();
   let currentSection = null;
@@ -5034,6 +5127,23 @@ async function applyPostmanMcpForPlatform({
           ],
           { cwd },
         );
+        const postmanToken = normalizePostmanApiKey(
+          process.env[apiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR],
+        );
+        const postmanPatch = await patchCodexPostmanHttpHeaders({
+          configPath: codexConfigPath,
+          mcpUrl,
+          bearerToken: postmanToken,
+          dryRun: false,
+        });
+        if (postmanPatch.action === "patched") {
+          warnings.push(
+            "Codex Postman MCP config patched to static Authorization header for startup reliability.",
+          );
+        }
+        if (postmanPatch.warnings?.length) {
+          warnings.push(...postmanPatch.warnings);
+        }
       } catch (error) {
         warnings.push(
           `Failed to register Postman MCP via Codex CLI. Ensure 'codex' is installed and rerun. (${error.message})`,

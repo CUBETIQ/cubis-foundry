@@ -2,6 +2,15 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.60] - 2026-03-05
+
+### Fixed
+
+- Fixed `cbx mcp serve` runtime failure from global npm installs by including required MCP runtime dependencies in the main package (`@modelcontextprotocol/sdk`, `zod`).
+- Improved Codex global Postman MCP startup reliability:
+  - after registration, CBX now patches Codex MCP config to use static Authorization headers when a managed Postman key is available
+  - avoids startup failures caused by missing shell-exported `POSTMAN_API_KEY_DEFAULT`.
+
 ## [0.3.59] - 2026-03-05
 
 ### Added
