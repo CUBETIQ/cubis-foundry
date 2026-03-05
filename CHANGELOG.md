@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.61] - 2026-03-05
+
+### Fixed
+
+- Extended MCP startup reliability fixes across all supported platforms:
+  - project/global Postman MCP runtime targets now prefer static Authorization headers when managed keys are available
+  - Stitch header generation now also supports managed static key injection for runtime startup reliability.
+- Unified default managed credential aliases across install paths:
+  - Postman default env alias is now `POSTMAN_API_KEY_DEFAULT`
+  - Stitch default env alias is now `STITCH_API_KEY_DEFAULT`
+  - aligns non-wizard installs with wizard persistence behavior across platforms.
+
 ## [0.3.60] - 2026-03-05
 
 ### Fixed

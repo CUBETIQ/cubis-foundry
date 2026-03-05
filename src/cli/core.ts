@@ -173,7 +173,7 @@ const CODEX_WORKFLOW_SKILL_PREFIX = "workflow-";
 const CODEX_AGENT_SKILL_PREFIX = "agent-";
 const TERMINAL_VERIFIER_PROVIDERS = ["codex", "gemini"];
 const DEFAULT_TERMINAL_VERIFIER = "codex";
-const POSTMAN_API_KEY_ENV_VAR = "POSTMAN_API_KEY";
+const POSTMAN_API_KEY_ENV_VAR = "POSTMAN_API_KEY_DEFAULT";
 const POSTMAN_MODE_TO_URL = Object.freeze({
   minimal: "https://mcp.postman.com/minimal",
   code: "https://mcp.postman.com/code",
@@ -190,7 +190,7 @@ const FOUNDRY_MCP_SERVER_ID = "cubis-foundry";
 const FOUNDRY_MCP_COMMAND = "cbx";
 const STITCH_SKILL_ID = "stitch";
 const STITCH_MCP_SERVER_ID = "StitchMCP";
-const STITCH_API_KEY_ENV_VAR = "STITCH_API_KEY";
+const STITCH_API_KEY_ENV_VAR = "STITCH_API_KEY_DEFAULT";
 const STITCH_MCP_URL = "https://stitch.googleapis.com/mcp";
 const POSTMAN_WORKSPACE_MANUAL_CHOICE = "__postman_workspace_manual__";
 const CBX_CONFIG_FILENAME = "cbx_config.json";
@@ -4301,16 +4301,31 @@ function resolveStitchMcpDefinitionPath({ scope, cwd = process.cwd() }) {
   );
 }
 
-function buildPostmanAuthHeader({ apiKeyEnvVar = POSTMAN_API_KEY_ENV_VAR }) {
+function buildPostmanAuthHeader({
+  apiKeyEnvVar = POSTMAN_API_KEY_ENV_VAR,
+  apiKey = null,
+}) {
+  const normalizedApiKey = normalizePostmanApiKey(apiKey);
+  if (normalizedApiKey) {
+    return `Bearer ${normalizedApiKey}`;
+  }
   return `Bearer \${${apiKeyEnvVar}}`;
 }
 
-function buildStitchApiHeader({ apiKeyEnvVar = STITCH_API_KEY_ENV_VAR }) {
+function buildStitchApiHeader({
+  apiKeyEnvVar = STITCH_API_KEY_ENV_VAR,
+  apiKey = null,
+}) {
+  const normalizedApiKey = normalizePostmanApiKey(apiKey);
+  if (normalizedApiKey) {
+    return `X-Goog-Api-Key: ${normalizedApiKey}`;
+  }
   return `X-Goog-Api-Key: \${${apiKeyEnvVar}}`;
 }
 
 function buildPostmanMcpDefinition({
   apiKeyEnvVar = POSTMAN_API_KEY_ENV_VAR,
+  apiKey = null,
   mcpUrl = POSTMAN_MCP_URL,
 }) {
   return {
@@ -4319,13 +4334,14 @@ function buildPostmanMcpDefinition({
     transport: "http",
     url: mcpUrl,
     headers: {
-      Authorization: buildPostmanAuthHeader({ apiKeyEnvVar }),
+      Authorization: buildPostmanAuthHeader({ apiKeyEnvVar, apiKey }),
     },
   };
 }
 
 function buildStitchMcpDefinition({
   apiKeyEnvVar = STITCH_API_KEY_ENV_VAR,
+  apiKey = null,
   mcpUrl = STITCH_MCP_URL,
 }) {
   return {
@@ -4338,7 +4354,7 @@ function buildStitchMcpDefinition({
       "mcp-remote",
       mcpUrl,
       "--header",
-      buildStitchApiHeader({ apiKeyEnvVar }),
+      buildStitchApiHeader({ apiKeyEnvVar, apiKey }),
     ],
     env: {},
   };
@@ -4346,13 +4362,14 @@ function buildStitchMcpDefinition({
 
 function buildVsCodePostmanServer({
   apiKeyEnvVar = POSTMAN_API_KEY_ENV_VAR,
+  apiKey = null,
   mcpUrl = POSTMAN_MCP_URL,
 }) {
   return {
     type: "sse",
     url: mcpUrl,
     headers: {
-      Authorization: buildPostmanAuthHeader({ apiKeyEnvVar }),
+      Authorization: buildPostmanAuthHeader({ apiKeyEnvVar, apiKey }),
     },
   };
 }
@@ -4376,13 +4393,14 @@ function buildVsCodeFoundryServer({ scope = "auto" } = {}) {
 
 function buildCopilotCliPostmanServer({
   apiKeyEnvVar = POSTMAN_API_KEY_ENV_VAR,
+  apiKey = null,
   mcpUrl = POSTMAN_MCP_URL,
 }) {
   return {
     type: "http",
     url: mcpUrl,
     headers: {
-      Authorization: buildPostmanAuthHeader({ apiKeyEnvVar }),
+      Authorization: buildPostmanAuthHeader({ apiKeyEnvVar, apiKey }),
     },
     tools: ["*"],
   };
@@ -4400,12 +4418,13 @@ function buildCopilotCliFoundryServer({ scope = "auto" } = {}) {
 
 function buildGeminiPostmanServer({
   apiKeyEnvVar = POSTMAN_API_KEY_ENV_VAR,
+  apiKey = null,
   mcpUrl = POSTMAN_MCP_URL,
 }) {
   return {
     httpUrl: mcpUrl,
     headers: {
-      Authorization: buildPostmanAuthHeader({ apiKeyEnvVar }),
+      Authorization: buildPostmanAuthHeader({ apiKeyEnvVar, apiKey }),
     },
   };
 }
@@ -4420,6 +4439,7 @@ function buildGeminiFoundryServer({ scope = "auto" } = {}) {
 
 function buildGeminiStitchServer({
   apiKeyEnvVar = STITCH_API_KEY_ENV_VAR,
+  apiKey = null,
   mcpUrl = STITCH_MCP_URL,
 }) {
   return {
@@ -4429,7 +4449,7 @@ function buildGeminiStitchServer({
       "mcp-remote",
       mcpUrl,
       "--header",
-      buildStitchApiHeader({ apiKeyEnvVar }),
+      buildStitchApiHeader({ apiKeyEnvVar, apiKey }),
     ],
     env: {},
   };
@@ -4933,6 +4953,12 @@ async function applyPostmanMcpForPlatform({
   const workspaceRoot = findWorkspaceRoot(cwd);
   const warnings = [];
   const foundryScope = mcpScope === "global" ? "global" : "project";
+  const resolvedPostmanApiKey = normalizePostmanApiKey(
+    process.env[apiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR],
+  );
+  const resolvedStitchApiKey = normalizePostmanApiKey(
+    process.env[stitchApiKeyEnvVar || STITCH_API_KEY_ENV_VAR],
+  );
 
   if (platform === "antigravity") {
     const settingsPath =
@@ -4952,6 +4978,7 @@ async function applyPostmanMcpForPlatform({
         if (includePostmanMcp) {
           mcpServers[POSTMAN_SKILL_ID] = buildGeminiPostmanServer({
             apiKeyEnvVar,
+            apiKey: resolvedPostmanApiKey,
             mcpUrl,
           });
         }
@@ -4965,6 +4992,7 @@ async function applyPostmanMcpForPlatform({
         if (includeStitchMcp) {
           mcpServers[STITCH_MCP_SERVER_ID] = buildGeminiStitchServer({
             apiKeyEnvVar: stitchApiKeyEnvVar,
+            apiKey: resolvedStitchApiKey,
             mcpUrl: stitchMcpUrl,
           });
         }
@@ -5001,6 +5029,7 @@ async function applyPostmanMcpForPlatform({
           if (includePostmanMcp) {
             mcpServers[POSTMAN_SKILL_ID] = buildCopilotCliPostmanServer({
               apiKeyEnvVar,
+              apiKey: resolvedPostmanApiKey,
               mcpUrl,
             });
           }
@@ -5024,6 +5053,7 @@ async function applyPostmanMcpForPlatform({
         if (includePostmanMcp) {
           servers[POSTMAN_SKILL_ID] = buildVsCodePostmanServer({
             apiKeyEnvVar,
+            apiKey: resolvedPostmanApiKey,
             mcpUrl,
           });
         }
@@ -5064,6 +5094,7 @@ async function applyPostmanMcpForPlatform({
           if (includePostmanMcp) {
             servers[POSTMAN_SKILL_ID] = buildVsCodePostmanServer({
               apiKeyEnvVar,
+              apiKey: resolvedPostmanApiKey,
               mcpUrl,
             });
           }
@@ -5672,6 +5703,7 @@ async function configurePostmanInstallArtifacts({
     const mcpDefinitionContent = `${JSON.stringify(
       buildPostmanMcpDefinition({
         apiKeyEnvVar: effectiveApiKeyEnvVar,
+        apiKey: envApiKey,
         mcpUrl: effectiveMcpUrl,
       }),
       null,
@@ -5693,6 +5725,7 @@ async function configurePostmanInstallArtifacts({
     const stitchMcpDefinitionContent = `${JSON.stringify(
       buildStitchMcpDefinition({
         apiKeyEnvVar: effectiveStitchApiKeyEnvVar,
+        apiKey: envStitchApiKey,
         mcpUrl: effectiveStitchMcpUrl,
       }),
       null,
@@ -5831,6 +5864,12 @@ async function applyPostmanConfigArtifacts({
   const stitchApiKeyEnvVar =
     normalizePostmanApiKey(stitchState?.apiKeyEnvVar) || STITCH_API_KEY_ENV_VAR;
   const stitchMcpUrl = stitchState?.mcpUrl || STITCH_MCP_URL;
+  const resolvedPostmanApiKey = normalizePostmanApiKey(
+    process.env[postmanApiKeyEnvVar],
+  );
+  const resolvedStitchApiKey = normalizePostmanApiKey(
+    process.env[stitchApiKeyEnvVar],
+  );
 
   const mcpDefinitionPath = resolvePostmanMcpDefinitionPath({
     platform,
@@ -5840,6 +5879,7 @@ async function applyPostmanConfigArtifacts({
   const mcpDefinitionContent = `${JSON.stringify(
     buildPostmanMcpDefinition({
       apiKeyEnvVar: postmanApiKeyEnvVar,
+      apiKey: resolvedPostmanApiKey,
       mcpUrl: postmanMcpUrl,
     }),
     null,
@@ -5861,6 +5901,7 @@ async function applyPostmanConfigArtifacts({
     const stitchMcpDefinitionContent = `${JSON.stringify(
       buildStitchMcpDefinition({
         apiKeyEnvVar: stitchApiKeyEnvVar,
+        apiKey: resolvedStitchApiKey,
         mcpUrl: stitchMcpUrl,
       }),
       null,
