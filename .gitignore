@@ -6,3 +6,15 @@ node_modules/
 **/*.tgz
 cbx_config.json
 .cbx/mcp/
+.cbx/
+.agent/
+.agents/
+.github/agents/
+.github/skills/
+.github/prompts/
+.github/copilot/
+AGENTS.md
+ENGINEERING_RULES.md
+TECH.md
+TECH_SCANNER_TEST_RESULTS.md
+dist/

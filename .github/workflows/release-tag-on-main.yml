@@ -35,6 +35,9 @@ jobs:
       - name: Run attribute checks
         run: npm run test:attributes
 
+      - name: Build CLI runtime
+        run: npm run build:cli
+
       - name: Determine release tag
         id: release
         run: |

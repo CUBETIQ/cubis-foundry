@@ -2,6 +2,51 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.54] - 2026-03-05
+
+### Added
+
+- Added full cleanup command surfaces:
+  - `cbx remove all ...`
+  - `cbx workflows remove-all ...`
+- Added cleanup engine for removing CBX-managed generated artifacts across selected scopes/platforms (workflows, wrappers, managed rule blocks/docs, MCP artifacts, runtime entries, and state/config roots).
+- Added optional credential cleanup flag for full cleanup (`--include-credentials`).
+- Added true-PTY init smoke test (`scripts/test-init-tty.exp`) and expanded smoke coverage for scripted init + remove-all command surfaces.
+
+### Changed
+
+- Updated README with full cleanup documentation and generated-file ignore recommendations for downstream repositories.
+
+## [0.3.53] - 2026-03-05
+
+### Changed
+
+- Migrated CLI runtime source to TypeScript modules under `src/cli` with compiled runtime output in `dist/cli`.
+- Replaced `bin/cubis.js` with a thin runtime loader that executes compiled CLI output.
+- Centralized command registration in modular TS command registrars (`workflows`, `mcp`, `rules`).
+- Added root CLI build pipeline (`tsconfig.cli.json`, `npm run build:cli`, `prepack` build hook).
+- Added interactive `cbx init` guided installer (bundle/platform/skills/MCP/scope flow with sequential per-platform execution).
+- Added `cbx init` welcome branding screen and JSON summary mode.
+- Added Stitch-only and Foundry-only MCP selection support in guided install flow.
+- `cbx rules init` now refreshes generated/legacy `ENGINEERING_RULES.md` templates even without `--overwrite`.
+- Managed engineering block now points to full absolute paths and enforces Decision Log response style.
+- Added maintainers-facing wizard documentation at `docs/cli-init-wizard.md`.
+
+### Removed
+
+- Removed legacy alias command tree `cbx skills ...`.
+- Removed root aliases `cbx install` and `cbx platforms`.
+- Removed alias subcommand `cbx workflows init`.
+
+### Notes
+
+- Canonical command surfaces are now:
+  - `cbx init`
+  - `cbx workflows ...`
+  - `cbx mcp ...`
+  - `cbx rules ...`
+  - `cbx agents status`
+
 ## [0.3.34] - 2026-03-02
 
 ### Added

@@ -1,0 +1,51 @@
+#!/usr/bin/env expect
+
+set timeout 90
+
+proc fail {msg} {
+  puts stderr $msg
+  exit 1
+}
+
+proc press_enter {} {
+  send "\n"
+}
+
+if {[llength $argv] < 1} {
+  fail "Usage: test-init-tty.exp <path-to-cli>"
+}
+
+set cli [lindex $argv 0]
+
+spawn node $cli init --dry-run --no-banner --bundle agent-environment-setup --platforms codex --mcps postman --mcp-runtime local
+
+expect -re "Select workflow bundle:" {} timeout { fail "Missing prompt: Select workflow bundle:" }
+press_enter
+expect -re "Select target platform\\(s\\):" {} timeout { fail "Missing prompt: Select target platform(s):" }
+press_enter
+expect -re "Select skills install profile:" {} timeout { fail "Missing prompt: Select skills install profile:" }
+press_enter
+expect -re "Select which MCP integrations to configure:" {} timeout { fail "Missing prompt: Select which MCP integrations to configure:" }
+press_enter
+expect -re "Select scope for Skills installation:" {} timeout { fail "Missing prompt: Select scope for Skills installation:" }
+press_enter
+expect -re "Select scope for MCP configuration:" {} timeout { fail "Missing prompt: Select scope for MCP configuration:" }
+press_enter
+expect -re "Select MCP runtime mode:" {} timeout { fail "Missing prompt: Select MCP runtime mode:" }
+press_enter
+expect -re "Select Postman installation mode:" {} timeout { fail "Missing prompt: Select Postman installation mode:" }
+press_enter
+expect -re "Postman API key \\(optional, leave blank to keep existing env/profile state\\):" {} timeout { fail "Missing prompt: Postman API key (optional...):" }
+press_enter
+expect -re "Apply this installation plan\\?" {} timeout { fail "Missing prompt: Apply this installation plan?" }
+press_enter
+expect -re "Dry-run complete\\." {} timeout { fail "Missing output: Dry-run complete." }
+expect eof
+
+set result [wait]
+set code [lindex $result 3]
+if {$code != 0} {
+  fail "cbx init interactive flow exited with code $code"
+}
+
+puts "TTY_INIT_OK"

@@ -21,12 +21,14 @@ Skill install default is profile-based:
 
 - [What This CLI Manages](#what-this-cli-manages)
 - [Install](#install)
+- [Guided Init Wizard (`cbx init`)](#guided-init-wizard-cbx-init)
 - [Quickstarts](#quickstarts)
 - [Scope Model (Global vs Project)](#scope-model-global-vs-project)
 - [Credential Model (`cbx_config.json` only)](#credential-model-cbx_configjson-only)
 - [Postman and Stitch Setup Flows](#postman-and-stitch-setup-flows)
 - [MCP Placement Matrix](#mcp-placement-matrix)
 - [Command Reference](#command-reference)
+- [Full Cleanup (`cbx remove all`)](#full-cleanup-cbx-remove-all)
 - [Troubleshooting](#troubleshooting)
 - [Migration Notes](#migration-notes)
 - [Platform Docs](#platform-docs)
@@ -53,6 +55,54 @@ export POSTMAN_API_KEY_DEFAULT="<your-postman-api-key>"
 export STITCH_API_KEY_DEFAULT="<your-stitch-api-key>" # Antigravity StitchMCP only
 cbx workflows config keys persist-env --service all --scope global
 ```
+
+## Guided Init Wizard (`cbx init`)
+
+`cbx init` is the interactive guided installer for first-time setup and multi-platform onboarding.
+
+```bash
+cbx init
+```
+
+Wizard flow:
+- Welcome screen (Cubis Foundry banner + version)
+- Bundle selection
+- Multi-platform selection (`codex`, `antigravity`, `copilot`)
+- Skills profile selection (`core`, `web-backend`, `full`)
+- MCP selection (`Cubis Foundry`, `Postman`, `Stitch`)
+- Separate scope selection for Skills and MCP (`project` or `global`)
+- MCP runtime selection (`cbx mcp serve` local, Docker pull, Docker local build) when Postman/Stitch is enabled
+- Conditional Postman mode/key and Stitch key prompts
+- Final summary + confirmation
+
+Non-interactive default mode:
+
+```bash
+cbx init --yes --dry-run --no-banner
+```
+
+Non-interactive scripted selection:
+
+```bash
+cbx init \
+  --yes \
+  --dry-run \
+  --no-banner \
+  --bundle agent-environment-setup \
+  --platforms codex,antigravity \
+  --skill-profile web-backend \
+  --skills-scope project \
+  --mcps cubis-foundry,postman,stitch \
+  --mcp-scope global \
+  --postman-mode minimal \
+  --mcp-runtime local
+```
+
+`cbx workflows install` remains the canonical explicit/scriptable installer.  
+Use `cbx init` when you want step-by-step guided setup.
+
+Detailed wizard behavior and platform matrix:
+- `docs/cli-init-wizard.md`
 
 ## Quickstarts
 
@@ -188,7 +238,7 @@ cbx workflows config keys persist-env --service all --scope global
 ```
 
 Alias commands are also available:
-- `cbx skills config keys ...`
+- None. Use canonical `cbx workflows config keys ...` commands only.
 
 ## Postman and Stitch Setup Flows
 
@@ -290,6 +340,7 @@ Copilot:
 ```bash
 cbx workflows install --platform <codex|antigravity|copilot> --bundle agent-environment-setup
 cbx workflows remove <bundle-or-workflow> --platform <platform>
+cbx workflows remove-all --scope <project|global|all> --platform <platform|all>
 cbx workflows prune-skills --platform <platform> --scope <project|global> --skill-profile <core|web-backend|full> [--include-mcp] [--dry-run]
 cbx workflows doctor --platform <platform> --scope <project|global>
 cbx workflows sync-rules --platform <platform> --scope <project|global>
@@ -462,9 +513,59 @@ cbx rules tech-md --overwrite
 cbx rules tech-md --overwrite --compact
 ```
 
-### Legacy alias
+### Removed aliases
 
-`cbx skills ...` remains as a compatibility alias for `cbx workflows ...`.
+The following aliases were removed:
+- `cbx skills ...`
+- `cbx install`
+- `cbx platforms`
+- `cbx workflows init`
+
+Use these canonical replacements:
+- `cbx init` (guided interactive installer)
+- `cbx workflows ...`
+- `cbx workflows install`
+- `cbx workflows platforms`
+
+## Full Cleanup (`cbx remove all`)
+
+Use this when you want to remove all CBX-managed generated artifacts in one step.
+
+```bash
+# Preview
+cbx remove all --scope all --platform all --dry-run
+
+# Apply
+cbx remove all --scope all --platform all --yes
+```
+
+Equivalent workflow command:
+
+```bash
+cbx workflows remove-all --scope all --platform all --yes
+```
+
+What it removes (by scope/platform selection):
+- Generated workflows/agents/skills wrappers.
+- Managed rule blocks and generated engineering docs (`AGENTS.md`, `ENGINEERING_RULES.md`, `TECH.md`) where applicable.
+- Managed MCP definition files and runtime target entries.
+- Project/global `.cbx` state/config artifacts created by installer flows.
+- Optional global credentials file (`~/.cbx/credentials.env`) when `--include-credentials` is provided.
+
+To keep generated artifacts out of git in app repositories, add these ignore entries:
+
+```gitignore
+.cbx/
+.agent/
+.agents/
+.github/agents/
+.github/skills/
+.github/prompts/
+.github/copilot/
+AGENTS.md
+ENGINEERING_RULES.md
+TECH.md
+```
 
 ## Troubleshooting
 
@@ -572,6 +673,10 @@ cbx workflows config --scope global --clear-workspace-id
 - `config --show` now reports stored vs effective auth source.
 - Install now defaults to indexed top-level all-skill install.
 - Nested duplicate skill directories are auto-cleaned during install.
+- Legacy aliases were removed (`skills`, root `install/init/platforms`, `workflows init`).
+- CLI runtime migrated to TypeScript source under `src/cli` with compiled output under `dist/cli`.
+- `ENGINEERING_RULES.md` now auto-refreshes generated/legacy templates on `cbx rules init` without requiring `--overwrite`.
+- Managed engineering guardrail block now includes full absolute file paths and a Decision Log response contract.
 
 ### Suggested refresh
 

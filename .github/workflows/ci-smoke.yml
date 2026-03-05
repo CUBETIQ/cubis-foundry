@@ -31,5 +31,8 @@ jobs:
       - name: Validate platform attributes
         run: npm run test:attributes
 
+      - name: Build CLI runtime
+        run: npm run build:cli
+
       - name: Run all-platform workflow smoke test
-        run: bash scripts/smoke-workflows.sh
+        run: npm run test:smoke

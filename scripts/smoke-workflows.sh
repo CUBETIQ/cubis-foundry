@@ -346,10 +346,80 @@ rg -n 'YAGNI' ENGINEERING_RULES.md >/dev/null
 rg -n '^# TECH\.md$' TECH.md >/dev/null
 log_ok "Codex rules init creates ENGINEERING_RULES.md, TECH.md, and rule block"
 
-log_step "C3 Skills alias dry-run"
-node "$CLI" skills install --platform codex --bundle agent-environment-setup --dry-run >/tmp/cbx-c3.log
-rg -n "\[deprecation\] 'cbx skills \.\.\.' is now an alias" /tmp/cbx-c3.log >/dev/null
-log_ok "Skills alias still works with deprecation warning"
+log_step "C3 Removed alias guidance"
+if node "$CLI" skills install --platform codex --bundle agent-environment-setup --dry-run >/tmp/cbx-c3.log 2>&1; then
+  echo "[FAIL] Expected skills alias command to fail after alias removal" >&2
+  exit 1
+fi
+rg -n "'skills' has been removed" /tmp/cbx-c3.log >/dev/null
+rg -n "cbx workflows" /tmp/cbx-c3.log >/dev/null
+if node "$CLI" install --platform codex --bundle agent-environment-setup --dry-run >/tmp/cbx-c3-install.log 2>&1; then
+  echo "[FAIL] Expected install alias command to fail after alias removal" >&2
+  exit 1
+fi
+rg -n "'install' has been removed" /tmp/cbx-c3-install.log >/dev/null
+if node "$CLI" platforms >/tmp/cbx-c3-platforms.log 2>&1; then
+  echo "[FAIL] Expected platforms alias command to fail after alias removal" >&2
+  exit 1
+fi
+rg -n "'platforms' has been removed" /tmp/cbx-c3-platforms.log >/dev/null
+log_ok "Removed skills alias prints migration guidance"
+
+log_step "C3.1 Init wizard help"
+node "$CLI" init --help >/tmp/cbx-c31.log
+rg -n '^Usage: cbx init \[options\]$' /tmp/cbx-c31.log >/dev/null
+rg -n 'guided interactive install wizard' /tmp/cbx-c31.log >/dev/null
+rg -n -- '--platforms <items>' /tmp/cbx-c31.log >/dev/null
+rg -n -- '--mcps <items>' /tmp/cbx-c31.log >/dev/null
+rg -n -- '--mcp-runtime <runtime>' /tmp/cbx-c31.log >/dev/null
+log_ok "Init wizard command is registered and discoverable"
+
+log_step "C3.1.1 Init wizard true TTY flow"
+expect "$ROOT_DIR/scripts/test-init-tty.exp" "$CLI" >/tmp/cbx-c311.log
+rg -n 'TTY_INIT_OK' /tmp/cbx-c311.log >/dev/null
+log_ok "Init wizard interactive path works in PTY mode"
+
+log_step "C3.2 Init wizard non-interactive explicit selections"
+node "$CLI" init --yes --dry-run --no-banner \
+  --bundle agent-environment-setup \
+  --platforms codex,antigravity \
+  --skill-profile web-backend \
+  --skills-scope project \
+  --mcps cubis-foundry,postman,stitch \
+  --mcp-scope global \
+  --postman-mode minimal \
+  --mcp-runtime local >/tmp/cbx-c32.log
+rg -n 'Init plan summary:' /tmp/cbx-c32.log >/dev/null
+rg -n 'Platforms: codex, antigravity' /tmp/cbx-c32.log >/dev/null
+rg -n 'Skill profile: web-backend' /tmp/cbx-c32.log >/dev/null
+rg -n 'MCP scope: global' /tmp/cbx-c32.log >/dev/null
+rg -n 'MCP runtime: local' /tmp/cbx-c32.log >/dev/null
+rg -n 'MCP selections: cubis-foundry, postman, stitch' /tmp/cbx-c32.log >/dev/null
+rg -n 'Postman mode: minimal' /tmp/cbx-c32.log >/dev/null
+rg -n "Stitch is not supported on 'codex'" /tmp/cbx-c32.log >/dev/null
+log_ok "Init wizard accepts explicit non-interactive selections"
+
+log_step "C3.3 Init wizard stitch-only path"
+node "$CLI" init --yes --dry-run --no-banner \
+  --platforms antigravity \
+  --mcps stitch \
+  --mcp-runtime local >/tmp/cbx-c33.log
+rg -n 'MCP selections: stitch' /tmp/cbx-c33.log >/dev/null
+rg -n 'MCP runtime: local' /tmp/cbx-c33.log >/dev/null
+rg -n 'Stitch MCP definition' /tmp/cbx-c33.log >/dev/null
+if rg -n 'postman.json' /tmp/cbx-c33.log >/dev/null; then
+  echo "[FAIL] Stitch-only init should not install Postman MCP definition" >&2
+  exit 1
+fi
+log_ok "Init wizard stitch-only mode avoids forced Postman artifacts"
+
+log_step "C3.4 Remove-all dry-run surfaces"
+node "$CLI" workflows remove-all --scope all --dry-run --yes >/tmp/cbx-c34.log
+rg -n '^Remove-all summary:$' /tmp/cbx-c34.log >/dev/null
+rg -n 'Scopes: project, global' /tmp/cbx-c34.log >/dev/null
+node "$CLI" remove all --scope all --dry-run --yes >/tmp/cbx-c341.log
+rg -n '^Remove-all summary:$' /tmp/cbx-c341.log >/dev/null
+log_ok "Remove-all works from workflows and top-level command surfaces"
 
 log_step "C4 Sync idempotency"
 node "$CLI" workflows sync-rules --platform codex >/tmp/cbx-c4a.log

@@ -1,6 +1,6 @@
 {
   "name": "@cubis/foundry",
-  "version": "0.3.53",
+  "version": "0.3.54",
   "description": "Cubis Foundry CLI for workflow-first AI agent environments",
   "type": "module",
   "bin": {
@@ -21,15 +21,19 @@
     "mcp/tsconfig.json",
     "mcp/src",
     "README.md",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "dist/cli",
+    "src/cli",
+    "tsconfig.cli.json"
   ],
   "scripts": {
-    "start": "node bin/cubis.js",
-    "check": "node bin/cubis.js --help",
+    "start": "npm run build:cli && node bin/cubis.js",
+    "check": "npm run build:cli && node bin/cubis.js --help",
     "test:attributes": "node scripts/validate-platform-attributes.mjs",
     "test:attributes:strict": "node scripts/validate-platform-attributes.mjs --strict",
     "test:tech-md": "node scripts/test-tech-md-scanner.mjs",
-    "test:smoke": "bash scripts/smoke-workflows.sh",
+    "test:smoke": "npm run build:cli && bash scripts/smoke-workflows.sh",
+    "test:init:tty": "npm run build:cli && expect scripts/test-init-tty.exp bin/cubis.js",
     "test:mcp:docker": "bash scripts/test-mcp-docker.sh",
     "test:all": "npm run test:attributes && npm run test:smoke",
     "test:all:strict": "npm run test:attributes:strict && npm run test:smoke",
@@ -55,7 +59,10 @@
     "generate:powers": "node \"workflows/scripts/generate-powers.mjs\"",
     "generate:powers:force": "node \"workflows/scripts/generate-powers.mjs\" --force",
     "generate:powers:from-skills": "node \"workflows/scripts/generate-powers.mjs\" --from-skills",
-    "generate:powers:sync": "node \"workflows/scripts/generate-powers.mjs\" --sync-skills --force"
+    "generate:powers:sync": "node \"workflows/scripts/generate-powers.mjs\" --sync-skills --force",
+    "build:cli": "tsc -p tsconfig.cli.json",
+    "clean:cli": "rm -rf dist/cli",
+    "prepack": "npm run build:cli"
   },
   "engines": {
     "node": ">=18.17"
@@ -77,5 +84,9 @@
     "@inquirer/prompts": "^7.8.6",
     "commander": "^14.0.1",
     "jsonc-parser": "^3.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "typescript": "^5.5.4"
   }
 }
