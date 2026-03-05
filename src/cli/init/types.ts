@@ -15,6 +15,7 @@ export interface InitWizardSelections {
   mcpBuildLocal: boolean;
   selectedMcps: InitMcpId[];
   postmanMode: InitPostmanMode;
+  postmanWorkspaceId: string | null;
   postmanApiKey: string | null;
   stitchApiKey: string | null;
 }

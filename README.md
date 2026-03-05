@@ -72,7 +72,7 @@ Wizard flow:
 - MCP selection (`Cubis Foundry`, `Postman`, `Stitch`)
 - Separate scope selection for Skills and MCP (`project` or `global`)
 - MCP runtime selection (`cbx mcp serve` local, Docker pull, Docker local build) when Postman/Stitch is enabled
-- Conditional Postman mode/key and Stitch key prompts
+- Conditional Postman mode/key/workspace and Stitch key prompts
 - Final summary + confirmation
 
 Non-interactive default mode:
@@ -95,6 +95,7 @@ cbx init \
   --mcps cubis-foundry,postman,stitch \
   --mcp-scope global \
   --postman-mode minimal \
+  --postman-workspace-id null \
   --mcp-runtime local
 ```
 

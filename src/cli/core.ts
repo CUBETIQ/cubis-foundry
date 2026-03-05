@@ -4574,6 +4574,81 @@ async function fetchPostmanWorkspaces({
   }
 }
 
+async function promptPostmanWorkspaceSelection({
+  apiKey,
+  defaultWorkspaceId = null,
+}) {
+  let selectedWorkspaceId = normalizePostmanWorkspaceId(defaultWorkspaceId);
+  let usedWorkspaceSelector = false;
+  const warnings = [];
+  const selectableApiKey = normalizePostmanApiKey(apiKey);
+
+  if (selectableApiKey) {
+    try {
+      const fetchedWorkspaces = await fetchPostmanWorkspaces({
+        apiKey: selectableApiKey,
+      });
+      if (fetchedWorkspaces.length > 0) {
+        usedWorkspaceSelector = true;
+        const sortedWorkspaces = [...fetchedWorkspaces].sort((a, b) =>
+          a.name.localeCompare(b.name),
+        );
+        const workspaceChoice = await select({
+          message: "Choose default Postman workspace for this install:",
+          choices: [
+            { name: "No default workspace (null)", value: null },
+            ...sortedWorkspaces.map((workspace) => {
+              const details = [workspace.type, workspace.visibility]
+                .filter(Boolean)
+                .join(", ");
+              const suffix = details ? ` - ${details}` : "";
+              return {
+                name: `${workspace.name} (${workspace.id})${suffix}`,
+                value: workspace.id,
+              };
+            }),
+            {
+              name: "Enter workspace ID manually",
+              value: POSTMAN_WORKSPACE_MANUAL_CHOICE,
+            },
+          ],
+          default: selectedWorkspaceId,
+        });
+
+        if (workspaceChoice === POSTMAN_WORKSPACE_MANUAL_CHOICE) {
+          const promptedWorkspaceId = await input({
+            message:
+              "Default Postman workspace ID (optional, leave blank for null):",
+            default: selectedWorkspaceId || "",
+          });
+          selectedWorkspaceId =
+            normalizePostmanWorkspaceId(promptedWorkspaceId);
+        } else {
+          selectedWorkspaceId = normalizePostmanWorkspaceId(workspaceChoice);
+        }
+      }
+    } catch (error) {
+      warnings.push(
+        `Could not load Postman workspaces for selection: ${error.message}`,
+      );
+    }
+  }
+
+  if (!usedWorkspaceSelector) {
+    const promptedWorkspaceId = await input({
+      message:
+        "Default Postman workspace ID (optional, leave blank for null):",
+      default: selectedWorkspaceId || "",
+    });
+    selectedWorkspaceId = normalizePostmanWorkspaceId(promptedWorkspaceId);
+  }
+
+  return {
+    workspaceId: selectedWorkspaceId,
+    warnings,
+  };
+}
+
 function parseJsonLenient(raw) {
   try {
     return {
@@ -5043,71 +5118,12 @@ async function resolvePostmanInstallSelection({
 
   const canPrompt = !options.yes && process.stdin.isTTY;
   if (postmanRequested && canPrompt && !hasWorkspaceOption) {
-    const selectableApiKey = normalizePostmanApiKey(envApiKey);
-    let usedWorkspaceSelector = false;
-    let selectedWorkspaceId = defaultWorkspaceId;
-
-    if (selectableApiKey) {
-      try {
-        const fetchedWorkspaces = await fetchPostmanWorkspaces({
-          apiKey: selectableApiKey,
-        });
-        if (fetchedWorkspaces.length > 0) {
-          usedWorkspaceSelector = true;
-          const sortedWorkspaces = [...fetchedWorkspaces].sort((a, b) =>
-            a.name.localeCompare(b.name),
-          );
-          const workspaceChoice = await select({
-            message: "Choose default Postman workspace for this install:",
-            choices: [
-              { name: "No default workspace (null)", value: null },
-              ...sortedWorkspaces.map((workspace) => {
-                const details = [workspace.type, workspace.visibility]
-                  .filter(Boolean)
-                  .join(", ");
-                const suffix = details ? ` - ${details}` : "";
-                return {
-                  name: `${workspace.name} (${workspace.id})${suffix}`,
-                  value: workspace.id,
-                };
-              }),
-              {
-                name: "Enter workspace ID manually",
-                value: POSTMAN_WORKSPACE_MANUAL_CHOICE,
-              },
-            ],
-            default: null,
-          });
-
-          if (workspaceChoice === POSTMAN_WORKSPACE_MANUAL_CHOICE) {
-            const promptedWorkspaceId = await input({
-              message:
-                "Default Postman workspace ID (optional, leave blank for null):",
-              default: "",
-            });
-            selectedWorkspaceId =
-              normalizePostmanWorkspaceId(promptedWorkspaceId);
-          } else {
-            selectedWorkspaceId = normalizePostmanWorkspaceId(workspaceChoice);
-          }
-        }
-      } catch (error) {
-        warnings.push(
-          `Could not load Postman workspaces for selection: ${error.message}`,
-        );
-      }
-    }
-
-    if (!usedWorkspaceSelector) {
-      const promptedWorkspaceId = await input({
-        message:
-          "Default Postman workspace ID (optional, leave blank for null):",
-        default: "",
-      });
-      selectedWorkspaceId = normalizePostmanWorkspaceId(promptedWorkspaceId);
-    }
-
-    defaultWorkspaceId = selectedWorkspaceId;
+    const workspaceSelection = await promptPostmanWorkspaceSelection({
+      apiKey: envApiKey,
+      defaultWorkspaceId,
+    });
+    defaultWorkspaceId = workspaceSelection.workspaceId;
+    warnings.push(...workspaceSelection.warnings);
     workspaceSelectionSource = "interactive";
   }
 
@@ -10987,6 +11003,10 @@ async function runInitWizard(options) {
       normalizeMcpScope(options.mcpScope, defaultSkillsScope) === "global"
         ? "global"
         : "project";
+    const defaultPostmanWorkspaceId =
+      options.postmanWorkspaceId !== undefined
+        ? normalizePostmanWorkspaceId(options.postmanWorkspaceId)
+        : null;
     const defaultMcpSelections = normalizeInitMcpSelections(options.mcps);
     const defaultPlatforms = normalizeInitPlatforms(options.platforms);
     const defaultMcpRuntime = normalizeMcpRuntime(
@@ -11035,9 +11055,11 @@ async function runInitWizard(options) {
         options.postmanMode && normalizePostmanMode(options.postmanMode)
           ? normalizePostmanMode(options.postmanMode)
           : "full",
+      postmanWorkspaceId: defaultPostmanWorkspaceId,
       postmanApiKey: null,
       stitchApiKey: null,
     };
+    const initWarnings = [];
 
     if (selections.platforms.length === 0) {
       throw new Error("No platforms selected.");
@@ -11066,6 +11088,20 @@ async function runInitWizard(options) {
       selections.postmanApiKey = await promptOptionalSecret(
         "Postman API key (optional, leave blank to keep existing env/profile state):",
       );
+      const postmanLookupApiKey =
+        normalizePostmanApiKey(selections.postmanApiKey) ||
+        normalizePostmanApiKey(
+          process.env[
+            profileEnvVarAlias("postman", DEFAULT_CREDENTIAL_PROFILE_NAME)
+          ],
+        ) ||
+        normalizePostmanApiKey(process.env[POSTMAN_API_KEY_ENV_VAR]);
+      const postmanWorkspaceSelection = await promptPostmanWorkspaceSelection({
+        apiKey: postmanLookupApiKey,
+        defaultWorkspaceId: selections.postmanWorkspaceId,
+      });
+      selections.postmanWorkspaceId = postmanWorkspaceSelection.workspaceId;
+      initWarnings.push(...postmanWorkspaceSelection.warnings);
     }
 
     if (selections.selectedMcps.includes("stitch") && isInteractive) {
@@ -11090,6 +11126,12 @@ async function runInitWizard(options) {
     });
 
     const initSummary = formatInitSummary(selections);
+    if (initWarnings.length > 0) {
+      console.log("\nInit warnings:");
+      for (const warning of initWarnings) {
+        console.log(`- ${warning}`);
+      }
+    }
     if (!options.yes && isInteractive) {
       const proceed = await promptInitApplyConfirmation(initSummary);
       if (!proceed) {

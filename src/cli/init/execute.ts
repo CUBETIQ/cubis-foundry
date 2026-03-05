@@ -53,6 +53,9 @@ export function buildInitExecutionPlan({
       mcpBuildLocal:
         wantsPostman || stitchEnabled ? selections.mcpBuildLocal : false,
       postmanMode: wantsPostman ? selections.postmanMode : undefined,
+      postmanWorkspaceId: wantsPostman
+        ? selections.postmanWorkspaceId
+        : undefined,
       initWizardMode: true,
     };
 
@@ -69,6 +72,7 @@ export function buildInitExecutionPlan({
 }
 
 export function formatInitSummary(selections: InitWizardSelections) {
+  const postmanSelected = selections.selectedMcps.includes("postman");
   return [
     "Init plan summary:",
     `- Bundle: ${selections.bundleId}`,
@@ -78,6 +82,7 @@ export function formatInitSummary(selections: InitWizardSelections) {
     `- MCP scope: ${selections.mcpScope}`,
     `- MCP runtime: ${selections.mcpRuntime}${selections.mcpRuntime === "docker" ? selections.mcpBuildLocal ? " (build local image)" : " (pull image)" : ""}`,
     `- MCP selections: ${selections.selectedMcps.length > 0 ? selections.selectedMcps.join(", ") : "(none)"}`,
-    `- Postman mode: ${selections.postmanMode}`,
+    `- Postman mode: ${postmanSelected ? selections.postmanMode : "(not selected)"}`,
+    `- Postman workspace: ${postmanSelected ? selections.postmanWorkspaceId === null ? "null" : selections.postmanWorkspaceId : "(not selected)"}`,
   ].join("\n");
 }

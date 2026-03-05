@@ -37,6 +37,11 @@ expect -re "Select Postman installation mode:" {} timeout { fail "Missing prompt
 press_enter
 expect -re "Postman API key \\(optional, leave blank to keep existing env/profile state\\):" {} timeout { fail "Missing prompt: Postman API key (optional...):" }
 press_enter
+expect {
+  -re "Choose default Postman workspace for this install:" { press_enter }
+  -re "Default Postman workspace ID \\(optional, leave blank for null\\):" { press_enter }
+  timeout { fail "Missing prompt: Postman workspace selection" }
+}
 expect -re "Apply this installation plan\\?" {} timeout { fail "Missing prompt: Apply this installation plan?" }
 press_enter
 expect -re "Dry-run complete\\." {} timeout { fail "Missing output: Dry-run complete." }

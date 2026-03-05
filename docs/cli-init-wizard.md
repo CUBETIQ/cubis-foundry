@@ -10,7 +10,7 @@ For explicit automation/scripting, use `cbx workflows install`.
 ## Command
 
 ```bash
-cbx init [--yes] [--dry-run] [--target <path>] [--bundle <bundleId>] [--platforms <csv>] [--mcps <csv>] [--skill-profile <profile>] [--skills-scope <scope>] [--mcp-scope <scope>] [--postman-mode <mode>] [--mcp-runtime <docker|local>] [--mcp-build-local] [--no-banner] [--json]
+cbx init [--yes] [--dry-run] [--target <path>] [--bundle <bundleId>] [--platforms <csv>] [--mcps <csv>] [--skill-profile <profile>] [--skills-scope <scope>] [--mcp-scope <scope>] [--postman-mode <mode>] [--postman-workspace-id <id|null>] [--mcp-runtime <docker|local>] [--mcp-build-local] [--no-banner] [--json]
 ```
 
 Options:
@@ -24,6 +24,7 @@ Options:
 - `--skills-scope <scope>`: `project` or `global`.
 - `--mcp-scope <scope>`: `project` or `global`.
 - `--postman-mode <mode>`: `full` or `minimal`.
+- `--postman-workspace-id <id|null>`: set default Postman workspace id in non-interactive mode (`null` clears default workspace).
 - `--mcp-runtime <docker|local>`: preselect MCP runtime (used in non-interactive mode and as interactive default).
 - `--mcp-build-local`: when runtime is docker, build MCP image locally instead of pull.
 - `--no-banner`: disable welcome banner output.
@@ -43,6 +44,9 @@ Options:
    - Postman selected:
      - Postman mode (`full` or `minimal`)
      - secure Postman API key input (optional)
+     - default Postman workspace selection:
+       - interactive workspace list (when API key is available)
+       - manual workspace id input fallback
    - Stitch selected:
      - secure Stitch API key input (optional)
 10. Execution summary + confirmation.
@@ -63,6 +67,7 @@ Core mappings:
 - Stitch selected -> `stitch=true`
 - Cubis Foundry selected -> `foundryMcp=true`
 - Postman mode -> `postmanMode`
+- Postman workspace selection -> `postmanWorkspaceId`
 
 Special handling:
 - Stitch-only is supported.

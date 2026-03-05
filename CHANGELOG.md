@@ -2,6 +2,21 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.55] - 2026-03-05
+
+### Added
+
+- Added Postman workspace selection step to `cbx init` wizard:
+  - interactive workspace list from Postman API when key is available
+  - manual workspace ID fallback prompt when listing is unavailable.
+- Added non-interactive workspace flag for wizard:
+  - `cbx init --postman-workspace-id <id|null>`
+
+### Changed
+
+- Updated wizard execution mapping so selected Postman workspace is persisted through install flow.
+- Updated init wizard docs and TTY smoke test to validate the new workspace selection step.
+
 ## [0.3.54] - 2026-03-05
 
 ### Added

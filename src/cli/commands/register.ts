@@ -67,6 +67,10 @@ export function registerCommands(deps: CliRegistrationDeps) {
       "comma-separated MCP selections: cubis-foundry,postman,stitch",
     )
     .option("--postman-mode <mode>", "Postman mode: full|minimal")
+    .option(
+      "--postman-workspace-id <id|null>",
+      "optional: set default Postman workspace ID (use 'null' for no default)",
+    )
     .option("--mcp-runtime <runtime>", "MCP runtime: docker|local")
     .option(
       "--mcp-build-local",
