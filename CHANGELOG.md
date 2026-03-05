@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.56] - 2026-03-05
+
+### Fixed
+
+- Improved `cbx remove all` cleanup coverage:
+  - removes CBX-managed skills from all configured profile path candidates (not just a single preferred path)
+  - includes legacy Codex skill path cleanup (`~/.codex/skills`) for managed artifacts
+  - removes empty global CBX roots (`~/.cbx`, `~/.agents`) after cleanup when eligible.
+- Ensured global remove flow clears CBX-managed profile/config artifacts consistently (`~/.cbx/cbx_config.json`, `~/.cbx/state.json`, `~/.cbx/credentials.env` when present).
+
 ## [0.3.55] - 2026-03-05
 
 ### Added

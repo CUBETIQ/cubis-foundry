@@ -2622,6 +2622,44 @@ async function resolveProfilePaths(profileId, scope, cwd = process.cwd()) {
   };
 }
 
+function expandUniquePaths(pathList, cwd = process.cwd()) {
+  const seen = new Set();
+  const output = [];
+  for (const value of pathList || []) {
+    const normalized = String(value || "").trim();
+    if (!normalized) continue;
+    const expanded = expandPath(normalized, cwd);
+    const key = path.resolve(expanded);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    output.push(expanded);
+  }
+  return output;
+}
+
+function resolveProfilePathCandidates(profileId, scope, cwd = process.cwd()) {
+  const profile = WORKFLOW_PROFILES[profileId];
+  if (!profile) throw new Error(`Unknown platform '${profileId}'.`);
+  const cfg = profile[scope];
+  return {
+    workflowsDirs: expandUniquePaths(cfg.workflowDirs, cwd),
+    agentsDirs: expandUniquePaths(cfg.agentDirs, cwd),
+    skillsDirs: expandUniquePaths(cfg.skillDirs, cwd),
+    commandsDirs: expandUniquePaths(cfg.commandDirs, cwd),
+    promptsDirs: expandUniquePaths(cfg.promptDirs, cwd),
+    ruleFilesByPriority: expandUniquePaths(cfg.ruleFilesByPriority, cwd),
+  };
+}
+
+function resolveLegacySkillDirsForCleanup(platform, scope, cwd = process.cwd()) {
+  if (platform !== "codex") return [];
+  if (scope === "global") {
+    return [path.join(os.homedir(), ".codex", "skills")];
+  }
+  const workspaceRoot = findWorkspaceRoot(cwd);
+  return [path.join(workspaceRoot, ".codex", "skills")];
+}
+
 async function resolveArtifactProfilePaths(
   profileId,
   scope,
@@ -8104,6 +8142,41 @@ async function removePathRecord({
   }
 }
 
+async function removeEmptyDirectoryRecord({
+  dirPath,
+  category,
+  dryRun = false,
+  records,
+}) {
+  if (!dirPath) return;
+  if (!(await pathExists(dirPath))) return;
+
+  let entries = [];
+  try {
+    entries = await readdir(dirPath);
+  } catch {
+    return;
+  }
+
+  if (entries.length > 0) return;
+
+  if (dryRun) {
+    records.push({
+      path: dirPath,
+      category,
+      action: "would-remove",
+    });
+    return;
+  }
+
+  await rm(dirPath, { recursive: true, force: true });
+  records.push({
+    path: dirPath,
+    category,
+    action: "removed",
+  });
+}
+
 async function removeMcpRuntimeEntriesJson({
   filePath,
   keyName,
@@ -8272,6 +8345,8 @@ async function runWorkflowRemoveAll(options) {
     const scopes = resolveRemoveAllScopes(opts.scope);
     const platforms = resolveRemoveAllPlatforms(opts.platform);
     const bundleIds = await listBundleIds();
+    const knownTopLevelSkillIds =
+      await listTopLevelSkillIdsFromRoot(workflowSkillsRoot());
 
     if (!dryRun && !opts.yes && process.stdin.isTTY) {
       const proceed = await confirm({
@@ -8291,11 +8366,45 @@ async function runWorkflowRemoveAll(options) {
 
     for (const scope of scopes) {
       for (const platform of platforms) {
-        const artifactProfilePaths = await resolveArtifactProfilePaths(
+        const artifactProfilePaths = await resolveProfilePaths(
           platform,
           scope,
           cwd,
         );
+        const profileCandidates = resolveProfilePathCandidates(
+          platform,
+          scope,
+          cwd,
+        );
+        const legacySkillDirs = resolveLegacySkillDirsForCleanup(
+          platform,
+          scope,
+          cwd,
+        );
+        const allSkillDirs = expandUniquePaths(
+          [...profileCandidates.skillsDirs, ...legacySkillDirs],
+          cwd,
+        );
+        const isPrimaryDir = (candidateDir, primaryDir) => {
+          if (!candidateDir || !primaryDir) return false;
+          return path.resolve(candidateDir) === path.resolve(primaryDir);
+        };
+        const alternateWorkflowsDirs = profileCandidates.workflowsDirs.filter(
+          (dirPath) => !isPrimaryDir(dirPath, artifactProfilePaths.workflowsDir),
+        );
+        const alternateAgentsDirs = profileCandidates.agentsDirs.filter(
+          (dirPath) => !isPrimaryDir(dirPath, artifactProfilePaths.agentsDir),
+        );
+        const alternateCommandsDirs = profileCandidates.commandsDirs.filter(
+          (dirPath) => !isPrimaryDir(dirPath, artifactProfilePaths.commandsDir),
+        );
+        const alternatePromptsDirs = profileCandidates.promptsDirs.filter(
+          (dirPath) => !isPrimaryDir(dirPath, artifactProfilePaths.promptsDir),
+        );
+        const alternateSkillsDirs = allSkillDirs.filter(
+          (dirPath) => !isPrimaryDir(dirPath, artifactProfilePaths.skillsDir),
+        );
+
         for (const bundleId of bundleIds) {
           const manifest = await readBundleManifest(bundleId);
           const removedBundle = await removeBundleArtifacts({
@@ -8314,20 +8423,103 @@ async function runWorkflowRemoveAll(options) {
               action: dryRun ? "would-remove" : "removed",
             });
           }
+
+          const platformSpec = manifest.platforms?.[platform];
+          if (!platformSpec) continue;
+
+          const workflowFiles = (platformSpec.workflows || []).map((entry) =>
+            path.basename(entry),
+          );
+          const agentFiles = (platformSpec.agents || []).map((entry) =>
+            path.basename(entry),
+          );
+          const commandFiles = (platformSpec.commands || []).map((entry) =>
+            path.basename(entry),
+          );
+          const promptFiles = (platformSpec.prompts || []).map((entry) =>
+            path.basename(entry),
+          );
+          const skillIds = await resolveInstallSkillIds({
+            platformSpec,
+            extraSkillIds: [],
+          });
+          const wrapperSkillIds =
+            platform === "codex" ? buildCodexWrapperSkillIds(platformSpec) : [];
+          const bundleSkillIds = [...new Set([...skillIds, ...wrapperSkillIds])];
+
+          for (const workflowsDir of alternateWorkflowsDirs) {
+            for (const workflowFile of workflowFiles) {
+              await removePathRecord({
+                targetPath: path.join(workflowsDir, workflowFile),
+                category: `${platform}/${scope}/bundle-alt`,
+                dryRun,
+                records: removedRecords,
+              });
+            }
+          }
+          for (const agentsDir of alternateAgentsDirs) {
+            for (const agentFile of agentFiles) {
+              await removePathRecord({
+                targetPath: path.join(agentsDir, agentFile),
+                category: `${platform}/${scope}/bundle-alt`,
+                dryRun,
+                records: removedRecords,
+              });
+            }
+          }
+          for (const commandsDir of alternateCommandsDirs) {
+            for (const commandFile of commandFiles) {
+              await removePathRecord({
+                targetPath: path.join(commandsDir, commandFile),
+                category: `${platform}/${scope}/bundle-alt`,
+                dryRun,
+                records: removedRecords,
+              });
+            }
+          }
+          for (const promptsDir of alternatePromptsDirs) {
+            for (const promptFile of promptFiles) {
+              await removePathRecord({
+                targetPath: path.join(promptsDir, promptFile),
+                category: `${platform}/${scope}/bundle-alt`,
+                dryRun,
+                records: removedRecords,
+              });
+            }
+          }
+          for (const skillsDir of alternateSkillsDirs) {
+            for (const skillId of bundleSkillIds) {
+              await removePathRecord({
+                targetPath: path.join(skillsDir, skillId),
+                category: `${platform}/${scope}/bundle-alt`,
+                dryRun,
+                records: removedRecords,
+              });
+            }
+          }
         }
 
-        const extraSkillPaths = [
-          path.join(artifactProfilePaths.skillsDir || "", POSTMAN_SKILL_ID),
-          path.join(artifactProfilePaths.skillsDir || "", STITCH_SKILL_ID),
-          path.join(artifactProfilePaths.skillsDir || "", "skills_index.json"),
-        ];
-        for (const extraPath of extraSkillPaths) {
-          await removePathRecord({
-            targetPath: extraPath,
-            category: `${platform}/${scope}/extra-skill`,
-            dryRun,
-            records: removedRecords,
-          });
+        for (const skillsDir of allSkillDirs) {
+          for (const entry of [
+            POSTMAN_SKILL_ID,
+            STITCH_SKILL_ID,
+            "skills_index.json",
+          ]) {
+            await removePathRecord({
+              targetPath: path.join(skillsDir, entry),
+              category: `${platform}/${scope}/extra-skill`,
+              dryRun,
+              records: removedRecords,
+            });
+          }
+          for (const skillId of knownTopLevelSkillIds) {
+            await removePathRecord({
+              targetPath: path.join(skillsDir, skillId),
+              category: `${platform}/${scope}/known-skill`,
+              dryRun,
+              records: removedRecords,
+            });
+          }
         }
 
         if (platform === "antigravity") {
@@ -8377,6 +8569,25 @@ async function runWorkflowRemoveAll(options) {
           if (runtimeResult.warnings?.length > 0) {
             warnings.push(...runtimeResult.warnings);
           }
+        }
+
+        for (const managedDir of expandUniquePaths(
+          [
+            ...profileCandidates.skillsDirs,
+            ...profileCandidates.agentsDirs,
+            ...profileCandidates.workflowsDirs,
+            ...profileCandidates.commandsDirs,
+            ...profileCandidates.promptsDirs,
+            ...legacySkillDirs,
+          ],
+          cwd,
+        )) {
+          await removeEmptyDirectoryRecord({
+            dirPath: managedDir,
+            category: `${platform}/${scope}/managed-dir-empty`,
+            dryRun,
+            records: removedRecords,
+          });
         }
 
         const scopedProfilePaths = await resolveProfilePaths(platform, scope, cwd);
@@ -8445,13 +8656,27 @@ async function runWorkflowRemoveAll(options) {
           dryRun,
           records: removedRecords,
         });
-      } else if (includeCredentials) {
+      } else if (scope === "global" || includeCredentials) {
         await removePathRecord({
           targetPath: resolveManagedCredentialsEnvPath(),
           category: "global/credentials",
           dryRun,
           records: removedRecords,
         });
+      }
+
+      if (scope === "global") {
+        for (const globalRootDir of [
+          path.join(os.homedir(), ".cbx"),
+          path.join(os.homedir(), ".agents"),
+        ]) {
+          await removeEmptyDirectoryRecord({
+            dirPath: globalRootDir,
+            category: "global/root-dir-empty",
+            dryRun,
+            records: removedRecords,
+          });
+        }
       }
     }
 
