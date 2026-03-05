@@ -87,6 +87,7 @@ Non-interactive scripted selection:
 cbx init \
   --yes \
   --dry-run \
+  --overwrite \
   --no-banner \
   --bundle agent-environment-setup \
   --platforms codex,antigravity \

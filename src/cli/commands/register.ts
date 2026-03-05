@@ -47,6 +47,7 @@ export function registerCommands(deps: CliRegistrationDeps) {
     .description("Run guided interactive install wizard")
     .option("-y, --yes", "accept defaults and apply without confirmation")
     .option("--dry-run", "preview wizard execution without writing files")
+    .option("--overwrite", "overwrite existing files where supported")
     .option("--target <path>", "run against target project directory")
     .option("--bundle <bundleId>", "workflow bundle id")
     .option(

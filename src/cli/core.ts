@@ -11359,6 +11359,7 @@ function normalizeInitMcpSelections(value) {
 async function runInitWizard(options) {
   try {
     const dryRun = Boolean(options.dryRun);
+    const overwrite = Boolean(options.overwrite);
     const emitJson = Boolean(options.json);
     const hideBanner = options.banner === false || Boolean(options.noBanner);
     const cwd = options.target ? path.resolve(options.target) : process.cwd();
@@ -11527,6 +11528,7 @@ async function runInitWizard(options) {
     const plan = buildInitExecutionPlan({
       selections,
       dryRun,
+      overwrite,
       target: options.target,
     });
 

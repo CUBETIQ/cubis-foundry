@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.62] - 2026-03-05
+
+### Fixed
+
+- Added `--overwrite` support to `cbx init` and wired it through wizard execution so guided installs can replace existing managed files instead of failing/being skipped.
+- Updated init wizard documentation/help examples to include overwrite usage in scripted and repeat install flows.
+
 ## [0.3.61] - 2026-03-05
 
 ### Fixed

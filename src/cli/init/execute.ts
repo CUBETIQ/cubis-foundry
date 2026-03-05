@@ -12,10 +12,12 @@ function hasMcpSelection(selectedMcps: InitMcpId[], mcpId: InitMcpId) {
 export function buildInitExecutionPlan({
   selections,
   dryRun,
+  overwrite,
   target,
 }: {
   selections: InitWizardSelections;
   dryRun: boolean;
+  overwrite: boolean;
   target?: string;
 }): InitExecutionPlan {
   const planItems: InitExecutionPlanItem[] = [];
@@ -40,6 +42,7 @@ export function buildInitExecutionPlan({
       skillProfile: selections.skillProfile,
       allSkills: selections.skillProfile === "full",
       dryRun,
+      overwrite,
       yes: true,
       target,
       postman: wantsPostman,

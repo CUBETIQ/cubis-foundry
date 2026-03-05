@@ -10,12 +10,13 @@ For explicit automation/scripting, use `cbx workflows install`.
 ## Command
 
 ```bash
-cbx init [--yes] [--dry-run] [--target <path>] [--bundle <bundleId>] [--platforms <csv>] [--mcps <csv>] [--skill-profile <profile>] [--skills-scope <scope>] [--mcp-scope <scope>] [--postman-mode <mode>] [--postman-workspace-id <id|null>] [--mcp-runtime <docker|local>] [--mcp-build-local] [--no-banner] [--json]
+cbx init [--yes] [--dry-run] [--overwrite] [--target <path>] [--bundle <bundleId>] [--platforms <csv>] [--mcps <csv>] [--skill-profile <profile>] [--skills-scope <scope>] [--mcp-scope <scope>] [--postman-mode <mode>] [--postman-workspace-id <id|null>] [--mcp-runtime <docker|local>] [--mcp-build-local] [--no-banner] [--json]
 ```
 
 Options:
 - `--yes`: skip final confirmation and use defaults where prompts are skipped.
 - `--dry-run`: preview all actions without writing files.
+- `--overwrite`: replace existing generated files instead of skipping.
 - `--target <path>`: run install logic against another project directory.
 - `--bundle <bundleId>`: preselect bundle id (used as interactive default and non-interactive value).
 - `--platforms <csv>`: comma-separated platforms (`codex,antigravity,copilot`).
