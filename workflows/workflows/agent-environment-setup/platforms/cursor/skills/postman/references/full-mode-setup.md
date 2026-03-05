@@ -7,7 +7,7 @@ Use CLI mode flags instead of manual `jq` edits.
 ```bash
 cbx workflows install \
   --platform codex \
-  --scope global \
+  --scope <project|global> \
   --bundle agent-environment-setup \
   --postman \
   --postman-mode full \
@@ -21,7 +21,7 @@ cbx workflows install \
 ## Change Mode Later
 
 ```bash
-cbx workflows config --scope global --platform codex --postman-mode full
+cbx workflows config --scope <project|global> --platform codex --postman-mode full
 ```
 
 This updates:
@@ -34,3 +34,7 @@ This updates:
 ```bash
 cbx workflows config keys persist-env --service postman --scope global
 ```
+
+Note:
+- `persist-env` writes CBX-managed aliases to `~/.cbx/credentials.env`.
+- Keep MCP target scope (`project` or `global`) aligned with the scope where you installed Postman integration.

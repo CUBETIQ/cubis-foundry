@@ -22,7 +22,8 @@
         "mobile.md",
         "devops.md",
         "qa.md",
-        "vercel.md"
+        "vercel.md",
+        "postman.md"
       ],
       "agents": [
         "backend-specialist.md",
@@ -193,7 +194,8 @@
         "mobile.toml",
         "devops.toml",
         "qa.toml",
-        "vercel.toml"
+        "vercel.toml",
+        "postman.toml"
       ]
     },
     "codex": {
@@ -215,7 +217,8 @@
         "mobile.md",
         "devops.md",
         "qa.md",
-        "vercel.md"
+        "vercel.md",
+        "postman.md"
       ],
       "agents": [
         "backend-specialist.md",
@@ -388,7 +391,8 @@
         "mobile.md",
         "devops.md",
         "qa.md",
-        "vercel.md"
+        "vercel.md",
+        "postman.md"
       ],
       "agents": [
         "backend-specialist.md",
@@ -559,7 +563,8 @@
         "workflow-mobile.prompt.md",
         "workflow-devops.prompt.md",
         "workflow-qa.prompt.md",
-        "workflow-vercel.prompt.md"
+        "workflow-vercel.prompt.md",
+        "workflow-postman.prompt.md"
       ]
     }
   }

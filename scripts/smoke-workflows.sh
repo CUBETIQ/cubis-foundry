@@ -139,12 +139,12 @@ node "$CLI" workflows install --platform antigravity --bundle agent-environment-
 [ -f .gemini/commands/backend.toml ]
 [ -f .gemini/commands/review.toml ]
 [ -f .gemini/commands/vercel.toml ]
-if [ "$(find .agent/workflows -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "18" ]; then
-  echo "[FAIL] Antigravity expected exactly 18 workflow files" >&2
+if [ "$(find .agent/workflows -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "19" ]; then
+  echo "[FAIL] Antigravity expected exactly 19 workflow files" >&2
   exit 1
 fi
-if [ "$(find .gemini/commands -maxdepth 1 -type f -name '*.toml' | wc -l | tr -d ' ')" -ne "18" ]; then
-  echo "[FAIL] Antigravity expected exactly 18 Gemini command files" >&2
+if [ "$(find .gemini/commands -maxdepth 1 -type f -name '*.toml' | wc -l | tr -d ' ')" -ne "19" ]; then
+  echo "[FAIL] Antigravity expected exactly 19 Gemini command files" >&2
   exit 1
 fi
 if [ "$(find .agent/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -lt "20" ]; then
@@ -237,8 +237,8 @@ node "$CLI" workflows install --platform codex --bundle agent-environment-setup 
 [ -f .agents/workflows/mobile.md ]
 [ -f .agents/workflows/devops.md ]
 [ -f .agents/workflows/qa.md ]
-if [ "$(find .agents/workflows -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "18" ]; then
-  echo "[FAIL] Codex expected exactly 18 workflow files" >&2
+if [ "$(find .agents/workflows -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "19" ]; then
+  echo "[FAIL] Codex expected exactly 19 workflow files" >&2
   exit 1
 fi
 [ ! -d .agents/agents ]
@@ -330,12 +330,12 @@ node "$CLI" workflows sync-rules --platform codex --scope global --dry-run --jso
 node - <<'NODE'
 const fs = require('fs');
 const payload = JSON.parse(fs.readFileSync('/tmp/cbx-c221.json', 'utf8'));
-if (payload.workflowsCount !== 18) {
-  console.error(`[FAIL] Expected workflowsCount=18 for codex global sync dry-run, got ${payload.workflowsCount}`);
+if (payload.workflowsCount !== 19) {
+  console.error(`[FAIL] Expected workflowsCount=19 for codex global sync dry-run, got ${payload.workflowsCount}`);
   process.exit(1);
 }
 NODE
-log_ok "Codex global sync dry-run reports workflowsCount=18"
+log_ok "Codex global sync dry-run reports workflowsCount=19"
 
 log_step "C2.3 Rules init (Codex)"
 node "$CLI" rules init --platform codex --scope project --overwrite >/tmp/cbx-c23.log
@@ -445,8 +445,8 @@ node "$CLI" workflows install --platform copilot --bundle agent-environment-setu
 [ -f .github/copilot/workflows/mobile.md ]
 [ -f .github/copilot/workflows/devops.md ]
 [ -f .github/copilot/workflows/qa.md ]
-if [ "$(find .github/copilot/workflows -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "18" ]; then
-  echo "[FAIL] Copilot expected exactly 18 workflow files" >&2
+if [ "$(find .github/copilot/workflows -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "19" ]; then
+  echo "[FAIL] Copilot expected exactly 19 workflow files" >&2
   exit 1
 fi
 [ -f .github/agents/backend-specialist.md ]
@@ -461,8 +461,8 @@ if [ "$(find .github/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' '
   echo "[FAIL] Copilot expected at least 20 agent files" >&2
   exit 1
 fi
-if [ "$(find .github/prompts -maxdepth 1 -type f -name '*.prompt.md' | wc -l | tr -d ' ')" -ne "18" ]; then
-  echo "[FAIL] Copilot expected exactly 18 prompt files" >&2
+if [ "$(find .github/prompts -maxdepth 1 -type f -name '*.prompt.md' | wc -l | tr -d ' ')" -ne "19" ]; then
+  echo "[FAIL] Copilot expected exactly 19 prompt files" >&2
   exit 1
 fi
 [ -d "$COPILOT_GLOBAL_SKILLS/api-designer" ]

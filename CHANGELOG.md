@@ -2,6 +2,24 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.59] - 2026-03-05
+
+### Added
+
+- Added dedicated Postman workflow routing across supported platforms:
+  - new `/postman` workflow definition
+  - generated platform assets for Codex, Antigravity, and Copilot
+  - generated wrapper skill `workflow-postman` for Codex.
+
+### Changed
+
+- Tightened Postman guidance to be MCP-first:
+  - explicitly prefer `postman.*` / `postman_*` tools for execution
+  - disallow default fallback to raw JSON/curl/Newman unless explicitly requested.
+- Updated Postman setup/troubleshooting docs to be scope-aware (`project|global`) so project installs stop drifting to global-only guidance.
+- Updated Codex rules template to reinforce no default JSON/curl fallback when Postman MCP tools are available.
+- Updated smoke test expectations from 18 to 19 workflows/prompts/commands where applicable.
+
 ## [0.3.57] - 2026-03-05
 
 ### Changed

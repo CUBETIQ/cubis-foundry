@@ -105,6 +105,7 @@ When user intent includes Postman workflows (for example: workspace, collection,
 2. If `postman` skill exists, load `skill_get "postman"` before workflow/agent routing.
 3. Prefer Postman MCP tools (`postman.*`) over Newman/CLI fallback unless the user explicitly asks for fallback.
 4. If `--postman` was installed but `postman` skill cannot be found, report installation drift and suggest reinstall with `cbx workflows install ... --postman`.
+5. Do not default to raw Postman REST JSON payloads or curl for execution when Postman MCP tools are available.
 
 **Hard rules:**
 

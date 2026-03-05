@@ -18,19 +18,20 @@ References:
 - Accept both dynamic naming styles from clients:
   - dotted: `postman.<tool>`
   - alias: `postman_<tool>`
+- Never default to raw Postman REST JSON payloads, Newman, or Postman CLI when MCP tools are available.
 - Do not use Newman/Postman CLI fallback unless the user explicitly asks for fallback.
 - If required Postman MCP tools are unavailable, report discovery/remediation steps first.
 
 ## Setup Baseline
 
-1. Install with Postman enabled and explicit full mode:
-   - `cbx workflows install --platform <codex|antigravity|copilot> --scope global --bundle agent-environment-setup --postman --postman-mode full --mcp-runtime docker --mcp-fallback local --mcp-tool-sync --yes`
+1. Install with Postman enabled and explicit full mode (use the same scope as your current install):
+   - `cbx workflows install --platform <codex|antigravity|copilot> --scope <project|global> --bundle agent-environment-setup --postman --postman-mode full --mcp-runtime docker --mcp-fallback local --mcp-tool-sync --yes`
 2. Persist env aliases once (no per-session re-export):
    - `cbx workflows config keys persist-env --service postman --scope global`
 3. Verify mode/config:
-   - `cbx workflows config --scope global --show`
-   - `cbx mcp tools sync --service postman --scope global`
-   - `cbx mcp tools list --service postman --scope global`
+   - `cbx workflows config --scope <project|global> --show`
+   - `cbx mcp tools sync --service postman --scope <project|global>`
+   - `cbx mcp tools list --service postman --scope <project|global>`
 
 ## Preflight
 
@@ -40,6 +41,10 @@ References:
    - If not, call `postman_set_mode` with `mode: full`.
 3. Discover upstream tools:
    - Confirm required tools exist before execution (for example workspaces/collections/runs).
+
+Execution rule:
+- For Postman requests, call MCP tools directly (`postman.*` or `postman_*`) instead of drafting manual JSON or curl payloads.
+- If the user asks for API payload examples, provide them only as supplemental documentation after MCP execution guidance.
 
 ## Default Workspace Policy
 
@@ -52,7 +57,7 @@ Resolve workspace in this order:
 4. If multiple workspaces and no default:
    - Ask user to choose one.
    - Recommend persisting it with:
-     - `cbx workflows config --scope global --workspace-id <workspace-id>`
+     - `cbx workflows config --scope <project|global> --workspace-id <workspace-id>`
 
 When a Postman tool requires a workspace argument, always pass the resolved workspace ID explicitly.
 
@@ -75,10 +80,10 @@ If dynamic Postman tools are missing:
 
 1. Verify env alias expected by config is set.
 2. Resync catalog:
-   - `cbx mcp tools sync --service postman --scope global`
-   - `cbx mcp tools list --service postman --scope global`
+   - `cbx mcp tools sync --service postman --scope <project|global>`
+   - `cbx mcp tools list --service postman --scope <project|global>`
 3. Recreate runtime if needed:
-   - `cbx mcp runtime up --scope global --name cbx-mcp --replace --port 3310 --skills-root ~/.agents/skills`
+   - `cbx mcp runtime up --scope <project|global> --name cbx-mcp --replace --port 3310 --skills-root ~/.agents/skills`
 
 ## Security Notes
 
