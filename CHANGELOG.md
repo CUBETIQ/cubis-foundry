@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.57] - 2026-03-05
+
+### Changed
+
+- Refined `cbx init` welcome banner to a cleaner terminal layout with improved spacing and branding readability.
+- Removed placeholder banner text and replaced it with final Cubis Foundry ASCII presentation.
+
 ## [0.3.56] - 2026-03-05
 
 ### Fixed
