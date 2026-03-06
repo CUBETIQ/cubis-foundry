@@ -242,9 +242,21 @@ const BUILTIN_TOOLS = [
     category: "skill",
   },
   {
+    name: "skill_validate",
+    description:
+      "Validate an exact skill ID before loading it. Returns alias metadata and discoverable reference markdown paths.",
+    category: "skill",
+  },
+  {
     name: "skill_get",
     description:
-      "Get full content of a specific skill by ID. Returns SKILL.md content and referenced files.",
+      "Get full content of a specific skill by ID. Returns SKILL.md content and optionally direct referenced markdown files.",
+    category: "skill",
+  },
+  {
+    name: "skill_get_reference",
+    description:
+      "Get one validated markdown reference file for a skill by exact relative path.",
     category: "skill",
   },
   {

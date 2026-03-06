@@ -1,12 +1,12 @@
 {
   "$schema": "cubis-foundry-mcp-manifest-v1",
-  "generatedAt": "2026-03-04T07:50:57.618Z",
-  "contentHash": "0e874edf5db4cf1b",
+  "generatedAt": "2026-03-06T02:09:15.371Z",
+  "contentHash": "388ec098ff752b41",
   "summary": {
     "totalSkills": 123,
     "totalCategories": 22,
-    "totalBytes": 436265,
-    "estimatedTokens": 109067
+    "totalBytes": 437054,
+    "estimatedTokens": 109264
   },
   "categories": [
     {
@@ -1117,11 +1117,11 @@
       "id": "postman",
       "name": "postman",
       "displayName": null,
-      "description": "Use Postman MCP tools for workspace, collection, environment, and run workflows with explicit default-workspace handling.",
+      "description": "Automate API testing and collection management with Postman MCP using full-mode defaults and workspace-aware execution.",
       "category": "general",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 2838,
+      "fileBytes": 3627,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -2107,8 +2107,18 @@
       "category": "skill"
     },
     {
+      "name": "skill_validate",
+      "description": "Validate an exact skill ID before loading it. Returns alias metadata and discoverable reference markdown paths.",
+      "category": "skill"
+    },
+    {
       "name": "skill_get",
-      "description": "Get full content of a specific skill by ID. Returns SKILL.md content and referenced files.",
+      "description": "Get full content of a specific skill by ID. Returns SKILL.md content and optionally direct referenced markdown files.",
+      "category": "skill"
+    },
+    {
+      "name": "skill_get_reference",
+      "description": "Get one validated markdown reference file for a skill by exact relative path.",
       "category": "skill"
     },
     {

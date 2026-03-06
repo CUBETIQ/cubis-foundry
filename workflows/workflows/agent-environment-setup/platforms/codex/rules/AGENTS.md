@@ -27,7 +27,7 @@ Rules:
 Skills and workflows are the two primary execution layers. **Skills** deliver domain expertise via the Foundry MCP server (see §5 MCP Skill Engine). **Workflows** orchestrate task execution via slash commands. They work together — never in isolation.
 
 1. Codex operates primarily through **Skills** and **Rules**; the Foundry MCP server (`cbx-mcp`) is the delivery mechanism for all domain skills.
-2. Before implementing any non-trivial task, run `skill_search` to check if a matching skill exists — load it before writing a single line of code.
+2. Before loading any skill, inspect the repo/task locally first. Use MCP skill tools only when the user names a skill explicitly or local grounding still leaves the domain unclear.
 3. Complex multi-domain tasks: compose multiple skill loads within a single $workflow-orchestrate execution.
 4. Workflow and skill namespaces are distinct — never mix workflow IDs (`workflow-*`) with skill IDs in MCP calls.
 
@@ -69,9 +69,11 @@ Use the best specialist first:
 
 Before handing off to any specialist agent, prime context with the relevant domain skill (→ §5 MCP Skill Engine):
 
-1. Run `skill_search <domain>` to find the best matching skill.
-2. If a strong match exists, load it with `skill_get <id>` before delegating.
-3. Include the loaded skill ID in the Decision Log for the routing decision.
+1. Validate user-named exact skills with `skill_validate <id>` before loading them.
+2. If the domain is still unclear after local grounding, run one narrow `skill_search <domain>` and then validate the chosen exact ID with `skill_validate <id>`.
+3. Load the core skill with `skill_get <id>` using `includeReferences:false` by default.
+4. Pull one sidecar markdown file at a time with `skill_get_reference` when the skill or task requires it.
+5. Include the validated skill ID in the Decision Log for the routing decision.
 
 This ensures the specialist starts with accurate domain knowledge, not just role intent.
 
@@ -83,34 +85,41 @@ The Foundry MCP server is the primary knowledge layer. Use tools decisively — 
 
 | Prefix      | Tools                                                                                                | When to use                                                    |
 | ----------- | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| `skill_*`   | `skill_list_categories`, `skill_search`, `skill_browse_category`, `skill_get`, `skill_budget_report` | Domain expertise for any implementation, debug, or review task |
+| `skill_*`   | `skill_list_categories`, `skill_search`, `skill_validate`, `skill_browse_category`, `skill_get`, `skill_get_reference`, `skill_budget_report` | Domain expertise for implementation, debug, or review without loading the full catalog |
 | `postman_*` | `postman_get_mode`, `postman_set_mode`, `postman_get_status`                                         | API testing or Postman configuration tasks                     |
 | `stitch_*`  | `stitch_get_mode`, `stitch_set_profile`, `stitch_get_status`                                         | Stitch data pipeline tasks                                     |
 
-### Discovery Flow (Mandatory Order)
+### Validated Skill Flow (Mandatory Order)
 
-Stop at the earliest step that gives enough signal. Do not jump ahead.
+Stop at the earliest step that gives enough signal. Do not jump ahead or front-load skill discovery.
 
-1. `skill_list_categories` — run once per session if domain is unknown; see what exists
-2. `skill_search <keyword>` — fast keyword match across all skills; always try this first
-3. `skill_browse_category <category>` — explore if search is too broad or returns 0 results
-4. `skill_get <id>` — load full skill content; only when committed to using it
-5. `skill_budget_report` — verify token cost internally; do not emit budget details unless requested
+1. Inspect the codebase/task locally first; do not start with `skill_search`
+2. If the user names an exact skill ID, call `skill_validate <id>` directly
+3. Otherwise, if local grounding still leaves the domain unclear, run one narrow `skill_search <keyword>`
+4. Validate the selected exact skill ID with `skill_validate <id>` before any load
+5. Load only the core `SKILL.md` with `skill_get <id>` and `includeReferences:false`
+6. Load at most one sidecar markdown file at a time with `skill_get_reference <id> <path>`
+7. Use `skill_list_categories` or `skill_browse_category` only as fallback when targeted search fails
+8. Use `skill_budget_report` internally only when the user explicitly asks for context accounting
 
 ### Postman Intent Trigger (Required)
 
 When user intent includes Postman workflows (for example: workspace, collection, environment, runCollection, monitor, mock, or "run Postman tests"):
 
-1. Run `skill_search "postman"` first.
-2. If `postman` skill exists, load `skill_get "postman"` before workflow/agent routing.
-3. Prefer Postman MCP tools (`postman.*`) over Newman/CLI fallback unless the user explicitly asks for fallback.
-4. If `--postman` was installed but `postman` skill cannot be found, report installation drift and suggest reinstall with `cbx workflows install ... --postman`.
-5. Do not default to raw Postman REST JSON payloads or curl for execution when Postman MCP tools are available.
+1. Validate `postman` directly with `skill_validate "postman"` when the exact skill ID is known.
+2. If validation fails and local grounding is still insufficient, run a narrow `skill_search "postman"` and validate the selected exact ID.
+3. Load `skill_get "postman"` with `includeReferences:false` before workflow/agent routing.
+4. Prefer Postman MCP tools (`postman.*`) over Newman/CLI fallback unless the user explicitly asks for fallback.
+5. If `--postman` was installed but `postman` skill cannot be found, report installation drift and suggest reinstall with `cbx workflows install ... --postman`.
+6. Do not default to raw Postman REST JSON payloads or curl for execution when Postman MCP tools are available.
 
 **Hard rules:**
 
-- Never call `skill_get` without a prior `skill_search` or `skill_browse_category`
+- Never call `skill_get` from fuzzy search output without first validating the exact ID via `skill_validate`
+- Never skip local repo inspection and jump straight to `skill_search`
 - Never call `skill_get` with a workflow ID — `workflow-*` are routes, not skills; keep workflow mentions in the Decision Log using raw $workflow-\* wrappers
+- Never call `skill_get` with `includeReferences:true` by default in agent workflows
+- Never bulk-load sibling/reference markdown files when one targeted `skill_get_reference` will do
 - Never reload a skill already loaded this session — reuse content already in context
 - If `skill_search` returns 0 results, try `skill_browse_category`, then fall back to built-in knowledge
 
@@ -140,12 +149,23 @@ After `skill_get`, include at most one short line:
 
 Do not append budget tables or token summaries unless the user explicitly asks.
 
+### Reference Files (Required When Relevant)
+
+Reference markdown files are first-class skill context, but they must be loaded selectively.
+
+1. Use `skill_validate` to see `availableReferences` for the exact skill
+2. Start with `skill_get(..., includeReferences:false)` to load only the core skill body
+3. If the skill points to a reference or the task clearly needs sidecar detail, load one file with `skill_get_reference`
+4. Only load another reference if the first one still leaves a concrete gap
+
 
 ### Anti-Patterns (Never Do These)
 
 - Loading skills speculatively "just in case" they might be useful
-- Calling `skill_get` before running `skill_search` or `skill_browse_category`
+- Calling `skill_get` before `skill_validate`
 - Using partial or guessed skill IDs in `skill_get`
+- Treating `skill_search` results as an implicit final selection
+- Starting a task with `skill_list_categories` or broad catalog browsing
 - Publishing verbose budget fields (`full_catalog_est_tokens`, `loaded_est_tokens`, etc.) in responses
 - Re-emitting the ctx stamp multiple times within a single response
 - Treating workflow IDs as skill IDs in any MCP tool call
@@ -237,66 +257,25 @@ Selection policy:
 <!-- cbx:workflows:auto:end -->
 
 <!-- cbx:mcp:auto:start version=1 -->
-## Cubis Foundry MCP Tool Catalog (auto-managed)
+## Cubis Foundry MCP (auto-managed)
 
-The Foundry MCP server provides progressive-disclosure skill discovery and integration management tools.
+Keep MCP context lazy and exact. Do not front-load the skill catalog.
 
-### Skill Vault
+### Compact Tool Map
 
-- **123** skills across **22** categories
-- Estimated full catalog: ~109,067 tokens
+- Skill tools: `skill_search`, `skill_validate`, `skill_get`, `skill_get_reference`, `skill_budget_report`
+- Fallback browsing only: `skill_list_categories`, `skill_browse_category`
+- Config tools: `postman_*`, `stitch_*`
 
-Categories:
-- `ai`: 1 skill(s)
-- `api`: 3 skill(s)
-- `architecture`: 3 skill(s)
-- `backend`: 14 skill(s)
-- `data`: 4 skill(s)
-- `design`: 6 skill(s)
-- `devops`: 20 skill(s)
-- `documentation`: 3 skill(s)
-- `frontend`: 9 skill(s)
-- `game-dev`: 1 skill(s)
-- `general`: 26 skill(s)
-- `localization`: 1 skill(s)
-- `marketing`: 2 skill(s)
-- `mobile`: 7 skill(s)
-- `observability`: 1 skill(s)
-- `payments`: 1 skill(s)
-- `performance`: 2 skill(s)
-- `practices`: 5 skill(s)
-- `saas`: 1 skill(s)
-- `security`: 4 skill(s)
-- `testing`: 6 skill(s)
-- `tooling`: 3 skill(s)
+### Validated Skill Flow
 
-### Built-in Tools
-
-**Skill Discovery:**
-- `skill_list_categories`: List all skill categories available in the vault. Returns category names and skill counts.
-- `skill_browse_category`: Browse skills within a specific category. Returns skill IDs and short descriptions.
-- `skill_search`: Search skills by keyword. Matches against skill IDs and descriptions.
-- `skill_get`: Get full content of a specific skill by ID. Returns SKILL.md content and referenced files.
-- `skill_budget_report`: Report estimated context/token budget for selected and loaded skills.
-
-**Postman Integration:**
-- `postman_get_mode`: Get current Postman MCP mode from cbx_config.
-- `postman_set_mode`: Set Postman MCP mode in cbx_config.
-- `postman_get_status`: Get Postman integration status and active profile.
-
-**Stitch Integration:**
-- `stitch_get_mode`: Get Stitch MCP mode from cbx_config.
-- `stitch_set_profile`: Switch active Stitch profile in cbx_config.
-- `stitch_get_status`: Get Stitch integration status and active profile.
-
-### Skill Discovery Flow
-
-Use progressive disclosure to minimize context usage:
-1. `skill_list_categories` → see available categories and counts
-2. `skill_browse_category` → browse skills in a category with short descriptions
-3. `skill_search` → search by keyword across all skills
-4. `skill_get` → load full content of a specific skill (only tool that reads full content)
-5. `skill_budget_report` → check token usage for selected/loaded skills; use result to emit the § Context Budget Tracking stamp
+1. Inspect the repo/task locally first. Do not start with `skill_search`.
+2. If the user names an exact skill, run `skill_validate` directly. Otherwise use one narrow `skill_search` only if local grounding still leaves the domain unclear.
+3. Always run `skill_validate` on the exact selected ID before `skill_get`.
+4. Call `skill_get` with `includeReferences:false` by default.
+5. Load at most one sidecar markdown file at a time with `skill_get_reference`.
+6. Use `skill_list_categories` or `skill_browse_category` only as fallback when targeted search fails.
+7. Never print catalog counts or budget details unless the user asks.
 
 ### Connection
 

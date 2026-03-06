@@ -38,7 +38,9 @@ describe("tool registry", () => {
     expect(names).toContain("skill_list_categories");
     expect(names).toContain("skill_browse_category");
     expect(names).toContain("skill_search");
+    expect(names).toContain("skill_validate");
     expect(names).toContain("skill_get");
+    expect(names).toContain("skill_get_reference");
     expect(names).toContain("skill_budget_report");
     expect(names).toContain("postman_get_mode");
     expect(names).toContain("postman_set_mode");
@@ -48,8 +50,8 @@ describe("tool registry", () => {
     expect(names).toContain("stitch_get_status");
   });
 
-  it("has exactly 11 built-in tools", () => {
-    expect(TOOL_REGISTRY).toHaveLength(11);
+  it("has exactly 13 built-in tools", () => {
+    expect(TOOL_REGISTRY).toHaveLength(13);
   });
 
   it("has no duplicate tool names", () => {
@@ -70,7 +72,7 @@ describe("tool registry", () => {
 
   it("filters by category", () => {
     const skillTools = getToolsByCategory("skill");
-    expect(skillTools).toHaveLength(5);
+    expect(skillTools).toHaveLength(7);
     expect(skillTools.every((t) => t.category === "skill")).toBe(true);
 
     const postmanTools = getToolsByCategory("postman");
@@ -103,11 +105,11 @@ describe("tool registry", () => {
 
   it("buildRegistrySummary produces correct structure", () => {
     const summary = buildRegistrySummary();
-    expect(summary.totalTools).toBe(11);
+    expect(summary.totalTools).toBe(13);
     expect(summary.categories).toHaveProperty("skill");
     expect(summary.categories).toHaveProperty("postman");
     expect(summary.categories).toHaveProperty("stitch");
-    expect(summary.categories.skill.tools).toHaveLength(5);
+    expect(summary.categories.skill.tools).toHaveLength(7);
     expect(summary.categories.postman.tools).toHaveLength(3);
     expect(summary.categories.stitch.tools).toHaveLength(3);
   });

@@ -3,7 +3,7 @@
 /**
  * generate-mcp-rules-block.mjs
  *
- * Generates a managed MCP catalog block for injection into rule files
+ * Generates a managed compact MCP rules block for injection into rule files
  * (AGENTS.md, GEMINI.md, copilot-instructions.md).
  *
  * Follows the same `<!-- cbx:mcp:auto:start -->` / `<!-- cbx:mcp:auto:end -->`
@@ -53,80 +53,44 @@ function parseArgs(argv) {
 function buildMcpBlock(manifest) {
   const lines = [];
   lines.push(`${BLOCK_START} version=1 -->`);
-  lines.push("## Cubis Foundry MCP Tool Catalog (auto-managed)");
+  lines.push("## Cubis Foundry MCP (auto-managed)");
+  lines.push("");
+  lines.push("Keep MCP context lazy and exact. Do not front-load the skill catalog.");
+  lines.push("");
+  lines.push("### Compact Tool Map");
   lines.push("");
   lines.push(
-    "The Foundry MCP server provides progressive-disclosure skill discovery and integration management tools.",
-  );
-  lines.push("");
-
-  // Skill vault summary
-  lines.push("### Skill Vault");
-  lines.push("");
-  lines.push(
-    `- **${manifest.summary.totalSkills}** skills across **${manifest.summary.totalCategories}** categories`,
+    "- Skill tools: `skill_search`, `skill_validate`, `skill_get`, `skill_get_reference`, `skill_budget_report`",
   );
   lines.push(
-    `- Estimated full catalog: ~${manifest.summary.estimatedTokens.toLocaleString()} tokens`,
+    "- Fallback browsing only: `skill_list_categories`, `skill_browse_category`",
   );
+  lines.push("- Config tools: `postman_*`, `stitch_*`");
   lines.push("");
-
-  // Categories
-  lines.push("Categories:");
-  for (const cat of manifest.categories) {
-    lines.push(`- \`${cat.name}\`: ${cat.skillCount} skill(s)`);
-  }
+  lines.push("### Validated Skill Flow");
   lines.push("");
-
-  // Built-in tools by category
-  lines.push("### Built-in Tools");
-  lines.push("");
-
-  const toolsByCategory = {};
-  for (const tool of manifest.builtinTools) {
-    if (!toolsByCategory[tool.category]) {
-      toolsByCategory[tool.category] = [];
-    }
-    toolsByCategory[tool.category].push(tool);
-  }
-
-  const categoryLabels = {
-    skill: "Skill Discovery",
-    postman: "Postman Integration",
-    stitch: "Stitch Integration",
-  };
-
-  for (const [catKey, label] of Object.entries(categoryLabels)) {
-    const tools = toolsByCategory[catKey];
-    if (!tools?.length) continue;
-
-    lines.push(`**${label}:**`);
-    for (const tool of tools) {
-      lines.push(`- \`${tool.name}\`: ${tool.description}`);
-    }
-    lines.push("");
-  }
-
-  // Discovery flow
-  lines.push("### Skill Discovery Flow");
-  lines.push("");
-  lines.push("Use progressive disclosure to minimize context usage:");
   lines.push(
-    "1. `skill_list_categories` → see available categories and counts",
+    "1. Inspect the repo/task locally first. Do not start with `skill_search`.",
   );
   lines.push(
-    "2. `skill_browse_category` → browse skills in a category with short descriptions",
-  );
-  lines.push("3. `skill_search` → search by keyword across all skills");
-  lines.push(
-    "4. `skill_get` → load full content of a specific skill (only tool that reads full content)",
+    "2. If the user names an exact skill, run `skill_validate` directly. Otherwise use one narrow `skill_search` only if local grounding still leaves the domain unclear.",
   );
   lines.push(
-    "5. `skill_budget_report` → check token usage for selected/loaded skills; use result to emit the § Context Budget Tracking stamp",
+    "3. Always run `skill_validate` on the exact selected ID before `skill_get`.",
+  );
+  lines.push(
+    "4. Call `skill_get` with `includeReferences:false` by default.",
+  );
+  lines.push(
+    "5. Load at most one sidecar markdown file at a time with `skill_get_reference`.",
+  );
+  lines.push(
+    "6. Use `skill_list_categories` or `skill_browse_category` only as fallback when targeted search fails.",
+  );
+  lines.push(
+    "7. Never print catalog counts or budget details unless the user asks.",
   );
   lines.push("");
-
-  // Server connection
   lines.push("### Connection");
   lines.push("");
   lines.push("- **stdio**: `cbx mcp serve --transport stdio --scope auto`");

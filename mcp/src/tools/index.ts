@@ -41,11 +41,25 @@ export {
 } from "./skillSearch.js";
 
 export {
+  skillValidateName,
+  skillValidateDescription,
+  skillValidateSchema,
+  handleSkillValidate,
+} from "./skillValidate.js";
+
+export {
   skillGetName,
   skillGetDescription,
   skillGetSchema,
   handleSkillGet,
 } from "./skillGet.js";
+
+export {
+  skillGetReferenceName,
+  skillGetReferenceDescription,
+  skillGetReferenceSchema,
+  handleSkillGetReference,
+} from "./skillGetReference.js";
 
 export {
   skillBudgetReportName,

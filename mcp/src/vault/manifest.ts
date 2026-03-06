@@ -101,6 +101,48 @@ export interface ReferencedSkillFile {
   content: string;
 }
 
+export interface SkillFrontmatter {
+  description?: string;
+  metadata: Record<string, string>;
+}
+
+function parseFrontmatter(content: string): { raw: string; body: string } {
+  const match = content.match(/^---\s*\n([\s\S]*?)\n---\s*\n?/);
+  if (!match) return { raw: "", body: content };
+  return { raw: match[1], body: content.slice(match[0].length) };
+}
+
+function parseMetadataFromFrontmatter(
+  frontmatter: string,
+): Record<string, string> {
+  const lines = frontmatter.split(/\r?\n/);
+  const metadata: Record<string, string> = {};
+  let inMetadata = false;
+
+  for (const line of lines) {
+    if (/^metadata\s*:\s*$/.test(line)) {
+      inMetadata = true;
+      continue;
+    }
+    if (!inMetadata) continue;
+    if (!line.trim()) continue;
+    if (!/^\s+/.test(line)) break;
+    const kv = line.match(/^\s+([A-Za-z0-9_-]+)\s*:\s*(.+)\s*$/);
+    if (!kv) continue;
+    metadata[kv[1]] = kv[2].trim().replace(/^['"]|['"]$/g, "");
+  }
+
+  return metadata;
+}
+
+export function parseSkillFrontmatter(content: string): SkillFrontmatter {
+  const { raw } = parseFrontmatter(content);
+  return {
+    description: parseDescriptionFromFrontmatter(content, Number.MAX_SAFE_INTEGER),
+    metadata: parseMetadataFromFrontmatter(raw),
+  };
+}
+
 function normalizeLinkTarget(rawTarget: string): string | null {
   let target = String(rawTarget || "").trim();
   if (!target) return null;
@@ -218,6 +260,47 @@ async function collectSiblingMarkdownTargets(
   return targets;
 }
 
+export async function listReferencedMarkdownPaths(
+  skillPath: string,
+  skillContent?: string,
+): Promise<string[]> {
+  const source = skillContent ?? (await readFullSkillContent(skillPath));
+  const skillDir = path.dirname(skillPath);
+  const explicitTargets = collectReferencedMarkdownTargets(source);
+  const siblingTargets = await collectSiblingMarkdownTargets(skillDir);
+  const merged = new Set<string>([...explicitTargets, ...siblingTargets]);
+  return [...merged].sort((a, b) => a.localeCompare(b)).slice(0, MAX_REFERENCED_FILES);
+}
+
+export async function readSkillReferenceFile(
+  skillPath: string,
+  relativePath: string,
+): Promise<ReferencedSkillFile> {
+  const normalized = String(relativePath || "").trim();
+  if (!normalized || !normalized.toLowerCase().endsWith(".md")) {
+    throw new Error("Reference path must be a non-empty relative markdown file.");
+  }
+
+  const available = await listReferencedMarkdownPaths(skillPath);
+  if (!available.includes(normalized)) {
+    throw new Error(
+      `Reference path "${normalized}" is not available for this skill.`,
+    );
+  }
+
+  const skillDir = path.dirname(skillPath);
+  const resolved = path.resolve(skillDir, normalized);
+  const relative = path.relative(skillDir, resolved);
+  if (relative.startsWith("..") || path.isAbsolute(relative)) {
+    throw new Error(`Reference path "${normalized}" escapes the skill directory.`);
+  }
+
+  return {
+    relativePath: relative.split(path.sep).join("/"),
+    content: await readFile(resolved, "utf8"),
+  };
+}
+
 /**
  * Read full SKILL.md content and any direct local markdown references declared
  * in the skill document. Reference discovery is one-hop (no recursive crawling).
@@ -233,6 +316,13 @@ export async function readSkillContentWithReferences(
 
   const references = await readReferencedMarkdownFiles(skillPath, skillContent);
   return { skillContent, references };
+}
+
+export async function readSkillFrontmatter(
+  skillPath: string,
+): Promise<SkillFrontmatter> {
+  const content = await readFullSkillContent(skillPath);
+  return parseSkillFrontmatter(content);
 }
 
 /**

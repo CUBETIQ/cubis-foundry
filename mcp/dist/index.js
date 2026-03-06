@@ -433,6 +433,36 @@ async function readFullSkillContent(skillPath) {
 }
 var MARKDOWN_LINK_RE = /\[[^\]]+\]\(([^)]+)\)/g;
 var MAX_REFERENCED_FILES = 25;
+function parseFrontmatter2(content) {
+  const match = content.match(/^---\s*\n([\s\S]*?)\n---\s*\n?/);
+  if (!match) return { raw: "", body: content };
+  return { raw: match[1], body: content.slice(match[0].length) };
+}
+function parseMetadataFromFrontmatter(frontmatter) {
+  const lines = frontmatter.split(/\r?\n/);
+  const metadata = {};
+  let inMetadata = false;
+  for (const line of lines) {
+    if (/^metadata\s*:\s*$/.test(line)) {
+      inMetadata = true;
+      continue;
+    }
+    if (!inMetadata) continue;
+    if (!line.trim()) continue;
+    if (!/^\s+/.test(line)) break;
+    const kv = line.match(/^\s+([A-Za-z0-9_-]+)\s*:\s*(.+)\s*$/);
+    if (!kv) continue;
+    metadata[kv[1]] = kv[2].trim().replace(/^['"]|['"]$/g, "");
+  }
+  return metadata;
+}
+function parseSkillFrontmatter(content) {
+  const { raw } = parseFrontmatter2(content);
+  return {
+    description: parseDescriptionFromFrontmatter(content, Number.MAX_SAFE_INTEGER),
+    metadata: parseMetadataFromFrontmatter(raw)
+  };
+}
 function normalizeLinkTarget(rawTarget) {
   let target = String(rawTarget || "").trim();
   if (!target) return null;
@@ -519,6 +549,36 @@ async function collectSiblingMarkdownTargets(skillDir) {
   targets.sort((a, b) => a.localeCompare(b));
   return targets;
 }
+async function listReferencedMarkdownPaths(skillPath, skillContent) {
+  const source = skillContent ?? await readFullSkillContent(skillPath);
+  const skillDir = path3.dirname(skillPath);
+  const explicitTargets = collectReferencedMarkdownTargets(source);
+  const siblingTargets = await collectSiblingMarkdownTargets(skillDir);
+  const merged = /* @__PURE__ */ new Set([...explicitTargets, ...siblingTargets]);
+  return [...merged].sort((a, b) => a.localeCompare(b)).slice(0, MAX_REFERENCED_FILES);
+}
+async function readSkillReferenceFile(skillPath, relativePath) {
+  const normalized = String(relativePath || "").trim();
+  if (!normalized || !normalized.toLowerCase().endsWith(".md")) {
+    throw new Error("Reference path must be a non-empty relative markdown file.");
+  }
+  const available = await listReferencedMarkdownPaths(skillPath);
+  if (!available.includes(normalized)) {
+    throw new Error(
+      `Reference path "${normalized}" is not available for this skill.`
+    );
+  }
+  const skillDir = path3.dirname(skillPath);
+  const resolved = path3.resolve(skillDir, normalized);
+  const relative = path3.relative(skillDir, resolved);
+  if (relative.startsWith("..") || path3.isAbsolute(relative)) {
+    throw new Error(`Reference path "${normalized}" escapes the skill directory.`);
+  }
+  return {
+    relativePath: relative.split(path3.sep).join("/"),
+    content: await readFile(resolved, "utf8")
+  };
+}
 async function readSkillContentWithReferences(skillPath, includeReferences = true) {
   const skillContent = await readFullSkillContent(skillPath);
   if (!includeReferences) {
@@ -526,6 +586,10 @@ async function readSkillContentWithReferences(skillPath, includeReferences = tru
   }
   const references = await readReferencedMarkdownFiles(skillPath, skillContent);
   return { skillContent, references };
+}
+async function readSkillFrontmatter(skillPath) {
+  const content = await readFullSkillContent(skillPath);
+  return parseSkillFrontmatter(content);
 }
 async function enrichWithDescriptions(skills, maxLength) {
   return Promise.all(
@@ -539,7 +603,7 @@ async function enrichWithDescriptions(skills, maxLength) {
 
 // src/server.ts
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z as z13 } from "zod";
+import { z as z15 } from "zod";
 
 // src/tools/skillListCategories.ts
 import { z as z2 } from "zod";
@@ -709,13 +773,85 @@ async function handleSkillSearch(args, manifest, summaryMaxLength, charsPerToken
   };
 }
 
-// src/tools/skillGet.ts
+// src/tools/skillValidate.ts
 import { z as z5 } from "zod";
+var skillValidateName = "skill_validate";
+var skillValidateDescription = "Validate an exact skill ID before loading it. Returns alias metadata and discoverable reference markdown paths.";
+var skillValidateSchema = z5.object({
+  id: z5.string().describe("The exact skill ID (directory name) to validate")
+});
+function assertConcreteSkillId(id) {
+  if (id.startsWith("workflow-") || id.startsWith("agent-")) {
+    invalidInput(
+      `Skill id "${id}" appears to be a wrapper id. Use workflow/agent routing (for example $workflow-implement-track or $agent-backend-specialist) and call skill_get only for concrete skill ids.`
+    );
+  }
+}
+async function handleSkillValidate(args, manifest, charsPerToken) {
+  const { id } = args;
+  assertConcreteSkillId(id);
+  const skill = manifest.skills.find((entry) => entry.id === id);
+  if (!skill) {
+    const payload2 = {
+      id,
+      exists: false,
+      canonicalId: null,
+      category: null,
+      description: null,
+      isWrapper: false,
+      isAlias: false,
+      replacementId: null,
+      availableReferences: []
+    };
+    const text2 = JSON.stringify(payload2, null, 2);
+    const metrics2 = buildSkillToolMetrics({
+      charsPerToken,
+      fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
+      responseEstimatedTokens: estimateTokensFromText(text2, charsPerToken),
+      responseCharacterCount: text2.length
+    });
+    return {
+      content: [{ type: "text", text: text2 }],
+      structuredContent: { ...payload2, metrics: metrics2 },
+      _meta: { metrics: metrics2 }
+    };
+  }
+  const frontmatter = await readSkillFrontmatter(skill.path);
+  const replacementId = frontmatter.metadata.replaced_by || frontmatter.metadata.alias_of || null;
+  const isAlias = Boolean(replacementId || frontmatter.metadata.deprecated);
+  const availableReferences = await listReferencedMarkdownPaths(skill.path);
+  const payload = {
+    id,
+    exists: true,
+    canonicalId: replacementId || skill.id,
+    category: skill.category,
+    description: frontmatter.description || skill.description || null,
+    isWrapper: false,
+    isAlias,
+    replacementId,
+    availableReferences
+  };
+  const text = JSON.stringify(payload, null, 2);
+  const metrics = buildSkillToolMetrics({
+    charsPerToken,
+    fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
+    responseEstimatedTokens: estimateTokensFromText(text, charsPerToken),
+    responseCharacterCount: text.length
+  });
+  return {
+    content: [{ type: "text", text }],
+    structuredContent: { ...payload, metrics },
+    _meta: { metrics }
+  };
+}
+
+// src/tools/skillGet.ts
+import { z as z6 } from "zod";
 var skillGetName = "skill_get";
 var skillGetDescription = "Get full content of a specific skill by ID. Returns SKILL.md content and optionally direct referenced markdown files.";
-var skillGetSchema = z5.object({
-  id: z5.string().describe("The skill ID (directory name) to retrieve"),
-  includeReferences: z5.boolean().optional().describe(
+var skillGetSchema = z6.object({
+  id: z6.string().describe("The skill ID (directory name) to retrieve"),
+  includeReferences: z6.boolean().optional().describe(
     "Whether to include direct local markdown references from SKILL.md (default: true)"
   )
 });
@@ -780,13 +916,63 @@ async function handleSkillGet(args, manifest, charsPerToken) {
   };
 }
 
+// src/tools/skillGetReference.ts
+import { z as z7 } from "zod";
+var skillGetReferenceName = "skill_get_reference";
+var skillGetReferenceDescription = "Get one validated markdown reference file for a skill by exact relative path.";
+var skillGetReferenceSchema = z7.object({
+  id: z7.string().describe("The exact skill ID (directory name)"),
+  path: z7.string().describe("Exact relative markdown reference path exposed by skill_validate")
+});
+function assertConcreteSkillId2(id) {
+  if (id.startsWith("workflow-") || id.startsWith("agent-")) {
+    invalidInput(
+      `Skill id "${id}" appears to be a wrapper id. Use workflow/agent routing (for example $workflow-implement-track or $agent-backend-specialist) and call skill_get only for concrete skill ids.`
+    );
+  }
+}
+async function handleSkillGetReference(args, manifest, charsPerToken) {
+  const { id, path: path8 } = args;
+  assertConcreteSkillId2(id);
+  const skill = manifest.skills.find((entry) => entry.id === id);
+  if (!skill) {
+    notFound("Skill", id);
+  }
+  let reference;
+  try {
+    reference = await readSkillReferenceFile(skill.path, path8);
+  } catch (error) {
+    invalidInput(error instanceof Error ? error.message : String(error));
+  }
+  const metrics = buildSkillToolMetrics({
+    charsPerToken,
+    fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
+    responseEstimatedTokens: estimateTokensFromText(
+      reference.content,
+      charsPerToken
+    ),
+    responseCharacterCount: reference.content.length
+  });
+  return {
+    content: [{ type: "text", text: reference.content }],
+    structuredContent: {
+      skillId: id,
+      path: reference.relativePath,
+      metrics
+    },
+    _meta: {
+      metrics
+    }
+  };
+}
+
 // src/tools/skillBudgetReport.ts
-import { z as z6 } from "zod";
+import { z as z8 } from "zod";
 var skillBudgetReportName = "skill_budget_report";
 var skillBudgetReportDescription = "Report estimated context/token budget for selected and loaded skills compared to the full skill catalog.";
-var skillBudgetReportSchema = z6.object({
-  selectedSkillIds: z6.array(z6.string()).default([]).describe("Skill IDs selected after search/browse."),
-  loadedSkillIds: z6.array(z6.string()).default([]).describe("Skill IDs loaded via skill_get.")
+var skillBudgetReportSchema = z8.object({
+  selectedSkillIds: z8.array(z8.string()).default([]).describe("Skill IDs selected after search/browse."),
+  loadedSkillIds: z8.array(z8.string()).default([]).describe("Skill IDs loaded via skill_get.")
 });
 function uniqueStrings(values) {
   return [...new Set(values.map((value) => String(value)))];
@@ -876,7 +1062,7 @@ function handleSkillBudgetReport(args, manifest, charsPerToken) {
 }
 
 // src/tools/postmanGetMode.ts
-import { z as z7 } from "zod";
+import { z as z9 } from "zod";
 
 // src/cbxConfig/paths.ts
 import path4 from "path";
@@ -1136,8 +1322,8 @@ function isValidMode(mode) {
 // src/tools/postmanGetMode.ts
 var postmanGetModeName = "postman_get_mode";
 var postmanGetModeDescription = "Get the current Postman MCP mode from cbx_config.json. Returns the friendly mode name and URL.";
-var postmanGetModeSchema = z7.object({
-  scope: z7.enum(["global", "project", "auto"]).optional().describe(
+var postmanGetModeSchema = z9.object({
+  scope: z9.enum(["global", "project", "auto"]).optional().describe(
     "Config scope to read. Default: auto (project if exists, else global)"
   )
 });
@@ -1192,12 +1378,12 @@ function handlePostmanGetMode(args) {
 }
 
 // src/tools/postmanSetMode.ts
-import { z as z8 } from "zod";
+import { z as z10 } from "zod";
 var postmanSetModeName = "postman_set_mode";
 var postmanSetModeDescription = "Set the Postman MCP mode in cbx_config.json. Modes: minimal, code, full.";
-var postmanSetModeSchema = z8.object({
-  mode: z8.enum(["minimal", "code", "full"]).describe("Postman MCP mode to set: minimal, code, or full"),
-  scope: z8.enum(["global", "project", "auto"]).optional().describe(
+var postmanSetModeSchema = z10.object({
+  mode: z10.enum(["minimal", "code", "full"]).describe("Postman MCP mode to set: minimal, code, or full"),
+  scope: z10.enum(["global", "project", "auto"]).optional().describe(
     "Config scope to write. Default: auto (project if exists, else global)"
   )
 });
@@ -1236,11 +1422,11 @@ function handlePostmanSetMode(args) {
 }
 
 // src/tools/postmanGetStatus.ts
-import { z as z9 } from "zod";
+import { z as z11 } from "zod";
 var postmanGetStatusName = "postman_get_status";
 var postmanGetStatusDescription = "Get full Postman configuration status including mode, URL, and workspace ID.";
-var postmanGetStatusSchema = z9.object({
-  scope: z9.enum(["global", "project", "auto"]).optional().describe(
+var postmanGetStatusSchema = z11.object({
+  scope: z11.enum(["global", "project", "auto"]).optional().describe(
     "Config scope to read. Default: auto (project if exists, else global)"
   )
 });
@@ -1280,11 +1466,11 @@ function handlePostmanGetStatus(args) {
 }
 
 // src/tools/stitchGetMode.ts
-import { z as z10 } from "zod";
+import { z as z12 } from "zod";
 var stitchGetModeName = "stitch_get_mode";
 var stitchGetModeDescription = "Get the active Stitch profile name and URL from cbx_config.json. Never exposes API keys.";
-var stitchGetModeSchema = z10.object({
-  scope: z10.enum(["global", "project", "auto"]).optional().describe(
+var stitchGetModeSchema = z12.object({
+  scope: z12.enum(["global", "project", "auto"]).optional().describe(
     "Config scope to read. Default: auto (project if exists, else global)"
   )
 });
@@ -1319,12 +1505,12 @@ function handleStitchGetMode(args) {
 }
 
 // src/tools/stitchSetProfile.ts
-import { z as z11 } from "zod";
+import { z as z13 } from "zod";
 var stitchSetProfileName = "stitch_set_profile";
 var stitchSetProfileDescription = "Set the active Stitch profile in cbx_config.json. The profile must already exist in the config.";
-var stitchSetProfileSchema = z11.object({
-  profileName: z11.string().min(1).describe("Name of the Stitch profile to activate"),
-  scope: z11.enum(["global", "project", "auto"]).optional().describe(
+var stitchSetProfileSchema = z13.object({
+  profileName: z13.string().min(1).describe("Name of the Stitch profile to activate"),
+  scope: z13.enum(["global", "project", "auto"]).optional().describe(
     "Config scope to write. Default: auto (project if exists, else global)"
   )
 });
@@ -1369,11 +1555,11 @@ function handleStitchSetProfile(args) {
 }
 
 // src/tools/stitchGetStatus.ts
-import { z as z12 } from "zod";
+import { z as z14 } from "zod";
 var stitchGetStatusName = "stitch_get_status";
 var stitchGetStatusDescription = "Get full Stitch configuration status including active profile, all profile names, and URLs. Never exposes API keys.";
-var stitchGetStatusSchema = z12.object({
-  scope: z12.enum(["global", "project", "auto"]).optional().describe(
+var stitchGetStatusSchema = z14.object({
+  scope: z14.enum(["global", "project", "auto"]).optional().describe(
     "Config scope to read. Default: auto (project if exists, else global)"
   )
 });
@@ -1459,11 +1645,33 @@ var TOOL_REGISTRY = [
     )
   },
   {
+    name: skillValidateName,
+    description: skillValidateDescription,
+    schema: skillValidateSchema,
+    category: "skill",
+    createHandler: (ctx) => async (args) => handleSkillValidate(
+      args,
+      ctx.manifest,
+      ctx.charsPerToken
+    )
+  },
+  {
     name: skillGetName,
     description: skillGetDescription,
     schema: skillGetSchema,
     category: "skill",
     createHandler: (ctx) => async (args) => handleSkillGet(
+      args,
+      ctx.manifest,
+      ctx.charsPerToken
+    )
+  },
+  {
+    name: skillGetReferenceName,
+    description: skillGetReferenceDescription,
+    schema: skillGetReferenceSchema,
+    category: "skill",
+    createHandler: (ctx) => async (args) => handleSkillGetReference(
       args,
       ctx.manifest,
       ctx.charsPerToken
@@ -1850,7 +2058,7 @@ async function createServer({
     `Registered ${TOOL_REGISTRY.length} built-in tools from registry`
   );
   const upstreamCatalogs = await discoverUpstreamCatalogs(defaultConfigScope);
-  const dynamicSchema = z13.object({}).passthrough();
+  const dynamicSchema = z15.object({}).passthrough();
   const registeredDynamicToolNames = /* @__PURE__ */ new Set();
   for (const catalog of [upstreamCatalogs.postman, upstreamCatalogs.stitch]) {
     for (const tool of catalog.tools) {

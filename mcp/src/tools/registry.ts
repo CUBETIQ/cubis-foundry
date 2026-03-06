@@ -68,11 +68,25 @@ import {
 } from "./skillSearch.js";
 
 import {
+  skillValidateName,
+  skillValidateDescription,
+  skillValidateSchema,
+  handleSkillValidate,
+} from "./skillValidate.js";
+
+import {
   skillGetName,
   skillGetDescription,
   skillGetSchema,
   handleSkillGet,
 } from "./skillGet.js";
+
+import {
+  skillGetReferenceName,
+  skillGetReferenceDescription,
+  skillGetReferenceSchema,
+  handleSkillGetReference,
+} from "./skillGetReference.js";
 
 import {
   skillBudgetReportName,
@@ -176,6 +190,18 @@ export const TOOL_REGISTRY: readonly ToolRegistryEntry[] = [
       ),
   },
   {
+    name: skillValidateName,
+    description: skillValidateDescription,
+    schema: skillValidateSchema,
+    category: "skill",
+    createHandler: (ctx) => async (args) =>
+      handleSkillValidate(
+        args as z.infer<typeof skillValidateSchema>,
+        ctx.manifest,
+        ctx.charsPerToken,
+      ),
+  },
+  {
     name: skillGetName,
     description: skillGetDescription,
     schema: skillGetSchema,
@@ -183,6 +209,18 @@ export const TOOL_REGISTRY: readonly ToolRegistryEntry[] = [
     createHandler: (ctx) => async (args) =>
       handleSkillGet(
         args as z.infer<typeof skillGetSchema>,
+        ctx.manifest,
+        ctx.charsPerToken,
+      ),
+  },
+  {
+    name: skillGetReferenceName,
+    description: skillGetReferenceDescription,
+    schema: skillGetReferenceSchema,
+    category: "skill",
+    createHandler: (ctx) => async (args) =>
+      handleSkillGetReference(
+        args as z.infer<typeof skillGetReferenceSchema>,
         ctx.manifest,
         ctx.charsPerToken,
       ),

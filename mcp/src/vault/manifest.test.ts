@@ -6,9 +6,13 @@ import {
   buildManifest,
   enrichWithDescriptions,
   extractDescription,
+  listReferencedMarkdownPaths,
   parseDescriptionFromFrontmatter,
+  parseSkillFrontmatter,
+  readSkillFrontmatter,
   readFullSkillContent,
   readSkillContentWithReferences,
+  readSkillReferenceFile,
 } from "./manifest.js";
 
 const tempDirs: string[] = [];
@@ -60,6 +64,27 @@ describe("frontmatter description parsing", () => {
     const content = ["---", "name: no-description", "---", "# Body"].join("\n");
     expect(parseDescriptionFromFrontmatter(content, 100)).toBeUndefined();
   });
+
+  it("extracts metadata from skill frontmatter", () => {
+    const content = [
+      "---",
+      "name: alias-skill",
+      "description: Compatibility alias",
+      "metadata:",
+      "  deprecated: true",
+      "  replaced_by: canonical-skill",
+      "---",
+      "# Alias",
+    ].join("\n");
+
+    expect(parseSkillFrontmatter(content)).toEqual({
+      description: "Compatibility alias",
+      metadata: {
+        deprecated: "true",
+        replaced_by: "canonical-skill",
+      },
+    });
+  });
 });
 
 describe("skill content IO", () => {
@@ -90,6 +115,31 @@ describe("skill content IO", () => {
     writeFileSync(file, body, "utf8");
 
     await expect(readFullSkillContent(file)).resolves.toBe(body);
+  });
+
+  it("reads frontmatter metadata from a skill file", async () => {
+    const dir = createTempDir("mcp-frontmatter-read-");
+    const file = path.join(dir, "SKILL.md");
+    writeFileSync(
+      file,
+      [
+        "---",
+        "name: frontmatter-read",
+        "description: Metadata body",
+        "metadata:",
+        "  alias_of: canonical-skill",
+        "---",
+        "# Content",
+      ].join("\n"),
+      "utf8",
+    );
+
+    await expect(readSkillFrontmatter(file)).resolves.toEqual({
+      description: "Metadata body",
+      metadata: {
+        alias_of: "canonical-skill",
+      },
+    });
   });
 
   it("loads direct local markdown references from SKILL.md", async () => {
@@ -159,6 +209,57 @@ describe("skill content IO", () => {
     expect(result.references).toEqual([
       { relativePath: "overview.md", content: "# Overview\nSibling content" },
     ]);
+  });
+
+  it("lists available reference paths from explicit and sibling markdown files", async () => {
+    const dir = createTempDir("mcp-refs-list-");
+    const file = path.join(dir, "SKILL.md");
+    const refsDir = path.join(dir, "references");
+    mkdirSync(refsDir, { recursive: true });
+    writeFileSync(
+      file,
+      [
+        "---",
+        "name: listed-refs",
+        "description: refs",
+        "---",
+        "# Skill",
+        "See [Guide](references/guide.md).",
+      ].join("\n"),
+      "utf8",
+    );
+    writeFileSync(path.join(refsDir, "guide.md"), "# Guide", "utf8");
+    writeFileSync(path.join(dir, "overview.md"), "# Overview", "utf8");
+
+    await expect(listReferencedMarkdownPaths(file)).resolves.toEqual([
+      "overview.md",
+      "references/guide.md",
+    ]);
+  });
+
+  it("reads one validated skill reference file", async () => {
+    const dir = createTempDir("mcp-ref-file-read-");
+    const file = path.join(dir, "SKILL.md");
+    const refsDir = path.join(dir, "references");
+    mkdirSync(refsDir, { recursive: true });
+    writeFileSync(
+      file,
+      [
+        "---",
+        "name: ref-reader",
+        "description: refs",
+        "---",
+        "# Skill",
+        "See [Guide](references/guide.md).",
+      ].join("\n"),
+      "utf8",
+    );
+    writeFileSync(path.join(refsDir, "guide.md"), "# Guide\nReference body", "utf8");
+
+    await expect(readSkillReferenceFile(file, "references/guide.md")).resolves.toEqual({
+      relativePath: "references/guide.md",
+      content: "# Guide\nReference body",
+    });
   });
 });
 

@@ -24,13 +24,13 @@ This server exposes built-in tools plus dynamic passthrough tools discovered fro
 
 | Domain      | Tools | Purpose                                                       |
 | ----------- | ----- | ------------------------------------------------------------- |
-| **Skills**               | 5        | Browse/search/get + budget reporting for skill definitions          |
+| **Skills**               | 7        | Browse/search/validate/get + targeted reference loading for skills  |
 | **Postman config**       | 3        | Read/write Postman MCP mode in `cbx_config.json`                   |
 | **Stitch config**        | 3        | Read/write Stitch active profile in `cbx_config.json`              |
 | **Postman passthrough**  | dynamic  | `postman.<tool_name>` for all discovered upstream Postman tools    |
 | **Stitch passthrough**   | dynamic  | `stitch.<tool_name>` for all discovered upstream Stitch tools       |
 
-The skill vault uses a **lazy content model**: startup only scans metadata (category/name/path). Full `SKILL.md` content is loaded on-demand via `skill_get` only.
+The skill vault uses a **lazy content model**: startup only scans metadata (category/name/path). Exact skill selection is validated via `skill_validate`, `skill_get` loads the core `SKILL.md`, and sidecar markdown is loaded only when needed via `skill_get_reference`.
 
 ## Architecture
 
@@ -67,7 +67,9 @@ mcp/
 │   │   ├── skillListCategories.ts
 │   │   ├── skillBrowseCategory.ts
 │   │   ├── skillSearch.ts
+│   │   ├── skillValidate.ts
 │   │   ├── skillGet.ts
+│   │   ├── skillGetReference.ts
 │   │   ├── skillBudgetReport.ts
 │   │   ├── postmanModes.ts    # Mode ↔ URL mapping
 │   │   ├── postmanGetMode.ts
@@ -269,6 +271,32 @@ Search skills by keyword.
 }
 ```
 
+#### `skill_validate`
+
+Validate an exact skill ID before loading it.
+
+**Input**:
+
+```json
+{ "id": "flutter-expert" }
+```
+
+**Output**:
+
+```json
+{
+  "id": "flutter-expert",
+  "exists": true,
+  "canonicalId": "flutter-expert",
+  "category": "mobile",
+  "description": "Flutter app architecture...",
+  "isWrapper": false,
+  "isAlias": false,
+  "replacementId": null,
+  "availableReferences": ["references/project-structure.md"]
+}
+```
+
 #### `skill_get`
 
 Get the full SKILL.md content for a specific skill.
@@ -276,11 +304,29 @@ Get the full SKILL.md content for a specific skill.
 **Input**:
 
 ```json
-{ "id": "nestjs-expert" }
+{ "id": "nestjs-expert", "includeReferences": false }
 ```
 
 **Output**: Full markdown content of the skill file (as `type: "text"` content block).
 `structuredContent.metrics` includes `loadedSkillEstimatedTokens` and estimated savings vs full catalog.
+
+By policy, agents should call `includeReferences: false` by default and fetch sidecar docs only when needed.
+
+#### `skill_get_reference`
+
+Get one validated markdown sidecar file for a skill.
+
+**Input**:
+
+```json
+{
+  "id": "flutter-expert",
+  "path": "references/project-structure.md"
+}
+```
+
+**Output**: Raw markdown content of the requested reference file (as `type: "text"` content block).
+`structuredContent` includes the resolved relative path and token metrics.
 
 #### `skill_budget_report`
 

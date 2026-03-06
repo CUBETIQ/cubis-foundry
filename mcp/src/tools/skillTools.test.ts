@@ -6,8 +6,10 @@ import type { VaultManifest } from "../vault/types.js";
 import { handleSkillBrowseCategory } from "./skillBrowseCategory.js";
 import { handleSkillBudgetReport } from "./skillBudgetReport.js";
 import { handleSkillGet } from "./skillGet.js";
+import { handleSkillGetReference } from "./skillGetReference.js";
 import { handleSkillListCategories } from "./skillListCategories.js";
 import { handleSkillSearch } from "./skillSearch.js";
+import { handleSkillValidate } from "./skillValidate.js";
 
 function payload(result: { content: Array<{ text: string }> }): Record<string, unknown> {
   return JSON.parse(result.content[0].text) as Record<string, unknown>;
@@ -145,6 +147,76 @@ describe("skill tools", () => {
     expect(result.content[0].text).toContain("# Content");
     expect(result.content[0].text).toContain("description: React performance");
     expect(toolMetrics.loadedSkillEstimatedTokens).toBeGreaterThan(0);
+  });
+
+  it("validates an exact skill id and exposes alias/reference metadata", async () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), "mcp-skill-validate-"));
+    const skillFile = path.join(dir, "SKILL.md");
+    const referencesDir = path.join(dir, "references");
+    mkdirSync(referencesDir, { recursive: true });
+    writeFileSync(
+      skillFile,
+      [
+        "---",
+        "name: deprecated-skill",
+        "description: compatibility shim",
+        "metadata:",
+        "  deprecated: true",
+        "  replaced_by: canonical-skill",
+        "---",
+        "# Skill",
+      ].join("\n"),
+      "utf8",
+    );
+    writeFileSync(path.join(referencesDir, "guide.md"), "# Guide", "utf8");
+
+    const skillBytes = statSync(skillFile).size;
+    const manifest: VaultManifest = {
+      categories: ["general"],
+      skills: [
+        {
+          id: "deprecated-skill",
+          category: "general",
+          path: skillFile,
+          fileBytes: skillBytes,
+        },
+      ],
+      fullCatalogBytes: skillBytes,
+      fullCatalogEstimatedTokens: Math.ceil(skillBytes / 4),
+    };
+
+    const result = await handleSkillValidate(
+      { id: "deprecated-skill" },
+      manifest,
+      4,
+    );
+    const data = payload(result);
+    expect(data).toMatchObject({
+      id: "deprecated-skill",
+      exists: true,
+      canonicalId: "canonical-skill",
+      isAlias: true,
+      replacementId: "canonical-skill",
+    });
+    expect(data.availableReferences).toContain("references/guide.md");
+  });
+
+  it("returns exists=false for unknown exact skill ids", async () => {
+    const manifest = createManifest();
+    const result = await handleSkillValidate({ id: "missing" }, manifest, 4);
+    const data = payload(result);
+    expect(data).toMatchObject({
+      id: "missing",
+      exists: false,
+      canonicalId: null,
+    });
+  });
+
+  it("throws a wrapper guidance error when skill_validate receives workflow id", async () => {
+    const manifest = createManifest();
+    await expect(
+      handleSkillValidate({ id: "workflow-implement-track" }, manifest, 4),
+    ).rejects.toThrow("appears to be a wrapper id");
   });
 
   it("includes referenced markdown files in skill_get by default", async () => {
@@ -294,6 +366,90 @@ describe("skill tools", () => {
     await expect(
       handleSkillGet({ id: "agent-backend-specialist" }, manifest, 4),
     ).rejects.toThrow("appears to be a wrapper id");
+  });
+
+  it("returns one validated reference file for skill_get_reference", async () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), "mcp-skill-ref-single-"));
+    const skillFile = path.join(dir, "SKILL.md");
+    const referencesDir = path.join(dir, "references");
+    mkdirSync(referencesDir, { recursive: true });
+    writeFileSync(
+      skillFile,
+      [
+        "---",
+        "name: single-ref-skill",
+        "description: one ref",
+        "---",
+        "# Skill",
+        "See [Guide](references/guide.md).",
+      ].join("\n"),
+      "utf8",
+    );
+    writeFileSync(
+      path.join(referencesDir, "guide.md"),
+      "# Guide\nOne file only",
+      "utf8",
+    );
+
+    const skillBytes = statSync(skillFile).size;
+    const manifest: VaultManifest = {
+      categories: ["general"],
+      skills: [
+        {
+          id: "single-ref-skill",
+          category: "general",
+          path: skillFile,
+          fileBytes: skillBytes,
+        },
+      ],
+      fullCatalogBytes: skillBytes,
+      fullCatalogEstimatedTokens: Math.ceil(skillBytes / 4),
+    };
+
+    const result = await handleSkillGetReference(
+      { id: "single-ref-skill", path: "references/guide.md" },
+      manifest,
+      4,
+    );
+    expect(result.content[0].text).toBe("# Guide\nOne file only");
+    expect(result.structuredContent).toMatchObject({
+      skillId: "single-ref-skill",
+      path: "references/guide.md",
+    });
+  });
+
+  it("rejects invalid reference paths for skill_get_reference", async () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), "mcp-skill-ref-invalid-"));
+    const skillFile = path.join(dir, "SKILL.md");
+    writeFileSync(
+      skillFile,
+      ["---", "name: invalid-ref-skill", "description: invalid", "---", "# Skill"].join(
+        "\n",
+      ),
+      "utf8",
+    );
+    const skillBytes = statSync(skillFile).size;
+    const manifest: VaultManifest = {
+      categories: ["general"],
+      skills: [
+        {
+          id: "invalid-ref-skill",
+          category: "general",
+          path: skillFile,
+          fileBytes: skillBytes,
+        },
+      ],
+      fullCatalogBytes: skillBytes,
+      fullCatalogEstimatedTokens: Math.ceil(skillBytes / 4),
+    };
+
+    await expect(
+      handleSkillGetReference(
+        { id: "invalid-ref-skill", path: "../secret.md" },
+        manifest,
+        4,
+      ),
+    ).rejects.toThrow("Reference path");
   });
 
   it("returns consolidated budget rollup for selected and loaded skills", () => {
