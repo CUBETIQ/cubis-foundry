@@ -1,10 +1,7 @@
 ---
 name: "refactor"
-displayName: "Refactor - OneUp HR"
 description: "Migrate legacy code to new architecture while maintaining behavior"
-keywords: ["refactor", "migrate", "clean", "improve", "legacy", "architecture"]
 ---
-
 # Refactor - OneUp HR
 
 ## Migration Patterns

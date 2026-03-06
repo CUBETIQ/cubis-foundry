@@ -2,8 +2,6 @@
 name: "code-documenter"
 description: "Use when adding docstrings, creating API documentation, or building documentation sites. Invoke for OpenAPI/Swagger specs, JSDoc, doc portals, tutorials, user guides."
 ---
-
-
 # Code Documenter
 
 ## Overview
@@ -81,7 +79,3 @@ Depending on the task, provide:
 ## Knowledge Reference
 
 Google/NumPy/Sphinx docstrings, JSDoc, OpenAPI 3.0/3.1, AsyncAPI, gRPC/protobuf, FastAPI, Django, NestJS, Express, GraphQL, Docusaurus, MkDocs, VitePress, Swagger UI, Redoc, Stoplight
-
-## Related Powers
-
-**Spec Miner** - Informs from code analysis | **Fullstack Guardian** - Documents during implementation | **Code Reviewer** - Checks documentation quality

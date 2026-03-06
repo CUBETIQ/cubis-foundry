@@ -6,7 +6,6 @@ metadata:
   version: "1.0.0"
   argument-hint: <file-or-pattern>
 ---
-
 # Web Interface Guidelines
 
 Review files for compliance with Web Interface Guidelines.

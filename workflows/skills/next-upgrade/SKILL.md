@@ -1,7 +1,8 @@
 ---
 name: next-upgrade
 description: "Use only for upgrading Next.js versions with official migration guides and codemods; includes dependency/version planning and upgrade validation."
-argument-hint: "[target-version]"
+metadata:
+  argument-hint: "[target-version]"
 ---
 
 # Upgrade Next.js

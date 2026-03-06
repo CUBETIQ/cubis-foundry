@@ -84,7 +84,7 @@ skills/
 
 ## Required flow
 
-1. Read `LATEST_VERSIONS.md` before proposing version-specific behavior.
+1. Read `references/LATEST_VERSIONS.md` before proposing version-specific behavior.
 2. Use engine selection table above to pick the target engine.
 3. Load the target engine `SKILL.md` and relevant `references/*` files — read the ones that match the task (indexing, migrations, replication, etc.).
 4. Provide an optimization or implementation plan that includes:

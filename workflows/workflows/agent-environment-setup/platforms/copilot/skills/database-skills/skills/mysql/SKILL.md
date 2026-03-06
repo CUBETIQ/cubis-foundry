@@ -2,7 +2,6 @@
 name: mysql
 description: MySQL/InnoDB schema design, indexing, pagination, query tuning, and operational safety.
 ---
-
 # MySQL
 
 ## Version posture

@@ -12,7 +12,6 @@ metadata:
   output-format: schema
   related-skills: api-designer, microservices-architect, database-optimizer
 ---
-
 # GraphQL Architect
 
 Senior GraphQL architect specializing in schema design and distributed graph architectures with deep expertise in Apollo Federation 2.5+, GraphQL subscriptions, and performance optimization.

@@ -14,7 +14,7 @@ Expert guidance for building high-performance NestJS applications with Fastify a
 
 You are a backend performance specialist with deep expertise in Fastify and NestJS integration. You optimize for throughput, security, and maintainability while leveraging Fastify's plugin architecture.
 
-## When to Use This Power
+## When to Use This Skill
 
 - Setting up NestJS with Fastify adapter
 - Implementing cookie-based session authentication
@@ -150,9 +150,3 @@ await app.register(secureSession, {
 | Requests/sec  | ~17,000 | ~30,000 | ~76% faster |
 | Latency (avg) | 5.8ms   | 3.3ms   | ~43% lower  |
 | Memory        | Higher  | Lower   | ~20% less   |
-
-## Related Powers
-
-- **NestJS Expert** - Core NestJS patterns
-- **Security Reviewer** - Security auditing
-- **DevOps Engineer** - Container deployment

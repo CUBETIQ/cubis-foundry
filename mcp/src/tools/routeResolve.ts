@@ -1,0 +1,417 @@
+/**
+ * Cubis Foundry MCP Server – route_resolve tool.
+ *
+ * Resolves workflows and custom agents before skill discovery.
+ */
+
+import path from "node:path";
+import process from "node:process";
+import { promises as fs } from "node:fs";
+import { z } from "zod";
+import type { RouteEntry, RouteManifest } from "../routes/types.js";
+
+export const routeResolveName = "route_resolve";
+
+export const routeResolveDescription =
+  "Resolve an explicit workflow command, explicit custom agent, compatibility alias, or free-text intent into one workflow/agent route before skill loading.";
+
+export const routeResolveSchema = z.object({
+  intent: z
+    .string()
+    .min(1)
+    .describe(
+      "Explicit workflow command (/mobile), explicit agent (@mobile-developer), compatibility alias ($workflow-mobile / $agent-mobile-developer), or free-text user intent",
+    ),
+});
+
+const ROUTE_STOP_WORDS = new Set([
+  "a",
+  "an",
+  "and",
+  "app",
+  "for",
+  "help",
+  "i",
+  "in",
+  "is",
+  "me",
+  "of",
+  "on",
+  "or",
+  "please",
+  "the",
+  "to",
+  "with",
+]);
+
+const SKILL_AUTHORING_OBJECT_SIGNALS = [
+  "skill",
+  "skills",
+  "skill authoring",
+  "skill-authoring",
+  "skill creator",
+  "skill-creator",
+  "skill.md",
+  "power.md",
+  "frontmatter",
+  "metadata",
+  "reference",
+  "references",
+  "sidecar",
+  "sidecars",
+  "mirror",
+  "mirrors",
+];
+
+const SKILL_AUTHORING_ACTION_SIGNALS = [
+  "adapt",
+  "author",
+  "build",
+  "check",
+  "create",
+  "design",
+  "fix",
+  "maintain",
+  "migrate",
+  "normalize",
+  "plan",
+  "repair",
+  "review",
+  "scaffold",
+  "spec",
+  "update",
+  "validate",
+  "wire",
+];
+
+const SKILL_AUTHORING_PLAN_SIGNALS = ["design", "plan", "spec"];
+const SKILL_AUTHORING_REVIEW_SIGNALS = ["audit", "check", "review", "validate"];
+const SKILL_AUTHORING_ORCHESTRATE_SIGNALS = [
+  "all platform",
+  "all platforms",
+  "cross platform",
+  "cross-platform",
+  "every platform",
+  "generator",
+  "mirror",
+  "mirrors",
+];
+
+const LANGUAGE_SIGNAL_FILES: Array<{ skillId: string; files: string[] }> = [
+  { skillId: "typescript-pro", files: ["tsconfig.json", "tsconfig.base.json", "deno.json"] },
+  { skillId: "javascript-pro", files: ["package.json"] },
+  { skillId: "python-pro", files: ["pyproject.toml", "requirements.txt", "requirements-dev.txt"] },
+  { skillId: "golang-pro", files: ["go.mod"] },
+  { skillId: "rust-pro", files: ["Cargo.toml"] },
+  { skillId: "csharp-pro", files: [".sln", ".csproj"] },
+  { skillId: "java-pro", files: ["pom.xml", "build.gradle"] },
+  { skillId: "kotlin-pro", files: ["build.gradle.kts", "settings.gradle.kts"] },
+];
+
+function normalize(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9@/$+-]+/g, " ").trim();
+}
+
+function tokenize(value: string): string[] {
+  const seen = new Set<string>();
+  return normalize(value)
+    .split(/\s+/)
+    .filter((token) => token.length >= 2 && !ROUTE_STOP_WORDS.has(token))
+    .filter((token) => {
+      if (seen.has(token)) return false;
+      seen.add(token);
+      return true;
+    });
+}
+
+function countTokenMatches(haystack: string, tokens: string[]): number {
+  let matches = 0;
+  for (const token of tokens) {
+    if (haystack.includes(token)) matches += 1;
+  }
+  return matches;
+}
+
+function includesAnyPhrase(normalizedIntent: string, phrases: string[]): boolean {
+  return phrases.some((phrase) => normalizedIntent.includes(phrase));
+}
+
+function isSkillAuthoringIntent(intent: string): boolean {
+  const normalizedIntent = normalize(intent);
+  const hasObjectSignal = includesAnyPhrase(
+    normalizedIntent,
+    SKILL_AUTHORING_OBJECT_SIGNALS,
+  );
+  if (!hasObjectSignal) return false;
+
+  return includesAnyPhrase(normalizedIntent, SKILL_AUTHORING_ACTION_SIGNALS);
+}
+
+function chooseSkillAuthoringRoute(
+  intent: string,
+  manifest: RouteManifest,
+): RouteEntry | null {
+  if (!isSkillAuthoringIntent(intent)) return null;
+
+  const normalizedIntent = normalize(intent);
+  let preferredRouteId = "create";
+  if (includesAnyPhrase(normalizedIntent, SKILL_AUTHORING_REVIEW_SIGNALS)) {
+    preferredRouteId = "review";
+  } else if (includesAnyPhrase(normalizedIntent, SKILL_AUTHORING_PLAN_SIGNALS)) {
+    preferredRouteId = "plan";
+  } else if (
+    includesAnyPhrase(normalizedIntent, SKILL_AUTHORING_ORCHESTRATE_SIGNALS)
+  ) {
+    preferredRouteId = "orchestrate";
+  }
+
+  return (
+    manifest.routes.find(
+      (entry) => entry.kind === "workflow" && entry.id === preferredRouteId,
+    ) || null
+  );
+}
+
+function buildSearchText(route: RouteEntry): string {
+  return normalize(
+    [
+      route.kind,
+      route.id,
+      route.command || "",
+      route.displayName,
+      route.description,
+      route.primaryAgent,
+      ...route.supportingAgents,
+      ...route.triggers,
+      ...route.primarySkills,
+      ...route.supportingSkills,
+      route.artifacts.codex?.compatibilityAlias || "",
+      route.artifacts.antigravity?.commandFile || "",
+      route.artifacts.copilot?.promptFile || "",
+    ].join(" "),
+  );
+}
+
+function findExplicitRoute(
+  intent: string,
+  manifest: RouteManifest,
+): { route: RouteEntry; matchedBy: string } | null {
+  const trimmed = intent.trim();
+
+  if (trimmed.startsWith("/")) {
+    const route = manifest.routes.find(
+      (entry) =>
+        entry.kind === "workflow" &&
+        entry.command?.toLowerCase() === trimmed.toLowerCase(),
+    );
+    if (route) return { route, matchedBy: "explicit-workflow-command" };
+  }
+
+  if (trimmed.startsWith("@")) {
+    const normalizedAgent = trimmed.slice(1).toLowerCase();
+    const route = manifest.routes.find(
+      (entry) => entry.kind === "agent" && entry.id.toLowerCase() === normalizedAgent,
+    );
+    if (route) return { route, matchedBy: "explicit-agent" };
+  }
+
+  if (trimmed.startsWith("$")) {
+    const normalizedAlias = trimmed.toLowerCase();
+    const route = manifest.routes.find(
+      (entry) =>
+        entry.artifacts.codex?.compatibilityAlias?.toLowerCase() === normalizedAlias,
+    );
+    if (route) return { route, matchedBy: "compatibility-alias" };
+  }
+
+  return null;
+}
+
+function resolveByIntent(
+  intent: string,
+  manifest: RouteManifest,
+): { route: RouteEntry; matchedBy: string; score: number } | null {
+  const normalizedIntent = normalize(intent);
+  const tokens = tokenize(intent);
+
+  let best:
+    | { route: RouteEntry; matchedBy: string; score: number; tokenMatches: number }
+    | null = null;
+
+  for (const route of manifest.routes) {
+    const searchText = buildSearchText(route);
+    const phraseMatch =
+      normalizedIntent.length > 0 && searchText.includes(normalizedIntent);
+    const tokenMatches = countTokenMatches(searchText, tokens);
+    const triggerMatches = route.triggers.reduce((sum, trigger) => {
+      return sum + (normalizedIntent.includes(normalize(trigger)) ? 1 : 0);
+    }, 0);
+    const score =
+      (phraseMatch ? 500 : 0) +
+      triggerMatches * 120 +
+      tokenMatches * 40 +
+      (route.kind === "workflow" ? 10 : 0);
+
+    if (score <= 0) continue;
+    if (
+      !best ||
+      score > best.score ||
+      (score === best.score && route.id.localeCompare(best.route.id) < 0)
+    ) {
+      best = {
+        route,
+        matchedBy: triggerMatches > 0 ? "trigger-match" : "intent-match",
+        score,
+        tokenMatches,
+      };
+    }
+  }
+
+  if (!best) return null;
+  if (best.score < 80 && best.tokenMatches < 2) return null;
+  return best;
+}
+
+function buildResolvedPayload(
+  input: string,
+  route: RouteEntry,
+  matchedBy: string,
+  detectedLanguageSkill: string | null,
+) {
+  const primarySkillHint = isSkillAuthoringIntent(input)
+    ? "skill-authoring"
+    : route.primarySkills[0] || null;
+  return {
+    input,
+    resolved: true,
+    kind: route.kind,
+    id: route.id,
+    command: route.command,
+    agent: route.primaryAgent,
+    primarySkillHint,
+    primarySkills: route.primarySkills,
+    supportingSkills: route.supportingSkills,
+    detectedLanguageSkill,
+    fallbackSkillSearchRecommended: false,
+    matchedBy,
+    explanation:
+      matchedBy === "explicit-workflow-command"
+        ? `Matched explicit workflow command ${route.command}.`
+        : matchedBy === "explicit-agent"
+          ? `Matched explicit agent @${route.id}.`
+          : matchedBy === "compatibility-alias"
+            ? `Matched compatibility alias ${route.artifacts.codex?.compatibilityAlias}.`
+            : matchedBy === "skill-authoring-intent"
+              ? `Matched workflow '${route.id}' and selected skill-authoring as the primary skill hint for skill package work.`
+            : `Matched ${route.kind} '${route.id}' from installed route metadata.`,
+    artifacts: route.artifacts,
+  };
+}
+
+async function fileExists(target: string) {
+  try {
+    await fs.stat(target);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function detectLanguageSkillHint() {
+  const cwd = process.cwd();
+  const candidates = await fs.readdir(cwd).catch(() => []);
+  const has = (fileName: string) => candidates.includes(fileName);
+
+  for (const entry of LANGUAGE_SIGNAL_FILES) {
+    for (const fileName of entry.files) {
+      if (fileName === ".sln" || fileName === ".csproj") {
+        if (candidates.some((item) => item.endsWith(fileName))) {
+          return "csharp-pro";
+        }
+        continue;
+      }
+      if (has(fileName) || (await fileExists(path.join(cwd, fileName)))) {
+        if (entry.skillId === "javascript-pro") {
+          const tsSignals = ["tsconfig.json", "tsconfig.base.json", "deno.json"];
+          if (tsSignals.some((signal) => has(signal))) {
+            return "typescript-pro";
+          }
+        }
+        return entry.skillId;
+      }
+    }
+  }
+  return null;
+}
+
+export async function handleRouteResolve(
+  args: z.infer<typeof routeResolveSchema>,
+  routeManifest: RouteManifest,
+) {
+  const { intent } = args;
+  const detectedLanguageSkill = await detectLanguageSkillHint();
+  const explicit = findExplicitRoute(intent, routeManifest);
+  if (explicit) {
+    const payload = buildResolvedPayload(
+      intent,
+      explicit.route,
+      explicit.matchedBy,
+      detectedLanguageSkill,
+    );
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify(payload, null, 2) }],
+      structuredContent: payload,
+    };
+  }
+
+  const skillAuthoringRoute = chooseSkillAuthoringRoute(intent, routeManifest);
+  if (skillAuthoringRoute) {
+    const payload = buildResolvedPayload(
+      intent,
+      skillAuthoringRoute,
+      "skill-authoring-intent",
+      detectedLanguageSkill,
+    );
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify(payload, null, 2) }],
+      structuredContent: payload,
+    };
+  }
+
+  const inferred = resolveByIntent(intent, routeManifest);
+  if (inferred) {
+    const payload = buildResolvedPayload(
+      intent,
+      inferred.route,
+      inferred.matchedBy,
+      detectedLanguageSkill,
+    );
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify(payload, null, 2) }],
+      structuredContent: payload,
+    };
+  }
+
+  const payload = {
+    input: intent,
+    resolved: false,
+    kind: null,
+    id: null,
+    command: null,
+    agent: null,
+    primarySkillHint: null,
+    primarySkills: [],
+    supportingSkills: [],
+    detectedLanguageSkill,
+    fallbackSkillSearchRecommended: true,
+    matchedBy: "none",
+    explanation:
+      "No workflow or custom agent matched the current intent. Inspect locally first, then use one narrow skill_search only if the domain is still unclear.",
+    artifacts: null,
+  };
+
+  return {
+    content: [{ type: "text" as const, text: JSON.stringify(payload, null, 2) }],
+    structuredContent: payload,
+  };
+}

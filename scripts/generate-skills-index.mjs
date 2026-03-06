@@ -94,7 +94,8 @@ function parseArgs(argv) {
     argv.find((item, idx) => argv[idx - 1] === "--target") || "all";
   const target = String(targetArg).toLowerCase();
   const dryRun = args.has("--dry-run");
-  return { target, dryRun };
+  const check = args.has("--check");
+  return { target, dryRun, check };
 }
 
 function splitTopLevelCsv(value) {
@@ -148,6 +149,14 @@ function getMetadataBlock(frontmatterRaw) {
   return metadata;
 }
 
+function normalizeNullableString(value) {
+  if (value == null) return null;
+  const normalized = String(value).trim().replace(/^['\"]|['\"]$/g, "");
+  const lower = normalized.toLowerCase();
+  if (!normalized || lower === "null" || lower === "~") return null;
+  return normalized;
+}
+
 function getAllTriggerValues(frontmatterRaw) {
   const lines = frontmatterRaw.split(/\r?\n/);
   const values = [];
@@ -186,6 +195,28 @@ async function pathExists(target) {
   }
 }
 
+async function listSkillFiles(root) {
+  const files = [];
+  const queue = [root];
+  while (queue.length > 0) {
+    const current = queue.pop();
+    if (!current || !(await pathExists(current))) continue;
+    const entries = await fs.readdir(current, { withFileTypes: true });
+    for (const entry of entries) {
+      if (entry.name.startsWith(".")) continue;
+      const fullPath = path.join(current, entry.name);
+      if (entry.isDirectory()) {
+        queue.push(fullPath);
+        continue;
+      }
+      if (entry.isFile() && entry.name === "SKILL.md") {
+        files.push(fullPath);
+      }
+    }
+  }
+  return files.sort((a, b) => a.localeCompare(b));
+}
+
 function normalizeBoolean(value) {
   if (typeof value === "boolean") return value;
   if (typeof value !== "string") return false;
@@ -213,13 +244,9 @@ async function collectSkillsIndexEntries(roots, indexPathPrefix) {
   for (const skillsRoot of roots) {
     if (!(await pathExists(skillsRoot))) continue;
 
-    const entries = await fs.readdir(skillsRoot, { withFileTypes: true });
-    for (const entry of entries) {
-      if (!entry.isDirectory() || entry.name.startsWith(".")) continue;
-      const skillId = entry.name;
-      const skillFile = path.join(skillsRoot, skillId, "SKILL.md");
-      if (!(await pathExists(skillFile))) continue;
-
+    for (const skillFile of await listSkillFiles(skillsRoot)) {
+      const skillDir = path.dirname(skillFile);
+      const skillId = path.basename(skillDir);
       const raw = await fs.readFile(skillFile, "utf8");
       const fm = parseFrontmatter(raw);
       const metadata = getMetadataBlock(fm.raw);
@@ -233,9 +260,7 @@ async function collectSkillsIndexEntries(roots, indexPathPrefix) {
       const description = getScalar(fm.raw, "description") || "";
       const triggers = getAllTriggerValues(fm.raw);
       const deprecated = normalizeBoolean(metadata.deprecated);
-      const replacedBy = metadata.replaced_by
-        ? String(metadata.replaced_by).trim()
-        : null;
+      const replacedBy = normalizeNullableString(metadata.replaced_by);
       const canonicalId = replacedBy || id;
 
       // Later roots override earlier roots for same id (MCP canonical preferred).
@@ -245,7 +270,7 @@ async function collectSkillsIndexEntries(roots, indexPathPrefix) {
         canonical_id: canonicalId,
         deprecated,
         replaced_by: replacedBy,
-        path: `${indexPathPrefix}/${id}/SKILL.md`,
+        path: `${indexPathPrefix}/${path.relative(skillsRoot, skillFile).replaceAll(path.sep, "/")}`,
         description,
         triggers,
       });
@@ -292,22 +317,39 @@ function ensureUniqueIds(rows, label) {
   }
 }
 
-async function writeIndex({ label, roots, outFile, indexPathPrefix, dryRun }) {
+async function writeIndex({
+  label,
+  roots,
+  outFile,
+  indexPathPrefix,
+  dryRun,
+  check,
+}) {
   const rows = await collectSkillsIndexEntries(roots, indexPathPrefix);
   ensureUniqueNames(rows, label);
   ensureUniqueIds(rows, label);
 
   const content = `${JSON.stringify(rows, null, 2)}\n`;
-  if (!dryRun) {
+  if (check) {
+    if (!(await pathExists(outFile))) {
+      throw new Error(`Missing skills index for target '${label}': ${outFile}`);
+    }
+    const existing = await fs.readFile(outFile, "utf8");
+    if (existing !== content) {
+      throw new Error(
+        `Stale skills index for target '${label}': ${outFile}. Run npm run generate:skills-index.`,
+      );
+    }
+  } else if (!dryRun) {
     await fs.mkdir(path.dirname(outFile), { recursive: true });
     await fs.writeFile(outFile, content, "utf8");
   }
 
-  return { label, outFile, count: rows.length, dryRun };
+  return { label, outFile, count: rows.length, dryRun, check };
 }
 
 async function main() {
-  const { target, dryRun } = parseArgs(process.argv);
+  const { target, dryRun, check } = parseArgs(process.argv);
 
   const targetLabels =
     target === "all"
@@ -322,9 +364,9 @@ async function main() {
 
   for (const label of targetLabels) {
     const spec = DEFAULT_TARGETS[label];
-    const result = await writeIndex({ label, ...spec, dryRun });
+    const result = await writeIndex({ label, ...spec, dryRun, check });
     console.log(
-      `${result.dryRun ? "[dry-run] " : ""}generated ${result.label} skills index (${result.count} entries): ${result.outFile}`,
+      `${result.check ? "[check] " : result.dryRun ? "[dry-run] " : ""}${result.check ? "validated" : "generated"} ${result.label} skills index (${result.count} entries): ${result.outFile}`,
     );
   }
 }

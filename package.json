@@ -29,8 +29,8 @@
   "scripts": {
     "start": "npm run build:cli && node bin/cubis.js",
     "check": "npm run build:cli && node bin/cubis.js --help",
-    "test:attributes": "node scripts/validate-platform-attributes.mjs",
-    "test:attributes:strict": "node scripts/validate-platform-attributes.mjs --strict",
+    "test:attributes": "node scripts/validate-platform-attributes.mjs && node scripts/validate-shared-routing.mjs && node scripts/validate-skill-packaging.mjs && node scripts/validate-runtime-wiring.mjs && node scripts/generate-skills-index.mjs --check",
+    "test:attributes:strict": "node scripts/validate-platform-attributes.mjs --strict && node scripts/validate-shared-routing.mjs && node scripts/validate-skill-packaging.mjs && node scripts/validate-runtime-wiring.mjs && node scripts/generate-skills-index.mjs --check",
     "test:tech-md": "node scripts/test-tech-md-scanner.mjs",
     "test:smoke": "npm run build:cli && bash scripts/smoke-workflows.sh",
     "test:init:tty": "npm run build:cli && expect scripts/test-init-tty.exp bin/cubis.js",
@@ -40,6 +40,7 @@
     "generate:platform-assets": "node scripts/generate-platform-assets.mjs",
     "sync:skill-mirrors": "node scripts/sync-skill-mirrors.mjs",
     "generate:skills-index": "node scripts/generate-skills-index.mjs",
+    "check:skills-index": "node scripts/generate-skills-index.mjs --check",
     "generate:mcp-manifest": "node scripts/generate-mcp-manifest.mjs",
     "generate:mcp-rules-block": "node scripts/generate-mcp-rules-block.mjs",
     "inject:mcp-rules:codex": "node scripts/generate-mcp-rules-block.mjs --inject workflows/workflows/agent-environment-setup/platforms/codex/rules/AGENTS.md",
@@ -62,7 +63,7 @@
     "generate:powers:sync": "node \"workflows/scripts/generate-powers.mjs\" --sync-skills --force",
     "build:cli": "tsc -p tsconfig.cli.json",
     "clean:cli": "rm -rf dist/cli",
-    "prepack": "npm run build:cli"
+    "prepack": "npm run build:cli && npm run check:skills-index"
   },
   "engines": {
     "node": ">=18.17"

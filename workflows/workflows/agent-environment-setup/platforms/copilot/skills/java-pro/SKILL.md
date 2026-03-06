@@ -9,7 +9,6 @@ metadata:
   stack: "java"
   baseline: "Java SE 25"
 ---
-
 # Java Pro
 
 ## When to use
@@ -17,6 +16,12 @@ metadata:
 - Building or modernizing Java backend services.
 - Designing JVM architecture for high-throughput systems.
 - Improving reliability, observability, and maintainability.
+
+## When not to use
+
+- Frontend-only tasks with no JVM component.
+- Pure schema/index work better handled as database design or optimization.
+- Low-level native systems work where Rust/Go is the actual project stack.
 
 ## Core workflow
 
@@ -32,6 +37,24 @@ metadata:
 - Keep null-handling explicit; avoid silent NPE pathways.
 - Use structured logging and trace propagation.
 - Enforce dependency and API compatibility checks in CI.
+
+## Debugging and observability
+
+- Capture request/job correlation IDs in logs and traces.
+- Keep exception handling consistent between transport, service, and persistence layers.
+- Reproduce performance or memory issues with focused benchmarks/profilers before redesigning.
+
+## Performance and reliability
+
+- Prefer explicit timeouts, bulkheads, and retry budgets at I/O boundaries.
+- Keep thread/virtual-thread usage bounded and observable.
+- Separate transport DTOs from domain and persistence models to reduce cascade failures.
+
+## References
+
+| File | Load when |
+| --- | --- |
+| `references/operational-baseline.md` | You need current Java service guardrails for logging, testing, dependency hygiene, and runtime operations. |
 
 ## Avoid
 

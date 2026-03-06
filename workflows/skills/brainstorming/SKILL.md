@@ -34,7 +34,7 @@ allowed-tools: Read, Glob, Grep
 
 ## 🧠 Dynamic Question Generation
 
-**⛔ NEVER use static templates.** Read `dynamic-questioning.md` for principles.
+**⛔ NEVER use static templates.** Read `references/dynamic-questioning.md` for principles.
 
 ### Core Principles
 
@@ -73,7 +73,7 @@ allowed-tools: Read, Glob, Grep
 **If Not Specified:** [Default + rationale]
 ```
 
-**For detailed domain-specific question banks and algorithms**, see: `dynamic-questioning.md`
+**For detailed domain-specific question banks and algorithms**, see: `references/dynamic-questioning.md`
 
 ---
 

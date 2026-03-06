@@ -12,7 +12,6 @@ metadata:
   output-format: document
   related-skills: fullstack-guardian, spec-miner, test-master
 ---
-
 # Feature Forge
 
 Requirements specialist conducting structured workshops to define comprehensive feature specifications.

@@ -1,19 +1,7 @@
 ---
 name: "ux-ui-consistency"
-displayName: "UX/UI Consistency"
 description: "Ensure consistent UX patterns: design system component usage, screen states, error handling, and loading patterns"
-keywords:
-  [
-    "ux",
-    "ui consistency",
-    "design system",
-    "components",
-    "screen states",
-    "error handling",
-    "loading states",
-  ]
 ---
-
 # UX/UI Consistency
 
 ## Overview
@@ -113,12 +101,15 @@ try {
 - [ ] Screen reader labels present
 - [ ] Focus order is logical
 
-## Steering Files
+## References
 
-- `one_component_rules.md` - Complete design system component usage guide
-- `ux_checklist.md` - UX review checklist for all screens
+Load detailed guidance only when needed.
+
+| File | Load when |
+| --- | --- |
+| `steering/one_component_rules.md` | Enforcing design-system component usage and avoiding raw widget drift |
+| `steering/ux_checklist.md` | Running a full UX consistency review across a screen or feature |
 
 ## Templates
 
 - `screen_states_widget` - Complete screen state handling template
-

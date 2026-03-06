@@ -5,8 +5,16 @@ triggers: ["track", "milestone", "delivery", "progress", "execution"]
 ---
 # Implement Track Workflow
 
+# CHANGED: routing — added explicit milestone coordination owners — prevents generic fallback and clarifies who runs long execution tracks.
+# CHANGED: output contract — converted free-form bullets into structured YAML — keeps milestone state machine-readable for resumability.
+
 ## When to use
 Use this for medium/large efforts where progress visibility is required.
+
+## Routing
+- Primary coordinator: `@orchestrator`
+- Milestone planning: `@project-planner`
+- Verification gates: `@test-engineer`
 
 ## Context notes
 - This workflow file, active platform rules, and selected agents/skills guide execution.
@@ -29,7 +37,20 @@ Use this for medium/large efforts where progress visibility is required.
 - Note any gaps that were not validated.
 
 ## Output Contract
-- Milestone board (done/in-progress/next)
-- Gate status
-- Blockers and dependencies
-- ETA confidence
+```yaml
+IMPLEMENT_TRACK_WORKFLOW_RESULT:
+  primary_agent: orchestrator
+  supporting_agents: [project-planner?, test-engineer?]
+  primary_skills: [plan-writing, feature-forge]
+  supporting_skills: [lint-and-validate?, test-master?]
+  milestones:
+    done: [<string>]
+    in_progress: [<string>]
+    next: [<string>]
+  gate_status: [<string>]
+  blockers: [<string>] | []
+  dependencies: [<string>] | []
+  eta_confidence: <low|medium|high>
+  next_handoff:
+    plan_handoff: <PLAN_HANDOFF|null>
+```

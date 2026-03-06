@@ -109,8 +109,8 @@ mycli                           # Root command
 
 | File                 | Load When                                                    |
 | -------------------- | ------------------------------------------------------------ |
-| `design-patterns.md` | Command hierarchy, flags, config layers, plugin architecture |
-| `node-cli.md`        | Commander, Yargs, Inquirer, Chalk, Ora                       |
-| `python-cli.md`      | Typer, Click, argparse, Rich, questionary                    |
-| `go-cli.md`          | Cobra, Viper, Bubble Tea, progress bars                      |
-| `ux-patterns.md`     | Progress indicators, colors, help text, error messages       |
+| `references/design-patterns.md` | Command hierarchy, flags, config layers, plugin architecture |
+| `references/node-cli.md`        | Commander, Yargs, Inquirer, Chalk, Ora                       |
+| `references/python-cli.md`      | Typer, Click, argparse, Rich, questionary                    |
+| `references/go-cli.md`          | Cobra, Viper, Bubble Tea, progress bars                      |
+| `references/ux-patterns.md`     | Progress indicators, colors, help text, error messages       |

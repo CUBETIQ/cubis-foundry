@@ -7,8 +7,9 @@ This `AGENTS.md` exists for cross-tool compatibility (for example Codex/Cursor s
 
 - Workflows: `.github/copilot/workflows`
 - Agents: `.github/agents`
-- Skills: `.github/skills`
+- Skills: `.github/skills` (installed by default; keep routing workflow-first and sidecar loading on-demand)
 - Prompt files: `.github/prompts`
+- MCP (preferred): `.vscode/mcp.json`
 - Rules file (project): `.github/copilot-instructions.md`
 
 ## Startup Transparency (Minimal)
@@ -24,13 +25,15 @@ Rules:
 3. Keep progress updates to one short sentence.
 4. For pure Q&A replies, skip the status line.
 
-## 2) Workflow-First Contract
+## 2) Route-First Workflow Contract
 
-1. If the user explicitly requests a slash command, run that workflow first.
+1. If the user explicitly requests a workflow prompt or slash command, route through the matching `.github/prompts/workflow-*.prompt.md` and `.github/copilot/workflows/*.md` first.
 2. Otherwise choose the best workflow by intent from `.github/copilot/workflows` and reuse `.github/prompts/workflow-*.prompt.md` when available.
 3. For cross-domain tasks, use `/orchestrate` and `@orchestrator`.
-4. Keep one primary workflow; use others only as supporting references.
-5. Before loading any skill, inspect the repo/task locally first. Use MCP skill tools only when the user names a skill explicitly or local grounding still leaves the domain unclear (→ §6 MCP Skill Engine).
+4. Resolve explicit `@agent` mentions before skill discovery and treat workflows/agents as route primitives, not skills.
+5. On Copilot, the primary route surface is workflow prompts/workflow files plus `@agent-name`. Do not treat `$workflow-*` or `$agent-*` as the primary route surface here; those are Codex compatibility aliases.
+6. Keep one primary workflow; use others only as supporting references.
+7. Before loading any skill, inspect the repo/task locally first. Use MCP skill tools only when the user names a skill explicitly or route resolution still leaves the domain unclear (→ §6 MCP Skill Engine).
 
 ## 3) Request Classifier
 
@@ -69,11 +72,11 @@ Use the best specialist first:
 
 Before handing off to any specialist agent, prime context with the relevant domain skill (→ §6 MCP Skill Engine):
 
-1. Validate user-named exact skills with `skill_validate <id>` before loading them.
-2. If the domain is still unclear after local grounding, run one narrow `skill_search <domain>` and then validate the chosen exact ID with `skill_validate <id>`.
+1. Resolve the workflow or custom agent first with `route_resolve <intent>`.
+2. Prime only the mapped primary skills for that route. If the route is still unresolved after local grounding, run one narrow `skill_search <domain>` and then validate the chosen exact ID with `skill_validate <id>`.
 3. Load the core skill with `skill_get <id>` using `includeReferences:false` by default.
 4. Pull one sidecar markdown file at a time with `skill_get_reference` when the skill or task requires it.
-5. Include the validated skill ID in the Decision Log for the routing decision.
+5. Include the resolved route ID and validated skill IDs in the Decision Log.
 
 This ensures the specialist starts with accurate domain knowledge, not just role intent.
 
@@ -82,6 +85,7 @@ This ensures the specialist starts with accurate domain knowledge, not just role
 When authoring custom Copilot assets, keep frontmatter schema compatible:
 
 1. Skill files in `.github/skills/<id>/SKILL.md` must use supported top-level keys only.
+   This directory is installed by default, but workflows and agents remain the primary route surfaces on Copilot Stable.
 2. Agent files in `.github/agents/*.md` must use supported top-level keys only.
 3. If unsupported keys are detected, reinstall with overwrite to auto-normalize.
 
@@ -93,7 +97,8 @@ The Foundry MCP server is the primary knowledge layer. Use tools decisively — 
 
 | Prefix      | Tools                                                                                                | When to use                                                    |
 | ----------- | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| `skill_*`   | `skill_list_categories`, `skill_search`, `skill_validate`, `skill_browse_category`, `skill_get`, `skill_get_reference`, `skill_budget_report` | Domain expertise for implementation, debug, or review without loading the full catalog |
+| `route_*`   | `route_resolve`                                                                                       | Resolve workflows and custom agents before any skill loading   |
+| `skill_*`   | `skill_list_categories`, `skill_search`, `skill_validate`, `skill_browse_category`, `skill_get`, `skill_get_reference`, `skill_budget_report` | Domain expertise for implementation, debug, or review after the route is known |
 | `postman_*` | `postman_get_mode`, `postman_set_mode`, `postman_get_status`                                         | API testing or Postman configuration tasks                     |
 | `stitch_*`  | `stitch_get_mode`, `stitch_set_profile`, `stitch_get_status`                                         | Stitch data pipeline tasks                                     |
 
@@ -102,8 +107,8 @@ The Foundry MCP server is the primary knowledge layer. Use tools decisively — 
 Stop at the earliest step that gives enough signal. Do not jump ahead or front-load skill discovery.
 
 1. Inspect the codebase/task locally first; do not start with `skill_search`
-2. If the user names an exact skill ID, call `skill_validate <id>` directly
-3. Otherwise, if local grounding still leaves the domain unclear, run one narrow `skill_search <keyword>`
+2. Resolve explicit workflows, custom agents, or free-text route intent with `route_resolve <intent>`
+3. If the route is still unresolved and local grounding leaves the domain unclear, run one narrow `skill_search <keyword>`
 4. Validate the selected exact skill ID with `skill_validate <id>` before any load
 5. Load only the core `SKILL.md` with `skill_get <id>` and `includeReferences:false`
 6. Load at most one sidecar markdown file at a time with `skill_get_reference <id> <path>`
@@ -124,7 +129,8 @@ When user intent includes Postman workflows (for example: workspace, collection,
 
 - Never call `skill_get` from fuzzy search output without first validating the exact ID via `skill_validate`
 - Never skip local repo inspection and jump straight to `skill_search`
-- Never call `skill_get` with a workflow ID — `workflow-*` are routes, not skills; keep workflow mentions in workflow decisions (`/workflow`) and keep skill logs skill-only
+- Never use `skill_search` to discover workflows or custom agents
+- Never call `skill_get` with a workflow or agent ID — routes are not skills; keep workflow mentions in workflow decisions (`/workflow`) and keep skill logs skill-only
 - Never call `skill_get` with `includeReferences:true` by default in agent workflows
 - Never bulk-load sibling/reference markdown files when one targeted `skill_get_reference` will do
 - Never reload a skill already loaded this session — reuse content already in context
@@ -135,6 +141,7 @@ When user intent includes Postman workflows (for example: workspace, collection,
 | Request type                                   | Skills to load via `skill_get`                                  |
 | ---------------------------------------------- | --------------------------------------------------------------- |
 | Q&A / explanation                              | None — answer from knowledge; load only if user explicitly asks |
+| Skill creation / skill maintenance             | `skill-authoring` first; add at most one supporting skill       |
 | Single-domain implementation, debug, or review | 1 primary + 1 supporting (max)                                  |
 | Multi-domain / orchestration                   | 1 per distinct domain, hard cap at 3                            |
 | User explicitly names a skill                  | Always load it — overrides all caps                             |
@@ -270,6 +277,7 @@ Keep MCP context lazy and exact. Do not front-load the skill catalog.
 
 ### Compact Tool Map
 
+- Route tools: `route_resolve`
 - Skill tools: `skill_search`, `skill_validate`, `skill_get`, `skill_get_reference`, `skill_budget_report`
 - Fallback browsing only: `skill_list_categories`, `skill_browse_category`
 - Config tools: `postman_*`, `stitch_*`
@@ -277,12 +285,13 @@ Keep MCP context lazy and exact. Do not front-load the skill catalog.
 ### Validated Skill Flow
 
 1. Inspect the repo/task locally first. Do not start with `skill_search`.
-2. If the user names an exact skill, run `skill_validate` directly. Otherwise use one narrow `skill_search` only if local grounding still leaves the domain unclear.
-3. Always run `skill_validate` on the exact selected ID before `skill_get`.
-4. Call `skill_get` with `includeReferences:false` by default.
-5. Load at most one sidecar markdown file at a time with `skill_get_reference`.
-6. Use `skill_list_categories` or `skill_browse_category` only as fallback when targeted search fails.
-7. Never print catalog counts or budget details unless the user asks.
+2. Resolve explicit workflows, agents, or free-text route intent with `route_resolve` before loading any skills.
+3. If the route is still unresolved and local grounding leaves the domain unclear, use one narrow `skill_search`.
+4. Always run `skill_validate` on the exact selected ID before `skill_get`.
+5. Call `skill_get` with `includeReferences:false` by default.
+6. Load at most one sidecar markdown file at a time with `skill_get_reference`.
+7. Use `skill_list_categories` or `skill_browse_category` only as fallback when targeted search fails.
+8. Never print catalog counts or budget details unless the user asks.
 
 ### Connection
 

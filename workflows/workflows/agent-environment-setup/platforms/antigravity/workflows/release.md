@@ -5,6 +5,8 @@ triggers: ["release", "deploy", "rollout", "ship", "go-live"]
 ---
 # Release Workflow
 
+# CHANGED: output contract — converted free-form bullets into structured YAML — keeps release gates and monitoring plans machine-readable.
+
 ## When to use
 Use this before deployment to production-like environments.
 
@@ -34,7 +36,14 @@ Use this before deployment to production-like environments.
 - Note any gaps that were not validated.
 
 ## Output Contract
-- Release checklist status
-- Rollout strategy
-- Rollback conditions
-- Post-release monitoring plan
+```yaml
+RELEASE_WORKFLOW_RESULT:
+  primary_agent: devops-engineer
+  supporting_agents: [security-auditor?, test-engineer?, product-owner?]
+  primary_skills: [devops-engineer, sre-engineer]
+  supporting_skills: [monitoring-expert?, test-master?]
+  release_checklist_status: [<string>]
+  rollout_strategy: [<string>]
+  rollback_conditions: [<string>]
+  post_release_monitoring_plan: [<string>]
+```

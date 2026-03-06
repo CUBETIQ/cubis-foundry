@@ -6,7 +6,6 @@ metadata:
   replaced_by: code-reviewer
   removal_target: v0.6.0
 ---
-
 # Code Review Checklist
 
 ## Compatibility Alias

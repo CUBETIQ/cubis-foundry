@@ -13,11 +13,12 @@
 
 import { z } from "zod";
 import type { VaultManifest } from "../vault/types.js";
+import type { RouteManifest } from "../routes/types.js";
 import type { ConfigScope } from "../cbxConfig/types.js";
 
 // ─── Core types ─────────────────────────────────────────────
 
-export type ToolCategory = "skill" | "postman" | "stitch";
+export type ToolCategory = "skill" | "route" | "postman" | "stitch";
 
 export interface ToolRegistryEntry {
   /** Tool name exposed to MCP clients. */
@@ -39,12 +40,20 @@ export interface ToolRegistryEntry {
 
 export interface ToolRuntimeContext {
   manifest: VaultManifest;
+  routeManifest: RouteManifest;
   charsPerToken: number;
   summaryMaxLength: number;
   defaultConfigScope: ConfigScope | "auto";
 }
 
 // ─── Tool imports ───────────────────────────────────────────
+
+import {
+  routeResolveName,
+  routeResolveDescription,
+  routeResolveSchema,
+  handleRouteResolve,
+} from "./routeResolve.js";
 
 import {
   skillListCategoriesName,
@@ -154,6 +163,19 @@ function withDefaultScope(
 // ─── Registry ───────────────────────────────────────────────
 
 export const TOOL_REGISTRY: readonly ToolRegistryEntry[] = [
+  // ── Route tools ───────────────────────────────────────────
+  {
+    name: routeResolveName,
+    description: routeResolveDescription,
+    schema: routeResolveSchema,
+    category: "route",
+    createHandler: (ctx) => async (args) =>
+      handleRouteResolve(
+        args as z.infer<typeof routeResolveSchema>,
+        ctx.routeManifest,
+      ),
+  },
+
   // ── Skill vault tools ─────────────────────────────────────
   {
     name: skillListCategoriesName,

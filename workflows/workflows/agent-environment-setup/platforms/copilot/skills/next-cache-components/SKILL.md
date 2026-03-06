@@ -2,7 +2,6 @@
 name: next-cache-components
 description: "Use only for Next.js 16 Cache Components and PPR implementation (use cache, cacheLife, cacheTag, updateTag, Suspense boundaries)."
 ---
-
 # Cache Components (Next.js 16+)
 
 Cache Components enable Partial Prerendering (PPR) - mix static, cached, and dynamic content in a single route.

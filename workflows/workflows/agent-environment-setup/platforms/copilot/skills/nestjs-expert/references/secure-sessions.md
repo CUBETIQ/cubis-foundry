@@ -52,5 +52,5 @@ Do not store tokens, passwords, raw PII, or authorization policy blobs.
 
 ## Related
 
-- `references/authentication.md`
-- `references/services-di.md`
+- [authentication.md](authentication.md)
+- [services-di.md](services-di.md)

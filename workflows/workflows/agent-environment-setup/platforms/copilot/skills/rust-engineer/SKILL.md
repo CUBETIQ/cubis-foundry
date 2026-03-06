@@ -6,7 +6,6 @@ metadata:
   replaced_by: rust-pro
   removal_target: v0.6.0
 ---
-
 # Rust Engineer
 
 ## Compatibility Alias

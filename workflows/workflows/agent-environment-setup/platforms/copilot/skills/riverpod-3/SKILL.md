@@ -1,20 +1,7 @@
 ---
 name: "riverpod-3"
-displayName: "Riverpod 3 Expert"
 description: "Riverpod 3 best practices for codegen, UI interaction boundaries, caching, paging, lifecycle, and testing"
-keywords:
-  [
-    "riverpod",
-    "riverpod 3",
-    "flutter",
-    "state management",
-    "asyncnotifier",
-    "codegen",
-    "keepalive",
-    "testing",
-  ]
 ---
-
 # Riverpod 3 Expert
 
 ## Overview
@@ -125,19 +112,25 @@ Avoid keepAlive for:
 
 ## Steering Files
 
-- `loop-avoidance.md` - Loop diagnostics and safe patterns
-- `minimal-rebuild.md` - `select`, widget splitting, item-level providers
-- `provider-layout.md` - Generic provider organization and boundaries
-- `refresh-cache-paging.md` - Refresh/paging/cache recipes
-- `testing.md` - ProviderContainer and widget test patterns
+| File | Load when |
+| --- | --- |
+| `references/loop-avoidance.md` | Diagnosing provider loops, invalidation storms, or notifier recursion. |
+| `references/minimal-rebuild.md` | Reducing rebuilds with `select`, widget splitting, or item-level providers. |
+| `references/provider-layout.md` | Organizing provider boundaries, layers, and ownership. |
+| `references/refresh-cache-paging.md` | Designing refresh, cache TTL, paging, or stale-while-revalidate flows. |
+| `references/testing.md` | Writing `ProviderContainer` or widget tests for Riverpod behavior. |
 
 ## Examples
 
-- `attendance_paging.md` - Complete paging example
-- `profile_edit.md` - Form workflow example
+| File | Load when |
+| --- | --- |
+| `examples/attendance_paging.md` | You need a concrete paginated list example. |
+| `examples/profile_edit.md` | You need a form/editing workflow example. |
 
 ## Templates
 
-- `cache_policy.dart` - TTL helper for repository cache policy
-- `paged_controller.dart` - Cursor/page-based infinite list controller
-- `riverpod_controller_test` - Provider/controller test template
+| File | Load when |
+| --- | --- |
+| `templates/cache_policy.dart.md` | Creating a TTL helper for repository caching. |
+| `templates/paged_controller.dart.md` | Bootstrapping a cursor/page-based controller. |
+| `templates/riverpod_controller_test.md` | Starting a provider/controller test template. |

@@ -1,19 +1,7 @@
 ---
 name: "error-ux-observability"
-displayName: "Error UX & Observability"
 description: "Map backend failures to user-friendly messages, implement proper logging levels, and ensure observable error handling"
-keywords:
-  [
-    "error handling",
-    "error messages",
-    "logging",
-    "observability",
-    "user feedback",
-    "failure mapping",
-    "error ux",
-  ]
 ---
-
 # Error UX & Observability
 
 ## Overview
@@ -147,12 +135,15 @@ ref.listen(controllerProvider, (prev, next) {
 4. **Log at appropriate levels** (debug/info/warning/error/fatal)
 5. **Include stack traces for errors**
 
-## Steering Files
+## References
 
-- `failure_to_ui.md` - Complete failure-to-message mapping guide
-- `logging_levels.md` - When to use each log level
+Load detailed guidance only when needed.
+
+| File | Load when |
+| --- | --- |
+| `references/failure_to_ui.md` | Mapping backend/domain failures into user-facing messages and screen states |
+| `references/logging_levels.md` | Deciding which log level and structure to use for an event or failure |
 
 ## Templates
 
 - `failure_message_mapper` - Failure to UI message mapper template
-

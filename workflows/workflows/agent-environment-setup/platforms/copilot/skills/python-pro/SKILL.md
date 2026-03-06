@@ -9,7 +9,6 @@ metadata:
   stack: "python"
   baseline: "Python 3.14"
 ---
-
 # Python Pro
 
 ## When to use
@@ -17,6 +16,12 @@ metadata:
 - Building backend services, automation, or data pipelines in Python.
 - Migrating legacy Python to typed and testable architecture.
 - Implementing async I/O with predictable behavior.
+
+## When not to use
+
+- Frontend-only tasks with no Python runtime involved.
+- Database-only tuning or migration work with no Python code change.
+- Tiny shell-first automation where Python adds unnecessary packaging/runtime cost.
 
 ## Core workflow
 
@@ -41,6 +46,18 @@ metadata:
 - Keep I/O async and CPU work isolated where needed.
 - Treat free-threaded mode as opt-in until dependencies are validated.
 
+## Debugging and observability
+
+- Preserve exception context and structured log fields at service boundaries.
+- Reproduce async bugs with deterministic fixtures before widening scope.
+- Use profiling and trace tooling before speculative concurrency changes.
+
+## Performance and reliability
+
+- Set timeout/retry budgets explicitly for external I/O.
+- Isolate CPU-heavy work from event loops or request handlers.
+- Keep dependency and packaging state reproducible with `pyproject.toml` tooling.
+
 ## Avoid
 
 - Untyped public APIs in shared modules.
@@ -49,8 +66,10 @@ metadata:
 
 ## Reference files
 
-- `references/type-system.md`
-- `references/async-patterns.md`
-- `references/testing.md`
-- `references/packaging.md`
-- `references/standard-library.md`
+| File | Load when |
+| --- | --- |
+| `references/type-system.md` | Typing strategy, protocols, generics, or boundary models need detail. |
+| `references/async-patterns.md` | Async I/O, task groups, or cancellation semantics need detail. |
+| `references/testing.md` | Pytest strategy, fixtures, or concurrency-safe tests are needed. |
+| `references/packaging.md` | Packaging, dependency layout, or toolchain reproducibility is in scope. |
+| `references/standard-library.md` | Standard-library-first options need review before adding dependencies. |

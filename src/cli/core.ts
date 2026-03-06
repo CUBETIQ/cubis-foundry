@@ -158,7 +158,8 @@ const WORKFLOW_PROFILES = {
     },
     detectorPaths: [
       ".github/agents",
-      ".github/skills",
+      ".github/prompts",
+      ".vscode/mcp.json",
       ".github/copilot-instructions.md",
       ".github/instructions",
       "AGENTS.md",
@@ -3470,12 +3471,12 @@ function buildCodexWorkflowWrapperSkillMarkdown(wrapperSkillId, workflow) {
     `  workflow-command: ${yamlSingleQuoted(workflow.command)}`,
     "---",
     "",
-    `# Workflow Wrapper: ${workflow.command}`,
+    `# Workflow Compatibility Alias: ${workflow.command}`,
     "",
-    `Use this skill as a callable replacement for \`${workflow.command}\` workflow instructions in Codex.`,
+    `Compatibility alias for \`${workflow.command}\` in Codex. Prefer the direct workflow route first and use this wrapper only when older installs or prompts mention $${wrapperSkillId}.`,
     "",
     "## Invocation Contract",
-    "1. Match the current task against this workflow intent before execution.",
+    "1. Resolve the workflow route first; do not use this alias as a substitute for skill discovery.",
     "2. Follow the sequence and guardrails in the source instructions below.",
     "3. Produce actionable output and call out assumptions before edits.",
     "",
@@ -3505,14 +3506,15 @@ function buildCodexAgentWrapperSkillMarkdown(wrapperSkillId, agent) {
     `  agent-id: ${yamlSingleQuoted(agent.id)}`,
     "---",
     "",
-    `# Agent Wrapper: @${agent.id}`,
+    `# Agent Compatibility Alias: @${agent.id}`,
     "",
-    "Use this skill as a callable replacement for custom @agent files in Codex.",
+    `Compatibility alias for @${agent.id} in Codex. Prefer the direct @agent route first and use this wrapper only when older installs or prompts mention $${wrapperSkillId}.`,
     "",
     "## Invocation Contract",
-    "1. Adopt the role and constraints defined in the source agent content.",
-    "2. Apply domain heuristics and escalation rules before coding.",
-    "3. Ask clarifying questions when requirements are ambiguous.",
+    "1. Resolve the agent route first; do not use this alias as a substitute for skill discovery.",
+    "2. Adopt the role and constraints defined in the source agent content.",
+    "3. Apply domain heuristics and escalation rules before coding.",
+    "4. Ask clarifying questions when requirements are ambiguous.",
     "",
     `- Source agent name: ${agent.name}`,
     `- Source agent description: ${agent.description}`,
@@ -3714,13 +3716,35 @@ function buildManagedWorkflowBlock(platformId, workflows) {
     `<!-- cbx:workflows:auto:start platform=${platformId} version=1 -->`,
   );
   lines.push("## CBX Workflow Routing (auto-managed)");
+  lines.push("");
+  lines.push("<!-- cbx:managed:skill-routing start -->");
+  lines.push("Classify intent before any MCP call.");
+  lines.push("- TIER 1 DIRECT: `skill_get <exact-skill-id>` when domain and skill are obvious.");
+  lines.push("- TIER 2 TARGETED SEARCH: one `skill_search <1-3 word noun>` max, then `skill_validate` -> `skill_get`.");
+  lines.push("- TIER 3 SKIP: no MCP call for conversational, same-session, or native-tool-sufficient work.");
+  lines.push("- Never pre-load skills or agents speculatively.");
+  lines.push("- Keep one primary agent and one primary skill by default.");
+  lines.push("- Add supporting skills only when the active task explicitly crosses domains.");
+  lines.push("- Direct skill-package creation or repair work to `skill-authoring` instead of starting with `skill_search`.");
+  lines.push("# Full reference: foundry-detail.md#tiered-routing");
+  lines.push("<!-- cbx:managed:skill-routing end -->");
+  lines.push("");
+  lines.push("<!-- cbx:managed:long-plan-execution start -->");
+  lines.push("When `PLAN_HANDOFF` is present, continue task 1→N without confirmation pauses.");
+  lines.push("- Pre-load deduped `skill_hint` values once, then run `skill_budget_report`.");
+  lines.push("- Execute in order, respecting `depends_on` and `stop_if_failed`.");
+  lines.push("- Emit `CHECKPOINT` every ~3 tasks in runs of 5+.");
+  lines.push("- Finish with `EXECUTION_SUMMARY {completed, skipped, stopped_at, artifacts, skills_used, dropped}`.");
+  lines.push("- Stop only for blocking artifact failure, unplanned destructive action, missing required skill after one search, or explicit user halt.");
+  lines.push("- Codex: compact before context exhaustion. Antigravity: native long context. Copilot: write `.copilot-tracking/handoff.md`.");
+  lines.push("# Full reference: foundry-detail.md#plan-handoff-and-execution");
+  lines.push("<!-- cbx:managed:long-plan-execution end -->");
+  lines.push("");
   if (platformId === "codex") {
-    lines.push("Use Codex callable wrappers:");
-    lines.push("- Workflows: $workflow-<name>");
-    lines.push("- Agents: $agent-<name>");
-    lines.push(
-      "- Use raw $workflow-* / $agent-* tokens (no backticks) so Codex can render icons.",
-    );
+    lines.push("Prefer direct route identifiers first:");
+    lines.push("- Workflows: `/workflow-name`");
+    lines.push("- Agents: `@agent-name`");
+    lines.push("- Compatibility aliases remain available: `$workflow-*`, `$agent-*`");
     lines.push("");
 
     if (workflows.length === 0) {
@@ -3729,22 +3753,40 @@ function buildManagedWorkflowBlock(platformId, workflows) {
       for (const workflow of workflows) {
         const triggerPreview = workflow.triggers.slice(0, 2).join(", ");
         const hint = triggerPreview ? ` (${triggerPreview})` : "";
-        lines.push(
-          `- ${workflow.command} -> $${CODEX_WORKFLOW_SKILL_PREFIX}${workflow.id}${hint}`,
-        );
+        lines.push(`- ${workflow.command} -> primary route (${workflow.id})${hint}`);
       }
     }
 
     lines.push("");
     lines.push("Selection policy:");
-    lines.push("1. If user names a $workflow-*, use it directly.");
+    lines.push("1. If the user names `/workflow` or `@agent`, use that route directly.");
     lines.push("2. Else map intent to one primary workflow.");
-    lines.push(
-      "3. Use $agent-* wrappers only when role specialization is needed.",
-    );
+    lines.push("3. Treat `$workflow-*` / `$agent-*` as compatibility aliases only.");
     lines.push("");
     lines.push("<!-- cbx:workflows:auto:end -->");
     return lines.join("\n");
+  }
+
+  if (platformId === "copilot") {
+    lines.push("Prefer native Copilot route surfaces first:");
+    lines.push("- Workflow prompts: `.github/prompts/workflow-*.prompt.md`");
+    lines.push("- Workflow files: `.github/copilot/workflows/*.md`");
+    lines.push("- Agents: `@agent-name`");
+    lines.push("- Workspace-first MCP: `.vscode/mcp.json`");
+    lines.push(
+      "- Do not use `$workflow-*` / `$agent-*` as the primary route surface here; those are Codex compatibility aliases.",
+    );
+    lines.push("- `.github/skills` is installed by default, but route through workflows and agents before loading skills.");
+    lines.push("");
+  } else if (platformId === "antigravity") {
+    lines.push("Prefer native Antigravity route surfaces first:");
+    lines.push("- Commands: `.gemini/commands/*.toml`");
+    lines.push("- Workflow files: `.agent/workflows/*.md`");
+    lines.push("- Agents: `@agent-name`");
+    lines.push(
+      "- Do not use `$workflow-*` / `$agent-*` as the primary route surface here; those are Codex compatibility aliases.",
+    );
+    lines.push("");
   }
 
   lines.push(
@@ -3769,11 +3811,29 @@ function buildManagedWorkflowBlock(platformId, workflows) {
 
   lines.push("");
   lines.push("Selection policy:");
-  lines.push("1. Match explicit slash command first.");
-  lines.push("2. Else match user intent to workflow description and triggers.");
-  lines.push(
-    "3. Prefer one primary workflow; reference others only when needed.",
-  );
+  if (platformId === "copilot") {
+    lines.push("1. Match explicit workflow prompt, workflow, or `@agent` first.");
+    lines.push(
+      "2. Else match user intent to one primary workflow and reuse the matching prompt file when available.",
+    );
+    lines.push(
+      "3. Treat `$workflow-*` / `$agent-*` as Codex compatibility aliases, not as the primary route surface here.",
+    );
+  } else if (platformId === "antigravity") {
+    lines.push("1. Match explicit Gemini command, workflow, or `@agent` first.");
+    lines.push(
+      "2. Else match user intent to one primary workflow and use the matching command file when available.",
+    );
+    lines.push(
+      "3. Treat `$workflow-*` / `$agent-*` as Codex compatibility aliases, not as the primary route surface here.",
+    );
+  } else {
+    lines.push("1. Match explicit slash command first.");
+    lines.push("2. Else match user intent to workflow description and triggers.");
+    lines.push(
+      "3. Prefer one primary workflow; reference others only when needed.",
+    );
+  }
   lines.push("");
   lines.push("<!-- cbx:workflows:auto:end -->");
 
@@ -5074,7 +5134,15 @@ async function applyPostmanMcpForPlatform({
       scope: mcpScope,
       path: configPath,
       action: result.action,
-      warnings: [...warnings, ...result.warnings],
+      warnings: [
+        ...(mcpScope === "global"
+          ? [
+              "Copilot global MCP config is legacy compatibility. Prefer workspace .vscode/mcp.json as the primary supported path.",
+            ]
+          : []),
+        ...warnings,
+        ...result.warnings,
+      ],
     };
   }
 
@@ -6022,23 +6090,41 @@ async function sanitizeInstalledSkillsForPlatform({
   skillDirs,
   dryRun = false,
 }) {
-  if (dryRun || platform !== "copilot") return [];
-
   const sanitized = [];
 
   for (const skillDir of skillDirs) {
+    if (!(await pathExists(skillDir))) continue;
+    const entries = await readdir(skillDir, { withFileTypes: true });
+    const removedFiles = [];
+    for (const entry of entries) {
+      if (!entry.isFile()) continue;
+      if (!entry.name.endsWith(".md")) continue;
+      if (entry.name === "SKILL.md") continue;
+      const targetPath = path.join(skillDir, entry.name);
+      if (!dryRun) {
+        await rm(targetPath, { force: true });
+      }
+      removedFiles.push(entry.name);
+    }
+
     const skillFile = path.join(skillDir, "SKILL.md");
     if (!(await pathExists(skillFile))) continue;
 
-    const raw = await readFile(skillFile, "utf8");
-    const { changed, content, removedKeys } =
-      sanitizeSkillMarkdownForCopilot(raw);
-    if (!changed) continue;
+    let removedKeys = [];
+    if (!dryRun && platform === "copilot") {
+      const raw = await readFile(skillFile, "utf8");
+      const sanitizedSkill = sanitizeSkillMarkdownForCopilot(raw);
+      removedKeys = sanitizedSkill.removedKeys;
+      if (sanitizedSkill.changed) {
+        await writeFile(skillFile, sanitizedSkill.content, "utf8");
+      }
+    }
 
-    await writeFile(skillFile, content, "utf8");
+    if (removedKeys.length === 0 && removedFiles.length === 0) continue;
     sanitized.push({
       skillId: path.basename(skillDir),
       removedKeys,
+      removedFiles,
     });
   }
 
@@ -6221,9 +6307,13 @@ async function installBundleArtifacts({
     );
   }
 
+  const shouldInstallPlatformSkills = true;
+
   if (!dryRun) {
     await mkdir(profilePaths.workflowsDir, { recursive: true });
-    await mkdir(profilePaths.skillsDir, { recursive: true });
+    if (shouldInstallPlatformSkills) {
+      await mkdir(profilePaths.skillsDir, { recursive: true });
+    }
     if (platformInstallsCustomAgents(platform)) {
       await mkdir(profilePaths.agentsDir, { recursive: true });
     }
@@ -6366,56 +6456,57 @@ async function installBundleArtifacts({
       skipped.push(destination);
     else installed.push(destination);
   }
-  const agentSkillDependencies = await resolvePlatformAgentSkillDependencies({
-    platformRoot,
-    platformSpec,
-  });
-  const skillIds = await resolveInstallSkillIds({
-    platformSpec,
-    extraSkillIds: [...extraSkillIds, ...agentSkillDependencies],
-    skillProfile,
-  });
-  for (const skillId of skillIds) {
-    const source = await resolveSkillSourceDirectory(skillId);
-    const destination = path.join(profilePaths.skillsDir, skillId);
+  if (shouldInstallPlatformSkills) {
+    const agentSkillDependencies = await resolvePlatformAgentSkillDependencies({
+      platformRoot,
+      platformSpec,
+    });
+    const skillIds = await resolveInstallSkillIds({
+      platformSpec,
+      extraSkillIds: [...extraSkillIds, ...agentSkillDependencies],
+      skillProfile,
+    });
+    for (const skillId of skillIds) {
+      const source = await resolveSkillSourceDirectory(skillId);
+      const destination = path.join(profilePaths.skillsDir, skillId);
 
-    if (!source) {
-      throw new Error(
-        `Missing skill source directory for '${skillId}' (checked ${workflowSkillsRoot()}).`,
-      );
+      if (!source) {
+        throw new Error(
+          `Missing skill source directory for '${skillId}' (checked ${workflowSkillsRoot()}).`,
+        );
+      }
+
+      const result = await copyArt({
+        source,
+        destination,
+        overwrite,
+        dryRun,
+      });
+      artifacts.skills.push(destination);
+      if (result.action === "skipped" || result.action === "would-skip")
+        skipped.push(destination);
+      else installed.push(destination);
     }
 
-    const result = await copyArt({
-      source,
-      destination,
-      overwrite,
-      dryRun,
-    });
-    artifacts.skills.push(destination);
-    if (result.action === "skipped" || result.action === "would-skip")
-      skipped.push(destination);
-    else installed.push(destination);
-  }
-
-  // Copy skills_index.json if it exists in the package skills root
-  const skillsIndexSource = path.join(
-    workflowSkillsRoot(),
-    "skills_index.json",
-  );
-  if (await pathExists(skillsIndexSource)) {
-    const skillsIndexDest = path.join(
-      profilePaths.skillsDir,
+    const skillsIndexSource = path.join(
+      workflowSkillsRoot(),
       "skills_index.json",
     );
-    const indexResult = await copyArt({
-      source: skillsIndexSource,
-      destination: skillsIndexDest,
-      overwrite,
-      dryRun,
-    });
-    if (indexResult.action === "skipped" || indexResult.action === "would-skip")
-      skipped.push(skillsIndexDest);
-    else installed.push(skillsIndexDest);
+    if (await pathExists(skillsIndexSource)) {
+      const skillsIndexDest = path.join(
+        profilePaths.skillsDir,
+        "skills_index.json",
+      );
+      const indexResult = await copyArt({
+        source: skillsIndexSource,
+        destination: skillsIndexDest,
+        overwrite,
+        dryRun,
+      });
+      if (indexResult.action === "skipped" || indexResult.action === "would-skip")
+        skipped.push(skillsIndexDest);
+      else installed.push(skillsIndexDest);
+    }
   }
 
   let generatedWrapperSkills = [];
@@ -6807,7 +6898,9 @@ function printInstallSummary({
     console.log(
       `\nCodex callable wrapper skills: ${generatedWrapperSkills.length} (workflow=${workflowCount}, agent=${agentCount})`,
     );
-    console.log("Invoke these with $workflow-... or $agent-... in Codex.");
+    console.log(
+      "These remain compatibility aliases. Prefer direct /workflow and @agent routing in Codex when available.",
+    );
   }
 
   if (terminalIntegration) {

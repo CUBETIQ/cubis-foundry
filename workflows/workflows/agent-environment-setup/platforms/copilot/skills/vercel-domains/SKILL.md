@@ -6,7 +6,6 @@ metadata:
   replaced_by: vercel-delivery
   removal_target: v0.6.0
 ---
-
 # Vercel Domains
 
 ## Compatibility Alias

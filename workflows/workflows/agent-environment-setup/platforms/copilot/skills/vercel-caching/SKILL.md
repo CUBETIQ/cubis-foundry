@@ -6,7 +6,6 @@ metadata:
   replaced_by: vercel-runtime
   removal_target: v0.6.0
 ---
-
 # Vercel Caching
 
 ## Compatibility Alias

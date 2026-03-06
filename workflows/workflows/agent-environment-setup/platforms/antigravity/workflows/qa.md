@@ -5,6 +5,8 @@ triggers: ["qa", "test", "regression", "automation", "e2e"]
 ---
 # QA Workflow
 
+# CHANGED: output contract — converted free-form bullets into structured YAML — keeps quality strategy and defect findings machine-readable.
+
 ## When to use
 Use this when verification quality and regression prevention are primary concerns.
 
@@ -33,7 +35,17 @@ Use this when verification quality and regression prevention are primary concern
 - Note any gaps that were not validated.
 
 ## Output Contract
-- Test strategy and scope
-- Automation coverage updates
-- Defect findings and severity
-- Confidence and residual risk
+```yaml
+QA_WORKFLOW_RESULT:
+  primary_agent: qa-automation-engineer
+  supporting_agents: [test-engineer?, debugger?]
+  primary_skills: [test-master, playwright-expert]
+  supporting_skills: [webapp-testing?, lint-and-validate?]
+  strategy_and_scope: [<string>]
+  automation_coverage_updates: [<string>]
+  defect_findings:
+    - severity: <critical|high|medium|low>
+      summary: <string>
+  confidence: <low|medium|high>
+  residual_risk: [<string>] | []
+```

@@ -1,10 +1,7 @@
 ---
 name: "git-commit"
-displayName: "Git Commit"
 description: "Create conventional commits with intelligent staging and message generation"
-keywords: ["git", "commit", "conventional", "stage", "push", "version control"]
 ---
-
 # Git Commit
 
 ## Conventional Commit Format

@@ -39,6 +39,14 @@ const MIRRORS = {
   ),
 };
 
+const COPILOT_ALLOWED_SKILL_FRONTMATTER_KEYS = new Set([
+  "compatibility",
+  "description",
+  "license",
+  "metadata",
+  "name",
+]);
+
 function parseArgs(argv) {
   const args = new Set(argv.slice(2));
   const onlyArg = argv.find((item, idx) => argv[idx - 1] === "--only") || "all";
@@ -87,6 +95,90 @@ async function buildCanonicalSkillSourceMap() {
   return sourceById;
 }
 
+function extractFrontmatter(markdown) {
+  const match = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
+  if (!match) return { frontmatter: "", body: markdown, matched: false };
+  return {
+    frontmatter: match[1],
+    body: markdown.slice(match[0].length),
+    matched: true,
+  };
+}
+
+function sanitizeSkillMarkdownForCopilot(markdown) {
+  const extracted = extractFrontmatter(markdown);
+  if (!extracted.matched) return markdown;
+
+  const lines = extracted.frontmatter.split(/\r?\n/);
+  const kept = [];
+  let skipUnsupportedKey = null;
+
+  for (const line of lines) {
+    if (skipUnsupportedKey) {
+      const isTopLevelKey =
+        /^([A-Za-z0-9_-]+)\s*:/.test(line) && !/^\s/.test(line);
+      if (!isTopLevelKey) {
+        continue;
+      }
+      skipUnsupportedKey = null;
+    }
+
+    const keyMatch = line.match(/^([A-Za-z0-9_-]+)\s*:/);
+    if (!keyMatch || /^\s/.test(line)) {
+      kept.push(line);
+      continue;
+    }
+
+    const key = keyMatch[1];
+    if (COPILOT_ALLOWED_SKILL_FRONTMATTER_KEYS.has(key)) {
+      kept.push(line);
+      continue;
+    }
+
+    const inlineArray = /\[[\s\S]*\]\s*$/.test(line);
+    if (!inlineArray) {
+      skipUnsupportedKey = key;
+    }
+  }
+
+  const cleanedFrontmatter = kept.join("\n").replace(/\n{3,}/g, "\n\n").trimEnd();
+  const bodyWithoutLeadingNewlines = extracted.body.replace(/^\n+/, "");
+  return `---\n${cleanedFrontmatter}\n---\n${bodyWithoutLeadingNewlines}`;
+}
+
+async function copyFilteredSkillDir(source, destination, label, depth = 0) {
+  await fs.mkdir(destination, { recursive: true });
+  const entries = await fs.readdir(source, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const sourcePath = path.join(source, entry.name);
+    const destinationPath = path.join(destination, entry.name);
+
+    if (entry.isDirectory()) {
+      await copyFilteredSkillDir(sourcePath, destinationPath, label, depth + 1);
+      continue;
+    }
+
+    if (!entry.isFile()) continue;
+    if (entry.name === "POWER.md") continue;
+    if (depth === 0 && entry.name.endsWith(".md") && entry.name !== "SKILL.md") {
+      continue;
+    }
+
+    if (label === "copilot" && entry.name === "SKILL.md") {
+      const raw = await fs.readFile(sourcePath, "utf8");
+      await fs.writeFile(
+        destinationPath,
+        sanitizeSkillMarkdownForCopilot(raw),
+        "utf8",
+      );
+      continue;
+    }
+
+    await fs.copyFile(sourcePath, destinationPath);
+  }
+}
+
 async function syncMirror({
   label,
   mirrorRoot,
@@ -119,7 +211,7 @@ async function syncMirror({
     const destination = path.join(mirrorRoot, item.id);
     if (!dryRun) {
       await fs.rm(destination, { recursive: true, force: true });
-      await fs.cp(item.source, destination, { recursive: true });
+      await copyFilteredSkillDir(item.source, destination, label);
     }
     synced.push(item.id);
   }

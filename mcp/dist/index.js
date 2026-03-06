@@ -129,13 +129,49 @@ function loadServerConfig(configPath) {
   return result.data;
 }
 
+// src/routes/loadGeneratedRouteManifest.ts
+import { readFile } from "fs/promises";
+import path2 from "path";
+function createEmptyRouteManifest() {
+  return {
+    $schema: "cubis-foundry-route-manifest-v1",
+    generatedAt: (/* @__PURE__ */ new Date(0)).toISOString(),
+    contentHash: "missing",
+    summary: {
+      totalRoutes: 0,
+      workflows: 0,
+      agents: 0
+    },
+    routes: []
+  };
+}
+async function loadGeneratedRouteManifest(mcpPackageRoot) {
+  const filePath = path2.resolve(
+    mcpPackageRoot,
+    "../workflows/workflows/agent-environment-setup/generated/route-manifest.json"
+  );
+  try {
+    const raw = await readFile(filePath, "utf8");
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed.routes)) {
+      throw new Error("missing routes array");
+    }
+    return parsed;
+  } catch (error) {
+    logger.warn(
+      `Generated route manifest unavailable at ${filePath}: ${String(error)}`
+    );
+    return createEmptyRouteManifest();
+  }
+}
+
 // src/vault/scanner.ts
 import { open, readdir, stat } from "fs/promises";
-import path2 from "path";
+import path3 from "path";
 async function scanVaultRoots(roots, basePath) {
   const skills = [];
   for (const rootRel of roots) {
-    const rootAbs = path2.resolve(basePath, rootRel);
+    const rootAbs = path3.resolve(basePath, rootRel);
     let entries;
     try {
       entries = await readdir(rootAbs);
@@ -145,10 +181,10 @@ async function scanVaultRoots(roots, basePath) {
     }
     for (const entry of entries) {
       if (entry.startsWith(".")) continue;
-      const entryPath = path2.join(rootAbs, entry);
+      const entryPath = path3.join(rootAbs, entry);
       const entryStat = await stat(entryPath).catch(() => null);
       if (!entryStat?.isDirectory()) continue;
-      const skillFile = path2.join(entryPath, "SKILL.md");
+      const skillFile = path3.join(entryPath, "SKILL.md");
       const skillStat = await stat(skillFile).catch(() => null);
       if (!skillStat?.isFile()) continue;
       if (skillStat.size === 0) {
@@ -321,8 +357,8 @@ function deriveCategory(skillId) {
 }
 
 // src/vault/manifest.ts
-import { readdir as readdir2, readFile } from "fs/promises";
-import path3 from "path";
+import { readdir as readdir2, readFile as readFile2 } from "fs/promises";
+import path4 from "path";
 
 // src/telemetry/tokenBudget.ts
 var TOKEN_ESTIMATOR_VERSION = "char-estimator-v1";
@@ -406,7 +442,7 @@ function buildManifest(skills, charsPerToken) {
 }
 async function extractDescription(skillPath, maxLength) {
   try {
-    const content = await readFile(skillPath, "utf8");
+    const content = await readFile2(skillPath, "utf8");
     return parseDescriptionFromFrontmatter(content, maxLength);
   } catch (err) {
     logger.debug(`Failed to read description from ${skillPath}: ${err}`);
@@ -429,7 +465,7 @@ function parseDescriptionFromFrontmatter(content, maxLength) {
   return desc;
 }
 async function readFullSkillContent(skillPath) {
-  return readFile(skillPath, "utf8");
+  return readFile2(skillPath, "utf8");
 }
 var MARKDOWN_LINK_RE = /\[[^\]]+\]\(([^)]+)\)/g;
 var MAX_REFERENCED_FILES = 25;
@@ -477,7 +513,7 @@ function normalizeLinkTarget(rawTarget) {
   if (!target) return null;
   if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(target)) return null;
   if (/^[a-zA-Z]:[\\/]/.test(target)) return null;
-  if (path3.isAbsolute(target)) return null;
+  if (path4.isAbsolute(target)) return null;
   return target;
 }
 function collectReferencedMarkdownTargets(skillContent) {
@@ -495,24 +531,35 @@ function collectReferencedMarkdownTargets(skillContent) {
   }
   return targets;
 }
+function normalizeInSkillMarkdownTarget(skillDir, target) {
+  const resolved = path4.resolve(skillDir, target);
+  const relative = path4.relative(skillDir, resolved);
+  if (relative.startsWith("..") || path4.isAbsolute(relative)) {
+    return null;
+  }
+  if (path4.basename(resolved).toLowerCase() === "skill.md") {
+    return null;
+  }
+  return relative.split(path4.sep).join("/");
+}
 async function readReferencedMarkdownFiles(skillPath, skillContent) {
-  const skillDir = path3.dirname(skillPath);
+  const skillDir = path4.dirname(skillPath);
   let targets = collectReferencedMarkdownTargets(skillContent);
   if (targets.length === 0) {
     targets = await collectSiblingMarkdownTargets(skillDir);
   }
   const references = [];
   for (const target of targets) {
-    const resolved = path3.resolve(skillDir, target);
-    const relative = path3.relative(skillDir, resolved);
-    if (relative.startsWith("..") || path3.isAbsolute(relative)) {
+    const resolved = path4.resolve(skillDir, target);
+    const relative = path4.relative(skillDir, resolved);
+    if (relative.startsWith("..") || path4.isAbsolute(relative)) {
       continue;
     }
-    if (path3.basename(resolved).toLowerCase() === "skill.md") continue;
+    if (path4.basename(resolved).toLowerCase() === "skill.md") continue;
     try {
-      const content = await readFile(resolved, "utf8");
+      const content = await readFile2(resolved, "utf8");
       references.push({
-        relativePath: relative.split(path3.sep).join("/"),
+        relativePath: relative.split(path4.sep).join("/"),
         content
       });
     } catch (err) {
@@ -529,7 +576,7 @@ async function collectSiblingMarkdownTargets(skillDir) {
   for (const entry of entries) {
     if (entry.name.startsWith(".")) continue;
     if (entry.isDirectory()) {
-      const subEntries = await readdir2(path3.join(skillDir, entry.name), {
+      const subEntries = await readdir2(path4.join(skillDir, entry.name), {
         withFileTypes: true
       }).catch(() => []);
       for (const sub of subEntries) {
@@ -551,8 +598,8 @@ async function collectSiblingMarkdownTargets(skillDir) {
 }
 async function listReferencedMarkdownPaths(skillPath, skillContent) {
   const source = skillContent ?? await readFullSkillContent(skillPath);
-  const skillDir = path3.dirname(skillPath);
-  const explicitTargets = collectReferencedMarkdownTargets(source);
+  const skillDir = path4.dirname(skillPath);
+  const explicitTargets = collectReferencedMarkdownTargets(source).map((target) => normalizeInSkillMarkdownTarget(skillDir, target)).filter((target) => Boolean(target));
   const siblingTargets = await collectSiblingMarkdownTargets(skillDir);
   const merged = /* @__PURE__ */ new Set([...explicitTargets, ...siblingTargets]);
   return [...merged].sort((a, b) => a.localeCompare(b)).slice(0, MAX_REFERENCED_FILES);
@@ -568,15 +615,15 @@ async function readSkillReferenceFile(skillPath, relativePath) {
       `Reference path "${normalized}" is not available for this skill.`
     );
   }
-  const skillDir = path3.dirname(skillPath);
-  const resolved = path3.resolve(skillDir, normalized);
-  const relative = path3.relative(skillDir, resolved);
-  if (relative.startsWith("..") || path3.isAbsolute(relative)) {
+  const skillDir = path4.dirname(skillPath);
+  const resolved = path4.resolve(skillDir, normalized);
+  const relative = path4.relative(skillDir, resolved);
+  if (relative.startsWith("..") || path4.isAbsolute(relative)) {
     throw new Error(`Reference path "${normalized}" escapes the skill directory.`);
   }
   return {
-    relativePath: relative.split(path3.sep).join("/"),
-    content: await readFile(resolved, "utf8")
+    relativePath: relative.split(path4.sep).join("/"),
+    content: await readFile2(resolved, "utf8")
   };
 }
 async function readSkillContentWithReferences(skillPath, includeReferences = true) {
@@ -603,13 +650,334 @@ async function enrichWithDescriptions(skills, maxLength) {
 
 // src/server.ts
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z as z15 } from "zod";
+import { z as z16 } from "zod";
+
+// src/tools/routeResolve.ts
+import path5 from "path";
+import process2 from "process";
+import { promises as fs } from "fs";
+import { z as z2 } from "zod";
+var routeResolveName = "route_resolve";
+var routeResolveDescription = "Resolve an explicit workflow command, explicit custom agent, compatibility alias, or free-text intent into one workflow/agent route before skill loading.";
+var routeResolveSchema = z2.object({
+  intent: z2.string().min(1).describe(
+    "Explicit workflow command (/mobile), explicit agent (@mobile-developer), compatibility alias ($workflow-mobile / $agent-mobile-developer), or free-text user intent"
+  )
+});
+var ROUTE_STOP_WORDS = /* @__PURE__ */ new Set([
+  "a",
+  "an",
+  "and",
+  "app",
+  "for",
+  "help",
+  "i",
+  "in",
+  "is",
+  "me",
+  "of",
+  "on",
+  "or",
+  "please",
+  "the",
+  "to",
+  "with"
+]);
+var SKILL_AUTHORING_OBJECT_SIGNALS = [
+  "skill",
+  "skills",
+  "skill authoring",
+  "skill-authoring",
+  "skill creator",
+  "skill-creator",
+  "skill.md",
+  "power.md",
+  "frontmatter",
+  "metadata",
+  "reference",
+  "references",
+  "sidecar",
+  "sidecars",
+  "mirror",
+  "mirrors"
+];
+var SKILL_AUTHORING_ACTION_SIGNALS = [
+  "adapt",
+  "author",
+  "build",
+  "check",
+  "create",
+  "design",
+  "fix",
+  "maintain",
+  "migrate",
+  "normalize",
+  "plan",
+  "repair",
+  "review",
+  "scaffold",
+  "spec",
+  "update",
+  "validate",
+  "wire"
+];
+var SKILL_AUTHORING_PLAN_SIGNALS = ["design", "plan", "spec"];
+var SKILL_AUTHORING_REVIEW_SIGNALS = ["audit", "check", "review", "validate"];
+var SKILL_AUTHORING_ORCHESTRATE_SIGNALS = [
+  "all platform",
+  "all platforms",
+  "cross platform",
+  "cross-platform",
+  "every platform",
+  "generator",
+  "mirror",
+  "mirrors"
+];
+var LANGUAGE_SIGNAL_FILES = [
+  { skillId: "typescript-pro", files: ["tsconfig.json", "tsconfig.base.json", "deno.json"] },
+  { skillId: "javascript-pro", files: ["package.json"] },
+  { skillId: "python-pro", files: ["pyproject.toml", "requirements.txt", "requirements-dev.txt"] },
+  { skillId: "golang-pro", files: ["go.mod"] },
+  { skillId: "rust-pro", files: ["Cargo.toml"] },
+  { skillId: "csharp-pro", files: [".sln", ".csproj"] },
+  { skillId: "java-pro", files: ["pom.xml", "build.gradle"] },
+  { skillId: "kotlin-pro", files: ["build.gradle.kts", "settings.gradle.kts"] }
+];
+function normalize(value) {
+  return value.toLowerCase().replace(/[^a-z0-9@/$+-]+/g, " ").trim();
+}
+function tokenize(value) {
+  const seen = /* @__PURE__ */ new Set();
+  return normalize(value).split(/\s+/).filter((token) => token.length >= 2 && !ROUTE_STOP_WORDS.has(token)).filter((token) => {
+    if (seen.has(token)) return false;
+    seen.add(token);
+    return true;
+  });
+}
+function countTokenMatches(haystack, tokens) {
+  let matches = 0;
+  for (const token of tokens) {
+    if (haystack.includes(token)) matches += 1;
+  }
+  return matches;
+}
+function includesAnyPhrase(normalizedIntent, phrases) {
+  return phrases.some((phrase) => normalizedIntent.includes(phrase));
+}
+function isSkillAuthoringIntent(intent) {
+  const normalizedIntent = normalize(intent);
+  const hasObjectSignal = includesAnyPhrase(
+    normalizedIntent,
+    SKILL_AUTHORING_OBJECT_SIGNALS
+  );
+  if (!hasObjectSignal) return false;
+  return includesAnyPhrase(normalizedIntent, SKILL_AUTHORING_ACTION_SIGNALS);
+}
+function chooseSkillAuthoringRoute(intent, manifest) {
+  if (!isSkillAuthoringIntent(intent)) return null;
+  const normalizedIntent = normalize(intent);
+  let preferredRouteId = "create";
+  if (includesAnyPhrase(normalizedIntent, SKILL_AUTHORING_REVIEW_SIGNALS)) {
+    preferredRouteId = "review";
+  } else if (includesAnyPhrase(normalizedIntent, SKILL_AUTHORING_PLAN_SIGNALS)) {
+    preferredRouteId = "plan";
+  } else if (includesAnyPhrase(normalizedIntent, SKILL_AUTHORING_ORCHESTRATE_SIGNALS)) {
+    preferredRouteId = "orchestrate";
+  }
+  return manifest.routes.find(
+    (entry) => entry.kind === "workflow" && entry.id === preferredRouteId
+  ) || null;
+}
+function buildSearchText(route) {
+  return normalize(
+    [
+      route.kind,
+      route.id,
+      route.command || "",
+      route.displayName,
+      route.description,
+      route.primaryAgent,
+      ...route.supportingAgents,
+      ...route.triggers,
+      ...route.primarySkills,
+      ...route.supportingSkills,
+      route.artifacts.codex?.compatibilityAlias || "",
+      route.artifacts.antigravity?.commandFile || "",
+      route.artifacts.copilot?.promptFile || ""
+    ].join(" ")
+  );
+}
+function findExplicitRoute(intent, manifest) {
+  const trimmed = intent.trim();
+  if (trimmed.startsWith("/")) {
+    const route = manifest.routes.find(
+      (entry) => entry.kind === "workflow" && entry.command?.toLowerCase() === trimmed.toLowerCase()
+    );
+    if (route) return { route, matchedBy: "explicit-workflow-command" };
+  }
+  if (trimmed.startsWith("@")) {
+    const normalizedAgent = trimmed.slice(1).toLowerCase();
+    const route = manifest.routes.find(
+      (entry) => entry.kind === "agent" && entry.id.toLowerCase() === normalizedAgent
+    );
+    if (route) return { route, matchedBy: "explicit-agent" };
+  }
+  if (trimmed.startsWith("$")) {
+    const normalizedAlias = trimmed.toLowerCase();
+    const route = manifest.routes.find(
+      (entry) => entry.artifacts.codex?.compatibilityAlias?.toLowerCase() === normalizedAlias
+    );
+    if (route) return { route, matchedBy: "compatibility-alias" };
+  }
+  return null;
+}
+function resolveByIntent(intent, manifest) {
+  const normalizedIntent = normalize(intent);
+  const tokens = tokenize(intent);
+  let best = null;
+  for (const route of manifest.routes) {
+    const searchText = buildSearchText(route);
+    const phraseMatch = normalizedIntent.length > 0 && searchText.includes(normalizedIntent);
+    const tokenMatches = countTokenMatches(searchText, tokens);
+    const triggerMatches = route.triggers.reduce((sum, trigger) => {
+      return sum + (normalizedIntent.includes(normalize(trigger)) ? 1 : 0);
+    }, 0);
+    const score = (phraseMatch ? 500 : 0) + triggerMatches * 120 + tokenMatches * 40 + (route.kind === "workflow" ? 10 : 0);
+    if (score <= 0) continue;
+    if (!best || score > best.score || score === best.score && route.id.localeCompare(best.route.id) < 0) {
+      best = {
+        route,
+        matchedBy: triggerMatches > 0 ? "trigger-match" : "intent-match",
+        score,
+        tokenMatches
+      };
+    }
+  }
+  if (!best) return null;
+  if (best.score < 80 && best.tokenMatches < 2) return null;
+  return best;
+}
+function buildResolvedPayload(input, route, matchedBy, detectedLanguageSkill) {
+  const primarySkillHint = isSkillAuthoringIntent(input) ? "skill-authoring" : route.primarySkills[0] || null;
+  return {
+    input,
+    resolved: true,
+    kind: route.kind,
+    id: route.id,
+    command: route.command,
+    agent: route.primaryAgent,
+    primarySkillHint,
+    primarySkills: route.primarySkills,
+    supportingSkills: route.supportingSkills,
+    detectedLanguageSkill,
+    fallbackSkillSearchRecommended: false,
+    matchedBy,
+    explanation: matchedBy === "explicit-workflow-command" ? `Matched explicit workflow command ${route.command}.` : matchedBy === "explicit-agent" ? `Matched explicit agent @${route.id}.` : matchedBy === "compatibility-alias" ? `Matched compatibility alias ${route.artifacts.codex?.compatibilityAlias}.` : matchedBy === "skill-authoring-intent" ? `Matched workflow '${route.id}' and selected skill-authoring as the primary skill hint for skill package work.` : `Matched ${route.kind} '${route.id}' from installed route metadata.`,
+    artifacts: route.artifacts
+  };
+}
+async function fileExists(target) {
+  try {
+    await fs.stat(target);
+    return true;
+  } catch {
+    return false;
+  }
+}
+async function detectLanguageSkillHint() {
+  const cwd = process2.cwd();
+  const candidates = await fs.readdir(cwd).catch(() => []);
+  const has = (fileName) => candidates.includes(fileName);
+  for (const entry of LANGUAGE_SIGNAL_FILES) {
+    for (const fileName of entry.files) {
+      if (fileName === ".sln" || fileName === ".csproj") {
+        if (candidates.some((item) => item.endsWith(fileName))) {
+          return "csharp-pro";
+        }
+        continue;
+      }
+      if (has(fileName) || await fileExists(path5.join(cwd, fileName))) {
+        if (entry.skillId === "javascript-pro") {
+          const tsSignals = ["tsconfig.json", "tsconfig.base.json", "deno.json"];
+          if (tsSignals.some((signal) => has(signal))) {
+            return "typescript-pro";
+          }
+        }
+        return entry.skillId;
+      }
+    }
+  }
+  return null;
+}
+async function handleRouteResolve(args, routeManifest) {
+  const { intent } = args;
+  const detectedLanguageSkill = await detectLanguageSkillHint();
+  const explicit = findExplicitRoute(intent, routeManifest);
+  if (explicit) {
+    const payload2 = buildResolvedPayload(
+      intent,
+      explicit.route,
+      explicit.matchedBy,
+      detectedLanguageSkill
+    );
+    return {
+      content: [{ type: "text", text: JSON.stringify(payload2, null, 2) }],
+      structuredContent: payload2
+    };
+  }
+  const skillAuthoringRoute = chooseSkillAuthoringRoute(intent, routeManifest);
+  if (skillAuthoringRoute) {
+    const payload2 = buildResolvedPayload(
+      intent,
+      skillAuthoringRoute,
+      "skill-authoring-intent",
+      detectedLanguageSkill
+    );
+    return {
+      content: [{ type: "text", text: JSON.stringify(payload2, null, 2) }],
+      structuredContent: payload2
+    };
+  }
+  const inferred = resolveByIntent(intent, routeManifest);
+  if (inferred) {
+    const payload2 = buildResolvedPayload(
+      intent,
+      inferred.route,
+      inferred.matchedBy,
+      detectedLanguageSkill
+    );
+    return {
+      content: [{ type: "text", text: JSON.stringify(payload2, null, 2) }],
+      structuredContent: payload2
+    };
+  }
+  const payload = {
+    input: intent,
+    resolved: false,
+    kind: null,
+    id: null,
+    command: null,
+    agent: null,
+    primarySkillHint: null,
+    primarySkills: [],
+    supportingSkills: [],
+    detectedLanguageSkill,
+    fallbackSkillSearchRecommended: true,
+    matchedBy: "none",
+    explanation: "No workflow or custom agent matched the current intent. Inspect locally first, then use one narrow skill_search only if the domain is still unclear.",
+    artifacts: null
+  };
+  return {
+    content: [{ type: "text", text: JSON.stringify(payload, null, 2) }],
+    structuredContent: payload
+  };
+}
 
 // src/tools/skillListCategories.ts
-import { z as z2 } from "zod";
+import { z as z3 } from "zod";
 var skillListCategoriesName = "skill_list_categories";
 var skillListCategoriesDescription = "List all skill categories available in the vault. Returns category names and skill counts.";
-var skillListCategoriesSchema = z2.object({});
+var skillListCategoriesSchema = z3.object({});
 function handleSkillListCategories(manifest, charsPerToken) {
   const categoryCounts = {};
   for (const skill of manifest.skills) {
@@ -644,7 +1012,7 @@ function handleSkillListCategories(manifest, charsPerToken) {
 }
 
 // src/tools/skillBrowseCategory.ts
-import { z as z3 } from "zod";
+import { z as z4 } from "zod";
 
 // src/utils/errors.ts
 import { McpError, ErrorCode } from "@modelcontextprotocol/sdk/types.js";
@@ -670,8 +1038,8 @@ function notFound(entity, id) {
 // src/tools/skillBrowseCategory.ts
 var skillBrowseCategoryName = "skill_browse_category";
 var skillBrowseCategoryDescription = "Browse skills within a specific category. Returns skill IDs and short descriptions.";
-var skillBrowseCategorySchema = z3.object({
-  category: z3.string().describe("The category name to browse (from skill_list_categories)")
+var skillBrowseCategorySchema = z4.object({
+  category: z4.string().describe("The category name to browse (from skill_list_categories)")
 });
 async function handleSkillBrowseCategory(args, manifest, summaryMaxLength, charsPerToken) {
   const { category } = args;
@@ -714,31 +1082,83 @@ async function handleSkillBrowseCategory(args, manifest, summaryMaxLength, chars
 }
 
 // src/tools/skillSearch.ts
-import { z as z4 } from "zod";
+import { z as z5 } from "zod";
 var skillSearchName = "skill_search";
 var skillSearchDescription = "Search skills by keyword. Matches against skill IDs and descriptions. Returns matching skills with short descriptions.";
-var skillSearchSchema = z4.object({
-  query: z4.string().min(1).describe(
+var skillSearchSchema = z5.object({
+  query: z5.string().min(1).describe(
     "Search keyword or phrase to match against skill IDs and descriptions"
   )
 });
+var SEARCH_STOP_WORDS = /* @__PURE__ */ new Set([
+  "a",
+  "an",
+  "and",
+  "api",
+  "for",
+  "in",
+  "of",
+  "on",
+  "or",
+  "the",
+  "to",
+  "with"
+]);
+function normalizeSearchText(value) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+function extractQueryTokens(query) {
+  const seen = /* @__PURE__ */ new Set();
+  const tokens = normalizeSearchText(query).split(/\s+/).filter((token) => token.length >= 2 && !SEARCH_STOP_WORDS.has(token)).filter((token) => {
+    if (seen.has(token)) return false;
+    seen.add(token);
+    return true;
+  });
+  return tokens;
+}
+function countMatchedTokens(haystack, tokens) {
+  if (!haystack) return 0;
+  let matches = 0;
+  for (const token of tokens) {
+    if (haystack.includes(token)) matches += 1;
+  }
+  return matches;
+}
+function isWrapperSkillId(id) {
+  return id.startsWith("workflow-") || id.startsWith("agent-");
+}
 async function handleSkillSearch(args, manifest, summaryMaxLength, charsPerToken) {
   const { query } = args;
-  const lower = query.toLowerCase();
-  let matches = manifest.skills.filter(
-    (s) => s.id.toLowerCase().includes(lower)
-  );
-  if (matches.length === 0) {
-    const enriched = await enrichWithDescriptions(
-      manifest.skills,
-      summaryMaxLength
+  const normalizedQuery = normalizeSearchText(query);
+  const queryTokens = extractQueryTokens(query);
+  const enriched = await enrichWithDescriptions(manifest.skills, summaryMaxLength);
+  const rankedMatches = enriched.filter((skill) => !isWrapperSkillId(skill.id)).map((skill) => {
+    const normalizedId = normalizeSearchText(skill.id);
+    const normalizedCategory = normalizeSearchText(skill.category);
+    const normalizedDescription = normalizeSearchText(skill.description ?? "");
+    const idPhraseMatch = normalizedId.includes(normalizedQuery);
+    const categoryPhraseMatch = normalizedCategory.includes(normalizedQuery);
+    const descriptionPhraseMatch = normalizedDescription.includes(normalizedQuery);
+    const idTokenMatches = countMatchedTokens(normalizedId, queryTokens);
+    const categoryTokenMatches = countMatchedTokens(
+      normalizedCategory,
+      queryTokens
     );
-    matches = enriched.filter(
-      (s) => s.id.toLowerCase().includes(lower) || s.description && s.description.toLowerCase().includes(lower)
+    const descriptionTokenMatches = countMatchedTokens(
+      normalizedDescription,
+      queryTokens
     );
-  } else {
-    matches = await enrichWithDescriptions(matches, summaryMaxLength);
-  }
+    const totalTokenMatches = idTokenMatches + categoryTokenMatches + descriptionTokenMatches;
+    const score = (idPhraseMatch ? 500 : 0) + (descriptionPhraseMatch ? 250 : 0) + (categoryPhraseMatch ? 150 : 0) + idTokenMatches * 50 + categoryTokenMatches * 25 + descriptionTokenMatches * 15;
+    return {
+      skill,
+      score,
+      totalTokenMatches
+    };
+  }).filter(
+    ({ score, totalTokenMatches }) => score > 0 && (normalizedQuery.length > 0 || totalTokenMatches > 0)
+  ).sort((a, b) => b.score - a.score || a.skill.id.localeCompare(b.skill.id));
+  const matches = rankedMatches.map(({ skill }) => skill);
   const results = matches.map((s) => ({
     id: s.id,
     category: s.category,
@@ -764,9 +1184,7 @@ async function handleSkillSearch(args, manifest, summaryMaxLength, charsPerToken
         text
       }
     ],
-    structuredContent: {
-      metrics
-    },
+    structuredContent: payload,
     _meta: {
       metrics
     }
@@ -774,16 +1192,16 @@ async function handleSkillSearch(args, manifest, summaryMaxLength, charsPerToken
 }
 
 // src/tools/skillValidate.ts
-import { z as z5 } from "zod";
+import { z as z6 } from "zod";
 var skillValidateName = "skill_validate";
 var skillValidateDescription = "Validate an exact skill ID before loading it. Returns alias metadata and discoverable reference markdown paths.";
-var skillValidateSchema = z5.object({
-  id: z5.string().describe("The exact skill ID (directory name) to validate")
+var skillValidateSchema = z6.object({
+  id: z6.string().describe("The exact skill ID (directory name) to validate")
 });
 function assertConcreteSkillId(id) {
   if (id.startsWith("workflow-") || id.startsWith("agent-")) {
     invalidInput(
-      `Skill id "${id}" appears to be a wrapper id. Use workflow/agent routing (for example $workflow-implement-track or $agent-backend-specialist) and call skill_get only for concrete skill ids.`
+      `Skill id "${id}" appears to be a wrapper id. Use route_resolve with an explicit workflow command, @agent mention, or compatibility alias before loading concrete skills.`
     );
   }
 }
@@ -812,7 +1230,7 @@ async function handleSkillValidate(args, manifest, charsPerToken) {
     });
     return {
       content: [{ type: "text", text: text2 }],
-      structuredContent: { ...payload2, metrics: metrics2 },
+      structuredContent: payload2,
       _meta: { metrics: metrics2 }
     };
   }
@@ -840,18 +1258,18 @@ async function handleSkillValidate(args, manifest, charsPerToken) {
   });
   return {
     content: [{ type: "text", text }],
-    structuredContent: { ...payload, metrics },
+    structuredContent: payload,
     _meta: { metrics }
   };
 }
 
 // src/tools/skillGet.ts
-import { z as z6 } from "zod";
+import { z as z7 } from "zod";
 var skillGetName = "skill_get";
 var skillGetDescription = "Get full content of a specific skill by ID. Returns SKILL.md content and optionally direct referenced markdown files.";
-var skillGetSchema = z6.object({
-  id: z6.string().describe("The skill ID (directory name) to retrieve"),
-  includeReferences: z6.boolean().optional().describe(
+var skillGetSchema = z7.object({
+  id: z7.string().describe("The skill ID (directory name) to retrieve"),
+  includeReferences: z7.boolean().optional().describe(
     "Whether to include direct local markdown references from SKILL.md (default: true)"
   )
 });
@@ -859,7 +1277,7 @@ async function handleSkillGet(args, manifest, charsPerToken) {
   const { id, includeReferences = true } = args;
   if (id.startsWith("workflow-") || id.startsWith("agent-")) {
     invalidInput(
-      `Skill id "${id}" appears to be a wrapper id. Use workflow/agent routing (for example $workflow-implement-track or $agent-backend-specialist) and call skill_get only for concrete skill ids.`
+      `Skill id "${id}" appears to be a wrapper id. Use route_resolve with an explicit workflow command, @agent mention, or compatibility alias before loading concrete skills.`
     );
   }
   const skill = manifest.skills.find((s) => s.id === id);
@@ -917,22 +1335,22 @@ async function handleSkillGet(args, manifest, charsPerToken) {
 }
 
 // src/tools/skillGetReference.ts
-import { z as z7 } from "zod";
+import { z as z8 } from "zod";
 var skillGetReferenceName = "skill_get_reference";
 var skillGetReferenceDescription = "Get one validated markdown reference file for a skill by exact relative path.";
-var skillGetReferenceSchema = z7.object({
-  id: z7.string().describe("The exact skill ID (directory name)"),
-  path: z7.string().describe("Exact relative markdown reference path exposed by skill_validate")
+var skillGetReferenceSchema = z8.object({
+  id: z8.string().describe("The exact skill ID (directory name)"),
+  path: z8.string().describe("Exact relative markdown reference path exposed by skill_validate")
 });
 function assertConcreteSkillId2(id) {
   if (id.startsWith("workflow-") || id.startsWith("agent-")) {
     invalidInput(
-      `Skill id "${id}" appears to be a wrapper id. Use workflow/agent routing (for example $workflow-implement-track or $agent-backend-specialist) and call skill_get only for concrete skill ids.`
+      `Skill id "${id}" appears to be a wrapper id. Use route_resolve with an explicit workflow command, @agent mention, or compatibility alias before loading concrete skills.`
     );
   }
 }
 async function handleSkillGetReference(args, manifest, charsPerToken) {
-  const { id, path: path8 } = args;
+  const { id, path: path10 } = args;
   assertConcreteSkillId2(id);
   const skill = manifest.skills.find((entry) => entry.id === id);
   if (!skill) {
@@ -940,7 +1358,7 @@ async function handleSkillGetReference(args, manifest, charsPerToken) {
   }
   let reference;
   try {
-    reference = await readSkillReferenceFile(skill.path, path8);
+    reference = await readSkillReferenceFile(skill.path, path10);
   } catch (error) {
     invalidInput(error instanceof Error ? error.message : String(error));
   }
@@ -957,8 +1375,7 @@ async function handleSkillGetReference(args, manifest, charsPerToken) {
     content: [{ type: "text", text: reference.content }],
     structuredContent: {
       skillId: id,
-      path: reference.relativePath,
-      metrics
+      path: reference.relativePath
     },
     _meta: {
       metrics
@@ -967,12 +1384,12 @@ async function handleSkillGetReference(args, manifest, charsPerToken) {
 }
 
 // src/tools/skillBudgetReport.ts
-import { z as z8 } from "zod";
+import { z as z9 } from "zod";
 var skillBudgetReportName = "skill_budget_report";
 var skillBudgetReportDescription = "Report estimated context/token budget for selected and loaded skills compared to the full skill catalog.";
-var skillBudgetReportSchema = z8.object({
-  selectedSkillIds: z8.array(z8.string()).default([]).describe("Skill IDs selected after search/browse."),
-  loadedSkillIds: z8.array(z8.string()).default([]).describe("Skill IDs loaded via skill_get.")
+var skillBudgetReportSchema = z9.object({
+  selectedSkillIds: z9.array(z9.string()).default([]).describe("Skill IDs selected after search/browse."),
+  loadedSkillIds: z9.array(z9.string()).default([]).describe("Skill IDs loaded via skill_get.")
 });
 function uniqueStrings(values) {
   return [...new Set(values.map((value) => String(value)))];
@@ -1062,18 +1479,18 @@ function handleSkillBudgetReport(args, manifest, charsPerToken) {
 }
 
 // src/tools/postmanGetMode.ts
-import { z as z9 } from "zod";
+import { z as z10 } from "zod";
 
 // src/cbxConfig/paths.ts
-import path4 from "path";
+import path6 from "path";
 import os from "os";
 import { existsSync } from "fs";
 function globalConfigPath() {
-  return path4.join(os.homedir(), ".cbx", "cbx_config.json");
+  return path6.join(os.homedir(), ".cbx", "cbx_config.json");
 }
 function projectConfigPath(workspaceRoot) {
   const root = workspaceRoot ?? process.cwd();
-  return path4.join(root, "cbx_config.json");
+  return path6.join(root, "cbx_config.json");
 }
 function resolveConfigPath(scope, workspaceRoot) {
   if (scope === "global") {
@@ -1149,7 +1566,7 @@ import {
   mkdirSync,
   existsSync as existsSync3
 } from "fs";
-import path5 from "path";
+import path7 from "path";
 import { parse as parseJsonc2 } from "jsonc-parser";
 function writeConfigField(fieldPath, value, scope, workspaceRoot) {
   const resolved = resolveConfigPath(scope, workspaceRoot);
@@ -1175,7 +1592,7 @@ function writeConfigField(fieldPath, value, scope, workspaceRoot) {
     current = current[key];
   }
   current[parts[parts.length - 1]] = value;
-  const dir = path5.dirname(configPath);
+  const dir = path7.dirname(configPath);
   if (!existsSync3(dir)) {
     mkdirSync(dir, { recursive: true });
   }
@@ -1322,8 +1739,8 @@ function isValidMode(mode) {
 // src/tools/postmanGetMode.ts
 var postmanGetModeName = "postman_get_mode";
 var postmanGetModeDescription = "Get the current Postman MCP mode from cbx_config.json. Returns the friendly mode name and URL.";
-var postmanGetModeSchema = z9.object({
-  scope: z9.enum(["global", "project", "auto"]).optional().describe(
+var postmanGetModeSchema = z10.object({
+  scope: z10.enum(["global", "project", "auto"]).optional().describe(
     "Config scope to read. Default: auto (project if exists, else global)"
   )
 });
@@ -1378,12 +1795,12 @@ function handlePostmanGetMode(args) {
 }
 
 // src/tools/postmanSetMode.ts
-import { z as z10 } from "zod";
+import { z as z11 } from "zod";
 var postmanSetModeName = "postman_set_mode";
 var postmanSetModeDescription = "Set the Postman MCP mode in cbx_config.json. Modes: minimal, code, full.";
-var postmanSetModeSchema = z10.object({
-  mode: z10.enum(["minimal", "code", "full"]).describe("Postman MCP mode to set: minimal, code, or full"),
-  scope: z10.enum(["global", "project", "auto"]).optional().describe(
+var postmanSetModeSchema = z11.object({
+  mode: z11.enum(["minimal", "code", "full"]).describe("Postman MCP mode to set: minimal, code, or full"),
+  scope: z11.enum(["global", "project", "auto"]).optional().describe(
     "Config scope to write. Default: auto (project if exists, else global)"
   )
 });
@@ -1422,11 +1839,11 @@ function handlePostmanSetMode(args) {
 }
 
 // src/tools/postmanGetStatus.ts
-import { z as z11 } from "zod";
+import { z as z12 } from "zod";
 var postmanGetStatusName = "postman_get_status";
 var postmanGetStatusDescription = "Get full Postman configuration status including mode, URL, and workspace ID.";
-var postmanGetStatusSchema = z11.object({
-  scope: z11.enum(["global", "project", "auto"]).optional().describe(
+var postmanGetStatusSchema = z12.object({
+  scope: z12.enum(["global", "project", "auto"]).optional().describe(
     "Config scope to read. Default: auto (project if exists, else global)"
   )
 });
@@ -1466,11 +1883,11 @@ function handlePostmanGetStatus(args) {
 }
 
 // src/tools/stitchGetMode.ts
-import { z as z12 } from "zod";
+import { z as z13 } from "zod";
 var stitchGetModeName = "stitch_get_mode";
 var stitchGetModeDescription = "Get the active Stitch profile name and URL from cbx_config.json. Never exposes API keys.";
-var stitchGetModeSchema = z12.object({
-  scope: z12.enum(["global", "project", "auto"]).optional().describe(
+var stitchGetModeSchema = z13.object({
+  scope: z13.enum(["global", "project", "auto"]).optional().describe(
     "Config scope to read. Default: auto (project if exists, else global)"
   )
 });
@@ -1505,12 +1922,12 @@ function handleStitchGetMode(args) {
 }
 
 // src/tools/stitchSetProfile.ts
-import { z as z13 } from "zod";
+import { z as z14 } from "zod";
 var stitchSetProfileName = "stitch_set_profile";
 var stitchSetProfileDescription = "Set the active Stitch profile in cbx_config.json. The profile must already exist in the config.";
-var stitchSetProfileSchema = z13.object({
-  profileName: z13.string().min(1).describe("Name of the Stitch profile to activate"),
-  scope: z13.enum(["global", "project", "auto"]).optional().describe(
+var stitchSetProfileSchema = z14.object({
+  profileName: z14.string().min(1).describe("Name of the Stitch profile to activate"),
+  scope: z14.enum(["global", "project", "auto"]).optional().describe(
     "Config scope to write. Default: auto (project if exists, else global)"
   )
 });
@@ -1555,11 +1972,11 @@ function handleStitchSetProfile(args) {
 }
 
 // src/tools/stitchGetStatus.ts
-import { z as z14 } from "zod";
+import { z as z15 } from "zod";
 var stitchGetStatusName = "stitch_get_status";
 var stitchGetStatusDescription = "Get full Stitch configuration status including active profile, all profile names, and URLs. Never exposes API keys.";
-var stitchGetStatusSchema = z14.object({
-  scope: z14.enum(["global", "project", "auto"]).optional().describe(
+var stitchGetStatusSchema = z15.object({
+  scope: z15.enum(["global", "project", "auto"]).optional().describe(
     "Config scope to read. Default: auto (project if exists, else global)"
   )
 });
@@ -1612,6 +2029,17 @@ function withDefaultScope(args, defaultScope) {
   };
 }
 var TOOL_REGISTRY = [
+  // ── Route tools ───────────────────────────────────────────
+  {
+    name: routeResolveName,
+    description: routeResolveDescription,
+    schema: routeResolveSchema,
+    category: "route",
+    createHandler: (ctx) => async (args) => handleRouteResolve(
+      args,
+      ctx.routeManifest
+    )
+  },
   // ── Skill vault tools ─────────────────────────────────────
   {
     name: skillListCategoriesName,
@@ -1747,16 +2175,16 @@ var TOOL_REGISTRY = [
 ];
 
 // src/upstream/passthrough.ts
-import { mkdir, readFile as readFile2, writeFile } from "fs/promises";
-import path6 from "path";
+import { mkdir, readFile as readFile3, writeFile } from "fs/promises";
+import path8 from "path";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 function resolveCatalogDir(configPath) {
-  const configDir = path6.dirname(configPath);
-  if (path6.basename(configDir) === ".cbx") {
-    return path6.join(configDir, "mcp", "catalog");
+  const configDir = path8.dirname(configPath);
+  if (path8.basename(configDir) === ".cbx") {
+    return path8.join(configDir, "mcp", "catalog");
   }
-  return path6.join(configDir, ".cbx", "mcp", "catalog");
+  return path8.join(configDir, ".cbx", "mcp", "catalog");
 }
 function buildPassthroughAliasName(service, toolName) {
   const normalizedTool = String(toolName || "").trim().replace(/([a-z0-9])([A-Z])/g, "$1_$2").replace(/[^A-Za-z0-9]+/g, "_").replace(/^_+|_+$/g, "").replace(/_+/g, "_").toLowerCase();
@@ -1784,9 +2212,9 @@ async function loadCachedCatalogTools({
 }) {
   if (!configPath) return [];
   const catalogDir = resolveCatalogDir(configPath);
-  const catalogPath = path6.join(catalogDir, `${service}.json`);
+  const catalogPath = path8.join(catalogDir, `${service}.json`);
   try {
-    const raw = await readFile2(catalogPath, "utf8");
+    const raw = await readFile3(catalogPath, "utf8");
     const parsed = JSON.parse(raw);
     if (scope && typeof parsed.scope === "string" && parsed.scope.trim() && parsed.scope !== scope) {
       return [];
@@ -1870,7 +2298,7 @@ async function withUpstreamClient({
 async function persistCatalog(catalog) {
   if (!catalog.configPath) return;
   const catalogDir = resolveCatalogDir(catalog.configPath);
-  const catalogPath = path6.join(catalogDir, `${catalog.service}.json`);
+  const catalogPath = path8.join(catalogDir, `${catalog.service}.json`);
   const payload = {
     schemaVersion: 1,
     generatedAt: (/* @__PURE__ */ new Date()).toISOString(),
@@ -2030,6 +2458,7 @@ function toolCallErrorResult({
 async function createServer({
   config,
   manifest,
+  routeManifest,
   defaultConfigScope = "auto"
 }) {
   const server = new McpServer({
@@ -2038,6 +2467,7 @@ async function createServer({
   });
   const runtimeCtx = {
     manifest,
+    routeManifest,
     charsPerToken: config.telemetry?.charsPerToken ?? 4,
     summaryMaxLength: config.vault.summaryMaxLength,
     defaultConfigScope
@@ -2058,7 +2488,7 @@ async function createServer({
     `Registered ${TOOL_REGISTRY.length} built-in tools from registry`
   );
   const upstreamCatalogs = await discoverUpstreamCatalogs(defaultConfigScope);
-  const dynamicSchema = z15.object({}).passthrough();
+  const dynamicSchema = z16.object({}).passthrough();
   const registeredDynamicToolNames = /* @__PURE__ */ new Set();
   for (const catalog of [upstreamCatalogs.postman, upstreamCatalogs.stitch]) {
     for (const tool of catalog.tools) {
@@ -2289,9 +2719,9 @@ function createMultiSessionHttpServer(options, serverFactory) {
 }
 
 // src/index.ts
-import path7 from "path";
+import path9 from "path";
 import { fileURLToPath as fileURLToPath2 } from "url";
-var __dirname2 = path7.dirname(fileURLToPath2(import.meta.url));
+var __dirname2 = path9.dirname(fileURLToPath2(import.meta.url));
 function parseArgs(argv) {
   let transport = "stdio";
   let scope = "auto";
@@ -2390,10 +2820,11 @@ async function main() {
     setLogLevel("debug");
   }
   const serverConfig = loadServerConfig(args.configPath);
-  const basePath = path7.resolve(__dirname2, "..");
+  const basePath = path9.resolve(__dirname2, "..");
   const skills = await scanVaultRoots(serverConfig.vault.roots, basePath);
   const charsPerToken = serverConfig.telemetry.charsPerToken;
   const manifest = buildManifest(skills, charsPerToken);
+  const routeManifest = await loadGeneratedRouteManifest(basePath);
   await enrichWithDescriptions(
     manifest.skills,
     serverConfig.vault.summaryMaxLength
@@ -2425,6 +2856,7 @@ async function main() {
       const server = await createServer({
         config: serverConfig,
         manifest,
+        routeManifest,
         defaultConfigScope: args.scope
       });
       await server.connect(transport);
@@ -2445,6 +2877,7 @@ async function main() {
     const mcpServer = await createServer({
       config: serverConfig,
       manifest,
+      routeManifest,
       defaultConfigScope: args.scope
     });
     const transport = createStdioTransport();

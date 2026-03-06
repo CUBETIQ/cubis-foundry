@@ -12,6 +12,7 @@
  */
 
 import { loadServerConfig } from "./config/index.js";
+import { loadGeneratedRouteManifest } from "./routes/loadGeneratedRouteManifest.js";
 import { scanVaultRoots } from "./vault/scanner.js";
 import { buildManifest, enrichWithDescriptions } from "./vault/manifest.js";
 import { createServer } from "./server.js";
@@ -169,6 +170,7 @@ async function main(): Promise<void> {
   const skills = await scanVaultRoots(serverConfig.vault.roots, basePath);
   const charsPerToken = serverConfig.telemetry.charsPerToken;
   const manifest = buildManifest(skills, charsPerToken);
+  const routeManifest = await loadGeneratedRouteManifest(basePath);
 
   // Enrich with descriptions for faster browse/search at runtime
   await enrichWithDescriptions(
@@ -216,6 +218,7 @@ async function main(): Promise<void> {
       const server = await createServer({
         config: serverConfig,
         manifest,
+        routeManifest,
         defaultConfigScope: args.scope,
       });
       await server.connect(transport);
@@ -240,6 +243,7 @@ async function main(): Promise<void> {
     const mcpServer = await createServer({
       config: serverConfig,
       manifest,
+      routeManifest,
       defaultConfigScope: args.scope,
     });
     const transport = createStdioTransport();

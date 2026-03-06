@@ -1,9 +1,7 @@
 ---
 name: app-builder
 description: Main application building orchestrator. Creates full-stack applications from natural language requests. Determines project type, selects tech stack, coordinates agents.
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Agent
 ---
-
 # App Builder - Application Building Orchestrator
 
 > Analyzes user's requests, determines tech stack, plans structure, and coordinates agents.
@@ -14,11 +12,11 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Agent
 
 | File | Description | When to Read |
 |------|-------------|--------------|
-| `project-detection.md` | Keyword matrix, project type detection | Starting new project |
-| `tech-stack.md` | 2026 default stack, alternatives | Choosing technologies |
-| `agent-coordination.md` | Agent pipeline, execution order | Coordinating multi-agent work |
-| `scaffolding.md` | Directory structure, core files | Creating project structure |
-| `feature-building.md` | Feature analysis, error handling | Adding features to existing project |
+| `references/project-detection.md` | Keyword matrix, project type detection | Starting new project |
+| `references/tech-stack.md` | 2026 default stack, alternatives | Choosing technologies |
+| `references/agent-coordination.md` | Agent pipeline, execution order | Coordinating multi-agent work |
+| `references/scaffolding.md` | Directory structure, core files | Creating project structure |
+| `references/feature-building.md` | Feature analysis, error handling | Adding features to existing project |
 | `templates/SKILL.md` | **Project templates** | Scaffolding new project |
 
 ---

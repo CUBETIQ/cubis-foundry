@@ -1,5 +1,25 @@
 [
   {
+    "id": "2d-games",
+    "name": "2d-games",
+    "canonical_id": "2d-games",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".agents/skills/game-development/2d-games/SKILL.md",
+    "description": "2D game development principles. Sprites, tilemaps, physics, camera.",
+    "triggers": []
+  },
+  {
+    "id": "3d-games",
+    "name": "3d-games",
+    "canonical_id": "3d-games",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".agents/skills/game-development/3d-games/SKILL.md",
+    "description": "3D game development principles. Rendering, shaders, physics, cameras.",
+    "triggers": []
+  },
+  {
     "id": "accessibility",
     "name": "accessibility",
     "canonical_id": "accessibility",
@@ -16,7 +36,7 @@
     "deprecated": false,
     "replaced_by": null,
     "path": ".agents/skills/api-designer/SKILL.md",
-    "description": "Use when designing REST or GraphQL APIs, creating OpenAPI specifications, or planning API architecture. Invoke for resource modeling, versioning strategies, pagination patterns, error handling standards.",
+    "description": "Use when defining or reviewing external API contracts, OpenAPI specifications, resource models, pagination, versioning, or error response standards. Do not use for pure database design, implementation-only handler work, or framework-specific backend setup.",
     "triggers": []
   },
   {
@@ -409,6 +429,36 @@
     "triggers": []
   },
   {
+    "id": "game-art",
+    "name": "game-art",
+    "canonical_id": "game-art",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".agents/skills/game-development/game-art/SKILL.md",
+    "description": "Game art principles. Visual style selection, asset pipeline, animation workflow.",
+    "triggers": []
+  },
+  {
+    "id": "game-audio",
+    "name": "game-audio",
+    "canonical_id": "game-audio",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".agents/skills/game-development/game-audio/SKILL.md",
+    "description": "Game audio principles. Sound design, music integration, adaptive audio systems.",
+    "triggers": []
+  },
+  {
+    "id": "game-design",
+    "name": "game-design",
+    "canonical_id": "game-design",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".agents/skills/game-development/game-design/SKILL.md",
+    "description": "Game design principles. GDD structure, balancing, player psychology, progression.",
+    "triggers": []
+  },
+  {
     "id": "game-development",
     "name": "game-development",
     "canonical_id": "game-development",
@@ -515,7 +565,7 @@
     "deprecated": false,
     "replaced_by": null,
     "path": ".agents/skills/javascript-pro/SKILL.md",
-    "description": "Use for modern JavaScript architecture and implementation across browser, Node, and edge runtimes with ES2025+ practices.",
+    "description": "Use for modern JavaScript architecture and implementation across browser, Node, and edge runtimes with runtime-aware production practices.",
     "triggers": []
   },
   {
@@ -578,6 +628,26 @@
     "triggers": []
   },
   {
+    "id": "mobile-games",
+    "name": "mobile-games",
+    "canonical_id": "mobile-games",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".agents/skills/game-development/mobile-games/SKILL.md",
+    "description": "Mobile game development principles. Touch input, battery, performance, app stores.",
+    "triggers": []
+  },
+  {
+    "id": "mongodb",
+    "name": "mongodb",
+    "canonical_id": "mongodb",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".agents/skills/database-skills/skills/mongodb/SKILL.md",
+    "description": "MongoDB and Mongoose modeling, indexing, pagination, query tuning, and transaction guidance.",
+    "triggers": []
+  },
+  {
     "id": "monitoring-expert",
     "name": "monitoring-expert",
     "canonical_id": "monitoring-expert",
@@ -602,6 +672,36 @@
       "capacity planning",
       "bottleneck"
     ]
+  },
+  {
+    "id": "multiplayer",
+    "name": "multiplayer",
+    "canonical_id": "multiplayer",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".agents/skills/game-development/multiplayer/SKILL.md",
+    "description": "Multiplayer game development principles. Architecture, networking, synchronization.",
+    "triggers": []
+  },
+  {
+    "id": "mysql",
+    "name": "mysql",
+    "canonical_id": "mysql",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".agents/skills/database-skills/skills/mysql/SKILL.md",
+    "description": "MySQL/InnoDB schema design, indexing, pagination, query tuning, and operational safety.",
+    "triggers": []
+  },
+  {
+    "id": "neki",
+    "name": "neki",
+    "canonical_id": "neki",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".agents/skills/database-skills/skills/neki/SKILL.md",
+    "description": "Neki planning guidance for sharded Postgres architecture decisions and operational guardrails.",
+    "triggers": []
   },
   {
     "id": "nestjs-expert",
@@ -704,6 +804,16 @@
     "triggers": []
   },
   {
+    "id": "pc-games",
+    "name": "pc-games",
+    "canonical_id": "pc-games",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".agents/skills/game-development/pc-games/SKILL.md",
+    "description": "PC and console game development principles. Engine selection, platform features, optimization strategies.",
+    "triggers": []
+  },
+  {
     "id": "performance-profiling",
     "name": "performance-profiling",
     "canonical_id": "performance-profiling",
@@ -742,13 +852,23 @@
     ]
   },
   {
+    "id": "postgres",
+    "name": "postgres",
+    "canonical_id": "postgres",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".agents/skills/database-skills/skills/postgres/SKILL.md",
+    "description": "PostgreSQL schema, indexing, pagination, query optimization, migrations, and operations.",
+    "triggers": []
+  },
+  {
     "id": "postman",
     "name": "postman",
     "canonical_id": "postman",
     "deprecated": false,
     "replaced_by": null,
     "path": ".agents/skills/postman/SKILL.md",
-    "description": "Automate API testing and collection management with Postman MCP. Use for workspace, collection, environment, and mock operations.",
+    "description": "Automate API testing and collection management with Postman MCP using full-mode defaults and workspace-aware execution.",
     "triggers": []
   },
   {
@@ -819,6 +939,16 @@
     "replaced_by": null,
     "path": ".agents/skills/red-team-tactics/SKILL.md",
     "description": "Red team tactics principles based on MITRE ATT&CK. Attack phases, detection evasion, reporting.",
+    "triggers": []
+  },
+  {
+    "id": "redis",
+    "name": "redis",
+    "canonical_id": "redis",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".agents/skills/database-skills/skills/redis/SKILL.md",
+    "description": "Redis data modeling, caching strategy, throughput/latency optimization, and operational safety.",
     "triggers": []
   },
   {
@@ -943,6 +1073,16 @@
     "triggers": []
   },
   {
+    "id": "skill-authoring",
+    "name": "skill-authoring",
+    "canonical_id": "skill-authoring",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".agents/skills/skill-authoring/SKILL.md",
+    "description": "Use when creating a new Foundry skill or updating an existing one: scaffolding SKILL.md, fixing metadata, wiring references and scripts, removing legacy power files, and making the package work across Codex, Antigravity, Copilot, Cursor, and Windsurf. Do not use for prompt tuning without a skill package change or for editing only one generated mirror.",
+    "triggers": []
+  },
+  {
     "id": "spec-miner",
     "name": "spec-miner",
     "canonical_id": "spec-miner",
@@ -958,6 +1098,16 @@
       "understand codebase",
       "existing system"
     ]
+  },
+  {
+    "id": "sqlite",
+    "name": "sqlite",
+    "canonical_id": "sqlite",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".agents/skills/database-skills/skills/sqlite/SKILL.md",
+    "description": "SQLite local/edge data strategy, schema/index design, query planning, and WAL tuning.",
+    "triggers": []
   },
   {
     "id": "sre-engineer",
@@ -1021,6 +1171,16 @@
     "triggers": []
   },
   {
+    "id": "supabase",
+    "name": "supabase",
+    "canonical_id": "supabase",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".agents/skills/database-skills/skills/supabase/SKILL.md",
+    "description": "Supabase/Postgres patterns for RLS, indexing, query optimization, pooling, and safe migrations.",
+    "triggers": []
+  },
+  {
     "id": "systematic-debugging",
     "name": "systematic-debugging",
     "canonical_id": "systematic-debugging",
@@ -1048,6 +1208,16 @@
     "replaced_by": "test-master",
     "path": ".agents/skills/tdd-workflow/SKILL.md",
     "description": "Compatibility alias skill. Deprecated: use test-master.",
+    "triggers": []
+  },
+  {
+    "id": "templates",
+    "name": "templates",
+    "canonical_id": "templates",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".agents/skills/app-builder/templates/SKILL.md",
+    "description": "Project scaffolding templates for new applications. Use when creating new projects from scratch. Contains 12 templates for various tech stacks.",
     "triggers": []
   },
   {
@@ -1134,9 +1304,9 @@
   {
     "id": "vercel-ai",
     "name": "vercel-ai",
-    "canonical_id": "null",
+    "canonical_id": "vercel-ai",
     "deprecated": false,
-    "replaced_by": "null",
+    "replaced_by": null,
     "path": ".agents/skills/vercel-ai/SKILL.md",
     "description": "Canonical Vercel AI skill covering AI Gateway and AI SDK integration, routing, resilience, and observability.",
     "triggers": []
@@ -1184,9 +1354,9 @@
   {
     "id": "vercel-delivery",
     "name": "vercel-delivery",
-    "canonical_id": "null",
+    "canonical_id": "vercel-delivery",
     "deprecated": false,
-    "replaced_by": "null",
+    "replaced_by": null,
     "path": ".agents/skills/vercel-delivery/SKILL.md",
     "description": "Canonical Vercel delivery skill covering deployments, domains, flags, and CLI-driven release operations.",
     "triggers": []
@@ -1309,9 +1479,9 @@
   {
     "id": "vercel-runtime",
     "name": "vercel-runtime",
-    "canonical_id": "null",
+    "canonical_id": "vercel-runtime",
     "deprecated": false,
-    "replaced_by": "null",
+    "replaced_by": null,
     "path": ".agents/skills/vercel-runtime/SKILL.md",
     "description": "Canonical Vercel runtime skill covering functions, routing, and caching with production guardrails.",
     "triggers": []
@@ -1319,9 +1489,9 @@
   {
     "id": "vercel-security",
     "name": "vercel-security",
-    "canonical_id": "null",
+    "canonical_id": "vercel-security",
     "deprecated": false,
-    "replaced_by": "null",
+    "replaced_by": null,
     "path": ".agents/skills/vercel-security/SKILL.md",
     "description": "Canonical Vercel security skill covering WAF, rate limiting, bot controls, and traffic-protection policy.",
     "triggers": []
@@ -1349,6 +1519,26 @@
     ]
   },
   {
+    "id": "vitess",
+    "name": "vitess",
+    "canonical_id": "vitess",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".agents/skills/database-skills/skills/vitess/SKILL.md",
+    "description": "Vitess sharding strategy, VSchema/vindex design, routing, and scale operations.",
+    "triggers": []
+  },
+  {
+    "id": "vr-ar",
+    "name": "vr-ar",
+    "canonical_id": "vr-ar",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".agents/skills/game-development/vr-ar/SKILL.md",
+    "description": "VR/AR development principles. Comfort, interaction, performance requirements.",
+    "triggers": []
+  },
+  {
     "id": "vulnerability-scanner",
     "name": "vulnerability-scanner",
     "canonical_id": "security-reviewer",
@@ -1366,6 +1556,16 @@
     "replaced_by": null,
     "path": ".agents/skills/web-design-guidelines/SKILL.md",
     "description": "Review UI code for Web Interface Guidelines compliance. Use when asked to \"review my UI\", \"check accessibility\", \"audit design\", \"review UX\", or \"check my site against best practices\".",
+    "triggers": []
+  },
+  {
+    "id": "web-games",
+    "name": "web-games",
+    "canonical_id": "web-games",
+    "deprecated": false,
+    "replaced_by": null,
+    "path": ".agents/skills/game-development/web-games/SKILL.md",
+    "description": "Web browser game development principles. Framework selection, WebGPU, optimization, PWA.",
     "triggers": []
   },
   {

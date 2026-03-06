@@ -5,6 +5,8 @@ triggers: ["incident", "outage", "sev", "degraded", "hotfix"]
 ---
 # Incident Workflow
 
+# CHANGED: output contract — converted free-form bullets into structured YAML — keeps incident mitigation and follow-up data structured for resumability.
+
 ## When to use
 Use this for active or recent production incidents.
 
@@ -36,7 +38,15 @@ Use this for active or recent production incidents.
 - Note any gaps that were not validated.
 
 ## Output Contract
-- Incident timeline
-- Mitigation actions
-- Root cause statement
-- Follow-up prevention tasks
+```yaml
+INCIDENT_WORKFLOW_RESULT:
+  primary_agent_id: "backend-specialist"
+  escalation_agent_ids: ["debugger", "database-architect", "security-auditor", "test-engineer", "devops-engineer"]
+  primary_skill_ids: ["systematic-debugging", "sre-engineer"]
+  supporting_skill_ids: ["monitoring-expert", "security-reviewer"]
+  incident_timeline: ["Summarize sequence of impact, detection, mitigation, and recovery"]
+  mitigation_actions: ["Describe mitigation steps taken"]
+  root_cause: "Describe confirmed or best-supported root cause"
+  durable_fix: null
+  follow_up_prevention_tasks: ["Describe prevention and hardening actions"]
+```

@@ -5,8 +5,16 @@ triggers: ["refactor", "cleanup", "maintainability", "debt", "modularize"]
 ---
 # Refactor Workflow
 
+# CHANGED: routing — added explicit refactor ownership and regression support — prevents fallback routing and makes the preservation strategy clear.
+# CHANGED: output contract — converted free-form bullets into structured YAML — makes invariant and parity reporting machine-readable.
+
 ## When to use
 Use this for design improvement without intentional behavior changes.
+
+## Routing
+- Primary specialist: `@code-archaeologist`
+- Domain implementation support: `@backend-specialist`
+- Regression verification: `@test-engineer`
 
 ## Context notes
 - This workflow file, active platform rules, and selected agents/skills guide execution.
@@ -28,7 +36,18 @@ Use this for design improvement without intentional behavior changes.
 - Note any gaps that were not validated.
 
 ## Output Contract
-- Refactor scope and invariants
-- Structural changes
-- Behavior parity evidence
-- Deferred technical debt items
+```yaml
+REFACTOR_WORKFLOW_RESULT:
+  primary_agent: code-archaeologist
+  supporting_agents: [backend-specialist?, test-engineer?]
+  primary_skills: [refactor, legacy-modernizer]
+  supporting_skills: [architecture-designer?, code-reviewer?]
+  scope:
+    summary: <string>
+    invariants: [<string>]
+  structural_changes: [<string>]
+  behavior_parity_evidence: [<command or test>]
+  deferred_technical_debt: [<string>] | []
+  next_handoff:
+    plan_handoff: <PLAN_HANDOFF|null>
+```

@@ -2,7 +2,6 @@
 name: sqlite
 description: SQLite local/edge data strategy, schema/index design, query planning, and WAL tuning.
 ---
-
 # SQLite
 
 ## Optimization workflow

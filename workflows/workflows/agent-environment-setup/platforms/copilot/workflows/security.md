@@ -5,6 +5,8 @@ triggers: ["security", "vulnerability", "owasp", "auth", "hardening"]
 ---
 # Security Workflow
 
+# CHANGED: output contract — converted free-form bullets into structured YAML — keeps exploitability triage and remediation evidence machine-readable.
+
 ## When to use
 Use this when the task is primarily about security risk discovery, triage, or remediation.
 
@@ -33,7 +35,18 @@ Use this when the task is primarily about security risk discovery, triage, or re
 - Note any gaps that were not validated.
 
 ## Output Contract
-- Findings by severity
-- Fix plan with owners
-- Verification evidence
-- Residual risk notes
+```yaml
+SECURITY_WORKFLOW_RESULT:
+  primary_agent: security-auditor
+  supporting_agents: [penetration-tester?, test-engineer?]
+  primary_skills: [security-reviewer, secure-code-guardian]
+  supporting_skills: [semgrep?, static-analysis?, variant-analysis?]
+  findings:
+    - severity: <critical|high|medium|low>
+      summary: <string>
+  fix_plan:
+    - owner: <agent-id>
+      action: <string>
+  verification_evidence: [<string>]
+  residual_risk_notes: [<string>] | []
+```

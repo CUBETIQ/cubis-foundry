@@ -166,20 +166,22 @@ Minimum:
 - 1 unit test for failure path
 - Widget test for loading/error/data (or override repo)
 
-See: `steering/testing_expectations.md`
+See: `references/testing_expectations.md`
 
 ---
 
-## Steering Files
+## References
 
-| File                       | Load When                              |
-| -------------------------- | -------------------------------------- |
-| `review_checklist.md`      | Starting a review, categories          |
-| `testing_expectations.md`  | Checking test requirements             |
-| `common-issues.md`         | N+1 queries, magic numbers, patterns   |
-| `feedback-examples.md`     | Writing good feedback                  |
-| `strict-rules.md`          | Enforcing strict review standards      |
+Load detailed guidance only when needed.
+
+| File | Load when |
+| --- | --- |
+| `references/review_checklist.md` | Starting a review and needing the full category-by-category checklist |
+| `references/testing_expectations.md` | Checking whether controller, widget, or regression tests are sufficient |
+| `references/common-issues.md` | Looking for recurring Flutter/Riverpod review smells and anti-patterns |
+| `references/feedback-examples.md` | Writing concise, high-signal review feedback with clear fixes |
+| `references/strict-rules.md` | Applying stricter merge-blocking review standards |
 
 ## Templates
 
-- `review_response.md` - Code review response template
+- `templates/review_response.md` - Code review response template

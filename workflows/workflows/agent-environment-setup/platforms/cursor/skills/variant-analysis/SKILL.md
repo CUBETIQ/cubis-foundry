@@ -69,7 +69,7 @@ For each match, document:
 - **Exploitability**: Reachable? Controllable inputs?
 - **Priority**: Based on impact and exploitability
 
-For deeper strategic guidance, see [METHODOLOGY.md](METHODOLOGY.md).
+For deeper strategic guidance, see [METHODOLOGY.md](references/METHODOLOGY.md).
 
 ## Tool Selection
 

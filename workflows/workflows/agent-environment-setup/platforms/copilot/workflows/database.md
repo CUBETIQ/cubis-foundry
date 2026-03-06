@@ -5,6 +5,8 @@ triggers: ["database", "sql", "schema", "migration", "index"]
 ---
 # Database Workflow
 
+# CHANGED: output contract — converted free-form bullets into structured YAML — keeps schema and migration handoffs machine-readable across platforms.
+
 ## When to use
 Use this when data modeling, query quality, migration safety, or database performance is core to the task.
 
@@ -15,7 +17,7 @@ Use this when data modeling, query quality, migration safety, or database perfor
 - Core skill hub: `database-skills`
 - Companion skills: `database-design` (schema/migrations), `database-optimizer` (tuning/triage)
 - Mobile/local persistence companion: `drift-flutter`
-- Power bridge: `workflows/powers/database-skills`
+- Engine references are loaded on-demand through `database-skills` using `skill_validate` and targeted `skill_get_reference`.
 
 ## Context notes
 - This workflow file, active platform rules, and selected agents/skills guide execution.
@@ -24,7 +26,7 @@ Use this when data modeling, query quality, migration safety, or database perfor
 ## Skill Routing
 - Primary skills: `database-skills`, `database-design`
 - Supporting skills (optional): `database-optimizer`
-- Engine packs (sub-skills): `database-skills/postgres`, `database-skills/mysql`, `database-skills/vitess`, `database-skills/neki`, `database-skills/mongodb`, `database-skills/sqlite`, `database-skills/supabase`, `database-skills/redis`
+- Engine references: `postgres`, `mysql`, `vitess`, `neki`, `mongodb`, `sqlite`, `supabase`, `redis`
 
 ## Workflow steps
 1. Confirm data shape, access patterns, and workload size.
@@ -40,9 +42,20 @@ Use this when data modeling, query quality, migration safety, or database perfor
 - Note any gaps that were not validated.
 
 ## Output Contract
-- Schema/query changes
-- Indexing plan
-- Pagination plan
-- Migration + rollback plan
-- Query-plan evidence (`EXPLAIN` or equivalent)
-- Validation evidence
+```yaml
+DATABASE_WORKFLOW_RESULT:
+  primary_agent_id: "database-architect"
+  supporting_agent_ids: ["backend-specialist", "test-engineer"]
+  primary_skill_ids: ["database-skills", "database-design"]
+  supporting_skill_ids: ["database-optimizer"]
+  schema_changes: ["Describe schema changes"]
+  indexing_plan: ["Describe indexes and rationale"]
+  pagination_plan: null
+  migration:
+    required: false
+    plan: ["Describe migration steps"]
+    rollback: ["Describe rollback steps"]
+  evidence:
+    query_plans: ["Summarize explain or engine-native plan evidence"]
+    validation_checks: ["<command-or-test>"]
+```

@@ -12,7 +12,6 @@ metadata:
   output-format: code
   related-skills: fullstack-guardian, django-expert, test-master
 ---
-
 # FastAPI Expert
 
 Senior FastAPI specialist with deep expertise in async Python, Pydantic V2, and production-grade API development.

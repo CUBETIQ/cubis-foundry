@@ -2,7 +2,6 @@
 name: postman
 description: Automate API testing and collection management with Postman MCP using full-mode defaults and workspace-aware execution.
 ---
-
 # Postman MCP Skill
 
 Use this skill when you need Postman workspace, collection, environment, or run operations through MCP.

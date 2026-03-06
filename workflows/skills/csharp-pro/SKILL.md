@@ -18,6 +18,12 @@ metadata:
 - Refactoring legacy C# into modern, testable architecture.
 - Improving async correctness and operational resilience.
 
+## When not to use
+
+- Frontend-only browser work with no .NET runtime.
+- Database-only tuning where query/schema evidence is the primary task.
+- Tiny scripting tasks better served by existing shell or project tooling.
+
 ## Core workflow
 
 1. Confirm target framework/runtime constraints.
@@ -32,6 +38,24 @@ metadata:
 - Keep exception handling consistent and observable.
 - Use dependency injection with explicit lifetimes.
 - Keep API contracts versioned and backward-compatible.
+
+## Debugging and observability
+
+- Use structured logs with correlation/request IDs on service boundaries.
+- Keep exception-to-response mapping explicit and non-leaky.
+- Prefer `dotnet test`, analyzers, and targeted traces before speculative rewrites.
+
+## Performance and reliability
+
+- Measure allocation hotspots before changing data structures.
+- Propagate `CancellationToken` through request and worker paths.
+- Bound retries/timeouts explicitly for network and queue work.
+
+## References
+
+| File | Load when |
+| --- | --- |
+| `references/operational-baseline.md` | You need current async, logging, testing, and deployment guardrails for C#/.NET services. |
 
 ## Avoid
 

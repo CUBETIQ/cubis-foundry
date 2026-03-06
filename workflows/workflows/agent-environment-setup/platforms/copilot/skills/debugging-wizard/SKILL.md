@@ -6,7 +6,6 @@ metadata:
   replaced_by: systematic-debugging
   removal_target: v0.6.0
 ---
-
 # Debugging Wizard
 
 ## Compatibility Alias

@@ -6,7 +6,6 @@ metadata:
   replaced_by: vercel-ai
   removal_target: v0.6.0
 ---
-
 # Vercel Ai Sdk
 
 ## Compatibility Alias

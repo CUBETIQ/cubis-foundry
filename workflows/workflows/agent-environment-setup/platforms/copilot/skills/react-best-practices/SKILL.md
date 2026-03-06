@@ -8,7 +8,6 @@ metadata:
   domain: "frontend"
   role: "review-checklist"
 ---
-
 # React Best Practices
 
 ## Purpose

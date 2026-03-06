@@ -2,8 +2,6 @@
 name: "code-reviewer"
 description: "Use when reviewing pull requests, conducting code quality audits, or identifying security vulnerabilities. Invoke for PR reviews, code quality checks, refactoring suggestions."
 ---
-
-
 # Code Reviewer
 
 ## Overview
@@ -82,9 +80,3 @@ Code review report should include:
 ## Knowledge Reference
 
 SOLID, DRY, KISS, YAGNI, design patterns, OWASP Top 10, language idioms, testing patterns
-
-## Related Powers
-
-- **Security Reviewer** - Deep security analysis
-- **Test Master** - Test quality assessment
-- **Architecture Designer** - Design review

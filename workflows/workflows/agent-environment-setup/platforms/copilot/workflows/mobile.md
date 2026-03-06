@@ -5,6 +5,8 @@ triggers: ["mobile", "flutter", "ios", "android", "navigation"]
 ---
 # Mobile Workflow
 
+# CHANGED: output contract — converted free-form bullets into structured YAML — keeps mobile flow changes and readiness notes machine-readable.
+
 ## When to use
 Use this when mobile app architecture, UX behavior, or platform constraints are the focus.
 
@@ -33,7 +35,14 @@ Use this when mobile app architecture, UX behavior, or platform constraints are 
 - Note any gaps that were not validated.
 
 ## Output Contract
-- Mobile flow changes
-- Platform constraints handled
-- Test coverage summary
-- Release-readiness notes
+```yaml
+MOBILE_WORKFLOW_RESULT:
+  primary_agent: mobile-developer
+  supporting_agents: [frontend-specialist?, test-engineer?]
+  primary_skills: [mobile-design, flutter-expert]
+  supporting_skills: [riverpod-3?, drift-flutter?, flutter-test-master?]
+  flow_changes: [<string>]
+  platform_constraints_handled: [<string>]
+  test_coverage_summary: [<string>]
+  release_readiness_notes: [<string>] | []
+```

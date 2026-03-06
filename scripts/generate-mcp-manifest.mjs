@@ -224,6 +224,12 @@ function isWrapperSkill(skillId, metadata) {
 
 const BUILTIN_TOOLS = [
   {
+    name: "route_resolve",
+    description:
+      "Resolve an explicit workflow command, explicit custom agent, compatibility alias, or free-text intent into one workflow/agent route before skill loading.",
+    category: "route",
+  },
+  {
     name: "skill_list_categories",
     description:
       "List all skill categories available in the vault. Returns category names and skill counts.",

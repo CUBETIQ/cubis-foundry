@@ -59,6 +59,7 @@ function buildMcpBlock(manifest) {
   lines.push("");
   lines.push("### Compact Tool Map");
   lines.push("");
+  lines.push("- Route tools: `route_resolve`");
   lines.push(
     "- Skill tools: `skill_search`, `skill_validate`, `skill_get`, `skill_get_reference`, `skill_budget_report`",
   );
@@ -73,22 +74,25 @@ function buildMcpBlock(manifest) {
     "1. Inspect the repo/task locally first. Do not start with `skill_search`.",
   );
   lines.push(
-    "2. If the user names an exact skill, run `skill_validate` directly. Otherwise use one narrow `skill_search` only if local grounding still leaves the domain unclear.",
+    "2. Resolve explicit workflows, agents, or free-text route intent with `route_resolve` before loading any skills.",
   );
   lines.push(
-    "3. Always run `skill_validate` on the exact selected ID before `skill_get`.",
+    "3. If the route is still unresolved and local grounding leaves the domain unclear, use one narrow `skill_search`.",
   );
   lines.push(
-    "4. Call `skill_get` with `includeReferences:false` by default.",
+    "4. Always run `skill_validate` on the exact selected ID before `skill_get`.",
   );
   lines.push(
-    "5. Load at most one sidecar markdown file at a time with `skill_get_reference`.",
+    "5. Call `skill_get` with `includeReferences:false` by default.",
   );
   lines.push(
-    "6. Use `skill_list_categories` or `skill_browse_category` only as fallback when targeted search fails.",
+    "6. Load at most one sidecar markdown file at a time with `skill_get_reference`.",
   );
   lines.push(
-    "7. Never print catalog counts or budget details unless the user asks.",
+    "7. Use `skill_list_categories` or `skill_browse_category` only as fallback when targeted search fails.",
+  );
+  lines.push(
+    "8. Never print catalog counts or budget details unless the user asks.",
   );
   lines.push("");
   lines.push("### Connection");

@@ -296,8 +296,8 @@ log_ok "Codex install complete and legacy warning detected"
 log_step "C2.1 /backend wiring check (Codex files)"
 rg -n '^command:\s*"/backend"' .agents/workflows/backend.md >/dev/null
 rg -n '@backend-specialist' .agents/workflows/backend.md >/dev/null
-rg -n '^# Agent Wrapper: @backend-specialist$' "$CODEX_GLOBAL_SKILLS/agent-backend-specialist/SKILL.md" >/dev/null
-rg -n '^# Workflow Wrapper: /backend$' "$CODEX_GLOBAL_SKILLS/workflow-backend/SKILL.md" >/dev/null
+rg -n '^# Agent Compatibility Alias: @backend-specialist$' "$CODEX_GLOBAL_SKILLS/agent-backend-specialist/SKILL.md" >/dev/null
+rg -n '^# Workflow Compatibility Alias: /backend$' "$CODEX_GLOBAL_SKILLS/workflow-backend/SKILL.md" >/dev/null
 rg -n '\$agent-backend-specialist' "$CODEX_GLOBAL_SKILLS/workflow-backend/SKILL.md" >/dev/null
 if rg -n '@backend-specialist' "$CODEX_GLOBAL_SKILLS/workflow-backend/SKILL.md" >/dev/null; then
   echo "[FAIL] Codex workflow wrapper still references @backend-specialist instead of \$agent-backend-specialist" >&2
@@ -465,16 +465,18 @@ if [ "$(find .github/prompts -maxdepth 1 -type f -name '*.prompt.md' | wc -l | t
   echo "[FAIL] Copilot expected exactly 19 prompt files" >&2
   exit 1
 fi
+[ ! -d .github/skills ]
 [ -d "$COPILOT_GLOBAL_SKILLS/api-designer" ]
 rg -n '^name:' "$COPILOT_GLOBAL_SKILLS/clean-code/SKILL.md" >/dev/null
 if rg -n '^allowed-tools:' "$COPILOT_GLOBAL_SKILLS/clean-code/SKILL.md" >/dev/null; then
-  echo "[FAIL] Copilot SKILL.md still contains unsupported allowed-tools attribute" >&2
+  echo "[FAIL] Copilot global skill SKILL.md still contains unsupported allowed-tools attribute" >&2
   exit 1
 fi
 if rg -n '^priority:' "$COPILOT_GLOBAL_SKILLS/clean-code/SKILL.md" >/dev/null; then
-  echo "[FAIL] Copilot SKILL.md still contains unsupported priority attribute" >&2
+  echo "[FAIL] Copilot global skill SKILL.md still contains unsupported priority attribute" >&2
   exit 1
 fi
+rg -n 'Prefer workspace \.vscode/mcp\.json as the primary supported path' /tmp/cbx-p2.log >/dev/null
 if rg -n '^skills:' .github/agents/backend-specialist.md >/dev/null; then
   echo "[FAIL] Copilot agent file still contains unsupported skills attribute" >&2
   exit 1
@@ -484,7 +486,6 @@ node - <<'NODE'
 const fs = require('fs');
 const path = require('path');
 
-const allowedSkillKeys = new Set(['compatibility', 'description', 'license', 'metadata', 'name']);
 const allowedAgentKeys = new Set([
   'name',
   'description',
@@ -511,19 +512,6 @@ function topLevelKeys(frontmatter) {
 function frontmatter(text) {
   const m = text.match(/^---\n([\s\S]*?)\n---\n?/);
   return m ? m[1] : null;
-}
-
-const skillRoot = path.join(process.env.HOME || '', '.copilot/skills');
-for (const skillId of fs.readdirSync(skillRoot)) {
-  const file = path.join(skillRoot, skillId, 'SKILL.md');
-  if (!fs.existsSync(file)) continue;
-  const fm = frontmatter(fs.readFileSync(file, 'utf8'));
-  if (!fm) continue;
-  const unsupported = topLevelKeys(fm).filter((k) => !allowedSkillKeys.has(k));
-  if (unsupported.length) {
-    console.error(`[FAIL] Copilot skill ${skillId} has unsupported keys: ${unsupported.join(', ')}`);
-    process.exit(1);
-  }
 }
 
 const agentRoot = path.join(process.cwd(), '.github/agents');

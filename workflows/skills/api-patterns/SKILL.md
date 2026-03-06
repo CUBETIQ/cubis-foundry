@@ -19,16 +19,16 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 | File | Description | When to Read |
 |------|-------------|--------------|
-| `api-style.md` | REST vs GraphQL vs tRPC decision tree | Choosing API type |
-| `rest.md` | Resource naming, HTTP methods, status codes | Designing REST API |
-| `response.md` | Envelope pattern, error format, pagination | Response structure |
-| `graphql.md` | Schema design, when to use, security | Considering GraphQL |
-| `trpc.md` | TypeScript monorepo, type safety | TS fullstack projects |
-| `versioning.md` | URI/Header/Query versioning | API evolution planning |
-| `auth.md` | JWT, OAuth, Passkey, API Keys | Auth pattern selection |
-| `rate-limiting.md` | Token bucket, sliding window | API protection |
-| `documentation.md` | OpenAPI/Swagger best practices | Documentation |
-| `security-testing.md` | OWASP API Top 10, auth/authz testing | Security audits |
+| `references/api-style.md` | REST vs GraphQL vs tRPC decision tree | Choosing API type |
+| `references/rest.md` | Resource naming, HTTP methods, status codes | Designing REST API |
+| `references/response.md` | Envelope pattern, error format, pagination | Response structure |
+| `references/graphql.md` | Schema design, when to use, security | Considering GraphQL |
+| `references/trpc.md` | TypeScript monorepo, type safety | TS fullstack projects |
+| `references/versioning.md` | URI/Header/Query versioning | API evolution planning |
+| `references/auth.md` | JWT, OAuth, Passkey, API Keys | Auth pattern selection |
+| `references/rate-limiting.md` | Token bucket, sliding window | API protection |
+| `references/documentation.md` | OpenAPI/Swagger best practices | Documentation |
+| `references/security-testing.md` | OWASP API Top 10, auth/authz testing | Security audits |
 
 ---
 
@@ -78,4 +78,3 @@ Before designing an API:
 | Script | Purpose | Command |
 |--------|---------|---------|
 | `scripts/api_validator.py` | API endpoint validation | `python scripts/api_validator.py <project_path>` |
-

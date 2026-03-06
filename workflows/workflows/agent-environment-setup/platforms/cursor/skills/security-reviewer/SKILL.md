@@ -73,11 +73,3 @@ Provide: (1) Executive summary with risk, (2) Findings table with severity count
 ## Knowledge Reference
 
 OWASP Top 10, CWE, Semgrep, Bandit, ESLint Security, gosec, npm audit, gitleaks, trufflehog, CVSS scoring, nmap, Burp Suite, sqlmap, Trivy, Checkov, HashiCorp Vault, AWS Security Hub, CIS benchmarks, SOC2, ISO27001
-
-## Related Powers
-
-- **Secure Code Guardian** - Implementing fixes
-- **Code Reviewer** - General code review
-- **DevOps Engineer** - Security in CI/CD
-- **Cloud Architect** - Cloud security architecture
-- **Kubernetes Specialist** - Container security

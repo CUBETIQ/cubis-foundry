@@ -282,10 +282,13 @@ async function validateManifest() {
       warnings.push("Manifest missing builtinTools array");
     } else {
       const expectedToolNames = new Set([
+        "route_resolve",
         "skill_list_categories",
         "skill_browse_category",
         "skill_search",
+        "skill_validate",
         "skill_get",
+        "skill_get_reference",
         "skill_budget_report",
         "postman_get_mode",
         "postman_set_mode",

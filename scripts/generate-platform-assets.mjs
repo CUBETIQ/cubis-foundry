@@ -3,12 +3,15 @@
 import path from "node:path";
 import process from "node:process";
 import { promises as fs } from "node:fs";
+import { createHash } from "node:crypto";
 
 const ROOT = process.cwd();
 const BUNDLE_ROOT = path.join(ROOT, "workflows", "workflows", "agent-environment-setup");
 const SHARED_ROOT = path.join(BUNDLE_ROOT, "shared");
 const SHARED_AGENTS_DIR = path.join(SHARED_ROOT, "agents");
 const SHARED_WORKFLOWS_DIR = path.join(SHARED_ROOT, "workflows");
+const GENERATED_DIR = path.join(BUNDLE_ROOT, "generated");
+const ROUTE_MANIFEST_FILE = "route-manifest.json";
 
 const PLATFORM_DIRS = {
   codex: path.join(BUNDLE_ROOT, "platforms", "codex"),
@@ -60,6 +63,10 @@ function parseInlineArray(raw) {
 
 function unique(values) {
   return [...new Set(values)];
+}
+
+function normalizeMarkdownId(fileName) {
+  return path.basename(fileName, ".md").trim();
 }
 
 function getScalar(frontmatter, key) {
@@ -135,6 +142,167 @@ function buildSkillRoutingSection(skills) {
   ].join("\n");
 }
 
+function extractSection(body, heading) {
+  const match = body.match(
+    new RegExp(`^##\\s+${heading}\\s*\\n([\\s\\S]*?)(?=^##\\s+|\\Z)`, "m"),
+  );
+  return match ? match[1].trim() : "";
+}
+
+function parseInlineCodeList(value) {
+  const fromCodeSpans = [...String(value || "").matchAll(/`([^`]+)`/g)].map(
+    (match) => stripQuotes(match[1].trim()),
+  );
+  if (fromCodeSpans.length > 0) {
+    return unique(fromCodeSpans.filter(Boolean));
+  }
+  return unique(
+    String(value || "")
+      .split(",")
+      .map((item) => stripQuotes(item.trim()))
+      .filter(Boolean),
+  );
+}
+
+function parseWorkflowRouting(body) {
+  const routing = extractSection(body, "Routing");
+  const referencedAgents = unique(
+    [...routing.matchAll(/@([A-Za-z0-9_-]+)/g)].map((match) => match[1]),
+  );
+  const primaryMatch = routing.match(
+    /Primary (?:specialist|coordinator):\s*`?@([A-Za-z0-9_-]+)`?/i,
+  );
+  const primaryAgent = primaryMatch?.[1] || referencedAgents[0] || "orchestrator";
+  const supportingAgents = unique(
+    referencedAgents
+      .filter((agentId) => agentId !== primaryAgent),
+  );
+
+  return { primaryAgent, supportingAgents };
+}
+
+function parseWorkflowSkillRouting(body) {
+  const skillRouting = extractSection(body, "Skill Routing");
+  const primaryMatch = skillRouting.match(/Primary skills:\s*(.+)$/im);
+  const supportingMatch = skillRouting.match(
+    /Supporting skills(?:\s*\(optional\))?:\s*(.+)$/im,
+  );
+
+  return {
+    primarySkills: parseInlineCodeList(primaryMatch?.[1] || ""),
+    supportingSkills: parseInlineCodeList(supportingMatch?.[1] || ""),
+  };
+}
+
+function parseAgentTriggers(agent) {
+  const direct = getArray(agent.frontmatter, "triggers");
+  if (direct.length > 0) return direct;
+
+  const description = getScalar(agent.frontmatter, "description") || "";
+  const triggerMatch = description.match(/Triggers on (.+?)(?:\.|$)/i);
+  if (!triggerMatch) return [];
+  return unique(
+    triggerMatch[1]
+      .split(",")
+      .map((item) => stripQuotes(item.trim()))
+      .filter(Boolean),
+  );
+}
+
+function buildRouteManifest({ sharedAgents, sharedWorkflows }) {
+  const workflowRoutes = sharedWorkflows.map((workflow) => {
+    const { primaryAgent, supportingAgents } = parseWorkflowRouting(workflow.body);
+    const { primarySkills, supportingSkills } = parseWorkflowSkillRouting(
+      workflow.body,
+    );
+    const commandId = workflow.command
+      .replace(/^\//, "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "-");
+
+    return {
+      kind: "workflow",
+      id: workflow.id,
+      command: workflow.command,
+      displayName: workflow.id,
+      description: workflow.description,
+      triggers: unique(getArray(workflow.frontmatter, "triggers")),
+      primaryAgent,
+      supportingAgents,
+      primarySkills,
+      supportingSkills,
+      artifacts: {
+        codex: {
+          workflowFile: workflow.fileName,
+          compatibilityAlias: `$workflow-${workflow.id}`,
+        },
+        copilot: {
+          workflowFile: workflow.fileName,
+          promptFile: `workflow-${workflow.id}.prompt.md`,
+        },
+        antigravity: {
+          workflowFile: workflow.fileName,
+          commandFile: `${commandId}.toml`,
+        },
+      },
+    };
+  });
+
+  const agentRoutes = sharedAgents.map((agent) => {
+    const agentId = normalizeMarkdownId(agent.fileName);
+    const allSkills = getArray(agent.frontmatter, "skills");
+    return {
+      kind: "agent",
+      id: agentId,
+      command: null,
+      displayName: getScalar(agent.frontmatter, "name") || agentId,
+      description: getScalar(agent.frontmatter, "description") || "",
+      triggers: parseAgentTriggers(agent),
+      primaryAgent: agentId,
+      supportingAgents: [],
+      primarySkills: allSkills.slice(0, 2),
+      supportingSkills: allSkills.slice(2),
+      artifacts: {
+        codex: {
+          agentFile: agent.fileName,
+          compatibilityAlias: `$agent-${agentId}`,
+        },
+        copilot: {
+          agentFile: agent.fileName,
+        },
+        antigravity: {
+          agentFile: agent.fileName,
+        },
+      },
+    };
+  });
+
+  const routes = [...workflowRoutes, ...agentRoutes].sort((a, b) => {
+    return a.kind.localeCompare(b.kind) || a.id.localeCompare(b.id);
+  });
+  const contentHash = createHash("sha256")
+    .update(JSON.stringify(routes))
+    .digest("hex")
+    .slice(0, 16);
+
+  return JSON.stringify(
+    {
+      $schema: "cubis-foundry-route-manifest-v1",
+      generatedAt: new Date(0).toISOString(),
+      contentHash,
+      summary: {
+        totalRoutes: routes.length,
+        workflows: workflowRoutes.length,
+        agents: agentRoutes.length,
+      },
+      routes,
+    },
+    null,
+    2,
+  ) + "\n";
+}
+
 function buildCopilotAgentMarkdown(sharedMarkdown) {
   const parsed = parseFrontmatter(sharedMarkdown);
   if (!parsed) {
@@ -170,9 +338,10 @@ function buildAntigravityCommandToml({ id, command, description }) {
     `Follow the ${command} workflow from .agent/workflows/${id}.md.`,
     "",
     "Execution contract:",
-    "1. Confirm the request fits the workflow's \"When to use\" section.",
-    "2. Execute according to \"Workflow steps\" and apply \"Context notes\".",
-    "3. Complete \"Verification\" checks and report concrete evidence.",
+    "1. Treat route selection as already resolved by this command; do not begin with skill discovery.",
+    "2. Confirm the request fits the workflow's \"When to use\" section.",
+    "3. Execute according to \"Workflow steps\" and apply \"Context notes\".",
+    "4. Complete \"Verification\" checks and report concrete evidence.",
     "",
     "If command arguments are provided, treat them as additional user context."
   ].join("\n");
@@ -196,9 +365,10 @@ function buildCopilotPromptMarkdown({ id, command, description }) {
     `- Workflow: ../copilot/workflows/${id}.md`,
     "",
     "Execution contract:",
-    "1. Apply workflow sections in order: When to use, Workflow steps, Context notes, Verification.",
-    "2. Route to the workflow's primary specialist and only add supporting specialists when needed.",
-    "3. Return actions taken, verification evidence, and any gaps.",
+    "1. Treat route selection as already resolved by this prompt; do not begin with skill discovery.",
+    "2. Apply workflow sections in order: When to use, Workflow steps, Context notes, Verification.",
+    "3. Route to the workflow's primary specialist and only add supporting specialists when needed.",
+    "4. Return actions taken, verification evidence, and any gaps.",
     ""
   ].join("\n");
 }
@@ -338,6 +508,7 @@ function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
   const copilotWorkflows = new Map();
   const antigravityCommands = new Map();
   const copilotPrompts = new Map();
+  const generated = new Map();
 
   for (const agent of sharedAgents) {
     codexAgents.set(agent.fileName, agent.raw);
@@ -345,6 +516,11 @@ function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
     const transformed = buildCopilotAgentMarkdown(agent.raw);
     copilotAgents.set(agent.fileName, transformed.markdown);
   }
+
+  generated.set(
+    ROUTE_MANIFEST_FILE,
+    buildRouteManifest({ sharedAgents, sharedWorkflows }),
+  );
 
   for (const workflow of sharedWorkflows) {
     codexWorkflows.set(workflow.fileName, workflow.raw);
@@ -364,7 +540,8 @@ function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
     antigravityWorkflows,
     copilotWorkflows,
     antigravityCommands,
-    copilotPrompts
+    copilotPrompts,
+    generated
   };
 }
 
@@ -427,6 +604,12 @@ async function run({ checkOnly = false }) {
       dir: path.join(PLATFORM_DIRS.copilot, "prompts"),
       expected: maps.copilotPrompts,
       filter: (name) => name.endsWith(".prompt.md")
+    },
+    {
+      label: "generated route manifest",
+      dir: GENERATED_DIR,
+      expected: maps.generated,
+      filter: (name) => name === ROUTE_MANIFEST_FILE
     }
   ];
 
@@ -525,6 +708,13 @@ async function run({ checkOnly = false }) {
     ...(await applyOutputMap({
       rootDir: path.join(PLATFORM_DIRS.copilot, "prompts"),
       fileMap: maps.copilotPrompts,
+      cleanMdOnly: false
+    }))
+  );
+  written.push(
+    ...(await applyOutputMap({
+      rootDir: GENERATED_DIR,
+      fileMap: maps.generated,
       cleanMdOnly: false
     }))
   );

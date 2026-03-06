@@ -82,9 +82,3 @@ Code review report should include:
 ## Knowledge Reference
 
 SOLID, DRY, KISS, YAGNI, design patterns, OWASP Top 10, language idioms, testing patterns
-
-## Related Powers
-
-- **Security Reviewer** - Deep security analysis
-- **Test Master** - Test quality assessment
-- **Architecture Designer** - Design review

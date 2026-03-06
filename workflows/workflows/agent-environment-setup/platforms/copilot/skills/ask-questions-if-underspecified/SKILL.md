@@ -2,7 +2,6 @@
 name: ask-questions-if-underspecified
 description: Clarify requirements before implementing. Use when serious doubts arise.
 ---
-
 # Ask Questions If Underspecified
 
 ## When to Use

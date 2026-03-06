@@ -1,19 +1,7 @@
 ---
 name: static-analysis
 description: Runs CodeQL-based static security analysis (database build, query pack selection, and SARIF results) for vulnerability discovery and audits. Not for custom QL authoring or CI/CD setup.
-allowed-tools:
-  - Bash
-  - Read
-  - Write
-  - Glob
-  - Grep
-  - AskUserQuestion
-  - Task
-  - TaskCreate
-  - TaskList
-  - TaskUpdate
 ---
-
 # CodeQL Analysis
 
 Supported languages: Python, JavaScript/TypeScript, Go, Java/Kotlin, C/C++, C#, Ruby, Swift.

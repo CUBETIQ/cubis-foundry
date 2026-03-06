@@ -5,6 +5,8 @@ triggers: ["devops", "deploy", "ci", "cd", "rollback", "infra"]
 ---
 # DevOps Workflow
 
+# CHANGED: output contract — converted free-form bullets into structured YAML — keeps rollout and rollback planning machine-readable.
+
 ## When to use
 Use this when deployment pipeline, infrastructure, or release execution is the main scope.
 
@@ -33,7 +35,15 @@ Use this when deployment pipeline, infrastructure, or release execution is the m
 - Note any gaps that were not validated.
 
 ## Output Contract
-- Deployment plan
-- Rollback conditions
-- Validation and observability checks
-- Outstanding operational risks
+```yaml
+DEVOPS_WORKFLOW_RESULT:
+  primary_agent: devops-engineer
+  supporting_agents: [security-auditor?, test-engineer?]
+  primary_skills: [devops-engineer, sre-engineer]
+  supporting_skills: [monitoring-expert?, terraform-engineer?, wrangler?]
+  deployment_plan: [<string>]
+  rollback_conditions: [<string>]
+  validation_checks: [<command or test>]
+  observability_checks: [<string>]
+  outstanding_operational_risks: [<string>] | []
+```

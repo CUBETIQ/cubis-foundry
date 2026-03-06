@@ -13,7 +13,6 @@ metadata:
   related-skills: database-design, database-optimizer, vercel-functions, vercel-deployments
   consolidates: vercel-blob, vercel-marketplace-storage-postgres, vercel-marketplace-storage-redis, vercel-storage-migrations
 ---
-
 # Vercel Storage
 
 ## Purpose

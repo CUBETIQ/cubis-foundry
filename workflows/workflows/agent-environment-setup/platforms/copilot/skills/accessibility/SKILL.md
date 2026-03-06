@@ -1,20 +1,7 @@
 ---
 name: "accessibility"
-displayName: "Accessibility Expert"
 description: "Ensure Flutter apps meet WCAG 2.1 AA standards with proper semantics, focus management, and screen reader support"
-keywords:
-  [
-    "accessibility",
-    "a11y",
-    "wcag",
-    "semantics",
-    "screen reader",
-    "focus",
-    "contrast",
-    "flutter accessibility",
-  ]
 ---
-
 # Accessibility Expert
 
 ## Overview
@@ -91,13 +78,15 @@ SizedBox(
 4. **Color Contrast**: Text must have 4.5:1 contrast ratio (3:1 for large text)
 5. **Screen Reader**: Test with TalkBack (Android) and VoiceOver (iOS)
 
-## Steering Files
+## References
 
-Load detailed guidance:
-- `a11y_checklist.md` - Complete accessibility checklist for reviews
+Load detailed guidance only when needed.
+
+| File | Load when |
+| --- | --- |
+| `references/a11y_checklist.md` | Running an accessibility review or validating a widget/screen against the full checklist |
 
 ## Templates
 
 - `focus_form` - Form with proper focus management
 - `semantics_icon_button` - Icon button with semantic labels
-

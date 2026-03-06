@@ -4,20 +4,7 @@ description: Run Semgrep static analysis scan on a codebase using parallel subag
   detects and uses Semgrep Pro for cross-file analysis when available. Use when asked to scan
   code for vulnerabilities, run a security audit with Semgrep, find bugs, or perform
   static analysis. Spawns parallel workers for multi-language codebases and triage.
-allowed-tools:
-  - Bash
-  - Read
-  - Glob
-  - Grep
-  - Write
-  - Task
-  - AskUserQuestion
-  - TaskCreate
-  - TaskList
-  - TaskUpdate
-  - WebFetch
 ---
-
 # Semgrep Security Scan
 
 Run a complete Semgrep scan with automatic language detection, parallel execution via Task subagents, and parallel triage. Automatically uses Semgrep Pro for cross-file taint analysis when available.

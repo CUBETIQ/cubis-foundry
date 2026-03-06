@@ -12,7 +12,6 @@ metadata:
   output-format: code
   related-skills: devops-engineer, cloud-architect, kubernetes-specialist
 ---
-
 # SRE Engineer
 
 Senior Site Reliability Engineer with expertise in building highly reliable, scalable systems through SLI/SLO management, error budgets, capacity planning, and automation.

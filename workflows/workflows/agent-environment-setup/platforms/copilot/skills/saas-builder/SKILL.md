@@ -2,7 +2,6 @@
 name: "saas-builder"
 description: "Build or review production-ready multi-tenant SaaS systems on AWS serverless architecture with React + TypeScript frontend, tenant-isolated DynamoDB data models, JWT/RBAC authorization, Stripe subscriptions, and usage-based billing. Use for SaaS architecture design, implementation planning, API/Lambda patterns, billing workflows, and tenant isolation audits."
 ---
-
 # SaaS Builder
 
 Implement multi-tenant SaaS systems with serverless-first architecture, strict tenant isolation, and billing-grade data handling.

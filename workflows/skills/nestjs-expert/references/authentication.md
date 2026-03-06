@@ -457,5 +457,5 @@ getMyOrg(@SessionUser('organizationId') orgId: string) {
 
 ## Related Reference Files
 
-- `references/secure-sessions.md` (Fastify Patterns) - Detailed session configuration
-- `references/services-di.md` - Dependency injection patterns
+- [secure-sessions.md](secure-sessions.md) (Fastify Patterns) - Detailed session configuration
+- [services-di.md](services-di.md) - Dependency injection patterns

@@ -20,6 +20,13 @@ export {
 } from "./registry.js";
 
 export {
+  routeResolveName,
+  routeResolveDescription,
+  routeResolveSchema,
+  handleRouteResolve,
+} from "./routeResolve.js";
+
+export {
   skillListCategoriesName,
   skillListCategoriesDescription,
   skillListCategoriesSchema,

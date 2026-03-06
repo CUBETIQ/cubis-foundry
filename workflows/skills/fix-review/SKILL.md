@@ -158,7 +158,7 @@ See `references/finding-matching.md` for detailed matching strategies.
 
 Generate two outputs:
 
-**1. Report file (`FIX_REVIEW_REPORT.md`):**
+**1. Report file (`FIX_REVIEW_REPORT` markdown artifact):**
 
 ```markdown
 # Fix Review Report

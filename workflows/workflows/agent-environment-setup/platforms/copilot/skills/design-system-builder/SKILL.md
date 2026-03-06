@@ -1,19 +1,7 @@
 ---
 name: "design-system-builder"
-displayName: "Design System Builder"
 description: "Create and review design system components: API design, token usage, theming, variants, and documentation"
-keywords:
-  [
-    "design system",
-    "components",
-    "component design",
-    "tokens",
-    "theming",
-    "variants",
-    "widget api",
-  ]
 ---
-
 # Design System Builder
 
 ## Overview
@@ -140,9 +128,13 @@ When creating/reviewing a component:
 5. **Tests** (widget tests + golden ideas)
 6. **Migration Notes** (how to replace old widgets)
 
-## Steering Files
+## References
 
-- `component_api_guidelines.md` - API design best practices
+Load detailed guidance only when needed.
+
+| File | Load when |
+| --- | --- |
+| `references/component_api_guidelines.md` | Designing or reviewing a component API, variants, theming hooks, or token usage contracts |
 
 ## Templates
 

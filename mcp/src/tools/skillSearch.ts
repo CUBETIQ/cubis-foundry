@@ -28,6 +28,52 @@ export const skillSearchSchema = z.object({
     ),
 });
 
+const SEARCH_STOP_WORDS = new Set([
+  "a",
+  "an",
+  "and",
+  "api",
+  "for",
+  "in",
+  "of",
+  "on",
+  "or",
+  "the",
+  "to",
+  "with",
+]);
+
+function normalizeSearchText(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function extractQueryTokens(query: string): string[] {
+  const seen = new Set<string>();
+  const tokens = normalizeSearchText(query)
+    .split(/\s+/)
+    .filter((token) => token.length >= 2 && !SEARCH_STOP_WORDS.has(token))
+    .filter((token) => {
+      if (seen.has(token)) return false;
+      seen.add(token);
+      return true;
+    });
+
+  return tokens;
+}
+
+function countMatchedTokens(haystack: string, tokens: string[]): number {
+  if (!haystack) return 0;
+  let matches = 0;
+  for (const token of tokens) {
+    if (haystack.includes(token)) matches += 1;
+  }
+  return matches;
+}
+
+function isWrapperSkillId(id: string): boolean {
+  return id.startsWith("workflow-") || id.startsWith("agent-");
+}
+
 export async function handleSkillSearch(
   args: z.infer<typeof skillSearchSchema>,
   manifest: VaultManifest,
@@ -35,27 +81,55 @@ export async function handleSkillSearch(
   charsPerToken: number,
 ) {
   const { query } = args;
-  const lower = query.toLowerCase();
+  const normalizedQuery = normalizeSearchText(query);
+  const queryTokens = extractQueryTokens(query);
+  const enriched = await enrichWithDescriptions(manifest.skills, summaryMaxLength);
+  const rankedMatches = enriched
+    .filter((skill) => !isWrapperSkillId(skill.id))
+    .map((skill) => {
+      const normalizedId = normalizeSearchText(skill.id);
+      const normalizedCategory = normalizeSearchText(skill.category);
+      const normalizedDescription = normalizeSearchText(skill.description ?? "");
 
-  // First pass: match by ID
-  let matches = manifest.skills.filter((s) =>
-    s.id.toLowerCase().includes(lower),
-  );
+      const idPhraseMatch = normalizedId.includes(normalizedQuery);
+      const categoryPhraseMatch = normalizedCategory.includes(normalizedQuery);
+      const descriptionPhraseMatch = normalizedDescription.includes(normalizedQuery);
 
-  // Second pass: also search descriptions if needed (enrich all, then filter)
-  if (matches.length === 0) {
-    const enriched = await enrichWithDescriptions(
-      manifest.skills,
-      summaryMaxLength,
-    );
-    matches = enriched.filter(
-      (s) =>
-        s.id.toLowerCase().includes(lower) ||
-        (s.description && s.description.toLowerCase().includes(lower)),
-    );
-  } else {
-    matches = await enrichWithDescriptions(matches, summaryMaxLength);
-  }
+      const idTokenMatches = countMatchedTokens(normalizedId, queryTokens);
+      const categoryTokenMatches = countMatchedTokens(
+        normalizedCategory,
+        queryTokens,
+      );
+      const descriptionTokenMatches = countMatchedTokens(
+        normalizedDescription,
+        queryTokens,
+      );
+
+      const totalTokenMatches =
+        idTokenMatches + categoryTokenMatches + descriptionTokenMatches;
+
+      const score =
+        (idPhraseMatch ? 500 : 0) +
+        (descriptionPhraseMatch ? 250 : 0) +
+        (categoryPhraseMatch ? 150 : 0) +
+        idTokenMatches * 50 +
+        categoryTokenMatches * 25 +
+        descriptionTokenMatches * 15;
+
+      return {
+        skill,
+        score,
+        totalTokenMatches,
+      };
+    })
+    .filter(
+      ({ score, totalTokenMatches }) =>
+        score > 0 &&
+        (normalizedQuery.length > 0 || totalTokenMatches > 0),
+    )
+    .sort((a, b) => b.score - a.score || a.skill.id.localeCompare(b.skill.id));
+
+  const matches = rankedMatches.map(({ skill }) => skill);
 
   const results = matches.map((s) => ({
     id: s.id,
@@ -84,9 +158,7 @@ export async function handleSkillSearch(
         text,
       },
     ],
-    structuredContent: {
-      metrics,
-    },
+    structuredContent: payload,
     _meta: {
       metrics,
     },

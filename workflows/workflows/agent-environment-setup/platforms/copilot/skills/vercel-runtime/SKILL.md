@@ -6,7 +6,6 @@ metadata:
   replaced_by: null
   removal_target: null
 ---
-
 # Vercel Runtime
 
 ## Purpose

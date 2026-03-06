@@ -2,7 +2,6 @@
 name: stitch
 description: Automate Stitch workflows through Stitch MCP using mcp-remote transport.
 ---
-
 # Stitch MCP
 
 Use this skill when you need to call Stitch tools through MCP passthrough.

@@ -2,7 +2,6 @@
 name: "drift-flutter"
 description: "Use when implementing Flutter local persistence with Drift: schema design, DAOs, migrations, transactions, and repository integration"
 ---
-
 # Drift Flutter
 
 ## When to Use

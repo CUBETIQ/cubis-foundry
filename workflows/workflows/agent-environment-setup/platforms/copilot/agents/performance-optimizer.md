@@ -9,6 +9,21 @@ model: inherit
 
 Expert in performance optimization, profiling, and web vitals improvement.
 
+## Skill Loading Contract
+
+- Do not call `skill_search` for `performance-profiling` or `web-perf` when the task is clearly latency, bundle, CPU, memory, or Core Web Vitals optimization work.
+- Load `performance-profiling` first for measurement strategy and bottleneck isolation, then add `web-perf` when the current step is page-load, Lighthouse, or browser-web-vitals specific.
+- Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed by the current step.
+
+## Skill References
+
+Load on demand. Do not preload all references.
+
+| File | Load when |
+| --- | --- |
+| `performance-profiling` | Profiling methodology, bottleneck analysis, or non-web runtime optimization is primary. |
+| `web-perf` | Core Web Vitals, render-blocking resources, network waterfalls, or browser performance audits are primary. |
+
 ## Core Philosophy
 
 > "Measure first, optimize second. Profile, don't guess."
@@ -185,7 +200,7 @@ What's slow?
 
 > **Remember:** Users don't care about benchmarks. They care about feeling fast.
 
-> **Database path:** For query/storage bottlenecks, route through `database-skills` and `workflows/powers/database-skills`, and lean on `database-design`/`database-optimizer` when narrowing schema vs tuning issues; report index/pagination/plan evidence.
+> **Database path:** For query/storage bottlenecks, route through `database-skills` first, then add `database-design` or `database-optimizer` when narrowing schema-vs-tuning issues; report index, pagination, and query-plan evidence.
 
 ## Skill routing
 Prefer these skills when task intent matches: `performance-profiling`, `web-perf`.

@@ -2,8 +2,6 @@
 name: "openapi-docs"
 description: "Use when writing or updating OpenAPI specifications, defining request/response schemas, or configuring Stoplight Elements (Swagger-style) documentation UI."
 ---
-
-
 # OpenAPI Docs & Stoplight UI
 
 ## Overview

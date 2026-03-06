@@ -6,7 +6,6 @@ metadata:
   replaced_by: architecture-designer
   removal_target: v0.6.0
 ---
-
 # Architecture
 
 ## Compatibility Alias

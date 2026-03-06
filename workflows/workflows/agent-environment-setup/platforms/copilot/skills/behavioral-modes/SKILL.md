@@ -1,9 +1,7 @@
 ---
 name: behavioral-modes
 description: AI operational modes (brainstorm, implement, debug, review, teach, ship, orchestrate). Use to adapt behavior based on task type.
-allowed-tools: Read, Glob, Grep
 ---
-
 # Behavioral Modes - Adaptive AI Operating Modes
 
 ## Purpose
@@ -217,7 +215,7 @@ Modern architectures optimized for agent-to-agent collaboration:
 
 ### 2. 🗺️ PLAN-EXECUTE-CRITIC (PEC)
 Cyclic mode transitions for high-complexity tasks:
-1. **Planner:** Decomposes the task into atomic steps (`task.md`).
+1. **Planner:** Decomposes the task into atomic steps (task handoff or planning artifact).
 2. **Executor:** Performs the actual coding (`IMPLEMENT`).
 3. **Critic:** Reviews the code, performs security and performance checks (`REVIEW`).
 

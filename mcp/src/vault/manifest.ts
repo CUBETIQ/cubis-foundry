@@ -188,6 +188,24 @@ function collectReferencedMarkdownTargets(skillContent: string): string[] {
   return targets;
 }
 
+function normalizeInSkillMarkdownTarget(
+  skillDir: string,
+  target: string,
+): string | null {
+  const resolved = path.resolve(skillDir, target);
+  const relative = path.relative(skillDir, resolved);
+
+  if (relative.startsWith("..") || path.isAbsolute(relative)) {
+    return null;
+  }
+
+  if (path.basename(resolved).toLowerCase() === "skill.md") {
+    return null;
+  }
+
+  return relative.split(path.sep).join("/");
+}
+
 async function readReferencedMarkdownFiles(
   skillPath: string,
   skillContent: string,
@@ -266,7 +284,9 @@ export async function listReferencedMarkdownPaths(
 ): Promise<string[]> {
   const source = skillContent ?? (await readFullSkillContent(skillPath));
   const skillDir = path.dirname(skillPath);
-  const explicitTargets = collectReferencedMarkdownTargets(source);
+  const explicitTargets = collectReferencedMarkdownTargets(source)
+    .map((target) => normalizeInSkillMarkdownTarget(skillDir, target))
+    .filter((target): target is string => Boolean(target));
   const siblingTargets = await collectSiblingMarkdownTargets(skillDir);
   const merged = new Set<string>([...explicitTargets, ...siblingTargets]);
   return [...merged].sort((a, b) => a.localeCompare(b)).slice(0, MAX_REFERENCED_FILES);

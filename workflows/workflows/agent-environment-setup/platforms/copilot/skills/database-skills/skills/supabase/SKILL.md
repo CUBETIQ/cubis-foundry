@@ -2,7 +2,6 @@
 name: supabase
 description: Supabase/Postgres patterns for RLS, indexing, query optimization, pooling, and safe migrations.
 ---
-
 # Supabase
 
 ## Optimization workflow

@@ -1,9 +1,7 @@
 ---
 name: mobile-design
 description: Mobile-first design thinking and decision-making for iOS and Android apps. Touch interaction, performance patterns, platform conventions. Teaches principles, not fixed values. Use when building React Native, Flutter, or native mobile apps.
-allowed-tools: Read, Glob, Grep, Bash
 ---
-
 # Mobile Design System
 
 > **Philosophy:** Touch-first. Battery-conscious. Platform-respectful. Offline-capable.
@@ -29,16 +27,16 @@ allowed-tools: Read, Glob, Grep, Bash
 
 | File | Content | Status |
 |------|---------|--------|
-| **[mobile-design-thinking.md](mobile-design-thinking.md)** | **⚠️ ANTI-MEMORIZATION: Forces thinking, prevents AI defaults** | **⬜ CRITICAL FIRST** |
-| **[touch-psychology.md](touch-psychology.md)** | **Fitts' Law, gestures, haptics, thumb zone** | **⬜ CRITICAL** |
-| **[mobile-performance.md](mobile-performance.md)** | **RN/Flutter performance, 60fps, memory** | **⬜ CRITICAL** |
-| **[mobile-backend.md](mobile-backend.md)** | **Push notifications, offline sync, mobile API** | **⬜ CRITICAL** |
-| **[mobile-testing.md](mobile-testing.md)** | **Testing pyramid, E2E, platform-specific** | **⬜ CRITICAL** |
-| **[mobile-debugging.md](mobile-debugging.md)** | **Native vs JS debugging, Flipper, Logcat** | **⬜ CRITICAL** |
-| [mobile-navigation.md](mobile-navigation.md) | Tab/Stack/Drawer, deep linking | ⬜ Read |
-| [mobile-typography.md](mobile-typography.md) | System fonts, Dynamic Type, a11y | ⬜ Read |
-| [mobile-color-system.md](mobile-color-system.md) | OLED, dark mode, battery-aware | ⬜ Read |
-| [decision-trees.md](decision-trees.md) | Framework/state/storage selection | ⬜ Read |
+| **[mobile-design-thinking.md](references/mobile-design-thinking.md)** | **⚠️ ANTI-MEMORIZATION: Forces thinking, prevents AI defaults** | **⬜ CRITICAL FIRST** |
+| **[touch-psychology.md](references/touch-psychology.md)** | **Fitts' Law, gestures, haptics, thumb zone** | **⬜ CRITICAL** |
+| **[mobile-performance.md](references/mobile-performance.md)** | **RN/Flutter performance, 60fps, memory** | **⬜ CRITICAL** |
+| **[mobile-backend.md](references/mobile-backend.md)** | **Push notifications, offline sync, mobile API** | **⬜ CRITICAL** |
+| **[mobile-testing.md](references/mobile-testing.md)** | **Testing pyramid, E2E, platform-specific** | **⬜ CRITICAL** |
+| **[mobile-debugging.md](references/mobile-debugging.md)** | **Native vs JS debugging, Flipper, Logcat** | **⬜ CRITICAL** |
+| [mobile-navigation.md](references/mobile-navigation.md) | Tab/Stack/Drawer, deep linking | ⬜ Read |
+| [mobile-typography.md](references/mobile-typography.md) | System fonts, Dynamic Type, a11y | ⬜ Read |
+| [mobile-color-system.md](references/mobile-color-system.md) | OLED, dark mode, battery-aware | ⬜ Read |
+| [decision-trees.md](references/decision-trees.md) | Framework/state/storage selection | ⬜ Read |
 
 > 🧠 **mobile-design-thinking.md is PRIORITY!** This file ensures AI thinks instead of using memorized patterns.
 
@@ -46,8 +44,8 @@ allowed-tools: Read, Glob, Grep, Bash
 
 | Platform | File | Content | When to Read |
 |----------|------|---------|--------------|
-| **iOS** | [platform-ios.md](platform-ios.md) | Human Interface Guidelines, SF Pro, SwiftUI patterns | Building for iPhone/iPad |
-| **Android** | [platform-android.md](platform-android.md) | Material Design 3, Roboto, Compose patterns | Building for Android |
+| **iOS** | [platform-ios.md](references/platform-ios.md) | Human Interface Guidelines, SF Pro, SwiftUI patterns | Building for iPhone/iPad |
+| **Android** | [platform-android.md](references/platform-android.md) | Material Design 3, Roboto, Compose patterns | Building for Android |
 | **Cross-Platform** | Both above | Platform divergence points | React Native / Flutter |
 
 > 🔴 **If building for iOS → Read platform-ios.md FIRST!**
@@ -193,7 +191,7 @@ Mobile:  Finger is imprecise (~7mm contact area)
 | Large viewport | Limited space, scroll vertical |
 | Stable attention | Interrupted constantly |
 
-For deep dive: [touch-psychology.md](touch-psychology.md)
+For deep dive: [touch-psychology.md](references/touch-psychology.md)
 
 ---
 
@@ -266,7 +264,7 @@ GPU-accelerated (FAST):     CPU-bound (SLOW):
                             └── (AVOID animating these)
 ```
 
-For complete guide: [mobile-performance.md](mobile-performance.md)
+For complete guide: [mobile-performance.md](references/mobile-performance.md)
 
 ---
 
@@ -336,7 +334,7 @@ WHAT ARE YOU BUILDING?
             └── ✅ Flutter
 ```
 
-For complete decision trees: [decision-trees.md](decision-trees.md)
+For complete decision trees: [decision-trees.md](references/decision-trees.md)
 
 ---
 
@@ -379,15 +377,15 @@ For deeper guidance on specific areas:
 
 | File | When to Use |
 |------|-------------|
-| [mobile-design-thinking.md](mobile-design-thinking.md) | **FIRST! Anti-memorization, forces context-based thinking** |
-| [touch-psychology.md](touch-psychology.md) | Understanding touch interaction, Fitts' Law, gesture design |
-| [mobile-performance.md](mobile-performance.md) | Optimizing RN/Flutter, 60fps, memory/battery |
-| [platform-ios.md](platform-ios.md) | iOS-specific design, HIG compliance |
-| [platform-android.md](platform-android.md) | Android-specific design, Material Design 3 |
-| [mobile-navigation.md](mobile-navigation.md) | Navigation patterns, deep linking |
-| [mobile-typography.md](mobile-typography.md) | Type scale, system fonts, accessibility |
-| [mobile-color-system.md](mobile-color-system.md) | OLED optimization, dark mode, battery |
-| [decision-trees.md](decision-trees.md) | Framework, state, storage decisions |
+| [mobile-design-thinking.md](references/mobile-design-thinking.md) | **FIRST! Anti-memorization, forces context-based thinking** |
+| [touch-psychology.md](references/touch-psychology.md) | Understanding touch interaction, Fitts' Law, gesture design |
+| [mobile-performance.md](references/mobile-performance.md) | Optimizing RN/Flutter, 60fps, memory/battery |
+| [platform-ios.md](references/platform-ios.md) | iOS-specific design, HIG compliance |
+| [platform-android.md](references/platform-android.md) | Android-specific design, Material Design 3 |
+| [mobile-navigation.md](references/mobile-navigation.md) | Navigation patterns, deep linking |
+| [mobile-typography.md](references/mobile-typography.md) | Type scale, system fonts, accessibility |
+| [mobile-color-system.md](references/mobile-color-system.md) | OLED optimization, dark mode, battery |
+| [decision-trees.md](references/decision-trees.md) | Framework, state, storage decisions |
 
 ---
 

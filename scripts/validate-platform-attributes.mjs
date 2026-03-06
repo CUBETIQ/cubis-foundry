@@ -603,12 +603,25 @@ async function buildCanonicalSubSkillSet(canonicalMap) {
   for (const { id: topLevelId, root } of canonicalMap.values()) {
     const nestedRoot = path.join(root, topLevelId, "skills");
     if (!(await pathExists(nestedRoot))) continue;
-    const nestedEntries = await fs.readdir(nestedRoot, { withFileTypes: true });
-    for (const entry of nestedEntries) {
-      if (!entry.isDirectory() || entry.name.startsWith(".")) continue;
-      const nestedSkillFile = path.join(nestedRoot, entry.name, "SKILL.md");
-      if (!(await pathExists(nestedSkillFile))) continue;
-      ids.add(`${topLevelId}/${entry.name}`.toLowerCase());
+    const queue = [nestedRoot];
+    while (queue.length > 0) {
+      const current = queue.pop();
+      if (!current || !(await pathExists(current))) continue;
+      const nestedEntries = await fs.readdir(current, { withFileTypes: true });
+      for (const entry of nestedEntries) {
+        if (entry.name.startsWith(".")) continue;
+        const fullPath = path.join(current, entry.name);
+        if (entry.isDirectory()) {
+          queue.push(fullPath);
+          continue;
+        }
+        if (!entry.isFile() || entry.name !== "SKILL.md") continue;
+        const relativeDir = path.relative(nestedRoot, path.dirname(fullPath));
+        const parts = relativeDir.split(path.sep).filter(Boolean);
+        if (parts.length === 0) continue;
+        ids.add(parts[parts.length - 1].toLowerCase());
+        ids.add(`${topLevelId}/${parts.join("/")}`.toLowerCase());
+      }
     }
   }
   return ids;
@@ -877,11 +890,6 @@ async function validateSharedSourceAndGeneratedParity({
     );
   }
 
-  note(
-    notes,
-    SHARED_ROOT,
-    `shared source validated (agents=${sharedAgents.length}, workflows=${sharedWorkflows.length})`,
-  );
 }
 
 async function main() {
@@ -1016,7 +1024,11 @@ async function main() {
         );
         continue;
       }
-      const skillDir = path.join(canonicalSkill.root, canonicalSkill.id);
+      const mirrorRoot = MIRROR_SKILL_ROOTS[platformId];
+      const skillDir =
+        platformId === "copilot" && mirrorRoot
+          ? path.join(mirrorRoot, canonicalSkill.id)
+          : path.join(canonicalSkill.root, canonicalSkill.id);
       const skillFile = path.join(skillDir, "SKILL.md");
       if (!(await pathExists(skillFile))) {
         error(errors, skillFile, `SKILL.md missing for skill '${skillId}'`);

@@ -43,5 +43,5 @@ Move route groups from legacy to NestJS in controlled slices while preserving be
 
 ## Related
 
-- `references/migration-from-express.md`
-- `references/authentication.md`
+- [migration-from-express.md](migration-from-express.md)
+- [authentication.md](authentication.md)

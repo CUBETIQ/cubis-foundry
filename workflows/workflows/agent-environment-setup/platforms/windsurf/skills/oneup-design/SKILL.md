@@ -16,9 +16,11 @@ import '../../../../core/design_system/one_design_system.dart';
 
 ## When to Load Steering Files
 
-- Working with colors → `colors.md`
-- Working with spacing/padding → `spacing.md`
-- Using One* components → `components.md`
+| File | Load when |
+| --- | --- |
+| `references/colors.md` | Choosing semantic colors, surface roles, and token-safe palette usage. |
+| `references/spacing.md` | Replacing hard-coded spacing/padding and aligning with token spacing rules. |
+| `references/components.md` | Selecting or reviewing One* components and their expected usage patterns. |
 
 ## MCP Tools (Use Before Writing UI)
 

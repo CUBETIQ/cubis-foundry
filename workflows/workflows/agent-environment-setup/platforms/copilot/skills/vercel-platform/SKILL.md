@@ -13,7 +13,6 @@ metadata:
   related-skills: devops-engineer, secure-code-guardian, monitoring-expert, vercel-deployments, vercel-observability
   consolidates: vercel-automation, vercel-project-configuration, vercel-rbac-access-groups, vercel-2fa-enforcement, vercel-oidc-federation, vercel-secure-compute, vercel-rest-api, vercel-sdk, vercel-webhooks-and-checks, vercel-integrations-native, vercel-marketplace-partner-api, vercel-mcp-for-agents, vercel-agent-workflows, vercel-image-optimization, vercel-og-image-generation, vercel-cron-jobs, vercel-microfrontends, vercel-monorepos, vercel-multi-tenant
 ---
-
 # Vercel Platform
 
 ## Purpose

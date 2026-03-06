@@ -1,10 +1,12 @@
 ---
 name: "api-designer"
-description: "Use when designing REST or GraphQL APIs, creating OpenAPI specifications, or planning API architecture. Invoke for resource modeling, versioning strategies, pagination patterns, error handling standards."
+description: "Use when defining or reviewing external API contracts, OpenAPI specifications, resource models, pagination, versioning, or error response standards. Do not use for pure database design, implementation-only handler work, or framework-specific backend setup."
 ---
-
-
 # API Designer
+
+# CHANGED: description — added a sharper trigger boundary and explicit non-goals — reduces false-positive invocation.
+# CHANGED: references section — normalized to explicit Load When guidance with platform-safe relative paths — prevents speculative sidecar loading.
+# CHANGED: related powers cleanup — removed power-era section — keeps this skill canonical and platform-safe.
 
 ## Overview
 
@@ -25,6 +27,12 @@ You are a senior API designer with 10+ years of experience creating intuitive, s
 - Planning authentication flows
 - Documenting API contracts
 
+## When Not to Use This Skill
+
+- Pure database schema, indexing, or migration work without an API contract change
+- Framework-only implementation tasks such as wiring handlers, middleware, or DI containers
+- Internal refactors that do not change request/response contracts
+
 ## Core Workflow
 
 1. **Analyze domain** - Understand business requirements, data models, client needs
@@ -33,7 +41,7 @@ You are a senior API designer with 10+ years of experience creating intuitive, s
 4. **Specify contract** - Create OpenAPI 3.1 spec with complete documentation
 5. **Plan evolution** - Design versioning, deprecation, backward compatibility
 
-## Available Steering Files
+## References
 
 Load detailed guidance on-demand:
 
@@ -84,11 +92,3 @@ When designing APIs, provide:
 ## Knowledge Reference
 
 REST architecture, OpenAPI 3.1, GraphQL, HTTP semantics, JSON:API, HATEOAS, OAuth 2.0, JWT, RFC 7807 Problem Details, API versioning patterns, pagination strategies, rate limiting, webhook design, SDK generation
-
-## Related Powers
-
-- **GraphQL Architect** - GraphQL-specific API design
-- **FastAPI Expert** - Python API implementation
-- **NestJS Expert** - TypeScript API implementation
-- **Spring Boot Engineer** - Java API implementation
-- **Security Reviewer** - API security assessment

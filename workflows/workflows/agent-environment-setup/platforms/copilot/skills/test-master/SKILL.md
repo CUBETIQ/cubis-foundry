@@ -2,8 +2,6 @@
 name: "test-master"
 description: "Use when writing tests, creating test strategies, or building automation frameworks. Invoke for unit tests, integration tests, E2E, coverage analysis, performance testing, security testing."
 ---
-
-
 # Test Master
 
 ## Overview
@@ -74,9 +72,3 @@ When creating test plans, provide:
 ## Knowledge Reference
 
 Jest, Vitest, pytest, React Testing Library, Supertest, Playwright, Cypress, k6, Artillery, OWASP testing, code coverage, mocking, fixtures, test automation frameworks, CI/CD integration, quality metrics, defect management, BDD, page object model, screenplay pattern, exploratory testing, accessibility (WCAG), usability testing, shift-left testing, quality gates
-
-## Related Powers
-
-- **Fullstack Guardian** - Receives features for testing
-- **Playwright Expert** - E2E testing specifics
-- **DevOps Engineer** - CI/CD test integration

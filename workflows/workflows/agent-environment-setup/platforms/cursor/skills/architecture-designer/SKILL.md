@@ -75,9 +75,3 @@ When designing architecture, provide:
 ## Knowledge Reference
 
 Distributed systems, microservices, event-driven architecture, CQRS, DDD, CAP theorem, cloud platforms (AWS, GCP, Azure), containers, Kubernetes, message queues, caching, database design
-
-## Related Powers
-
-- **Fullstack Guardian** - Implementing designs
-- **DevOps Engineer** - Infrastructure implementation
-- **Secure Code Guardian** - Security architecture

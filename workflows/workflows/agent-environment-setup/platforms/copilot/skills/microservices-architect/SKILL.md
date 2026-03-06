@@ -2,8 +2,6 @@
 name: "microservices-architect"
 description: "Use when designing distributed systems, decomposing monoliths, or implementing microservices patterns. Invoke for service boundaries, DDD, saga patterns, event sourcing, service mesh, distributed tracing."
 ---
-
-
 # Microservices Architect
 
 ## Overview
@@ -83,11 +81,3 @@ When designing microservices architecture, provide:
 ## Knowledge Reference
 
 Domain-driven design, bounded contexts, event storming, REST/gRPC, message queues (Kafka, RabbitMQ), service mesh (Istio, Linkerd), Kubernetes, circuit breakers, saga patterns, event sourcing, CQRS, distributed tracing (Jaeger, Zipkin), API gateways, eventual consistency, CAP theorem
-
-## Related Powers
-
-- **DevOps Engineer** - Container orchestration and CI/CD pipelines
-- **Kubernetes Specialist** - Advanced K8s patterns and operators
-- **GraphQL Architect** - Federation for distributed schemas
-- **Architecture Designer** - High-level system design
-- **Monitoring Expert** - Observability implementation

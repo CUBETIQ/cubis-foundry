@@ -1,12 +1,12 @@
 {
   "$schema": "cubis-foundry-mcp-manifest-v1",
-  "generatedAt": "2026-03-06T02:09:15.371Z",
-  "contentHash": "388ec098ff752b41",
+  "generatedAt": "2026-03-06T09:57:33.609Z",
+  "contentHash": "f2a7f5af30e60805",
   "summary": {
-    "totalSkills": 123,
+    "totalSkills": 124,
     "totalCategories": 22,
-    "totalBytes": 437054,
-    "estimatedTokens": 109264
+    "totalBytes": 450915,
+    "estimatedTokens": 112729
   },
   "categories": [
     {
@@ -51,7 +51,7 @@
     },
     {
       "name": "general",
-      "skillCount": 26
+      "skillCount": 27
     },
     {
       "name": "localization",
@@ -107,7 +107,7 @@
       "category": "design",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 2353,
+      "fileBytes": 2458,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -116,13 +116,13 @@
       "id": "api-designer",
       "name": "api-designer",
       "displayName": null,
-      "description": "Use when designing REST or GraphQL APIs, creating OpenAPI specifications, or planning API architecture. Invoke for resource modeling, versioning strategies, pagination patterns, error handling standards.",
+      "description": "Use when defining or reviewing external API contracts, OpenAPI specifications, resource models, pagination, versioning, or error response standards. Do not use for pure database design, implementation-only handler work, or framework-specific backend setup.",
       "category": "api",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 3861,
+      "fileBytes": 4285,
       "warnings": [
-        "description too long (203 chars)",
+        "description too long (256 chars)",
         "no keywords or triggers"
       ]
     },
@@ -134,7 +134,7 @@
       "category": "api",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 2435,
+      "fileBytes": 2544,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -147,7 +147,7 @@
       "category": "general",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 3172,
+      "fileBytes": 3227,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -178,7 +178,7 @@
       "category": "architecture",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 3185,
+      "fileBytes": 3012,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -217,7 +217,7 @@
       "category": "practices",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 5379,
+      "fileBytes": 5403,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -230,7 +230,7 @@
       "category": "practices",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 4660,
+      "fileBytes": 4682,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -270,7 +270,7 @@
       "category": "tooling",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 3779,
+      "fileBytes": 3834,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -283,7 +283,7 @@
       "category": "documentation",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 3961,
+      "fileBytes": 3787,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -314,7 +314,7 @@
       "category": "general",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 3093,
+      "fileBytes": 2936,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -334,7 +334,7 @@
         "stack": "csharp",
         "baseline": "C# 14 / .NET 10"
       },
-      "fileBytes": 1216,
+      "fileBytes": 2097,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -347,7 +347,7 @@
       "category": "data",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 1527,
+      "fileBytes": 1593,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -360,7 +360,7 @@
       "category": "data",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 3596,
+      "fileBytes": 3404,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -380,7 +380,7 @@
         "domain": "data",
         "triggers": "database, sql, postgres, mysql, vitess, neki, mongodb, mongoose, sqlite, supabase, redis, schema, migration, index, query, performance, pagination, replication, pooling, sharding, cache"
       },
-      "fileBytes": 4597
+      "fileBytes": 4608
     },
     {
       "id": "debugging-wizard",
@@ -426,7 +426,7 @@
       "category": "design",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 3649,
+      "fileBytes": 3799,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -478,7 +478,7 @@
       "category": "general",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 4155,
+      "fileBytes": 4330,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -513,7 +513,7 @@
       "category": "backend",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 4699,
+      "fileBytes": 4547,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -561,7 +561,7 @@
       "category": "testing",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 7270,
+      "fileBytes": 7285,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -574,7 +574,7 @@
       "category": "mobile",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 5965,
+      "fileBytes": 6064,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -600,7 +600,7 @@
       "category": "mobile",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 5895,
+      "fileBytes": 6027,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -626,7 +626,7 @@
       "category": "frontend",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 12519,
+      "fileBytes": 12728,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -689,7 +689,7 @@
         "stack": "go",
         "baseline": "Go 1.26"
       },
-      "fileBytes": 1660,
+      "fileBytes": 2728,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -702,7 +702,7 @@
       "category": "mobile",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 3259,
+      "fileBytes": 3460,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -770,7 +770,7 @@
         "stack": "java",
         "baseline": "Java SE 25"
       },
-      "fileBytes": 1199,
+      "fileBytes": 2149,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -779,7 +779,7 @@
       "id": "javascript-pro",
       "name": "javascript-pro",
       "displayName": null,
-      "description": "Use for modern JavaScript architecture and implementation across browser, Node, and edge runtimes with ES2025+ practices.",
+      "description": "Use for modern JavaScript architecture and implementation across browser, Node, and edge runtimes with runtime-aware production practices.",
       "category": "backend",
       "keywords": [],
       "triggers": [],
@@ -788,9 +788,9 @@
         "domain": "language",
         "role": "specialist",
         "stack": "javascript",
-        "baseline": "ES2025+"
+        "baseline": "Runtime-policy baseline (Node/browser/edge)"
       },
-      "fileBytes": 1622,
+      "fileBytes": 2837,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -810,7 +810,7 @@
         "stack": "kotlin",
         "baseline": "Kotlin 2.3 line (2.2.20+ compatible)"
       },
-      "fileBytes": 1201,
+      "fileBytes": 2111,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -859,7 +859,7 @@
       "category": "architecture",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 4225,
+      "fileBytes": 3900,
       "warnings": [
         "description too long (204 chars)",
         "no keywords or triggers"
@@ -873,7 +873,7 @@
       "category": "design",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 15455,
+      "fileBytes": 15719,
       "warnings": [
         "description too long (239 chars)",
         "no keywords or triggers"
@@ -909,7 +909,7 @@
       "category": "backend",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 4237,
+      "fileBytes": 4000,
       "warnings": [
         "description too long (207 chars)",
         "no keywords or triggers"
@@ -923,7 +923,10 @@
       "category": "frontend",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 4043,
+      "metadata": {
+        "user-invocable": "false"
+      },
+      "fileBytes": 4225,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -949,7 +952,10 @@
       "category": "frontend",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 2070,
+      "metadata": {
+        "argument-hint": "[target-version]"
+      },
+      "fileBytes": 2082,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -1034,7 +1040,7 @@
         "theme"
       ],
       "triggers": [],
-      "fileBytes": 1599
+      "fileBytes": 1817
     },
     {
       "id": "openapi-docs",
@@ -1083,7 +1089,7 @@
       "category": "practices",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 4000,
+      "fileBytes": 4028,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -1156,7 +1162,7 @@
         "claude"
       ],
       "triggers": [],
-      "fileBytes": 1198
+      "fileBytes": 1517
     },
     {
       "id": "python-patterns",
@@ -1191,7 +1197,7 @@
         "stack": "python",
         "baseline": "Python 3.14"
       },
-      "fileBytes": 1627,
+      "fileBytes": 2746,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -1273,7 +1279,7 @@
       "category": "mobile",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 4255,
+      "fileBytes": 4693,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -1311,7 +1317,7 @@
         "stack": "rust",
         "baseline": "Rust stable 1.91"
       },
-      "fileBytes": 1499,
+      "fileBytes": 2436,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -1377,7 +1383,7 @@
       "category": "security",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 3721,
+      "fileBytes": 3468,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -1423,6 +1429,25 @@
       },
       "fileBytes": 487,
       "warnings": [
+        "no keywords or triggers"
+      ]
+    },
+    {
+      "id": "skill-authoring",
+      "name": "skill-authoring",
+      "displayName": null,
+      "description": "Use when creating a new Foundry skill or updating an existing one: scaffolding SKILL.md, fixing metadata, wiring references and scripts, removing legacy power files, and making the package work across Codex, Antigravity, Copilot, Cursor, and Windsurf. Do not use for prompt tuning without a skill package change or for editing only one generated mirror.",
+      "category": "general",
+      "keywords": [],
+      "triggers": [],
+      "metadata": {
+        "source": "https://github.com/anthropics/skills/tree/main/skills/skill-creator",
+        "snapshot": "Adapted from the local Codex system skill on 2026-03-06",
+        "maintenance": "Pinned snapshot; refresh manually when upstream changes are intentionally adopted."
+      },
+      "fileBytes": 3946,
+      "warnings": [
+        "description too long (353 chars)",
         "no keywords or triggers"
       ]
     },
@@ -1507,7 +1532,10 @@
       "category": "payments",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 5537,
+      "metadata": {
+        "alwaysApply": "false"
+      },
+      "fileBytes": 5548,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -1603,7 +1631,7 @@
       "category": "testing",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 4227,
+      "fileBytes": 4055,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -1642,7 +1670,7 @@
         "baseline": "TypeScript 5.9 stable",
         "transition": "TypeScript 6 compatibility prep"
       },
-      "fileBytes": 1791,
+      "fileBytes": 2916,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -1655,7 +1683,7 @@
       "category": "design",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 14398,
+      "fileBytes": 14460,
       "warnings": [
         "description too long (806 chars)",
         "no keywords or triggers"
@@ -1669,7 +1697,7 @@
       "category": "design",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 3085,
+      "fileBytes": 3232,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -1682,7 +1710,7 @@
       "category": "general",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 5650,
+      "fileBytes": 5662,
       "warnings": [
         "description too long (253 chars)",
         "no keywords or triggers"
@@ -2091,6 +2119,11 @@
     }
   ],
   "builtinTools": [
+    {
+      "name": "route_resolve",
+      "description": "Resolve an explicit workflow command, explicit custom agent, compatibility alias, or free-text intent into one workflow/agent route before skill loading.",
+      "category": "route"
+    },
     {
       "name": "skill_list_categories",
       "description": "List all skill categories available in the vault. Returns category names and skill counts.",

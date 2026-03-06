@@ -2,7 +2,6 @@
 name: mongodb
 description: MongoDB and Mongoose modeling, indexing, pagination, query tuning, and transaction guidance.
 ---
-
 # MongoDB and Mongoose
 
 ## Optimization workflow

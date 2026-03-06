@@ -1,24 +1,7 @@
 ---
 name: "flutter-security-reviewer"
-displayName: "Flutter/Dart Security Reviewer"
 description: "Review Flutter/Dart code for security vulnerabilities: secure storage, network hardening, log redaction, and data protection"
-keywords:
-  [
-    "security",
-    "flutter security",
-    "dart security",
-    "secure storage",
-    "encryption",
-    "log redaction",
-    "network security",
-    "data protection",
-    "pii",
-    "sensitive data",
-    "authentication",
-    "authorization",
-  ]
 ---
-
 # Flutter/Dart Security Reviewer
 
 ## Overview
@@ -189,16 +172,18 @@ logger.info('User login successful: userId=${user.id}');
 
 ---
 
-## Steering Files
+## References
 
-| File                        | Load When                              |
-| --------------------------- | -------------------------------------- |
-| `secure_storage_policy.md`  | What to store where                    |
-| `network_hardening.md`      | Network security best practices        |
-| `log_redaction.md`          | How to redact sensitive data from logs |
-| `vulnerability-patterns.md` | SQL injection, XSS, IDOR patterns      |
-| `secret-scanning.md`        | Finding hardcoded secrets              |
+Load detailed guidance only when needed.
+
+| File | Load when |
+| --- | --- |
+| `references/secure_storage_policy.md` | Deciding where tokens, credentials, or sensitive user data may be stored |
+| `references/network_hardening.md` | Reviewing TLS, certificate handling, interceptor logging, or retry policy |
+| `references/log_redaction.md` | Redacting PII, tokens, and secrets from logs, analytics, and crash reports |
+| `references/vulnerability-patterns.md` | Checking for common auth, injection, IDOR, or trust-boundary weaknesses |
+| `references/secret-scanning.md` | Hunting for hardcoded secrets or unsafe configuration material |
 
 ## Templates
 
-- `security_review_response.md` - Security review report template
+- `templates/security_review_response.md` - Security review report template

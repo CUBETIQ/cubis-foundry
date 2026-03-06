@@ -3,9 +3,10 @@ prompt = '''
 Follow the /refactor workflow from .agent/workflows/refactor.md.
 
 Execution contract:
-1. Confirm the request fits the workflow's "When to use" section.
-2. Execute according to "Workflow steps" and apply "Context notes".
-3. Complete "Verification" checks and report concrete evidence.
+1. Treat route selection as already resolved by this command; do not begin with skill discovery.
+2. Confirm the request fits the workflow's "When to use" section.
+3. Execute according to "Workflow steps" and apply "Context notes".
+4. Complete "Verification" checks and report concrete evidence.
 
 If command arguments are provided, treat them as additional user context.
 '''

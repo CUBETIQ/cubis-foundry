@@ -140,9 +140,13 @@ When creating/reviewing a component:
 5. **Tests** (widget tests + golden ideas)
 6. **Migration Notes** (how to replace old widgets)
 
-## Steering Files
+## References
 
-- `component_api_guidelines.md` - API design best practices
+Load detailed guidance only when needed.
+
+| File | Load when |
+| --- | --- |
+| `references/component_api_guidelines.md` | Designing or reviewing a component API, variants, theming hooks, or token usage contracts |
 
 ## Templates
 

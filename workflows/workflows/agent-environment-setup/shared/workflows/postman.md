@@ -5,6 +5,8 @@ triggers: ["postman", "collection", "workspace", "environment", "runcollection",
 ---
 # Postman Workflow
 
+# CHANGED: output contract — converted free-form bullets into structured YAML — keeps workspace/action identifiers machine-readable for follow-on automation.
+
 ## When to use
 Use this when tasks are primarily about Postman workspaces, collections, environments, monitors, mocks, or collection runs.
 
@@ -34,7 +36,18 @@ Use this when tasks are primarily about Postman workspaces, collections, environ
 - Note any skipped steps and required follow-up.
 
 ## Output Contract
-- Workspace/context used
-- Actions executed and resulting IDs
-- Pass/fail summary for runs
-- Follow-up or remediation steps
+```yaml
+POSTMAN_WORKFLOW_RESULT:
+  primary_agent: backend-specialist
+  supporting_agents: [security-auditor?, test-engineer?]
+  primary_skills: [postman]
+  supporting_skills: [api-designer?, test-master?]
+  workspace_context: <string>
+  actions_executed:
+    - action: <string>
+      result_id: <string|null>
+  run_summary:
+    passed: <bool|null>
+    failures: [<string>] | []
+  follow_up_steps: [<string>] | []
+```

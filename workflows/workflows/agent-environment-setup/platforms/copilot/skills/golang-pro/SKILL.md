@@ -9,7 +9,6 @@ metadata:
   stack: "go"
   baseline: "Go 1.26"
 ---
-
 # Golang Pro
 
 ## When to use
@@ -17,6 +16,12 @@ metadata:
 - Building APIs, workers, CLIs, and microservices in Go.
 - Designing concurrency with goroutines/channels/context.
 - Optimizing latency, allocations, and reliability.
+
+## When not to use
+
+- Database-only tuning with no Go code change.
+- Browser/frontend tasks outside Go-backed services or tooling.
+- Small shell automation already well-covered by existing scripts.
 
 ## Core workflow
 
@@ -41,6 +46,18 @@ metadata:
 - Use generics where they simplify, not where they obscure.
 - Benchmark hot paths (`testing.B`, `pprof`) before tuning.
 
+## Debugging and observability
+
+- Thread request IDs and trace context through handlers and workers.
+- Use structured logs that make cancellation, retries, and deadlines visible.
+- Reproduce concurrency issues with race tests and deterministic fixtures first.
+
+## Performance and reliability
+
+- Prefer bounded worker pools over unbounded goroutine fan-out.
+- Make timeout/cancellation behavior explicit at every network boundary.
+- Profile CPU, heap, and block contention before low-level rewrites.
+
 ## Avoid
 
 - Fire-and-forget goroutines without cancellation path.
@@ -49,8 +66,10 @@ metadata:
 
 ## Reference files
 
-- `references/concurrency.md`
-- `references/generics.md`
-- `references/interfaces.md`
-- `references/testing.md`
-- `references/project-structure.md`
+| File | Load when |
+| --- | --- |
+| `references/concurrency.md` | Concurrency ownership, channels, mutexes, or cancellation safety need detail. |
+| `references/generics.md` | Generics tradeoffs or reusable type-safe helpers are in scope. |
+| `references/interfaces.md` | Interface boundaries and package seams need review. |
+| `references/testing.md` | Test strategy, race checks, or benchmark setup is needed. |
+| `references/project-structure.md` | Package layout or service/module decomposition needs guidance. |

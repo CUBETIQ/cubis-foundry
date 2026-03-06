@@ -1,13 +1,11 @@
 ---
 name: database-skills
 description: Unified database skill hub with engine-specific packs for PostgreSQL, MySQL, Vitess, Neki, MongoDB (Mongoose), SQLite, Supabase, and Redis.
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 metadata:
   version: "2.0.0"
   domain: data
   triggers: database, sql, postgres, mysql, vitess, neki, mongodb, mongoose, sqlite, supabase, redis, schema, migration, index, query, performance, pagination, replication, pooling, sharding, cache
 ---
-
 # Database Skills Hub
 
 Use this as the primary database hub. Keep `database-design`, `database-optimizer`, and `drift-flutter` available for specialized/legacy-compatible flows. Load the target engine's `SKILL.md` from `skills/<engine>/`, then load relevant `references/*` files.
@@ -84,7 +82,7 @@ skills/
 
 ## Required flow
 
-1. Read `LATEST_VERSIONS.md` before proposing version-specific behavior.
+1. Read `references/LATEST_VERSIONS.md` before proposing version-specific behavior.
 2. Use engine selection table above to pick the target engine.
 3. Load the target engine `SKILL.md` and relevant `references/*` files — read the ones that match the task (indexing, migrations, replication, etc.).
 4. Provide an optimization or implementation plan that includes:

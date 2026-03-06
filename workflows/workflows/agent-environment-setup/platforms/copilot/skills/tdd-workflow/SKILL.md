@@ -6,7 +6,6 @@ metadata:
   replaced_by: test-master
   removal_target: v0.6.0
 ---
-
 # Tdd Workflow
 
 ## Compatibility Alias

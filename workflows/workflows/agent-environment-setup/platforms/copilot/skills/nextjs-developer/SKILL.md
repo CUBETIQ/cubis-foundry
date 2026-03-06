@@ -1,6 +1,5 @@
 ---
 name: "nextjs-developer"
-displayName: "Next.js Developer"
 description: "Use for implementing/refactoring Next.js App Router features, React Server Components/Actions, SEO, and production architecture."
 license: MIT
 metadata:
@@ -10,7 +9,6 @@ metadata:
   stack: "nextjs"
   baseline: "Next.js 16 + React 19"
 ---
-
 # Next.js Developer
 
 ## Scope

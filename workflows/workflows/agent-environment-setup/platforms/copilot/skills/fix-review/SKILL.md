@@ -1,15 +1,7 @@
 ---
 name: fix-review
 description: Verify remediation commits against security audit findings and confirm fixes without introducing regressions.
-allowed-tools:
-  - Read
-  - Write
-  - Grep
-  - Glob
-  - Bash
-  - WebFetch
 ---
-
 # Fix Review
 
 Differential analysis to verify commits address security findings without introducing bugs.
@@ -158,7 +150,7 @@ See `references/finding-matching.md` for detailed matching strategies.
 
 Generate two outputs:
 
-**1. Report file (`FIX_REVIEW_REPORT.md`):**
+**1. Report file (`FIX_REVIEW_REPORT` markdown artifact):**
 
 ```markdown
 # Fix Review Report

@@ -28,7 +28,7 @@ export const skillValidateSchema = z.object({
 function assertConcreteSkillId(id: string) {
   if (id.startsWith("workflow-") || id.startsWith("agent-")) {
     invalidInput(
-      `Skill id "${id}" appears to be a wrapper id. Use workflow/agent routing (for example $workflow-implement-track or $agent-backend-specialist) and call skill_get only for concrete skill ids.`,
+      `Skill id "${id}" appears to be a wrapper id. Use route_resolve with an explicit workflow command, @agent mention, or compatibility alias before loading concrete skills.`,
     );
   }
 }
@@ -64,7 +64,7 @@ export async function handleSkillValidate(
 
     return {
       content: [{ type: "text" as const, text }],
-      structuredContent: { ...payload, metrics },
+      structuredContent: payload,
       _meta: { metrics },
     };
   }
@@ -95,7 +95,7 @@ export async function handleSkillValidate(
 
   return {
     content: [{ type: "text" as const, text }],
-    structuredContent: { ...payload, metrics },
+    structuredContent: payload,
     _meta: { metrics },
   };
 }

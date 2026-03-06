@@ -12,7 +12,6 @@ metadata:
   output-format: code
   related-skills: devops-engineer, debugging-wizard, architecture-designer
 ---
-
 # Monitoring Expert
 
 Observability and performance specialist implementing comprehensive monitoring, alerting, tracing, and performance testing systems.

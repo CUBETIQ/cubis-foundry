@@ -9,11 +9,13 @@ keywords: ["prompt", "llm", "ai", "chain-of-thought", "few-shot", "evaluation", 
 
 ## When to Load Steering Files
 
-- Prompt patterns (zero-shot, few-shot, CoT) → `prompt-patterns.md`
-- Optimization techniques → `prompt-optimization.md`
-- Evaluation frameworks → `evaluation-frameworks.md`
-- Structured outputs (JSON, function calling) → `structured-outputs.md`
-- System prompt design → `system-prompts.md`
+| File | Load when |
+| --- | --- |
+| `references/prompt-patterns.md` | Choosing zero-shot, few-shot, chain-of-thought, or decomposition patterns. |
+| `references/prompt-optimization.md` | Iterating on failures, reducing ambiguity, or tightening prompts for latency/cost. |
+| `references/evaluation-frameworks.md` | Building prompt test cases, eval loops, or regression checks. |
+| `references/structured-outputs.md` | Designing JSON outputs, schema-constrained outputs, or tool/function calling prompts. |
+| `references/system-prompts.md` | Defining durable system prompts, role constraints, or behavioral guardrails. |
 
 ## Core Workflow
 

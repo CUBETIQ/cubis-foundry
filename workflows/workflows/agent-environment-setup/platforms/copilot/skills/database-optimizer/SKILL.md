@@ -2,8 +2,6 @@
 name: "database-optimizer"
 description: "Use for system-level database performance triage across engines: bottleneck analysis, indexing strategy, config tuning, partitioning, and lock contention."
 ---
-
-
 # Database Optimizer
 
 ## Overview
@@ -79,9 +77,3 @@ When optimizing database performance, provide:
 ## Knowledge Reference
 
 PostgreSQL (pg_stat_statements, EXPLAIN ANALYZE, indexes, VACUUM, partitioning), MySQL (slow query log, EXPLAIN, InnoDB, query cache), query optimization, index design, execution plans, configuration tuning, replication, sharding, caching strategies
-
-## Related Powers
-
-- **Backend Developer** - Query pattern optimization
-- **DevOps Engineer** - Infrastructure and resource tuning
-- **Data Engineer** - ETL and analytical query optimization

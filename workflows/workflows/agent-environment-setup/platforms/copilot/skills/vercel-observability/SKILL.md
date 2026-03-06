@@ -13,7 +13,6 @@ metadata:
   related-skills: monitoring-expert, sre-engineer, vercel-functions, vercel-firewall
   consolidates: vercel-observability-overview, vercel-alerts-monitoring, vercel-runtime-logs, vercel-log-drain-reference, vercel-log-trace-correlation, vercel-session-tracing, vercel-tracing-otel, vercel-speed-insights, vercel-web-analytics, vercel-custom-events, vercel-audit-logs, vercel-drains-setup
 ---
-
 # Vercel Observability
 
 ## Purpose

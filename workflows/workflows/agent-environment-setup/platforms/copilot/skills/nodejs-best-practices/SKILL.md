@@ -9,7 +9,6 @@ metadata:
   stack: "nodejs"
   baseline: "Node 22/24 LTS era"
 ---
-
 # Node.js Best Practices
 
 ## Purpose

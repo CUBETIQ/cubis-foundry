@@ -18,6 +18,12 @@ metadata:
 - Solving ownership/lifetime design problems.
 - Optimizing memory safety and runtime performance together.
 
+## When not to use
+
+- Browser/frontend-only work with no Rust component.
+- Database-only tuning without Rust service or library changes.
+- Small scripts where shell or existing project tooling is the intended path.
+
 ## Core workflow
 
 1. Define ownership and error model first.
@@ -41,6 +47,24 @@ metadata:
 - Use `Arc` + interior mutability only when ownership alternatives fail.
 - Keep borrow scopes tight to improve readability and compile times.
 - Separate transport DTOs from domain types.
+
+## Debugging and observability
+
+- Prefer reproducible failing tests and `tracing` instrumentation before redesigning ownership or async structure.
+- Make task cancellation, retries, and error chains visible in logs/telemetry.
+- Use `cargo test`, `clippy`, and targeted benchmarks to isolate regressions.
+
+## Performance and reliability
+
+- Keep async flows cancellation-safe and backpressure-aware.
+- Measure allocations, lock contention, and tail latency before unsafe or low-level tuning.
+- Bound work queues and connection pools explicitly.
+
+## References
+
+| File | Load when |
+| --- | --- |
+| `references/operational-baseline.md` | You need service-level guardrails for async, errors, tracing, and test discipline. |
 
 ## Avoid
 

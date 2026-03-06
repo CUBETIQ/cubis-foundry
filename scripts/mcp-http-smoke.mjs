@@ -7,8 +7,9 @@
  * 1) initialize handshake works
  * 2) notifications/initialized accepted
  * 3) tools/list returns expected built-in tools
- * 4) skill tools expose telemetry metrics in _meta
- * 5) skill_budget_report returns consolidated skill log + context budget
+ * 4) route_resolve works before skill discovery
+ * 5) skill tools expose telemetry metrics in _meta
+ * 6) skill_budget_report returns consolidated skill log + context budget
  */
 
 const endpoint = process.argv[2] || "http://127.0.0.1:3100/mcp";
@@ -184,10 +185,13 @@ async function main() {
     .filter(Boolean);
 
   const required = [
+    "route_resolve",
     "skill_list_categories",
     "skill_browse_category",
     "skill_search",
+    "skill_validate",
     "skill_get",
+    "skill_get_reference",
     "skill_budget_report",
     "postman_get_mode",
     "stitch_get_mode",
@@ -221,6 +225,56 @@ async function main() {
     throw new Error(
       "Dynamic Stitch dotted tools were found but alias tools (stitch_*) were not registered",
     );
+  }
+
+  const routeResolveResult = await callTool({
+    endpointUrl: endpoint,
+    sessionId,
+    name: "route_resolve",
+    args: { intent: "/mobile" },
+  });
+  const routeResolvePayload = parseToolTextPayload(routeResolveResult);
+  if (
+    routeResolvePayload.resolved !== true ||
+    routeResolvePayload.kind !== "workflow" ||
+    routeResolvePayload.id !== "mobile"
+  ) {
+    throw new Error("route_resolve failed explicit workflow resolution");
+  }
+
+  const skillAuthoringRouteResolveResult = await callTool({
+    endpointUrl: endpoint,
+    sessionId,
+    name: "route_resolve",
+    args: { intent: "create a new skill package for Copilot" },
+  });
+  const skillAuthoringRoutePayload = parseToolTextPayload(
+    skillAuthoringRouteResolveResult,
+  );
+  if (
+    skillAuthoringRoutePayload.resolved !== true ||
+    skillAuthoringRoutePayload.id !== "create" ||
+    skillAuthoringRoutePayload.primarySkillHint !== "skill-authoring"
+  ) {
+    throw new Error(
+      "route_resolve failed skill-authoring intent routing",
+    );
+  }
+
+  const skillAuthoringValidateResult = await callTool({
+    endpointUrl: endpoint,
+    sessionId,
+    name: "skill_validate",
+    args: { id: "skill-authoring" },
+  });
+  const skillAuthoringValidatePayload = parseToolTextPayload(
+    skillAuthoringValidateResult,
+  );
+  if (
+    skillAuthoringValidatePayload.exists !== true ||
+    skillAuthoringValidatePayload.canonicalId !== "skill-authoring"
+  ) {
+    throw new Error("skill_validate failed for skill-authoring");
   }
 
   const listCategoriesResult = await callTool({
@@ -329,6 +383,7 @@ async function main() {
   console.log(`endpoint=${endpoint}`);
   console.log(`sessionId=${sessionId}`);
   console.log(`tools.total=${toolNames.length}`);
+  console.log(`route_resolve.kind=${routeResolvePayload.kind}`);
   console.log(`tools.postman.namespaced=${namespacedPostman}`);
   console.log(`tools.stitch.namespaced=${namespacedStitch}`);
   console.log(`tools.postman.alias=${aliasPostman}`);

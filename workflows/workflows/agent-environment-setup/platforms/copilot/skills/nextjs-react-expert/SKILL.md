@@ -7,7 +7,6 @@ metadata:
   removal_target: "v0.6.0"
   alias_of: "react-best-practices"
 ---
-
 # nextjs-react-expert (Compatibility Alias)
 
 This skill is deprecated and kept for backward compatibility.

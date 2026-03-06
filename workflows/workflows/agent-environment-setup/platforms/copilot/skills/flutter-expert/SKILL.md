@@ -1,20 +1,7 @@
 ---
 name: "flutter-expert"
-displayName: "Flutter Expert"
 description: "Flutter app architecture coordinator for Clean Architecture projects; delegates state, routing, persistence, testing, and security to specialized skills"
-keywords:
-  [
-    "flutter",
-    "clean architecture",
-    "modular",
-    "feature",
-    "coordination",
-    "riverpod",
-    "gorouter",
-    "drift",
-  ]
 ---
-
 # Flutter Expert
 
 ## Overview

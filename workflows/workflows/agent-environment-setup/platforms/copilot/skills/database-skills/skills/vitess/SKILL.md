@@ -2,7 +2,6 @@
 name: vitess
 description: Vitess sharding strategy, VSchema/vindex design, routing, and scale operations.
 ---
-
 # Vitess
 
 ## Primary focus

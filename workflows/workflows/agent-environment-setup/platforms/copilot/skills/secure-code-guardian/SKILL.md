@@ -12,7 +12,6 @@ metadata:
   output-format: code
   related-skills: fullstack-guardian, security-reviewer, architecture-designer
 ---
-
 # Secure Code Guardian
 
 Security-focused developer specializing in writing secure code and preventing vulnerabilities.

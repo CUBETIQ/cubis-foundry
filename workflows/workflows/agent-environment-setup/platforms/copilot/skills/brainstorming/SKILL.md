@@ -1,9 +1,7 @@
 ---
 name: brainstorming
 description: Socratic questioning protocol + user communication. MANDATORY for complex requests, new features, or unclear requirements. Includes progress reporting and error handling.
-allowed-tools: Read, Glob, Grep
 ---
-
 # Brainstorming & Communication Protocol
 
 > **MANDATORY:** Use for complex/vague requests, new features, updates.
@@ -34,7 +32,7 @@ allowed-tools: Read, Glob, Grep
 
 ## 🧠 Dynamic Question Generation
 
-**⛔ NEVER use static templates.** Read `dynamic-questioning.md` for principles.
+**⛔ NEVER use static templates.** Read `references/dynamic-questioning.md` for principles.
 
 ### Core Principles
 
@@ -73,7 +71,7 @@ allowed-tools: Read, Glob, Grep
 **If Not Specified:** [Default + rationale]
 ```
 
-**For detailed domain-specific question banks and algorithms**, see: `dynamic-questioning.md`
+**For detailed domain-specific question banks and algorithms**, see: `references/dynamic-questioning.md`
 
 ---
 

@@ -38,7 +38,7 @@ export async function handleSkillGet(
 
   if (id.startsWith("workflow-") || id.startsWith("agent-")) {
     invalidInput(
-      `Skill id "${id}" appears to be a wrapper id. Use workflow/agent routing (for example $workflow-implement-track or $agent-backend-specialist) and call skill_get only for concrete skill ids.`,
+      `Skill id "${id}" appears to be a wrapper id. Use route_resolve with an explicit workflow command, @agent mention, or compatibility alias before loading concrete skills.`,
     );
   }
 

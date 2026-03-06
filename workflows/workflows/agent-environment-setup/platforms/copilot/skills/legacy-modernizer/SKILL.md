@@ -12,7 +12,6 @@ metadata:
   output-format: code+analysis
   related-skills: test-master, devops-engineer
 ---
-
 # Legacy Modernizer
 
 Senior legacy modernization specialist with expertise in transforming aging systems into modern architectures without disrupting business operations.

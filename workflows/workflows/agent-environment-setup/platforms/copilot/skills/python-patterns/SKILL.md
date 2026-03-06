@@ -6,7 +6,6 @@ metadata:
   replaced_by: python-pro
   removal_target: v0.6.0
 ---
-
 # Python Patterns
 
 ## Compatibility Alias

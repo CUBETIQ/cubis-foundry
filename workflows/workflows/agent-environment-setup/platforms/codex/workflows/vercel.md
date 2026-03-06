@@ -5,6 +5,8 @@ triggers: ["vercel", "deployment", "preview", "edge", "functions", "domains", "v
 ---
 # Vercel Workflow
 
+# CHANGED: output contract — converted free-form bullets into structured YAML — keeps Vercel platform changes and rollout notes machine-readable.
+
 ## When to use
 Use this workflow when the primary concern is Vercel platform behavior, deployment safety, or Vercel-specific automation.
 
@@ -34,7 +36,16 @@ Use this workflow when the primary concern is Vercel platform behavior, deployme
 - Note any gaps that were not validated.
 
 ## Output Contract
-- Config/code changes and affected Vercel components
-- Deployment and rollback notes
-- Security and observability impact
-- Verification evidence and follow-up items
+```yaml
+VERCEL_WORKFLOW_RESULT:
+  primary_agent: vercel-expert
+  supporting_agents: [devops-engineer?, security-auditor?, test-engineer?, qa-automation-engineer?]
+  primary_skills: [vercel-platform, vercel-runtime]
+  supporting_skills: [vercel-delivery?, vercel-security?, vercel-ai?, vercel-storage?]
+  affected_components: [<string>]
+  deployment_notes: [<string>]
+  rollback_notes: [<string>]
+  security_and_observability_impact: [<string>]
+  verification_evidence: [<string>]
+  follow_up_items: [<string>] | []
+```

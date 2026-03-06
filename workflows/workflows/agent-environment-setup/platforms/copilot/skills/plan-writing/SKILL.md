@@ -1,9 +1,7 @@
 ---
 name: plan-writing
 description: Structured task planning with clear breakdowns, dependencies, and verification criteria. Use when implementing features, refactoring, or any multi-step work.
-allowed-tools: Read, Glob, Grep
 ---
-
 # Plan Writing
 
 > Source: obra/superpowers
@@ -31,7 +29,7 @@ This skill provides a framework for breaking down work into clear, actionable ta
 
 ### 4. Dynamic Naming in Project Root
 - Plan files are saved as `{task-slug}.md` in the PROJECT ROOT
-- Name derived from task (e.g., "add auth" → `auth-feature.md`)
+- Name derived from task (e.g., "add auth" -> auth-feature markdown plan in the project root)
 - **NEVER** inside `.claude/`, `docs/`, or temp folders
 
 ## Planning Principles (NOT Templates!)

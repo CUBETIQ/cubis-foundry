@@ -6,7 +6,6 @@ metadata:
   replaced_by: devops-engineer
   removal_target: v0.6.0
 ---
-
 # Deployment Procedures
 
 ## Compatibility Alias

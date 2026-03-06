@@ -14,12 +14,12 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 | File | Description | When to Read |
 |------|-------------|--------------|
-| `database-selection.md` | PostgreSQL vs Neon vs Turso vs SQLite | Choosing database |
-| `orm-selection.md` | Drizzle vs Prisma vs Kysely | Choosing ORM |
-| `schema-design.md` | Normalization, PKs, relationships | Designing schema |
-| `indexing.md` | Index types, composite indexes | Performance tuning |
-| `optimization.md` | N+1, EXPLAIN ANALYZE | Query optimization |
-| `migrations.md` | Safe migrations, serverless DBs | Schema changes |
+| `references/database-selection.md` | PostgreSQL vs Neon vs Turso vs SQLite | Choosing database |
+| `references/orm-selection.md` | Drizzle vs Prisma vs Kysely | Choosing ORM |
+| `references/schema-design.md` | Normalization, PKs, relationships | Designing schema |
+| `references/indexing.md` | Index types, composite indexes | Performance tuning |
+| `references/optimization.md` | N+1, EXPLAIN ANALYZE | Query optimization |
+| `references/migrations.md` | Safe migrations, serverless DBs | Schema changes |
 
 ---
 

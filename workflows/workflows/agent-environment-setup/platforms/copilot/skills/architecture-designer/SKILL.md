@@ -2,8 +2,6 @@
 name: "architecture-designer"
 description: "Use when designing new system architecture, reviewing existing designs, or making architectural decisions. Invoke for system design, architecture review, design patterns, ADRs, scalability planning."
 ---
-
-
 # Architecture Designer
 
 ## Overview
@@ -75,9 +73,3 @@ When designing architecture, provide:
 ## Knowledge Reference
 
 Distributed systems, microservices, event-driven architecture, CQRS, DDD, CAP theorem, cloud platforms (AWS, GCP, Azure), containers, Kubernetes, message queues, caching, database design
-
-## Related Powers
-
-- **Fullstack Guardian** - Implementing designs
-- **DevOps Engineer** - Infrastructure implementation
-- **Secure Code Guardian** - Security architecture

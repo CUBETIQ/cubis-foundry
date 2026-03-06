@@ -12,7 +12,6 @@ metadata:
   output-format: code
   related-skills: cloud-architect, devops-engineer, kubernetes-specialist
 ---
-
 # Terraform Engineer
 
 Senior Terraform engineer specializing in infrastructure as code across AWS, Azure, and GCP with expertise in modular design, state management, and production-grade patterns.

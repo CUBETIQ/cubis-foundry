@@ -8,6 +8,7 @@ import {
   type ToolRuntimeContext,
 } from "./registry.js";
 import type { VaultManifest } from "../vault/types.js";
+import type { RouteManifest } from "../routes/types.js";
 
 function createTestContext(): ToolRuntimeContext {
   const manifest: VaultManifest = {
@@ -23,9 +24,35 @@ function createTestContext(): ToolRuntimeContext {
     fullCatalogBytes: 100,
     fullCatalogEstimatedTokens: 25,
   };
+  const routeManifest: RouteManifest = {
+    $schema: "cubis-foundry-route-manifest-v1",
+    generatedAt: new Date(0).toISOString(),
+    contentHash: "test",
+    summary: { totalRoutes: 1, workflows: 1, agents: 0 },
+    routes: [
+      {
+        kind: "workflow",
+        id: "mobile",
+        command: "/mobile",
+        displayName: "mobile",
+        description: "Mobile workflow",
+        triggers: ["mobile", "flutter"],
+        primaryAgent: "mobile-developer",
+        supportingAgents: [],
+        primarySkills: ["flutter-expert"],
+        supportingSkills: [],
+        artifacts: {
+          codex: { workflowFile: "mobile.md", compatibilityAlias: "$workflow-mobile" },
+          copilot: { workflowFile: "mobile.md", promptFile: "workflow-mobile.prompt.md" },
+          antigravity: { workflowFile: "mobile.md", commandFile: "mobile.toml" },
+        },
+      },
+    ],
+  };
 
   return {
     manifest,
+    routeManifest,
     charsPerToken: 4,
     summaryMaxLength: 200,
     defaultConfigScope: "auto",
@@ -35,6 +62,7 @@ function createTestContext(): ToolRuntimeContext {
 describe("tool registry", () => {
   it("contains all expected built-in tools", () => {
     const names = getRegisteredToolNames();
+    expect(names).toContain("route_resolve");
     expect(names).toContain("skill_list_categories");
     expect(names).toContain("skill_browse_category");
     expect(names).toContain("skill_search");
@@ -50,8 +78,8 @@ describe("tool registry", () => {
     expect(names).toContain("stitch_get_status");
   });
 
-  it("has exactly 13 built-in tools", () => {
-    expect(TOOL_REGISTRY).toHaveLength(13);
+  it("has exactly 14 built-in tools", () => {
+    expect(TOOL_REGISTRY).toHaveLength(14);
   });
 
   it("has no duplicate tool names", () => {
@@ -65,12 +93,15 @@ describe("tool registry", () => {
       expect(entry.name).toBeTruthy();
       expect(entry.description).toBeTruthy();
       expect(entry.schema).toBeTruthy();
-      expect(entry.category).toMatch(/^(skill|postman|stitch)$/);
+      expect(entry.category).toMatch(/^(skill|route|postman|stitch)$/);
       expect(typeof entry.createHandler).toBe("function");
     }
   });
 
   it("filters by category", () => {
+    const routeTools = getToolsByCategory("route");
+    expect(routeTools).toHaveLength(1);
+
     const skillTools = getToolsByCategory("skill");
     expect(skillTools).toHaveLength(7);
     expect(skillTools.every((t) => t.category === "skill")).toBe(true);
@@ -105,10 +136,12 @@ describe("tool registry", () => {
 
   it("buildRegistrySummary produces correct structure", () => {
     const summary = buildRegistrySummary();
-    expect(summary.totalTools).toBe(13);
+    expect(summary.totalTools).toBe(14);
+    expect(summary.categories).toHaveProperty("route");
     expect(summary.categories).toHaveProperty("skill");
     expect(summary.categories).toHaveProperty("postman");
     expect(summary.categories).toHaveProperty("stitch");
+    expect(summary.categories.route.tools).toHaveLength(1);
     expect(summary.categories.skill.tools).toHaveLength(7);
     expect(summary.categories.postman.tools).toHaveLength(3);
     expect(summary.categories.stitch.tools).toHaveLength(3);

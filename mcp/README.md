@@ -24,13 +24,14 @@ This server exposes built-in tools plus dynamic passthrough tools discovered fro
 
 | Domain      | Tools | Purpose                                                       |
 | ----------- | ----- | ------------------------------------------------------------- |
+| **Routes**               | 1        | Resolve workflows and custom agents before skill loading            |
 | **Skills**               | 7        | Browse/search/validate/get + targeted reference loading for skills  |
 | **Postman config**       | 3        | Read/write Postman MCP mode in `cbx_config.json`                   |
 | **Stitch config**        | 3        | Read/write Stitch active profile in `cbx_config.json`              |
 | **Postman passthrough**  | dynamic  | `postman.<tool_name>` for all discovered upstream Postman tools    |
 | **Stitch passthrough**   | dynamic  | `stitch.<tool_name>` for all discovered upstream Stitch tools       |
 
-The skill vault uses a **lazy content model**: startup only scans metadata (category/name/path). Exact skill selection is validated via `skill_validate`, `skill_get` loads the core `SKILL.md`, and sidecar markdown is loaded only when needed via `skill_get_reference`.
+The MCP layer now uses a **route-first, lazy content model**: workflow/custom-agent intent resolves through `route_resolve` first, exact skill selection is validated via `skill_validate`, `skill_get` loads the core `SKILL.md`, and sidecar markdown is loaded only when needed via `skill_get_reference`.
 
 ## Architecture
 
@@ -197,6 +198,35 @@ Followed by Postman/Stitch config status (or a warning if `cbx_config.json` is m
 
 ## Tool Reference
 
+### Route Tools
+
+#### `route_resolve`
+
+Resolve an explicit workflow command, explicit custom agent, compatibility alias, or free-text intent before skill loading.
+
+**Input**:
+
+```json
+{ "intent": "/mobile" }
+```
+
+**Output**:
+
+```json
+{
+  "input": "/mobile",
+  "resolved": true,
+  "kind": "workflow",
+  "id": "mobile",
+  "command": "/mobile",
+  "agent": "mobile-developer",
+  "primarySkills": ["mobile-design", "flutter-expert"],
+  "supportingSkills": ["riverpod-3", "drift-flutter", "flutter-test-master"],
+  "fallbackSkillSearchRecommended": false,
+  "matchedBy": "explicit-workflow-command"
+}
+```
+
 ### Skills Tools
 
 All skill tools include `structuredContent.metrics` with deterministic estimated token/context budget fields.
@@ -247,7 +277,7 @@ Browse skills within a category.
 
 #### `skill_search`
 
-Search skills by keyword.
+Search skills by keyword after route resolution fails or when a user explicitly asks for skill discovery.
 
 **Input**:
 

@@ -2,7 +2,6 @@
 name: redis
 description: Redis data modeling, caching strategy, throughput/latency optimization, and operational safety.
 ---
-
 # Redis
 
 ## Optimization workflow

@@ -1,9 +1,7 @@
 ---
 name: frontend-design
 description: Design thinking and decision-making for web UI. Use when designing components, layouts, color schemes, typography, or creating aesthetic interfaces. Teaches principles, not fixed values.
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
-
 # Frontend Design System
 
 > **Philosophy:** Every pixel has purpose. Restraint is luxury. User psychology drives decisions.
@@ -17,13 +15,13 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 
 | File | Status | When to Read |
 |------|--------|--------------|
-| [ux-psychology.md](ux-psychology.md) | 🔴 **REQUIRED** | Always read first! |
-| [color-system.md](color-system.md) | ⚪ Optional | Color/palette decisions |
-| [typography-system.md](typography-system.md) | ⚪ Optional | Font selection/pairing |
-| [visual-effects.md](visual-effects.md) | ⚪ Optional | Glassmorphism, shadows, gradients |
-| [animation-guide.md](animation-guide.md) | ⚪ Optional | Animation needed |
-| [motion-graphics.md](motion-graphics.md) | ⚪ Optional | Lottie, GSAP, 3D |
-| [decision-trees.md](decision-trees.md) | ⚪ Optional | Context templates |
+| [ux-psychology.md](references/ux-psychology.md) | 🔴 **REQUIRED** | Always read first! |
+| [color-system.md](references/color-system.md) | ⚪ Optional | Color/palette decisions |
+| [typography-system.md](references/typography-system.md) | ⚪ Optional | Font selection/pairing |
+| [visual-effects.md](references/visual-effects.md) | ⚪ Optional | Glassmorphism, shadows, gradients |
+| [animation-guide.md](references/animation-guide.md) | ⚪ Optional | Animation needed |
+| [motion-graphics.md](references/motion-graphics.md) | ⚪ Optional | Lottie, GSAP, 3D |
+| [decision-trees.md](references/decision-trees.md) | ⚪ Optional | Context templates |
 
 > 🔴 **ux-psychology.md = ALWAYS READ. Others = only if relevant.**
 
@@ -188,7 +186,7 @@ All spacing and sizing in multiples of 8:
 3. **Light or dark mode?** (sets foundation)
 4. **ASK USER** if not specified
 
-For detailed color theory: [color-system.md](color-system.md)
+For detailed color theory: [color-system.md](references/color-system.md)
 
 ---
 
@@ -219,7 +217,7 @@ Contrast + Harmony:
 - **Contrast**: Check WCAG requirements
 - **Size**: 16px+ for body on web
 
-For detailed typography: [typography-system.md](typography-system.md)
+For detailed typography: [typography-system.md](references/typography-system.md)
 
 ---
 
@@ -256,7 +254,7 @@ Harmonious gradients:
 └── VARY from project to project radically
 ```
 
-For complete effects guide: [visual-effects.md](visual-effects.md)
+For complete effects guide: [visual-effects.md](references/visual-effects.md)
 
 ---
 
@@ -287,7 +285,7 @@ Duration based on:
 - Respect reduced-motion preference
 - Test on low-end devices
 
-For animation patterns: [animation-guide.md](animation-guide.md), for advanced: [motion-graphics.md](motion-graphics.md)
+For animation patterns: [animation-guide.md](references/animation-guide.md), for advanced: [motion-graphics.md](references/motion-graphics.md)
 
 ---
 
@@ -383,13 +381,13 @@ For EVERY design task:
 
 For deeper guidance on specific areas:
 
-- [color-system.md](color-system.md) - Color theory and selection process
-- [typography-system.md](typography-system.md) - Font pairing and scale decisions
-- [visual-effects.md](visual-effects.md) - Effects principles and techniques
-- [animation-guide.md](animation-guide.md) - Motion design principles
-- [motion-graphics.md](motion-graphics.md) - Advanced: Lottie, GSAP, SVG, 3D, Particles
-- [decision-trees.md](decision-trees.md) - Context-specific templates
-- [ux-psychology.md](ux-psychology.md) - User psychology deep dive
+- [color-system.md](references/color-system.md) - Color theory and selection process
+- [typography-system.md](references/typography-system.md) - Font pairing and scale decisions
+- [visual-effects.md](references/visual-effects.md) - Effects principles and techniques
+- [animation-guide.md](references/animation-guide.md) - Motion design principles
+- [motion-graphics.md](references/motion-graphics.md) - Advanced: Lottie, GSAP, SVG, 3D, Particles
+- [decision-trees.md](references/decision-trees.md) - Context-specific templates
+- [ux-psychology.md](references/ux-psychology.md) - User psychology deep dive
 
 ---
 

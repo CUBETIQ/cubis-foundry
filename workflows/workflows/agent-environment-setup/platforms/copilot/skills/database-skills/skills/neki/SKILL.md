@@ -2,7 +2,6 @@
 name: neki
 description: Neki planning guidance for sharded Postgres architecture decisions and operational guardrails.
 ---
-
 # Neki
 
 Neki is currently pre-GA (announced and under active development), so guidance is architecture-first and risk-aware.

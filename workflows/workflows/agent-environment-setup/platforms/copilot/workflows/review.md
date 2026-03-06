@@ -5,6 +5,9 @@ triggers: ["review", "audit", "pr", "quality", "security review"]
 ---
 # Review Workflow
 
+# CHANGED: output contract — converted free-form bullets into structured YAML — keeps findings and remediation guidance machine-readable.
+# CHANGED: skill routing — added `skill-authoring` for skill package audits, metadata review, and sidecar repair work.
+
 ## When to use
 Use this for pull request or branch quality review.
 
@@ -20,7 +23,8 @@ Use this for pull request or branch quality review.
 
 ## Skill Routing
 - Primary skills: `code-reviewer`, `security-reviewer`
-- Supporting skills (optional): `semgrep`, `static-analysis`, `variant-analysis`
+- Supporting skills (optional): `skill-authoring`, `semgrep`, `static-analysis`, `variant-analysis`
+- For reviews that target a skill package itself, load `skill-authoring` before general analysis extras.
 
 ## Workflow steps
 1. Inspect changed behavior and risk surface.
@@ -34,7 +38,16 @@ Use this for pull request or branch quality review.
 - Note any gaps that were not validated.
 
 ## Output Contract
-- Findings ordered by severity
-- Affected files/areas
-- Recommended fixes
-- Residual risks after fixes
+```yaml
+REVIEW_WORKFLOW_RESULT:
+  primary_agent: code-archaeologist
+  supporting_agents: [frontend-specialist?, security-auditor?, test-engineer?]
+  primary_skills: [code-reviewer, security-reviewer]
+  supporting_skills: [semgrep?, static-analysis?, variant-analysis?]
+  findings:
+    - severity: <critical|high|medium|low>
+      summary: <string>
+      affected_areas: [<path-or-area>]
+      recommended_fix: <string>
+  residual_risks: [<string>] | []
+```

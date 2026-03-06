@@ -1,23 +1,7 @@
 ---
 name: "flutter-test-master"
-displayName: "Flutter Test Master"
 description: "Comprehensive Flutter testing guide covering unit tests, widget tests, integration tests, golden tests, and Riverpod provider testing with mocktail"
-keywords:
-  [
-    "flutter",
-    "test",
-    "testing",
-    "unit test",
-    "widget test",
-    "integration test",
-    "golden test",
-    "riverpod",
-    "mocktail",
-    "tdd",
-  ]
-author: "OneUp HR Team"
 ---
-
 # Flutter Test Master
 
 ## Overview

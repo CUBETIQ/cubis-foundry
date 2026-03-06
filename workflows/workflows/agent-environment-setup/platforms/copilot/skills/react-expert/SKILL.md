@@ -9,7 +9,6 @@ metadata:
   stack: "react"
   baseline: "React 19"
 ---
-
 # React Expert
 
 ## Scope

@@ -2,7 +2,6 @@
 name: postgres
 description: PostgreSQL schema, indexing, pagination, query optimization, migrations, and operations.
 ---
-
 # Postgres
 
 ## Optimization workflow

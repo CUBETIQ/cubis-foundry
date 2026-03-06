@@ -1,19 +1,7 @@
 ---
 name: "gorouter-restoration"
-displayName: "GoRouter & State Restoration"
 description: "GoRouter guard patterns, deep links, redirect safety, tab preservation, and restoration best practices"
-keywords:
-  [
-    "gorouter",
-    "routing",
-    "navigation",
-    "guards",
-    "deep links",
-    "state restoration",
-    "statefulshellroute",
-  ]
 ---
-
 # GoRouter & State Restoration
 
 ## Overview
@@ -114,10 +102,14 @@ MaterialApp.router(
 
 ## Steering Files
 
-- `guard_patterns.md` - Guard decision rules and anti-loop checks
-- `tab_preservation.md` - StatefulShellRoute and restoration patterns
+| File | Load when |
+| --- | --- |
+| `references/guard_patterns.md` | Designing guard logic, redirect rules, or anti-loop checks. |
+| `references/tab_preservation.md` | Preserving `StatefulShellRoute` branches and restoration state. |
 
 ## Templates
 
-- `guard_redirect` - Guard redirect function skeleton
-- `stateful_shell_skeleton` - Tab shell starter
+| File | Load when |
+| --- | --- |
+| `templates/guard_redirect.md` | Starting a redirect/guard function skeleton. |
+| `templates/stateful_shell_skeleton.md` | Starting a shell/tab restoration scaffold. |

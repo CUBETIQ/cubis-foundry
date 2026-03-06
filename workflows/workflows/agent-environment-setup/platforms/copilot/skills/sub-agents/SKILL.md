@@ -1,9 +1,7 @@
 ---
 name: sub-agents
 description: Execute external CLI AIs as isolated sub-agents for task delegation, parallel processing, and context separation. Use when delegating complex multi-step tasks, running parallel investigations, needing fresh context without current conversation history, or leveraging specialized agent definitions. Returns structured JSON with agent output, exit code, and execution status.
-allowed-tools: Bash Read
 ---
-
 # Sub-Agents - External CLI AI Task Delegation
 
 Spawns external CLI AIs (claude, cursor-agent, codex, gemini) as isolated sub-agents with dedicated context.

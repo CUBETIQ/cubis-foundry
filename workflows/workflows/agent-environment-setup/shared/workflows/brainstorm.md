@@ -5,8 +5,16 @@ triggers: ["idea", "brainstorm", "options", "tradeoff", "approach"]
 ---
 # Brainstorm Workflow
 
+# CHANGED: routing — added explicit primary and supporting specialists — prevents route manifest fallback to orchestrator for ideation work.
+# CHANGED: output contract — converted free-form bullets into structured YAML — keeps option handoff machine-readable across platforms.
+
 ## When to use
 Use this when requirements are still fluid and architecture choices are open.
+
+## Routing
+- Primary specialist: `@project-planner`
+- Scope and user-value framing: `@product-manager`
+- Technical tradeoff review: `@backend-specialist`
 
 ## Context notes
 - This workflow file, active platform rules, and selected agents/skills guide execution.
@@ -28,7 +36,21 @@ Use this when requirements are still fluid and architecture choices are open.
 - Note any gaps that were not validated.
 
 ## Output Contract
-- Option table (pros/cons)
-- Recommended option
-- Known unknowns
-- First implementation milestone
+```yaml
+BRAINSTORM_WORKFLOW_RESULT:
+  primary_agent: project-planner
+  supporting_agents: [product-manager?, backend-specialist?]
+  primary_skills: [brainstorming, feature-forge]
+  supporting_skills: [plan-writing?]
+  options:
+    - id: <string>
+      summary: <string>
+      pros: [<string>]
+      cons: [<string>]
+      risks: [<string>]
+  recommended_option: <option-id>
+  known_unknowns: [<string>] | []
+  first_milestone: <string>
+  next_handoff:
+    plan_handoff: <PLAN_HANDOFF|null>
+```

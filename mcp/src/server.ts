@@ -10,6 +10,7 @@ import { z } from "zod";
 import type { ServerConfig } from "./config/schema.js";
 import type { ConfigScope } from "./cbxConfig/types.js";
 import type { VaultManifest } from "./vault/types.js";
+import type { RouteManifest } from "./routes/types.js";
 import { TOOL_REGISTRY, type ToolRuntimeContext } from "./tools/registry.js";
 import {
   callUpstreamTool,
@@ -20,6 +21,7 @@ import { logger } from "./utils/logger.js";
 export interface CreateServerOptions {
   config: ServerConfig;
   manifest: VaultManifest;
+  routeManifest: RouteManifest;
   defaultConfigScope?: ConfigScope | "auto";
 }
 
@@ -54,6 +56,7 @@ function toolCallErrorResult({
 export async function createServer({
   config,
   manifest,
+  routeManifest,
   defaultConfigScope = "auto",
 }: CreateServerOptions): Promise<McpServer> {
   const server = new McpServer({
@@ -65,6 +68,7 @@ export async function createServer({
 
   const runtimeCtx: ToolRuntimeContext = {
     manifest,
+    routeManifest,
     charsPerToken: config.telemetry?.charsPerToken ?? 4,
     summaryMaxLength: config.vault.summaryMaxLength,
     defaultConfigScope,

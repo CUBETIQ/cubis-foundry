@@ -6,7 +6,6 @@ metadata:
   replaced_by: sre-engineer
   removal_target: v0.6.0
 ---
-
 # Server Management
 
 ## Compatibility Alias

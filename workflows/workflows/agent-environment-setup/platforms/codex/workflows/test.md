@@ -5,8 +5,16 @@ triggers: ["test", "verify", "coverage", "qa", "regression"]
 ---
 # Test Workflow
 
+# CHANGED: routing — added explicit verification owners — prevents route manifest fallback to orchestrator for test-focused requests.
+# CHANGED: output contract — converted free-form bullets into structured YAML — keeps test outcomes machine-readable for release gating.
+
 ## When to use
 Use this to drive confidence before merge or release.
+
+## Routing
+- Primary specialist: `@test-engineer`
+- Automation depth: `@qa-automation-engineer`
+- Failure triage: `@debugger`
 
 ## Context notes
 - This workflow file, active platform rules, and selected agents/skills guide execution.
@@ -28,7 +36,19 @@ Use this to drive confidence before merge or release.
 - Note any gaps that were not validated.
 
 ## Output Contract
-- Coverage map (what was tested)
-- Test results summary
-- Remaining risk and gaps
-- Merge/release recommendation
+```yaml
+TEST_WORKFLOW_RESULT:
+  primary_agent: test-engineer
+  supporting_agents: [qa-automation-engineer?, debugger?]
+  primary_skills: [test-master, playwright-expert]
+  supporting_skills: [webapp-testing?, flutter-test-master?]
+  coverage_map: [<string>]
+  test_results:
+    passed: [<string>]
+    failed: [<string>] | []
+    flaky: [<string>] | []
+  residual_risk: [<string>] | []
+  recommendation: <merge|hold|release-ready|needs-follow-up>
+  next_handoff:
+    plan_handoff: <PLAN_HANDOFF|null>
+```
