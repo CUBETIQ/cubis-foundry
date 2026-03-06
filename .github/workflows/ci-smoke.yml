@@ -25,8 +25,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install ripgrep
-        run: sudo apt-get update && sudo apt-get install -y ripgrep
+      - name: Install smoke test dependencies
+        run: sudo apt-get update && sudo apt-get install -y ripgrep expect
 
       - name: Validate platform attributes
         run: npm run test:attributes
