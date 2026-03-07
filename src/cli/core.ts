@@ -3211,7 +3211,7 @@ function unique(values) {
 }
 
 function extractFrontmatter(markdown) {
-  const match = markdown.match(/^---\n([\s\S]*?)\n---\n?/);
+  const match = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
   if (!match) {
     return { frontmatter: "", body: markdown };
   }
@@ -3222,7 +3222,7 @@ function extractFrontmatter(markdown) {
 }
 
 function hasFrontmatter(markdown) {
-  return /^---\n[\s\S]*?\n---\n?/.test(markdown);
+  return /^---\r?\n[\s\S]*?\r?\n---\r?\n?/.test(markdown);
 }
 
 function collectTopLevelFrontmatterKeys(frontmatter) {

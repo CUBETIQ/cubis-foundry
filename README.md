@@ -44,6 +44,13 @@ Skill install default is profile-based:
 - Engineering artifacts in workspace (`ENGINEERING_RULES.md`, `TECH.md`)
 - Managed MCP config for Postman and Stitch
 
+Generated rule files are intentionally route-first and lazy about skill loading:
+
+- inspect locally first
+- route through native workflows or agents first
+- execute directly for simple tasks
+- load skills only when the user names one or the domain is still unclear
+
 ## Install
 
 ```bash
@@ -269,10 +276,10 @@ If active Postman env var (for example `POSTMAN_API_KEY_DEFAULT`) is available a
 - direct Stitch MCP server where applicable (`StitchMCP` for Antigravity)
 - local Foundry MCP command server (`cubis-foundry` via `cbx mcp serve --transport stdio --scope global`)
 
-`--postman` also installs the `postman` skill. Managed platform rules then treat Postman intent as skill-first:
+`--postman` also installs the `postman` skill. Managed platform rules then treat Postman intent as route-first with optional skill priming:
 
-- run `skill_search "postman"`
-- load `skill_get "postman"` before workflow/agent routing
+- validate or search for the `postman` skill only when Postman intent is explicit or the route still needs domain context
+- load `skill_get "postman"` before execution only when that context is actually needed
 - use direct `postman` server tools for actual Postman collection/workspace/environment/run actions
 - keep Foundry `postman_*` tools limited to mode/status/default-workspace config
 - never auto-fallback from `runCollection` to `runMonitor`

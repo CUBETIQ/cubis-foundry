@@ -1,6 +1,6 @@
 {
   "name": "@cubis/foundry",
-  "version": "0.3.64",
+  "version": "0.3.65",
   "description": "Cubis Foundry CLI for workflow-first AI agent environments",
   "type": "module",
   "bin": {
@@ -32,9 +32,9 @@
     "test:attributes": "node scripts/validate-platform-attributes.mjs && node scripts/validate-shared-routing.mjs && node scripts/validate-skill-packaging.mjs && node scripts/validate-runtime-wiring.mjs && node scripts/generate-skills-index.mjs --check",
     "test:attributes:strict": "node scripts/validate-platform-attributes.mjs --strict && node scripts/validate-shared-routing.mjs && node scripts/validate-skill-packaging.mjs && node scripts/validate-runtime-wiring.mjs && node scripts/generate-skills-index.mjs --check",
     "test:tech-md": "node scripts/test-tech-md-scanner.mjs",
-    "test:smoke": "npm run build:cli && bash scripts/smoke-workflows.sh",
-    "test:init:tty": "npm run build:cli && expect scripts/test-init-tty.exp bin/cubis.js",
-    "test:mcp:docker": "bash scripts/test-mcp-docker.sh",
+    "test:smoke": "npm run build:cli && node scripts/run-bash-script.mjs scripts/smoke-workflows.sh",
+    "test:init:tty": "npm run build:cli && node scripts/run-init-tty-test.mjs bin/cubis.js",
+    "test:mcp:docker": "node scripts/run-bash-script.mjs scripts/test-mcp-docker.sh",
     "test:all": "npm run test:attributes && npm run test:smoke",
     "test:all:strict": "npm run test:attributes:strict && npm run test:smoke",
     "generate:platform-assets": "node scripts/generate-platform-assets.mjs",

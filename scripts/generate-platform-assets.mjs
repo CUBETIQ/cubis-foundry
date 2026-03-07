@@ -417,7 +417,7 @@ async function loadSharedFiles(directory, requiredSections = []) {
 
   for (const fileName of files) {
     const fullPath = path.join(directory, fileName);
-    const raw = await fs.readFile(fullPath, "utf8");
+    const raw = (await fs.readFile(fullPath, "utf8")).replace(/\r\n/g, "\n");
     const parsed = parseFrontmatter(raw);
     if (!parsed) {
       throw new Error(`Missing frontmatter: ${fullPath}`);

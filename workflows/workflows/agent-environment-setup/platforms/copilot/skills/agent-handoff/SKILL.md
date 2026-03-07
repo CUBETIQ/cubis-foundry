@@ -44,7 +44,8 @@ Fields you MUST use:
 
 ## Step 2 — Orient (Cold-Start, Minimal Read)
 
-Read ONLY `TASK_STATUS.md` — scan for your `milestone_id` status.
+Read ONLY the project status file named in `status_file` (usually TASK_STATUS.md).
+Use the [TASK_STATUS template](references/TASK_STATUS.md) only to confirm the expected shape.
 
 ```
 If your milestone shows "complete" → return result envelope immediately, skip execution.
@@ -101,7 +102,7 @@ Load only env vars listed in `env_context` — do not scan for or load others.
 After execution:
 1. Confirm `deliverable_path` exists
 2. Run acceptance check (as defined in `acceptance_criteria`)
-3. Update `TASK_STATUS.md`:
+3. Update the project status file from `status_file` using the [TASK_STATUS template](references/TASK_STATUS.md):
 
 ```markdown
 ## M2 — Build API layer
@@ -165,7 +166,7 @@ If your milestone requires spawning another agent:
 ## On Failure
 
 If execution fails:
-1. Update `TASK_STATUS.md` with failure details
+1. Update the project status file from `status_file` with failure details
 2. Return result envelope with `"status": "failed"` and structured `errors[]`
 3. Do NOT attempt to recover beyond one retry — surface to orchestrator
 4. Do NOT continue to the next milestone

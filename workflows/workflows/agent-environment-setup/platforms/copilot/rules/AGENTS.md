@@ -1,16 +1,13 @@
 # AGENTS.md - Copilot Compatibility Bridge
 
 Primary Copilot rule file is `.github/copilot-instructions.md`.
-This `AGENTS.md` exists for cross-tool compatibility (Codex-style readers) and defers
+This `AGENTS.md` exists for cross-tool compatibility and defers
 to `.github/copilot-instructions.md` when both files are present.
 
-All detailed sections — platform paths, request classifier, routing decision tree,
-agent routing, MCP skill engine, quality gates, CBX maintenance commands, and managed
-blocks — live in `copilot-instructions.md`. Do not duplicate them here.
+All detailed Copilot guidance lives in `copilot-instructions.md`.
+Do not duplicate it here.
 
 ## Route-First Workflow Contract
-
-See `copilot-instructions.md` §2 for the full contract. Summary:
 
 1. Resolve workflow or agent intent before loading any skill.
 2. Route surface: `.github/copilot/workflows/*.md` + `.github/prompts/workflow-*.prompt.md` + `@agent-name`.
@@ -18,9 +15,7 @@ See `copilot-instructions.md` §2 for the full contract. Summary:
 
 ## Validated Skill Flow
 
-See `copilot-instructions.md` §6 MCP Skill Engine for the full flow. Summary:
-
-1. Inspect codebase locally first — do not start with `skill_search`.
+1. Inspect codebase locally first - do not start with `skill_search`.
 2. Resolve route intent with `route_resolve` before skill loading.
 3. Run one narrow `skill_search` only if the route is still unresolved.
 4. Always `skill_validate` before `skill_get`.
