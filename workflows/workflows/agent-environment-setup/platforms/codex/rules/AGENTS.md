@@ -53,7 +53,37 @@ Map user intent to one primary workflow first:
 - GitHub PR review -> `@codex review` when available, otherwise `/review` locally
 - Documentation update -> `/create` + `@documentation-writer`
 
+## 3B) Routing Decision Tree (Codex)
+
+Follow this exact order to decide what mechanism to use:
+
+```
+1. Simple, single-step action you already know how to do?
+   → Use built-in tools directly (read/write files, terminal, etc.)
+
+2. Does a Foundry skill exist?
+   → skill_search "<intent>" → MATCH → skill_get "<name>" → follow it
+   → NO MATCH → continue
+
+3. Multi-step task spanning 5+ steps or multiple files?
+   → Use long-task workflow (TASK_SPEC → TASK_PLAN → TASK_STATUS)
+
+4. Involves APIs, collections, test runs?
+   → Route to Postman MCP
+
+5. Involves Google data integrations (Sheets, Drive, Calendar)?
+   → Route to StitchMCP if available
+
+6. None of above → execute directly with available tools
+```
+
+**Skills** = on-demand knowledge packages (loaded via MCP `skill_search`/`skill_get`).
+**Workflows** = multi-step procedures triggered by `/command` (`.agents/workflows/`).
+**MCP servers** = external tool bridges (Foundry catalog, Postman, StitchMCP).
+
 ## 4) Agent Routing Policy
+
+> **Codex Limitation:** Codex does NOT support custom agent spawning like other platforms (Claude Code subagents, Antigravity Agent Manager, Copilot custom agents). Agent references like `@agent-name` below are skill-prefixed compatibility aliases (`$agent-*`) that resolve through the same route-first workflow — they do NOT spawn isolated agent processes. All work executes in the current Codex session.
 
 Use the best specialist first:
 
@@ -84,12 +114,12 @@ The Foundry MCP server is the primary knowledge layer. Use tools decisively — 
 
 ### Tool Namespace Reference
 
-| Prefix      | Tools                                                                                                | When to use                                                    |
-| ----------- | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| `route_*`   | `route_resolve`                                                                                       | Resolve workflows and custom agents before any skill loading   |
+| Prefix      | Tools                                                                                                                                         | When to use                                                                    |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `route_*`   | `route_resolve`                                                                                                                               | Resolve workflows and custom agents before any skill loading                   |
 | `skill_*`   | `skill_list_categories`, `skill_search`, `skill_validate`, `skill_browse_category`, `skill_get`, `skill_get_reference`, `skill_budget_report` | Domain expertise for implementation, debug, or review after the route is known |
-| `postman_*` | `postman_get_mode`, `postman_set_mode`, `postman_get_status`                                         | API testing or Postman configuration tasks                     |
-| `stitch_*`  | `stitch_get_mode`, `stitch_set_profile`, `stitch_get_status`                                         | Stitch data pipeline tasks                                     |
+| `postman_*` | `postman_get_mode`, `postman_set_mode`, `postman_get_status`                                                                                  | Foundry-side Postman config only (status/mode/default workspace)               |
+| `stitch_*`  | `stitch_get_mode`, `stitch_set_profile`, `stitch_get_status`                                                                                  | Stitch data pipeline tasks                                                     |
 
 ### Validated Skill Flow (Mandatory Order)
 
@@ -111,9 +141,11 @@ When user intent includes Postman workflows (for example: workspace, collection,
 1. Validate `postman` directly with `skill_validate "postman"` when the exact skill ID is known.
 2. If validation fails and local grounding is still insufficient, run a narrow `skill_search "postman"` and validate the selected exact ID.
 3. Load `skill_get "postman"` with `includeReferences:false` before workflow/agent routing.
-4. Prefer Postman MCP tools (`postman.*`) over Newman/CLI fallback unless the user explicitly asks for fallback.
-5. If `--postman` was installed but `postman` skill cannot be found, report installation drift and suggest reinstall with `cbx workflows install ... --postman`.
-6. Do not default to raw Postman REST JSON payloads or curl for execution when Postman MCP tools are available.
+4. Use the direct Postman MCP server for real Postman actions (`postman.<tool>` or client-wrapped equivalent such as `mcp__postman__<tool>`). Reserve `postman_*` for Foundry config/status only.
+5. Never auto-fallback from `postman.runCollection` failure or timeout into `postman.runMonitor`.
+6. Only use monitor execution when the user explicitly asks for monitor-based cloud execution, scheduled monitoring, or monitor validation. Warn that monitor runs consume monitor usage.
+7. If `--postman` was installed but `postman` skill cannot be found, report installation drift and suggest reinstall with `cbx workflows install ... --postman`.
+8. Do not default to raw Postman REST JSON payloads or curl for execution when Postman MCP tools are available.
 
 **Hard rules:**
 
@@ -161,7 +193,6 @@ Reference markdown files are first-class skill context, but they must be loaded 
 2. Start with `skill_get(..., includeReferences:false)` to load only the core skill body
 3. If the skill points to a reference or the task clearly needs sidecar detail, load one file with `skill_get_reference`
 4. Only load another reference if the first one still leaves a concrete gap
-
 
 ### Anti-Patterns (Never Do These)
 
@@ -220,7 +251,6 @@ Use `skill_budget_report` internally for context control, but do not emit ctx st
 
 Only include token/context accounting when the user explicitly asks for it.
 
-
 ## 10) CBX Maintenance Commands
 
 Use these commands to keep this setup healthy:
@@ -261,6 +291,7 @@ Selection policy:
 <!-- cbx:workflows:auto:end -->
 
 <!-- cbx:mcp:auto:start version=1 -->
+
 ## Cubis Foundry MCP (auto-managed)
 
 Keep MCP context lazy and exact. Do not front-load the skill catalog.
@@ -270,7 +301,8 @@ Keep MCP context lazy and exact. Do not front-load the skill catalog.
 - Route tools: `route_resolve`
 - Skill tools: `skill_search`, `skill_validate`, `skill_get`, `skill_get_reference`, `skill_budget_report`
 - Fallback browsing only: `skill_list_categories`, `skill_browse_category`
-- Config tools: `postman_*`, `stitch_*`
+- Foundry config tools only: `postman_*`, `stitch_*` (status/mode/profile helpers, not direct cloud mutations)
+- Direct cloud actions should use installed upstream MCP servers such as `postman` when available
 
 ### Validated Skill Flow
 

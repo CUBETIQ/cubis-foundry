@@ -18,22 +18,43 @@ Use this when tasks are primarily about Postman workspaces, collections, environ
 ## Context notes
 - This workflow file, active platform rules, and selected agents/skills guide execution.
 - Resolve and pass workspace IDs explicitly when tools require them.
-- Prefer MCP tools (`postman.*` or `postman_*`) over manual JSON/CLI fallback unless fallback is explicitly requested by the user.
+- Use direct Postman MCP server tools for real Postman actions (`postman.<tool>` or client-wrapped equivalent such as `mcp__postman__<tool>`).
+- Reserve Foundry `postman_*` tools for status/mode/config only.
+- Prefer direct Postman MCP tools over manual JSON/CLI fallback unless fallback is explicitly requested by the user.
+- Support monitor tasks only when the user explicitly asks for monitor-based cloud execution or monitor validation.
+- Never auto-fallback from `postman.runCollection` failure into `postman.runMonitor`.
+- Recommend Postman CLI as the default secondary path after direct MCP execution fails.
 
 ## Skill Routing
 - Primary skills: `postman`
 - Supporting skills (optional): `api-designer`, `test-master`
 
 ## Workflow steps
-1. Load Postman skill and check integration status (`postman_get_status`).
+1. Load Postman skill and check integration status (`postman_get_status` for config/status only).
 2. Resolve workspace ID (user-provided, configured default, or explicit selection).
-3. Execute required MCP operations (list/create/update/run) with explicit IDs.
-4. Summarize outcomes, failures, and next actions with exact object identifiers.
+3. Execute required direct Postman MCP operations (list/create/update/run) with explicit IDs.
+4. If execution fails, classify the error before suggesting any fallback.
+5. Summarize outcomes, failures, and next actions with exact object identifiers.
 
 ## Verification
 - Confirm requested Postman action completed successfully.
 - Validate response status and key result fields (IDs, counts, failures).
 - Note any skipped steps and required follow-up.
+
+## Failure classification
+
+- `limitBreachedError` or "breached monitoring usage limit":
+  - classify as monitor quota exhaustion
+  - do not retry monitor execution
+  - recommend Postman CLI
+  - direct the user to Postman monitoring usage dashboard
+- `429` or rate-limited API response:
+  - classify as Postman API rate limiting
+  - recommend backoff and lower request burst
+- collection-run timeout without quota/rate-limit signal:
+  - classify as direct MCP/runtime timeout
+  - do not auto-convert to monitor execution
+  - recommend Postman CLI or smaller-scope rerun
 
 ## Output Contract
 ```yaml

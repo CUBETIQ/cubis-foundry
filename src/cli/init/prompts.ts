@@ -34,7 +34,11 @@ export async function promptInitPlatforms({
     message: "Select target platform(s):",
     required: true,
     choices: [
-      { name: "Codex", value: "codex", checked: defaultPlatforms.includes("codex") },
+      {
+        name: "Codex",
+        value: "codex",
+        checked: defaultPlatforms.includes("codex"),
+      },
       {
         name: "Antigravity",
         value: "antigravity",
@@ -45,11 +49,18 @@ export async function promptInitPlatforms({
         value: "copilot",
         checked: defaultPlatforms.includes("copilot"),
       },
+      {
+        name: "Claude Code",
+        value: "claude",
+        checked: defaultPlatforms.includes("claude"),
+      },
     ],
   });
 }
 
-export async function promptInitSkillProfile(defaultSkillProfile: InitSkillProfile) {
+export async function promptInitSkillProfile(
+  defaultSkillProfile: InitSkillProfile,
+) {
   return select<InitSkillProfile>({
     message: "Select skills install profile:",
     default: defaultSkillProfile,
@@ -70,8 +81,16 @@ export async function promptInitMcpSelection(defaultMcps: InitMcpId[]) {
         value: "cubis-foundry",
         checked: defaultMcps.includes("cubis-foundry"),
       },
-      { name: "Postman", value: "postman", checked: defaultMcps.includes("postman") },
-      { name: "Stitch", value: "stitch", checked: defaultMcps.includes("stitch") },
+      {
+        name: "Postman",
+        value: "postman",
+        checked: defaultMcps.includes("postman"),
+      },
+      {
+        name: "Stitch",
+        value: "stitch",
+        checked: defaultMcps.includes("stitch"),
+      },
     ],
   });
 }
@@ -87,7 +106,10 @@ export async function promptInitScope({
     message,
     default: defaultScope,
     choices: [
-      { name: defaultScope === "global" ? "Global (recommended)" : "Global", value: "global" },
+      {
+        name: defaultScope === "global" ? "Global (recommended)" : "Global",
+        value: "global",
+      },
       {
         name: defaultScope === "project" ? "Project (recommended)" : "Project",
         value: "project",

@@ -15,11 +15,17 @@ References:
 ## MCP-First Rule
 
 - Prefer Postman MCP tools for all Postman operations.
-- Accept both dynamic naming styles from clients:
-  - dotted: `postman.<tool>`
-  - alias: `postman_<tool>`
+- Use direct Postman server tools for actual Postman cloud work:
+  - direct server: `postman.<tool>`
+  - client-wrapped direct server: `mcp__postman__<tool>`
+- Treat Foundry `postman_*` tools as config helpers only:
+  - `postman_get_status`
+  - `postman_get_mode`
+  - `postman_set_mode`
 - Never default to raw Postman REST JSON payloads, Newman, or Postman CLI when MCP tools are available.
-- Do not use Newman/Postman CLI fallback unless the user explicitly asks for fallback.
+- Do not use `postman.runMonitor` as an automatic fallback after `postman.runCollection` timeout or failure.
+- Only use monitor execution when the user explicitly asks for monitor-based cloud execution, scheduled monitoring, or monitor validation.
+- Recommend Postman CLI as the default secondary path when direct MCP execution fails.
 - If required Postman MCP tools are unavailable, report discovery/remediation steps first.
 
 ## Setup Baseline
@@ -36,15 +42,20 @@ References:
 ## Preflight
 
 1. Read Postman status first:
-   - Call `postman_get_status`.
+   - Call `postman_get_status` for mode/default-workspace/config state.
 2. Ensure mode is `full`:
    - If not, call `postman_set_mode` with `mode: full`.
 3. Discover upstream tools:
-   - Confirm required tools exist before execution (for example workspaces/collections/runs).
+   - Confirm required direct Postman server tools exist before execution (for example workspaces/collections/runs).
 
 Execution rule:
-- For Postman requests, call MCP tools directly (`postman.*` or `postman_*`) instead of drafting manual JSON or curl payloads.
+- For Postman requests, call the direct Postman server (`postman.<tool>` or `mcp__postman__<tool>`) instead of Foundry `postman_*` config tools.
 - If the user asks for API payload examples, provide them only as supplemental documentation after MCP execution guidance.
+
+Quota-safe rule:
+- If `postman.runCollection` times out or fails, stop and classify the error before choosing any fallback.
+- Never auto-convert a collection run failure into `postman.runMonitor`.
+- Recommend Postman CLI first for repeatable local reruns.
 
 ## Default Workspace Policy
 
@@ -75,6 +86,30 @@ When a Postman tool requires a workspace argument, always pass the resolved work
    - proposed fix path for failures
 
 ## Failure Handling
+
+### Error Classification
+
+Classify failures before suggesting any fallback:
+
+- `limitBreachedError` or "breached monitoring usage limit":
+  - monitor quota exhaustion
+  - do not retry monitor runs
+  - recommend local Postman CLI execution
+  - tell the user to check the Postman monitoring usage dashboard
+- `429` or rate-limit response:
+  - Postman API rate limiting
+  - recommend backoff and a lower request burst
+  - do not reinterpret it as monitor quota
+- collection run timeout without quota/rate-limit signal:
+  - direct MCP runtime or tool timeout
+  - do not auto-convert to a monitor run
+  - recommend Postman CLI or a smaller-scope rerun
+
+### Quota Notes
+
+- Monitor usage is separate from Postman API rate limits.
+- Monitor usage is plan/billing usage and is consumed by request count, region count, and auth requests.
+- Monitor runtime caps are separate from monitor quota and do not imply quota remains available.
 
 If dynamic Postman tools are missing:
 

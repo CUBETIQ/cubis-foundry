@@ -11,13 +11,18 @@ const BUNDLE_ROOT = path.join(
   "workflows",
   "agent-environment-setup",
 );
-const ROUTE_MANIFEST_PATH = path.join(BUNDLE_ROOT, "generated", "route-manifest.json");
+const ROUTE_MANIFEST_PATH = path.join(
+  BUNDLE_ROOT,
+  "generated",
+  "route-manifest.json",
+);
 const CANONICAL_SKILLS_ROOT = path.join(ROOT, "workflows", "skills");
 
 const PLATFORM_ROOTS = {
   codex: path.join(BUNDLE_ROOT, "platforms", "codex"),
   copilot: path.join(BUNDLE_ROOT, "platforms", "copilot"),
   antigravity: path.join(BUNDLE_ROOT, "platforms", "antigravity"),
+  claude: path.join(BUNDLE_ROOT, "platforms", "claude"),
 };
 
 const REQUIRED_WORKFLOW_SECTIONS = [
@@ -55,7 +60,10 @@ async function collectCanonicalSkillIds() {
         continue;
       }
       if (!entry.isFile() || entry.name !== "SKILL.md") continue;
-      const relativeDir = path.relative(CANONICAL_SKILLS_ROOT, path.dirname(fullPath));
+      const relativeDir = path.relative(
+        CANONICAL_SKILLS_ROOT,
+        path.dirname(fullPath),
+      );
       const parts = relativeDir.split(path.sep).filter(Boolean);
       if (parts.length === 0) continue;
       ids.add(parts[parts.length - 1]);
@@ -85,14 +93,21 @@ function parseFrontmatter(markdown) {
 function getScalar(frontmatter, key) {
   const match = frontmatter.match(new RegExp(`^\\s*${key}\\s*:\\s*(.+)$`, "m"));
   if (!match) return null;
-  return String(match[1]).trim().replace(/^['"]|['"]$/g, "");
+  return String(match[1])
+    .trim()
+    .replace(/^['"]|['"]$/g, "");
 }
 
 function error(errors, filePath, message) {
   errors.push(`${filePath}: ${message}`);
 }
 
-async function validateWorkflowFile(filePath, expectedCommand, expectedDescription, errors) {
+async function validateWorkflowFile(
+  filePath,
+  expectedCommand,
+  expectedDescription,
+  errors,
+) {
   if (!(await exists(filePath))) {
     error(errors, filePath, "generated workflow missing");
     return;
@@ -113,7 +128,11 @@ async function validateWorkflowFile(filePath, expectedCommand, expectedDescripti
   const command = getScalar(parsed.raw, "command");
   const description = getScalar(parsed.raw, "description");
   if (command !== expectedCommand) {
-    error(errors, filePath, `workflow command mismatch (expected '${expectedCommand}', found '${command || "missing"}')`);
+    error(
+      errors,
+      filePath,
+      `workflow command mismatch (expected '${expectedCommand}', found '${command || "missing"}')`,
+    );
   }
   if (!description) {
     error(errors, filePath, "workflow description missing");
@@ -128,7 +147,12 @@ async function validateWorkflowFile(filePath, expectedCommand, expectedDescripti
   }
 }
 
-async function validateAgentFile(filePath, route, requireSkillsFrontmatter, errors) {
+async function validateAgentFile(
+  filePath,
+  route,
+  requireSkillsFrontmatter,
+  errors,
+) {
   if (!(await exists(filePath))) {
     error(errors, filePath, "generated agent missing");
     return;
@@ -151,15 +175,28 @@ async function validateAgentFile(filePath, route, requireSkillsFrontmatter, erro
   if (!name) error(errors, filePath, "agent name missing");
   if (!description) error(errors, filePath, "agent description missing");
   if (route?.displayName && name && name !== route.displayName) {
-    error(errors, filePath, `agent name mismatch (expected '${route.displayName}', found '${name}')`);
+    error(
+      errors,
+      filePath,
+      `agent name mismatch (expected '${route.displayName}', found '${name}')`,
+    );
   }
 
   if (requireSkillsFrontmatter && !/^\s*skills\s*:/m.test(parsed.raw)) {
-    error(errors, filePath, "skills frontmatter missing for platform that supports direct agent skill wiring");
+    error(
+      errors,
+      filePath,
+      "skills frontmatter missing for platform that supports direct agent skill wiring",
+    );
   }
 }
 
-async function validateCopilotPrompt(filePath, workflowFileName, command, errors) {
+async function validateCopilotPrompt(
+  filePath,
+  workflowFileName,
+  command,
+  errors,
+) {
   if (!(await exists(filePath))) {
     error(errors, filePath, "copilot prompt missing");
     return;
@@ -170,7 +207,11 @@ async function validateCopilotPrompt(filePath, workflowFileName, command, errors
     error(errors, filePath, "copilot prompt is unexpectedly short");
   }
   if (!raw.includes(workflowFileName)) {
-    error(errors, filePath, `copilot prompt does not reference workflow file '${workflowFileName}'`);
+    error(
+      errors,
+      filePath,
+      `copilot prompt does not reference workflow file '${workflowFileName}'`,
+    );
   }
   if (!raw.includes("route selection as already resolved")) {
     error(errors, filePath, "copilot prompt missing route-resolved contract");
@@ -179,11 +220,20 @@ async function validateCopilotPrompt(filePath, workflowFileName, command, errors
     error(errors, filePath, "copilot prompt missing no-skill-discovery guard");
   }
   if (command && !raw.includes(command)) {
-    error(errors, filePath, `copilot prompt missing workflow command '${command}'`);
+    error(
+      errors,
+      filePath,
+      `copilot prompt missing workflow command '${command}'`,
+    );
   }
 }
 
-async function validateAntigravityCommand(filePath, workflowFileName, command, errors) {
+async function validateAntigravityCommand(
+  filePath,
+  workflowFileName,
+  command,
+  errors,
+) {
   if (!(await exists(filePath))) {
     error(errors, filePath, "antigravity command missing");
     return;
@@ -194,16 +244,32 @@ async function validateAntigravityCommand(filePath, workflowFileName, command, e
     error(errors, filePath, "antigravity command is unexpectedly short");
   }
   if (!raw.includes(workflowFileName)) {
-    error(errors, filePath, `antigravity command does not reference workflow file '${workflowFileName}'`);
+    error(
+      errors,
+      filePath,
+      `antigravity command does not reference workflow file '${workflowFileName}'`,
+    );
   }
   if (!raw.includes("route selection as already resolved")) {
-    error(errors, filePath, "antigravity command missing route-resolved contract");
+    error(
+      errors,
+      filePath,
+      "antigravity command missing route-resolved contract",
+    );
   }
   if (!raw.includes("do not begin with skill discovery")) {
-    error(errors, filePath, "antigravity command missing no-skill-discovery guard");
+    error(
+      errors,
+      filePath,
+      "antigravity command missing no-skill-discovery guard",
+    );
   }
   if (command && !raw.includes(command)) {
-    error(errors, filePath, `antigravity command missing workflow command '${command}'`);
+    error(
+      errors,
+      filePath,
+      `antigravity command missing workflow command '${command}'`,
+    );
   }
 }
 
@@ -236,7 +302,9 @@ async function main() {
   }
 
   const routeManifest = JSON.parse(await readUtf8(ROUTE_MANIFEST_PATH));
-  const routes = Array.isArray(routeManifest.routes) ? routeManifest.routes : [];
+  const routes = Array.isArray(routeManifest.routes)
+    ? routeManifest.routes
+    : [];
   const agentIds = new Set(
     routes.filter((route) => route.kind === "agent").map((route) => route.id),
   );
@@ -257,19 +325,38 @@ async function main() {
     path.join(PLATFORM_ROOTS.copilot, "rules", "copilot-instructions.md"),
     errors,
   );
+  await validateRuleFile(
+    path.join(PLATFORM_ROOTS.claude, "rules", "CLAUDE.md"),
+    errors,
+  );
 
   for (const route of routes) {
     if (!agentIds.has(route.primaryAgent)) {
-      error(errors, ROUTE_MANIFEST_PATH, `route '${route.id}' references unknown primary agent '${route.primaryAgent}'`);
+      error(
+        errors,
+        ROUTE_MANIFEST_PATH,
+        `route '${route.id}' references unknown primary agent '${route.primaryAgent}'`,
+      );
     }
     for (const agentId of route.supportingAgents || []) {
       if (!agentIds.has(agentId)) {
-        error(errors, ROUTE_MANIFEST_PATH, `route '${route.id}' references unknown supporting agent '${agentId}'`);
+        error(
+          errors,
+          ROUTE_MANIFEST_PATH,
+          `route '${route.id}' references unknown supporting agent '${agentId}'`,
+        );
       }
     }
-    for (const skillId of [...(route.primarySkills || []), ...(route.supportingSkills || [])]) {
+    for (const skillId of [
+      ...(route.primarySkills || []),
+      ...(route.supportingSkills || []),
+    ]) {
       if (!(await canonicalSkillExists(skillId))) {
-        error(errors, ROUTE_MANIFEST_PATH, `route '${route.id}' references unknown skill '${skillId}'`);
+        error(
+          errors,
+          ROUTE_MANIFEST_PATH,
+          `route '${route.id}' references unknown skill '${skillId}'`,
+        );
       }
     }
 
@@ -290,9 +377,38 @@ async function main() {
         route.artifacts?.antigravity?.workflowFile || "",
       );
 
-      await validateWorkflowFile(codexWorkflow, route.command, route.description, errors);
-      await validateWorkflowFile(copilotWorkflow, route.command, route.description, errors);
-      await validateWorkflowFile(antigravityWorkflow, route.command, route.description, errors);
+      await validateWorkflowFile(
+        codexWorkflow,
+        route.command,
+        route.description,
+        errors,
+      );
+      await validateWorkflowFile(
+        copilotWorkflow,
+        route.command,
+        route.description,
+        errors,
+      );
+      await validateWorkflowFile(
+        antigravityWorkflow,
+        route.command,
+        route.description,
+        errors,
+      );
+
+      const claudeWorkflow = path.join(
+        PLATFORM_ROOTS.claude,
+        "workflows",
+        route.artifacts?.claude?.workflowFile ||
+          route.artifacts?.codex?.workflowFile ||
+          "",
+      );
+      await validateWorkflowFile(
+        claudeWorkflow,
+        route.command,
+        route.description,
+        errors,
+      );
 
       await validateCopilotPrompt(
         path.join(
@@ -319,21 +435,45 @@ async function main() {
     }
 
     await validateAgentFile(
-      path.join(PLATFORM_ROOTS.codex, "agents", route.artifacts?.codex?.agentFile || ""),
+      path.join(
+        PLATFORM_ROOTS.codex,
+        "agents",
+        route.artifacts?.codex?.agentFile || "",
+      ),
       route,
       true,
       errors,
     );
     await validateAgentFile(
-      path.join(PLATFORM_ROOTS.antigravity, "agents", route.artifacts?.antigravity?.agentFile || ""),
+      path.join(
+        PLATFORM_ROOTS.antigravity,
+        "agents",
+        route.artifacts?.antigravity?.agentFile || "",
+      ),
       route,
       true,
       errors,
     );
     await validateAgentFile(
-      path.join(PLATFORM_ROOTS.copilot, "agents", route.artifacts?.copilot?.agentFile || ""),
+      path.join(
+        PLATFORM_ROOTS.copilot,
+        "agents",
+        route.artifacts?.copilot?.agentFile || "",
+      ),
       route,
       false,
+      errors,
+    );
+    await validateAgentFile(
+      path.join(
+        PLATFORM_ROOTS.claude,
+        "agents",
+        route.artifacts?.claude?.agentFile ||
+          route.artifacts?.codex?.agentFile ||
+          "",
+      ),
+      route,
+      true,
       errors,
     );
   }

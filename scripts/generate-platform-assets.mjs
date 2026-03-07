@@ -6,7 +6,12 @@ import { promises as fs } from "node:fs";
 import { createHash } from "node:crypto";
 
 const ROOT = process.cwd();
-const BUNDLE_ROOT = path.join(ROOT, "workflows", "workflows", "agent-environment-setup");
+const BUNDLE_ROOT = path.join(
+  ROOT,
+  "workflows",
+  "workflows",
+  "agent-environment-setup",
+);
 const SHARED_ROOT = path.join(BUNDLE_ROOT, "shared");
 const SHARED_AGENTS_DIR = path.join(SHARED_ROOT, "agents");
 const SHARED_WORKFLOWS_DIR = path.join(SHARED_ROOT, "workflows");
@@ -16,7 +21,8 @@ const ROUTE_MANIFEST_FILE = "route-manifest.json";
 const PLATFORM_DIRS = {
   codex: path.join(BUNDLE_ROOT, "platforms", "codex"),
   antigravity: path.join(BUNDLE_ROOT, "platforms", "antigravity"),
-  copilot: path.join(BUNDLE_ROOT, "platforms", "copilot")
+  copilot: path.join(BUNDLE_ROOT, "platforms", "copilot"),
+  claude: path.join(BUNDLE_ROOT, "platforms", "claude"),
 };
 
 const COPILOT_ALLOWED_AGENT_KEYS = new Set([
@@ -29,7 +35,7 @@ const COPILOT_ALLOWED_AGENT_KEYS = new Set([
   "metadata",
   "model",
   "handoffs",
-  "argument-hint"
+  "argument-hint",
 ]);
 
 function parseFrontmatter(markdown) {
@@ -37,14 +43,14 @@ function parseFrontmatter(markdown) {
   if (!match) return null;
   return {
     raw: match[1],
-    body: markdown.slice(match[0].length)
+    body: markdown.slice(match[0].length),
   };
 }
 
 function stripQuotes(value) {
   const trimmed = String(value || "").trim();
   if (
-    (trimmed.startsWith("\"") && trimmed.endsWith("\"")) ||
+    (trimmed.startsWith('"') && trimmed.endsWith('"')) ||
     (trimmed.startsWith("'") && trimmed.endsWith("'"))
   ) {
     return trimmed.slice(1, -1).trim();
@@ -76,12 +82,16 @@ function getScalar(frontmatter, key) {
 }
 
 function getArray(frontmatter, key) {
-  const bracketMatch = frontmatter.match(new RegExp(`${key}\\s*:\\s*\\[([\\s\\S]*?)\\]`, "m"));
+  const bracketMatch = frontmatter.match(
+    new RegExp(`${key}\\s*:\\s*\\[([\\s\\S]*?)\\]`, "m"),
+  );
   if (bracketMatch) {
     return unique(parseInlineArray(bracketMatch[1]));
   }
 
-  const singleLine = frontmatter.match(new RegExp(`^\\s*${key}\\s*:\\s*(.+)$`, "m"));
+  const singleLine = frontmatter.match(
+    new RegExp(`^\\s*${key}\\s*:\\s*(.+)$`, "m"),
+  );
   if (!singleLine) return [];
   return unique(parseInlineArray(singleLine[1]));
 }
@@ -98,7 +108,8 @@ function sanitizeFrontmatterByAllowedKeys(frontmatter, allowedKeys) {
 
   for (const line of lines) {
     if (skipUnsupportedKey) {
-      const isTopLevelKey = /^([A-Za-z0-9_-]+)\s*:/.test(line) && !/^\s/.test(line);
+      const isTopLevelKey =
+        /^([A-Za-z0-9_-]+)\s*:/.test(line) && !/^\s/.test(line);
       if (!isTopLevelKey) {
         continue;
       }
@@ -125,8 +136,11 @@ function sanitizeFrontmatterByAllowedKeys(frontmatter, allowedKeys) {
   }
 
   return {
-    frontmatter: kept.join("\n").replace(/\n{3,}/g, "\n\n").trimEnd(),
-    removedKeys: unique(removedKeys)
+    frontmatter: kept
+      .join("\n")
+      .replace(/\n{3,}/g, "\n\n")
+      .trimEnd(),
+    removedKeys: unique(removedKeys),
   };
 }
 
@@ -138,7 +152,7 @@ function buildSkillRoutingSection(skills) {
     `Prefer these skills when task intent matches: ${list}.`,
     "",
     "If none apply directly, use the closest specialist guidance and state the fallback.",
-    ""
+    "",
   ].join("\n");
 }
 
@@ -172,10 +186,10 @@ function parseWorkflowRouting(body) {
   const primaryMatch = routing.match(
     /Primary (?:specialist|coordinator):\s*`?@([A-Za-z0-9_-]+)`?/i,
   );
-  const primaryAgent = primaryMatch?.[1] || referencedAgents[0] || "orchestrator";
+  const primaryAgent =
+    primaryMatch?.[1] || referencedAgents[0] || "orchestrator";
   const supportingAgents = unique(
-    referencedAgents
-      .filter((agentId) => agentId !== primaryAgent),
+    referencedAgents.filter((agentId) => agentId !== primaryAgent),
   );
 
   return { primaryAgent, supportingAgents };
@@ -211,7 +225,9 @@ function parseAgentTriggers(agent) {
 
 function buildRouteManifest({ sharedAgents, sharedWorkflows }) {
   const workflowRoutes = sharedWorkflows.map((workflow) => {
-    const { primaryAgent, supportingAgents } = parseWorkflowRouting(workflow.body);
+    const { primaryAgent, supportingAgents } = parseWorkflowRouting(
+      workflow.body,
+    );
     const { primarySkills, supportingSkills } = parseWorkflowSkillRouting(
       workflow.body,
     );
@@ -286,21 +302,23 @@ function buildRouteManifest({ sharedAgents, sharedWorkflows }) {
     .digest("hex")
     .slice(0, 16);
 
-  return JSON.stringify(
-    {
-      $schema: "cubis-foundry-route-manifest-v1",
-      generatedAt: new Date(0).toISOString(),
-      contentHash,
-      summary: {
-        totalRoutes: routes.length,
-        workflows: workflowRoutes.length,
-        agents: agentRoutes.length,
+  return (
+    JSON.stringify(
+      {
+        $schema: "cubis-foundry-route-manifest-v1",
+        generatedAt: new Date(0).toISOString(),
+        contentHash,
+        summary: {
+          totalRoutes: routes.length,
+          workflows: workflowRoutes.length,
+          agents: agentRoutes.length,
+        },
+        routes,
       },
-      routes,
-    },
-    null,
-    2,
-  ) + "\n";
+      null,
+      2,
+    ) + "\n"
+  );
 }
 
 function buildCopilotAgentMarkdown(sharedMarkdown) {
@@ -310,7 +328,10 @@ function buildCopilotAgentMarkdown(sharedMarkdown) {
   }
 
   const skills = getArray(parsed.raw, "skills");
-  const sanitized = sanitizeFrontmatterByAllowedKeys(parsed.raw, COPILOT_ALLOWED_AGENT_KEYS);
+  const sanitized = sanitizeFrontmatterByAllowedKeys(
+    parsed.raw,
+    COPILOT_ALLOWED_AGENT_KEYS,
+  );
   const body = parsed.body.trim();
 
   const lines = ["---", sanitized.frontmatter, "---", "", body];
@@ -322,7 +343,7 @@ function buildCopilotAgentMarkdown(sharedMarkdown) {
 
   return {
     markdown: `${lines.join("\n")}`,
-    removedKeys: sanitized.removedKeys
+    removedKeys: sanitized.removedKeys,
   };
 }
 
@@ -339,11 +360,11 @@ function buildAntigravityCommandToml({ id, command, description }) {
     "",
     "Execution contract:",
     "1. Treat route selection as already resolved by this command; do not begin with skill discovery.",
-    "2. Confirm the request fits the workflow's \"When to use\" section.",
-    "3. Execute according to \"Workflow steps\" and apply \"Context notes\".",
-    "4. Complete \"Verification\" checks and report concrete evidence.",
+    '2. Confirm the request fits the workflow\'s "When to use" section.',
+    '3. Execute according to "Workflow steps" and apply "Context notes".',
+    '4. Complete "Verification" checks and report concrete evidence.',
     "",
-    "If command arguments are provided, treat them as additional user context."
+    "If command arguments are provided, treat them as additional user context.",
   ].join("\n");
 
   return [
@@ -351,7 +372,7 @@ function buildAntigravityCommandToml({ id, command, description }) {
     "prompt = '''",
     prompt,
     "'''",
-    ""
+    "",
   ].join("\n");
 }
 
@@ -369,7 +390,7 @@ function buildCopilotPromptMarkdown({ id, command, description }) {
     "2. Apply workflow sections in order: When to use, Workflow steps, Context notes, Verification.",
     "3. Route to the workflow's primary specialist and only add supporting specialists when needed.",
     "4. Return actions taken, verification evidence, and any gaps.",
-    ""
+    "",
   ].join("\n");
 }
 
@@ -380,7 +401,12 @@ async function ensureDir(dir) {
 async function listMarkdownFiles(dir) {
   const entries = await fs.readdir(dir, { withFileTypes: true });
   return entries
-    .filter((entry) => entry.isFile() && entry.name.endsWith(".md") && !entry.name.startsWith("."))
+    .filter(
+      (entry) =>
+        entry.isFile() &&
+        entry.name.endsWith(".md") &&
+        !entry.name.startsWith("."),
+    )
     .map((entry) => entry.name)
     .sort((a, b) => a.localeCompare(b));
 }
@@ -399,7 +425,9 @@ async function loadSharedFiles(directory, requiredSections = []) {
 
     for (const section of requiredSections) {
       if (!hasSection(parsed.body, section)) {
-        throw new Error(`Missing required section \"${section}\" in ${fullPath}`);
+        throw new Error(
+          `Missing required section \"${section}\" in ${fullPath}`,
+        );
       }
     }
 
@@ -411,7 +439,7 @@ async function loadSharedFiles(directory, requiredSections = []) {
       frontmatter: parsed.raw,
       body: parsed.body,
       command: getScalar(parsed.raw, "command") || `/${id}`,
-      description: getScalar(parsed.raw, "description") || `${id} workflow`
+      description: getScalar(parsed.raw, "description") || `${id} workflow`,
     });
   }
 
@@ -481,7 +509,7 @@ function diffSet(expectedMap, actualMap) {
   return {
     missing: missing.sort((a, b) => a.localeCompare(b)),
     changed: changed.sort((a, b) => a.localeCompare(b)),
-    extra: extra.sort((a, b) => a.localeCompare(b))
+    extra: extra.sort((a, b) => a.localeCompare(b)),
   };
 }
 
@@ -493,7 +521,9 @@ async function readFileMap(dir, filter = null) {
     if (!entry.isFile()) continue;
     if (entry.name.startsWith(".")) continue;
     if (filter && !filter(entry.name)) continue;
-    const content = (await fs.readFile(path.join(dir, entry.name), "utf8")).replace(/\r\n/g, "\n");
+    const content = (
+      await fs.readFile(path.join(dir, entry.name), "utf8")
+    ).replace(/\r\n/g, "\n");
     map.set(entry.name, content);
   }
   return map;
@@ -503,9 +533,11 @@ function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
   const codexAgents = new Map();
   const antigravityAgents = new Map();
   const copilotAgents = new Map();
+  const claudeAgents = new Map();
   const codexWorkflows = new Map();
   const antigravityWorkflows = new Map();
   const copilotWorkflows = new Map();
+  const claudeWorkflows = new Map();
   const antigravityCommands = new Map();
   const copilotPrompts = new Map();
   const generated = new Map();
@@ -513,6 +545,7 @@ function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
   for (const agent of sharedAgents) {
     codexAgents.set(agent.fileName, agent.raw);
     antigravityAgents.set(agent.fileName, agent.raw);
+    claudeAgents.set(agent.fileName, agent.raw);
     const transformed = buildCopilotAgentMarkdown(agent.raw);
     copilotAgents.set(agent.fileName, transformed.markdown);
   }
@@ -526,22 +559,35 @@ function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
     codexWorkflows.set(workflow.fileName, workflow.raw);
     antigravityWorkflows.set(workflow.fileName, workflow.raw);
     copilotWorkflows.set(workflow.fileName, workflow.raw);
+    claudeWorkflows.set(workflow.fileName, workflow.raw);
 
-    const commandId = workflow.command.replace(/^\//, "").trim().toLowerCase().replace(/\s+/g, "-");
-    antigravityCommands.set(`${commandId}.toml`, buildAntigravityCommandToml(workflow));
-    copilotPrompts.set(`workflow-${workflow.id}.prompt.md`, buildCopilotPromptMarkdown(workflow));
+    const commandId = workflow.command
+      .replace(/^\//, "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "-");
+    antigravityCommands.set(
+      `${commandId}.toml`,
+      buildAntigravityCommandToml(workflow),
+    );
+    copilotPrompts.set(
+      `workflow-${workflow.id}.prompt.md`,
+      buildCopilotPromptMarkdown(workflow),
+    );
   }
 
   return {
     codexAgents,
     antigravityAgents,
     copilotAgents,
+    claudeAgents,
     codexWorkflows,
     antigravityWorkflows,
     copilotWorkflows,
+    claudeWorkflows,
     antigravityCommands,
     copilotPrompts,
-    generated
+    generated,
   };
 }
 
@@ -551,7 +597,7 @@ async function run({ checkOnly = false }) {
     "When to use",
     "Workflow steps",
     "Context notes",
-    "Verification"
+    "Verification",
   ]);
 
   const maps = buildExpectedMaps({ sharedAgents, sharedWorkflows });
@@ -561,56 +607,68 @@ async function run({ checkOnly = false }) {
       label: "codex agents",
       dir: path.join(PLATFORM_DIRS.codex, "agents"),
       expected: maps.codexAgents,
-      filter: (name) => name.endsWith(".md")
+      filter: (name) => name.endsWith(".md"),
     },
     {
       label: "codex workflows",
       dir: path.join(PLATFORM_DIRS.codex, "workflows"),
       expected: maps.codexWorkflows,
-      filter: (name) => name.endsWith(".md")
+      filter: (name) => name.endsWith(".md"),
     },
     {
       label: "antigravity agents",
       dir: path.join(PLATFORM_DIRS.antigravity, "agents"),
       expected: maps.antigravityAgents,
-      filter: (name) => name.endsWith(".md")
+      filter: (name) => name.endsWith(".md"),
     },
     {
       label: "antigravity workflows",
       dir: path.join(PLATFORM_DIRS.antigravity, "workflows"),
       expected: maps.antigravityWorkflows,
-      filter: (name) => name.endsWith(".md")
+      filter: (name) => name.endsWith(".md"),
     },
     {
       label: "antigravity commands",
       dir: path.join(PLATFORM_DIRS.antigravity, "commands"),
       expected: maps.antigravityCommands,
-      filter: (name) => name.endsWith(".toml")
+      filter: (name) => name.endsWith(".toml"),
     },
     {
       label: "copilot agents",
       dir: path.join(PLATFORM_DIRS.copilot, "agents"),
       expected: maps.copilotAgents,
-      filter: (name) => name.endsWith(".md")
+      filter: (name) => name.endsWith(".md"),
     },
     {
       label: "copilot workflows",
       dir: path.join(PLATFORM_DIRS.copilot, "workflows"),
       expected: maps.copilotWorkflows,
-      filter: (name) => name.endsWith(".md")
+      filter: (name) => name.endsWith(".md"),
     },
     {
       label: "copilot prompts",
       dir: path.join(PLATFORM_DIRS.copilot, "prompts"),
       expected: maps.copilotPrompts,
-      filter: (name) => name.endsWith(".prompt.md")
+      filter: (name) => name.endsWith(".prompt.md"),
+    },
+    {
+      label: "claude agents",
+      dir: path.join(PLATFORM_DIRS.claude, "agents"),
+      expected: maps.claudeAgents,
+      filter: (name) => name.endsWith(".md"),
+    },
+    {
+      label: "claude workflows",
+      dir: path.join(PLATFORM_DIRS.claude, "workflows"),
+      expected: maps.claudeWorkflows,
+      filter: (name) => name.endsWith(".md"),
     },
     {
       label: "generated route manifest",
       dir: GENERATED_DIR,
       expected: maps.generated,
-      filter: (name) => name === ROUTE_MANIFEST_FILE
-    }
+      filter: (name) => name === ROUTE_MANIFEST_FILE,
+    },
   ];
 
   if (checkOnly) {
@@ -645,11 +703,11 @@ async function run({ checkOnly = false }) {
           mode: "check",
           sharedAgents: sharedAgents.length,
           sharedWorkflows: sharedWorkflows.length,
-          status: "ok"
+          status: "ok",
         },
         null,
-        2
-      )
+        2,
+      ),
     );
     return;
   }
@@ -659,64 +717,78 @@ async function run({ checkOnly = false }) {
     ...(await applyOutputMap({
       rootDir: path.join(PLATFORM_DIRS.codex, "agents"),
       fileMap: maps.codexAgents,
-      cleanMdOnly: true
-    }))
+      cleanMdOnly: true,
+    })),
   );
   written.push(
     ...(await applyOutputMap({
       rootDir: path.join(PLATFORM_DIRS.codex, "workflows"),
       fileMap: maps.codexWorkflows,
-      cleanMdOnly: true
-    }))
+      cleanMdOnly: true,
+    })),
   );
   written.push(
     ...(await applyOutputMap({
       rootDir: path.join(PLATFORM_DIRS.antigravity, "agents"),
       fileMap: maps.antigravityAgents,
-      cleanMdOnly: true
-    }))
+      cleanMdOnly: true,
+    })),
   );
   written.push(
     ...(await applyOutputMap({
       rootDir: path.join(PLATFORM_DIRS.antigravity, "workflows"),
       fileMap: maps.antigravityWorkflows,
-      cleanMdOnly: true
-    }))
+      cleanMdOnly: true,
+    })),
   );
   written.push(
     ...(await applyOutputMap({
       rootDir: path.join(PLATFORM_DIRS.antigravity, "commands"),
       fileMap: maps.antigravityCommands,
-      cleanMdOnly: false
-    }))
+      cleanMdOnly: false,
+    })),
   );
   written.push(
     ...(await applyOutputMap({
       rootDir: path.join(PLATFORM_DIRS.copilot, "agents"),
       fileMap: maps.copilotAgents,
-      cleanMdOnly: true
-    }))
+      cleanMdOnly: true,
+    })),
   );
   written.push(
     ...(await applyOutputMap({
       rootDir: path.join(PLATFORM_DIRS.copilot, "workflows"),
       fileMap: maps.copilotWorkflows,
-      cleanMdOnly: true
-    }))
+      cleanMdOnly: true,
+    })),
   );
   written.push(
     ...(await applyOutputMap({
       rootDir: path.join(PLATFORM_DIRS.copilot, "prompts"),
       fileMap: maps.copilotPrompts,
-      cleanMdOnly: false
-    }))
+      cleanMdOnly: false,
+    })),
+  );
+  written.push(
+    ...(await applyOutputMap({
+      rootDir: path.join(PLATFORM_DIRS.claude, "agents"),
+      fileMap: maps.claudeAgents,
+      cleanMdOnly: true,
+    })),
+  );
+  written.push(
+    ...(await applyOutputMap({
+      rootDir: path.join(PLATFORM_DIRS.claude, "workflows"),
+      fileMap: maps.claudeWorkflows,
+      cleanMdOnly: true,
+    })),
   );
   written.push(
     ...(await applyOutputMap({
       rootDir: GENERATED_DIR,
       fileMap: maps.generated,
-      cleanMdOnly: false
-    }))
+      cleanMdOnly: false,
+    })),
   );
 
   console.log(
@@ -725,11 +797,11 @@ async function run({ checkOnly = false }) {
         mode: "write",
         sharedAgents: sharedAgents.length,
         sharedWorkflows: sharedWorkflows.length,
-        filesWritten: written.length
+        filesWritten: written.length,
       },
       null,
-      2
-    )
+      2,
+    ),
   );
 }
 

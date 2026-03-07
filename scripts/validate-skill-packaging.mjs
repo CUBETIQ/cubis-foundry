@@ -14,9 +14,24 @@ const SHARED_ROOT = path.join(
   "shared",
 );
 const PLATFORM_SKILL_ROOTS = [
-  path.join(ROOT, "workflows", "workflows", "agent-environment-setup", "platforms", "copilot", "skills"),
-  path.join(ROOT, "workflows", "workflows", "agent-environment-setup", "platforms", "cursor", "skills"),
-  path.join(ROOT, "workflows", "workflows", "agent-environment-setup", "platforms", "windsurf", "skills"),
+  path.join(
+    ROOT,
+    "workflows",
+    "workflows",
+    "agent-environment-setup",
+    "platforms",
+    "copilot",
+    "skills",
+  ),
+  path.join(
+    ROOT,
+    "workflows",
+    "workflows",
+    "agent-environment-setup",
+    "platforms",
+    "claude",
+    "skills",
+  ),
 ];
 
 async function exists(target) {
@@ -58,7 +73,8 @@ function extractBacktickedMarkdownPaths(markdown) {
 
 function shouldValidateLink(target) {
   if (!target) return false;
-  if (target.startsWith("http://") || target.startsWith("https://")) return false;
+  if (target.startsWith("http://") || target.startsWith("https://"))
+    return false;
   if (target.startsWith("mailto:") || target.startsWith("#")) return false;
   if (target.startsWith("/")) return false;
   if (target.includes("{") || target.includes("}")) return false;
@@ -127,7 +143,9 @@ async function validateMarkdownTargets(markdownFile, errors, prefix) {
     if (path.extname(resolved) === ".md") {
       const linkedContent = (await readUtf8(resolved)).trim();
       if (!linkedContent) {
-        errors.push(`${markdownFile}: ${prefix} markdown reference '${target}' is empty`);
+        errors.push(
+          `${markdownFile}: ${prefix} markdown reference '${target}' is empty`,
+        );
       }
     }
   }
@@ -149,10 +167,14 @@ async function validateCanonicalSkillReferences(errors) {
       errors.push(`${skillFile}: stale workflows/powers reference`);
     }
     if (markdown.includes("## Related Powers")) {
-      errors.push(`${skillFile}: power-era section '## Related Powers' must be removed`);
+      errors.push(
+        `${skillFile}: power-era section '## Related Powers' must be removed`,
+      );
     }
     if (markdown.includes("When to Use This Power")) {
-      errors.push(`${skillFile}: power-era heading 'When to Use This Power' must be renamed`);
+      errors.push(
+        `${skillFile}: power-era heading 'When to Use This Power' must be renamed`,
+      );
     }
 
     const entries = await fs.readdir(skillRoot, { withFileTypes: true });
@@ -160,9 +182,13 @@ async function validateCanonicalSkillReferences(errors) {
       .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
       .map((entry) => entry.name)
       .sort((a, b) => a.localeCompare(b));
-    const extraTopLevel = topLevelMarkdown.filter((name) => name !== "SKILL.md");
+    const extraTopLevel = topLevelMarkdown.filter(
+      (name) => name !== "SKILL.md",
+    );
     if (extraTopLevel.length > 0) {
-      errors.push(`${skillRoot}: extra top-level markdown entries detected (${extraTopLevel.join(", ")})`);
+      errors.push(
+        `${skillRoot}: extra top-level markdown entries detected (${extraTopLevel.join(", ")})`,
+      );
     }
 
     for (const markdownFile of await listRuntimeMarkdownFiles(skillRoot)) {
@@ -203,15 +229,23 @@ async function validatePlatformBundles(errors) {
         .map((entry) => entry.name)
         .sort((a, b) => a.localeCompare(b));
       if (topLevelMarkdown.includes("POWER.md")) {
-        errors.push(`${skillRoot}: POWER.md must not be exposed in platform-facing skill bundles`);
+        errors.push(
+          `${skillRoot}: POWER.md must not be exposed in platform-facing skill bundles`,
+        );
       }
-      const extraTopLevel = topLevelMarkdown.filter((name) => name !== "SKILL.md");
+      const extraTopLevel = topLevelMarkdown.filter(
+        (name) => name !== "SKILL.md",
+      );
       if (extraTopLevel.length > 0) {
-        errors.push(`${skillRoot}: extra top-level markdown entries detected (${extraTopLevel.join(", ")})`);
+        errors.push(
+          `${skillRoot}: extra top-level markdown entries detected (${extraTopLevel.join(", ")})`,
+        );
       }
 
       if (!(await exists(skillFile))) {
-        errors.push(`${skillRoot}: SKILL.md missing in platform-facing skill bundle`);
+        errors.push(
+          `${skillRoot}: SKILL.md missing in platform-facing skill bundle`,
+        );
         continue;
       }
 

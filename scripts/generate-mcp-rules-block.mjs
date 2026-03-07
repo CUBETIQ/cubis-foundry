@@ -66,7 +66,12 @@ function buildMcpBlock(manifest) {
   lines.push(
     "- Fallback browsing only: `skill_list_categories`, `skill_browse_category`",
   );
-  lines.push("- Config tools: `postman_*`, `stitch_*`");
+  lines.push(
+    "- Foundry config tools only: `postman_*`, `stitch_*` (status/mode/profile helpers, not direct cloud mutations)",
+  );
+  lines.push(
+    "- Direct cloud actions should use installed upstream MCP servers such as `postman` when available",
+  );
   lines.push("");
   lines.push("### Validated Skill Flow");
   lines.push("");

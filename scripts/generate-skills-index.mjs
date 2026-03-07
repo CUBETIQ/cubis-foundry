@@ -38,7 +38,7 @@ const DEFAULT_TARGETS = {
     ),
     indexPathPrefix: ".github/skills",
   },
-  cursor: {
+  claude: {
     roots: [
       path.join(
         ROOT,
@@ -46,7 +46,7 @@ const DEFAULT_TARGETS = {
         "workflows",
         "agent-environment-setup",
         "platforms",
-        "cursor",
+        "claude",
         "skills",
       ),
     ],
@@ -56,35 +56,11 @@ const DEFAULT_TARGETS = {
       "workflows",
       "agent-environment-setup",
       "platforms",
-      "cursor",
+      "claude",
       "skills",
       "skills_index.json",
     ),
-    indexPathPrefix: ".cursor/skills",
-  },
-  windsurf: {
-    roots: [
-      path.join(
-        ROOT,
-        "workflows",
-        "workflows",
-        "agent-environment-setup",
-        "platforms",
-        "windsurf",
-        "skills",
-      ),
-    ],
-    outFile: path.join(
-      ROOT,
-      "workflows",
-      "workflows",
-      "agent-environment-setup",
-      "platforms",
-      "windsurf",
-      "skills",
-      "skills_index.json",
-    ),
-    indexPathPrefix: ".windsurf/skills",
+    indexPathPrefix: ".claude/skills",
   },
 };
 
@@ -151,7 +127,9 @@ function getMetadataBlock(frontmatterRaw) {
 
 function normalizeNullableString(value) {
   if (value == null) return null;
-  const normalized = String(value).trim().replace(/^['\"]|['\"]$/g, "");
+  const normalized = String(value)
+    .trim()
+    .replace(/^['\"]|['\"]$/g, "");
   const lower = normalized.toLowerCase();
   if (!normalized || lower === "null" || lower === "~") return null;
   return normalized;
@@ -225,7 +203,9 @@ function normalizeBoolean(value) {
 }
 
 function normalizeLower(value) {
-  return String(value || "").trim().toLowerCase();
+  return String(value || "")
+    .trim()
+    .toLowerCase();
 }
 
 function isCodexWrapperSkill(id, metadata) {
@@ -358,7 +338,7 @@ async function main() {
 
   if (targetLabels.length === 0) {
     throw new Error(
-      `Unknown target '${target}'. Use one of: all, canonical, copilot, cursor, windsurf.`,
+      `Unknown target '${target}'. Use one of: all, canonical, copilot, claude.`,
     );
   }
 

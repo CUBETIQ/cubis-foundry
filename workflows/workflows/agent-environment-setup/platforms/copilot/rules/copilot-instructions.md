@@ -10,6 +10,13 @@ This file defines mandatory behavior for GitHub Copilot projects installed via `
 - Prompt files: `.github/prompts`
 - MCP (preferred): `.vscode/mcp.json`
 - Rules file (project): `.github/copilot-instructions.md`
+- Path-scoped instructions: `.github/instructions/*.instructions.md` (with `applyTo` globs)
+
+### Cross-File Reading
+
+Copilot automatically reads `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md` at the repo root.
+If multiple rule files exist, follow `copilot-instructions.md` as the primary authority for Copilot.
+Platform-specific sections in `CLAUDE.md` (sub-agent spawning, scoped rules) or `GEMINI.md` (StitchMCP, Agent Manager) do not apply to Copilot — ignore those sections when operating as a Copilot agent.
 
 ## Startup Transparency (Minimal)
 
@@ -54,6 +61,24 @@ Map intent to one primary workflow first:
 - Local code review -> `/review`
 - Documentation update -> `/create` + `@documentation-writer`
 
+## 3B) Routing Decision Tree (Copilot)
+
+Follow this exact order to decide what mechanism to use:
+
+```
+1. Simple action → use built-in Copilot tools directly
+2. Skill exists? → skill_search → skill_get → follow it
+3. Multi-step task spanning 5+ steps? → long-task workflow
+4. API work? → Route to Postman MCP
+5. Specialist needed? → spawn custom agent (.github/agents/)
+6. None of above → execute directly
+```
+
+**Skills** = on-demand knowledge packages (loaded via MCP `skill_search`/`skill_get`).
+**Workflows** = multi-step procedures (`.github/copilot/workflows/` + `.github/prompts/`).
+**Agents** = specialist workers (`.github/agents/*.md`).
+**MCP servers** = external tool bridges (Foundry catalog, Postman).
+
 ## 4) Agent Routing Policy
 
 Use the best specialist first:
@@ -88,6 +113,21 @@ When authoring custom Copilot assets, keep frontmatter schema compatible:
 2. Agent files in `.github/agents/*.md` must use supported top-level keys only.
 3. If unsupported keys are detected, reinstall with overwrite to auto-normalize.
 
+### Path-Specific Instructions
+
+Copilot supports path-scoped instruction files in `.github/instructions/`:
+
+```yaml
+---
+applyTo: "src/**/*.ts"
+---
+# TypeScript rules that apply only to matching files
+```
+
+Use `applyTo` globs to scope rules to specific file patterns.
+Use `excludeAgent: "code-review"` to exclude rules from the code review agent.
+These files are only activated when Copilot is working on files matching their glob.
+
 ## 6) MCP Skill Engine
 
 The Foundry MCP server is the primary knowledge layer. Use tools decisively — discover first, load only when committed.
@@ -98,7 +138,7 @@ The Foundry MCP server is the primary knowledge layer. Use tools decisively — 
 | ----------- | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
 | `route_*`   | `route_resolve`                                                                                       | Resolve workflows and custom agents before any skill loading   |
 | `skill_*`   | `skill_list_categories`, `skill_search`, `skill_validate`, `skill_browse_category`, `skill_get`, `skill_get_reference`, `skill_budget_report` | Domain expertise for implementation, debug, or review after the route is known |
-| `postman_*` | `postman_get_mode`, `postman_set_mode`, `postman_get_status`                                         | API testing or Postman configuration tasks                     |
+| `postman_*` | `postman_get_mode`, `postman_set_mode`, `postman_get_status`                                         | Foundry-side Postman config only (status/mode/default workspace) |
 | `stitch_*`  | `stitch_get_mode`, `stitch_set_profile`, `stitch_get_status`                                         | Stitch data pipeline tasks                                     |
 
 ### Validated Skill Flow (Mandatory Order)
@@ -121,8 +161,11 @@ When user intent includes Postman workflows (for example: workspace, collection,
 1. Validate `postman` directly with `skill_validate "postman"` when the exact skill ID is known.
 2. If validation fails and local grounding is still insufficient, run a narrow `skill_search "postman"` and validate the selected exact ID.
 3. Load `skill_get "postman"` with `includeReferences:false` before workflow/agent routing.
-4. Prefer Postman MCP tools (`postman.*`) over Newman/CLI fallback unless the user explicitly asks for fallback.
-5. If `--postman` was installed but `postman` skill cannot be found, report installation drift and suggest reinstall with `cbx workflows install ... --postman`.
+4. Use the direct Postman MCP server for real Postman actions (`postman.<tool>` or client-wrapped equivalent such as `mcp__postman__<tool>`). Reserve `postman_*` for Foundry config/status only.
+5. Never auto-fallback from `postman.runCollection` failure or timeout into `postman.runMonitor`.
+6. Only use monitor execution when the user explicitly asks for monitor-based cloud execution, scheduled monitoring, or monitor validation. Warn that monitor runs consume monitor usage.
+7. If `--postman` was installed but `postman` skill cannot be found, report installation drift and suggest reinstall with `cbx workflows install ... --postman`.
+8. Do not default to raw Postman REST JSON payloads or curl for execution when Postman MCP tools are available.
 
 **Hard rules:**
 
@@ -279,7 +322,8 @@ Keep MCP context lazy and exact. Do not front-load the skill catalog.
 - Route tools: `route_resolve`
 - Skill tools: `skill_search`, `skill_validate`, `skill_get`, `skill_get_reference`, `skill_budget_report`
 - Fallback browsing only: `skill_list_categories`, `skill_browse_category`
-- Config tools: `postman_*`, `stitch_*`
+- Foundry config tools only: `postman_*`, `stitch_*` (status/mode/profile helpers, not direct cloud mutations)
+- Direct cloud actions should use installed upstream MCP servers such as `postman` when available
 
 ### Validated Skill Flow
 

@@ -147,7 +147,7 @@ const WORKFLOW_PROFILES = {
       agentDirs: [".github/agents"],
       skillDirs: [".github/skills"],
       promptDirs: [".github/prompts"],
-      ruleFilesByPriority: [".github/copilot-instructions.md", "AGENTS.md"],
+      ruleFilesByPriority: [".github/copilot-instructions.md"],
     },
     global: {
       workflowDirs: ["~/.copilot/workflows"],
@@ -166,6 +166,31 @@ const WORKFLOW_PROFILES = {
     ],
     legacyDetectorPaths: [],
     ruleHintName: "AGENTS.md or .github/copilot-instructions.md",
+  },
+  claude: {
+    id: "claude",
+    label: "Claude Code",
+    installsCustomAgents: true,
+    project: {
+      workflowDirs: [".claude/workflows"],
+      agentDirs: [".claude/agents"],
+      skillDirs: [".claude/skills"],
+      ruleFilesByPriority: ["CLAUDE.md"],
+    },
+    global: {
+      workflowDirs: ["~/.claude/workflows"],
+      agentDirs: ["~/.claude/agents"],
+      skillDirs: ["~/.claude/skills"],
+      ruleFilesByPriority: ["~/.claude/CLAUDE.md"],
+    },
+    detectorPaths: [
+      "CLAUDE.md",
+      ".claude",
+      ".claude/rules",
+      ".claude/settings.json",
+    ],
+    legacyDetectorPaths: [],
+    ruleHintName: "CLAUDE.md",
   },
 };
 
@@ -1082,7 +1107,10 @@ async function upsertEngineeringRulesFile({
 
   if (analysis.status === "absent") {
     if (!isLikelyGeneratedEngineeringRules(original)) {
-      return { action: dryRun ? "would-skip" : "skipped", filePath: targetPath };
+      return {
+        action: dryRun ? "would-skip" : "skipped",
+        filePath: targetPath,
+      };
     }
     return writeTextFile({
       targetPath,
@@ -1232,8 +1260,7 @@ async function patchCodexPostmanHttpHeaders({
   const lines = original.split(/\r?\n/);
   const nextLines = [];
 
-  const headerLine =
-    `http_headers = { Authorization = "Bearer ${escapeTomlBasicString(normalizedToken)}" }`;
+  const headerLine = `http_headers = { Authorization = "Bearer ${escapeTomlBasicString(normalizedToken)}" }`;
   const serverHeader = "[mcp_servers.postman]";
   let inPostmanSection = false;
   let postmanSectionFound = false;
@@ -1279,7 +1306,9 @@ async function patchCodexPostmanHttpHeaders({
       nextLines.push("");
     }
     nextLines.push(serverHeader);
-    nextLines.push(`url = "${escapeTomlBasicString(mcpUrl || POSTMAN_MCP_URL)}"`);
+    nextLines.push(
+      `url = "${escapeTomlBasicString(mcpUrl || POSTMAN_MCP_URL)}"`,
+    );
     nextLines.push(headerLine);
   }
 
@@ -1495,7 +1524,9 @@ function collectChildDirs(relativeFiles, prefix) {
 
 function hasPathPrefix(relativeFiles, prefix) {
   const normalizedPrefix = prefix.endsWith("/") ? prefix : `${prefix}/`;
-  return relativeFiles.some((filePath) => filePath.startsWith(normalizedPrefix));
+  return relativeFiles.some((filePath) =>
+    filePath.startsWith(normalizedPrefix),
+  );
 }
 
 function inferArchitectureForApp(rootPath, relativeFiles, relativeDirs) {
@@ -1504,7 +1535,9 @@ function inferArchitectureForApp(rootPath, relativeFiles, relativeDirs) {
   const appStructurePaths = structurePaths.filter((entryPath) =>
     entryPath.startsWith(rootPrefix),
   );
-  const appFiles = relativeFiles.filter((filePath) => filePath.startsWith(rootPrefix));
+  const appFiles = relativeFiles.filter((filePath) =>
+    filePath.startsWith(rootPrefix),
+  );
   const rel = (p) => (rootPath === "." ? p : `${rootPath}/${p}`);
   const architectureSignals = [];
   const structureHints = [];
@@ -1570,7 +1603,10 @@ function inferArchitectureForApp(rootPath, relativeFiles, relativeDirs) {
 
   if (hasLibCore && hasLibFeatures) {
     const coreModules = collectChildDirs(appStructurePaths, rel("lib/core"));
-    const featureModules = collectChildDirs(appStructurePaths, rel("lib/features"));
+    const featureModules = collectChildDirs(
+      appStructurePaths,
+      rel("lib/features"),
+    );
     const featurePreview = featureModules.slice(0, 8).join(", ");
     const remainingFeatureCount = Math.max(0, featureModules.length - 8);
     structureHints.push("- `lib/core/` present for shared/core concerns.");
@@ -1586,7 +1622,10 @@ function inferArchitectureForApp(rootPath, relativeFiles, relativeDirs) {
       structureHints.push("- `lib/main.dart` present as app entrypoint.");
     }
   } else if (hasSrcFeatures) {
-    const featureModules = collectChildDirs(appStructurePaths, rel("src/features"));
+    const featureModules = collectChildDirs(
+      appStructurePaths,
+      rel("src/features"),
+    );
     if (featureModules.length > 0) {
       const featurePreview = featureModules.slice(0, 8).join(", ");
       const remainingFeatureCount = Math.max(0, featureModules.length - 8);
@@ -1607,7 +1646,10 @@ function inferArchitectureByApp(relativeFiles, relativeDirs) {
   const appRoots = new Set(["."]);
   for (const relPath of relativeFiles) {
     const segments = relPath.split("/");
-    if (segments.length >= 3 && (segments[0] === "apps" || segments[0] === "packages")) {
+    if (
+      segments.length >= 3 &&
+      (segments[0] === "apps" || segments[0] === "packages")
+    ) {
       appRoots.add(`${segments[0]}/${segments[1]}`);
       continue;
     }
@@ -2271,7 +2313,9 @@ function buildTechMd(snapshot, { compact = false } = {}) {
   if (snapshot.frameworks.length === 0) {
     lines.push("- Framework/runtime signals: none detected.");
   } else {
-    lines.push(`- Framework/runtime signals: ${snapshot.frameworks.join(", ")}.`);
+    lines.push(
+      `- Framework/runtime signals: ${snapshot.frameworks.join(", ")}.`,
+    );
   }
   if (snapshot.languages.length === 0) {
     lines.push("- Primary languages: none detected.");
@@ -2319,7 +2363,9 @@ function buildTechMd(snapshot, { compact = false } = {}) {
       .join(", ");
     lines.push(`- Top directories: ${topDirPreview}.`);
   } else if (snapshot.topDirs.length > 0) {
-    lines.push(`- Top directories: ${snapshot.topDirs.slice(0, 10).join(", ")}.`);
+    lines.push(
+      `- Top directories: ${snapshot.topDirs.slice(0, 10).join(", ")}.`,
+    );
   } else {
     lines.push("- Top directories: none detected.");
   }
@@ -2774,7 +2820,11 @@ function resolveProfilePathCandidates(profileId, scope, cwd = process.cwd()) {
   };
 }
 
-function resolveLegacySkillDirsForCleanup(platform, scope, cwd = process.cwd()) {
+function resolveLegacySkillDirsForCleanup(
+  platform,
+  scope,
+  cwd = process.cwd(),
+) {
   if (platform !== "codex") return [];
   if (scope === "global") {
     return [path.join(os.homedir(), ".codex", "skills")];
@@ -3719,24 +3769,46 @@ function buildManagedWorkflowBlock(platformId, workflows) {
   lines.push("");
   lines.push("<!-- cbx:managed:skill-routing start -->");
   lines.push("Classify intent before any MCP call.");
-  lines.push("- TIER 1 DIRECT: `skill_get <exact-skill-id>` when domain and skill are obvious.");
-  lines.push("- TIER 2 TARGETED SEARCH: one `skill_search <1-3 word noun>` max, then `skill_validate` -> `skill_get`.");
-  lines.push("- TIER 3 SKIP: no MCP call for conversational, same-session, or native-tool-sufficient work.");
+  lines.push(
+    "- TIER 1 DIRECT: `skill_get <exact-skill-id>` when domain and skill are obvious.",
+  );
+  lines.push(
+    "- TIER 2 TARGETED SEARCH: one `skill_search <1-3 word noun>` max, then `skill_validate` -> `skill_get`.",
+  );
+  lines.push(
+    "- TIER 3 SKIP: no MCP call for conversational, same-session, or native-tool-sufficient work.",
+  );
   lines.push("- Never pre-load skills or agents speculatively.");
   lines.push("- Keep one primary agent and one primary skill by default.");
-  lines.push("- Add supporting skills only when the active task explicitly crosses domains.");
-  lines.push("- Direct skill-package creation or repair work to `skill-authoring` instead of starting with `skill_search`.");
+  lines.push(
+    "- Add supporting skills only when the active task explicitly crosses domains.",
+  );
+  lines.push(
+    "- Direct skill-package creation or repair work to `skill-authoring` instead of starting with `skill_search`.",
+  );
   lines.push("# Full reference: foundry-detail.md#tiered-routing");
   lines.push("<!-- cbx:managed:skill-routing end -->");
   lines.push("");
   lines.push("<!-- cbx:managed:long-plan-execution start -->");
-  lines.push("When `PLAN_HANDOFF` is present, continue task 1→N without confirmation pauses.");
-  lines.push("- Pre-load deduped `skill_hint` values once, then run `skill_budget_report`.");
-  lines.push("- Execute in order, respecting `depends_on` and `stop_if_failed`.");
+  lines.push(
+    "When `PLAN_HANDOFF` is present, continue task 1→N without confirmation pauses.",
+  );
+  lines.push(
+    "- Pre-load deduped `skill_hint` values once, then run `skill_budget_report`.",
+  );
+  lines.push(
+    "- Execute in order, respecting `depends_on` and `stop_if_failed`.",
+  );
   lines.push("- Emit `CHECKPOINT` every ~3 tasks in runs of 5+.");
-  lines.push("- Finish with `EXECUTION_SUMMARY {completed, skipped, stopped_at, artifacts, skills_used, dropped}`.");
-  lines.push("- Stop only for blocking artifact failure, unplanned destructive action, missing required skill after one search, or explicit user halt.");
-  lines.push("- Codex: compact before context exhaustion. Antigravity: native long context. Copilot: write `.copilot-tracking/handoff.md`.");
+  lines.push(
+    "- Finish with `EXECUTION_SUMMARY {completed, skipped, stopped_at, artifacts, skills_used, dropped}`.",
+  );
+  lines.push(
+    "- Stop only for blocking artifact failure, unplanned destructive action, missing required skill after one search, or explicit user halt.",
+  );
+  lines.push(
+    "- Codex: compact before context exhaustion. Antigravity: native long context. Copilot: write `.copilot-tracking/handoff.md`.",
+  );
   lines.push("# Full reference: foundry-detail.md#plan-handoff-and-execution");
   lines.push("<!-- cbx:managed:long-plan-execution end -->");
   lines.push("");
@@ -3744,7 +3816,9 @@ function buildManagedWorkflowBlock(platformId, workflows) {
     lines.push("Prefer direct route identifiers first:");
     lines.push("- Workflows: `/workflow-name`");
     lines.push("- Agents: `@agent-name`");
-    lines.push("- Compatibility aliases remain available: `$workflow-*`, `$agent-*`");
+    lines.push(
+      "- Compatibility aliases remain available: `$workflow-*`, `$agent-*`",
+    );
     lines.push("");
 
     if (workflows.length === 0) {
@@ -3753,15 +3827,21 @@ function buildManagedWorkflowBlock(platformId, workflows) {
       for (const workflow of workflows) {
         const triggerPreview = workflow.triggers.slice(0, 2).join(", ");
         const hint = triggerPreview ? ` (${triggerPreview})` : "";
-        lines.push(`- ${workflow.command} -> primary route (${workflow.id})${hint}`);
+        lines.push(
+          `- ${workflow.command} -> primary route (${workflow.id})${hint}`,
+        );
       }
     }
 
     lines.push("");
     lines.push("Selection policy:");
-    lines.push("1. If the user names `/workflow` or `@agent`, use that route directly.");
+    lines.push(
+      "1. If the user names `/workflow` or `@agent`, use that route directly.",
+    );
     lines.push("2. Else map intent to one primary workflow.");
-    lines.push("3. Treat `$workflow-*` / `$agent-*` as compatibility aliases only.");
+    lines.push(
+      "3. Treat `$workflow-*` / `$agent-*` as compatibility aliases only.",
+    );
     lines.push("");
     lines.push("<!-- cbx:workflows:auto:end -->");
     return lines.join("\n");
@@ -3776,13 +3856,24 @@ function buildManagedWorkflowBlock(platformId, workflows) {
     lines.push(
       "- Do not use `$workflow-*` / `$agent-*` as the primary route surface here; those are Codex compatibility aliases.",
     );
-    lines.push("- `.github/skills` is installed by default, but route through workflows and agents before loading skills.");
+    lines.push(
+      "- `.github/skills` is installed by default, but route through workflows and agents before loading skills.",
+    );
     lines.push("");
   } else if (platformId === "antigravity") {
     lines.push("Prefer native Antigravity route surfaces first:");
     lines.push("- Commands: `.gemini/commands/*.toml`");
     lines.push("- Workflow files: `.agent/workflows/*.md`");
     lines.push("- Agents: `@agent-name`");
+    lines.push(
+      "- Do not use `$workflow-*` / `$agent-*` as the primary route surface here; those are Codex compatibility aliases.",
+    );
+    lines.push("");
+  } else if (platformId === "claude") {
+    lines.push("Prefer native Claude Code route surfaces first:");
+    lines.push("- Rules: `.claude/rules/*.md`");
+    lines.push("- Workflow files: `.claude/workflows/*.md`");
+    lines.push("- Memory: `CLAUDE.md`");
     lines.push(
       "- Do not use `$workflow-*` / `$agent-*` as the primary route surface here; those are Codex compatibility aliases.",
     );
@@ -3812,7 +3903,9 @@ function buildManagedWorkflowBlock(platformId, workflows) {
   lines.push("");
   lines.push("Selection policy:");
   if (platformId === "copilot") {
-    lines.push("1. Match explicit workflow prompt, workflow, or `@agent` first.");
+    lines.push(
+      "1. Match explicit workflow prompt, workflow, or `@agent` first.",
+    );
     lines.push(
       "2. Else match user intent to one primary workflow and reuse the matching prompt file when available.",
     );
@@ -3820,16 +3913,26 @@ function buildManagedWorkflowBlock(platformId, workflows) {
       "3. Treat `$workflow-*` / `$agent-*` as Codex compatibility aliases, not as the primary route surface here.",
     );
   } else if (platformId === "antigravity") {
-    lines.push("1. Match explicit Gemini command, workflow, or `@agent` first.");
+    lines.push(
+      "1. Match explicit Gemini command, workflow, or `@agent` first.",
+    );
     lines.push(
       "2. Else match user intent to one primary workflow and use the matching command file when available.",
     );
     lines.push(
       "3. Treat `$workflow-*` / `$agent-*` as Codex compatibility aliases, not as the primary route surface here.",
     );
+  } else if (platformId === "claude") {
+    lines.push("1. Match explicit workflow or scoped rule first.");
+    lines.push("2. Else match user intent to one primary workflow.");
+    lines.push(
+      "3. Treat `$workflow-*` / `$agent-*` as Codex compatibility aliases, not as the primary route surface here.",
+    );
   } else {
     lines.push("1. Match explicit slash command first.");
-    lines.push("2. Else match user intent to workflow description and triggers.");
+    lines.push(
+      "2. Else match user intent to workflow description and triggers.",
+    );
     lines.push(
       "3. Prefer one primary workflow; reference others only when needed.",
     );
@@ -4321,7 +4424,8 @@ async function persistManagedCredentialsEnv({ envVarNames, dryRun = false }) {
     "# Managed by cbx workflows config keys persist-env",
     "# Stores credential env vars for future cbx sessions.",
     ...orderedNames.map(
-      (name) => `export ${name}=${quoteShellEnvValue(existingEntries.get(name))}`,
+      (name) =>
+        `export ${name}=${quoteShellEnvValue(existingEntries.get(name))}`,
     ),
     "",
   ].join("\n");
@@ -4876,8 +4980,7 @@ async function promptPostmanWorkspaceSelection({
 
   if (!usedWorkspaceSelector) {
     const promptedWorkspaceId = await input({
-      message:
-        "Default Postman workspace ID (optional, leave blank for null):",
+      message: "Default Postman workspace ID (optional, leave blank for null):",
       default: selectedWorkspaceId || "",
     });
     selectedWorkspaceId = normalizePostmanWorkspaceId(promptedWorkspaceId);
@@ -5152,8 +5255,8 @@ async function applyPostmanMcpForPlatform({
       const result = await upsertJsonObjectFile({
         targetPath: vscodePath,
         updater: (existing) => {
-        const next = { ...existing };
-        const servers =
+          const next = { ...existing };
+          const servers =
             next.servers &&
             typeof next.servers === "object" &&
             !Array.isArray(next.servers)
@@ -5370,7 +5473,8 @@ async function resolvePostmanInstallSelection({
   const warnings = [];
   const stitchEnabled =
     stitchRequested ||
-    (platform === "antigravity" && options.stitchDefaultForAntigravity !== false);
+    (platform === "antigravity" &&
+      options.stitchDefaultForAntigravity !== false);
   const envStitchApiKey = normalizePostmanApiKey(
     process.env[STITCH_API_KEY_ENV_VAR],
   );
@@ -5816,13 +5920,13 @@ async function configurePostmanInstallArtifacts({
       }
     : await applyPostmanMcpForPlatform({
         platform,
-      mcpScope: postmanSelection.mcpScope,
-      apiKeyEnvVar: effectiveApiKeyEnvVar,
-      mcpUrl: effectiveMcpUrl,
-      includePostmanMcp: shouldInstallPostman,
-      stitchApiKeyEnvVar: effectiveStitchApiKeyEnvVar,
-      stitchMcpUrl: effectiveStitchMcpUrl,
-      includeStitchMcp: shouldInstallStitch,
+        mcpScope: postmanSelection.mcpScope,
+        apiKeyEnvVar: effectiveApiKeyEnvVar,
+        mcpUrl: effectiveMcpUrl,
+        includePostmanMcp: shouldInstallPostman,
+        stitchApiKeyEnvVar: effectiveStitchApiKeyEnvVar,
+        stitchMcpUrl: effectiveStitchMcpUrl,
+        includeStitchMcp: shouldInstallStitch,
         includeFoundryMcp: postmanSelection.foundryMcpEnabled,
         dryRun,
         cwd,
@@ -5880,7 +5984,10 @@ async function configurePostmanInstallArtifacts({
     postmanEnabled: shouldInstallPostman,
     postmanMode:
       shouldInstallPostman && effectiveMcpUrl
-        ? resolvePostmanModeFromUrl(effectiveMcpUrl, DEFAULT_POSTMAN_INSTALL_MODE)
+        ? resolvePostmanModeFromUrl(
+            effectiveMcpUrl,
+            DEFAULT_POSTMAN_INSTALL_MODE,
+          )
         : null,
     postmanMcpUrl: shouldInstallPostman ? effectiveMcpUrl : null,
     apiKeySource: effectiveApiKeySource,
@@ -5926,7 +6033,8 @@ async function applyPostmanConfigArtifacts({
   const postmanState = ensureCredentialServiceState(configValue, "postman");
   const stitchState = parseStoredStitchConfig(configValue);
   const postmanApiKeyEnvVar =
-    normalizePostmanApiKey(postmanState.apiKeyEnvVar) || POSTMAN_API_KEY_ENV_VAR;
+    normalizePostmanApiKey(postmanState.apiKeyEnvVar) ||
+    POSTMAN_API_KEY_ENV_VAR;
   const postmanMcpUrl = postmanState.mcpUrl || POSTMAN_MCP_URL;
   const stitchEnabled = Boolean(stitchState);
   const stitchApiKeyEnvVar =
@@ -6503,7 +6611,10 @@ async function installBundleArtifacts({
         overwrite,
         dryRun,
       });
-      if (indexResult.action === "skipped" || indexResult.action === "would-skip")
+      if (
+        indexResult.action === "skipped" ||
+        indexResult.action === "would-skip"
+      )
         skipped.push(skillsIndexDest);
       else installed.push(skillsIndexDest);
     }
@@ -7893,7 +8004,11 @@ async function performWorkflowInstall(
   });
 
   if (platform === "codex" && scope === "global") {
-    const codexProjectPaths = await resolveProfilePaths("codex", "project", cwd);
+    const codexProjectPaths = await resolveProfilePaths(
+      "codex",
+      "project",
+      cwd,
+    );
     if (
       path.resolve(artifactProfilePaths.workflowsDir) !==
       path.resolve(codexProjectPaths.workflowsDir)
@@ -8520,7 +8635,11 @@ async function removePlatformMcpRuntimeTargets({
   cwd = process.cwd(),
 }) {
   const workspaceRoot = findWorkspaceRoot(cwd);
-  const serverIds = [POSTMAN_SKILL_ID, FOUNDRY_MCP_SERVER_ID, STITCH_MCP_SERVER_ID];
+  const serverIds = [
+    POSTMAN_SKILL_ID,
+    FOUNDRY_MCP_SERVER_ID,
+    STITCH_MCP_SERVER_ID,
+  ];
 
   if (platform === "antigravity") {
     const settingsPath =
@@ -8663,7 +8782,8 @@ async function runWorkflowRemoveAll(options) {
           return path.resolve(candidateDir) === path.resolve(primaryDir);
         };
         const alternateWorkflowsDirs = profileCandidates.workflowsDirs.filter(
-          (dirPath) => !isPrimaryDir(dirPath, artifactProfilePaths.workflowsDir),
+          (dirPath) =>
+            !isPrimaryDir(dirPath, artifactProfilePaths.workflowsDir),
         );
         const alternateAgentsDirs = profileCandidates.agentsDirs.filter(
           (dirPath) => !isPrimaryDir(dirPath, artifactProfilePaths.agentsDir),
@@ -8718,7 +8838,9 @@ async function runWorkflowRemoveAll(options) {
           });
           const wrapperSkillIds =
             platform === "codex" ? buildCodexWrapperSkillIds(platformSpec) : [];
-          const bundleSkillIds = [...new Set([...skillIds, ...wrapperSkillIds])];
+          const bundleSkillIds = [
+            ...new Set([...skillIds, ...wrapperSkillIds]),
+          ];
 
           for (const workflowsDir of alternateWorkflowsDirs) {
             for (const workflowFile of workflowFiles) {
@@ -8863,7 +8985,11 @@ async function runWorkflowRemoveAll(options) {
           });
         }
 
-        const scopedProfilePaths = await resolveProfilePaths(platform, scope, cwd);
+        const scopedProfilePaths = await resolveProfilePaths(
+          platform,
+          scope,
+          cwd,
+        );
         const ruleCandidates = [...scopedProfilePaths.ruleFilesByPriority];
         if (scope === "global") {
           const workspaceRule = await resolveWorkspaceRuleFileForGlobalScope(
@@ -8995,7 +9121,9 @@ async function runWorkflowRemoveAll(options) {
     if (ruleRecords.length > 0) {
       console.log("\nRule file cleanup:");
       for (const item of ruleRecords) {
-        console.log(`- [${item.platform}/${item.scope}] ${item.filePath}: ${item.action}`);
+        console.log(
+          `- [${item.platform}/${item.scope}] ${item.filePath}: ${item.action}`,
+        );
       }
     }
 
@@ -9864,7 +9992,10 @@ async function runWorkflowConfigKeysPersistEnv(options) {
       let selectedProfiles = [];
 
       if (requestedProfileName) {
-        const selected = findProfileByName(state.profiles, requestedProfileName);
+        const selected = findProfileByName(
+          state.profiles,
+          requestedProfileName,
+        );
         if (!selected) {
           warnings.push(
             `${serviceId}: profile '${requestedProfileName}' was not found`,
@@ -10079,15 +10210,9 @@ async function runWorkflowConfig(options) {
       let platform = null;
       const explicitPlatform = normalizePlatform(opts.platform);
       const configuredPlatform = normalizePlatform(next?.mcp?.platform);
-      if (
-        explicitPlatform &&
-        WORKFLOW_PROFILES[explicitPlatform]
-      ) {
+      if (explicitPlatform && WORKFLOW_PROFILES[explicitPlatform]) {
         platform = explicitPlatform;
-      } else if (
-        configuredPlatform &&
-        WORKFLOW_PROFILES[configuredPlatform]
-      ) {
+      } else if (configuredPlatform && WORKFLOW_PROFILES[configuredPlatform]) {
         platform = configuredPlatform;
       } else {
         try {
@@ -11442,7 +11567,9 @@ function normalizeInitMcpSelections(value) {
   const items = Array.isArray(value) ? value : parseCsvOption(value);
   const normalized = [];
   for (const item of items) {
-    const key = String(item || "").trim().toLowerCase();
+    const key = String(item || "")
+      .trim()
+      .toLowerCase();
     if (!allowed.has(key)) continue;
     if (!normalized.includes(key)) normalized.push(key);
   }
@@ -11497,7 +11624,9 @@ async function runInitWizard(options) {
       options.skillProfile,
       DEFAULT_SKILL_PROFILE,
     );
-    const defaultSkillsScope = normalizeScope(options.skillsScope || options.scope);
+    const defaultSkillsScope = normalizeScope(
+      options.skillsScope || options.scope,
+    );
     const defaultMcpScope =
       normalizeMcpScope(options.mcpScope, defaultSkillsScope) === "global"
         ? "global"
@@ -11510,7 +11639,9 @@ async function runInitWizard(options) {
     const defaultPlatforms = normalizeInitPlatforms(options.platforms);
     const defaultMcpRuntime = normalizeMcpRuntime(
       options.mcpRuntime,
-      defaultMcpSelections.some((item) => item === "postman" || item === "stitch")
+      defaultMcpSelections.some(
+        (item) => item === "postman" || item === "stitch",
+      )
         ? "docker"
         : "local",
     );
@@ -11610,12 +11741,14 @@ async function runInitWizard(options) {
     }
 
     if (selections.postmanApiKey) {
-      process.env[profileEnvVarAlias("postman", DEFAULT_CREDENTIAL_PROFILE_NAME)] =
-        selections.postmanApiKey;
+      process.env[
+        profileEnvVarAlias("postman", DEFAULT_CREDENTIAL_PROFILE_NAME)
+      ] = selections.postmanApiKey;
     }
     if (selections.stitchApiKey) {
-      process.env[profileEnvVarAlias("stitch", DEFAULT_CREDENTIAL_PROFILE_NAME)] =
-        selections.stitchApiKey;
+      process.env[
+        profileEnvVarAlias("stitch", DEFAULT_CREDENTIAL_PROFILE_NAME)
+      ] = selections.stitchApiKey;
     }
 
     const plan = buildInitExecutionPlan({
@@ -11645,7 +11778,9 @@ async function runInitWizard(options) {
     const results = [];
     for (const item of plan.items) {
       try {
-        const installOutcome = await performWorkflowInstall(item.installOptions);
+        const installOutcome = await performWorkflowInstall(
+          item.installOptions,
+        );
         if (installOutcome.cancelled) {
           console.log("Cancelled.");
           process.exit(0);
@@ -11656,17 +11791,21 @@ async function runInitWizard(options) {
           bundleId: installOutcome.bundleId,
           installed: installOutcome.installResult.installed,
           skipped: installOutcome.installResult.skipped,
-          generatedWrapperSkills: installOutcome.installResult.generatedWrapperSkills,
-          duplicateSkillCleanup: installOutcome.installResult.duplicateSkillCleanup,
+          generatedWrapperSkills:
+            installOutcome.installResult.generatedWrapperSkills,
+          duplicateSkillCleanup:
+            installOutcome.installResult.duplicateSkillCleanup,
           sanitizedSkills: installOutcome.installResult.sanitizedSkills,
           sanitizedAgents: installOutcome.installResult.sanitizedAgents,
           terminalIntegration: installOutcome.installResult.terminalIntegration,
-          terminalIntegrationRules: installOutcome.terminalVerificationRuleResult,
+          terminalIntegrationRules:
+            installOutcome.terminalVerificationRuleResult,
           dryRun: installOutcome.dryRun,
         });
         printRuleSyncResult(installOutcome.syncResult);
         printInstallEngineeringSummary({
-          engineeringResults: installOutcome.engineeringArtifactsResult.engineeringResults,
+          engineeringResults:
+            installOutcome.engineeringArtifactsResult.engineeringResults,
           techResult: installOutcome.engineeringArtifactsResult.techResult,
         });
         printPostmanSetupSummary({
@@ -11691,7 +11830,9 @@ async function runInitWizard(options) {
           error: error?.message || String(error),
         };
         results.push(failure);
-        console.error(`\nInit failed on platform '${item.platform}': ${failure.error}`);
+        console.error(
+          `\nInit failed on platform '${item.platform}': ${failure.error}`,
+        );
         if (emitJson) {
           console.log(JSON.stringify({ dryRun, results }, null, 2));
         }
@@ -11787,7 +11928,9 @@ export function buildCliProgram() {
 
 export async function runCli(argv = process.argv) {
   const program = buildCliProgram();
-  const removedTopLevelAlias = String(argv[2] || "").trim().toLowerCase();
+  const removedTopLevelAlias = String(argv[2] || "")
+    .trim()
+    .toLowerCase();
   if (["skills", "install", "platforms"].includes(removedTopLevelAlias)) {
     console.error(
       `\nError: '${removedTopLevelAlias}' has been removed. Use 'cbx workflows' commands instead.`,
@@ -11804,7 +11947,9 @@ export async function runCli(argv = process.argv) {
 
   if (
     removedTopLevelAlias === "workflows" &&
-    String(argv[3] || "").trim().toLowerCase() === "init"
+    String(argv[3] || "")
+      .trim()
+      .toLowerCase() === "init"
   ) {
     console.error("\nError: 'cbx workflows init' has been removed.");
     console.error("Use: cbx workflows install");

@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented in this file.
 
+## [Unreleased]
+
+### Changed
+
+- Clarified Postman MCP guidance across skills, workflows, README, and platform rule templates:
+  - direct `postman` MCP server is now the explicit execution path for collections, workspaces, environments, monitors, and runs
+  - Foundry `postman_*` tools are documented as config/status helpers only.
+- Added quota-safe Postman execution guidance:
+  - no automatic `runCollection` -> `runMonitor` fallback
+  - Postman CLI is the recommended secondary path after direct MCP execution fails
+  - monitor quota, API rate limits, and runtime timeouts are documented as separate failure classes.
+
 ## [0.3.62] - 2026-03-05
 
 ### Fixed

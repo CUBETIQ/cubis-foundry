@@ -69,8 +69,7 @@ const canonicalRoots = [
 ];
 const mirrors = {
   copilot: path.join(root, 'workflows', 'workflows', 'agent-environment-setup', 'platforms', 'copilot', 'skills'),
-  cursor: path.join(root, 'workflows', 'workflows', 'agent-environment-setup', 'platforms', 'cursor', 'skills'),
-  windsurf: path.join(root, 'workflows', 'workflows', 'agent-environment-setup', 'platforms', 'windsurf', 'skills')
+  claude: path.join(root, 'workflows', 'workflows', 'agent-environment-setup', 'platforms', 'claude', 'skills')
 };
 function listDirs(dir) {
   if (!fs.existsSync(dir)) return [];

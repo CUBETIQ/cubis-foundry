@@ -26,8 +26,7 @@ const SKILLS_INDEX_PATH = path.join(ASSETS_ROOT, "skills", "skills_index.json");
 const CANONICAL_SKILLS_ROOT = path.join(ASSETS_ROOT, "skills");
 const MIRROR_SKILL_ROOTS = {
   copilot: path.join(BUNDLE_ROOT, "platforms", "copilot", "skills"),
-  cursor: path.join(BUNDLE_ROOT, "platforms", "cursor", "skills"),
-  windsurf: path.join(BUNDLE_ROOT, "platforms", "windsurf", "skills"),
+  claude: path.join(BUNDLE_ROOT, "platforms", "claude", "skills"),
 };
 
 const CLI_ARGS = new Set(process.argv.slice(2));
@@ -79,6 +78,11 @@ const platforms = {
     agentDir: "agents",
     promptsDir: "prompts",
     rulesFile: "rules/AGENTS.md",
+  },
+  claude: {
+    workflowDir: "workflows",
+    agentDir: "agents",
+    rulesFile: "rules/CLAUDE.md",
   },
 };
 
@@ -755,7 +759,7 @@ async function validateSharedSourceAndGeneratedParity({
     );
   }
 
-  for (const platformId of ["codex", "antigravity", "copilot"]) {
+  for (const platformId of ["codex", "antigravity", "copilot", "claude"]) {
     const spec = manifest.platforms?.[platformId];
     if (!spec) {
       error(errors, MANIFEST_PATH, `manifest missing platform '${platformId}'`);
@@ -889,7 +893,6 @@ async function validateSharedSourceAndGeneratedParity({
       `generated assets drift detected (${detail})`,
     );
   }
-
 }
 
 async function main() {

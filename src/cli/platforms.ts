@@ -1,1 +1,1 @@
-export type PlatformId = "codex" | "antigravity" | "copilot";
+export type PlatformId = "codex" | "antigravity" | "copilot" | "claude";

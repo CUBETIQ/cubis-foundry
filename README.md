@@ -5,14 +5,16 @@ Workflow-first installer for multi-platform AI agent environments.
 Last updated: 2026-03-04.
 
 `cbx` installs workflows, skills, wrappers, and rule files for:
+
 - Codex
 - Antigravity (Gemini)
 - GitHub Copilot
+- Claude Code
 
-Official install targets: `codex`, `antigravity`, `copilot`.
-Mirror/parity artifacts are maintained for `cursor` and `windsurf`, but those are not direct install targets.
+Official install targets: `codex`, `antigravity`, `copilot`, `claude`.
 
 Skill install default is profile-based:
+
 - default profile: `core`
 - add `--skill-profile web-backend` for broader web/backend stack
 - add `--all-skills` for full workflow + MCP catalog install
@@ -37,7 +39,7 @@ Skill install default is profile-based:
 
 - Workflow files (`/plan`, `/create`, etc.)
 - Skill folders
-- Codex callable wrapper skills ($workflow-*, $agent-*)
+- Codex callable wrapper skills ($workflow-_, $agent-_)
 - Platform rule files (`AGENTS.md`, `GEMINI.md`, etc.)
 - Engineering artifacts in workspace (`ENGINEERING_RULES.md`, `TECH.md`)
 - Managed MCP config for Postman and Stitch
@@ -65,6 +67,7 @@ cbx init
 ```
 
 Wizard flow:
+
 - Welcome screen (Cubis Foundry banner + version)
 - Bundle selection
 - Multi-platform selection (`codex`, `antigravity`, `copilot`)
@@ -104,6 +107,7 @@ cbx init \
 Use `cbx init` when you want step-by-step guided setup.
 
 Detailed wizard behavior and platform matrix:
+
 - `docs/cli-init-wizard.md`
 
 ## Quickstarts
@@ -115,6 +119,7 @@ cbx workflows install --platform codex --scope global --bundle agent-environment
 ```
 
 Important:
+
 - Do not use `--yes` if you want interactive Postman workspace selection.
 - Interactive install can fetch your Postman workspaces and save the selected workspace as the active profile `workspaceId`.
 
@@ -137,6 +142,7 @@ cbx workflows install --platform copilot --scope global --bundle agent-environme
 Default install scope is `global`.
 
 Behavior:
+
 - Skills are installed in global platform skill directories.
 - Workflows and agents are installed in project paths for active workspace behavior.
 - Rule files remain workspace-oriented for current repo context.
@@ -145,18 +151,21 @@ Behavior:
 ### Where files go
 
 Codex:
+
 - Global skills: `~/.agents/skills`
 - Project workflows: `<workspace>/.agents/workflows`
 - Project rules: `<workspace>/AGENTS.md`
 - Global rules: `~/.codex/AGENTS.md`
 
 Antigravity:
+
 - Global skills: `~/.gemini/antigravity/skills`
 - Project workflows: `<workspace>/.agent/workflows`
 - Project rules: `<workspace>/.agent/rules/GEMINI.md`
 - Global rules: `~/.gemini/GEMINI.md`
 
 Copilot:
+
 - Global skills: `~/.copilot/skills`
 - Project workflows: `<workspace>/.github/copilot/workflows`
 - Project rules: `<workspace>/AGENTS.md` and `<workspace>/.github/copilot-instructions.md`
@@ -167,6 +176,7 @@ Copilot:
 `cbx_config.json` is the single supported credentials/config source.
 
 Paths:
+
 - Global: `~/.cbx/cbx_config.json`
 - Project: `<workspace>/cbx_config.json`
 
@@ -240,6 +250,7 @@ cbx workflows config keys persist-env --service all --scope global
 ```
 
 Alias commands are also available:
+
 - None. Use canonical `cbx workflows config keys ...` commands only.
 
 ## Postman and Stitch Setup Flows
@@ -253,14 +264,26 @@ cbx workflows install --platform codex --scope global --bundle agent-environment
 If active Postman env var (for example `POSTMAN_API_KEY_DEFAULT`) is available and `--yes` is not used, installer can show workspace chooser and save selected `workspaceId` in active Postman profile.
 
 `--postman` now installs side-by-side MCP topology by default:
+
 - direct Postman MCP server (`postman`)
 - direct Stitch MCP server where applicable (`StitchMCP` for Antigravity)
 - local Foundry MCP command server (`cubis-foundry` via `cbx mcp serve --transport stdio --scope global`)
 
 `--postman` also installs the `postman` skill. Managed platform rules then treat Postman intent as skill-first:
+
 - run `skill_search "postman"`
 - load `skill_get "postman"` before workflow/agent routing
-- prefer Postman MCP tools over Newman/CLI fallback unless explicitly requested
+- use direct `postman` server tools for actual Postman collection/workspace/environment/run actions
+- keep Foundry `postman_*` tools limited to mode/status/default-workspace config
+- never auto-fallback from `runCollection` to `runMonitor`
+- recommend Postman CLI as the default secondary path after direct MCP execution fails
+- use monitor execution only when the user explicitly asks for monitor-based cloud execution
+
+Quota-safe execution facts:
+
+- Postman API rate limits are separate from monitor usage limits
+- monitor usage is plan/billing usage and is consumed by request count, region count, and auth requests
+- monitor runtime caps are separate from monitor quota and do not imply quota is still available
 
 To opt out of Foundry MCP registration during install:
 
@@ -312,24 +335,28 @@ Default managed command template:
 ## MCP Placement Matrix
 
 Managed MCP definition files (`.cbx/mcp/...`):
+
 - Global scope: `~/.cbx/mcp/<platform>/postman.json`
 - Project scope: `<workspace>/.cbx/mcp/<platform>/postman.json`
 
 Runtime target patching:
 
 Codex:
+
 - Global MCP runtime target: `~/.codex/config.toml` (via `codex mcp add/remove`)
 - Project MCP runtime target: `<workspace>/.vscode/mcp.json`
 - Foundry side-by-side server id: `cubis-foundry` (command: `cbx mcp serve --transport stdio --scope <global|project>`)
   - Install now pins scope explicitly (`global` or `project`) in this command.
 
 Antigravity:
+
 - Global runtime target: `~/.gemini/settings.json` (`mcpServers`)
 - Project runtime target: `<workspace>/.gemini/settings.json` (`mcpServers`)
 - Foundry side-by-side server id: `cubis-foundry` (command template)
   - Install now pins scope explicitly (`global` or `project`) in this command.
 
 Copilot:
+
 - Global runtime target: `~/.copilot/mcp-config.json` (`servers`)
 - Project runtime target: `<workspace>/.vscode/mcp.json` (`servers`)
 - Foundry side-by-side server id: `cubis-foundry` (stdio command server)
@@ -361,6 +388,7 @@ cbx workflows install --platform codex --bundle agent-environment-setup --postma
 ```
 
 When `--mcp-runtime docker` is selected and Docker is available, install now prepares the image automatically:
+
 - Pulls the image by default (`docker pull`)
 - Or builds locally when `--mcp-build-local` is set
 
@@ -373,6 +401,7 @@ cbx mcp tools list --service stitch --scope global
 ```
 
 Notes:
+
 - `cbx mcp tools sync` requires `POSTMAN_API_KEY_DEFAULT`.
 - For `--service stitch` or `--service all`, it also requires `STITCH_API_KEY_DEFAULT`.
 
@@ -392,6 +421,7 @@ npm run check:mcp-rules:all
 ```
 
 Generated MCP artifacts:
+
 - `mcp/generated/mcp-manifest.json` (catalog snapshot used by managed rule blocks)
 - `mcp/generated/README.md` (artifact notes)
 
@@ -502,6 +532,7 @@ cbx workflows config --scope project --mcp-runtime docker --mcp-fallback local
 ```
 
 `--show` now includes computed `status`:
+
 - stored source (from active profile config)
 - effective source (resolved at runtime with env)
 - active profile name
@@ -518,12 +549,14 @@ cbx rules tech-md --overwrite --compact
 ### Removed aliases
 
 The following aliases were removed:
+
 - `cbx skills ...`
 - `cbx install`
 - `cbx platforms`
 - `cbx workflows init`
 
 Use these canonical replacements:
+
 - `cbx init` (guided interactive installer)
 - `cbx workflows ...`
 - `cbx workflows install`
@@ -548,6 +581,7 @@ cbx workflows remove-all --scope all --platform all --yes
 ```
 
 What it removes (by scope/platform selection):
+
 - Generated workflows/agents/skills wrappers.
 - Managed rule blocks and generated engineering docs (`AGENTS.md`, `ENGINEERING_RULES.md`, `TECH.md`) where applicable.
 - Managed MCP definition files and runtime target entries.
@@ -574,9 +608,11 @@ TECH.md
 ### `MCP startup failed: Environment variable POSTMAN_API_KEY_* ... is not set`
 
 Cause:
+
 - Active profile uses env alias but variable is not exported in current shell/process.
 
 Fix:
+
 ```bash
 export POSTMAN_API_KEY_DEFAULT="<key>"
 cbx workflows config --scope global --show
@@ -587,11 +623,13 @@ Then confirm `status.postman.effectiveSource` is `env`.
 ### `apiKeySource` looks unset even after export
 
 Use:
+
 ```bash
 cbx workflows config --scope global --show
 ```
 
 Check these fields:
+
 - `status.postman.storedSource`
 - `status.postman.effectiveSource`
 - `status.postman.effectiveEnvVar`
@@ -601,15 +639,18 @@ If stored source is env but effective source is unset, your env var alias is mis
 ### Existing config skipped during install
 
 If installer says config was skipped:
+
 - Re-run with `--overwrite`, or
 - Use `cbx workflows config` / `cbx workflows config keys ...` to mutate existing config.
 
 ### Docker runtime starts but skill discovery is zero
 
 Cause:
+
 - Runtime container has no skill mount at `/workflows/skills`.
 
 Fix:
+
 ```bash
 # Ensure host skill vault exists
 ls ~/.agents/skills

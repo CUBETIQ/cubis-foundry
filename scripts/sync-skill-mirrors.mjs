@@ -19,22 +19,13 @@ const MIRRORS = {
     "copilot",
     "skills",
   ),
-  cursor: path.join(
+  claude: path.join(
     ROOT,
     "workflows",
     "workflows",
     "agent-environment-setup",
     "platforms",
-    "cursor",
-    "skills",
-  ),
-  windsurf: path.join(
-    ROOT,
-    "workflows",
-    "workflows",
-    "agent-environment-setup",
-    "platforms",
-    "windsurf",
+    "claude",
     "skills",
   ),
 };
@@ -141,7 +132,10 @@ function sanitizeSkillMarkdownForCopilot(markdown) {
     }
   }
 
-  const cleanedFrontmatter = kept.join("\n").replace(/\n{3,}/g, "\n\n").trimEnd();
+  const cleanedFrontmatter = kept
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trimEnd();
   const bodyWithoutLeadingNewlines = extracted.body.replace(/^\n+/, "");
   return `---\n${cleanedFrontmatter}\n---\n${bodyWithoutLeadingNewlines}`;
 }
@@ -161,7 +155,11 @@ async function copyFilteredSkillDir(source, destination, label, depth = 0) {
 
     if (!entry.isFile()) continue;
     if (entry.name === "POWER.md") continue;
-    if (depth === 0 && entry.name.endsWith(".md") && entry.name !== "SKILL.md") {
+    if (
+      depth === 0 &&
+      entry.name.endsWith(".md") &&
+      entry.name !== "SKILL.md"
+    ) {
       continue;
     }
 
@@ -242,7 +240,7 @@ async function main() {
 
   if (targets.length === 0) {
     throw new Error(
-      `Unknown --only target '${only}'. Use one of: all, copilot, cursor, windsurf.`,
+      `Unknown --only target '${only}'. Use one of: all, copilot, claude.`,
     );
   }
 
