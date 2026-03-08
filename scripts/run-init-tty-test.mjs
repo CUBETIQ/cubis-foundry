@@ -1,11 +1,15 @@
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import process from "node:process";
+import { fileURLToPath } from "node:url";
+
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 
 function hasExpect() {
-  const probe = process.platform === "win32"
-    ? spawnSync("where", ["expect"], { encoding: "utf8" })
-    : spawnSync("which", ["expect"], { encoding: "utf8" });
+  const probe =
+    process.platform === "win32"
+      ? spawnSync("where", ["expect"], { encoding: "utf8" })
+      : spawnSync("which", ["expect"], { encoding: "utf8" });
   return probe.status === 0;
 }
 
@@ -20,7 +24,7 @@ if (!hasExpect()) {
   process.exit(0);
 }
 
-const scriptPath = path.resolve("scripts", "test-init-tty.exp");
+const scriptPath = path.resolve(scriptDir, "test-init-tty.exp");
 const cliPath = path.resolve(cliArg);
 const result = spawnSync("expect", [scriptPath, cliPath], {
   stdio: "inherit",
