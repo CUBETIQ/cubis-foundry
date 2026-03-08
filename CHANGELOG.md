@@ -14,6 +14,16 @@ All notable changes to this project are documented in this file.
   - Postman CLI is the recommended secondary path after direct MCP execution fails
   - monitor quota, API rate limits, and runtime timeouts are documented as separate failure classes.
 
+## [0.3.67] - 2026-03-08
+
+### Fixed
+
+- `cbx init` now keeps MCP runtime selection available when `cubis-foundry` is the only MCP selected.
+- Foundry MCP install/config patching now respects the selected runtime:
+  - local runtime keeps the `cbx mcp serve` stdio registration
+  - docker runtime points supported clients at the local Docker MCP endpoint
+- `cbx workflows config --mcp-runtime ...` now reapplies managed MCP target wiring so runtime changes update the platform config.
+
 ## [0.3.62] - 2026-03-05
 
 ### Fixed
@@ -262,3 +272,5 @@ All notable changes to this project are documented in this file.
 - Added centralized Postman config via `cbx_config.json`.
 - Added MCP scope controls (`project/workspace/global/user`) with platform-aware runtime placement.
 - Kept rules/engineering artifacts in workspace scope while defaulting skills/powers install to global scope.
+
+

@@ -28,6 +28,7 @@ export function buildInitExecutionPlan({
   for (const platform of selections.platforms) {
     const stitchSupported = platform === "antigravity";
     const stitchEnabled = wantsStitch && stitchSupported;
+    const hasAnyMcp = wantsPostman || stitchEnabled || wantsFoundry;
     const warnings: string[] = [];
     if (wantsStitch && !stitchSupported) {
       warnings.push(
@@ -51,10 +52,9 @@ export function buildInitExecutionPlan({
       mcpScope: selections.mcpScope,
       foundryMcp: wantsFoundry,
       mcpToolSync: wantsPostman || stitchEnabled,
-      mcpRuntime: wantsPostman || stitchEnabled ? selections.mcpRuntime : "local",
+      mcpRuntime: hasAnyMcp ? selections.mcpRuntime : "local",
       mcpFallback: "local",
-      mcpBuildLocal:
-        wantsPostman || stitchEnabled ? selections.mcpBuildLocal : false,
+      mcpBuildLocal: hasAnyMcp ? selections.mcpBuildLocal : false,
       postmanMode: wantsPostman ? selections.postmanMode : undefined,
       postmanWorkspaceId: wantsPostman
         ? selections.postmanWorkspaceId

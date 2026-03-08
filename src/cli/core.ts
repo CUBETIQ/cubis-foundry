@@ -4546,7 +4546,23 @@ function buildFoundryServeArgs({ scope = "auto" } = {}) {
   return ["mcp", "serve", "--transport", "stdio", "--scope", normalizedScope];
 }
 
-function buildVsCodeFoundryServer({ scope = "auto" } = {}) {
+function buildFoundryDockerUrl({ port = DEFAULT_MCP_DOCKER_HOST_PORT } = {}) {
+  return `http://127.0.0.1:${normalizePortNumber(port, DEFAULT_MCP_DOCKER_HOST_PORT)}/mcp`;
+}
+
+function buildVsCodeFoundryServer({
+  scope = "auto",
+  runtime = "local",
+  dockerPort = DEFAULT_MCP_DOCKER_HOST_PORT,
+} = {}) {
+  if (runtime === "docker") {
+    return {
+      type: "http",
+      url: buildFoundryDockerUrl({ port: dockerPort }),
+      headers: {},
+    };
+  }
+
   return {
     type: "stdio",
     command: FOUNDRY_MCP_COMMAND,
@@ -4570,7 +4586,20 @@ function buildCopilotCliPostmanServer({
   };
 }
 
-function buildCopilotCliFoundryServer({ scope = "auto" } = {}) {
+function buildCopilotCliFoundryServer({
+  scope = "auto",
+  runtime = "local",
+  dockerPort = DEFAULT_MCP_DOCKER_HOST_PORT,
+} = {}) {
+  if (runtime === "docker") {
+    return {
+      type: "http",
+      url: buildFoundryDockerUrl({ port: dockerPort }),
+      headers: {},
+      tools: ["*"],
+    };
+  }
+
   return {
     type: "stdio",
     command: FOUNDRY_MCP_COMMAND,
@@ -4593,7 +4622,18 @@ function buildGeminiPostmanServer({
   };
 }
 
-function buildGeminiFoundryServer({ scope = "auto" } = {}) {
+function buildGeminiFoundryServer({
+  scope = "auto",
+  runtime = "local",
+  dockerPort = DEFAULT_MCP_DOCKER_HOST_PORT,
+} = {}) {
+  if (runtime === "docker") {
+    return {
+      httpUrl: buildFoundryDockerUrl({ port: dockerPort }),
+      headers: {},
+    };
+  }
+
   return {
     command: FOUNDRY_MCP_COMMAND,
     args: buildFoundryServeArgs({ scope }),
@@ -5110,18 +5150,35 @@ async function applyPostmanMcpForPlatform({
   stitchMcpUrl,
   includeStitchMcp = false,
   includeFoundryMcp = true,
+  foundryRuntime = "local",
   dryRun = false,
   cwd = process.cwd(),
 }) {
   const workspaceRoot = findWorkspaceRoot(cwd);
   const warnings = [];
   const foundryScope = mcpScope === "global" ? "global" : "project";
+  const normalizedFoundryRuntime = normalizeMcpRuntime(foundryRuntime, "local");
   const resolvedPostmanApiKey = normalizePostmanApiKey(
     process.env[apiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR],
   );
   const resolvedStitchApiKey = normalizePostmanApiKey(
     process.env[stitchApiKeyEnvVar || STITCH_API_KEY_ENV_VAR],
   );
+  let foundryDockerPort = DEFAULT_MCP_DOCKER_HOST_PORT;
+  if (includeFoundryMcp && normalizedFoundryRuntime === "docker") {
+    const runningPort = await resolveDockerContainerHostPort({
+      name: DEFAULT_MCP_DOCKER_CONTAINER_NAME,
+      containerPort: MCP_DOCKER_CONTAINER_PORT,
+      cwd,
+    });
+    if (runningPort) {
+      foundryDockerPort = runningPort;
+    } else {
+      warnings.push(
+        `Foundry MCP is configured for Docker runtime at ${buildFoundryDockerUrl({ port: foundryDockerPort })}. Start it with 'cbx mcp runtime up --scope ${mcpScope}'.`,
+      );
+    }
+  }
 
   if (platform === "antigravity") {
     const settingsPath =
@@ -5148,6 +5205,8 @@ async function applyPostmanMcpForPlatform({
         if (includeFoundryMcp) {
           mcpServers[FOUNDRY_MCP_SERVER_ID] = buildGeminiFoundryServer({
             scope: foundryScope,
+            runtime: normalizedFoundryRuntime,
+            dockerPort: foundryDockerPort,
           });
         } else {
           delete mcpServers[FOUNDRY_MCP_SERVER_ID];
@@ -5199,6 +5258,8 @@ async function applyPostmanMcpForPlatform({
           if (includeFoundryMcp) {
             mcpServers[FOUNDRY_MCP_SERVER_ID] = buildCopilotCliFoundryServer({
               scope: foundryScope,
+              runtime: normalizedFoundryRuntime,
+              dockerPort: foundryDockerPort,
             });
           } else {
             delete mcpServers[FOUNDRY_MCP_SERVER_ID];
@@ -5223,6 +5284,8 @@ async function applyPostmanMcpForPlatform({
         if (includeFoundryMcp) {
           servers[FOUNDRY_MCP_SERVER_ID] = buildVsCodeFoundryServer({
             scope: foundryScope,
+            runtime: normalizedFoundryRuntime,
+            dockerPort: foundryDockerPort,
           });
         } else {
           delete servers[FOUNDRY_MCP_SERVER_ID];
@@ -5272,6 +5335,8 @@ async function applyPostmanMcpForPlatform({
           if (includeFoundryMcp) {
             servers[FOUNDRY_MCP_SERVER_ID] = buildVsCodeFoundryServer({
               scope: foundryScope,
+              runtime: normalizedFoundryRuntime,
+              dockerPort: foundryDockerPort,
             });
           } else {
             delete servers[FOUNDRY_MCP_SERVER_ID];
@@ -5362,18 +5427,32 @@ async function applyPostmanMcpForPlatform({
 
     if (includeFoundryMcp) {
       try {
-        await execFile(
-          "codex",
-          [
-            "mcp",
-            "add",
-            FOUNDRY_MCP_SERVER_ID,
-            "--",
-            FOUNDRY_MCP_COMMAND,
-            ...buildFoundryServeArgs({ scope: foundryScope }),
-          ],
-          { cwd },
-        );
+        if (normalizedFoundryRuntime === "docker") {
+          await execFile(
+            "codex",
+            [
+              "mcp",
+              "add",
+              FOUNDRY_MCP_SERVER_ID,
+              "--url",
+              buildFoundryDockerUrl({ port: foundryDockerPort }),
+            ],
+            { cwd },
+          );
+        } else {
+          await execFile(
+            "codex",
+            [
+              "mcp",
+              "add",
+              FOUNDRY_MCP_SERVER_ID,
+              "--",
+              FOUNDRY_MCP_COMMAND,
+              ...buildFoundryServeArgs({ scope: foundryScope }),
+            ],
+            { cwd },
+          );
+        }
       } catch (error) {
         warnings.push(
           `Failed to register ${FOUNDRY_MCP_SERVER_ID} MCP via Codex CLI. Ensure 'cbx' and 'codex' are installed and rerun. (${error.message})`,
@@ -5928,6 +6007,7 @@ async function configurePostmanInstallArtifacts({
         stitchMcpUrl: effectiveStitchMcpUrl,
         includeStitchMcp: shouldInstallStitch,
         includeFoundryMcp: postmanSelection.foundryMcpEnabled,
+        foundryRuntime: postmanSelection.effectiveMcpRuntime || "local",
         dryRun,
         cwd,
       });
@@ -6040,6 +6120,10 @@ async function applyPostmanConfigArtifacts({
   const stitchApiKeyEnvVar =
     normalizePostmanApiKey(stitchState?.apiKeyEnvVar) || STITCH_API_KEY_ENV_VAR;
   const stitchMcpUrl = stitchState?.mcpUrl || STITCH_MCP_URL;
+  const foundryRuntime = normalizeMcpRuntime(
+    configValue?.mcp?.effectiveRuntime || configValue?.mcp?.runtime,
+    "local",
+  );
   const resolvedPostmanApiKey = normalizePostmanApiKey(
     process.env[postmanApiKeyEnvVar],
   );
@@ -6105,6 +6189,7 @@ async function applyPostmanConfigArtifacts({
       stitchMcpUrl,
       includeStitchMcp: stitchEnabled,
       includeFoundryMcp: true,
+      foundryRuntime,
       dryRun,
       cwd,
     });
@@ -7106,7 +7191,7 @@ function printPostmanSetupSummary({ postmanSetup }) {
     `- MCP tool sync: ${postmanSetup.mcpToolSync ? "enabled" : "disabled"}`,
   );
   console.log(
-    `- Foundry MCP side-by-side: ${postmanSetup.foundryMcpEnabled ? "enabled" : "disabled"}`,
+    `- Foundry MCP side-by-side: ${postmanSetup.foundryMcpEnabled ? postmanSetup.effectiveMcpRuntime === "docker" ? "enabled (docker endpoint)" : "enabled (cbx mcp serve)" : "disabled"}`,
   );
   if (postmanSetup.postmanEnabled) {
     console.log(`- Postman API key source: ${postmanSetup.apiKeySource}`);
@@ -10205,7 +10290,7 @@ async function runWorkflowConfig(options) {
     );
 
     let postmanArtifacts = null;
-    if (hasPostmanModeOption) {
+    if (hasPostmanModeOption || hasMcpRuntimeOption) {
       const mcpScope = resolveMcpScopeFromConfigDocument(next, scope);
       let platform = null;
       const explicitPlatform = normalizePlatform(opts.platform);
@@ -11695,18 +11780,16 @@ async function runInitWizard(options) {
       throw new Error("No platforms selected.");
     }
 
-    const remoteMcpSelected =
-      selections.selectedMcps.includes("postman") ||
-      selections.selectedMcps.includes("stitch");
+    const runtimeSelectableMcp = selections.selectedMcps.length > 0;
 
-    if (remoteMcpSelected && isInteractive) {
+    if (runtimeSelectableMcp && isInteractive) {
       const runtimeSelection = await promptInitMcpRuntime({
         defaultRuntime: selections.mcpRuntime,
         defaultBuildLocal: selections.mcpBuildLocal,
       });
       selections.mcpRuntime = runtimeSelection.mcpRuntime;
       selections.mcpBuildLocal = runtimeSelection.mcpBuildLocal;
-    } else if (!remoteMcpSelected) {
+    } else if (!runtimeSelectableMcp) {
       selections.mcpRuntime = "local";
       selections.mcpBuildLocal = false;
     }

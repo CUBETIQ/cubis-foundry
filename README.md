@@ -81,7 +81,7 @@ Wizard flow:
 - Skills profile selection (`core`, `web-backend`, `full`)
 - MCP selection (`Cubis Foundry`, `Postman`, `Stitch`)
 - Separate scope selection for Skills and MCP (`project` or `global`)
-- MCP runtime selection (`cbx mcp serve` local, Docker pull, Docker local build) when Postman/Stitch is enabled
+- MCP runtime selection (`cbx mcp serve` local, Docker pull, Docker local build) when any MCP integration is enabled
 - Conditional Postman mode/key/workspace and Stitch key prompts
 - Final summary + confirmation
 
@@ -354,6 +354,7 @@ Codex:
 - Project MCP runtime target: `<workspace>/.vscode/mcp.json`
 - Foundry side-by-side server id: `cubis-foundry` (command: `cbx mcp serve --transport stdio --scope <global|project>`)
   - Install now pins scope explicitly (`global` or `project`) in this command.
+  - When MCP runtime is set to `docker`, install points `cubis-foundry` at the local Docker endpoint (`http://127.0.0.1:3310/mcp`) instead of the stdio command.
 
 Antigravity:
 
