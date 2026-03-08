@@ -7,7 +7,13 @@ metadata:
   domain: "language"
   role: "specialist"
   stack: "rust"
+  category: "languages"
+  layer: "languages"
+  canonical: true
+  maturity: "stable"
+  aliases: ["rust-engineer"]
   baseline: "Rust stable 1.91"
+  tags: ["rust", "async", "systems", "performance", "services"]
 ---
 # Rust Pro
 

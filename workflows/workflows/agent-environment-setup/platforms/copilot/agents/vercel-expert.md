@@ -49,6 +49,6 @@ Load on demand. Do not preload all references.
 - Add QA specialist support for release gates and regression automation.
 
 ## Skill routing
-Prefer these skills when task intent matches: `vercel-platform`, `vercel-runtime`, `vercel-delivery`, `vercel-security`, `vercel-ai`.
+Prefer these skills when task intent matches: `nextjs-developer`, `react-expert`, `tailwind-patterns`, `web-perf`, `nodejs-best-practices`, `typescript-pro`, `javascript-pro`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

@@ -1,142 +1,61 @@
 ---
 name: "design-system-builder"
-description: "Create and review design system components: API design, token usage, theming, variants, and documentation"
+description: "Use when creating or reviewing reusable UI components, token-driven styling, variant APIs, theming hooks, and component documentation for a design system."
+license: MIT
+metadata:
+  version: "3.0.0"
+  domain: "frontend"
+  role: "specialist"
+  stack: "design-system"
+  category: "frameworks-runtimes"
+  layer: "frameworks-runtimes"
+  canonical: true
+  maturity: "stable"
+  baseline: "token-driven component systems"
+  tags: ["design-system", "components", "tokens", "theming", "variants", "ui"]
 ---
 # Design System Builder
 
-## Overview
+## When to use
 
-This power helps you create new design system components or update existing ones, ensuring consistent API design, proper token usage, theming support, and comprehensive documentation.
+- Designing reusable component APIs and variant systems.
+- Standardizing token usage, theming hooks, and component composition.
+- Reviewing whether a component belongs in the system or app layer.
+- Writing design-system-facing implementation guidance and examples.
 
-## When to Use
+## When not to use
 
-- Creating new One\* components
-- Updating existing One\* components
-- Reviewing component API design
-- Adding new variants to components
-- Ensuring token compliance in components
+- One-off product UI with no reusable-system concern.
+- Pure visual direction work before component boundaries are known.
+- Framework/runtime debugging unrelated to component API design.
 
-## Component Design Principles
+## Core workflow
 
-### 1. Token-Based Styling
+1. Confirm whether the component is truly reusable across screens or products.
+2. Define semantic props, states, variants, and token usage before styling details.
+3. Keep the base primitive simple and compose complexity around it deliberately.
+4. Make theming, accessibility, and docs part of the contract.
+5. Verify the component system stays smaller and clearer after the addition.
 
-```dart
-// ❌ Don't hardcode values
-Container(
-  padding: EdgeInsets.all(16),
-  decoration: BoxDecoration(
-    color: Color(0xFF123456),
-    borderRadius: BorderRadius.circular(8),
-  ),
-)
+## Baseline standards
 
-// ✅ Use design tokens
-Container(
-  padding: EdgeInsets.all(AppSpacing.lg), // Use your spacing tokens
-  decoration: BoxDecoration(
-    color: Theme.of(context).colorScheme.surface, // Use theme colors
-    borderRadius: BorderRadius.circular(AppRadius.md), // Use radius tokens
-  ),
-)
-```
+- Use semantic APIs instead of exposing raw style knobs by default.
+- Prefer token-driven styling over hardcoded values.
+- Make state, variant, and accessibility behavior explicit.
+- Keep component boundaries composable rather than magical.
+- Document intended usage and anti-usage clearly.
 
-### 2. Semantic API
+## Avoid
 
-```dart
-// ✅ Semantic, clear API
-class AppButton extends StatelessWidget {
-  final String label;
-  final VoidCallback? onPressed;
-  final bool isLoading;
-  final bool isDisabled;
-  final Widget? leading;
-  final Widget? trailing;
-
-  // Named constructors for variants
-  AppButton.primary({...});
-  AppButton.secondary({...});
-  AppButton.ghost({...});
-}
-```
-
-### 3. Composition Over Configuration
-
-```dart
-// ✅ Compose smaller components
-class AppCard extends StatelessWidget {
-  final Widget child;
-  final EdgeInsets? padding;
-  final Color? backgroundColor;
-
-  AppCard.elevated({...}) : this(
-    padding: EdgeInsets.all(AppSpacing.lg),
-    backgroundColor: Theme.of(context).colorScheme.surface,
-    elevation: 2,
-  );
-}
-```
-
-## Component Checklist
-
-### API Design
-
-- [ ] Semantic property names (label, errorText, leading, trailing)
-- [ ] Sensible defaults (minimal required params)
-- [ ] Named constructors for variants
-- [ ] Consistent with other design system components
-
-### Token Usage
-
-- [ ] No hardcoded colors (use theme colors or color tokens)
-- [ ] No hardcoded spacing (use spacing tokens)
-- [ ] No hardcoded typography (use text styles)
-- [ ] No hardcoded radius (use radius tokens)
-
-### Theming
-
-- [ ] Respects light/dark theme
-- [ ] Uses theme-aware colors (context.colors)
-- [ ] Adapts to platform (iOS/Android)
-
-### Variants
-
-- [ ] Variants defined as enums or named constructors
-- [ ] Each variant has clear use case
-- [ ] Variants share common base implementation
-
-### Documentation
-
-- [ ] Doc comment explaining purpose
-- [ ] At least 2 usage examples
-- [ ] Migration notes from raw Flutter widgets
-
-### Testing
-
-- [ ] Widget test for each variant
-- [ ] Test disabled/loading states
-- [ ] Test accessibility (semantic labels)
-- [ ] Consider golden tests for visual regression
-
-## Output Format
-
-When creating/reviewing a component:
-
-1. **Component Spec** (purpose, variants, API)
-2. **Token Usage** (which tokens are used)
-3. **Implementation Notes** (composition, theming)
-4. **Examples** (2+ usage snippets)
-5. **Tests** (widget tests + golden ideas)
-6. **Migration Notes** (how to replace old widgets)
+- Dumping product-specific behavior into system primitives.
+- Hardcoded spacing, colors, and radii in shared components.
+- Prop surfaces that only mirror implementation internals.
+- Adding variants before the use cases are distinct and durable.
 
 ## References
 
-Load detailed guidance only when needed.
+Load on demand. Do not preload all reference files.
 
 | File | Load when |
 | --- | --- |
-| `references/component_api_guidelines.md` | Designing or reviewing a component API, variants, theming hooks, or token usage contracts |
-
-## Templates
-
-- `one_component_skeleton` - Component template
-- `component_widget_test` - Widget test template
+| `references/component-api-checklist.md` | You need deeper guidance for token-driven component APIs, variants, theming, docs, and system-vs-product boundaries. |

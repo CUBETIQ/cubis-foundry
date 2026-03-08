@@ -29,8 +29,8 @@
   "scripts": {
     "start": "npm run build:cli && node bin/cubis.js",
     "check": "npm run build:cli && node bin/cubis.js --help",
-    "test:attributes": "node scripts/validate-platform-attributes.mjs && node scripts/validate-shared-routing.mjs && node scripts/validate-skill-packaging.mjs && node scripts/validate-runtime-wiring.mjs && node scripts/generate-skills-index.mjs --check",
-    "test:attributes:strict": "node scripts/validate-platform-attributes.mjs --strict && node scripts/validate-shared-routing.mjs && node scripts/validate-skill-packaging.mjs && node scripts/validate-runtime-wiring.mjs && node scripts/generate-skills-index.mjs --check",
+    "test:attributes": "node scripts/validate-platform-attributes.mjs && node scripts/validate-shared-routing.mjs && node scripts/validate-skill-packaging.mjs && node scripts/validate-runtime-wiring.mjs && node scripts/generate-skills-index.mjs --check && node scripts/generate-skill-catalog.mjs --check",
+    "test:attributes:strict": "node scripts/validate-platform-attributes.mjs --strict && node scripts/validate-shared-routing.mjs && node scripts/validate-skill-packaging.mjs && node scripts/validate-runtime-wiring.mjs && node scripts/generate-skills-index.mjs --check && node scripts/generate-skill-catalog.mjs --check",
     "test:tech-md": "node scripts/test-tech-md-scanner.mjs",
     "test:smoke": "npm run build:cli && node scripts/run-bash-script.mjs scripts/smoke-workflows.sh",
     "test:init:tty": "npm run build:cli && node scripts/run-init-tty-test.mjs bin/cubis.js",
@@ -40,7 +40,10 @@
     "generate:platform-assets": "node scripts/generate-platform-assets.mjs",
     "sync:skill-mirrors": "node scripts/sync-skill-mirrors.mjs",
     "generate:skills-index": "node scripts/generate-skills-index.mjs",
+    "generate:skill-catalog": "node scripts/generate-skill-catalog.mjs",
+    "generate:public-skill-research": "node scripts/generate-public-skill-research.mjs",
     "check:skills-index": "node scripts/generate-skills-index.mjs --check",
+    "check:skill-catalog": "node scripts/generate-skill-catalog.mjs --check",
     "generate:mcp-manifest": "node scripts/generate-mcp-manifest.mjs",
     "generate:mcp-rules-block": "node scripts/generate-mcp-rules-block.mjs",
     "inject:mcp-rules:codex": "node scripts/generate-mcp-rules-block.mjs --inject workflows/workflows/agent-environment-setup/platforms/codex/rules/AGENTS.md",
@@ -53,7 +56,7 @@
     "check:mcp-rules:copilot-agents": "node scripts/generate-mcp-rules-block.mjs --check workflows/workflows/agent-environment-setup/platforms/copilot/rules/AGENTS.md",
     "check:mcp-rules:copilot": "node scripts/generate-mcp-rules-block.mjs --check workflows/workflows/agent-environment-setup/platforms/copilot/rules/copilot-instructions.md",
     "check:mcp-rules:all": "npm run check:mcp-rules:codex && npm run check:mcp-rules:antigravity && npm run check:mcp-rules:copilot-agents && npm run check:mcp-rules:copilot",
-    "generate:all": "npm run generate:skills-index && npm run generate:mcp-manifest && npm run inject:mcp-rules:all",
+    "generate:all": "npm run generate:skills-index && npm run generate:skill-catalog && npm run generate:mcp-manifest && npm run inject:mcp-rules:all",
     "validate:mcp-skills": "node scripts/validate-mcp-skills.mjs",
     "validate:mcp-skills:strict": "node scripts/validate-mcp-skills.mjs --strict",
     "validate:mcp-manifest": "node scripts/generate-mcp-manifest.mjs --check",
@@ -63,7 +66,7 @@
     "generate:powers:sync": "node \"workflows/scripts/generate-powers.mjs\" --sync-skills --force",
     "build:cli": "tsc -p tsconfig.cli.json",
     "clean:cli": "rm -rf dist/cli",
-    "prepack": "npm run build:cli && npm run check:skills-index"
+    "prepack": "npm run build:cli && npm run check:skills-index && npm run check:skill-catalog"
   },
   "engines": {
     "node": ">=18.17"

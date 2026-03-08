@@ -1,4 +1,4 @@
-description = "Design and execute verification strategy aligned to risk and acceptance criteria."
+description = "Design and execute verification and QA strategy aligned to risk and acceptance criteria."
 prompt = '''
 Follow the /test workflow from .agent/workflows/test.md.
 

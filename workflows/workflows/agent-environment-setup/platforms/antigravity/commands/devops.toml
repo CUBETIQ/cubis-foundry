@@ -1,4 +1,4 @@
-description = "Plan and execute deployment, CI/CD, and operational safety changes with rollback controls."
+description = "Plan and execute deployment, CI/CD, incident response, and operational safety changes with rollback controls."
 prompt = '''
 Follow the /devops workflow from .agent/workflows/devops.md.
 

@@ -1,6 +1,6 @@
 # Workflow Prompt: /test
 
-Design and execute verification strategy aligned to risk and acceptance criteria.
+Design and execute verification and QA strategy aligned to risk and acceptance criteria.
 
 Use this prompt with the matching workflow file:
 - Workflow: ../copilot/workflows/test.md

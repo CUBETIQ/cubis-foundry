@@ -1,6 +1,6 @@
 ---
 command: "/test"
-description: "Design and execute verification strategy aligned to risk and acceptance criteria."
+description: "Design and execute verification and QA strategy aligned to risk and acceptance criteria."
 triggers: ["test", "verify", "coverage", "qa", "regression"]
 ---
 # Test Workflow
@@ -13,7 +13,7 @@ Use this to drive confidence before merge or release.
 
 ## Routing
 - Primary specialist: `@test-engineer`
-- Automation depth: `@qa-automation-engineer`
+- Automation depth and regression safety: `@test-engineer`
 - Failure triage: `@debugger`
 
 ## Context notes
@@ -21,8 +21,9 @@ Use this to drive confidence before merge or release.
 - Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
 
 ## Skill Routing
-- Primary skills: `test-master`, `playwright-expert`
-- Supporting skills (optional): `webapp-testing`, `flutter-test-master`
+- Primary skills: `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`
+- Supporting skills (optional): `skill-creator`
+- Test work should follow the dominant implementation language in scope. There is no live dedicated testing specialist skill during the reset.
 
 ## Workflow steps
 1. Map change surface to risk areas.
@@ -39,7 +40,7 @@ Use this to drive confidence before merge or release.
 ```yaml
 TEST_WORKFLOW_RESULT:
   primary_agent: test-engineer
-  supporting_agents: [qa-automation-engineer?, debugger?]
+  supporting_agents: [debugger?]
   primary_skills: [test-master, playwright-expert]
   supporting_skills: [webapp-testing?, flutter-test-master?]
   coverage_map: [<string>]

@@ -187,6 +187,23 @@ function createRouteManifest(): RouteManifest {
           antigravity: { agentFile: "mobile-developer.md" },
         },
       },
+      {
+        kind: "agent",
+        id: "test-engineer",
+        command: null,
+        displayName: "test-engineer",
+        description: "Expert in testing and regression strategy",
+        triggers: ["test", "qa", "regression", "playwright"],
+        primaryAgent: "test-engineer",
+        supportingAgents: [],
+        primarySkills: ["test-master", "playwright-expert"],
+        supportingSkills: ["webapp-testing"],
+        artifacts: {
+          codex: { compatibilityAlias: "$agent-test-engineer", agentFile: "test-engineer.md" },
+          copilot: { agentFile: "test-engineer.md" },
+          antigravity: { agentFile: "test-engineer.md" },
+        },
+      },
     ],
   };
 }
@@ -207,6 +224,7 @@ interface GeneratedSkillManifest {
     id: string;
     category: string;
     description?: string;
+    path?: string;
     fileBytes: number;
     metadata?: Record<string, string>;
   }>;
@@ -223,10 +241,13 @@ function loadGeneratedCatalog(): {
     categories: [...new Set(generated.skills.map((skill) => skill.category))].sort(),
     skills: generated.skills.map((skill) => ({
       id: skill.id,
+      canonicalId: skill.metadata?.alias_of ?? skill.metadata?.replaced_by,
       category: skill.category,
       description: skill.description,
       fileBytes: skill.fileBytes,
-      path: path.join(SKILLS_ROOT, skill.id, "SKILL.md"),
+      path: skill.path
+        ? path.resolve(REPO_ROOT, skill.path)
+        : path.join(SKILLS_ROOT, skill.id, "SKILL.md"),
     })),
     fullCatalogBytes: generated.skills.reduce(
       (sum, skill) => sum + skill.fileBytes,
@@ -452,6 +473,33 @@ describe("skill tools", () => {
     });
   });
 
+  it("maps a legacy workflow command to the canonical workflow route", async () => {
+    const result = payload(
+      await handleRouteResolve({ intent: "/brainstorm" }, createRouteManifest()),
+    );
+    expect(result).toMatchObject({
+      resolved: true,
+      kind: "workflow",
+      id: "plan",
+      matchedBy: "legacy-workflow-alias",
+    });
+  });
+
+  it("maps a legacy agent mention to the canonical agent route", async () => {
+    const result = payload(
+      await handleRouteResolve(
+        { intent: "@qa-automation-engineer" },
+        createRouteManifest(),
+      ),
+    );
+    expect(result).toMatchObject({
+      resolved: true,
+      kind: "agent",
+      id: "test-engineer",
+      matchedBy: "legacy-agent-alias",
+    });
+  });
+
   it("resolves free-text trigger intent to a workflow route", async () => {
     const result = payload(
       await handleRouteResolve(
@@ -467,7 +515,7 @@ describe("skill tools", () => {
     expect(["trigger-match", "intent-match"]).toContain(result.matchedBy);
   });
 
-  it("routes skill authoring intent to create with skill-authoring as the primary skill hint", async () => {
+  it("routes skill creator intent to create with skill-creator as the primary skill hint", async () => {
     const result = payload(
       await handleRouteResolve(
         { intent: "create a new skill package for Copilot and Codex" },
@@ -478,12 +526,12 @@ describe("skill tools", () => {
       resolved: true,
       kind: "workflow",
       id: "create",
-      primarySkillHint: "skill-authoring",
-      matchedBy: "skill-authoring-intent",
+      primarySkillHint: "skill-creator",
+      matchedBy: "skill-creator-intent",
     });
   });
 
-  it("routes skill planning intent to plan with skill-authoring as the primary skill hint", async () => {
+  it("routes skill planning intent to plan with skill-creator as the primary skill hint", async () => {
     const result = payload(
       await handleRouteResolve(
         { intent: "plan a new skill and its sidecar references" },
@@ -494,12 +542,12 @@ describe("skill tools", () => {
       resolved: true,
       kind: "workflow",
       id: "plan",
-      primarySkillHint: "skill-authoring",
-      matchedBy: "skill-authoring-intent",
+      primarySkillHint: "skill-creator",
+      matchedBy: "skill-creator-intent",
     });
   });
 
-  it("routes skill review intent to review with skill-authoring as the primary skill hint", async () => {
+  it("routes skill review intent to review with skill-creator as the primary skill hint", async () => {
     const result = payload(
       await handleRouteResolve(
         { intent: "review this skill metadata and broken references" },
@@ -510,8 +558,8 @@ describe("skill tools", () => {
       resolved: true,
       kind: "workflow",
       id: "review",
-      primarySkillHint: "skill-authoring",
-      matchedBy: "skill-authoring-intent",
+      primarySkillHint: "skill-creator",
+      matchedBy: "skill-creator-intent",
     });
   });
 

@@ -173,6 +173,6 @@ Load on demand. Do not preload all references.
 > **Remember:** Good tests are documentation. They explain what the code should do.
 
 ## Skill routing
-Prefer these skills when task intent matches: `test-master`, `playwright-expert`, `flutter-test-master`.
+Prefer these skills when task intent matches: `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

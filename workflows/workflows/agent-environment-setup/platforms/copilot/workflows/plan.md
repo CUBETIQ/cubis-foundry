@@ -1,12 +1,12 @@
 ---
 command: "/plan"
 description: "Build a decision-complete implementation plan with interfaces, failure modes, and acceptance criteria."
-triggers: ["plan", "spec", "design", "roadmap", "acceptance"]
+triggers: ["plan", "spec", "design", "roadmap", "acceptance", "brainstorm", "idea", "options", "tradeoff", "approach"]
 ---
 # Plan Workflow
 
 # CHANGED: output contract — upgraded to canonical PLAN_HANDOFF schema — lets implementation agents continue task 1→N without re-routing or user restatement.
-# CHANGED: skill routing — added `skill-authoring` as a planning support skill for skill package design and maintenance work.
+# CHANGED: skill routing — added `skill-creator` as a planning support skill for skill package design and maintenance work.
 
 ## When to use
 Use this when execution needs a stable specification.
@@ -22,9 +22,9 @@ Use this when execution needs a stable specification.
 - Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
 
 ## Skill Routing
-- Primary skills: `plan-writing`, `architecture-designer`
-- Supporting skills (optional): `feature-forge`, `api-designer`, `skill-authoring`
-- When the plan itself is for a skill package, prefer `skill-authoring` as the first supporting skill.
+- Primary skills: `architecture-designer`, `skill-creator`
+- Supporting skills (optional): `api-designer`, `api-patterns`, `database-skills`, `database-design`, `database-optimizer`, `microservices-architect`, `nodejs-best-practices`, `nestjs-expert`, `fastapi-expert`, `graphql-architect`, `react-expert`, `nextjs-developer`, `tailwind-patterns`, `frontend-design`, `design-system-builder`, `web-perf`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`, `csharp-pro`, `kotlin-pro`, `rust-pro`, `php-pro`, `ruby-pro`, `c-pro`, `cpp-pro`, `dart-pro`, `swift-pro`
+- Use `architecture-designer` for system-shape, interface, and boundary planning; use `skill-creator` for skill-catalog planning. Add the narrowest restored specialist first, then one matching language skill only if the plan needs language-level constraints.
 
 ## Workflow steps
 1. Lock scope and non-goals.

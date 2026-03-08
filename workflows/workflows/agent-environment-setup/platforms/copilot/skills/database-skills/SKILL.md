@@ -1,100 +1,62 @@
 ---
-name: database-skills
-description: Unified database skill hub with engine-specific packs for PostgreSQL, MySQL, Vitess, Neki, MongoDB (Mongoose), SQLite, Supabase, and Redis.
+name: "database-skills"
+description: "Use as the primary database hub for engine choice, schema-vs-tuning routing, migration safety framing, and database task triage before engine-specific deep dives."
+license: MIT
 metadata:
-  version: "2.0.0"
-  domain: data
-  triggers: database, sql, postgres, mysql, vitess, neki, mongodb, mongoose, sqlite, supabase, redis, schema, migration, index, query, performance, pagination, replication, pooling, sharding, cache
+  version: "3.0.0"
+  domain: "data"
+  role: "hub"
+  stack: "databases"
+  category: "databases"
+  layer: "databases"
+  canonical: true
+  maturity: "stable"
+  baseline: "cross-engine database planning"
+  tags: ["database", "sql", "nosql", "migrations", "indexing", "query-plans", "routing"]
 ---
-# Database Skills Hub
+# Database Skills
 
-Use this as the primary database hub. Keep `database-design`, `database-optimizer`, and `drift-flutter` available for specialized/legacy-compatible flows. Load the target engine's `SKILL.md` from `skills/<engine>/`, then load relevant `references/*` files.
+## When to use
 
-## Engine selection
+- Choosing the right database path before implementation dives deep.
+- Routing a task toward schema design, optimization, or engine-specific work.
+- Planning migrations, indexing, query behavior, and operational safety at a high level.
+- Reviewing whether a data problem is really engine choice, schema shape, or query behavior.
 
-| Situation | Engine |
+## When not to use
+
+- Pure language or framework work with no meaningful data concern.
+- Deep single-engine tuning when the engine-specific specialist is already clear.
+- App-layer performance issues that are not database-bound.
+
+## Core workflow
+
+1. Clarify workload shape, consistency needs, scale, and operational model.
+2. Decide whether the task is engine choice, schema design, or performance triage.
+3. Choose the narrowest next specialist: `database-design` or `database-optimizer`.
+4. Keep migration risk, rollback, and blast radius visible from the start.
+5. Escalate to the exact engine specialist only when the engine is known and materially affects the decision: `postgres`, `mysql`, `sqlite`, `mongodb`, `redis`, `supabase`, `vitess`, or `neki`.
+
+## Baseline standards
+
+- Pick storage shape from workload and operations, not preference alone.
+- Treat indexes, migrations, and rollback as first-class design inputs.
+- Separate schema questions from tuning questions.
+- Load engine-specific guidance only when platform behavior or managed-product constraints actually matter.
+- Prefer evidence before recommending a new engine or data model.
+- Keep data safety and operational reversibility explicit.
+
+## Avoid
+
+- Treating every database issue as a query-optimization problem.
+- Recommending engine changes with no workload evidence.
+- Planning destructive schema changes without rollback.
+- Mixing schema design and tuning advice into one vague answer.
+
+## References
+
+Load on demand. Do not preload all reference files.
+
+| File | Load when |
 | --- | --- |
-| Relational OLTP, self-hosted or cloud | Postgres |
-| Relational OLTP, MySQL-compatible managed service | MySQL + Vitess (PlanetScale) |
-| Multi-tenant SaaS needing horizontal Postgres scale | Neki |
-| Document model, flexible schema | MongoDB |
-| Mobile / desktop / edge local storage | SQLite |
-| BaaS with built-in auth, storage & realtime | Supabase |
-| Caching, queues, leaderboards, pub/sub | Redis |
-
-## Structure
-
-```
-skills/
-  postgres/
-    SKILL.md
-    references/
-      schema-indexing.md       ← index types, composite, partial, INCLUDE
-      performance-ops.md       ← EXPLAIN, pg_stat_statements, VACUUM, autovacuum
-      migrations.md            ← zero-downtime DDL, expand/contract, tools
-      connection-pooling.md    ← PgBouncer, pool sizing, serverless patterns
-
-  mysql/
-    SKILL.md
-    references/
-      query-indexing.md        ← EXPLAIN, composite indexes, covering, seek pagination
-      locking-ddl.md           ← INSTANT/INPLACE/COPY, MDL, gh-ost, deadlocks
-      replication.md           ← binlog formats, GTID, lag monitoring, read routing
-
-  vitess/
-    SKILL.md
-    references/
-      sharding-routing.md      ← VSchema, vindexes, sequences, scatter queries
-      operational-safety.md    ← Online DDL strategies, migration lifecycle, VReplication
-
-  neki/
-    SKILL.md
-    references/
-      architecture.md          ← sharded Postgres architecture, pre-sharding checklist
-      operations.md            ← migration planning, validation, provisional pre-GA guidance
-
-  mongodb/
-    SKILL.md
-    references/
-      modeling.md              ← embed vs reference, compound indexes, explain(), pagination
-      mongoose-nestjs.md       ← repository pattern, lean reads, transactions, NestJS setup
-      aggregation.md           ← pipeline stages, $group, $lookup, $facet, performance
-
-  sqlite/
-    SKILL.md
-    references/
-      local-first.md           ← WAL mode, migration patterns, sync/conflict strategies
-      performance.md           ← EXPLAIN QUERY PLAN, indexes, batch writes, checkpoint tuning
-
-  supabase/
-    SKILL.md
-    references/
-      rls-auth.md              ← RLS policies, auth.uid(), index predicates, service_role
-      performance-operations.md ← query optimization, connection modes, pooler selection
-
-  redis/
-    SKILL.md
-    references/
-      data-modeling.md         ← data structure selection, key naming, TTL strategy
-      cache-patterns.md        ← pipelining, SCAN, rate limiting, leaderboards, invalidation
-      operations.md            ← memory management, eviction policies, latency diagnostics
-```
-
-## Required flow
-
-1. Read `references/LATEST_VERSIONS.md` before proposing version-specific behavior.
-2. Use engine selection table above to pick the target engine.
-3. Load the target engine `SKILL.md` and relevant `references/*` files — read the ones that match the task (indexing, migrations, replication, etc.).
-4. Provide an optimization or implementation plan that includes:
-   - specific change with rationale,
-   - indexing or schema decisions,
-   - migration safety (online vs offline),
-   - rollback path.
-5. For production-impacting changes, include blast-radius assessment and rollout stages.
-
-## Cross-engine performance checklist
-
-- **Indexing**: add indexes only for real predicates and sort patterns. Drop unused indexes — they penalize writes.
-- **Pagination**: prefer keyset/seek for deep or high-throughput pagination. Reserve offset for shallow interactive pages only.
-- **Measurement**: compare before/after plans with engine-native explain tooling (`EXPLAIN ANALYZE`, `VEXPLAIN`, `explain()`). Validate with realistic cardinality.
-- **Safety**: no destructive data/schema operations without explicit user confirmation. Always include rollback/recovery steps.
+| `references/engine-selection-and-routing.md` | You need a sharper routing aid for engine choice, escalation into schema vs tuning, and when to load exact engine specialists. |

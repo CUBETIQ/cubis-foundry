@@ -21,8 +21,9 @@ Use this for medium/large efforts where progress visibility is required.
 - Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
 
 ## Skill Routing
-- Primary skills: `plan-writing`, `feature-forge`
-- Supporting skills (optional): `lint-and-validate`, `test-master`
+- Primary skills: `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`, `csharp-pro`, `kotlin-pro`, `rust-pro`, `php-pro`, `ruby-pro`, `c-pro`, `cpp-pro`, `dart-pro`, `swift-pro`
+- Supporting skills (optional): `skill-creator`
+- Keep one primary language skill per milestone. Add `skill-creator` only when a milestone is specifically about rebuilding the skill catalog.
 
 ## Workflow steps
 1. Split into milestone-sized deliverables.
@@ -41,8 +42,8 @@ Use this for medium/large efforts where progress visibility is required.
 IMPLEMENT_TRACK_WORKFLOW_RESULT:
   primary_agent: orchestrator
   supporting_agents: [project-planner?, test-engineer?]
-  primary_skills: [plan-writing, feature-forge]
-  supporting_skills: [lint-and-validate?, test-master?]
+  primary_skills: [architecture-designer, skill-creator]
+  supporting_skills: [api-designer?, database-skills?, typescript-pro?]
   milestones:
     done: [<string>]
     in_progress: [<string>]

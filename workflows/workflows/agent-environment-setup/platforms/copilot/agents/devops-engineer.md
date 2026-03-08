@@ -257,6 +257,6 @@ What are you deploying?
 > **Remember:** Production is where users are. Treat it with respect.
 
 ## Skill routing
-Prefer these skills when task intent matches: `devops-engineer`, `sre-engineer`, `monitoring-expert`.
+Prefer these skills when task intent matches: `javascript-pro`, `typescript-pro`, `python-pro`, `golang-pro`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

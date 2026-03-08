@@ -1,0 +1,381 @@
+{
+  "$schema": "cubis-foundry-skill-audit-v1",
+  "generatedAt": "1970-01-01T00:00:00.000Z",
+  "summary": {
+    "keep": 41,
+    "review": 0,
+    "alias-only": 0
+  },
+  "entries": [
+    {
+      "id": "api-designer",
+      "canonical_id": "api-designer",
+      "status": "keep",
+      "layer": "core-operating",
+      "category": "core-operating",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "api-patterns",
+      "canonical_id": "api-patterns",
+      "status": "keep",
+      "layer": "core-operating",
+      "category": "core-operating",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "architecture-designer",
+      "canonical_id": "architecture-designer",
+      "status": "keep",
+      "layer": "core-operating",
+      "category": "core-operating",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "auth-architect",
+      "canonical_id": "auth-architect",
+      "status": "keep",
+      "layer": "frameworks-runtimes",
+      "category": "frameworks-runtimes",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "c-pro",
+      "canonical_id": "c-pro",
+      "status": "keep",
+      "layer": "languages",
+      "category": "languages",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "cpp-pro",
+      "canonical_id": "cpp-pro",
+      "status": "keep",
+      "layer": "languages",
+      "category": "languages",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "csharp-pro",
+      "canonical_id": "csharp-pro",
+      "status": "keep",
+      "layer": "languages",
+      "category": "languages",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "dart-pro",
+      "canonical_id": "dart-pro",
+      "status": "keep",
+      "layer": "languages",
+      "category": "languages",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "database-design",
+      "canonical_id": "database-design",
+      "status": "keep",
+      "layer": "databases",
+      "category": "databases",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "database-optimizer",
+      "canonical_id": "database-optimizer",
+      "status": "keep",
+      "layer": "databases",
+      "category": "databases",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "database-skills",
+      "canonical_id": "database-skills",
+      "status": "keep",
+      "layer": "databases",
+      "category": "databases",
+      "tier": "system",
+      "reason": "Database hub stays active but routes into engine-specific subskills instead of duplicating engine detail."
+    },
+    {
+      "id": "design-system-builder",
+      "canonical_id": "design-system-builder",
+      "status": "keep",
+      "layer": "frameworks-runtimes",
+      "category": "frameworks-runtimes",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "fastapi-expert",
+      "canonical_id": "fastapi-expert",
+      "status": "keep",
+      "layer": "frameworks-runtimes",
+      "category": "frameworks-runtimes",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "frontend-design",
+      "canonical_id": "frontend-design",
+      "status": "keep",
+      "layer": "frameworks-runtimes",
+      "category": "frameworks-runtimes",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "golang-pro",
+      "canonical_id": "golang-pro",
+      "status": "keep",
+      "layer": "languages",
+      "category": "languages",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "graphql-architect",
+      "canonical_id": "graphql-architect",
+      "status": "keep",
+      "layer": "frameworks-runtimes",
+      "category": "frameworks-runtimes",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "java-pro",
+      "canonical_id": "java-pro",
+      "status": "keep",
+      "layer": "languages",
+      "category": "languages",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "javascript-pro",
+      "canonical_id": "javascript-pro",
+      "status": "keep",
+      "layer": "languages",
+      "category": "languages",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "kotlin-pro",
+      "canonical_id": "kotlin-pro",
+      "status": "keep",
+      "layer": "languages",
+      "category": "languages",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "microservices-architect",
+      "canonical_id": "microservices-architect",
+      "status": "keep",
+      "layer": "frameworks-runtimes",
+      "category": "frameworks-runtimes",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "mongodb",
+      "canonical_id": "mongodb",
+      "status": "keep",
+      "layer": "databases",
+      "category": "databases",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "mysql",
+      "canonical_id": "mysql",
+      "status": "keep",
+      "layer": "databases",
+      "category": "databases",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "neki",
+      "canonical_id": "neki",
+      "status": "keep",
+      "layer": "databases",
+      "category": "databases",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "nestjs-expert",
+      "canonical_id": "nestjs-expert",
+      "status": "keep",
+      "layer": "frameworks-runtimes",
+      "category": "frameworks-runtimes",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "nextjs-developer",
+      "canonical_id": "nextjs-developer",
+      "status": "keep",
+      "layer": "frameworks-runtimes",
+      "category": "frameworks-runtimes",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "nodejs-best-practices",
+      "canonical_id": "nodejs-best-practices",
+      "status": "keep",
+      "layer": "frameworks-runtimes",
+      "category": "frameworks-runtimes",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "php-pro",
+      "canonical_id": "php-pro",
+      "status": "keep",
+      "layer": "languages",
+      "category": "languages",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "postgres",
+      "canonical_id": "postgres",
+      "status": "keep",
+      "layer": "databases",
+      "category": "databases",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "python-pro",
+      "canonical_id": "python-pro",
+      "status": "keep",
+      "layer": "languages",
+      "category": "languages",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "react-expert",
+      "canonical_id": "react-expert",
+      "status": "keep",
+      "layer": "frameworks-runtimes",
+      "category": "frameworks-runtimes",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "redis",
+      "canonical_id": "redis",
+      "status": "keep",
+      "layer": "databases",
+      "category": "databases",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "ruby-pro",
+      "canonical_id": "ruby-pro",
+      "status": "keep",
+      "layer": "languages",
+      "category": "languages",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "rust-pro",
+      "canonical_id": "rust-pro",
+      "status": "keep",
+      "layer": "languages",
+      "category": "languages",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "skill-creator",
+      "canonical_id": "skill-creator",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "sqlite",
+      "canonical_id": "sqlite",
+      "status": "keep",
+      "layer": "databases",
+      "category": "databases",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "supabase",
+      "canonical_id": "supabase",
+      "status": "keep",
+      "layer": "databases",
+      "category": "databases",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "swift-pro",
+      "canonical_id": "swift-pro",
+      "status": "keep",
+      "layer": "languages",
+      "category": "languages",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "tailwind-patterns",
+      "canonical_id": "tailwind-patterns",
+      "status": "keep",
+      "layer": "frameworks-runtimes",
+      "category": "frameworks-runtimes",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "typescript-pro",
+      "canonical_id": "typescript-pro",
+      "status": "keep",
+      "layer": "languages",
+      "category": "languages",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "vitess",
+      "canonical_id": "vitess",
+      "status": "keep",
+      "layer": "databases",
+      "category": "databases",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "web-perf",
+      "canonical_id": "web-perf",
+      "status": "keep",
+      "layer": "frameworks-runtimes",
+      "category": "frameworks-runtimes",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    }
+  ],
+  "contentHash": "5a2453494a259302"
+}

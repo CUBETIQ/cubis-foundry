@@ -1,86 +1,64 @@
 ---
-name: graphql-architect
-description: Use when designing GraphQL schemas, implementing Apollo Federation, or building real-time subscriptions. Invoke for schema design, resolvers with DataLoader, query optimization, federation directives.
+name: "graphql-architect"
+description: "Use when designing GraphQL schemas, resolver boundaries, batching strategy, auth and policy enforcement, federation shape, query safety, and real-time graph behavior."
 license: MIT
 metadata:
-  author: https://github.com/Jeffallan
-  version: "1.0.0"
-  domain: api-architecture
-  triggers: GraphQL, Apollo Federation, GraphQL schema, API graph, GraphQL subscriptions, Apollo Server, schema design, GraphQL resolvers, DataLoader
-  role: architect
-  scope: design
-  output-format: schema
-  related-skills: api-designer, microservices-architect, database-optimizer
+  version: "3.0.0"
+  domain: "api-architecture"
+  role: "specialist"
+  stack: "graphql"
+  category: "frameworks-runtimes"
+  layer: "frameworks-runtimes"
+  canonical: true
+  maturity: "stable"
+  baseline: "modern GraphQL schema and resolver practices"
+  tags: ["graphql", "schema", "resolvers", "dataloader", "federation", "api"]
 ---
 
 # GraphQL Architect
 
-Senior GraphQL architect specializing in schema design and distributed graph architectures with deep expertise in Apollo Federation 2.5+, GraphQL subscriptions, and performance optimization.
+## When to use
 
-## Role Definition
+- Designing or refactoring GraphQL schemas and resolver structure.
+- Choosing batching, caching, federation, auth, and subscription behavior.
+- Reviewing query safety, nullability, and graph boundary decisions.
+- Converting a REST-shaped backend into a graph with deliberate tradeoffs.
 
-You are a senior GraphQL architect with 10+ years of API design experience. You specialize in Apollo Federation, schema-first design, and building type-safe API graphs that scale across teams and services. You master resolvers, DataLoader patterns, and real-time subscriptions.
+## When not to use
 
-## When to Use This Skill
+- Simple REST contract design with no graph requirement.
+- Framework-only Nest or FastAPI questions that are not GraphQL-specific.
+- Database-only tuning with no resolver/query-shape impact.
 
-- Designing GraphQL schemas and type systems
-- Implementing Apollo Federation architectures
-- Building resolvers with DataLoader optimization
-- Creating real-time GraphQL subscriptions
-- Optimizing query complexity and performance
-- Setting up authentication and authorization
+## Core workflow
 
-## Core Workflow
+1. Model the domain graph and choose what belongs in the schema, not the storage layer.
+2. Define nullability, pagination, mutation semantics, and auth ownership explicitly.
+3. Design resolver boundaries with batching and cache behavior in mind.
+4. Add query safety controls, policy checks, and subscription behavior where needed.
+5. Verify that the graph remains understandable for clients and operable for services.
 
-1. **Domain Modeling** - Map business domains to GraphQL type system
-2. **Design Schema** - Create types, interfaces, unions with federation directives
-3. **Implement Resolvers** - Write efficient resolvers with DataLoader patterns
-4. **Secure** - Add query complexity limits, depth limiting, field-level auth
-5. **Optimize** - Performance tune with caching, persisted queries, monitoring
+## Baseline standards
 
-## Reference Guide
+- Prefer schema clarity over exposing every backend shape.
+- Use batching to prevent N+1 patterns.
+- Keep nullability intentional and documented.
+- Keep auth and permission rules explicit at schema or resolver boundaries.
+- Treat federation and subscriptions as architectural choices, not defaults.
+- Make query cost and auth behavior explicit.
 
-Load detailed guidance based on context:
+## Avoid
 
-| Topic | Reference | Load When |
-|-------|-----------|-----------|
-| Schema Design | `references/schema-design.md` | Types, interfaces, unions, enums, input types |
-| Resolvers | `references/resolvers.md` | Resolver patterns, context, DataLoader, N+1 |
-| Federation | `references/federation.md` | Apollo Federation, subgraphs, entities, directives |
-| Subscriptions | `references/subscriptions.md` | Real-time updates, WebSocket, pub/sub patterns |
-| Security | `references/security.md` | Query depth, complexity analysis, authentication |
-| REST Migration | `references/migration-from-rest.md` | Migrating REST APIs to GraphQL |
+- REST-shaped GraphQL that only mirrors endpoint habits.
+- Resolver logic that hides unbounded fan-out.
+- Ambiguous nullability and inconsistent mutation payloads.
+- Authorization that exists only in the client or gateway with no resolver ownership.
+- Adding federation complexity before single-graph boundaries are clear.
 
-## Constraints
+## References
 
-### MUST DO
-- Use schema-first design approach
-- Implement proper nullable field patterns
-- Use DataLoader for batching and caching
-- Add query complexity analysis
-- Document all types and fields
-- Follow GraphQL naming conventions (camelCase)
-- Use federation directives correctly
-- Provide example queries for all operations
+Load on demand. Do not preload all reference files.
 
-### MUST NOT DO
-- Create N+1 query problems
-- Skip query depth limiting
-- Expose internal implementation details
-- Use REST patterns in GraphQL
-- Return null for non-nullable fields
-- Skip error handling in resolvers
-- Hardcode authorization logic
-- Ignore schema validation
-
-## Output Templates
-
-When implementing GraphQL features, provide:
-1. Schema definition (SDL with types and directives)
-2. Resolver implementation (with DataLoader patterns)
-3. Query/mutation/subscription examples
-4. Brief explanation of design decisions
-
-## Knowledge Reference
-
-Apollo Server, Apollo Federation 2.5+, GraphQL SDL, DataLoader, GraphQL Subscriptions, WebSocket, Redis pub/sub, schema composition, query complexity, persisted queries, schema stitching, type generation
+| File | Load when |
+| --- | --- |
+| `references/schema-resolver-checklist.md` | You need a more detailed checklist for schema shape, nullability, batching, auth and policy, subscriptions, federation, and query safety. |

@@ -20,8 +20,9 @@ Use this when mobile app architecture, UX behavior, or platform constraints are 
 - Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
 
 ## Skill Routing
-- Primary skills: `mobile-design`, `flutter-expert`
-- Supporting skills (optional): `riverpod-3`, `drift-flutter`, `flutter-test-master`
+- Primary skills: `dart-pro`, `swift-pro`, `kotlin-pro`, `typescript-pro`, `javascript-pro`
+- Supporting skills (optional): `skill-creator`
+- Choose `dart-pro`, `swift-pro`, or `kotlin-pro` first for native/mobile code. Use the JavaScript or TypeScript skills only for React Native or web-adjacent mobile surfaces.
 
 ## Workflow steps
 1. Confirm platform and UX constraints.
@@ -39,8 +40,8 @@ Use this when mobile app architecture, UX behavior, or platform constraints are 
 MOBILE_WORKFLOW_RESULT:
   primary_agent: mobile-developer
   supporting_agents: [frontend-specialist?, test-engineer?]
-  primary_skills: [mobile-design, flutter-expert]
-  supporting_skills: [riverpod-3?, drift-flutter?, flutter-test-master?]
+  primary_skills: [dart-pro, swift-pro]
+  supporting_skills: [kotlin-pro?, typescript-pro?, javascript-pro?, skill-creator?]
   flow_changes: [<string>]
   platform_constraints_handled: [<string>]
   test_coverage_summary: [<string>]

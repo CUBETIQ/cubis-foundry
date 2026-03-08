@@ -1,52 +1,62 @@
 ---
-name: database-design
-description: Database design principles and decision-making. Schema design, indexing strategy, ORM selection, serverless databases.
-allowed-tools: Read, Write, Edit, Glob, Grep
+name: "database-design"
+description: "Use when designing schemas, relationships, indexes, ORM boundaries, and safe migration plans for relational or document-oriented workloads."
+license: MIT
+metadata:
+  version: "3.0.0"
+  domain: "data"
+  role: "specialist"
+  stack: "database-design"
+  category: "databases"
+  layer: "databases"
+  canonical: true
+  maturity: "stable"
+  baseline: "modern schema and migration design"
+  tags: ["database", "schema", "migrations", "indexing", "orm", "modeling"]
 ---
 
 # Database Design
 
-> **Learn to THINK, not copy SQL patterns.**
+## When to use
 
-## 🎯 Selective Reading Rule
+- Designing or refactoring schemas, keys, and relationships.
+- Choosing relational vs document vs local-first structure.
+- Planning ORM and persistence boundaries.
+- Designing migrations and indexing strategy before rollout.
 
-**Read ONLY files relevant to the request!** Check the content map, find what you need.
+## When not to use
 
-| File | Description | When to Read |
-|------|-------------|--------------|
-| `references/database-selection.md` | PostgreSQL vs Neon vs Turso vs SQLite | Choosing database |
-| `references/orm-selection.md` | Drizzle vs Prisma vs Kysely | Choosing ORM |
-| `references/schema-design.md` | Normalization, PKs, relationships | Designing schema |
-| `references/indexing.md` | Index types, composite indexes | Performance tuning |
-| `references/optimization.md` | N+1, EXPLAIN ANALYZE | Query optimization |
-| `references/migrations.md` | Safe migrations, serverless DBs | Schema changes |
+- Performance triage where the real issue is plans, waits, or contention.
+- High-level engine routing where `database-skills` is enough.
+- App-layer framework work with no meaningful model change.
 
----
+## Core workflow
 
-## ⚠️ Core Principle
+1. Model the workload and lifecycle constraints before choosing tables or collections.
+2. Define entities, ownership, keys, and read/write paths explicitly.
+3. Design indexes and pagination from real access patterns.
+4. Plan migrations, backfills, and rollback before implementation.
+5. Validate that the design lowers long-term change risk rather than hiding it.
 
-- ASK user for database preferences when unclear
-- Choose database/ORM based on CONTEXT
-- Don't default to PostgreSQL for everything
+## Baseline standards
 
----
+- Prefer schema decisions backed by access patterns.
+- Treat indexes as part of the model, not an afterthought.
+- Keep persistence models and transport models distinct when that lowers coupling.
+- Make migration safety explicit.
+- Choose normalization or denormalization deliberately.
 
-## Decision Checklist
+## Avoid
 
-Before designing schema:
+- Modeling by ORM convenience alone.
+- Deferring migration planning until after shipping.
+- Adding indexes with no predicate or sort evidence.
+- Using unstructured blobs to avoid real data modeling.
 
-- [ ] Asked user about database preference?
-- [ ] Chosen database for THIS context?
-- [ ] Considered deployment environment?
-- [ ] Planned index strategy?
-- [ ] Defined relationship types?
+## References
 
----
+Load on demand. Do not preload all reference files.
 
-## Anti-Patterns
-
-❌ Default to PostgreSQL for simple apps (SQLite may suffice)
-❌ Skip indexing
-❌ Use SELECT * in production
-❌ Store JSON when structured data is better
-❌ Ignore N+1 queries
+| File | Load when |
+| --- | --- |
+| `references/schema-migration-checklist.md` | You need more explicit guidance for keys, indexes, pagination, ORM boundaries, backfills, and rollback-safe migration plans. |

@@ -11,9 +11,9 @@ You are a project planning expert. You analyze user requests, break them into ta
 
 ## Skill Loading Contract
 
-- Do not call `skill_search` for `app-builder`, `plan-writing`, `architecture-designer`, or `skill-authoring` when the planning domain is already clear.
-- Load `app-builder` when the task is greenfield or needs stack/package selection, `plan-writing` when turning scope into executable tasks, `architecture-designer` when interfaces or boundaries are still unsettled, and `skill-authoring` when the plan is about creating or repairing a skill package.
-- Add a second planning skill only when the current step explicitly crosses from scoping into architecture or implementation structure.
+- Do not call `skill_search` for `architecture-designer`, `api-designer`, `database-skills`, or `skill-creator` when the planning domain is already clear.
+- Load `architecture-designer` when interfaces or boundaries are still unsettled, `api-designer` when contract shape is central to the plan, `database-skills` when the plan is data-heavy, and `skill-creator` when the plan is about creating or repairing a skill package.
+- Add a second planning skill only when the current step explicitly crosses from scoping into architecture, contract design, or data-model structure.
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed by the current planning step.
 
 ## Skill References
@@ -22,10 +22,10 @@ Load on demand. Do not preload all references.
 
 | File | Load when |
 | --- | --- |
-| `app-builder` | Greenfield scaffolding, stack selection, package choices, or project-shape decisions are primary. |
-| `plan-writing` | Breaking scope into executable tasks, milestones, and acceptance criteria is primary. |
 | `architecture-designer` | Interfaces, boundaries, or target-state architecture are still unsettled. |
-| `skill-authoring` | The plan targets canonical skill packaging, sidecars, metadata, or platform mirror parity. |
+| `api-designer` | API shape, contract versioning, or integration boundaries need planning-level decisions. |
+| `database-skills` | Data model, storage engine, migration, or indexing decisions materially affect the plan. |
+| `skill-creator` | The plan targets canonical skill packaging, sidecars, metadata, or platform mirror parity. |
 
 ## 🛑 PHASE 0: CONTEXT CHECK (QUICK)
 
@@ -393,11 +393,11 @@ python .agent/skills/webapp-testing/scripts/playwright_runner.py http://localhos
 
 | Signal | Action |
 |--------|--------|
-| "I think..." phrase | Defer to explorer-agent for codebase analysis |
+| "I think..." phrase | Defer to code-archaeologist for codebase analysis |
 | Ambiguous requirement | Ask clarifying question before proceeding |
 | Missing dependency | Add task to resolve, mark as blocker |
 
-**When to defer to explorer-agent:**
+**When to defer to code-archaeologist:**
 - Complex existing codebase needs mapping
 - File dependencies unclear
 - Impact of changes uncertain
@@ -422,6 +422,6 @@ python .agent/skills/webapp-testing/scripts/playwright_runner.py http://localhos
 ---
 
 ## Skill routing
-Prefer these skills when task intent matches: `app-builder`, `plan-writing`, `architecture-designer`, `skill-authoring`.
+Prefer these skills when task intent matches: `architecture-designer`, `api-designer`, `database-skills`, `skill-creator`, `typescript-pro`, `javascript-pro`, `python-pro`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

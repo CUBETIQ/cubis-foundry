@@ -6,7 +6,7 @@ triggers: ["orchestrate", "coordinate", "multi-area", "cross-team", "handoff"]
 # Orchestrate Workflow
 
 # CHANGED: output contract — converted free-form bullets into structured YAML — keeps multi-workstream coordination deterministic across regenerated platforms.
-# CHANGED: skill routing — added `skill-authoring` when orchestration spans canonical skill edits, generator updates, and platform parity work.
+# CHANGED: skill routing — added `skill-creator` when orchestration spans canonical skill edits, generator updates, and platform parity work.
 
 ## When to use
 Use this when a task spans backend, frontend, data, testing, and release concerns.
@@ -32,9 +32,9 @@ Use this when a task spans backend, frontend, data, testing, and release concern
 - Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
 
 ## Skill Routing
-- Primary skills: `parallel-agents`, `architecture-designer`
-- Supporting skills (optional): `plan-writing`, `feature-forge`, `skill-authoring`
-- When the workstream includes skill package changes across multiple platforms, load `skill-authoring` as the first supporting skill.
+- Primary skills: `skill-creator`
+- Supporting skills (optional): `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`, `csharp-pro`, `kotlin-pro`, `rust-pro`, `php-pro`, `ruby-pro`, `c-pro`, `cpp-pro`, `dart-pro`, `swift-pro`
+- Use `skill-creator` when coordination spans the skill catalog or generated mirrors. Otherwise pick the single language skill that best matches the dominant code path.
 
 ## Verification
 - Run focused checks/tests for the changed scope.
@@ -46,8 +46,8 @@ Use this when a task spans backend, frontend, data, testing, and release concern
 ORCHESTRATE_WORKFLOW_RESULT:
   primary_agent: orchestrator
   supporting_agents: [backend-specialist?, database-architect?, frontend-specialist?, security-auditor?, test-engineer?, devops-engineer?]
-  primary_skills: [parallel-agents, architecture-designer]
-  supporting_skills: [plan-writing?, feature-forge?]
+  primary_skills: [architecture-designer, skill-creator]
+  supporting_skills: [api-designer?, database-skills?, typescript-pro?]
   scope_and_assumptions: [<string>]
   workstreams:
     - owner: <agent-id>

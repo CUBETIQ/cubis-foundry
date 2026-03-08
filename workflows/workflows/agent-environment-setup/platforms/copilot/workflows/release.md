@@ -13,15 +13,16 @@ Use this before deployment to production-like environments.
 ## Routing
 - Release orchestration: `@devops-engineer`
 - Risk checks: `@security-auditor` + `@test-engineer`
-- Scope/fallback alignment: `@product-owner`
+- Scope/fallback alignment: `@product-manager`
 
 ## Context notes
 - This workflow file, active platform rules, and selected agents/skills guide execution.
 - Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
 
 ## Skill Routing
-- Primary skills: `devops-engineer`, `sre-engineer`
-- Supporting skills (optional): `monitoring-expert`, `test-master`
+- Primary skills: `javascript-pro`, `typescript-pro`, `python-pro`, `golang-pro`
+- Supporting skills (optional): `skill-creator`
+- Release work should stay anchored to the language used by the build and deployment surface. There is no live release specialist skill during the reset.
 
 ## Workflow steps
 1. Confirm release scope and dependencies.
@@ -39,7 +40,7 @@ Use this before deployment to production-like environments.
 ```yaml
 RELEASE_WORKFLOW_RESULT:
   primary_agent: devops-engineer
-  supporting_agents: [security-auditor?, test-engineer?, product-owner?]
+  supporting_agents: [security-auditor?, test-engineer?, product-manager?]
   primary_skills: [devops-engineer, sre-engineer]
   supporting_skills: [monitoring-expert?, test-master?]
   release_checklist_status: [<string>]

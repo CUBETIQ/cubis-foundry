@@ -12,7 +12,7 @@ Use this when the task is primarily about security risk discovery, triage, or re
 
 ## Routing
 - Primary specialist: `@security-auditor`
-- Exploitability validation: `@penetration-tester`
+- Exploitability validation: `@security-auditor`
 - Verification support: `@test-engineer`
 
 ## Context notes
@@ -20,8 +20,9 @@ Use this when the task is primarily about security risk discovery, triage, or re
 - Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
 
 ## Skill Routing
-- Primary skills: `security-reviewer`, `secure-code-guardian`
-- Supporting skills (optional): `semgrep`, `static-analysis`, `variant-analysis`
+- Primary skills: `auth-architect`
+- Supporting skills (optional): `api-designer`, `graphql-architect`, `nodejs-best-practices`, `nestjs-expert`, `fastapi-expert`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `rust-pro`, `skill-creator`
+- Use `auth-architect` when login, sessions, tokens, OAuth or OIDC, passkeys, policy checks, or tenant isolation are in scope. Add the matching framework or language skill only when code-path details matter. Keep `api-designer` for contract-facing auth semantics, `graphql-architect` for resolver or field-level policy behavior, and reserve `skill-creator` for skill-package security work.
 
 ## Workflow steps
 1. Map threat surface and high-risk paths.
@@ -38,9 +39,9 @@ Use this when the task is primarily about security risk discovery, triage, or re
 ```yaml
 SECURITY_WORKFLOW_RESULT:
   primary_agent: security-auditor
-  supporting_agents: [penetration-tester?, test-engineer?]
-  primary_skills: [security-reviewer, secure-code-guardian]
-  supporting_skills: [semgrep?, static-analysis?, variant-analysis?]
+  supporting_agents: [test-engineer?]
+  primary_skills: [auth-architect]
+  supporting_skills: [typescript-pro?, javascript-pro?, python-pro?, golang-pro?, rust-pro?, api-designer?, graphql-architect?, nodejs-best-practices?, nestjs-expert?, fastapi-expert?, skill-creator?]
   findings:
     - severity: <critical|high|medium|low>
       summary: <string>

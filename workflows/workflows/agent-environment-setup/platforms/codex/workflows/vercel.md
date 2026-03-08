@@ -14,15 +14,16 @@ Use this workflow when the primary concern is Vercel platform behavior, deployme
 - Primary specialist: `@vercel-expert`
 - Add `@devops-engineer` for CI/CD and rollout policy design.
 - Add `@security-auditor` for WAF, auth, and network-hardening decisions.
-- Add `@test-engineer` or `@qa-automation-engineer` for release quality gates.
+- Add `@test-engineer` for release quality gates.
 
 ## Context notes
 - This workflow file, active platform rules, and selected agents/skills guide execution.
 - Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
 
 ## Skill Routing
-- Primary skills: `vercel-platform`, `vercel-runtime`
-- Supporting skills (optional): `vercel-delivery`, `vercel-security`, `vercel-ai`, `vercel-storage`
+- Primary skills: `nextjs-developer`, `react-expert`
+- Supporting skills (optional): `tailwind-patterns`, `web-perf`, `typescript-pro`, `javascript-pro`, `nodejs-best-practices`, `skill-creator`
+- Prefer `nextjs-developer` for App Router, rendering, cache, and deployment behavior. Add `react-expert` for component/state issues, `tailwind-patterns` for styling-system work, `web-perf` for delivery bottlenecks, keep the web language skill as support, and use `skill-creator` only for skill-package work.
 
 ## Workflow steps
 1. Confirm environment targets, success criteria, and rollback constraints.
@@ -39,7 +40,7 @@ Use this workflow when the primary concern is Vercel platform behavior, deployme
 ```yaml
 VERCEL_WORKFLOW_RESULT:
   primary_agent: vercel-expert
-  supporting_agents: [devops-engineer?, security-auditor?, test-engineer?, qa-automation-engineer?]
+  supporting_agents: [devops-engineer?, security-auditor?, test-engineer?]
   primary_skills: [vercel-platform, vercel-runtime]
   supporting_skills: [vercel-delivery?, vercel-security?, vercel-ai?, vercel-storage?]
   affected_components: [<string>]

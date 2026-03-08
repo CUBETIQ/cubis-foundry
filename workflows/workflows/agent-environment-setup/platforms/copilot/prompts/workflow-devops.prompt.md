@@ -1,6 +1,6 @@
 # Workflow Prompt: /devops
 
-Plan and execute deployment, CI/CD, and operational safety changes with rollback controls.
+Plan and execute deployment, CI/CD, incident response, and operational safety changes with rollback controls.
 
 Use this prompt with the matching workflow file:
 - Workflow: ../copilot/workflows/devops.md

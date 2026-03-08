@@ -21,8 +21,9 @@ Use this when behavior is failing or inconsistent.
 - Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
 
 ## Skill Routing
-- Primary skills: `systematic-debugging`, `find-bugs`
-- Supporting skills (optional): `monitoring-expert`, `error-ux-observability`
+- Primary skills: `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`, `csharp-pro`, `kotlin-pro`, `rust-pro`
+- Supporting skills (optional): `skill-creator`
+- Pick the language skill that matches the failing path. Use `skill-creator` only when the bug is in a skill package or generator surface.
 
 ## Workflow steps
 1. Reproduce issue and collect evidence.

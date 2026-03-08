@@ -21,8 +21,9 @@ Use this for design improvement without intentional behavior changes.
 - Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
 
 ## Skill Routing
-- Primary skills: `refactor`, `legacy-modernizer`
-- Supporting skills (optional): `architecture-designer`, `code-reviewer`
+- Primary skills: `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`, `csharp-pro`, `kotlin-pro`, `rust-pro`, `php-pro`, `ruby-pro`, `c-pro`, `cpp-pro`, `dart-pro`, `swift-pro`
+- Supporting skills (optional): `skill-creator`
+- Refactors should stay anchored to the dominant language in scope. Use `skill-creator` only when refactoring skill packages, generators, or mirror wiring.
 
 ## Workflow steps
 1. Define behavior invariants and guardrails.

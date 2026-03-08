@@ -7,7 +7,12 @@ metadata:
   domain: "language"
   role: "specialist"
   stack: "csharp"
+  category: "languages"
+  layer: "languages"
+  canonical: true
+  maturity: "stable"
   baseline: "C# 14 / .NET 10"
+  tags: ["csharp", "dotnet", "async", "apis", "services"]
 ---
 # C# Pro
 

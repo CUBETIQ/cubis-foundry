@@ -5,6 +5,8 @@
 export interface SkillPointer {
   /** Skill identifier (directory name). */
   id: string;
+  /** Canonical skill identifier when this pointer is a compatibility alias. */
+  canonicalId?: string;
   /** Category derived from parent directory or frontmatter. */
   category: string;
   /** Absolute path to the SKILL.md file. */

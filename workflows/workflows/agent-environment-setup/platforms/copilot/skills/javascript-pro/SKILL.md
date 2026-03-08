@@ -7,7 +7,12 @@ metadata:
   domain: "language"
   role: "specialist"
   stack: "javascript"
+  category: "languages"
+  layer: "languages"
+  canonical: true
+  maturity: "stable"
   baseline: "Runtime-policy baseline (Node/browser/edge)"
+  tags: ["javascript", "runtime", "node", "browser", "edge"]
 ---
 # JavaScript Pro
 
@@ -16,6 +21,7 @@ metadata:
 - Implementing feature work in plain JavaScript.
 - Refactoring legacy JS toward modern modules and async flows.
 - Improving performance and reliability in browser/Node runtimes.
+- Serving as the language baseline before framework-specific guidance is loaded.
 
 ## When not to use
 

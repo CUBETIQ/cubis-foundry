@@ -3,6 +3,12 @@
 import path from "node:path";
 import process from "node:process";
 import { promises as fs } from "node:fs";
+import {
+  getMetadataBlock,
+  normalizeBoolean,
+  normalizeNullableString,
+  parseFrontmatter,
+} from "./lib/skill-catalog.mjs";
 
 const ROOT = process.cwd();
 const CANONICAL_SKILLS_ROOT = path.join(ROOT, "workflows", "skills");
@@ -30,6 +36,24 @@ const PLATFORM_SKILL_ROOTS = [
     "agent-environment-setup",
     "platforms",
     "claude",
+    "skills",
+  ),
+  path.join(
+    ROOT,
+    "workflows",
+    "workflows",
+    "agent-environment-setup",
+    "platforms",
+    "cursor",
+    "skills",
+  ),
+  path.join(
+    ROOT,
+    "workflows",
+    "workflows",
+    "agent-environment-setup",
+    "platforms",
+    "windsurf",
     "skills",
   ),
 ];
@@ -152,6 +176,16 @@ async function validateMarkdownTargets(markdownFile, errors, prefix) {
 }
 
 async function validateCanonicalSkillReferences(errors) {
+  const legacySystemRoot = path.join(CANONICAL_SKILLS_ROOT, ".system");
+  if (await exists(legacySystemRoot)) {
+    errors.push(`${legacySystemRoot}: repo-owned .system skill source must not exist`);
+  }
+
+  const legacySkillAuthoringRoot = path.join(CANONICAL_SKILLS_ROOT, "skill-authoring");
+  if (await exists(legacySkillAuthoringRoot)) {
+    errors.push(`${legacySkillAuthoringRoot}: legacy skill-authoring package must be removed or renamed to skill-creator`);
+  }
+
   for (const skillId of await listDirs(CANONICAL_SKILLS_ROOT)) {
     const skillRoot = path.join(CANONICAL_SKILLS_ROOT, skillId);
     const skillFile = path.join(skillRoot, "SKILL.md");
@@ -163,6 +197,10 @@ async function validateCanonicalSkillReferences(errors) {
     }
 
     const markdown = await readUtf8(skillFile);
+    const metadata = getMetadataBlock(parseFrontmatter(markdown).raw);
+    if (markdown.includes("skill-authoring")) {
+      errors.push(`${skillFile}: stale skill-authoring reference`);
+    }
     if (markdown.includes("workflows/powers/")) {
       errors.push(`${skillFile}: stale workflows/powers reference`);
     }
@@ -191,6 +229,26 @@ async function validateCanonicalSkillReferences(errors) {
       );
     }
 
+    const isDeprecated = normalizeBoolean(metadata.deprecated);
+    const replacedBy = normalizeNullableString(metadata.replaced_by);
+    if (isDeprecated && !replacedBy) {
+      errors.push(
+        `${skillFile}: deprecated compatibility skill must declare metadata.replaced_by`,
+      );
+    }
+    if (replacedBy && replacedBy !== skillId) {
+      const replacementSkill = path.join(
+        CANONICAL_SKILLS_ROOT,
+        replacedBy,
+        "SKILL.md",
+      );
+      if (!(await exists(replacementSkill))) {
+        errors.push(
+          `${skillFile}: replacement target '${replacedBy}' does not exist`,
+        );
+      }
+    }
+
     for (const markdownFile of await listRuntimeMarkdownFiles(skillRoot)) {
       await validateMarkdownTargets(markdownFile, errors, "missing referenced");
     }
@@ -211,6 +269,9 @@ async function validateSharedPowerRefs(errors) {
       }
       if (!entry.isFile() || !entry.name.endsWith(".md")) continue;
       const content = await readUtf8(fullPath);
+      if (content.includes("skill-authoring")) {
+        errors.push(`${fullPath}: stale skill-authoring reference`);
+      }
       if (content.includes("workflows/powers/")) {
         errors.push(`${fullPath}: stale workflows/powers reference`);
       }
@@ -247,6 +308,11 @@ async function validatePlatformBundles(errors) {
           `${skillRoot}: SKILL.md missing in platform-facing skill bundle`,
         );
         continue;
+      }
+
+      const raw = await readUtf8(skillFile);
+      if (raw.includes("skill-authoring")) {
+        errors.push(`${skillFile}: stale mirrored skill-authoring reference`);
       }
 
       for (const markdownFile of await listRuntimeMarkdownFiles(skillRoot)) {

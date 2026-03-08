@@ -3784,7 +3784,7 @@ function buildManagedWorkflowBlock(platformId, workflows) {
     "- Add supporting skills only when the active task explicitly crosses domains.",
   );
   lines.push(
-    "- Direct skill-package creation or repair work to `skill-authoring` instead of starting with `skill_search`.",
+    "- Direct skill-package creation or repair work to `skill-creator` instead of starting with `skill_search`.",
   );
   lines.push("# Full reference: foundry-detail.md#tiered-routing");
   lines.push("<!-- cbx:managed:skill-routing end -->");
@@ -6664,6 +6664,9 @@ async function installBundleArtifacts({
       const destination = path.join(profilePaths.skillsDir, skillId);
 
       if (!source) {
+        if (skillId === POSTMAN_SKILL_ID || skillId === STITCH_SKILL_ID) {
+          continue;
+        }
         throw new Error(
           `Missing skill source directory for '${skillId}' (checked ${workflowSkillsRoot()}).`,
         );

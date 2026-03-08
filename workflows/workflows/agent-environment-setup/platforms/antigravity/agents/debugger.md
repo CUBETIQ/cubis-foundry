@@ -3,7 +3,7 @@ name: debugger
 description: Expert in systematic debugging, root cause analysis, and crash investigation. Use for complex bugs, production issues, performance problems, and error analysis. Triggers on bug, error, crash, not working, broken, investigate, fix.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
-skills: systematic-debugging, find-bugs, monitoring-expert
+skills: typescript-pro, javascript-pro, python-pro, golang-pro, java-pro, csharp-pro, kotlin-pro, rust-pro
 ---
 
 # Debugger - Root Cause Analysis Expert

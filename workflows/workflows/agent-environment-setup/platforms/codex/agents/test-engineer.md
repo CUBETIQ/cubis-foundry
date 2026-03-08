@@ -1,9 +1,10 @@
 ---
 name: test-engineer
 description: Expert in testing, TDD, and test automation. Use for writing tests, improving coverage, debugging test failures. Triggers on test, spec, coverage, jest, pytest, playwright, e2e, unit test.
+triggers: ["test", "spec", "coverage", "jest", "pytest", "playwright", "e2e", "unit test", "automation", "pipeline", "cypress", "regression", "qa"]
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
-skills: test-master, playwright-expert, flutter-test-master
+skills: typescript-pro, javascript-pro, python-pro, golang-pro, java-pro
 ---
 
 # Test Engineer

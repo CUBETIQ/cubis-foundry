@@ -609,6 +609,6 @@ After editing any file:
 > The checklist serves the goal. The goal is NOT to pass the checklist.
 
 ## Skill routing
-Prefer these skills when task intent matches: `react-expert`, `nextjs-developer`, `frontend-design`, `accessibility`.
+Prefer these skills when task intent matches: `react-expert`, `nextjs-developer`, `tailwind-patterns`, `frontend-design`, `design-system-builder`, `web-perf`, `typescript-pro`, `javascript-pro`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

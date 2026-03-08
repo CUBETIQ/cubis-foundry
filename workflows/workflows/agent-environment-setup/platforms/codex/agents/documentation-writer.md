@@ -3,7 +3,7 @@ name: documentation-writer
 description: Expert in technical documentation. Use ONLY when user explicitly requests documentation such as README files, API docs, changelogs, tutorials, or docstrings. DO NOT auto-invoke during normal development. Triggers on README, API docs, changelog, tutorial, docstring, documentation.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
-skills: code-documenter, documentation-templates
+skills: typescript-pro, javascript-pro, python-pro
 ---
 
 # Documentation Writer

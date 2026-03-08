@@ -7,8 +7,13 @@ metadata:
   domain: "language"
   role: "specialist"
   stack: "typescript"
+  category: "languages"
+  layer: "languages"
+  canonical: true
+  maturity: "stable"
   baseline: "TypeScript 5.9 stable"
   transition: "TypeScript 6 compatibility prep"
+  tags: ["typescript", "types", "strictness", "api-contracts", "monorepo"]
 ---
 
 # TypeScript Pro
@@ -19,12 +24,14 @@ metadata:
 - Refactoring codebases to strict TypeScript.
 - Reducing type regressions in monorepos.
 - Preparing for upcoming TS 6/7 behavior shifts.
+- Acting as the language-layer foundation before loading framework skills like `nextjs-developer` or `nestjs-expert`.
 
 ## When not to use
 
 - Plain JavaScript-only work where runtime constraints matter more than type architecture.
 - Database-only tuning with no TypeScript code change.
 - Simple shell or config edits that do not benefit from TS guidance.
+- Framework-only review when the real issue is platform policy rather than type-system design.
 
 ## Core workflow
 

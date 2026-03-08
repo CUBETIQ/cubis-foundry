@@ -136,28 +136,26 @@ node "$CLI" workflows install --platform antigravity --bundle agent-environment-
 [ -f .agent/workflows/database.md ]
 [ -f .agent/workflows/mobile.md ]
 [ -f .agent/workflows/devops.md ]
-[ -f .agent/workflows/qa.md ]
 [ -f .agent/workflows/orchestrate.md ]
 [ -f .agent/workflows/review.md ]
 [ -f .agent/workflows/refactor.md ]
 [ -f .agent/workflows/release.md ]
-[ -f .agent/workflows/incident.md ]
 [ -f .agent/agents/backend-specialist.md ]
 [ -f .agent/agents/orchestrator.md ]
 [ -f .agent/agents/security-auditor.md ]
 [ -f .gemini/commands/backend.toml ]
 [ -f .gemini/commands/review.toml ]
 [ -f .gemini/commands/vercel.toml ]
-if [ "$(find .agent/workflows -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "19" ]; then
-  echo "[FAIL] Antigravity expected exactly 19 workflow files" >&2
+if [ "$(find .agent/workflows -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "15" ]; then
+  echo "[FAIL] Antigravity expected exactly 15 workflow files" >&2
   exit 1
 fi
-if [ "$(find .gemini/commands -maxdepth 1 -type f -name '*.toml' | wc -l | tr -d ' ')" -ne "19" ]; then
-  echo "[FAIL] Antigravity expected exactly 19 Gemini command files" >&2
+if [ "$(find .gemini/commands -maxdepth 1 -type f -name '*.toml' | wc -l | tr -d ' ')" -ne "15" ]; then
+  echo "[FAIL] Antigravity expected exactly 15 Gemini command files" >&2
   exit 1
 fi
-if [ "$(find .agent/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -lt "20" ]; then
-  echo "[FAIL] Antigravity expected at least 20 agent files" >&2
+if [ "$(find .agent/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "17" ]; then
+  echo "[FAIL] Antigravity expected exactly 17 agent files" >&2
   exit 1
 fi
 [ -d "$ANTIGRAVITY_GLOBAL_SKILLS/api-designer" ]
@@ -245,9 +243,8 @@ node "$CLI" workflows install --platform codex --bundle agent-environment-setup 
 [ -f .agents/workflows/database.md ]
 [ -f .agents/workflows/mobile.md ]
 [ -f .agents/workflows/devops.md ]
-[ -f .agents/workflows/qa.md ]
-if [ "$(find .agents/workflows -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "19" ]; then
-  echo "[FAIL] Codex expected exactly 19 workflow files" >&2
+if [ "$(find .agents/workflows -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "15" ]; then
+  echo "[FAIL] Codex expected exactly 15 workflow files" >&2
   exit 1
 fi
 [ ! -d .agents/agents ]
@@ -255,18 +252,16 @@ fi
 [ -f "$CODEX_GLOBAL_SKILLS/workflow-plan/SKILL.md" ]
 [ -f "$CODEX_GLOBAL_SKILLS/agent-backend-specialist/SKILL.md" ]
 [ -f "$CODEX_GLOBAL_SKILLS/agent-security-auditor/SKILL.md" ]
-[ -f "$CODEX_GLOBAL_SKILLS/vercel-runtime/SKILL.md" ]
-[ -f "$CODEX_GLOBAL_SKILLS/vercel-delivery/SKILL.md" ]
-[ -f "$CODEX_GLOBAL_SKILLS/vercel-security/SKILL.md" ]
-[ -f "$CODEX_GLOBAL_SKILLS/vercel-ai/SKILL.md" ]
-[ -f "$CODEX_GLOBAL_SKILLS/vercel-functions/SKILL.md" ]
-[ -f "$CODEX_GLOBAL_SKILLS/vercel-deployments/SKILL.md" ]
+[ -f "$CODEX_GLOBAL_SKILLS/auth-architect/SKILL.md" ]
+[ -f "$CODEX_GLOBAL_SKILLS/nextjs-developer/SKILL.md" ]
+[ -f "$CODEX_GLOBAL_SKILLS/web-perf/SKILL.md" ]
+[ -f "$CODEX_GLOBAL_SKILLS/graphql-architect/SKILL.md" ]
+[ ! -d "$CODEX_GLOBAL_SKILLS/vercel-functions" ]
+[ ! -d "$CODEX_GLOBAL_SKILLS/vercel-deployments" ]
 rg -n '^name:\s*workflow-backend$' "$CODEX_GLOBAL_SKILLS/workflow-backend/SKILL.md" >/dev/null
 rg -n '^name:\s*agent-backend-specialist$' "$CODEX_GLOBAL_SKILLS/agent-backend-specialist/SKILL.md" >/dev/null
-assert_file_contains_literal "$CODEX_GLOBAL_SKILLS/vercel-functions/SKILL.md" 'metadata:' "Codex deprecated skill metadata"
-assert_file_contains_literal "$CODEX_GLOBAL_SKILLS/vercel-functions/SKILL.md" 'deprecated: true' "Codex deprecated skill metadata"
-assert_file_contains_literal "$CODEX_GLOBAL_SKILLS/vercel-functions/SKILL.md" 'replaced_by: vercel-runtime' "Codex deprecated skill metadata"
-assert_file_contains_literal "$CODEX_GLOBAL_SKILLS/nextjs-react-expert/SKILL.md" 'replaced_by: react-best-practices' "Codex deprecated skill metadata"
+assert_file_contains_literal "$CODEX_GLOBAL_SKILLS/auth-architect/SKILL.md" 'OAuth or OIDC' "Codex auth specialist content"
+assert_file_contains_literal "$CODEX_GLOBAL_SKILLS/nextjs-developer/SKILL.md" 'App Router' "Codex Next.js specialist content"
 node - <<'NODE'
 const fs = require('fs');
 const path = require('path');
@@ -339,12 +334,12 @@ node "$CLI" workflows sync-rules --platform codex --scope global --dry-run --jso
 node - <<'NODE'
 const fs = require('fs');
 const payload = JSON.parse(fs.readFileSync('./cbx-c221.json', 'utf8'));
-if (payload.workflowsCount !== 19) {
-  console.error(`[FAIL] Expected workflowsCount=19 for codex global sync dry-run, got ${payload.workflowsCount}`);
+if (payload.workflowsCount !== 15) {
+  console.error(`[FAIL] Expected workflowsCount=15 for codex global sync dry-run, got ${payload.workflowsCount}`);
   process.exit(1);
 }
 NODE
-log_ok "Codex global sync dry-run reports workflowsCount=19"
+log_ok "Codex global sync dry-run reports workflowsCount=15"
 
 log_step "C2.3 Rules init (Codex)"
 node "$CLI" rules init --platform codex --scope project --overwrite >/tmp/cbx-c23.log
@@ -459,9 +454,8 @@ node "$CLI" workflows install --platform copilot --bundle agent-environment-setu
 [ -f .github/copilot/workflows/database.md ]
 [ -f .github/copilot/workflows/mobile.md ]
 [ -f .github/copilot/workflows/devops.md ]
-[ -f .github/copilot/workflows/qa.md ]
-if [ "$(find .github/copilot/workflows -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "19" ]; then
-  echo "[FAIL] Copilot expected exactly 19 workflow files" >&2
+if [ "$(find .github/copilot/workflows -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "15" ]; then
+  echo "[FAIL] Copilot expected exactly 15 workflow files" >&2
   exit 1
 fi
 [ -f .github/agents/backend-specialist.md ]
@@ -472,22 +466,22 @@ fi
 [ -f .github/prompts/workflow-backend.prompt.md ]
 [ -f .github/prompts/workflow-review.prompt.md ]
 [ -f .github/prompts/workflow-vercel.prompt.md ]
-if [ "$(find .github/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -lt "20" ]; then
-  echo "[FAIL] Copilot expected at least 20 agent files" >&2
+if [ "$(find .github/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "17" ]; then
+  echo "[FAIL] Copilot expected exactly 17 agent files" >&2
   exit 1
 fi
-if [ "$(find .github/prompts -maxdepth 1 -type f -name '*.prompt.md' | wc -l | tr -d ' ')" -ne "19" ]; then
-  echo "[FAIL] Copilot expected exactly 19 prompt files" >&2
+if [ "$(find .github/prompts -maxdepth 1 -type f -name '*.prompt.md' | wc -l | tr -d ' ')" -ne "15" ]; then
+  echo "[FAIL] Copilot expected exactly 15 prompt files" >&2
   exit 1
 fi
 [ ! -d .github/skills ]
 [ -d "$COPILOT_GLOBAL_SKILLS/api-designer" ]
-rg -n '^name:' "$COPILOT_GLOBAL_SKILLS/clean-code/SKILL.md" >/dev/null
-if rg -n '^allowed-tools:' "$COPILOT_GLOBAL_SKILLS/clean-code/SKILL.md" >/dev/null; then
+rg -n '^name:' "$COPILOT_GLOBAL_SKILLS/auth-architect/SKILL.md" >/dev/null
+if rg -n '^allowed-tools:' "$COPILOT_GLOBAL_SKILLS/auth-architect/SKILL.md" >/dev/null; then
   echo "[FAIL] Copilot global skill SKILL.md still contains unsupported allowed-tools attribute" >&2
   exit 1
 fi
-if rg -n '^priority:' "$COPILOT_GLOBAL_SKILLS/clean-code/SKILL.md" >/dev/null; then
+if rg -n '^priority:' "$COPILOT_GLOBAL_SKILLS/auth-architect/SKILL.md" >/dev/null; then
   echo "[FAIL] Copilot global skill SKILL.md still contains unsupported priority attribute" >&2
   exit 1
 fi

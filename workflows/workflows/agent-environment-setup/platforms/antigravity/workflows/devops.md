@@ -1,17 +1,20 @@
 ---
 command: "/devops"
-description: "Plan and execute deployment, CI/CD, and operational safety changes with rollback controls."
-triggers: ["devops", "deploy", "ci", "cd", "rollback", "infra"]
+description: "Plan and execute deployment, CI/CD, incident response, and operational safety changes with rollback controls."
+triggers: ["devops", "deploy", "ci", "cd", "rollback", "infra", "incident", "outage", "sev", "degraded", "hotfix", "recovery"]
 ---
 # DevOps Workflow
 
 # CHANGED: output contract — converted free-form bullets into structured YAML — keeps rollout and rollback planning machine-readable.
 
 ## When to use
-Use this when deployment pipeline, infrastructure, or release execution is the main scope.
+Use this when deployment pipeline, infrastructure, release execution, or incident recovery is the main scope.
 
 ## Routing
 - Primary specialist: `@devops-engineer`
+- Runtime triage: `@debugger`
+- Service impact analysis: `@backend-specialist`
+- Data recovery support: `@database-architect`
 - Security checks: `@security-auditor`
 - Verification support: `@test-engineer`
 
@@ -20,14 +23,15 @@ Use this when deployment pipeline, infrastructure, or release execution is the m
 - Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
 
 ## Skill Routing
-- Primary skills: `devops-engineer`, `sre-engineer`
-- Supporting skills (optional): `monitoring-expert`, `terraform-engineer`, `wrangler`
+- Primary skills: `javascript-pro`, `typescript-pro`, `python-pro`, `golang-pro`
+- Supporting skills (optional): `skill-creator`
+- Use the language skill that matches deployment scripts, runtime code, or build tooling in the repo. There is no live infrastructure specialist skill during the reset.
 
 ## Workflow steps
-1. Confirm target environment and risk level.
-2. Define rollout and rollback strategy.
-3. Apply CI/CD or infra changes.
-4. Validate monitors/alerts and recovery path.
+1. Confirm whether this is planned ops work or active incident response.
+2. Establish impact, target environment, and rollback or mitigation path.
+3. Apply CI/CD, infra, or recovery actions with explicit safety controls.
+4. Validate monitors, alerts, and service recovery.
 
 ## Verification
 - Run focused checks/tests for the changed scope.

@@ -7,7 +7,7 @@ triggers: ["create", "build", "implement", "feature", "develop"]
 
 # CHANGED: routing — added explicit implementation owners by domain — prevents fallback routing and clarifies which specialist leads execution.
 # CHANGED: output contract — converted free-form bullets into structured YAML — makes create results consumable by downstream workflows.
-# CHANGED: skill routing — added `skill-authoring` as the canonical support skill for skill package work — lets skill creation and repair route cleanly without blind startup search.
+# CHANGED: skill routing — added `skill-creator` as the canonical support skill for skill package work — lets skill creation and repair route cleanly without blind startup search.
 
 ## When to use
 Use this for net-new implementation after design is stable.
@@ -24,9 +24,9 @@ Use this for net-new implementation after design is stable.
 - Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
 
 ## Skill Routing
-- Primary skills: `feature-forge`, `architecture-designer`
-- Supporting skills (optional): `skill-authoring`, `lint-and-validate`, `test-master`
-- If the task is creating or repairing a skill package, load `skill-authoring` directly before generic supporting skills.
+- Primary skills: `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`, `csharp-pro`, `kotlin-pro`, `rust-pro`, `php-pro`, `ruby-pro`, `c-pro`, `cpp-pro`, `dart-pro`, `swift-pro`
+- Supporting skills (optional): `api-designer`, `api-patterns`, `nodejs-best-practices`, `nestjs-expert`, `fastapi-expert`, `graphql-architect`, `react-expert`, `nextjs-developer`, `tailwind-patterns`, `frontend-design`, `design-system-builder`, `web-perf`, `skill-creator`
+- Pick one primary language skill from repo signals or touched files. Add the narrowest restored specialist only when the feature is clearly backend or frontend framework-specific. Use `skill-creator` only for canonical skill-package creation or repair.
 
 ## Workflow steps
 1. Confirm target files and contracts.

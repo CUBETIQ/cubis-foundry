@@ -7,7 +7,12 @@ metadata:
   domain: "language"
   role: "specialist"
   stack: "java"
+  category: "languages"
+  layer: "languages"
+  canonical: true
+  maturity: "stable"
   baseline: "Java SE 25"
+  tags: ["java", "jvm", "backend", "services", "observability"]
 ---
 
 # Java Pro

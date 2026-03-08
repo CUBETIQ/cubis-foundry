@@ -7,7 +7,12 @@ metadata:
   domain: "language"
   role: "specialist"
   stack: "kotlin"
+  category: "languages"
+  layer: "languages"
+  canonical: true
+  maturity: "stable"
   baseline: "Kotlin 2.3 line (2.2.20+ compatible)"
+  tags: ["kotlin", "coroutines", "android", "jvm", "multiplatform"]
 ---
 # Kotlin Pro
 

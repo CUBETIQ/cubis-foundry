@@ -1,77 +1,62 @@
 ---
 name: "architecture-designer"
-description: "Use when designing new system architecture, reviewing existing designs, or making architectural decisions. Invoke for system design, architecture review, design patterns, ADRs, scalability planning."
+description: "Use when designing or reviewing system architecture, interface boundaries, tradeoffs, ADRs, scalability posture, and the smallest durable target shape for a product or platform."
+license: MIT
+metadata:
+  version: "3.0.0"
+  domain: "architecture"
+  role: "specialist"
+  stack: "system-design"
+  category: "core-operating"
+  layer: "core-operating"
+  canonical: true
+  maturity: "stable"
+  baseline: "pragmatic modern system design"
+  tags: ["architecture", "system-design", "adrs", "boundaries", "tradeoffs", "scalability"]
 ---
-
 
 # Architecture Designer
 
-## Overview
+## When to use
 
-Senior software architect specializing in system design, design patterns, and architectural decision-making.
+- Designing a new system or reshaping an existing one.
+- Making boundary, ownership, integration, or deployment tradeoffs explicit.
+- Writing or reviewing architectural decisions and ADR-style reasoning.
+- Deciding how much architecture is actually justified for the product stage.
 
-## Role Definition
+## When not to use
 
-You are a principal architect with 15+ years of experience designing scalable systems. You specialize in distributed systems, cloud architecture, and making pragmatic trade-offs. You document decisions with ADRs and consider long-term maintainability.
+- Small code changes where architecture is already settled.
+- Framework-specific implementation work with no boundary decision.
+- Pure infrastructure tuning or database optimization with no system-shape change.
 
-## When to Use This Skill
+## Core workflow
 
-- Designing new system architecture
-- Choosing between architectural patterns
-- Reviewing existing architecture
-- Creating Architecture Decision Records (ADRs)
-- Planning for scalability
-- Evaluating technology choices
+1. Clarify product goals, constraints, and failure tolerance.
+2. Identify the few architectural decisions that materially change risk or cost.
+3. Compare viable shapes and document tradeoffs, not just the favorite option.
+4. Choose the smallest architecture that safely supports the current target.
+5. Hand off explicit boundaries, risks, and follow-up validation points.
 
-## Core Workflow
+## Baseline standards
 
-1. **Understand requirements** - Functional, non-functional, constraints
-2. **Identify patterns** - Match requirements to architectural patterns
-3. **Design** - Create architecture with trade-offs documented
-4. **Document** - Write ADRs for key decisions
-5. **Review** - Validate with stakeholders
+- Start from product outcomes, not architecture fashion.
+- Make ownership and interfaces explicit.
+- Consider security, observability, and operations as part of the design.
+- Prefer reversible decisions when uncertainty is high.
+- Keep ADR-style reasoning concrete and testable.
 
-## Available Steering Files
+## Avoid
 
-Load detailed guidance on-demand:
+- Over-engineering for hypothetical future scale.
+- Treating diagrams as a substitute for boundary decisions.
+- Choosing technology before identifying the real constraints.
+- Hiding unresolved risk behind vague architectural language.
 
-| Topic                 | Reference                           | Load When                             |
-| --------------------- | ----------------------------------- | ------------------------------------- |
-| Architecture Patterns | `references/architecture-patterns.md` | Choosing monolith vs microservices    |
-| ADR Template          | `references/adr-template.md`          | Documenting decisions                 |
-| System Design         | `references/system-design.md`         | Full system design template           |
-| Database Selection    | `references/database-selection.md`    | Choosing database technology          |
-| NFR Checklist         | `references/nfr-checklist.md`         | Gathering non-functional requirements |
+## References
 
-## Constraints
+Load on demand. Do not preload all reference files.
 
-### MUST DO
-
-- Document all significant decisions with ADRs
-- Consider non-functional requirements explicitly
-- Evaluate trade-offs, not just benefits
-- Plan for failure modes
-- Consider operational complexity
-- Review with stakeholders before finalizing
-
-### MUST NOT DO
-
-- Over-engineer for hypothetical scale
-- Choose technology without evaluating alternatives
-- Ignore operational costs
-- Design without understanding requirements
-- Skip security considerations
-
-## Output Templates
-
-When designing architecture, provide:
-
-1. Requirements summary (functional + non-functional)
-2. High-level architecture diagram
-3. Key decisions with trade-offs (ADR format)
-4. Technology recommendations with rationale
-5. Risks and mitigation strategies
-
-## Knowledge Reference
-
-Distributed systems, microservices, event-driven architecture, CQRS, DDD, CAP theorem, cloud platforms (AWS, GCP, Azure), containers, Kubernetes, message queues, caching, database design
+| File | Load when |
+| --- | --- |
+| `references/system-tradeoff-checklist.md` | You need a sharper system-design checklist for boundaries, ADRs, integration shape, resilience, and rollout risk. |

@@ -1,29 +1,25 @@
 {
   "$schema": "cubis-foundry-mcp-manifest-v1",
-  "generatedAt": "2026-03-06T09:57:33.609Z",
-  "contentHash": "f2a7f5af30e60805",
+  "generatedAt": "2026-03-08T18:36:56.389Z",
+  "contentHash": "c5e6147f3dc26a41",
   "summary": {
-    "totalSkills": 124,
-    "totalCategories": 22,
-    "totalBytes": 450915,
-    "estimatedTokens": 112729
+    "totalSkills": 43,
+    "totalCategories": 8,
+    "totalBytes": 102279,
+    "estimatedTokens": 25570
   },
   "categories": [
     {
-      "name": "ai",
-      "skillCount": 1
-    },
-    {
       "name": "api",
-      "skillCount": 3
+      "skillCount": 2
     },
     {
       "name": "architecture",
-      "skillCount": 3
+      "skillCount": 2
     },
     {
       "name": "backend",
-      "skillCount": 14
+      "skillCount": 13
     },
     {
       "name": "data",
@@ -31,98 +27,46 @@
     },
     {
       "name": "design",
-      "skillCount": 6
-    },
-    {
-      "name": "devops",
-      "skillCount": 20
-    },
-    {
-      "name": "documentation",
-      "skillCount": 3
+      "skillCount": 1
     },
     {
       "name": "frontend",
-      "skillCount": 9
-    },
-    {
-      "name": "game-dev",
-      "skillCount": 1
-    },
-    {
-      "name": "general",
-      "skillCount": 27
-    },
-    {
-      "name": "localization",
-      "skillCount": 1
-    },
-    {
-      "name": "marketing",
-      "skillCount": 2
-    },
-    {
-      "name": "mobile",
-      "skillCount": 7
-    },
-    {
-      "name": "observability",
-      "skillCount": 1
-    },
-    {
-      "name": "payments",
-      "skillCount": 1
-    },
-    {
-      "name": "performance",
-      "skillCount": 2
-    },
-    {
-      "name": "practices",
-      "skillCount": 5
-    },
-    {
-      "name": "saas",
-      "skillCount": 1
-    },
-    {
-      "name": "security",
       "skillCount": 4
     },
     {
-      "name": "testing",
-      "skillCount": 6
+      "name": "general",
+      "skillCount": 16
     },
     {
-      "name": "tooling",
-      "skillCount": 3
+      "name": "performance",
+      "skillCount": 1
     }
   ],
   "skills": [
     {
-      "id": "accessibility",
-      "name": "accessibility",
-      "displayName": "Accessibility Expert",
-      "description": "Ensure Flutter apps meet WCAG 2.1 AA standards with proper semantics, focus management, and screen reader support",
-      "category": "design",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 2458,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
       "id": "api-designer",
       "name": "api-designer",
       "displayName": null,
-      "description": "Use when defining or reviewing external API contracts, OpenAPI specifications, resource models, pagination, versioning, or error response standards. Do not use for pure database design, implementation-only handler work, or framework-specific backend setup.",
+      "description": "Use when defining or reviewing external API contracts, OpenAPI specifications, resource models, pagination, versioning, and error response standards. Do not use for pure database design or framework-only handler wiring.",
       "category": "api",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 4285,
+      "path": "workflows/skills/api-designer/SKILL.md",
+      "metadata": {
+        "version": "3.0.0",
+        "domain": "api",
+        "role": "specialist",
+        "stack": "api-design",
+        "category": "core-operating",
+        "layer": "core-operating",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "OpenAPI 3.1 and current HTTP API practices",
+        "tags": "[\"api\", \"openapi\", \"rest\", \"graphql\", \"versioning\", \"pagination\"]"
+      },
+      "fileBytes": 2214,
       "warnings": [
-        "description too long (256 chars)",
+        "description too long (219 chars)",
         "no keywords or triggers"
       ]
     },
@@ -130,42 +74,24 @@
       "id": "api-patterns",
       "name": "api-patterns",
       "displayName": null,
-      "description": "API design principles and decision-making. REST vs GraphQL vs tRPC selection, response formats, versioning, pagination.",
+      "description": "Use when choosing between REST, GraphQL, and type-safe RPC patterns, or when standardizing response envelopes, versioning, pagination, auth shape, and API protection strategy.",
       "category": "api",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 2544,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "app-builder",
-      "name": "app-builder",
-      "displayName": null,
-      "description": "Main application building orchestrator. Creates full-stack applications from natural language requests. Determines project type, selects tech stack, coordinates agents.",
-      "category": "general",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 3227,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "architecture",
-      "name": "architecture",
-      "displayName": null,
-      "description": "Compatibility alias skill. Deprecated: use architecture-designer.",
-      "category": "architecture",
-      "keywords": [],
-      "triggers": [],
+      "path": "workflows/skills/api-patterns/SKILL.md",
       "metadata": {
-        "deprecated": "true",
-        "replaced_by": "architecture-designer",
-        "removal_target": "v0.6.0"
+        "version": "3.0.0",
+        "domain": "api",
+        "role": "specialist",
+        "stack": "api-design",
+        "category": "core-operating",
+        "layer": "core-operating",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "modern HTTP and graph API patterns",
+        "tags": "[\"api\", \"rest\", \"graphql\", \"rpc\", \"pagination\", \"versioning\", \"auth\"]"
       },
-      "fileBytes": 517,
+      "fileBytes": 2310,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -174,147 +100,93 @@
       "id": "architecture-designer",
       "name": "architecture-designer",
       "displayName": null,
-      "description": "Use when designing new system architecture, reviewing existing designs, or making architectural decisions. Invoke for system design, architecture review, design patterns, ADRs, scalability planning.",
+      "description": "Use when designing or reviewing system architecture, interface boundaries, tradeoffs, ADRs, scalability posture, and the smallest durable target shape for a product or platform.",
       "category": "architecture",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 3012,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "ask-questions-if-underspecified",
-      "name": "ask-questions-if-underspecified",
-      "displayName": null,
-      "description": "Clarify requirements before implementing. Use when serious doubts arise.",
-      "category": "general",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 3987,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "bash-linux",
-      "name": "bash-linux",
-      "displayName": null,
-      "description": "Bash/Linux terminal patterns. Critical commands, piping, error handling, scripting. Use when working on macOS or Linux systems.",
-      "category": "general",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 4156,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "behavioral-modes",
-      "name": "behavioral-modes",
-      "displayName": null,
-      "description": "AI operational modes (brainstorm, implement, debug, review, teach, ship, orchestrate). Use to adapt behavior based on task type.",
-      "category": "practices",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 5403,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "brainstorming",
-      "name": "brainstorming",
-      "displayName": null,
-      "description": "Socratic questioning protocol + user communication. MANDATORY for complex requests, new features, or unclear requirements. Includes progress reporting and error handling.",
-      "category": "practices",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 4682,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "changelog-generator",
-      "name": "changelog-generator",
-      "displayName": null,
-      "description": "Automatically creates user-facing changelogs from git commits by analyzing commit history, categorizing changes, and transforming technical commits into clear, customer-friendly release notes. Turns hours of manual changelog writing into minutes of automated generation.",
-      "category": "documentation",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 3096,
-      "warnings": [
-        "description too long (270 chars)",
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "clean-code",
-      "name": "clean-code",
-      "displayName": null,
-      "description": "Pragmatic coding standards - concise, direct, no over-engineering, no unnecessary comments",
-      "category": "practices",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 6634,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "cli-developer",
-      "name": "cli-developer",
-      "displayName": "CLI Developer",
-      "description": "Build intuitive, cross-platform CLI tools with argument parsing, interactive prompts, progress indicators, and shell completions across Node.js, Python, and Go",
-      "category": "tooling",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 3834,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "code-documenter",
-      "name": "code-documenter",
-      "displayName": null,
-      "description": "Use when adding docstrings, creating API documentation, or building documentation sites. Invoke for OpenAPI/Swagger specs, JSDoc, doc portals, tutorials, user guides.",
-      "category": "documentation",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 3787,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "code-review-checklist",
-      "name": "code-review-checklist",
-      "displayName": null,
-      "description": "Compatibility alias skill. Deprecated: use code-reviewer.",
-      "category": "general",
-      "keywords": [],
-      "triggers": [],
+      "path": "workflows/skills/architecture-designer/SKILL.md",
       "metadata": {
-        "deprecated": "true",
-        "replaced_by": "code-reviewer",
-        "removal_target": "v0.6.0"
+        "version": "3.0.0",
+        "domain": "architecture",
+        "role": "specialist",
+        "stack": "system-design",
+        "category": "core-operating",
+        "layer": "core-operating",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "pragmatic modern system design",
+        "tags": "[\"architecture\", \"system-design\", \"adrs\", \"boundaries\", \"tradeoffs\", \"scalability\"]"
       },
-      "fileBytes": 504,
+      "fileBytes": 2337,
       "warnings": [
         "no keywords or triggers"
       ]
     },
     {
-      "id": "code-reviewer",
-      "name": "code-reviewer",
+      "id": "auth-architect",
+      "name": "auth-architect",
       "displayName": null,
-      "description": "Use when reviewing pull requests, conducting code quality audits, or identifying security vulnerabilities. Invoke for PR reviews, code quality checks, refactoring suggestions.",
+      "description": "Use when designing or reviewing authentication and authorization for backend systems, including sessions, tokens, OAuth or OIDC, RBAC or ABAC, passkeys, service-to-service auth, and policy enforcement boundaries.",
       "category": "general",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 2936,
+      "path": "workflows/skills/auth-architect/SKILL.md",
+      "metadata": {
+        "version": "3.0.0",
+        "domain": "security",
+        "role": "specialist",
+        "stack": "auth",
+        "category": "frameworks-runtimes",
+        "layer": "frameworks-runtimes",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "modern auth for web and service platforms",
+        "tags": "[\"auth\", \"authorization\", \"oauth\", \"oidc\", \"rbac\", \"abac\", \"sessions\", \"jwt\", \"passkeys\", \"security\"]"
+      },
+      "fileBytes": 2825,
+      "warnings": [
+        "description too long (212 chars)",
+        "no keywords or triggers"
+      ]
+    },
+    {
+      "id": "c-pro",
+      "name": "c-pro",
+      "displayName": null,
+      "description": "Use for modern C23-era systems and embedded engineering with memory safety discipline, build reproducibility, and low-level debugging awareness.",
+      "category": "general",
+      "keywords": [],
+      "triggers": [],
+      "path": "workflows/skills/c-pro/SKILL.md",
+      "metadata": {
+        "category": "languages",
+        "layer": "languages",
+        "canonical": "true",
+        "maturity": "stable",
+        "tags": "[\"c\", \"language\", \"systems\", \"embedded\", \"memory-safety\"]"
+      },
+      "fileBytes": 1089,
+      "warnings": [
+        "no keywords or triggers"
+      ]
+    },
+    {
+      "id": "cpp-pro",
+      "name": "cpp-pro",
+      "displayName": null,
+      "description": "Use for modern C++23-era systems and application engineering with RAII, value semantics, toolchain awareness, and performance-safe design.",
+      "category": "general",
+      "keywords": [],
+      "triggers": [],
+      "path": "workflows/skills/cpp-pro/SKILL.md",
+      "metadata": {
+        "category": "languages",
+        "layer": "languages",
+        "canonical": "true",
+        "maturity": "stable",
+        "tags": "[\"cpp\", \"c++\", \"language\", \"systems\", \"performance\"]"
+      },
+      "fileBytes": 1145,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -327,14 +199,41 @@
       "category": "backend",
       "keywords": [],
       "triggers": [],
+      "path": "workflows/skills/csharp-pro/SKILL.md",
       "metadata": {
         "version": "1.0.0",
         "domain": "language",
         "role": "specialist",
         "stack": "csharp",
-        "baseline": "C# 14 / .NET 10"
+        "category": "languages",
+        "layer": "languages",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "C# 14 / .NET 10",
+        "tags": "[\"csharp\", \"dotnet\", \"async\", \"apis\", \"services\"]"
       },
-      "fileBytes": 2097,
+      "fileBytes": 2297,
+      "warnings": [
+        "no keywords or triggers"
+      ]
+    },
+    {
+      "id": "dart-pro",
+      "name": "dart-pro",
+      "displayName": null,
+      "description": "Use for modern Dart engineering across Flutter, server, and CLI code with Dart 3.9-era language features, package hygiene, isolates, and testing discipline.",
+      "category": "general",
+      "keywords": [],
+      "triggers": [],
+      "path": "workflows/skills/dart-pro/SKILL.md",
+      "metadata": {
+        "category": "languages",
+        "layer": "languages",
+        "canonical": "true",
+        "maturity": "stable",
+        "tags": "[\"dart\", \"flutter\", \"language\", \"packages\", \"isolates\"]"
+      },
+      "fileBytes": 1091,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -343,11 +242,24 @@
       "id": "database-design",
       "name": "database-design",
       "displayName": null,
-      "description": "Database design principles and decision-making. Schema design, indexing strategy, ORM selection, serverless databases.",
+      "description": "Use when designing schemas, relationships, indexes, ORM boundaries, and safe migration plans for relational or document-oriented workloads.",
       "category": "data",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 1593,
+      "path": "workflows/skills/database-design/SKILL.md",
+      "metadata": {
+        "version": "3.0.0",
+        "domain": "data",
+        "role": "specialist",
+        "stack": "database-design",
+        "category": "databases",
+        "layer": "databases",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "modern schema and migration design",
+        "tags": "[\"database\", \"schema\", \"migrations\", \"indexing\", \"orm\", \"modeling\"]"
+      },
+      "fileBytes": 2162,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -356,11 +268,24 @@
       "id": "database-optimizer",
       "name": "database-optimizer",
       "displayName": null,
-      "description": "Use for system-level database performance triage across engines: bottleneck analysis, indexing strategy, config tuning, partitioning, and lock contention.",
+      "description": "Use for database performance triage across engines: query-plan analysis, indexing changes, wait and contention diagnosis, config tuning, and safe before/after validation.",
       "category": "data",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 3404,
+      "path": "workflows/skills/database-optimizer/SKILL.md",
+      "metadata": {
+        "version": "3.0.0",
+        "domain": "data",
+        "role": "specialist",
+        "stack": "database-performance",
+        "category": "databases",
+        "layer": "databases",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "modern query and workload optimization",
+        "tags": "[\"database\", \"performance\", \"query-plans\", \"indexing\", \"locks\", \"tuning\"]"
+      },
+      "fileBytes": 2245,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -369,51 +294,24 @@
       "id": "database-skills",
       "name": "database-skills",
       "displayName": null,
-      "description": "Unified database skill hub with engine-specific packs for PostgreSQL, MySQL, Vitess, Neki, MongoDB (Mongoose), SQLite, Supabase, and Redis.",
+      "description": "Use as the primary database hub for engine choice, schema-vs-tuning routing, migration safety framing, and database task triage before engine-specific deep dives.",
       "category": "data",
       "keywords": [],
-      "triggers": [
-        "database, sql, postgres, mysql, vitess, neki, mongodb, mongoose, sqlite, supabase, redis, schema, migration, index, query, performance, pagination, replication, pooling, sharding, cache"
-      ],
+      "triggers": [],
+      "path": "workflows/skills/database-skills/SKILL.md",
       "metadata": {
-        "version": "2.0.0",
+        "version": "3.0.0",
         "domain": "data",
-        "triggers": "database, sql, postgres, mysql, vitess, neki, mongodb, mongoose, sqlite, supabase, redis, schema, migration, index, query, performance, pagination, replication, pooling, sharding, cache"
+        "role": "hub",
+        "stack": "databases",
+        "category": "databases",
+        "layer": "databases",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "cross-engine database planning",
+        "tags": "[\"database\", \"sql\", \"nosql\", \"migrations\", \"indexing\", \"query-plans\", \"routing\"]"
       },
-      "fileBytes": 4608
-    },
-    {
-      "id": "debugging-wizard",
-      "name": "debugging-wizard",
-      "displayName": null,
-      "description": "Compatibility alias skill. Deprecated: use systematic-debugging.",
-      "category": "general",
-      "keywords": [],
-      "triggers": [],
-      "metadata": {
-        "deprecated": "true",
-        "replaced_by": "systematic-debugging",
-        "removal_target": "v0.6.0"
-      },
-      "fileBytes": 524,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "deployment-procedures",
-      "name": "deployment-procedures",
-      "displayName": null,
-      "description": "Compatibility alias skill. Deprecated: use devops-engineer.",
-      "category": "devops",
-      "keywords": [],
-      "triggers": [],
-      "metadata": {
-        "deprecated": "true",
-        "replaced_by": "devops-engineer",
-        "removal_target": "v0.6.0"
-      },
-      "fileBytes": 514,
+      "fileBytes": 2636,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -422,63 +320,24 @@
       "id": "design-system-builder",
       "name": "design-system-builder",
       "displayName": "Design System Builder",
-      "description": "Create and review design system components: API design, token usage, theming, variants, and documentation",
+      "description": "Use when creating or reviewing reusable UI components, token-driven styling, variant APIs, theming hooks, and component documentation for a design system.",
       "category": "design",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 3799,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "devops-engineer",
-      "name": "devops-engineer",
-      "displayName": null,
-      "description": "Use when setting up CI/CD pipelines, containerizing applications, or managing infrastructure as code. Invoke for pipelines, Docker, Kubernetes, cloud platforms, GitOps.",
-      "category": "devops",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 3662,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "documentation-templates",
-      "name": "documentation-templates",
-      "displayName": null,
-      "description": "Documentation templates and structure guidelines. README, API docs, code comments, and AI-friendly documentation.",
-      "category": "documentation",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 3312,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "drift-flutter",
-      "name": "drift-flutter",
-      "displayName": null,
-      "description": "Use when implementing Flutter local persistence with Drift: schema design, DAOs, migrations, transactions, and repository integration",
-      "category": "mobile",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 1655,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "error-ux-observability",
-      "name": "error-ux-observability",
-      "displayName": "Error UX & Observability",
-      "description": "Map backend failures to user-friendly messages, implement proper logging levels, and ensure observable error handling",
-      "category": "general",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 4330,
+      "path": "workflows/skills/design-system-builder/SKILL.md",
+      "metadata": {
+        "version": "3.0.0",
+        "domain": "frontend",
+        "role": "specialist",
+        "stack": "design-system",
+        "category": "frameworks-runtimes",
+        "layer": "frameworks-runtimes",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "token-driven component systems",
+        "tags": "[\"design-system\", \"components\", \"tokens\", \"theming\", \"variants\", \"ui\"]"
+      },
+      "fileBytes": 2338,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -487,133 +346,24 @@
       "id": "fastapi-expert",
       "name": "fastapi-expert",
       "displayName": null,
-      "description": "Use when building high-performance async Python APIs with FastAPI and Pydantic V2. Invoke for async SQLAlchemy, JWT authentication, WebSockets, OpenAPI documentation.",
+      "description": "Use when building FastAPI services with async Python, Pydantic v2, lifespan-managed resources, dependency-based auth, background task boundaries, and OpenAPI-safe request handling.",
       "category": "backend",
       "keywords": [],
-      "triggers": [
-        "FastAPI, Pydantic, async Python, Python API, REST API Python, SQLAlchemy async, JWT authentication, OpenAPI, Swagger Python"
-      ],
+      "triggers": [],
+      "path": "workflows/skills/fastapi-expert/SKILL.md",
       "metadata": {
-        "author": "https://github.com/Jeffallan",
-        "version": "1.0.0",
+        "version": "3.0.0",
         "domain": "backend",
-        "triggers": "FastAPI, Pydantic, async Python, Python API, REST API Python, SQLAlchemy async, JWT authentication, OpenAPI, Swagger Python",
         "role": "specialist",
-        "scope": "implementation",
-        "output-format": "code",
-        "related-skills": "fullstack-guardian, django-expert, test-master"
+        "stack": "fastapi",
+        "category": "frameworks-runtimes",
+        "layer": "frameworks-runtimes",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "FastAPI + Pydantic v2 + modern async Python",
+        "tags": "[\"fastapi\", \"python\", \"pydantic\", \"async\", \"backend\", \"openapi\"]"
       },
-      "fileBytes": 3292
-    },
-    {
-      "id": "fastify-patterns",
-      "name": "fastify-patterns",
-      "displayName": null,
-      "description": "NestJS + Fastify integration patterns including secure sessions, cookie authentication, performance optimization, and plugin configuration. Use for high-performance API development.",
-      "category": "backend",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 4547,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "feature-forge",
-      "name": "feature-forge",
-      "displayName": null,
-      "description": "Use when defining new features, gathering requirements, or writing specifications. Invoke for feature definition, requirements gathering, user stories, EARS format specs.",
-      "category": "general",
-      "keywords": [],
-      "triggers": [
-        "requirements, specification, feature definition, user stories, EARS, planning"
-      ],
-      "metadata": {
-        "author": "https://github.com/Jeffallan",
-        "version": "1.0.0",
-        "domain": "workflow",
-        "triggers": "requirements, specification, feature definition, user stories, EARS, planning",
-        "role": "specialist",
-        "scope": "design",
-        "output-format": "document",
-        "related-skills": "fullstack-guardian, spec-miner, test-master"
-      },
-      "fileBytes": 3695
-    },
-    {
-      "id": "find-bugs",
-      "name": "find-bugs",
-      "displayName": null,
-      "description": "Find bugs, security vulnerabilities, and code quality issues in local branch changes. Use when asked to review changes, find bugs, security review, or audit code on the current branch.",
-      "category": "testing",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 2830,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "fix-review",
-      "name": "fix-review",
-      "displayName": null,
-      "description": "Verify remediation commits against security audit findings and confirm fixes without introducing regressions.",
-      "category": "testing",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 7285,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "flutter-code-reviewer",
-      "name": "flutter-code-reviewer",
-      "displayName": "Flutter/Dart Code Reviewer",
-      "description": "Perform strict, actionable code reviews for Flutter/Dart projects enforcing architecture boundaries, Riverpod patterns, testing, and performance",
-      "category": "mobile",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 6064,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "flutter-expert",
-      "name": "flutter-expert",
-      "displayName": "Flutter Expert",
-      "description": "Flutter app architecture coordinator for Clean Architecture projects; delegates state, routing, persistence, testing, and security to specialized skills",
-      "category": "mobile",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 2119,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "flutter-security-reviewer",
-      "name": "flutter-security-reviewer",
-      "displayName": "Flutter/Dart Security Reviewer",
-      "description": "Review Flutter/Dart code for security vulnerabilities: secure storage, network hardening, log redaction, and data protection",
-      "category": "mobile",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 6027,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "flutter-test-master",
-      "name": "flutter-test-master",
-      "displayName": "Flutter Test Master",
-      "description": "Comprehensive Flutter testing guide covering unit tests, widget tests, integration tests, golden tests, and Riverpod provider testing with mocktail",
-      "category": "mobile",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 12398,
+      "fileBytes": 2782,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -622,57 +372,27 @@
       "id": "frontend-design",
       "name": "frontend-design",
       "displayName": null,
-      "description": "Design thinking and decision-making for web UI. Use when designing components, layouts, color schemes, typography, or creating aesthetic interfaces. Teaches principles, not fixed values.",
+      "description": "Use for web UI design decisions: layout, hierarchy, typography, color, motion, and interaction clarity. This skill teaches decision-making, not a fixed visual style.",
       "category": "frontend",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 12728,
+      "path": "workflows/skills/frontend-design/SKILL.md",
+      "metadata": {
+        "version": "3.0.0",
+        "domain": "frontend",
+        "role": "specialist",
+        "stack": "design",
+        "category": "frameworks-runtimes",
+        "layer": "frameworks-runtimes",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "modern web product UI",
+        "tags": "[\"design\", \"ui\", \"ux\", \"layout\", \"typography\", \"color\", \"motion\"]"
+      },
+      "fileBytes": 2353,
       "warnings": [
         "no keywords or triggers"
       ]
-    },
-    {
-      "id": "game-development",
-      "name": "game-development",
-      "displayName": null,
-      "description": "Game development orchestrator. Routes to platform-specific skills based on project needs.",
-      "category": "game-dev",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 4682,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "geo-fundamentals",
-      "name": "geo-fundamentals",
-      "displayName": null,
-      "description": "Generative Engine Optimization for AI search engines (ChatGPT, Claude, Perplexity).",
-      "category": "marketing",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 3445,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "git-commit",
-      "name": "git-commit",
-      "displayName": "Git Commit",
-      "description": "Create conventional commits with intelligent staging and message generation",
-      "category": "tooling",
-      "keywords": [
-        "git",
-        "commit",
-        "conventional",
-        "stage",
-        "push",
-        "version control"
-      ],
-      "triggers": [],
-      "fileBytes": 1251
     },
     {
       "id": "golang-pro",
@@ -682,27 +402,20 @@
       "category": "backend",
       "keywords": [],
       "triggers": [],
+      "path": "workflows/skills/golang-pro/SKILL.md",
       "metadata": {
         "version": "2.0.0",
         "domain": "language",
         "role": "specialist",
         "stack": "go",
-        "baseline": "Go 1.26"
+        "category": "languages",
+        "layer": "languages",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "Go 1.26",
+        "tags": "[\"go\", \"golang\", \"concurrency\", \"services\", \"tooling\"]"
       },
-      "fileBytes": 2728,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "gorouter-restoration",
-      "name": "gorouter-restoration",
-      "displayName": "GoRouter & State Restoration",
-      "description": "GoRouter guard patterns, deep links, redirect safety, tab preservation, and restoration best practices",
-      "category": "mobile",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 3460,
+      "fileBytes": 2945,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -711,46 +424,24 @@
       "id": "graphql-architect",
       "name": "graphql-architect",
       "displayName": null,
-      "description": "Use when designing GraphQL schemas, implementing Apollo Federation, or building real-time subscriptions. Invoke for schema design, resolvers with DataLoader, query optimization, federation directives.",
+      "description": "Use when designing GraphQL schemas, resolver boundaries, batching strategy, auth and policy enforcement, federation shape, query safety, and real-time graph behavior.",
       "category": "data",
       "keywords": [],
-      "triggers": [
-        "GraphQL, Apollo Federation, GraphQL schema, API graph, GraphQL subscriptions, Apollo Server, schema design, GraphQL resolvers, DataLoader"
-      ],
+      "triggers": [],
+      "path": "workflows/skills/graphql-architect/SKILL.md",
       "metadata": {
-        "author": "https://github.com/Jeffallan",
-        "version": "1.0.0",
+        "version": "3.0.0",
         "domain": "api-architecture",
-        "triggers": "GraphQL, Apollo Federation, GraphQL schema, API graph, GraphQL subscriptions, Apollo Server, schema design, GraphQL resolvers, DataLoader",
-        "role": "architect",
-        "scope": "design",
-        "output-format": "schema",
-        "related-skills": "api-designer, microservices-architect, database-optimizer"
+        "role": "specialist",
+        "stack": "graphql",
+        "category": "frameworks-runtimes",
+        "layer": "frameworks-runtimes",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "modern GraphQL schema and resolver practices",
+        "tags": "[\"graphql\", \"schema\", \"resolvers\", \"dataloader\", \"federation\", \"api\"]"
       },
-      "fileBytes": 3661
-    },
-    {
-      "id": "i18n-localization",
-      "name": "i18n-localization",
-      "displayName": null,
-      "description": "Internationalization and localization patterns. Detecting hardcoded strings, managing translations, locale files, RTL support.",
-      "category": "localization",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 3121,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "intelligent-routing",
-      "name": "intelligent-routing",
-      "displayName": null,
-      "description": "Automatic agent selection and intelligent task routing. Analyzes user requests and automatically selects the best specialist agent(s) without requiring explicit user mentions.",
-      "category": "general",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 10617,
+      "fileBytes": 2534,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -763,14 +454,20 @@
       "category": "backend",
       "keywords": [],
       "triggers": [],
+      "path": "workflows/skills/java-pro/SKILL.md",
       "metadata": {
         "version": "1.0.0",
         "domain": "language",
         "role": "specialist",
         "stack": "java",
-        "baseline": "Java SE 25"
+        "category": "languages",
+        "layer": "languages",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "Java SE 25",
+        "tags": "[\"java\", \"jvm\", \"backend\", \"services\", \"observability\"]"
       },
-      "fileBytes": 2149,
+      "fileBytes": 2355,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -783,14 +480,20 @@
       "category": "backend",
       "keywords": [],
       "triggers": [],
+      "path": "workflows/skills/javascript-pro/SKILL.md",
       "metadata": {
         "version": "2.0.0",
         "domain": "language",
         "role": "specialist",
         "stack": "javascript",
-        "baseline": "Runtime-policy baseline (Node/browser/edge)"
+        "category": "languages",
+        "layer": "languages",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "Runtime-policy baseline (Node/browser/edge)",
+        "tags": "[\"javascript\", \"runtime\", \"node\", \"browser\", \"edge\"]"
       },
-      "fileBytes": 2837,
+      "fileBytes": 3129,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -803,51 +506,21 @@
       "category": "backend",
       "keywords": [],
       "triggers": [],
+      "path": "workflows/skills/kotlin-pro/SKILL.md",
       "metadata": {
         "version": "1.0.0",
         "domain": "language",
         "role": "specialist",
         "stack": "kotlin",
-        "baseline": "Kotlin 2.3 line (2.2.20+ compatible)"
+        "category": "languages",
+        "layer": "languages",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "Kotlin 2.3 line (2.2.20+ compatible)",
+        "tags": "[\"kotlin\", \"coroutines\", \"android\", \"jvm\", \"multiplatform\"]"
       },
-      "fileBytes": 2111,
+      "fileBytes": 2321,
       "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "legacy-modernizer",
-      "name": "legacy-modernizer",
-      "displayName": null,
-      "description": "Use when modernizing legacy systems, implementing incremental migration strategies, or reducing technical debt. Invoke for strangler fig pattern, monolith decomposition, framework upgrades.",
-      "category": "general",
-      "keywords": [],
-      "triggers": [
-        "legacy modernization, strangler fig, incremental migration, technical debt, legacy refactoring, system migration, legacy system, modernize codebase"
-      ],
-      "metadata": {
-        "author": "https://github.com/Jeffallan",
-        "version": "1.0.0",
-        "domain": "specialized",
-        "triggers": "legacy modernization, strangler fig, incremental migration, technical debt, legacy refactoring, system migration, legacy system, modernize codebase",
-        "role": "specialist",
-        "scope": "architecture",
-        "output-format": "code+analysis",
-        "related-skills": "test-master, devops-engineer"
-      },
-      "fileBytes": 3863
-    },
-    {
-      "id": "lint-and-validate",
-      "name": "lint-and-validate",
-      "displayName": null,
-      "description": "Automatic quality control, linting, and static analysis procedures. Use after every code modification to ensure syntax correctness and project standards. Triggers: lint, format, check, validate, types, static analysis.",
-      "category": "tooling",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 1717,
-      "warnings": [
-        "description too long (218 chars)",
         "no keywords or triggers"
       ]
     },
@@ -855,108 +528,131 @@
       "id": "microservices-architect",
       "name": "microservices-architect",
       "displayName": null,
-      "description": "Use when designing distributed systems, decomposing monoliths, or implementing microservices patterns. Invoke for service boundaries, DDD, saga patterns, event sourcing, service mesh, distributed tracing.",
+      "description": "Use when decomposing systems into services, designing service boundaries, choosing sync and async integration patterns, and managing distributed-system reliability tradeoffs.",
       "category": "architecture",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 3900,
+      "path": "workflows/skills/microservices-architect/SKILL.md",
+      "metadata": {
+        "version": "3.0.0",
+        "domain": "architecture",
+        "role": "specialist",
+        "stack": "distributed-systems",
+        "category": "frameworks-runtimes",
+        "layer": "frameworks-runtimes",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "modern distributed-service architecture",
+        "tags": "[\"microservices\", \"ddd\", \"distributed-systems\", \"events\", \"services\", \"resilience\"]"
+      },
+      "fileBytes": 2355,
       "warnings": [
-        "description too long (204 chars)",
         "no keywords or triggers"
       ]
     },
     {
-      "id": "mobile-design",
-      "name": "mobile-design",
+      "id": "mongodb",
+      "name": "mongodb",
       "displayName": null,
-      "description": "Mobile-first design thinking and decision-making for iOS and Android apps. Touch interaction, performance patterns, platform conventions. Teaches principles, not fixed values. Use when building React Native, Flutter, or native mobile apps.",
-      "category": "design",
+      "description": "Use when the task is specifically MongoDB: document-model design, aggregation pipelines, index strategy, shard-key tradeoffs, and operational guidance for document workloads.",
+      "category": "general",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 15719,
+      "path": "workflows/skills/mongodb/SKILL.md",
+      "metadata": {
+        "version": "3.0.0",
+        "domain": "data",
+        "role": "specialist",
+        "stack": "mongodb",
+        "category": "databases",
+        "layer": "databases",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "modern mongodb engineering",
+        "tags": "[\"mongodb\", \"documents\", \"aggregation\", \"indexes\", \"sharding\", \"schema\"]"
+      },
+      "fileBytes": 2271,
       "warnings": [
-        "description too long (239 chars)",
         "no keywords or triggers"
       ]
     },
     {
-      "id": "monitoring-expert",
-      "name": "monitoring-expert",
+      "id": "mysql",
+      "name": "mysql",
       "displayName": null,
-      "description": "Use when setting up monitoring systems, logging, metrics, tracing, or alerting. Invoke for dashboards, Prometheus/Grafana, load testing, profiling, capacity planning.",
-      "category": "observability",
+      "description": "Use when the task is specifically MySQL or InnoDB: schema/index design, transaction behavior, replication-aware migrations, query tuning, and managed MySQL operational tradeoffs.",
+      "category": "general",
       "keywords": [],
-      "triggers": [
-        "monitoring, observability, logging, metrics, tracing, alerting, Prometheus, Grafana, DataDog, APM, performance testing, load testing, profiling, capacity planning, bottleneck"
-      ],
+      "triggers": [],
+      "path": "workflows/skills/mysql/SKILL.md",
       "metadata": {
-        "author": "https://github.com/Jeffallan",
-        "version": "1.0.0",
-        "domain": "devops",
-        "triggers": "monitoring, observability, logging, metrics, tracing, alerting, Prometheus, Grafana, DataDog, APM, performance testing, load testing, profiling, capacity planning, bottleneck",
+        "version": "3.0.0",
+        "domain": "data",
         "role": "specialist",
-        "scope": "implementation",
-        "output-format": "code",
-        "related-skills": "devops-engineer, debugging-wizard, architecture-designer"
+        "stack": "mysql",
+        "category": "databases",
+        "layer": "databases",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "modern mysql engineering",
+        "tags": "[\"mysql\", \"innodb\", \"replication\", \"online-ddl\", \"indexes\", \"transactions\"]"
       },
-      "fileBytes": 3208
+      "fileBytes": 2243,
+      "warnings": [
+        "no keywords or triggers"
+      ]
+    },
+    {
+      "id": "neki",
+      "name": "neki",
+      "displayName": null,
+      "description": "Use when the task is specifically Neki, PlanetScale’s sharded Postgres architecture: shard-key design, distributed Postgres tradeoffs, routing constraints, and operational decisions for large-scale Postgres workloads.",
+      "category": "general",
+      "keywords": [],
+      "triggers": [],
+      "path": "workflows/skills/neki/SKILL.md",
+      "metadata": {
+        "version": "3.0.0",
+        "domain": "data",
+        "role": "specialist",
+        "stack": "neki",
+        "category": "databases",
+        "layer": "databases",
+        "canonical": "true",
+        "maturity": "experimental",
+        "baseline": "neki-aware sharded postgres design",
+        "tags": "[\"neki\", \"postgres\", \"sharding\", \"planetscale\", \"distributed-postgres\", \"routing\"]"
+      },
+      "fileBytes": 2472,
+      "warnings": [
+        "description too long (217 chars)",
+        "no keywords or triggers"
+      ]
     },
     {
       "id": "nestjs-expert",
       "name": "nestjs-expert",
       "displayName": null,
-      "description": "Use when building NestJS applications requiring modular architecture, dependency injection, or TypeScript backend development. Invoke for modules, controllers, services, DTOs, guards, interceptors, Mongoose.",
+      "description": "Use when building NestJS services that need strong module boundaries, dependency injection, DTO validation, guards or interceptors, auth boundaries, transport-aware module design, and production-safe TypeScript backend structure.",
       "category": "backend",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 4000,
-      "warnings": [
-        "description too long (207 chars)",
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "next-best-practices",
-      "name": "next-best-practices",
-      "displayName": null,
-      "description": "Rulebook for reviewing/generating Next.js code against Vercel best practices (conventions, RSC boundaries, async APIs, metadata, bundling). Not a migration or feature-implementation skill by itself.",
-      "category": "frontend",
-      "keywords": [],
-      "triggers": [],
+      "path": "workflows/skills/nestjs-expert/SKILL.md",
       "metadata": {
-        "user-invocable": "false"
+        "version": "3.0.0",
+        "domain": "backend",
+        "role": "specialist",
+        "stack": "nestjs",
+        "category": "frameworks-runtimes",
+        "layer": "frameworks-runtimes",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "NestJS 11-era backend patterns",
+        "tags": "[\"nestjs\", \"typescript\", \"backend\", \"di\", \"modules\", \"guards\", \"dto\"]"
       },
-      "fileBytes": 4225,
+      "fileBytes": 2624,
       "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "next-cache-components",
-      "name": "next-cache-components",
-      "displayName": null,
-      "description": "Use only for Next.js 16 Cache Components and PPR implementation (use cache, cacheLife, cacheTag, updateTag, Suspense boundaries).",
-      "category": "frontend",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 7661,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "next-upgrade",
-      "name": "next-upgrade",
-      "displayName": null,
-      "description": "Use only for upgrading Next.js versions with official migration guides and codemods; includes dependency/version planning and upgrade validation.",
-      "category": "frontend",
-      "keywords": [],
-      "triggers": [],
-      "metadata": {
-        "argument-hint": "[target-version]"
-      },
-      "fileBytes": 2082,
-      "warnings": [
+        "description too long (229 chars)",
         "no keywords or triggers"
       ]
     },
@@ -964,37 +660,24 @@
       "id": "nextjs-developer",
       "name": "nextjs-developer",
       "displayName": "Next.js Developer",
-      "description": "Use for implementing/refactoring Next.js App Router features, React Server Components/Actions, SEO, and production architecture.",
+      "description": "Use for implementing and reviewing Next.js App Router features, React Server Components and Actions, caching strategy, SEO, and production runtime behavior.",
       "category": "frontend",
       "keywords": [],
       "triggers": [],
+      "path": "workflows/skills/nextjs-developer/SKILL.md",
       "metadata": {
-        "version": "2.0.0",
+        "version": "3.0.0",
         "domain": "frontend",
         "role": "specialist",
         "stack": "nextjs",
-        "baseline": "Next.js 16 + React 19"
+        "category": "frameworks-runtimes",
+        "layer": "frameworks-runtimes",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "Next.js 16 + React 19",
+        "tags": "[\"nextjs\", \"app-router\", \"rsc\", \"server-actions\", \"seo\", \"web-vitals\"]"
       },
-      "fileBytes": 1770,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "nextjs-react-expert",
-      "name": "nextjs-react-expert",
-      "displayName": null,
-      "description": "Compatibility alias skill. Deprecated: use react-best-practices.",
-      "category": "frontend",
-      "keywords": [],
-      "triggers": [],
-      "metadata": {
-        "deprecated": "true",
-        "replaced_by": "react-best-practices",
-        "removal_target": "v0.6.0",
-        "alias_of": "react-best-practices"
-      },
-      "fileBytes": 414,
+      "fileBytes": 2319,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -1003,184 +686,90 @@
       "id": "nodejs-best-practices",
       "name": "nodejs-best-practices",
       "displayName": null,
-      "description": "Decision framework for modern Node.js backend architecture, operations, and security using current LTS-era practices.",
+      "description": "Use for modern Node.js backend architecture, runtime choices, worker or queue boundaries, edge-vs-server tradeoffs, reliability controls, and production-safe service implementation in the current LTS era.",
       "category": "backend",
       "keywords": [],
       "triggers": [],
+      "path": "workflows/skills/nodejs-best-practices/SKILL.md",
       "metadata": {
-        "version": "2.0.0",
+        "version": "3.0.0",
         "domain": "backend",
-        "role": "decision-guide",
-        "stack": "nodejs",
-        "baseline": "Node 22/24 LTS era"
-      },
-      "fileBytes": 1550,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "oneup-design",
-      "name": "oneup-design",
-      "displayName": "OneUp Design System",
-      "description": "OneUp HR design system with One* components, colors, spacing, and typography tokens",
-      "category": "general",
-      "keywords": [
-        "design",
-        "ui",
-        "component",
-        "color",
-        "spacing",
-        "padding",
-        "typography",
-        "OneText",
-        "OneButton",
-        "OneCard",
-        "widget",
-        "theme"
-      ],
-      "triggers": [],
-      "fileBytes": 1817
-    },
-    {
-      "id": "openapi-docs",
-      "name": "openapi-docs",
-      "displayName": null,
-      "description": "Use when writing or updating OpenAPI specifications, defining request/response schemas, or configuring Stoplight Elements (Swagger-style) documentation UI.",
-      "category": "api",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 2950,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "parallel-agents",
-      "name": "parallel-agents",
-      "displayName": null,
-      "description": "Multi-agent orchestration patterns. Use when multiple independent tasks can run with different domain expertise or when comprehensive analysis requires multiple perspectives.",
-      "category": "general",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 5340,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "performance-profiling",
-      "name": "performance-profiling",
-      "displayName": null,
-      "description": "Performance profiling principles. Measurement, analysis, and optimization techniques.",
-      "category": "performance",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 3101,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "plan-writing",
-      "name": "plan-writing",
-      "displayName": null,
-      "description": "Structured task planning with clear breakdowns, dependencies, and verification criteria. Use when implementing features, refactoring, or any multi-step work.",
-      "category": "practices",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 4028,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "playwright-expert",
-      "name": "playwright-expert",
-      "displayName": null,
-      "description": "Use when writing E2E tests with Playwright, setting up test infrastructure, or debugging flaky browser tests. Invoke for browser automation, E2E tests, Page Object Model, test flakiness, visual testing.",
-      "category": "testing",
-      "keywords": [],
-      "triggers": [
-        "Playwright, E2E test, end-to-end, browser testing, automation, UI testing, visual testing"
-      ],
-      "metadata": {
-        "author": "https://github.com/Jeffallan",
-        "version": "1.0.0",
-        "domain": "quality",
-        "triggers": "Playwright, E2E test, end-to-end, browser testing, automation, UI testing, visual testing",
         "role": "specialist",
-        "scope": "testing",
-        "output-format": "code",
-        "related-skills": "test-master, react-expert, devops-engineer"
+        "stack": "nodejs",
+        "category": "frameworks-runtimes",
+        "layer": "frameworks-runtimes",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "Node 22/24 LTS era",
+        "tags": "[\"nodejs\", \"backend\", \"runtime\", \"services\", \"reliability\", \"security\"]"
       },
-      "fileBytes": 2832,
+      "fileBytes": 2710,
       "warnings": [
-        "description too long (202 chars)"
+        "description too long (204 chars)",
+        "no keywords or triggers"
       ]
     },
     {
-      "id": "postman",
-      "name": "postman",
+      "id": "php-pro",
+      "name": "php-pro",
       "displayName": null,
-      "description": "Automate API testing and collection management with Postman MCP using full-mode defaults and workspace-aware execution.",
+      "description": "Use for modern PHP 8.4-era backend and application engineering with strict typing, framework-aware architecture, testing, and operational safety.",
       "category": "general",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 3627,
+      "path": "workflows/skills/php-pro/SKILL.md",
+      "metadata": {
+        "category": "languages",
+        "layer": "languages",
+        "canonical": "true",
+        "maturity": "stable",
+        "tags": "[\"php\", \"backend\", \"language\", \"strict-types\", \"composer\"]"
+      },
+      "fileBytes": 1073,
       "warnings": [
         "no keywords or triggers"
       ]
     },
     {
-      "id": "powershell-windows",
-      "name": "powershell-windows",
+      "id": "postgres",
+      "name": "postgres",
       "displayName": null,
-      "description": "PowerShell Windows patterns. Critical pitfalls, operator syntax, error handling.",
+      "description": "Use when the task is specifically PostgreSQL: schema design with Postgres features, query plans, indexes, JSONB, extensions, partitioning, logical replication, or managed Postgres operational tradeoffs.",
       "category": "general",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 3500,
+      "path": "workflows/skills/postgres/SKILL.md",
+      "metadata": {
+        "version": "3.0.0",
+        "domain": "data",
+        "role": "specialist",
+        "stack": "postgres",
+        "category": "databases",
+        "layer": "databases",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "modern postgres engineering",
+        "tags": "[\"postgres\", \"postgresql\", \"jsonb\", \"pgvector\", \"indexes\", \"partitioning\"]"
+      },
+      "fileBytes": 2417,
       "warnings": [
+        "description too long (202 chars)",
         "no keywords or triggers"
       ]
-    },
-    {
-      "id": "prompt-engineer",
-      "name": "prompt-engineer",
-      "displayName": "Prompt Engineer",
-      "description": "Design and optimize LLM prompts with chain-of-thought, few-shot learning, and evaluation frameworks",
-      "category": "ai",
-      "keywords": [
-        "prompt",
-        "llm",
-        "ai",
-        "chain-of-thought",
-        "few-shot",
-        "evaluation",
-        "gpt",
-        "claude"
-      ],
-      "triggers": [],
-      "fileBytes": 1517
     },
     {
       "id": "python-patterns",
       "name": "python-patterns",
-      "displayName": null,
-      "description": "Compatibility alias skill. Deprecated: use python-pro.",
+      "displayName": "python-patterns",
+      "description": "Use for production Python with 3.14-era typing, async, packaging, and testing standards.",
       "category": "backend",
       "keywords": [],
       "triggers": [],
+      "path": "workflows/skills/python-pro/SKILL.md",
       "metadata": {
-        "deprecated": "true",
-        "replaced_by": "python-pro",
-        "removal_target": "v0.6.0"
+        "alias_of": "python-pro"
       },
-      "fileBytes": 471,
-      "warnings": [
-        "no keywords or triggers"
-      ]
+      "fileBytes": 3088
     },
     {
       "id": "python-pro",
@@ -1190,33 +779,21 @@
       "category": "backend",
       "keywords": [],
       "triggers": [],
+      "path": "workflows/skills/python-pro/SKILL.md",
       "metadata": {
         "version": "2.0.0",
         "domain": "language",
         "role": "specialist",
         "stack": "python",
-        "baseline": "Python 3.14"
+        "category": "languages",
+        "layer": "languages",
+        "canonical": "true",
+        "maturity": "stable",
+        "aliases": "[\"python-patterns\"]",
+        "baseline": "Python 3.14",
+        "tags": "[\"python\", \"typing\", \"async\", \"pytest\", \"packaging\"]"
       },
-      "fileBytes": 2746,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "react-best-practices",
-      "name": "react-best-practices",
-      "displayName": null,
-      "description": "Performance-focused React/Next.js review checklist. Use for audits and optimization passes, not as primary implementation skill.",
-      "category": "frontend",
-      "keywords": [],
-      "triggers": [],
-      "metadata": {
-        "author": "vercel",
-        "version": "2.0.0",
-        "domain": "frontend",
-        "role": "review-checklist"
-      },
-      "fileBytes": 1297,
+      "fileBytes": 3088,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -1225,61 +802,71 @@
       "id": "react-expert",
       "name": "react-expert",
       "displayName": null,
-      "description": "Use for framework-agnostic React architecture with React 19 patterns, state design, and performance tuning.",
+      "description": "Use for framework-agnostic React architecture with React 19 patterns, state design, component boundaries, and rendering-performance decisions.",
       "category": "frontend",
       "keywords": [],
       "triggers": [],
+      "path": "workflows/skills/react-expert/SKILL.md",
       "metadata": {
-        "version": "2.0.0",
+        "version": "3.0.0",
         "domain": "frontend",
         "role": "specialist",
         "stack": "react",
-        "baseline": "React 19"
+        "category": "frameworks-runtimes",
+        "layer": "frameworks-runtimes",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "React 19",
+        "tags": "[\"react\", \"components\", \"state\", \"performance\", \"frontend\", \"hooks\"]"
       },
-      "fileBytes": 1551,
+      "fileBytes": 2125,
       "warnings": [
         "no keywords or triggers"
       ]
     },
     {
-      "id": "red-team-tactics",
-      "name": "red-team-tactics",
+      "id": "redis",
+      "name": "redis",
       "displayName": null,
-      "description": "Red team tactics principles based on MITRE ATT&CK. Attack phases, detection evasion, reporting.",
-      "category": "security",
+      "description": "Use when the task is specifically Redis: cache design, key strategy, TTLs, queues, rate limiting, pub/sub, memory tradeoffs, and safe persistence or eviction decisions.",
+      "category": "general",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 4405,
+      "path": "workflows/skills/redis/SKILL.md",
+      "metadata": {
+        "version": "3.0.0",
+        "domain": "data",
+        "role": "specialist",
+        "stack": "redis",
+        "category": "databases",
+        "layer": "databases",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "modern redis engineering",
+        "tags": "[\"redis\", \"cache\", \"ttl\", \"queues\", \"rate-limits\", \"eviction\"]"
+      },
+      "fileBytes": 2265,
       "warnings": [
         "no keywords or triggers"
       ]
     },
     {
-      "id": "refactor",
-      "name": "refactor",
-      "displayName": "Refactor - OneUp HR",
-      "description": "Migrate legacy code to new architecture while maintaining behavior",
-      "category": "practices",
-      "keywords": [
-        "refactor",
-        "migrate",
-        "clean",
-        "improve",
-        "legacy",
-        "architecture"
-      ],
-      "triggers": [],
-      "fileBytes": 1115
-    },
-    {
-      "id": "riverpod-3",
-      "name": "riverpod-3",
-      "displayName": "Riverpod 3 Expert",
-      "description": "Riverpod 3 best practices for codegen, UI interaction boundaries, caching, paging, lifecycle, and testing",
-      "category": "mobile",
+      "id": "ruby-pro",
+      "name": "ruby-pro",
+      "displayName": null,
+      "description": "Use for modern Ruby 3.4-era backend, scripting, and application engineering with clear object boundaries, concurrency awareness, and test discipline.",
+      "category": "general",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 4693,
+      "path": "workflows/skills/ruby-pro/SKILL.md",
+      "metadata": {
+        "category": "languages",
+        "layer": "languages",
+        "canonical": "true",
+        "maturity": "stable",
+        "tags": "[\"ruby\", \"language\", \"backend\", \"scripting\", \"bundler\"]"
+      },
+      "fileBytes": 1074,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -1287,20 +874,16 @@
     {
       "id": "rust-engineer",
       "name": "rust-engineer",
-      "displayName": null,
-      "description": "Compatibility alias skill. Deprecated: use rust-pro.",
+      "displayName": "rust-engineer",
+      "description": "Use for modern Rust systems/services with stable 1.91-era patterns, async correctness, and performance-focused design.",
       "category": "backend",
       "keywords": [],
       "triggers": [],
+      "path": "workflows/skills/rust-pro/SKILL.md",
       "metadata": {
-        "deprecated": "true",
-        "replaced_by": "rust-pro",
-        "removal_target": "v0.6.0"
+        "alias_of": "rust-pro"
       },
-      "fileBytes": 455,
-      "warnings": [
-        "no keywords or triggers"
-      ]
+      "fileBytes": 2680
     },
     {
       "id": "rust-pro",
@@ -1310,259 +893,119 @@
       "category": "backend",
       "keywords": [],
       "triggers": [],
+      "path": "workflows/skills/rust-pro/SKILL.md",
       "metadata": {
         "version": "2.0.0",
         "domain": "language",
         "role": "specialist",
         "stack": "rust",
-        "baseline": "Rust stable 1.91"
+        "category": "languages",
+        "layer": "languages",
+        "canonical": "true",
+        "maturity": "stable",
+        "aliases": "[\"rust-engineer\"]",
+        "baseline": "Rust stable 1.91",
+        "tags": "[\"rust\", \"async\", \"systems\", \"performance\", \"services\"]"
       },
-      "fileBytes": 2436,
+      "fileBytes": 2680,
       "warnings": [
         "no keywords or triggers"
       ]
     },
     {
-      "id": "saas-builder",
-      "name": "saas-builder",
+      "id": "skill-creator",
+      "name": "skill-creator",
       "displayName": null,
-      "description": "Build or review production-ready multi-tenant SaaS systems on AWS serverless architecture with React + TypeScript frontend, tenant-isolated DynamoDB data models, JWT/RBAC authorization, Stripe subscriptions, and usage-based billing. Use for SaaS architecture design, implementation planning, API/Lambda patterns, billing workflows, and tenant isolation audits.",
-      "category": "saas",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 3774,
-      "warnings": [
-        "description too long (360 chars)",
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "sarif-parsing",
-      "name": "sarif-parsing",
-      "displayName": null,
-      "description": "Parse, analyze, and process SARIF (Static Analysis Results Interchange Format) files. Use when reading security scan results, aggregating findings from multiple tools, deduplicating alerts, extracting specific vulnerabilities, or integrating SARIF data into CI/CD pipelines.",
+      "description": "Use when creating, rebuilding, or repairing a Foundry skill package, workflow skill, or agent-facing skill surface across Codex, Claude, Copilot, Antigravity, Cursor, and Windsurf. Do not use for prompt-only tweaks or edits to one generated mirror.",
       "category": "general",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 15203,
-      "warnings": [
-        "description too long (274 chars)",
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "secure-code-guardian",
-      "name": "secure-code-guardian",
-      "displayName": null,
-      "description": "Use when implementing authentication/authorization, securing user input, or preventing OWASP Top 10 vulnerabilities. Invoke for authentication, authorization, input validation, encryption, OWASP Top 10 prevention.",
-      "category": "security",
-      "keywords": [],
-      "triggers": [
-        "security, authentication, authorization, encryption, OWASP, vulnerability, secure coding, password, JWT, OAuth"
-      ],
-      "metadata": {
-        "author": "https://github.com/Jeffallan",
-        "version": "1.0.0",
-        "domain": "security",
-        "triggers": "security, authentication, authorization, encryption, OWASP, vulnerability, secure coding, password, JWT, OAuth",
-        "role": "specialist",
-        "scope": "implementation",
-        "output-format": "code",
-        "related-skills": "fullstack-guardian, security-reviewer, architecture-designer"
-      },
-      "fileBytes": 2977,
-      "warnings": [
-        "description too long (213 chars)"
-      ]
-    },
-    {
-      "id": "security-reviewer",
-      "name": "security-reviewer",
-      "displayName": null,
-      "description": "Use when conducting security audits, reviewing code for vulnerabilities, or analyzing infrastructure security. Invoke for SAST scans, penetration testing, DevSecOps practices, cloud security reviews.",
-      "category": "security",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 3468,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "semgrep",
-      "name": "semgrep",
-      "displayName": null,
-      "description": "Run Semgrep static analysis scan on a codebase using parallel subagents. Automatically",
-      "category": "general",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 15755,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "seo-fundamentals",
-      "name": "seo-fundamentals",
-      "displayName": null,
-      "description": "SEO fundamentals, E-E-A-T, Core Web Vitals, and Google algorithm principles.",
-      "category": "marketing",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 2787,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "server-management",
-      "name": "server-management",
-      "displayName": null,
-      "description": "Compatibility alias skill. Deprecated: use sre-engineer.",
-      "category": "general",
-      "keywords": [],
-      "triggers": [],
-      "metadata": {
-        "deprecated": "true",
-        "replaced_by": "sre-engineer",
-        "removal_target": "v0.6.0"
-      },
-      "fileBytes": 487,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "skill-authoring",
-      "name": "skill-authoring",
-      "displayName": null,
-      "description": "Use when creating a new Foundry skill or updating an existing one: scaffolding SKILL.md, fixing metadata, wiring references and scripts, removing legacy power files, and making the package work across Codex, Antigravity, Copilot, Cursor, and Windsurf. Do not use for prompt tuning without a skill package change or for editing only one generated mirror.",
-      "category": "general",
-      "keywords": [],
-      "triggers": [],
+      "path": "workflows/skills/skill-creator/SKILL.md",
       "metadata": {
         "source": "https://github.com/anthropics/skills/tree/main/skills/skill-creator",
-        "snapshot": "Adapted from the local Codex system skill on 2026-03-06",
-        "maintenance": "Pinned snapshot; refresh manually when upstream changes are intentionally adopted."
+        "snapshot": "Rebuilt for Foundry on 2026-03-08 after removing the repo-owned .system source layer.",
+        "maintenance": "Pinned rewrite; refresh deliberately against upstream patterns rather than mirroring third-party skills directly.",
+        "category": "workflow-specialists",
+        "layer": "workflow-specialists",
+        "canonical": "true",
+        "maturity": "stable",
+        "tags": "[\"skill-creation\", \"skill-packaging\", \"workflow-automation\", \"platform-adapters\"]"
       },
-      "fileBytes": 3946,
+      "fileBytes": 5431,
       "warnings": [
-        "description too long (353 chars)",
+        "description too long (248 chars)",
         "no keywords or triggers"
       ]
     },
     {
-      "id": "spec-miner",
-      "name": "spec-miner",
+      "id": "sqlite",
+      "name": "sqlite",
       "displayName": null,
-      "description": "Use when understanding legacy or undocumented systems, creating documentation for existing code, or extracting specifications from implementations. Invoke for legacy analysis, code archaeology, undocumented features.",
+      "description": "Use when the task is specifically SQLite or libSQL/Turso-style SQLite: local-first schema design, WAL/concurrency tradeoffs, embedded deployments, and lightweight migration strategy.",
       "category": "general",
       "keywords": [],
-      "triggers": [
-        "reverse engineer, legacy code, code analysis, undocumented, understand codebase, existing system"
-      ],
+      "triggers": [],
+      "path": "workflows/skills/sqlite/SKILL.md",
       "metadata": {
-        "author": "https://github.com/Jeffallan",
-        "version": "1.0.0",
-        "domain": "workflow",
-        "triggers": "reverse engineer, legacy code, code analysis, undocumented, understand codebase, existing system",
+        "version": "3.0.0",
+        "domain": "data",
         "role": "specialist",
-        "scope": "review",
-        "output-format": "document",
-        "related-skills": "feature-forge, fullstack-guardian, architecture-designer"
+        "stack": "sqlite",
+        "category": "databases",
+        "layer": "databases",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "modern sqlite engineering",
+        "tags": "[\"sqlite\", \"libsql\", \"turso\", \"embedded\", \"wal\", \"local-first\"]"
       },
-      "fileBytes": 2926,
+      "fileBytes": 2368,
       "warnings": [
-        "description too long (216 chars)"
+        "no keywords or triggers"
       ]
     },
     {
-      "id": "sre-engineer",
-      "name": "sre-engineer",
+      "id": "supabase",
+      "name": "supabase",
       "displayName": null,
-      "description": "Use when defining SLIs/SLOs, managing error budgets, or building reliable systems at scale. Invoke for incident management, chaos engineering, toil reduction, capacity planning.",
+      "description": "Use when the task is specifically Supabase: managed Postgres with RLS, auth, storage, edge functions, branching, and product decisions that depend on Supabase platform behavior.",
       "category": "general",
       "keywords": [],
-      "triggers": [
-        "SRE, site reliability, SLO, SLI, error budget, incident management, chaos engineering, toil reduction, on-call, MTTR"
-      ],
+      "triggers": [],
+      "path": "workflows/skills/supabase/SKILL.md",
       "metadata": {
-        "author": "https://github.com/Jeffallan",
-        "version": "1.0.0",
-        "domain": "devops",
-        "triggers": "SRE, site reliability, SLO, SLI, error budget, incident management, chaos engineering, toil reduction, on-call, MTTR",
+        "version": "3.0.0",
+        "domain": "data",
         "role": "specialist",
-        "scope": "implementation",
-        "output-format": "code",
-        "related-skills": "devops-engineer, cloud-architect, kubernetes-specialist"
+        "stack": "supabase",
+        "category": "databases",
+        "layer": "databases",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "supabase platform-aware database engineering",
+        "tags": "[\"supabase\", \"postgres\", \"rls\", \"auth\", \"storage\", \"edge-functions\"]"
       },
-      "fileBytes": 3726
-    },
-    {
-      "id": "static-analysis",
-      "name": "static-analysis",
-      "displayName": null,
-      "description": "Runs CodeQL-based static security analysis (database build, query pack selection, and SARIF results) for vulnerability discovery and audits. Not for custom QL authoring or CI/CD setup.",
-      "category": "general",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 5209,
+      "fileBytes": 2452,
       "warnings": [
         "no keywords or triggers"
       ]
     },
     {
-      "id": "stitch",
-      "name": "stitch",
+      "id": "swift-pro",
+      "name": "swift-pro",
       "displayName": null,
-      "description": "Automate Stitch workflows through Stitch MCP using mcp-remote transport.",
+      "description": "Use for modern Swift 6.1-era application and systems engineering with strong concurrency, protocol boundaries, package structure, and Apple-platform correctness.",
       "category": "general",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 469,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "stripe-best-practices",
-      "name": "stripe-best-practices",
-      "displayName": null,
-      "description": "Best practices for building Stripe integrations",
-      "category": "payments",
-      "keywords": [],
-      "triggers": [],
+      "path": "workflows/skills/swift-pro/SKILL.md",
       "metadata": {
-        "alwaysApply": "false"
+        "category": "languages",
+        "layer": "languages",
+        "canonical": "true",
+        "maturity": "stable",
+        "tags": "[\"swift\", \"language\", \"concurrency\", \"spm\", \"apple-platforms\"]"
       },
-      "fileBytes": 5548,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "sub-agents",
-      "name": "sub-agents",
-      "displayName": null,
-      "description": "Execute external CLI AIs as isolated sub-agents for task delegation, parallel processing, and context separation. Use when delegating complex multi-step tasks, running parallel investigations, needing fresh context without current conversation history, or leveraging specialized agent definitions. Returns structured JSON with agent output, exit code, and execution status.",
-      "category": "general",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 5826,
-      "warnings": [
-        "description too long (373 chars)",
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "systematic-debugging",
-      "name": "systematic-debugging",
-      "displayName": null,
-      "description": "4-phase systematic debugging methodology with root cause analysis and evidence-based verification. Use when debugging complex issues.",
-      "category": "general",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 2405,
+      "fileBytes": 1120,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -1571,85 +1014,24 @@
       "id": "tailwind-patterns",
       "name": "tailwind-patterns",
       "displayName": null,
-      "description": "Tailwind CSS v4 principles. CSS-first configuration, container queries, modern patterns, design token architecture.",
+      "description": "Use for Tailwind CSS v4 architecture, CSS-first theme setup, utility composition, container-query usage, and design-token hygiene.",
       "category": "frontend",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 6757,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "tdd-workflow",
-      "name": "tdd-workflow",
-      "displayName": null,
-      "description": "Compatibility alias skill. Deprecated: use test-master.",
-      "category": "testing",
-      "keywords": [],
-      "triggers": [],
+      "path": "workflows/skills/tailwind-patterns/SKILL.md",
       "metadata": {
-        "deprecated": "true",
-        "replaced_by": "test-master",
-        "removal_target": "v0.6.0"
-      },
-      "fileBytes": 467,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "terraform-engineer",
-      "name": "terraform-engineer",
-      "displayName": null,
-      "description": "Use when implementing infrastructure as code with Terraform across AWS, Azure, or GCP. Invoke for module development, state management, provider configuration, multi-environment workflows, infrastructure testing.",
-      "category": "devops",
-      "keywords": [],
-      "triggers": [
-        "Terraform, infrastructure as code, IaC, terraform module, terraform state, AWS provider, Azure provider, GCP provider, terraform plan, terraform apply"
-      ],
-      "metadata": {
-        "author": "https://github.com/Jeffallan",
-        "version": "1.0.0",
-        "domain": "infrastructure",
-        "triggers": "Terraform, infrastructure as code, IaC, terraform module, terraform state, AWS provider, Azure provider, GCP provider, terraform plan, terraform apply",
+        "version": "3.0.0",
+        "domain": "frontend",
         "role": "specialist",
-        "scope": "implementation",
-        "output-format": "code",
-        "related-skills": "cloud-architect, devops-engineer, kubernetes-specialist"
+        "stack": "tailwindcss",
+        "category": "frameworks-runtimes",
+        "layer": "frameworks-runtimes",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "Tailwind CSS v4",
+        "tags": "[\"tailwindcss\", \"css\", \"design-tokens\", \"container-queries\", \"frontend\"]"
       },
-      "fileBytes": 3612,
-      "warnings": [
-        "description too long (212 chars)"
-      ]
-    },
-    {
-      "id": "test-master",
-      "name": "test-master",
-      "displayName": null,
-      "description": "Use when writing tests, creating test strategies, or building automation frameworks. Invoke for unit tests, integration tests, E2E, coverage analysis, performance testing, security testing.",
-      "category": "testing",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 4055,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "testing-patterns",
-      "name": "testing-patterns",
-      "displayName": null,
-      "description": "Compatibility alias skill. Deprecated: use test-master.",
-      "category": "testing",
-      "keywords": [],
-      "triggers": [],
-      "metadata": {
-        "deprecated": "true",
-        "replaced_by": "test-master",
-        "removal_target": "v0.6.0"
-      },
-      "fileBytes": 479,
+      "fileBytes": 2279,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -1662,417 +1044,49 @@
       "category": "backend",
       "keywords": [],
       "triggers": [],
+      "path": "workflows/skills/typescript-pro/SKILL.md",
       "metadata": {
         "version": "2.0.0",
         "domain": "language",
         "role": "specialist",
         "stack": "typescript",
+        "category": "languages",
+        "layer": "languages",
+        "canonical": "true",
+        "maturity": "stable",
         "baseline": "TypeScript 5.9 stable",
-        "transition": "TypeScript 6 compatibility prep"
+        "transition": "TypeScript 6 compatibility prep",
+        "tags": "[\"typescript\", \"types\", \"strictness\", \"api-contracts\", \"monorepo\"]"
       },
-      "fileBytes": 2916,
+      "fileBytes": 3356,
       "warnings": [
         "no keywords or triggers"
       ]
     },
     {
-      "id": "ui-ux-pro-max",
-      "name": "ui-ux-pro-max",
+      "id": "vitess",
+      "name": "vitess",
       "displayName": null,
-      "description": "UI/UX design intelligence. 50 styles, 21 palettes, 50 font pairings, 20 charts, 9 stacks (React, Next.js, Vue, Svelte, SwiftUI, React Native, Flutter, Tailwind, shadcn/ui). Actions: plan, build, create, design, implement, review, fix, improve, optimize, enhance, refactor, check UI/UX code. Projects: website, landing page, dashboard, admin panel, e-commerce, SaaS, portfolio, blog, mobile app, .html, .tsx, .vue, .svelte. Elements: button, modal, navbar, sidebar, card, table, form, chart. Styles: glassmorphism, claymorphism, minimalism, brutalism, neumorphism, bento grid, dark mode, responsive, skeuomorphism, flat design. Topics: color palette, accessibility, animation, layout, typography, font pairing, spacing, hover, shadow, gradient. Integrations: shadcn/ui MCP for component search and examples.",
-      "category": "design",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 14460,
-      "warnings": [
-        "description too long (806 chars)",
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "ux-ui-consistency",
-      "name": "ux-ui-consistency",
-      "displayName": "UX/UI Consistency",
-      "description": "Ensure consistent UX patterns: design system component usage, screen states, error handling, and loading patterns",
-      "category": "design",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 3232,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "variant-analysis",
-      "name": "variant-analysis",
-      "displayName": null,
-      "description": "Find similar vulnerabilities and bugs across codebases using pattern-based analysis. Use when hunting bug variants, building CodeQL/Semgrep queries, analyzing security vulnerabilities, or performing systematic code audits after finding an initial issue.",
+      "description": "Use when the task is specifically Vitess or Vitess-backed MySQL platforms: shard-key design, vindexes, resharding, query-routing constraints, Online DDL, and operational tradeoffs for horizontally scaled MySQL.",
       "category": "general",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 5662,
-      "warnings": [
-        "description too long (253 chars)",
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "vercel-ai",
-      "name": "vercel-ai",
-      "displayName": null,
-      "description": "Canonical Vercel AI skill covering AI Gateway and AI SDK integration, routing, resilience, and observability.",
-      "category": "devops",
-      "keywords": [],
-      "triggers": [],
+      "path": "workflows/skills/vitess/SKILL.md",
       "metadata": {
-        "deprecated": "false",
-        "replaced_by": "null",
-        "removal_target": "null"
-      },
-      "fileBytes": 1134,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "vercel-ai-gateway",
-      "name": "vercel-ai-gateway",
-      "displayName": null,
-      "description": "Compatibility alias skill. Deprecated: use vercel-ai.",
-      "category": "devops",
-      "keywords": [],
-      "triggers": [],
-      "metadata": {
-        "deprecated": "true",
-        "replaced_by": "vercel-ai",
-        "removal_target": "v0.6.0"
-      },
-      "fileBytes": 472,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "vercel-ai-sdk",
-      "name": "vercel-ai-sdk",
-      "displayName": null,
-      "description": "Compatibility alias skill. Deprecated: use vercel-ai.",
-      "category": "devops",
-      "keywords": [],
-      "triggers": [],
-      "metadata": {
-        "deprecated": "true",
-        "replaced_by": "vercel-ai",
-        "removal_target": "v0.6.0"
-      },
-      "fileBytes": 460,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "vercel-caching",
-      "name": "vercel-caching",
-      "displayName": null,
-      "description": "Compatibility alias skill. Deprecated: use vercel-runtime.",
-      "category": "devops",
-      "keywords": [],
-      "triggers": [],
-      "metadata": {
-        "deprecated": "true",
-        "replaced_by": "vercel-runtime",
-        "removal_target": "v0.6.0"
-      },
-      "fileBytes": 488,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "vercel-cli",
-      "name": "vercel-cli",
-      "displayName": null,
-      "description": "Compatibility alias skill. Deprecated: use vercel-delivery.",
-      "category": "devops",
-      "keywords": [],
-      "triggers": [],
-      "metadata": {
-        "deprecated": "true",
-        "replaced_by": "vercel-delivery",
-        "removal_target": "v0.6.0"
-      },
-      "fileBytes": 481,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "vercel-delivery",
-      "name": "vercel-delivery",
-      "displayName": null,
-      "description": "Canonical Vercel delivery skill covering deployments, domains, flags, and CLI-driven release operations.",
-      "category": "devops",
-      "keywords": [],
-      "triggers": [],
-      "metadata": {
-        "deprecated": "false",
-        "replaced_by": "null",
-        "removal_target": "null"
-      },
-      "fileBytes": 1108,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "vercel-deployments",
-      "name": "vercel-deployments",
-      "displayName": null,
-      "description": "Compatibility alias skill. Deprecated: use vercel-delivery.",
-      "category": "devops",
-      "keywords": [],
-      "triggers": [],
-      "metadata": {
-        "deprecated": "true",
-        "replaced_by": "vercel-delivery",
-        "removal_target": "v0.6.0"
-      },
-      "fileBytes": 505,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "vercel-domains",
-      "name": "vercel-domains",
-      "displayName": null,
-      "description": "Compatibility alias skill. Deprecated: use vercel-delivery.",
-      "category": "devops",
-      "keywords": [],
-      "triggers": [],
-      "metadata": {
-        "deprecated": "true",
-        "replaced_by": "vercel-delivery",
-        "removal_target": "v0.6.0"
-      },
-      "fileBytes": 493,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "vercel-firewall",
-      "name": "vercel-firewall",
-      "displayName": null,
-      "description": "Compatibility alias skill. Deprecated: use vercel-security.",
-      "category": "devops",
-      "keywords": [],
-      "triggers": [],
-      "metadata": {
-        "deprecated": "true",
-        "replaced_by": "vercel-security",
-        "removal_target": "v0.6.0"
-      },
-      "fileBytes": 496,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "vercel-flags",
-      "name": "vercel-flags",
-      "displayName": null,
-      "description": "Compatibility alias skill. Deprecated: use vercel-delivery.",
-      "category": "devops",
-      "keywords": [],
-      "triggers": [],
-      "metadata": {
-        "deprecated": "true",
-        "replaced_by": "vercel-delivery",
-        "removal_target": "v0.6.0"
-      },
-      "fileBytes": 487,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "vercel-functions",
-      "name": "vercel-functions",
-      "displayName": null,
-      "description": "Compatibility alias skill. Deprecated: use vercel-runtime.",
-      "category": "devops",
-      "keywords": [],
-      "triggers": [],
-      "metadata": {
-        "deprecated": "true",
-        "replaced_by": "vercel-runtime",
-        "removal_target": "v0.6.0"
-      },
-      "fileBytes": 494,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "vercel-observability",
-      "name": "vercel-observability",
-      "displayName": null,
-      "description": "Vercel observability stack: logs, tracing (OTel), session tracing, speed insights, web analytics, alerts, custom events, log drains, audit logs, and structured monitoring.",
-      "category": "devops",
-      "keywords": [],
-      "triggers": [
-        "vercel, observability, runtime logs, tracing, opentelemetry, session tracing, speed insights, web analytics, alerts, log drain, audit log, custom events, monitoring"
-      ],
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0.0",
-        "domain": "vercel",
-        "triggers": "vercel, observability, runtime logs, tracing, opentelemetry, session tracing, speed insights, web analytics, alerts, log drain, audit log, custom events, monitoring",
+        "version": "3.0.0",
+        "domain": "data",
         "role": "specialist",
-        "scope": "implementation",
-        "output-format": "checklist",
-        "related-skills": "monitoring-expert, sre-engineer, vercel-functions, vercel-firewall",
-        "consolidates": "vercel-observability-overview, vercel-alerts-monitoring, vercel-runtime-logs, vercel-log-drain-reference, vercel-log-trace-correlation, vercel-session-tracing, vercel-tracing-otel, vercel-speed-insights, vercel-web-analytics, vercel-custom-events, vercel-audit-logs, vercel-drains-setup"
+        "stack": "vitess",
+        "category": "databases",
+        "layer": "databases",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "vitess-aware sharded mysql design",
+        "tags": "[\"vitess\", \"sharding\", \"mysql\", \"vindexes\", \"online-ddl\", \"routing\"]"
       },
-      "fileBytes": 3827
-    },
-    {
-      "id": "vercel-platform",
-      "name": "vercel-platform",
-      "displayName": null,
-      "description": "Vercel platform operations: project configuration, RBAC, 2FA/OIDC/SSO, secure compute, REST API, SDK, webhooks, integrations, MCP for agents, image optimization, OG images, cron jobs, monorepos, microfrontends, and multi-tenant architecture.",
-      "category": "devops",
-      "keywords": [],
-      "triggers": [
-        "vercel, project config, rbac, 2fa, oidc, sso, secure compute, rest api, vercel sdk, webhooks, integrations marketplace, mcp for agents, image optimization, og image, cron jobs, monorepo, microfrontends, multi-tenant, automation, audit"
-      ],
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0.0",
-        "domain": "vercel",
-        "triggers": "vercel, project config, rbac, 2fa, oidc, sso, secure compute, rest api, vercel sdk, webhooks, integrations marketplace, mcp for agents, image optimization, og image, cron jobs, monorepo, microfrontends, multi-tenant, automation, audit",
-        "role": "specialist",
-        "scope": "implementation",
-        "output-format": "checklist",
-        "related-skills": "devops-engineer, secure-code-guardian, monitoring-expert, vercel-deployments, vercel-observability",
-        "consolidates": "vercel-automation, vercel-project-configuration, vercel-rbac-access-groups, vercel-2fa-enforcement, vercel-oidc-federation, vercel-secure-compute, vercel-rest-api, vercel-sdk, vercel-webhooks-and-checks, vercel-integrations-native, vercel-marketplace-partner-api, vercel-mcp-for-agents, vercel-agent-workflows, vercel-image-optimization, vercel-og-image-generation, vercel-cron-jobs, vercel-microfrontends, vercel-monorepos, vercel-multi-tenant"
-      },
-      "fileBytes": 5263,
+      "fileBytes": 2330,
       "warnings": [
-        "description too long (241 chars)"
-      ]
-    },
-    {
-      "id": "vercel-routing",
-      "name": "vercel-routing",
-      "displayName": null,
-      "description": "Compatibility alias skill. Deprecated: use vercel-runtime.",
-      "category": "devops",
-      "keywords": [],
-      "triggers": [],
-      "metadata": {
-        "deprecated": "true",
-        "replaced_by": "vercel-runtime",
-        "removal_target": "v0.6.0"
-      },
-      "fileBytes": 488,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "vercel-runtime",
-      "name": "vercel-runtime",
-      "displayName": null,
-      "description": "Canonical Vercel runtime skill covering functions, routing, and caching with production guardrails.",
-      "category": "devops",
-      "keywords": [],
-      "triggers": [],
-      "metadata": {
-        "deprecated": "false",
-        "replaced_by": "null",
-        "removal_target": "null"
-      },
-      "fileBytes": 1117,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "vercel-security",
-      "name": "vercel-security",
-      "displayName": null,
-      "description": "Canonical Vercel security skill covering WAF, rate limiting, bot controls, and traffic-protection policy.",
-      "category": "devops",
-      "keywords": [],
-      "triggers": [],
-      "metadata": {
-        "deprecated": "false",
-        "replaced_by": "null",
-        "removal_target": "null"
-      },
-      "fileBytes": 1088,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "vercel-storage",
-      "name": "vercel-storage",
-      "displayName": null,
-      "description": "Vercel Storage solutions: Blob for file storage, Marketplace Postgres, Marketplace Redis, and storage migration strategies between providers.",
-      "category": "devops",
-      "keywords": [],
-      "triggers": [
-        "vercel, storage, blob, postgres, redis, kv, storage migration, file upload, vercel blob, vercel postgres, vercel redis"
-      ],
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0.0",
-        "domain": "vercel",
-        "triggers": "vercel, storage, blob, postgres, redis, kv, storage migration, file upload, vercel blob, vercel postgres, vercel redis",
-        "role": "specialist",
-        "scope": "implementation",
-        "output-format": "checklist",
-        "related-skills": "database-design, database-optimizer, vercel-functions, vercel-deployments",
-        "consolidates": "vercel-blob, vercel-marketplace-storage-postgres, vercel-marketplace-storage-redis, vercel-storage-migrations"
-      },
-      "fileBytes": 2886
-    },
-    {
-      "id": "vulnerability-scanner",
-      "name": "vulnerability-scanner",
-      "displayName": null,
-      "description": "Compatibility alias skill. Deprecated: use security-reviewer.",
-      "category": "security",
-      "keywords": [],
-      "triggers": [],
-      "metadata": {
-        "deprecated": "true",
-        "replaced_by": "security-reviewer",
-        "removal_target": "v0.6.0"
-      },
-      "fileBytes": 524,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "web-design-guidelines",
-      "name": "web-design-guidelines",
-      "displayName": null,
-      "description": "Review UI code for Web Interface Guidelines compliance. Use when asked to \"review my UI\", \"check accessibility\", \"audit design\", \"review UX\", or \"check my site against best practices\".",
-      "category": "design",
-      "keywords": [],
-      "triggers": [],
-      "metadata": {
-        "author": "vercel",
-        "version": "1.0.0",
-        "argument-hint": "<file-or-pattern>"
-      },
-      "fileBytes": 1771,
-      "warnings": [
+        "description too long (210 chars)",
         "no keywords or triggers"
       ]
     },
@@ -2080,40 +1094,25 @@
       "id": "web-perf",
       "name": "web-perf",
       "displayName": null,
-      "description": "Analyzes web performance using Chrome DevTools MCP. Measures Core Web Vitals (FCP, LCP, TBT, CLS, Speed Index), identifies render-blocking resources, network dependency chains, layout shifts, caching issues, and accessibility gaps. Use when asked to audit, profile, debug, or optimize page load performance, Lighthouse scores, or site speed.",
+      "description": "Use for measuring and improving web performance with Core Web Vitals, rendering-path analysis, bundle and network prioritization, and framework-aware delivery tradeoffs.",
       "category": "performance",
       "keywords": [],
       "triggers": [],
-      "fileBytes": 7621,
+      "path": "workflows/skills/web-perf/SKILL.md",
+      "metadata": {
+        "version": "3.0.0",
+        "domain": "frontend",
+        "role": "specialist",
+        "stack": "web-performance",
+        "category": "frameworks-runtimes",
+        "layer": "frameworks-runtimes",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "Core Web Vitals era with INP",
+        "tags": "[\"performance\", \"core-web-vitals\", \"lcp\", \"inp\", \"cls\", \"bundles\", \"network\"]"
+      },
+      "fileBytes": 2351,
       "warnings": [
-        "description too long (341 chars)",
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "webapp-testing",
-      "name": "webapp-testing",
-      "displayName": null,
-      "description": "Web application testing principles. E2E, Playwright, deep audit strategies.",
-      "category": "general",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 3815,
-      "warnings": [
-        "no keywords or triggers"
-      ]
-    },
-    {
-      "id": "wrangler",
-      "name": "wrangler",
-      "displayName": null,
-      "description": "Cloudflare Workers CLI for deploying, developing, and managing Workers, KV, R2, D1, Vectorize, Hyperdrive, Workers AI, Containers, Queues, Workflows, Pipelines, and Secrets Store. Load before running wrangler commands to ensure correct syntax and best practices.",
-      "category": "general",
-      "keywords": [],
-      "triggers": [],
-      "fileBytes": 16154,
-      "warnings": [
-        "description too long (262 chars)",
         "no keywords or triggers"
       ]
     }

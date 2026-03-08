@@ -1,48 +1,63 @@
 ---
 name: "nodejs-best-practices"
-description: "Decision framework for modern Node.js backend architecture, operations, and security using current LTS-era practices."
+description: "Use for modern Node.js backend architecture, runtime choices, worker or queue boundaries, edge-vs-server tradeoffs, reliability controls, and production-safe service implementation in the current LTS era."
 license: MIT
 metadata:
-  version: "2.0.0"
+  version: "3.0.0"
   domain: "backend"
-  role: "decision-guide"
+  role: "specialist"
   stack: "nodejs"
+  category: "frameworks-runtimes"
+  layer: "frameworks-runtimes"
+  canonical: true
+  maturity: "stable"
   baseline: "Node 22/24 LTS era"
+  tags: ["nodejs", "backend", "runtime", "services", "reliability", "security"]
 ---
 # Node.js Best Practices
 
-## Purpose
+## When to use
 
-Use this skill to choose the right Node backend patterns for the actual constraints of the task, not by habit.
+- Choosing Node backend structure for APIs, workers, or service code.
+- Making runtime, framework, validation, queue, and observability decisions.
+- Hardening Node services for concurrency, deployment, and failure handling.
+- Reviewing service code for event-loop safety, background work boundaries, and production behavior.
 
-## Decision flow
+## When not to use
 
-1. Clarify deployment target (container, serverless, edge).
-2. Select framework/runtime shape based on latency and team constraints.
-3. Define API, validation, auth, and observability boundaries.
-4. Implement smallest safe slice, then harden.
+- Pure frontend React or Next.js component work.
+- Language-only TypeScript questions with no Node runtime concern.
+- Infra-only deployment policy with no Node service behavior in scope.
 
-## Core guidance
+## Core workflow
 
-- Prefer typed boundaries (TypeScript + schema validation).
-- Keep transport concerns out of business logic.
-- Standardize error envelopes and correlation IDs.
-- Enforce timeout, retry, and circuit-breaker strategy for downstream calls.
-- Use graceful shutdown and health/readiness probes.
+1. Confirm runtime context: container, serverless, edge, worker, queue consumer, or long-lived process.
+2. Pick the smallest framework/runtime shape that fits latency, I/O profile, and deployment constraints.
+3. Keep transport, business logic, persistence, and background execution boundaries explicit.
+4. Add validation, timeout, retry, backpressure, and observability controls before shipping.
+5. Verify graceful shutdown, health checks, worker behavior, and dependency failure handling.
 
-## Security and reliability
+## Baseline standards
 
-- Validate all request input before business logic.
-- Use least-privilege credentials and secret rotation.
+- Prefer typed boundaries and explicit schema validation.
 - Avoid blocking the event loop in request paths.
-- Add rate limits and abuse controls on external endpoints.
+- Use workers or queues when CPU-heavy or long-lived background work would distort request latency.
+- Add correlation IDs and consistent error envelopes.
+- Use graceful shutdown and readiness probes.
+- Measure CPU, heap, and I/O hot paths before optimizing.
 
-## Performance
+## Avoid
 
-- Measure before optimizing.
-- Profile CPU and heap in realistic workloads.
-- Use streaming/backpressure for large I/O paths.
+- Framework-by-habit decisions.
+- Hidden background work with no timeout or cancellation path.
+- Running CPU-bound work on the main event loop when workers or out-of-process jobs are needed.
+- Unbounded retries and silent downstream failures.
+- Secret handling or auth logic without explicit least-privilege boundaries.
 
-## Output expectation
+## References
 
-Return concrete architecture choices with tradeoffs, then implementation steps and verification criteria.
+Load on demand. Do not preload all reference files.
+
+| File | Load when |
+| --- | --- |
+| `references/runtime-reliability-checklist.md` | You need a deeper checklist for runtime choice, shutdown, workers or queues, edge-vs-server tradeoffs, validation, retries, observability, and production failure handling. |

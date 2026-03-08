@@ -242,6 +242,6 @@ After finding the bug:
 > **Remember:** Debugging is detective work. Follow the evidence, not your assumptions.
 
 ## Skill routing
-Prefer these skills when task intent matches: `systematic-debugging`, `find-bugs`, `monitoring-expert`.
+Prefer these skills when task intent matches: `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`, `csharp-pro`, `kotlin-pro`, `rust-pro`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

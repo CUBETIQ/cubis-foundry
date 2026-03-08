@@ -242,39 +242,39 @@ async function main() {
     throw new Error("route_resolve failed explicit workflow resolution");
   }
 
-  const skillAuthoringRouteResolveResult = await callTool({
+  const skillCreatorRouteResolveResult = await callTool({
     endpointUrl: endpoint,
     sessionId,
     name: "route_resolve",
     args: { intent: "create a new skill package for Copilot" },
   });
-  const skillAuthoringRoutePayload = parseToolTextPayload(
-    skillAuthoringRouteResolveResult,
+  const skillCreatorRoutePayload = parseToolTextPayload(
+    skillCreatorRouteResolveResult,
   );
   if (
-    skillAuthoringRoutePayload.resolved !== true ||
-    skillAuthoringRoutePayload.id !== "create" ||
-    skillAuthoringRoutePayload.primarySkillHint !== "skill-authoring"
+    skillCreatorRoutePayload.resolved !== true ||
+    skillCreatorRoutePayload.id !== "create" ||
+    skillCreatorRoutePayload.primarySkillHint !== "skill-creator"
   ) {
     throw new Error(
-      "route_resolve failed skill-authoring intent routing",
+      "route_resolve failed skill-creator intent routing",
     );
   }
 
-  const skillAuthoringValidateResult = await callTool({
+  const skillCreatorValidateResult = await callTool({
     endpointUrl: endpoint,
     sessionId,
     name: "skill_validate",
-    args: { id: "skill-authoring" },
+    args: { id: "skill-creator" },
   });
-  const skillAuthoringValidatePayload = parseToolTextPayload(
-    skillAuthoringValidateResult,
+  const skillCreatorValidatePayload = parseToolTextPayload(
+    skillCreatorValidateResult,
   );
   if (
-    skillAuthoringValidatePayload.exists !== true ||
-    skillAuthoringValidatePayload.canonicalId !== "skill-authoring"
+    skillCreatorValidatePayload.exists !== true ||
+    skillCreatorValidatePayload.canonicalId !== "skill-creator"
   ) {
-    throw new Error("skill_validate failed for skill-authoring");
+    throw new Error("skill_validate failed for skill-creator");
   }
 
   const listCategoriesResult = await callTool({

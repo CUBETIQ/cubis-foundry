@@ -16,8 +16,7 @@ Use this when data modeling, query quality, migration safety, or database perfor
 - Verification support: `@test-engineer`
 - Core skill hub: `database-skills`
 - Companion skills: `database-design` (schema/migrations), `database-optimizer` (tuning/triage)
-- Mobile/local persistence companion: `drift-flutter`
-- Engine references are loaded on-demand through `database-skills` using `skill_validate` and targeted `skill_get_reference`.
+- Engine specialists are loaded on-demand only when platform behavior matters: `postgres`, `mysql`, `sqlite`, `mongodb`, `redis`, `supabase`, `vitess`, `neki`.
 
 ## Context notes
 - This workflow file, active platform rules, and selected agents/skills guide execution.
@@ -25,8 +24,8 @@ Use this when data modeling, query quality, migration safety, or database perfor
 
 ## Skill Routing
 - Primary skills: `database-skills`, `database-design`
-- Supporting skills (optional): `database-optimizer`
-- Engine references: `postgres`, `mysql`, `vitess`, `neki`, `mongodb`, `sqlite`, `supabase`, `redis`
+- Supporting skills (optional): `database-optimizer`, `postgres`, `mysql`, `sqlite`, `mongodb`, `redis`, `supabase`, `vitess`, `neki`, `architecture-designer`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`, `php-pro`, `ruby-pro`, `skill-creator`
+- Use `database-skills` as the triage hub, `database-design` when schema and migration shape are primary, and `database-optimizer` only when evidence shows a query, index, or contention problem. Add the exact engine specialist only when engine behavior or managed-product constraints are relevant, then one matching language skill for ORM or query-code changes.
 
 ## Workflow steps
 1. Confirm data shape, access patterns, and workload size.

@@ -1,0 +1,1039 @@
+{
+  "$schema": "cubis-foundry-public-skill-repo-corpus-v1",
+  "generatedAt": "2026-03-08T18:37:03.476Z",
+  "discoveryQueries": [
+    "site:github.com \"claude-skills\" github programming repo",
+    "site:github.com \"awesome agent skills\" github",
+    "site:github.com \"agent skills\" github repo react nextjs postgres",
+    "site:github.com \"google genai skills\" github repo",
+    "site:github.com \"claude skills marketplace\" github",
+    "site:github.com \"ai agent skills\" github repo coding frameworks databases"
+  ],
+  "summary": {
+    "repoCount": 19,
+    "classCounts": [
+      {
+        "key": "public-implementation",
+        "count": 5
+      },
+      {
+        "key": "awesome-list",
+        "count": 4
+      },
+      {
+        "key": "aggregate-library",
+        "count": 3
+      },
+      {
+        "key": "installer-registry",
+        "count": 3
+      },
+      {
+        "key": "official",
+        "count": 2
+      },
+      {
+        "key": "marketplace",
+        "count": 1
+      },
+      {
+        "key": "open-standard",
+        "count": 1
+      }
+    ],
+    "sourceGroupCounts": [
+      {
+        "key": "community-library",
+        "count": 4
+      },
+      {
+        "key": "curated-discovery",
+        "count": 4
+      },
+      {
+        "key": "distribution-and-portability",
+        "count": 4
+      },
+      {
+        "key": "coding-specialists",
+        "count": 2
+      },
+      {
+        "key": "official-baseline",
+        "count": 2
+      },
+      {
+        "key": "google-oriented",
+        "count": 1
+      },
+      {
+        "key": "spec-and-portability",
+        "count": 1
+      },
+      {
+        "key": "workflow-and-planning",
+        "count": 1
+      }
+    ],
+    "taxonomySignals": [
+      {
+        "signal": "automation",
+        "count": 16
+      },
+      {
+        "signal": "coding",
+        "count": 14
+      },
+      {
+        "signal": "product",
+        "count": 4
+      },
+      {
+        "signal": "registry",
+        "count": 4
+      },
+      {
+        "signal": "research",
+        "count": 4
+      },
+      {
+        "signal": "design",
+        "count": 3
+      },
+      {
+        "signal": "docs",
+        "count": 3
+      },
+      {
+        "signal": "analysis",
+        "count": 2
+      },
+      {
+        "signal": "authoring",
+        "count": 2
+      },
+      {
+        "signal": "gemini",
+        "count": 2
+      },
+      {
+        "signal": "install",
+        "count": 2
+      },
+      {
+        "signal": "tooling",
+        "count": 2
+      },
+      {
+        "signal": "writing",
+        "count": 2
+      },
+      {
+        "signal": "backend",
+        "count": 1
+      },
+      {
+        "signal": "bmad",
+        "count": 1
+      },
+      {
+        "signal": "business",
+        "count": 1
+      },
+      {
+        "signal": "claude",
+        "count": 1
+      },
+      {
+        "signal": "cline",
+        "count": 1
+      },
+      {
+        "signal": "codex",
+        "count": 1
+      },
+      {
+        "signal": "curated",
+        "count": 1
+      },
+      {
+        "signal": "deployment",
+        "count": 1
+      },
+      {
+        "signal": "discovery",
+        "count": 1
+      },
+      {
+        "signal": "frameworks",
+        "count": 1
+      },
+      {
+        "signal": "frontend",
+        "count": 1
+      },
+      {
+        "signal": "git",
+        "count": 1
+      },
+      {
+        "signal": "github",
+        "count": 1
+      },
+      {
+        "signal": "google",
+        "count": 1
+      },
+      {
+        "signal": "interoperability",
+        "count": 1
+      },
+      {
+        "signal": "marketplace",
+        "count": 1
+      },
+      {
+        "signal": "mcp",
+        "count": 1
+      },
+      {
+        "signal": "planning",
+        "count": 1
+      },
+      {
+        "signal": "portability",
+        "count": 1
+      },
+      {
+        "signal": "security",
+        "count": 1
+      },
+      {
+        "signal": "spec",
+        "count": 1
+      },
+      {
+        "signal": "system",
+        "count": 1
+      },
+      {
+        "signal": "testing",
+        "count": 1
+      },
+      {
+        "signal": "workflow",
+        "count": 1
+      }
+    ],
+    "platformTargets": [
+      {
+        "platform": "multi-agent",
+        "count": 10
+      },
+      {
+        "platform": "claude",
+        "count": 7
+      },
+      {
+        "platform": "codex",
+        "count": 1
+      },
+      {
+        "platform": "gemini",
+        "count": 1
+      },
+      {
+        "platform": "google-genai",
+        "count": 1
+      }
+    ]
+  },
+  "repos": [
+    {
+      "id": "anthropics/skills",
+      "url": "https://github.com/anthropics/skills",
+      "repoClass": "official",
+      "sourceGroup": "official-baseline",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "packaging",
+        "trigger-quality",
+        "skill-authoring"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "research",
+        "writing"
+      ],
+      "manualNotes": "Primary baseline for compact roots, selective sidecars, and skill-creator style lifecycle guidance.",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "openai/skills",
+      "url": "https://github.com/openai/skills",
+      "repoClass": "official",
+      "sourceGroup": "official-baseline",
+      "platformTargets": [
+        "codex"
+      ],
+      "useFor": [
+        "catalog-discipline",
+        "tiering",
+        "packaging"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "system",
+        "curated"
+      ],
+      "manualNotes": "Primary baseline for system/curated/experimental catalog discipline and Codex-oriented packaging.",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "vercel-labs/agent-skills",
+      "url": "https://github.com/vercel-labs/agent-skills",
+      "repoClass": "public-implementation",
+      "sourceGroup": "coding-specialists",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "coding-specialists",
+        "framework-scope",
+        "production-guardrails"
+      ],
+      "taxonomySignals": [
+        "frontend",
+        "backend",
+        "frameworks",
+        "deployment"
+      ],
+      "manualNotes": "High-signal coding specialists that help keep framework/runtime skills narrow and practical.",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "agentskills/agentskills",
+      "url": "https://github.com/agentskills/agentskills",
+      "repoClass": "open-standard",
+      "sourceGroup": "spec-and-portability",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "portability",
+        "metadata",
+        "packaging"
+      ],
+      "taxonomySignals": [
+        "spec",
+        "registry",
+        "interoperability"
+      ],
+      "manualNotes": "Useful for portable packaging assumptions and metadata shape, not for canonical wording.",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "travisvn/awesome-claude-skills",
+      "url": "https://github.com/travisvn/awesome-claude-skills",
+      "repoClass": "awesome-list",
+      "sourceGroup": "curated-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "demand-signals"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "design",
+        "writing",
+        "research",
+        "automation"
+      ],
+      "manualNotes": "High-signal curated inventory of official and community Claude skill repos. Good for breadth and naming patterns.",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "Jeffallan/claude-skills",
+      "url": "https://github.com/Jeffallan/claude-skills",
+      "repoClass": "aggregate-library",
+      "sourceGroup": "community-library",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "taxonomy",
+        "category-breadth",
+        "missing-family-detection"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "business",
+        "design",
+        "research",
+        "product",
+        "automation"
+      ],
+      "manualNotes": "Large community library with many categories. Valuable for category breadth and spotting missing Foundry families.",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "VoltAgent/awesome-agent-skills",
+      "url": "https://github.com/VoltAgent/awesome-agent-skills",
+      "repoClass": "awesome-list",
+      "sourceGroup": "curated-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "ecosystem-breadth",
+        "cross-platform-demand"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "security",
+        "testing",
+        "docs",
+        "product"
+      ],
+      "manualNotes": "Very broad cross-agent view. Good for demand sensing and surfacing families outside Claude/Codex-only ecosystems.",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "Microck/ordinary-claude-skills",
+      "url": "https://github.com/Microck/ordinary-claude-skills",
+      "repoClass": "aggregate-library",
+      "sourceGroup": "community-library",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "taxonomy",
+        "breadth",
+        "naming-collisions"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "docs",
+        "product",
+        "analysis"
+      ],
+      "manualNotes": "Large local-first aggregate library that helps identify common skill names and overlap problems.",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "MoizIbnYousaf/Ai-Agent-Skills",
+      "url": "https://github.com/MoizIbnYousaf/Ai-Agent-Skills",
+      "repoClass": "installer-registry",
+      "sourceGroup": "distribution-and-portability",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "distribution",
+        "install-flow",
+        "taxonomy"
+      ],
+      "taxonomySignals": [
+        "registry",
+        "install",
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Useful for install/distribution ergonomics and category breadth. Do not treat as canonical wording source.",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "gotalab/skillport",
+      "url": "https://github.com/gotalab/skillport",
+      "repoClass": "installer-registry",
+      "sourceGroup": "distribution-and-portability",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "manage-once-serve-anywhere",
+        "portability",
+        "registry-shape"
+      ],
+      "taxonomySignals": [
+        "registry",
+        "mcp",
+        "portability",
+        "automation"
+      ],
+      "manualNotes": "Strong signal for multi-agent portability and central skill management patterns.",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "cnemri/google-genai-skills",
+      "url": "https://github.com/cnemri/google-genai-skills",
+      "repoClass": "public-implementation",
+      "sourceGroup": "google-oriented",
+      "platformTargets": [
+        "gemini",
+        "google-genai"
+      ],
+      "useFor": [
+        "google-platform-patterns",
+        "packaging"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "gemini",
+        "google"
+      ],
+      "manualNotes": "Useful for Google/Gemini packaging and skill-family portability beyond Claude/Codex.",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "fvadicamo/dev-agent-skills",
+      "url": "https://github.com/fvadicamo/dev-agent-skills",
+      "repoClass": "public-implementation",
+      "sourceGroup": "coding-specialists",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "workflow-examples",
+        "coding-specialists",
+        "skill-authoring"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "git",
+        "github",
+        "authoring",
+        "automation"
+      ],
+      "manualNotes": "Smaller library with practical development-workflow skills and skill-authoring examples.",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "vercel-labs/skills",
+      "url": "https://github.com/vercel-labs/skills",
+      "repoClass": "installer-registry",
+      "sourceGroup": "distribution-and-portability",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "distribution",
+        "sync",
+        "install-ergonomics"
+      ],
+      "taxonomySignals": [
+        "registry",
+        "install",
+        "coding",
+        "tooling"
+      ],
+      "manualNotes": "Useful for install/sync assumptions and portable packaging expectations.",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "skillmatic-ai/awesome-agent-skills",
+      "url": "https://github.com/skillmatic-ai/awesome-agent-skills",
+      "repoClass": "awesome-list",
+      "sourceGroup": "curated-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "breadth",
+        "new-candidate-finding"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "research",
+        "design",
+        "product",
+        "automation"
+      ],
+      "manualNotes": "Another discovery-focused awesome list that helps validate whether candidate families recur across lists.",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "heilcheng/awesome-agent-skills",
+      "url": "https://github.com/heilcheng/awesome-agent-skills",
+      "repoClass": "awesome-list",
+      "sourceGroup": "curated-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "cross-platform-breadth",
+        "category-check"
+      ],
+      "taxonomySignals": [
+        "claude",
+        "codex",
+        "cline",
+        "gemini",
+        "automation"
+      ],
+      "manualNotes": "Good cross-platform list for checking whether a skill family is ecosystem-wide rather than tool-local.",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "mhattingpete/claude-skills-marketplace",
+      "url": "https://github.com/mhattingpete/claude-skills-marketplace",
+      "repoClass": "marketplace",
+      "sourceGroup": "distribution-and-portability",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "marketplace-signal",
+        "demand",
+        "discovery"
+      ],
+      "taxonomySignals": [
+        "marketplace",
+        "coding",
+        "automation",
+        "discovery"
+      ],
+      "manualNotes": "Useful for understanding what skill families are marketed and surfaced to end users.",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "rknall/claude-skills",
+      "url": "https://github.com/rknall/claude-skills",
+      "repoClass": "public-implementation",
+      "sourceGroup": "community-library",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "community-patterns",
+        "skill-structure"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "authoring"
+      ],
+      "manualNotes": "Community package set that helps check how smaller authors structure reusable skills.",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "aj-geddes/claude-code-bmad-skills",
+      "url": "https://github.com/aj-geddes/claude-code-bmad-skills",
+      "repoClass": "public-implementation",
+      "sourceGroup": "workflow-and-planning",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "workflow-shape",
+        "planning-patterns",
+        "agent-orchestration"
+      ],
+      "taxonomySignals": [
+        "planning",
+        "bmad",
+        "workflow",
+        "automation"
+      ],
+      "manualNotes": "Structured workflow/planning library useful for orchestration, planning, and agent workflow skill design.",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "numman-ali/openskills",
+      "url": "https://github.com/numman-ali/openskills",
+      "repoClass": "aggregate-library",
+      "sourceGroup": "community-library",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "breadth",
+        "naming-patterns",
+        "missing-family-detection"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "docs",
+        "analysis",
+        "tooling"
+      ],
+      "manualNotes": "Broad library useful for category spread and repeated naming patterns across public skill packs.",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    }
+  ]
+}

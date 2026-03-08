@@ -18,7 +18,7 @@ export async function scanVaultRoots(
   roots: string[],
   basePath: string,
 ): Promise<SkillPointer[]> {
-  const skills: SkillPointer[] = [];
+  const skillsById = new Map<string, SkillPointer>();
 
   for (const rootRel of roots) {
     const rootAbs = path.resolve(basePath, rootRel);
@@ -46,7 +46,9 @@ export async function scanVaultRoots(
         continue;
       }
 
-      const wrapperKind = await detectWrapperKind(entry, skillFile);
+      const rawPreview = await readFrontmatterPreview(skillFile);
+      const frontmatter = rawPreview ? parseFrontmatter(rawPreview) : null;
+      const wrapperKind = detectWrapperKind(entry, frontmatter);
       if (wrapperKind) {
         logger.debug(
           `Skipping wrapper skill ${entry} (${wrapperKind}) at ${skillFile}`,
@@ -54,17 +56,28 @@ export async function scanVaultRoots(
         continue;
       }
 
-      // Derive category from the skill's frontmatter or default to "general"
-      // At scan time we only store the path; category is derived from directory structure
-      skills.push({
+      const skillPointer: SkillPointer = {
         id: entry,
         category: deriveCategory(entry),
         path: skillFile,
         fileBytes: skillStat.size,
-      });
+      };
+      registerSkillPointer(skillsById, skillPointer);
+
+      for (const aliasId of extractMetadataAliases(frontmatter)) {
+        if (aliasId === entry) continue;
+        registerSkillPointer(skillsById, {
+          id: aliasId,
+          canonicalId: entry,
+          category: skillPointer.category,
+          path: skillFile,
+          fileBytes: skillStat.size,
+        });
+      }
     }
   }
 
+  const skills = [...skillsById.values()].sort((a, b) => a.id.localeCompare(b.id));
   logger.info(`Vault scan complete: ${skills.length} skills discovered`);
   return skills;
 }
@@ -108,6 +121,13 @@ function parseFrontmatter(rawPreview: string): string | null {
   return match?.[1] ?? null;
 }
 
+function parseInlineList(raw: string): string[] {
+  return String(raw || "")
+    .split(",")
+    .map((item) => item.trim().replace(/^['"]|['"]$/g, ""))
+    .filter(Boolean);
+}
+
 function extractMetadataWrapper(frontmatter: string): string | null {
   const lines = frontmatter.split(/\r?\n/);
   let inMetadata = false;
@@ -138,16 +158,96 @@ function extractMetadataWrapper(frontmatter: string): string | null {
   return null;
 }
 
-async function detectWrapperKind(
+function extractMetadataAliases(frontmatter: string | null): string[] {
+  if (!frontmatter) return [];
+  const lines = frontmatter.split(/\r?\n/);
+  let inMetadata = false;
+  const aliases: string[] = [];
+
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i];
+    if (!inMetadata) {
+      if (/^\s*metadata\s*:\s*$/.test(line)) {
+        inMetadata = true;
+      }
+      continue;
+    }
+
+    if (!line.trim()) continue;
+    if (!/^\s+/.test(line)) break;
+
+    const inlineMatch = line.match(/^\s+aliases\s*:\s*(.+)\s*$/);
+    if (!inlineMatch) continue;
+
+    const rest = inlineMatch[1].trim();
+    if (rest.startsWith("[") && rest.endsWith("]")) {
+      aliases.push(...parseInlineList(rest.slice(1, -1)));
+      break;
+    }
+
+    if (rest) {
+      aliases.push(...parseInlineList(rest));
+      break;
+    }
+
+    for (let j = i + 1; j < lines.length; j += 1) {
+      const next = lines[j];
+      if (!next.trim()) continue;
+      if (/^\s+[A-Za-z0-9_-]+\s*:/.test(next)) {
+        i = j - 1;
+        break;
+      }
+
+      const bullet = next.match(/^\s+-\s*(.+)$/);
+      if (bullet) {
+        aliases.push(bullet[1].trim().replace(/^['"]|['"]$/g, ""));
+      }
+
+      if (j === lines.length - 1) {
+        i = j;
+      }
+    }
+  }
+
+  return [...new Set(aliases.filter(Boolean))];
+}
+
+function registerSkillPointer(
+  skillsById: Map<string, SkillPointer>,
+  pointer: SkillPointer,
+) {
+  const key = pointer.id.toLowerCase();
+  if (!skillsById.has(key)) {
+    skillsById.set(key, pointer);
+    return;
+  }
+
+  const existing = skillsById.get(key);
+  if (!existing) {
+    skillsById.set(key, pointer);
+    return;
+  }
+
+  // Prefer concrete canonical skills over synthetic aliases on collisions.
+  if (existing.canonicalId && !pointer.canonicalId) {
+    skillsById.set(key, pointer);
+    return;
+  }
+
+  if (existing.path !== pointer.path || existing.canonicalId !== pointer.canonicalId) {
+    logger.warn(
+      `Duplicate skill id '${pointer.id}' discovered; keeping first registration at ${existing.path}`,
+    );
+  }
+}
+
+function detectWrapperKind(
   skillId: string,
-  skillFile: string,
-): Promise<"workflow" | "agent" | null> {
+  frontmatter: string | null,
+): "workflow" | "agent" | null {
   const byId = extractWrapperKindFromId(skillId);
   if (byId) return byId;
 
-  const rawPreview = await readFrontmatterPreview(skillFile);
-  if (!rawPreview) return null;
-  const frontmatter = parseFrontmatter(rawPreview);
   if (!frontmatter) return null;
 
   const byMetadata = extractMetadataWrapper(frontmatter);

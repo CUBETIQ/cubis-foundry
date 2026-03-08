@@ -1,94 +1,61 @@
 ---
 name: "api-designer"
-description: "Use when defining or reviewing external API contracts, OpenAPI specifications, resource models, pagination, versioning, or error response standards. Do not use for pure database design, implementation-only handler work, or framework-specific backend setup."
+description: "Use when defining or reviewing external API contracts, OpenAPI specifications, resource models, pagination, versioning, and error response standards. Do not use for pure database design or framework-only handler wiring."
+license: MIT
+metadata:
+  version: "3.0.0"
+  domain: "api"
+  role: "specialist"
+  stack: "api-design"
+  category: "core-operating"
+  layer: "core-operating"
+  canonical: true
+  maturity: "stable"
+  baseline: "OpenAPI 3.1 and current HTTP API practices"
+  tags: ["api", "openapi", "rest", "graphql", "versioning", "pagination"]
 ---
 # API Designer
 
-# CHANGED: description — added a sharper trigger boundary and explicit non-goals — reduces false-positive invocation.
-# CHANGED: references section — normalized to explicit Load When guidance with platform-safe relative paths — prevents speculative sidecar loading.
-# CHANGED: related powers cleanup — removed power-era section — keeps this skill canonical and platform-safe.
+## When to use
 
-## Overview
+- Defining external REST or GraphQL contracts.
+- Writing or reviewing OpenAPI schemas and endpoint shapes.
+- Choosing pagination, filtering, idempotency, and versioning rules.
+- Standardizing error envelopes and auth-facing API behavior.
 
-Senior API architect with expertise in designing scalable, developer-friendly REST and GraphQL APIs with comprehensive OpenAPI specifications.
+## When not to use
 
-## Role Definition
+- Pure schema/index/migration work with no contract change.
+- Framework-only controller or router implementation.
+- Internal-only refactors that do not alter request or response boundaries.
 
-You are a senior API designer with 10+ years of experience creating intuitive, scalable API architectures. You specialize in REST design patterns, OpenAPI 3.1 specifications, GraphQL schemas, and creating APIs that developers love to use while ensuring performance, security, and maintainability.
+## Core workflow
 
-## When to Use This Skill
+1. Clarify consumers, auth model, and backward-compatibility constraints.
+2. Model resources, operations, and failure cases before implementation.
+3. Choose transport shape, versioning policy, and pagination pattern deliberately.
+4. Define request, response, and error envelopes with explicit examples.
+5. Hand off a contract that implementation skills can build against without guessing.
 
-- Designing new REST or GraphQL APIs
-- Creating OpenAPI 3.1 specifications
-- Modeling resources and relationships
-- Implementing API versioning strategies
-- Designing pagination and filtering
-- Standardizing error responses
-- Planning authentication flows
-- Documenting API contracts
+## Baseline standards
 
-## When Not to Use This Skill
+- Prefer stable resource-oriented contracts over framework-driven shapes.
+- Keep request validation explicit at the boundary.
+- Document error semantics and retry expectations.
+- Use pagination on collections by default.
+- Make deprecation and compatibility policy explicit.
 
-- Pure database schema, indexing, or migration work without an API contract change
-- Framework-only implementation tasks such as wiring handlers, middleware, or DI containers
-- Internal refactors that do not change request/response contracts
+## Avoid
 
-## Core Workflow
-
-1. **Analyze domain** - Understand business requirements, data models, client needs
-2. **Model resources** - Identify resources, relationships, operations
-3. **Design endpoints** - Define URI patterns, HTTP methods, request/response schemas
-4. **Specify contract** - Create OpenAPI 3.1 spec with complete documentation
-5. **Plan evolution** - Design versioning, deprecation, backward compatibility
+- Verb-based URI design.
+- Inconsistent response envelopes across endpoints.
+- Silent breaking changes.
+- Mixing database structure directly into the external contract.
 
 ## References
 
-Load detailed guidance on-demand:
+Load on demand. Do not preload all reference files.
 
-| Topic          | Reference                    | Load When                                   |
-| -------------- | ---------------------------- | ------------------------------------------- |
-| REST Patterns  | `references/rest-patterns.md`  | Resource design, HTTP methods, HATEOAS      |
-| Versioning     | `references/versioning.md`     | API versions, deprecation, breaking changes |
-| Pagination     | `references/pagination.md`     | Cursor, offset, keyset pagination           |
-| Error Handling | `references/error-handling.md` | Error responses, RFC 7807, status codes     |
-| OpenAPI        | `references/openapi.md`        | OpenAPI 3.1, documentation, code generation |
-
-## Constraints
-
-### MUST DO
-
-- Follow REST principles (resource-oriented, proper HTTP methods)
-- Use consistent naming conventions (snake_case or camelCase)
-- Include comprehensive OpenAPI 3.1 specification
-- Design proper error responses with actionable messages
-- Implement pagination for collection endpoints
-- Version APIs with clear deprecation policies
-- Document authentication and authorization
-- Provide request/response examples
-
-### MUST NOT DO
-
-- Use verbs in resource URIs (use `/users/{id}`, not `/getUser/{id}`)
-- Return inconsistent response structures
-- Skip error code documentation
-- Ignore HTTP status code semantics
-- Design APIs without versioning strategy
-- Expose implementation details in API
-- Create breaking changes without migration path
-- Omit rate limiting considerations
-
-## Output Templates
-
-When designing APIs, provide:
-
-1. Resource model and relationships
-2. Endpoint specifications with URIs and methods
-3. OpenAPI 3.1 specification (YAML or JSON)
-4. Authentication and authorization flows
-5. Error response catalog
-6. Pagination and filtering patterns
-7. Versioning and deprecation strategy
-
-## Knowledge Reference
-
-REST architecture, OpenAPI 3.1, GraphQL, HTTP semantics, JSON:API, HATEOAS, OAuth 2.0, JWT, RFC 7807 Problem Details, API versioning patterns, pagination strategies, rate limiting, webhook design, SDK generation
+| File | Load when |
+| --- | --- |
+| `references/contract-checklist.md` | You need a sharper checklist for resource modeling, versioning, pagination, idempotency, and error semantics. |

@@ -11,7 +11,7 @@
 | schema, migration, drizzle, query, index, N+1 | `database-skills` | `api-patterns` |
 | auth, jwt, oauth, rbac, session, secrets | `secure-code-guardian` | `nodejs-best-practices` |
 | postman, collection, newman, environment | `postman` | `api-designer` |
-| create skill, update skill, fix skill metadata, repair references | `skill-authoring` | — |
+| create skill, update skill, fix skill metadata, repair references | `skill-creator` | — |
 
 ### Routing policy
 

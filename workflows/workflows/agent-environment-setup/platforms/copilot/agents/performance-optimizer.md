@@ -203,6 +203,6 @@ What's slow?
 > **Database path:** For query/storage bottlenecks, route through `database-skills` first, then add `database-design` or `database-optimizer` when narrowing schema-vs-tuning issues; report index, pagination, and query-plan evidence.
 
 ## Skill routing
-Prefer these skills when task intent matches: `performance-profiling`, `web-perf`.
+Prefer these skills when task intent matches: `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `rust-pro`, `cpp-pro`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

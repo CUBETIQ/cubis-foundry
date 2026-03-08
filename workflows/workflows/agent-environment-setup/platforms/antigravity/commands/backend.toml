@@ -1,4 +1,4 @@
-description = "Drive backend architecture and implementation via backend specialist with API, data, and reliability focus."
+description = "Drive backend architecture, API operations, and Postman-oriented execution with API, data, and reliability focus."
 prompt = '''
 Follow the /backend workflow from .agent/workflows/backend.md.
 

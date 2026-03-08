@@ -44,7 +44,7 @@ const ROUTE_STOP_WORDS = new Set([
   "with",
 ]);
 
-const SKILL_AUTHORING_OBJECT_SIGNALS = [
+const SKILL_CREATOR_OBJECT_SIGNALS = [
   "skill",
   "skills",
   "skill authoring",
@@ -63,7 +63,7 @@ const SKILL_AUTHORING_OBJECT_SIGNALS = [
   "mirrors",
 ];
 
-const SKILL_AUTHORING_ACTION_SIGNALS = [
+const SKILL_CREATOR_ACTION_SIGNALS = [
   "adapt",
   "author",
   "build",
@@ -84,9 +84,9 @@ const SKILL_AUTHORING_ACTION_SIGNALS = [
   "wire",
 ];
 
-const SKILL_AUTHORING_PLAN_SIGNALS = ["design", "plan", "spec"];
-const SKILL_AUTHORING_REVIEW_SIGNALS = ["audit", "check", "review", "validate"];
-const SKILL_AUTHORING_ORCHESTRATE_SIGNALS = [
+const SKILL_CREATOR_PLAN_SIGNALS = ["design", "plan", "spec"];
+const SKILL_CREATOR_REVIEW_SIGNALS = ["audit", "check", "review", "validate"];
+const SKILL_CREATOR_ORCHESTRATE_SIGNALS = [
   "all platform",
   "all platforms",
   "cross platform",
@@ -106,7 +106,25 @@ const LANGUAGE_SIGNAL_FILES: Array<{ skillId: string; files: string[] }> = [
   { skillId: "csharp-pro", files: [".sln", ".csproj"] },
   { skillId: "java-pro", files: ["pom.xml", "build.gradle"] },
   { skillId: "kotlin-pro", files: ["build.gradle.kts", "settings.gradle.kts"] },
+  { skillId: "dart-pro", files: ["pubspec.yaml"] },
+  { skillId: "php-pro", files: ["composer.json"] },
+  { skillId: "ruby-pro", files: ["Gemfile"] },
+  { skillId: "swift-pro", files: ["Package.swift"] },
 ];
+
+const LEGACY_WORKFLOW_ALIASES: Record<string, string> = {
+  brainstorm: "plan",
+  qa: "test",
+  incident: "devops",
+  postman: "backend",
+};
+
+const LEGACY_AGENT_ALIASES: Record<string, string> = {
+  "penetration-tester": "security-auditor",
+  "qa-automation-engineer": "test-engineer",
+  "product-owner": "product-manager",
+  "explorer-agent": "code-archaeologist",
+};
 
 function normalize(value: string): string {
   return value.toLowerCase().replace(/[^a-z0-9@/$+-]+/g, " ").trim();
@@ -136,31 +154,31 @@ function includesAnyPhrase(normalizedIntent: string, phrases: string[]): boolean
   return phrases.some((phrase) => normalizedIntent.includes(phrase));
 }
 
-function isSkillAuthoringIntent(intent: string): boolean {
+function isSkillCreatorIntent(intent: string): boolean {
   const normalizedIntent = normalize(intent);
   const hasObjectSignal = includesAnyPhrase(
     normalizedIntent,
-    SKILL_AUTHORING_OBJECT_SIGNALS,
+    SKILL_CREATOR_OBJECT_SIGNALS,
   );
   if (!hasObjectSignal) return false;
 
-  return includesAnyPhrase(normalizedIntent, SKILL_AUTHORING_ACTION_SIGNALS);
+  return includesAnyPhrase(normalizedIntent, SKILL_CREATOR_ACTION_SIGNALS);
 }
 
-function chooseSkillAuthoringRoute(
+function chooseSkillCreatorRoute(
   intent: string,
   manifest: RouteManifest,
 ): RouteEntry | null {
-  if (!isSkillAuthoringIntent(intent)) return null;
+  if (!isSkillCreatorIntent(intent)) return null;
 
   const normalizedIntent = normalize(intent);
   let preferredRouteId = "create";
-  if (includesAnyPhrase(normalizedIntent, SKILL_AUTHORING_REVIEW_SIGNALS)) {
+  if (includesAnyPhrase(normalizedIntent, SKILL_CREATOR_REVIEW_SIGNALS)) {
     preferredRouteId = "review";
-  } else if (includesAnyPhrase(normalizedIntent, SKILL_AUTHORING_PLAN_SIGNALS)) {
+  } else if (includesAnyPhrase(normalizedIntent, SKILL_CREATOR_PLAN_SIGNALS)) {
     preferredRouteId = "plan";
   } else if (
-    includesAnyPhrase(normalizedIntent, SKILL_AUTHORING_ORCHESTRATE_SIGNALS)
+    includesAnyPhrase(normalizedIntent, SKILL_CREATOR_ORCHESTRATE_SIGNALS)
   ) {
     preferredRouteId = "orchestrate";
   }
@@ -205,6 +223,14 @@ function findExplicitRoute(
         entry.command?.toLowerCase() === trimmed.toLowerCase(),
     );
     if (route) return { route, matchedBy: "explicit-workflow-command" };
+
+    const legacyWorkflowId = LEGACY_WORKFLOW_ALIASES[trimmed.slice(1).toLowerCase()];
+    if (legacyWorkflowId) {
+      const legacyRoute = manifest.routes.find(
+        (entry) => entry.kind === "workflow" && entry.id === legacyWorkflowId,
+      );
+      if (legacyRoute) return { route: legacyRoute, matchedBy: "legacy-workflow-alias" };
+    }
   }
 
   if (trimmed.startsWith("@")) {
@@ -213,6 +239,14 @@ function findExplicitRoute(
       (entry) => entry.kind === "agent" && entry.id.toLowerCase() === normalizedAgent,
     );
     if (route) return { route, matchedBy: "explicit-agent" };
+
+    const legacyAgentId = LEGACY_AGENT_ALIASES[normalizedAgent];
+    if (legacyAgentId) {
+      const legacyRoute = manifest.routes.find(
+        (entry) => entry.kind === "agent" && entry.id.toLowerCase() === legacyAgentId,
+      );
+      if (legacyRoute) return { route: legacyRoute, matchedBy: "legacy-agent-alias" };
+    }
   }
 
   if (trimmed.startsWith("$")) {
@@ -278,8 +312,8 @@ function buildResolvedPayload(
   matchedBy: string,
   detectedLanguageSkill: string | null,
 ) {
-  const primarySkillHint = isSkillAuthoringIntent(input)
-    ? "skill-authoring"
+  const primarySkillHint = isSkillCreatorIntent(input)
+    ? "skill-creator"
     : route.primarySkills[0] || null;
   return {
     input,
@@ -299,11 +333,15 @@ function buildResolvedPayload(
         ? `Matched explicit workflow command ${route.command}.`
         : matchedBy === "explicit-agent"
           ? `Matched explicit agent @${route.id}.`
+          : matchedBy === "legacy-workflow-alias"
+            ? `Matched legacy workflow alias and routed to canonical workflow '${route.id}'.`
+            : matchedBy === "legacy-agent-alias"
+              ? `Matched legacy agent alias and routed to canonical agent @${route.id}.`
           : matchedBy === "compatibility-alias"
             ? `Matched compatibility alias ${route.artifacts.codex?.compatibilityAlias}.`
-            : matchedBy === "skill-authoring-intent"
-              ? `Matched workflow '${route.id}' and selected skill-authoring as the primary skill hint for skill package work.`
-            : `Matched ${route.kind} '${route.id}' from installed route metadata.`,
+            : matchedBy === "skill-creator-intent"
+              ? `Matched workflow '${route.id}' and selected skill-creator as the primary skill hint for skill package work.`
+              : `Matched ${route.kind} '${route.id}' from installed route metadata.`,
     artifacts: route.artifacts,
   };
 }
@@ -364,12 +402,12 @@ export async function handleRouteResolve(
     };
   }
 
-  const skillAuthoringRoute = chooseSkillAuthoringRoute(intent, routeManifest);
-  if (skillAuthoringRoute) {
+  const skillCreatorRoute = chooseSkillCreatorRoute(intent, routeManifest);
+  if (skillCreatorRoute) {
     const payload = buildResolvedPayload(
       intent,
-      skillAuthoringRoute,
-      "skill-authoring-intent",
+      skillCreatorRoute,
+      "skill-creator-intent",
       detectedLanguageSkill,
     );
     return {

@@ -7,7 +7,13 @@ metadata:
   domain: "language"
   role: "specialist"
   stack: "python"
+  category: "languages"
+  layer: "languages"
+  canonical: true
+  maturity: "stable"
+  aliases: ["python-patterns"]
   baseline: "Python 3.14"
+  tags: ["python", "typing", "async", "pytest", "packaging"]
 ---
 
 # Python Pro
@@ -17,6 +23,7 @@ metadata:
 - Building backend services, automation, or data pipelines in Python.
 - Migrating legacy Python to typed and testable architecture.
 - Implementing async I/O with predictable behavior.
+- Serving as the language-layer baseline before framework skills like `fastapi-expert` are loaded.
 
 ## When not to use
 

@@ -1,107 +1,64 @@
 ---
 name: "nestjs-expert"
-description: "Use when building NestJS applications requiring modular architecture, dependency injection, or TypeScript backend development. Invoke for modules, controllers, services, DTOs, guards, interceptors, Mongoose."
+description: "Use when building NestJS services that need strong module boundaries, dependency injection, DTO validation, guards or interceptors, auth boundaries, transport-aware module design, and production-safe TypeScript backend structure."
+license: MIT
+metadata:
+  version: "3.0.0"
+  domain: "backend"
+  role: "specialist"
+  stack: "nestjs"
+  category: "frameworks-runtimes"
+  layer: "frameworks-runtimes"
+  canonical: true
+  maturity: "stable"
+  baseline: "NestJS 11-era backend patterns"
+  tags: ["nestjs", "typescript", "backend", "di", "modules", "guards", "dto"]
 ---
-
 
 # NestJS Expert
 
-## Overview
+## When to use
 
-Senior NestJS specialist with deep expertise in enterprise-grade, scalable TypeScript backend applications. Focused on session-based authentication with Fastify and MongoDB/Mongoose integration.
+- Building or refactoring NestJS APIs and service modules.
+- Designing providers, controllers, DTOs, guards, interceptors, pipes, and auth boundaries.
+- Enforcing modular TypeScript backend boundaries in a Nest app or monorepo.
+- Reviewing Nest code for dependency direction, transport separation, validation, and operational safety.
 
-## Role Definition
+## When not to use
 
-You are a senior Node.js engineer with 10+ years of backend experience. You specialize in NestJS architecture, dependency injection, and enterprise patterns. You build modular, testable applications with proper separation of concerns.
+- Generic Node runtime decisions with no Nest-specific surface.
+- Pure API-contract design before framework choice is fixed.
+- Database-only tuning or schema design with no Nest integration concern.
 
-## When to Use This Skill
+## Core workflow
 
-- Building NestJS REST APIs with Fastify
-- Implementing modules, controllers, and services
-- Creating DTOs with validation
-- Setting up session-based authentication (NOT JWT)
-- Implementing guards, interceptors, and pipes
-- Database integration with Mongoose
+1. Define module boundaries, provider ownership, and transport boundaries before adding endpoints.
+2. Keep controllers thin and push logic into services or domain layers.
+3. Validate input with DTOs and explicit boundary rules.
+4. Apply guards, interceptors, filters, and auth wiring intentionally rather than globally by habit.
+5. Verify testability, error behavior, dependency direction, and bootstrap posture before shipping.
 
-## Core Workflow
+## Baseline standards
 
-1. **Analyze requirements** - Identify modules, endpoints, entities
-2. **Design structure** - Plan module organization and dependencies
-3. **Implement** - Create modules, services, controllers with DI
-4. **Secure** - Add guards, validation, authentication
-5. **Test** - Write unit tests and E2E tests
+- Use modules to express bounded context, not folder cosmetics.
+- Keep DI graphs simple and acyclic.
+- Treat DTOs as boundary contracts, not domain models.
+- Keep transport concerns, auth policy, and domain logic separate.
+- Use guards/interceptors/pipes only where their responsibility is clear.
+- Keep config and infrastructure concerns explicit and testable.
 
-## Available Steering Files
+## Avoid
 
-Load detailed guidance on-demand:
+- Fat controllers and hidden business logic in decorators.
+- Circular module/provider dependencies.
+- DTO reuse that leaks transport concerns across layers.
+- Request-scoped providers by default when singleton or explicit factory wiring is enough.
+- Global framework magic when local explicit behavior is safer.
 
-| Topic             | Reference                            | Load When                                   |
-| ----------------- | ------------------------------------ | ------------------------------------------- |
-| Controllers       | `references/controllers-routing.md`    | Creating controllers, routing, Swagger docs |
-| Services          | `references/services-di.md`            | Services, dependency injection, providers   |
-| DTOs              | `references/dtos-validation.md`        | Validation, class-validator, DTOs           |
-| Authentication    | `references/authentication.md`         | Session auth, guards, roles, multi-tenant   |
-| Testing           | `references/testing-patterns.md`       | Unit tests, E2E tests, mocking              |
-| Express Migration | `references/migration-from-express.md` | Migrating from Express.js to NestJS         |
+## References
 
-## Authentication Approach
+Load on demand. Do not preload all reference files.
 
-**OneUp uses session-based authentication, NOT JWT.**
-
-```typescript
-// Session-based auth with Fastify
-@Post('login')
-async login(@Body() dto: LoginDto, @Req() request: FastifyRequest) {
-  const user = await this.authService.validateUser(dto.username, dto.password);
-
-  // Store user info in session
-  request.session.set('userId', user.userId);
-  request.session.set('organizationId', user.organizationId);
-  request.session.set('role', user.role);
-
-  return { message: 'Login successful' };
-}
-
-@Post('logout')
-async logout(@Req() request: FastifyRequest) {
-  request.session.delete();
-  return { message: 'Logout successful' };
-}
-```
-
-See `references/authentication.md` for complete session auth implementation.
-
-## Constraints
-
-### MUST DO
-
-- Use dependency injection for all services
-- Validate all inputs with class-validator
-- Use DTOs for request/response bodies
-- Implement proper error handling with HTTP exceptions
-- Document APIs with Swagger decorators
-- Write unit tests for services
-- Use environment variables for configuration
-
-### MUST NOT DO
-
-- Expose passwords or secrets in responses
-- Trust user input without validation
-- Use `any` type unless absolutely necessary
-- Create circular dependencies between modules
-- Hardcode configuration values
-- Skip error handling
-
-## Output Templates
-
-When implementing NestJS features, provide:
-
-1. Module definition
-2. Controller with Swagger decorators
-3. Service with error handling
-4. DTOs with validation
-5. Tests for service methods
-
-## Knowledge Reference
-
-NestJS, TypeScript, Mongoose, Fastify, @fastify/secure-session, class-validator, class-transformer, Swagger/OpenAPI, Jest, Supertest, Guards, Interceptors, Pipes, Filters
+| File | Load when |
+| --- | --- |
+| `references/module-dto-guard-playbook.md` | You need a more explicit Nest playbook for modules, DTOs, guards, auth, transports, config, and testable dependency graphs. |

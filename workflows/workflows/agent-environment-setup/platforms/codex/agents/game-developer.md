@@ -3,7 +3,7 @@ name: game-developer
 description: Game development across all platforms (PC, Web, Mobile, VR/AR). Use when building games with Unity, Godot, Unreal, Phaser, Three.js, or similar engines. Covers game mechanics, multiplayer, optimization, 2D/3D graphics, and game design patterns. Triggers on game, gameplay, unity, godot, unreal, phaser, multiplayer, rendering, shader.
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: inherit
-skills: game-development, javascript-pro
+skills: typescript-pro, javascript-pro, cpp-pro, c-pro, csharp-pro
 ---
 
 # Game Developer Agent

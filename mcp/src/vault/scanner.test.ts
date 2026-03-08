@@ -103,4 +103,33 @@ describe("scanVaultRoots", () => {
 
     expect(ids).toEqual(["lint-and-validate", "tdd-workflow"]);
   });
+
+  it("synthesizes compatibility aliases from canonical metadata", async () => {
+    const root = createTempDir("mcp-vault-alias-");
+    createSkillFromContent(
+      root,
+      "react-best-practices",
+      [
+        "---",
+        "name: react-best-practices",
+        "description: React review checklist",
+        "metadata:",
+        "  aliases: [nextjs-react-expert]",
+        "---",
+        "# Skill",
+      ].join("\n"),
+    );
+
+    const skills = await scanVaultRoots([root], "/unused");
+    const canonical = skills.find((skill) => skill.id === "react-best-practices");
+    const alias = skills.find((skill) => skill.id === "nextjs-react-expert");
+
+    expect(canonical?.canonicalId).toBeUndefined();
+    expect(alias).toMatchObject({
+      id: "nextjs-react-expert",
+      canonicalId: "react-best-practices",
+      category: "frontend",
+      path: canonical?.path,
+    });
+  });
 });

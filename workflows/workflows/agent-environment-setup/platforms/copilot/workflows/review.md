@@ -6,7 +6,7 @@ triggers: ["review", "audit", "pr", "quality", "security review"]
 # Review Workflow
 
 # CHANGED: output contract — converted free-form bullets into structured YAML — keeps findings and remediation guidance machine-readable.
-# CHANGED: skill routing — added `skill-authoring` for skill package audits, metadata review, and sidecar repair work.
+# CHANGED: skill routing — added `skill-creator` for skill package audits, metadata review, and sidecar repair work.
 
 ## When to use
 Use this for pull request or branch quality review.
@@ -22,9 +22,9 @@ Use this for pull request or branch quality review.
 - Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
 
 ## Skill Routing
-- Primary skills: `code-reviewer`, `security-reviewer`
-- Supporting skills (optional): `skill-authoring`, `semgrep`, `static-analysis`, `variant-analysis`
-- For reviews that target a skill package itself, load `skill-authoring` before general analysis extras.
+- Primary skills: `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `rust-pro`
+- Supporting skills (optional): `skill-creator`
+- Reviews should load the language skill that matches the changed code. Use `skill-creator` when the review target is a skill package, skill metadata, or mirror output.
 
 ## Workflow steps
 1. Inspect changed behavior and risk surface.

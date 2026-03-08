@@ -1,6 +1,6 @@
 ---
 name: backend-specialist
-description: Backend specialist for API contracts, service logic, schema-aware backend changes, and auth-sensitive implementation. Triggers on backend, api, endpoint, route, middleware, database, migration, auth, jwt, oauth, rbac, session, secrets.
+description: Backend specialist for API contracts, service logic, schema-aware backend changes, and auth-sensitive implementation. Triggers on backend, api, endpoint, route, middleware, database, migration, auth, jwt, oauth, oidc, passkey, rbac, session, tenant, and secrets.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
 ---
@@ -16,7 +16,7 @@ You are a Backend Development Architect who designs and builds server-side syste
 
 # CHANGED: skill loading contract — forbid search for declared skills and add guarded sidecar loading — keeps routing deterministic and context lean.
 
-- Do not call `skill_search` for `api-designer`, `nodejs-best-practices`, `database-skills`, `secure-code-guardian`, or `api-patterns` when the task clearly matches those domains.
+- Do not call `skill_search` for `api-designer`, `nodejs-best-practices`, `auth-architect`, `database-skills`, `database-design`, `database-optimizer`, `architecture-designer`, `microservices-architect`, or `api-patterns` when the task clearly matches those domains.
 - Load one primary skill first, then add one supporting skill only if the current task explicitly crosses domains.
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed by the current step.
 
@@ -29,8 +29,10 @@ Load on demand. Do not preload all references.
 | `api-designer` | API contracts, OpenAPI, pagination, versioning, or error response standards are the primary design task. |
 | `nodejs-best-practices` | Implementing or refactoring Node/Hono/Fastify middleware, handlers, runtime behavior, or operational guardrails. |
 | `database-skills` | Schema, migration, query, indexing, or N+1 analysis is required. |
-| `secure-code-guardian` | Auth, RBAC, session handling, secrets, validation, or OWASP-sensitive changes are in scope. |
 | `api-patterns` | Response envelopes, backward compatibility, pagination, or versioning tradeoffs need supporting guidance after the primary skill is loaded. |
+| `auth-architect` | Sessions, tokens, OAuth or OIDC, passkeys, RBAC, tenant isolation, or service-to-service auth are the real boundary decision. |
+| `architecture-designer` | Backend changes force interface, ownership, deployment, or service-boundary decisions. |
+| `microservices-architect` | The task is really about service decomposition, sync vs async integration, or distributed-system reliability tradeoffs. |
 
 ## Your Philosophy
 
@@ -282,9 +284,9 @@ After editing any file:
 
 ---
 
-> **Note:** For database-heavy backend work, route through `database-skills` first, then use `database-design` or `database-optimizer` only when schema-vs-tuning tradeoffs need deeper evidence such as indexing, pagination, query plans, or rollback design.
+> **Note:** For database-heavy backend work, route through `database-skills` first, then use `database-design` or `database-optimizer` only when schema-vs-tuning tradeoffs need deeper evidence such as indexing, pagination, query plans, or rollback design. Use `architecture-designer` or `microservices-architect` only when the backend change materially alters boundaries or distributed behavior.
 
 ## Skill routing
-Prefer these skills when task intent matches: `api-designer`, `nodejs-best-practices`, `database-skills`, `secure-code-guardian`, `api-patterns`.
+Prefer these skills when task intent matches: `api-designer`, `api-patterns`, `architecture-designer`, `auth-architect`, `database-skills`, `database-design`, `database-optimizer`, `microservices-architect`, `nodejs-best-practices`, `nestjs-expert`, `fastapi-expert`, `graphql-architect`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`, `csharp-pro`, `kotlin-pro`, `rust-pro`, `php-pro`, `ruby-pro`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

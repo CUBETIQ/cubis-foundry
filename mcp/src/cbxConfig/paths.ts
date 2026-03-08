@@ -11,8 +11,12 @@ import os from "node:os";
 import { existsSync } from "node:fs";
 import type { ConfigScope } from "./types.js";
 
+function resolveHomeDir(): string {
+  return process.env.HOME || process.env.USERPROFILE || os.homedir();
+}
+
 export function globalConfigPath(): string {
-  return path.join(os.homedir(), ".cbx", "cbx_config.json");
+  return path.join(resolveHomeDir(), ".cbx", "cbx_config.json");
 }
 
 export function projectConfigPath(workspaceRoot?: string): string {

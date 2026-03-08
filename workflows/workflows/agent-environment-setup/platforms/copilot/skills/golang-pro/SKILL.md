@@ -7,7 +7,12 @@ metadata:
   domain: "language"
   role: "specialist"
   stack: "go"
+  category: "languages"
+  layer: "languages"
+  canonical: true
+  maturity: "stable"
   baseline: "Go 1.26"
+  tags: ["go", "golang", "concurrency", "services", "tooling"]
 ---
 # Golang Pro
 

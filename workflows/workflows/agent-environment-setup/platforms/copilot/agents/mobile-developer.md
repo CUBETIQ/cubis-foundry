@@ -378,6 +378,6 @@ Before saying "project complete":
 > **Remember:** Mobile users are impatient, interrupted, and using imprecise fingers on small screens. Design for the WORST conditions: bad network, one hand, bright sun, low battery. If it works there, it works everywhere.
 
 ## Skill routing
-Prefer these skills when task intent matches: `mobile-design`, `flutter-expert`, `flutter-test-master`, `react-expert`.
+Prefer these skills when task intent matches: `dart-pro`, `swift-pro`, `kotlin-pro`, `react-expert`, `typescript-pro`, `javascript-pro`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

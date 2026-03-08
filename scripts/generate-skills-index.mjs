@@ -4,6 +4,11 @@ import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 import { promises as fs } from "node:fs";
+import {
+  deriveDescriptor,
+  getMetadataBlock,
+  parseFrontmatter,
+} from "./lib/skill-catalog.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -62,6 +67,54 @@ const DEFAULT_TARGETS = {
     ),
     indexPathPrefix: ".claude/skills",
   },
+  cursor: {
+    roots: [
+      path.join(
+        ROOT,
+        "workflows",
+        "workflows",
+        "agent-environment-setup",
+        "platforms",
+        "cursor",
+        "skills",
+      ),
+    ],
+    outFile: path.join(
+      ROOT,
+      "workflows",
+      "workflows",
+      "agent-environment-setup",
+      "platforms",
+      "cursor",
+      "skills",
+      "skills_index.json",
+    ),
+    indexPathPrefix: ".cursor/skills",
+  },
+  windsurf: {
+    roots: [
+      path.join(
+        ROOT,
+        "workflows",
+        "workflows",
+        "agent-environment-setup",
+        "platforms",
+        "windsurf",
+        "skills",
+      ),
+    ],
+    outFile: path.join(
+      ROOT,
+      "workflows",
+      "workflows",
+      "agent-environment-setup",
+      "platforms",
+      "windsurf",
+      "skills",
+      "skills_index.json",
+    ),
+    indexPathPrefix: ".windsurf/skills",
+  },
 };
 
 function parseArgs(argv) {
@@ -72,96 +125,6 @@ function parseArgs(argv) {
   const dryRun = args.has("--dry-run");
   const check = args.has("--check");
   return { target, dryRun, check };
-}
-
-function splitTopLevelCsv(value) {
-  return String(value)
-    .split(",")
-    .map((item) => item.trim().replace(/^['\"]|['\"]$/g, ""))
-    .filter(Boolean);
-}
-
-function parseInlineList(value) {
-  const trimmed = String(value || "").trim();
-  if (!trimmed.startsWith("[") || !trimmed.endsWith("]"))
-    return splitTopLevelCsv(trimmed);
-  const inner = trimmed.slice(1, -1);
-  return splitTopLevelCsv(inner);
-}
-
-function parseFrontmatter(markdown) {
-  const match = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
-  if (!match) return { raw: "", body: markdown };
-  return { raw: match[1], body: markdown.slice(match[0].length) };
-}
-
-function getScalar(frontmatterRaw, key) {
-  const match = frontmatterRaw.match(
-    new RegExp(`^\\s*${key}\\s*:\\s*(.+)$`, "m"),
-  );
-  if (!match) return null;
-  return match[1].trim().replace(/^['\"]|['\"]$/g, "");
-}
-
-function getMetadataBlock(frontmatterRaw) {
-  const lines = frontmatterRaw.split(/\r?\n/);
-  const metadata = {};
-  let inMetadata = false;
-  for (const line of lines) {
-    const metaStart = line.match(/^metadata\s*:\s*$/);
-    if (metaStart) {
-      inMetadata = true;
-      continue;
-    }
-    if (!inMetadata) continue;
-    if (!line.trim()) continue;
-    if (!/^\s+/.test(line)) break;
-    const kv = line.match(/^\s+([A-Za-z0-9_-]+)\s*:\s*(.+)\s*$/);
-    if (!kv) continue;
-    const key = kv[1];
-    const value = kv[2].trim().replace(/^['\"]|['\"]$/g, "");
-    metadata[key] = value;
-  }
-  return metadata;
-}
-
-function normalizeNullableString(value) {
-  if (value == null) return null;
-  const normalized = String(value)
-    .trim()
-    .replace(/^['\"]|['\"]$/g, "");
-  const lower = normalized.toLowerCase();
-  if (!normalized || lower === "null" || lower === "~") return null;
-  return normalized;
-}
-
-function getAllTriggerValues(frontmatterRaw) {
-  const lines = frontmatterRaw.split(/\r?\n/);
-  const values = [];
-
-  for (let i = 0; i < lines.length; i += 1) {
-    const line = lines[i];
-    const triggerMatch = line.match(/^\s*triggers\s*:\s*(.*)$/);
-    if (!triggerMatch) continue;
-
-    const rest = triggerMatch[1].trim();
-    if (rest) {
-      values.push(...parseInlineList(rest));
-      continue;
-    }
-
-    for (let j = i + 1; j < lines.length; j += 1) {
-      const next = lines[j];
-      if (!next.trim()) continue;
-      if (/^\s*[A-Za-z0-9_-]+\s*:/.test(next)) break;
-
-      const bullet = next.match(/^\s*-\s*(.+)$/);
-      if (!bullet) continue;
-      values.push(bullet[1].trim().replace(/^['\"]|['\"]$/g, ""));
-    }
-  }
-
-  return [...new Set(values.filter(Boolean))];
 }
 
 async function pathExists(target) {
@@ -195,13 +158,6 @@ async function listSkillFiles(root) {
   return files.sort((a, b) => a.localeCompare(b));
 }
 
-function normalizeBoolean(value) {
-  if (typeof value === "boolean") return value;
-  if (typeof value !== "string") return false;
-  const normalized = value.trim().toLowerCase();
-  return normalized === "true" || normalized === "yes" || normalized === "1";
-}
-
 function normalizeLower(value) {
   return String(value || "")
     .trim()
@@ -220,6 +176,19 @@ function isCodexWrapperSkill(id, metadata) {
 
 async function collectSkillsIndexEntries(roots, indexPathPrefix) {
   const rowById = new Map();
+  const coreProfile = JSON.parse(
+    await fs.readFile(path.join(ROOT, "workflows", "skills", "catalogs", "core.json"), "utf8"),
+  );
+  const webBackendProfile = JSON.parse(
+    await fs.readFile(
+      path.join(ROOT, "workflows", "skills", "catalogs", "web-backend.json"),
+      "utf8",
+    ),
+  );
+  const coreProfileIds = new Set((coreProfile.skills || []).map((item) => String(item)));
+  const webBackendProfileIds = new Set(
+    (webBackendProfile.skills || []).map((item) => String(item)),
+  );
 
   for (const skillsRoot of roots) {
     if (!(await pathExists(skillsRoot))) continue;
@@ -235,24 +204,38 @@ async function collectSkillsIndexEntries(roots, indexPathPrefix) {
         continue;
       }
 
+      const descriptor = deriveDescriptor({
+        skillFile: {
+          skillDir,
+          filePath: skillFile,
+          rawContent: raw,
+        },
+        skillsRoot,
+        coreProfileIds,
+        webBackendProfileIds,
+      });
       const id = skillId;
-      const name = getScalar(fm.raw, "name") || id;
-      const description = getScalar(fm.raw, "description") || "";
-      const triggers = getAllTriggerValues(fm.raw);
-      const deprecated = normalizeBoolean(metadata.deprecated);
-      const replacedBy = normalizeNullableString(metadata.replaced_by);
-      const canonicalId = replacedBy || id;
 
       // Later roots override earlier roots for same id (MCP canonical preferred).
       rowById.set(String(id).toLowerCase(), {
         id,
-        name,
-        canonical_id: canonicalId,
-        deprecated,
-        replaced_by: replacedBy,
+        package_id: descriptor.package_id,
+        catalog_id: descriptor.catalog_id,
+        kind: descriptor.kind,
+        name: descriptor.name,
+        canonical: descriptor.canonical,
+        canonical_id: descriptor.canonical_id,
+        deprecated: descriptor.deprecated,
+        replaced_by: descriptor.replaced_by,
+        aliases: descriptor.aliases,
+        category: descriptor.category,
+        layer: descriptor.layer,
+        maturity: descriptor.maturity,
+        tier: descriptor.tier,
+        tags: descriptor.tags,
         path: `${indexPathPrefix}/${path.relative(skillsRoot, skillFile).replaceAll(path.sep, "/")}`,
-        description,
-        triggers,
+        description: descriptor.description,
+        triggers: descriptor.triggers,
       });
     }
   }
@@ -338,7 +321,7 @@ async function main() {
 
   if (targetLabels.length === 0) {
     throw new Error(
-      `Unknown target '${target}'. Use one of: all, canonical, copilot, claude.`,
+      `Unknown target '${target}'. Use one of: all, canonical, copilot, claude, cursor, windsurf.`,
     );
   }
 

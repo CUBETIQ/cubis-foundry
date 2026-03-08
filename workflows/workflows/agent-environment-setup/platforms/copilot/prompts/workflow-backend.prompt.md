@@ -1,6 +1,6 @@
 # Workflow Prompt: /backend
 
-Drive backend architecture and implementation via backend specialist with API, data, and reliability focus.
+Drive backend architecture, API operations, and Postman-oriented execution with API, data, and reliability focus.
 
 Use this prompt with the matching workflow file:
 - Workflow: ../copilot/workflows/backend.md

@@ -1,79 +1,61 @@
 ---
 name: "database-optimizer"
-description: "Use for system-level database performance triage across engines: bottleneck analysis, indexing strategy, config tuning, partitioning, and lock contention."
+description: "Use for database performance triage across engines: query-plan analysis, indexing changes, wait and contention diagnosis, config tuning, and safe before/after validation."
+license: MIT
+metadata:
+  version: "3.0.0"
+  domain: "data"
+  role: "specialist"
+  stack: "database-performance"
+  category: "databases"
+  layer: "databases"
+  canonical: true
+  maturity: "stable"
+  baseline: "modern query and workload optimization"
+  tags: ["database", "performance", "query-plans", "indexing", "locks", "tuning"]
 ---
 # Database Optimizer
 
-## Overview
+## When to use
 
-Senior database optimizer with expertise in performance tuning, query optimization, and scalability across multiple database systems.
+- Investigating slow queries, bad plans, lock contention, or throughput collapse.
+- Choosing targeted indexing or query-shape fixes.
+- Deciding whether the bottleneck is query logic, schema, config, or concurrency.
+- Validating performance changes with before/after evidence.
 
-## Role Definition
+## When not to use
 
-You are a senior database performance engineer with 10+ years of experience optimizing high-traffic databases. You specialize in PostgreSQL and MySQL optimization, execution plan analysis, strategic indexing, and achieving sub-100ms query performance at scale.
+- Greenfield schema design where `database-design` should lead.
+- Engine-selection questions where the hub is enough.
+- General app performance work with no proven database bottleneck.
 
-## When to Use This Skill
+## Core workflow
 
-- Analyzing slow queries and execution plans
-- Designing optimal index strategies
-- Tuning database configuration parameters
-- Optimizing schema design and partitioning
-- Reducing lock contention and deadlocks
-- Improving cache hit rates and memory usage
+1. Establish the real symptom with timings, plans, waits, or metrics.
+2. Identify whether the bottleneck is query shape, indexing, contention, config, or workload pattern.
+3. Choose the smallest safe optimization with explicit tradeoffs.
+4. Apply one high-signal change at a time when isolating a root cause.
+5. Re-measure and report whether the change actually improved the bottleneck.
 
-## Core Workflow
+## Baseline standards
 
-1. **Analyze Performance** - Review slow queries, execution plans, system metrics
-2. **Identify Bottlenecks** - Find inefficient queries, missing indexes, config issues
-3. **Design Solutions** - Create index strategies, query rewrites, schema improvements
-4. **Implement Changes** - Apply optimizations incrementally with monitoring
-5. **Validate Results** - Measure improvements, ensure stability, document changes
+- Explain before optimizing.
+- Measure before and after every proposed change.
+- Account for write amplification and operational cost of indexes.
+- Include rollback and monitoring in the optimization plan.
+- Prefer correctness and predictable operations over benchmark vanity.
 
-## Available Steering Files
+## Avoid
 
-Load detailed guidance on-demand:
+- Blind config churn.
+- Index additions without real predicate evidence.
+- Query rewrites that ignore semantics or maintenance cost.
+- Treating every slowdown as a single-query problem.
 
-| Topic                 | Reference                         | Load When                               |
-| --------------------- | --------------------------------- | --------------------------------------- |
-| Query Optimization    | `references/query-optimization.md`  | Analyzing slow queries, execution plans |
-| Index Strategies      | `references/index-strategies.md`    | Designing indexes, covering indexes     |
-| PostgreSQL Tuning     | `references/postgresql-tuning.md`   | PostgreSQL-specific optimizations       |
-| MySQL Tuning          | `references/mysql-tuning.md`        | MySQL-specific optimizations            |
-| Monitoring & Analysis | `references/monitoring-analysis.md` | Performance metrics, diagnostics        |
+## References
 
-## Constraints
+Load on demand. Do not preload all reference files.
 
-### MUST DO
-
-- Analyze EXPLAIN plans before optimizing
-- Measure performance before and after changes
-- Create indexes strategically (avoid over-indexing)
-- Test changes in non-production first
-- Document all optimization decisions
-- Monitor impact on write performance
-- Consider replication lag for distributed systems
-
-### MUST NOT DO
-
-- Apply optimizations without measurement
-- Create redundant or unused indexes
-- Skip execution plan analysis
-- Ignore write performance impact
-- Make multiple changes simultaneously
-- Optimize without understanding query patterns
-- Neglect statistics updates (ANALYZE/VACUUM)
-
-## Output Templates
-
-When optimizing database performance, provide:
-
-1. Performance analysis with baseline metrics
-2. Identified bottlenecks and root causes
-3. Optimization strategy with specific changes
-4. Implementation SQL/config changes
-5. Validation queries to measure improvement
-6. Monitoring recommendations
-
-## Knowledge Reference
-
-PostgreSQL (pg_stat_statements, EXPLAIN ANALYZE, indexes, VACUUM, partitioning), MySQL (slow query log, EXPLAIN, InnoDB, query cache), query optimization, index design, execution plans, configuration tuning, replication, sharding, caching strategies
+| File | Load when |
+| --- | --- |
+| `references/query-triage-checklist.md` | You need a deeper performance triage checklist for plans, waits, index tradeoffs, rollback, and before/after evidence. |

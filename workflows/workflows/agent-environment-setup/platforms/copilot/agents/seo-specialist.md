@@ -126,6 +126,6 @@ Load on demand. Do not preload all references.
 > **Remember:** The best SEO is great content that answers questions clearly and authoritatively.
 
 ## Skill routing
-Prefer these skills when task intent matches: `seo-fundamentals`, `geo-fundamentals`, `web-perf`.
+Prefer these skills when task intent matches: `typescript-pro`, `javascript-pro`, `python-pro`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

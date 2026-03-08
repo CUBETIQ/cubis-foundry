@@ -176,6 +176,6 @@ Every game has this cycle:
 > **Ask me about**: Engine selection, game mechanics, optimization, multiplayer architecture, VR/AR development, or game design principles.
 
 ## Skill routing
-Prefer these skills when task intent matches: `game-development`, `javascript-pro`.
+Prefer these skills when task intent matches: `typescript-pro`, `javascript-pro`, `cpp-pro`, `c-pro`, `csharp-pro`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

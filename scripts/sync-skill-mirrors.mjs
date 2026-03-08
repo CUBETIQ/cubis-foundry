@@ -28,6 +28,24 @@ const MIRRORS = {
     "claude",
     "skills",
   ),
+  cursor: path.join(
+    ROOT,
+    "workflows",
+    "workflows",
+    "agent-environment-setup",
+    "platforms",
+    "cursor",
+    "skills",
+  ),
+  windsurf: path.join(
+    ROOT,
+    "workflows",
+    "workflows",
+    "agent-environment-setup",
+    "platforms",
+    "windsurf",
+    "skills",
+  ),
 };
 
 const COPILOT_ALLOWED_SKILL_FRONTMATTER_KEYS = new Set([
@@ -136,7 +154,10 @@ function sanitizeSkillMarkdownForCopilot(markdown) {
     .join("\n")
     .replace(/\n{3,}/g, "\n\n")
     .trimEnd();
-  const bodyWithoutLeadingNewlines = extracted.body.replace(/^\n+/, "");
+  const bodyWithoutLeadingNewlines = extracted.body.replace(
+    /^(?:\r?\n)+/,
+    "",
+  );
   return `---\n${cleanedFrontmatter}\n---\n${bodyWithoutLeadingNewlines}`;
 }
 
@@ -240,7 +261,7 @@ async function main() {
 
   if (targets.length === 0) {
     throw new Error(
-      `Unknown --only target '${only}'. Use one of: all, copilot, claude.`,
+      `Unknown --only target '${only}'. Use one of: all, copilot, claude, cursor, windsurf.`,
     );
   }
 

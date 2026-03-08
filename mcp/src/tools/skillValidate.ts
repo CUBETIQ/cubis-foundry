@@ -70,9 +70,12 @@ export async function handleSkillValidate(
   }
 
   const frontmatter = await readSkillFrontmatter(skill.path);
-  const replacementId =
+  const frontmatterReplacementId =
     frontmatter.metadata.replaced_by || frontmatter.metadata.alias_of || null;
-  const isAlias = Boolean(replacementId || frontmatter.metadata.deprecated);
+  const replacementId = skill.canonicalId || frontmatterReplacementId || null;
+  const isAlias = Boolean(
+    skill.canonicalId || frontmatterReplacementId || frontmatter.metadata.deprecated,
+  );
   const availableReferences = await listReferencedMarkdownPaths(skill.path);
   const payload = {
     id,

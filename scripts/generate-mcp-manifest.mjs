@@ -58,6 +58,13 @@ function getScalar(frontmatterRaw, key) {
   return match[1].trim().replace(/^['\"]|['\"]$/g, "");
 }
 
+function parseInlineList(text) {
+  return String(text || "")
+    .split(",")
+    .map((item) => item.trim().replace(/^['"]|['"]$/g, ""))
+    .filter(Boolean);
+}
+
 function getListField(frontmatterRaw, key) {
   const lines = frontmatterRaw.split(/\r?\n/);
   const values = [];
@@ -120,6 +127,59 @@ function getMetadataBlock(frontmatterRaw) {
     metadata[kv[1]] = kv[2].trim().replace(/^['\"]|['\"]$/g, "");
   }
   return metadata;
+}
+
+function getMetadataAliases(frontmatterRaw) {
+  const lines = frontmatterRaw.split(/\r?\n/);
+  let inMetadata = false;
+  const aliases = [];
+
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i];
+    if (!inMetadata) {
+      if (/^metadata\s*:\s*$/.test(line)) {
+        inMetadata = true;
+      }
+      continue;
+    }
+
+    if (!line.trim()) continue;
+    if (!/^\s+/.test(line)) break;
+
+    const inlineMatch = line.match(/^\s+aliases\s*:\s*(.+)\s*$/);
+    if (!inlineMatch) continue;
+
+    const rest = inlineMatch[1].trim();
+    if (rest.startsWith("[") && rest.endsWith("]")) {
+      aliases.push(...parseInlineList(rest.slice(1, -1)));
+      break;
+    }
+
+    if (rest) {
+      aliases.push(...parseInlineList(rest));
+      break;
+    }
+
+    for (let j = i + 1; j < lines.length; j += 1) {
+      const next = lines[j];
+      if (!next.trim()) continue;
+      if (/^\s+[A-Za-z0-9_-]+\s*:/.test(next)) {
+        i = j - 1;
+        break;
+      }
+
+      const bullet = next.match(/^\s*-\s*(.+)$/);
+      if (bullet) {
+        aliases.push(bullet[1].trim().replace(/^['"]|['"]$/g, ""));
+      }
+
+      if (j === lines.length - 1) {
+        i = j;
+      }
+    }
+  }
+
+  return [...new Set(aliases.filter(Boolean))];
 }
 
 // ─── Category derivation (mirrors mcp/src/vault/scanner.ts) ───
@@ -317,6 +377,7 @@ async function pathExists(target) {
 async function scanSkills(verbose) {
   const skills = [];
   const errors = [];
+  const skillsById = new Map();
 
   if (!(await pathExists(SKILLS_ROOT))) {
     throw new Error(`Skills root not found: ${SKILLS_ROOT}`);
@@ -349,8 +410,10 @@ async function scanSkills(verbose) {
       const description = getScalar(fm.raw, "description") || "";
       const keywords = getListField(fm.raw, "keywords");
       const triggers = getListField(fm.raw, "triggers");
+      const aliases = getMetadataAliases(fm.raw);
       const category = deriveCategory(skillId);
       const stat = await fs.stat(skillFile);
+      const relativePath = path.relative(ROOT, skillFile).replaceAll("\\", "/");
 
       // Validation warnings
       const warnings = [];
@@ -360,7 +423,7 @@ async function scanSkills(verbose) {
       if (keywords.length === 0 && triggers.length === 0)
         warnings.push("no keywords or triggers");
 
-      skills.push({
+      skillsById.set(skillId.toLowerCase(), {
         id: skillId,
         name,
         displayName,
@@ -368,17 +431,46 @@ async function scanSkills(verbose) {
         category,
         keywords,
         triggers,
+        path: relativePath,
         metadata: Object.keys(metadata).length > 0 ? metadata : undefined,
         fileBytes: stat.size,
         warnings: warnings.length > 0 ? warnings : undefined,
       });
+
+      for (const aliasId of aliases) {
+        if (!aliasId || aliasId.toLowerCase() === skillId.toLowerCase()) continue;
+        if (skillsById.has(aliasId.toLowerCase())) {
+          errors.push({
+            skillId: aliasId,
+            error: `synthetic alias collides with existing skill id (${skillId})`,
+          });
+          continue;
+        }
+
+        skillsById.set(aliasId.toLowerCase(), {
+          id: aliasId,
+          name: aliasId,
+          displayName: aliasId,
+          description,
+          category,
+          keywords: [],
+          triggers: [],
+          path: relativePath,
+          metadata: {
+            alias_of: skillId,
+          },
+          fileBytes: stat.size,
+        });
+      }
     } catch (err) {
       errors.push({ skillId, error: String(err.message || err) });
     }
   }
 
-  skills.sort((a, b) => a.id.localeCompare(b.id));
-  return { skills, errors };
+  const scannedSkills = [...skillsById.values()].sort((a, b) =>
+    a.id.localeCompare(b.id),
+  );
+  return { skills: scannedSkills, errors };
 }
 
 function buildManifest(skills, errors) {
