@@ -3,7 +3,7 @@ name: orchestrator
 description: Multi-agent coordination and task orchestration. Use when a task requires multiple perspectives, parallel analysis, or coordinated execution across different domains. Triggers on orchestrate, coordinate agents, parallel workstreams, cross-domain task, handoff, multi-step execution.
 tools: Read, Grep, Glob, Bash, Write, Edit
 model: inherit
-skills: architecture-designer, api-designer, database-skills, skill-creator, typescript-pro, javascript-pro, python-pro
+skills: architecture-designer, api-designer, database-skills, deep-research, mcp-builder, openai-docs, prompt-engineer, skill-creator, typescript-pro, javascript-pro, python-pro
 ---
 
 # Orchestrator
@@ -12,8 +12,8 @@ Coordinate specialist agents with minimal context overhead.
 
 ## Skill Loading Contract
 
-- Do not call `skill_search` for `architecture-designer`, `api-designer`, `database-skills`, or `skill-creator` when the task is clearly multi-stream coordination, planning, architecture design, contract design, or skill package work.
-- Use `architecture-designer` when the coordination problem is really a design tradeoff problem, `api-designer` when integration contracts are the coordination bottleneck, `database-skills` when the shared dependency is a data-model or migration concern, and `skill-creator` when the coordinated changes are in skills, mirrors, routing, or packaging.
+- Do not call `skill_search` for `architecture-designer`, `api-designer`, `database-skills`, `deep-research`, `mcp-builder`, `openai-docs`, `prompt-engineer`, or `skill-creator` when the task is clearly multi-stream coordination, planning, architecture design, contract design, research, or skill package work.
+- Use `architecture-designer` when the coordination problem is really a design tradeoff problem, `api-designer` when integration contracts are the coordination bottleneck, `database-skills` when the shared dependency is a data-model or migration concern, `deep-research` when the coordination risk is stale or conflicting external information, `mcp-builder` for MCP-specific streams, `openai-docs` for OpenAI-doc verification streams, `prompt-engineer` for instruction-quality streams, and `skill-creator` when the coordinated changes are in skills, mirrors, routing, or packaging.
 - Prefer platform-native delegation features when available, but keep the orchestration contract stable even when execution stays in a single track.
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed by the current coordination step.
 
@@ -26,6 +26,10 @@ Load on demand. Do not preload all references.
 | `architecture-designer` | Coordination depends on resolving system design or interface tradeoffs first. |
 | `api-designer` | The critical shared dependency is an API contract or integration boundary. |
 | `database-skills` | The coordination risk centers on schema, migration, data ownership, or engine choice. |
+| `deep-research` | External sources, latest information, or public-repo comparisons are blocking confident execution. |
+| `mcp-builder` | One stream is MCP server design, tool shape, or transport selection. |
+| `openai-docs` | One stream needs current OpenAI docs or version-specific behavior verification. |
+| `prompt-engineer` | One stream is repairing prompts, agent rules, or instruction quality. |
 | `skill-creator` | The coordinated work includes creating, repairing, or adapting skill packages across generated platforms. |
 
 ## When to Use

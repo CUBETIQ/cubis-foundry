@@ -1,6 +1,6 @@
 ---
 name: "database-skills"
-description: "Use as the primary database hub for engine choice, schema-vs-tuning routing, migration safety framing, and database task triage before engine-specific deep dives."
+description: "Use as the primary database hub for engine or platform choice, schema-vs-tuning routing, access-layer triage, migration safety framing, and database task triage before deeper engine, platform, or ORM specialists."
 license: MIT
 metadata:
   version: "3.0.0"
@@ -36,7 +36,8 @@ metadata:
 2. Decide whether the task is engine choice, schema design, or performance triage.
 3. Choose the narrowest next specialist: `database-design` or `database-optimizer`.
 4. Keep migration risk, rollback, and blast radius visible from the start.
-5. Escalate to the exact engine specialist only when the engine is known and materially affects the decision: `postgres`, `mysql`, `sqlite`, `mongodb`, `redis`, `supabase`, `vitess`, or `neki`.
+5. Escalate to the exact engine or platform specialist only when it is known and materially affects the decision: `postgres`, `mysql`, `sqlite`, `mongodb`, `redis`, `supabase`, `firebase`, `vitess`, or `neki`.
+6. Add `drizzle-expert` only when the TypeScript access layer or drizzle-kit workflow is the real decision surface.
 
 ## Baseline standards
 

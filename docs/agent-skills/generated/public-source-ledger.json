@@ -1,0 +1,5863 @@
+{
+  "$schema": "cubis-foundry-public-source-ledger-v1",
+  "generatedAt": "2026-03-09T03:59:28.443Z",
+  "discoveryQueries": [
+    "site:github.com \"claude-skills\" github programming repo",
+    "site:github.com \"awesome agent skills\" github",
+    "site:github.com \"agent skills\" github repo react nextjs postgres",
+    "site:github.com \"google genai skills\" github repo",
+    "site:github.com \"claude skills marketplace\" github",
+    "site:github.com \"ai agent skills\" github repo coding frameworks databases"
+  ],
+  "githubDiscoveryQueries": [
+    "topic:agent-skills",
+    "\"agent skills\" in:name,description,readme",
+    "\"claude skills\" in:name,description,readme",
+    "\"mcp\" \"skill\" in:name,description,readme",
+    "\"database\" \"skill\" in:name,description,readme"
+  ],
+  "directSources": [
+    {
+      "id": "anthropics/skills",
+      "url": "https://github.com/anthropics/skills",
+      "repoClass": "official",
+      "sourceGroup": "official-baseline",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "packaging",
+        "trigger-quality",
+        "skill-authoring"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "research",
+        "writing"
+      ],
+      "manualNotes": "Primary baseline for compact roots, selective sidecars, and skill-creator style lifecycle guidance.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "openai/skills",
+      "url": "https://github.com/openai/skills",
+      "repoClass": "official",
+      "sourceGroup": "official-baseline",
+      "platformTargets": [
+        "codex"
+      ],
+      "useFor": [
+        "catalog-discipline",
+        "tiering",
+        "packaging"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "system",
+        "curated"
+      ],
+      "manualNotes": "Primary baseline for system/curated/experimental catalog discipline and Codex-oriented packaging.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "vercel-labs/agent-skills",
+      "url": "https://github.com/vercel-labs/agent-skills",
+      "repoClass": "public-implementation",
+      "sourceGroup": "coding-specialists",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "coding-specialists",
+        "framework-scope",
+        "production-guardrails"
+      ],
+      "taxonomySignals": [
+        "frontend",
+        "backend",
+        "frameworks",
+        "deployment"
+      ],
+      "manualNotes": "High-signal coding specialists that help keep framework/runtime skills narrow and practical.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "agentskills/agentskills",
+      "url": "https://github.com/agentskills/agentskills",
+      "repoClass": "open-standard",
+      "sourceGroup": "spec-and-portability",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "portability",
+        "metadata",
+        "packaging"
+      ],
+      "taxonomySignals": [
+        "spec",
+        "registry",
+        "interoperability"
+      ],
+      "manualNotes": "Useful for portable packaging assumptions and metadata shape, not for canonical wording.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "travisvn/awesome-claude-skills",
+      "url": "https://github.com/travisvn/awesome-claude-skills",
+      "repoClass": "awesome-list",
+      "sourceGroup": "curated-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "demand-signals"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "design",
+        "writing",
+        "research",
+        "automation"
+      ],
+      "manualNotes": "High-signal curated inventory of official and community Claude skill repos. Good for breadth and naming patterns.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "Jeffallan/claude-skills",
+      "url": "https://github.com/Jeffallan/claude-skills",
+      "repoClass": "aggregate-library",
+      "sourceGroup": "community-library",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "taxonomy",
+        "category-breadth",
+        "missing-family-detection"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "business",
+        "design",
+        "research",
+        "product",
+        "automation"
+      ],
+      "manualNotes": "Large community library with many categories. Valuable for category breadth and spotting missing Foundry families.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "VoltAgent/awesome-agent-skills",
+      "url": "https://github.com/VoltAgent/awesome-agent-skills",
+      "repoClass": "awesome-list",
+      "sourceGroup": "curated-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "ecosystem-breadth",
+        "cross-platform-demand"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "security",
+        "testing",
+        "docs",
+        "product"
+      ],
+      "manualNotes": "Very broad cross-agent view. Good for demand sensing and surfacing families outside Claude/Codex-only ecosystems.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "Microck/ordinary-claude-skills",
+      "url": "https://github.com/Microck/ordinary-claude-skills",
+      "repoClass": "aggregate-library",
+      "sourceGroup": "community-library",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "taxonomy",
+        "breadth",
+        "naming-collisions"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "docs",
+        "product",
+        "analysis"
+      ],
+      "manualNotes": "Large local-first aggregate library that helps identify common skill names and overlap problems.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "MoizIbnYousaf/Ai-Agent-Skills",
+      "url": "https://github.com/MoizIbnYousaf/Ai-Agent-Skills",
+      "repoClass": "installer-registry",
+      "sourceGroup": "distribution-and-portability",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "distribution",
+        "install-flow",
+        "taxonomy"
+      ],
+      "taxonomySignals": [
+        "registry",
+        "install",
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Useful for install/distribution ergonomics and category breadth. Do not treat as canonical wording source.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "gotalab/skillport",
+      "url": "https://github.com/gotalab/skillport",
+      "repoClass": "installer-registry",
+      "sourceGroup": "distribution-and-portability",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "manage-once-serve-anywhere",
+        "portability",
+        "registry-shape"
+      ],
+      "taxonomySignals": [
+        "registry",
+        "mcp",
+        "portability",
+        "automation"
+      ],
+      "manualNotes": "Strong signal for multi-agent portability and central skill management patterns.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "cnemri/google-genai-skills",
+      "url": "https://github.com/cnemri/google-genai-skills",
+      "repoClass": "public-implementation",
+      "sourceGroup": "google-oriented",
+      "platformTargets": [
+        "gemini",
+        "google-genai"
+      ],
+      "useFor": [
+        "google-platform-patterns",
+        "packaging"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "gemini",
+        "google"
+      ],
+      "manualNotes": "Useful for Google/Gemini packaging and skill-family portability beyond Claude/Codex.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "fvadicamo/dev-agent-skills",
+      "url": "https://github.com/fvadicamo/dev-agent-skills",
+      "repoClass": "public-implementation",
+      "sourceGroup": "coding-specialists",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "workflow-examples",
+        "coding-specialists",
+        "skill-authoring"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "git",
+        "github",
+        "authoring",
+        "automation"
+      ],
+      "manualNotes": "Smaller library with practical development-workflow skills and skill-authoring examples.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "vercel-labs/skills",
+      "url": "https://github.com/vercel-labs/skills",
+      "repoClass": "installer-registry",
+      "sourceGroup": "distribution-and-portability",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "distribution",
+        "sync",
+        "install-ergonomics"
+      ],
+      "taxonomySignals": [
+        "registry",
+        "install",
+        "coding",
+        "tooling"
+      ],
+      "manualNotes": "Useful for install/sync assumptions and portable packaging expectations.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "skillmatic-ai/awesome-agent-skills",
+      "url": "https://github.com/skillmatic-ai/awesome-agent-skills",
+      "repoClass": "awesome-list",
+      "sourceGroup": "curated-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "breadth",
+        "new-candidate-finding"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "research",
+        "design",
+        "product",
+        "automation"
+      ],
+      "manualNotes": "Another discovery-focused awesome list that helps validate whether candidate families recur across lists.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "heilcheng/awesome-agent-skills",
+      "url": "https://github.com/heilcheng/awesome-agent-skills",
+      "repoClass": "awesome-list",
+      "sourceGroup": "curated-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "cross-platform-breadth",
+        "category-check"
+      ],
+      "taxonomySignals": [
+        "claude",
+        "codex",
+        "cline",
+        "gemini",
+        "automation"
+      ],
+      "manualNotes": "Good cross-platform list for checking whether a skill family is ecosystem-wide rather than tool-local.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "mhattingpete/claude-skills-marketplace",
+      "url": "https://github.com/mhattingpete/claude-skills-marketplace",
+      "repoClass": "marketplace",
+      "sourceGroup": "distribution-and-portability",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "marketplace-signal",
+        "demand",
+        "discovery"
+      ],
+      "taxonomySignals": [
+        "marketplace",
+        "coding",
+        "automation",
+        "discovery"
+      ],
+      "manualNotes": "Useful for understanding what skill families are marketed and surfaced to end users.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "rknall/claude-skills",
+      "url": "https://github.com/rknall/claude-skills",
+      "repoClass": "public-implementation",
+      "sourceGroup": "community-library",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "community-patterns",
+        "skill-structure"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "authoring"
+      ],
+      "manualNotes": "Community package set that helps check how smaller authors structure reusable skills.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "aj-geddes/claude-code-bmad-skills",
+      "url": "https://github.com/aj-geddes/claude-code-bmad-skills",
+      "repoClass": "public-implementation",
+      "sourceGroup": "workflow-and-planning",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "workflow-shape",
+        "planning-patterns",
+        "agent-orchestration"
+      ],
+      "taxonomySignals": [
+        "planning",
+        "bmad",
+        "workflow",
+        "automation"
+      ],
+      "manualNotes": "Structured workflow/planning library useful for orchestration, planning, and agent workflow skill design.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "numman-ali/openskills",
+      "url": "https://github.com/numman-ali/openskills",
+      "repoClass": "aggregate-library",
+      "sourceGroup": "community-library",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "breadth",
+        "naming-patterns",
+        "missing-family-detection"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "docs",
+        "analysis",
+        "tooling"
+      ],
+      "manualNotes": "Broad library useful for category spread and repeated naming patterns across public skill packs.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "github/awesome-copilot",
+      "url": "https://github.com/github/awesome-copilot",
+      "repoClass": "awesome-list",
+      "sourceGroup": "curated-discovery",
+      "platformTargets": [
+        "copilot"
+      ],
+      "useFor": [
+        "discovery",
+        "agent-builder-taxonomy",
+        "copilot-packaging"
+      ],
+      "taxonomySignals": [
+        "copilot",
+        "agents",
+        "skills",
+        "evaluation",
+        "automation"
+      ],
+      "manualNotes": "High-signal list for Copilot-native agents and skills, especially evaluation and repo-aware automation patterns.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "trailofbits/skills",
+      "url": "https://github.com/trailofbits/skills",
+      "repoClass": "public-implementation",
+      "sourceGroup": "community-library",
+      "platformTargets": [
+        "claude",
+        "multi-agent"
+      ],
+      "useFor": [
+        "security-review",
+        "skill-quality",
+        "narrow-specialists"
+      ],
+      "taxonomySignals": [
+        "security",
+        "audit",
+        "research",
+        "workflow"
+      ],
+      "manualNotes": "Security-heavy skill pack useful for quality and bounded-specialist patterns rather than broad coding coverage.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "antfu/skills",
+      "url": "https://github.com/antfu/skills",
+      "repoClass": "public-implementation",
+      "sourceGroup": "community-library",
+      "platformTargets": [
+        "claude",
+        "multi-agent"
+      ],
+      "useFor": [
+        "coding-specialists",
+        "quality",
+        "workflow-shape"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "tooling",
+        "automation",
+        "frontend"
+      ],
+      "manualNotes": "Smaller curated personal library with high-quality coding and tooling specialists.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "refly-ai/refly",
+      "url": "https://github.com/refly-ai/refly",
+      "repoClass": "public-implementation",
+      "sourceGroup": "workflow-and-planning",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "skill-builder-patterns",
+        "workflow-authoring",
+        "portability"
+      ],
+      "taxonomySignals": [
+        "builder",
+        "workflow",
+        "skills",
+        "multi-agent"
+      ],
+      "manualNotes": "Builder-oriented project that treats skills as workflow infrastructure, useful for authoring ergonomics and portability.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "agentailor/create-mcp-server",
+      "url": "https://github.com/agentailor/create-mcp-server",
+      "repoClass": "public-implementation",
+      "sourceGroup": "workflow-and-planning",
+      "platformTargets": [
+        "multi-agent",
+        "mcp"
+      ],
+      "useFor": [
+        "mcp-builder",
+        "scaffolding",
+        "agent-builder-taxonomy"
+      ],
+      "taxonomySignals": [
+        "mcp",
+        "scaffold",
+        "typescript",
+        "python",
+        "automation"
+      ],
+      "manualNotes": "Strong benchmark for MCP server scaffolding and practical builder workflows. Use as input to mcp-builder, not as a standalone Foundry canonical.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "hoodini/ai-agents-skills",
+      "url": "https://github.com/hoodini/ai-agents-skills",
+      "repoClass": "aggregate-library",
+      "sourceGroup": "community-library",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "taxonomy",
+        "missing-family-detection",
+        "packaging-scan"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "workflow",
+        "skills"
+      ],
+      "manualNotes": "Community library requested explicitly by the user. Good for breadth and category detection even if individual skill quality varies.",
+      "sourceKind": "repo",
+      "github": null,
+      "readmeSignals": {
+        "mentionsSkillMd": false,
+        "mentionsReferencesDir": false,
+        "mentionsScriptsDir": false,
+        "mentionsTemplatesDir": false,
+        "mentionsInstall": false,
+        "mentionsMarketplace": false,
+        "mentionsRegistry": false,
+        "mentionsMcp": false,
+        "mentionsCategories": false,
+        "mentionsAwesome": false,
+        "mentionsCollection": false,
+        "skillWordCount": 0
+      },
+      "linkedRepoIds": [],
+      "fetchStatus": "error",
+      "fetchNotes": [
+        "repo metadata unavailable: 403 rate limit exceeded",
+        "readme unavailable: 403 rate limit exceeded"
+      ]
+    },
+    {
+      "id": "github-topic-agent-skills",
+      "url": "https://github.com/topics/agent-skills",
+      "sourceKind": "topic-index",
+      "sourceGroup": "curated-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "trend-check",
+        "top-repo-harvest"
+      ],
+      "taxonomySignals": [
+        "directory",
+        "discovery",
+        "coding",
+        "automation"
+      ],
+      "mappedOutcome": "packaging_signal_only",
+      "mapsToSkills": [
+        "skill-creator",
+        "deep-research"
+      ],
+      "manualNotes": "Dynamic topic directory for harvesting the top 100 relevant public repos. Use for breadth and trend detection, not canonical wording.",
+      "github": null,
+      "readmeSignals": null,
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "pageSignals": {
+        "title": "agent-skills · GitHub Topics · GitHub",
+        "description": "GitHub is where people build software. More than 150 million people use GitHub to discover, fork, and contribute to over 420 million projects.",
+        "wordCount": 28081,
+        "mentionsMcp": true,
+        "mentionsPrompt": true,
+        "mentionsEval": true,
+        "mentionsOpenAi": true,
+        "mentionsSkill": true
+      }
+    },
+    {
+      "id": "agentailor-top-agent-skills-2026",
+      "url": "https://blog.agentailor.com/posts/top-agent-skills-for-agent-builders-2026",
+      "sourceKind": "blog",
+      "sourceGroup": "curated-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "agent-builder-taxonomy",
+        "priority-ranking"
+      ],
+      "taxonomySignals": [
+        "prompting",
+        "evaluation",
+        "mcp",
+        "docs",
+        "research"
+      ],
+      "mappedOutcome": "strengthen_existing",
+      "mapsToSkills": [
+        "prompt-engineer",
+        "skill-creator",
+        "mcp-builder",
+        "agentic-eval",
+        "openai-docs"
+      ],
+      "manualNotes": "Strong blog-level prioritization signal for agent-builder skills. Good for ranking and naming, not for canonical wording.",
+      "github": null,
+      "readmeSignals": null,
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "pageSignals": {
+        "title": "Top 5 Agent Skills Every Agent Builder Should Install | Agentailor",
+        "description": "The 5 most impactful agent skills for developers building AI agents with coding IDEs. From prompt engineering to agent evaluation, each skill includes what it does, why it matters, and the install command.",
+        "wordCount": 5807,
+        "mentionsMcp": true,
+        "mentionsPrompt": true,
+        "mentionsEval": true,
+        "mentionsOpenAi": true,
+        "mentionsSkill": true
+      }
+    }
+  ],
+  "discoveredRepos": [
+    {
+      "id": "shinpr/mcp-image",
+      "url": "https://github.com/shinpr/mcp-image",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "codex",
+        "gemini"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "mcp",
+        "prompting"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "shinpr/mcp-image",
+        "description": "MCP server for AI image generation and editing with automatic prompt optimization and quality presets (fast/balanced/quality). Powered by Gemini (Nano Banana 2 & Pro).",
+        "stars": 79,
+        "forks": 13,
+        "updatedAt": "2026-03-08T03:02:41Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai-tools",
+          "claude-code",
+          "codex",
+          "cursor",
+          "gemini",
+          "generative-ai",
+          "image-editing",
+          "image-generation",
+          "mcp",
+          "mcp-server",
+          "model-context-protocol",
+          "prompt-optimization",
+          "skills"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 12
+    },
+    {
+      "id": "ComposioHQ/awesome-claude-skills",
+      "url": "https://github.com/ComposioHQ/awesome-claude-skills",
+      "sourceKind": "repo",
+      "repoClass": "awesome-list",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "codex",
+        "gemini"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "mcp"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "ComposioHQ/awesome-claude-skills",
+        "description": "A curated list of awesome Claude Skills, resources, and tools for customizing Claude AI workflows",
+        "stars": 42024,
+        "forks": 4188,
+        "updatedAt": "2026-03-09T03:57:19Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai-agents",
+          "antigravity",
+          "automation",
+          "claude",
+          "claude-code",
+          "codex",
+          "composio",
+          "cursor",
+          "gemini-cli",
+          "mcp",
+          "rube",
+          "saas",
+          "skill",
+          "workflow-automation"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 11
+    },
+    {
+      "id": "sickn33/antigravity-awesome-skills",
+      "url": "https://github.com/sickn33/antigravity-awesome-skills",
+      "sourceKind": "repo",
+      "repoClass": "awesome-list",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "mcp"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "sickn33/antigravity-awesome-skills",
+        "description": "The Ultimate Collection of 1000+ Agentic Skills for Claude Code/Antigravity/Cursor. Battle-tested, high-performance skills for AI agents including official skills from Anthropic and Vercel.",
+        "stars": 21858,
+        "forks": 3790,
+        "updatedAt": "2026-03-09T03:56:04Z",
+        "archived": false,
+        "topics": [
+          "agentic-skills",
+          "ai-agents",
+          "antigravity",
+          "autonomous-coding",
+          "claude-code",
+          "mcp",
+          "react-patterns",
+          "security-auditing"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 11
+    },
+    {
+      "id": "affaan-m/everything-claude-code",
+      "url": "https://github.com/affaan-m/everything-claude-code",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "codex"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "mcp",
+        "research"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "affaan-m/everything-claude-code",
+        "description": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond.",
+        "stars": 67797,
+        "forks": 8456,
+        "updatedAt": "2026-03-09T03:59:19Z",
+        "archived": false,
+        "topics": [
+          "ai-agents",
+          "anthropic",
+          "claude",
+          "claude-code",
+          "developer-tools",
+          "llm",
+          "mcp",
+          "productivity"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 10
+    },
+    {
+      "id": "zhayujie/chatgpt-on-wechat",
+      "url": "https://github.com/zhayujie/chatgpt-on-wechat",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "codex",
+        "gemini"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "mcp"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "zhayujie/chatgpt-on-wechat",
+        "description": "CowAgent是基于大模型的超级AI助理，能主动思考和任务规划、访问操作系统和外部资源、创造和执行Skills、拥有长期记忆并不断成长。同时支持飞书、钉钉、企业微信应用、微信公众号、网页等接入，可选择OpenAI/Claude/Gemini/DeepSeek/ Qwen/GLM/Kimi/LinkAI，能处理文本、语音、图片和文件，可快速搭建个人AI助手和企业数字员工。",
+        "stars": 42027,
+        "forks": 9799,
+        "updatedAt": "2026-03-09T03:57:31Z",
+        "archived": false,
+        "topics": [
+          "ai",
+          "ai-agent",
+          "chatgpt",
+          "claude",
+          "deepseek",
+          "dingtalk",
+          "feishu-bot",
+          "gemini",
+          "kimi",
+          "linkai",
+          "llm",
+          "mcp",
+          "multi-agent",
+          "openai",
+          "openclaw",
+          "python3",
+          "qwen",
+          "skills",
+          "wechat"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 10
+    },
+    {
+      "id": "ruvnet/ruflo",
+      "url": "https://github.com/ruvnet/ruflo",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "codex"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "mcp"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "ruvnet/ruflo",
+        "description": "🌊 The leading agent orchestration platform for Claude. Deploy intelligent multi-agent swarms, coordinate autonomous workflows, and build conversational AI systems. Features    enterprise-grade architecture, distributed swarm intelligence, RAG integration, and native Claude Code / Codex Integration",
+        "stars": 20046,
+        "forks": 2228,
+        "updatedAt": "2026-03-09T03:58:46Z",
+        "archived": false,
+        "topics": [
+          "agentic-ai",
+          "agentic-engineering",
+          "agentic-framework",
+          "agentic-rag",
+          "agentic-workflow",
+          "agents",
+          "ai-assistant",
+          "ai-tools",
+          "anthropic-claude",
+          "autonomous-agents",
+          "claude-code",
+          "claude-code-skills",
+          "codex",
+          "huggingface",
+          "mcp-server",
+          "model-context-protocol",
+          "multi-agent",
+          "multi-agent-systems",
+          "swarm",
+          "swarm-intelligence"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 10
+    },
+    {
+      "id": "aden-hive/hive",
+      "url": "https://github.com/aden-hive/hive",
+      "sourceKind": "repo",
+      "repoClass": "awesome-list",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "codex"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "evaluation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "aden-hive/hive",
+        "description": "Outcome driven agent development framework that evolves",
+        "stars": 9009,
+        "forks": 5202,
+        "updatedAt": "2026-03-09T03:53:34Z",
+        "archived": false,
+        "topics": [
+          "agent",
+          "agent-framework",
+          "agent-skills",
+          "ai-evaluation",
+          "anthropic",
+          "automation",
+          "autonomous-agents",
+          "awesome",
+          "claude",
+          "claude-code",
+          "human-in-the-loop",
+          "observability-ai",
+          "openai",
+          "python",
+          "self-hosted",
+          "self-improving",
+          "self-improving-agent",
+          "self-improving-ai"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 10
+    },
+    {
+      "id": "ThinkInAIXYZ/deepchat",
+      "url": "https://github.com/ThinkInAIXYZ/deepchat",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "codex",
+        "gemini"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "mcp"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "ThinkInAIXYZ/deepchat",
+        "description": "🐬DeepChat - A smart assistant that connects powerful AI to your personal world",
+        "stars": 5555,
+        "forks": 640,
+        "updatedAt": "2026-03-09T03:05:16Z",
+        "archived": false,
+        "topics": [
+          "agent",
+          "agent-skills",
+          "agentic",
+          "agentic-ai",
+          "ai",
+          "ai-assistant",
+          "ai-chat",
+          "chatbot",
+          "chatgpt",
+          "claude",
+          "cross-platform",
+          "deepseek",
+          "electron",
+          "gemini",
+          "llm-client",
+          "mcp",
+          "mcp-client",
+          "openai-client",
+          "tool-calling"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 10
+    },
+    {
+      "id": "breaking-brake/cc-wf-studio",
+      "url": "https://github.com/breaking-brake/cc-wf-studio",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "mcp"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "breaking-brake/cc-wf-studio",
+        "description": "CC Workflow Studio",
+        "stars": 4364,
+        "forks": 487,
+        "updatedAt": "2026-03-09T03:17:22Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "claude-code",
+          "mcp-tools",
+          "slash-commands",
+          "sub-agents",
+          "vscode-extension",
+          "workflow-automation"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 10
+    },
+    {
+      "id": "microsoft/skills",
+      "url": "https://github.com/microsoft/skills",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "mcp"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "microsoft/skills",
+        "description": "Skills, MCP servers, Custom Agents, Agents.md for SDKs to ground Coding Agents",
+        "stars": 1657,
+        "forks": 172,
+        "updatedAt": "2026-03-09T03:06:25Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "agents",
+          "azure",
+          "foundry",
+          "mcp",
+          "sdk",
+          "skills"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 10
+    },
+    {
+      "id": "MicrosoftDocs/mcp",
+      "url": "https://github.com/MicrosoftDocs/mcp",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "copilot"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "mcp"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "MicrosoftDocs/mcp",
+        "description": "Official Microsoft Learn MCP Server – powering LLMs and AI agents with real-time, trusted Microsoft docs & code samples.",
+        "stars": 1427,
+        "forks": 169,
+        "updatedAt": "2026-03-08T01:00:15Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai",
+          "ai-agents",
+          "copilot",
+          "documentation",
+          "llm",
+          "mcp",
+          "mcp-server",
+          "microsoft",
+          "microsoft-learn",
+          "rag",
+          "skills"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 10
+    },
+    {
+      "id": "AIPexStudio/AIPex",
+      "url": "https://github.com/AIPexStudio/AIPex",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "gemini"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "mcp"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "AIPexStudio/AIPex",
+        "description": "AIPex: AI browser automation assistant, no migration and privacy first. Alternative to Manus Browser Operator、 Claude Chrome and Agent Browser",
+        "stars": 1091,
+        "forks": 108,
+        "updatedAt": "2026-03-08T12:43:23Z",
+        "archived": false,
+        "topics": [
+          "accessbility-testing",
+          "agent-browser",
+          "agent-skills",
+          "browser-automation",
+          "browser-use",
+          "chatgpt-atlas-alternative",
+          "chrome-extension",
+          "claude-chrome",
+          "claude-for-chrome",
+          "gemini",
+          "gemini-chrome",
+          "mcp",
+          "tab-management"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 10
+    },
+    {
+      "id": "VikashLoomba/copilot-mcp",
+      "url": "https://github.com/VikashLoomba/copilot-mcp",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "copilot",
+        "codex"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "mcp"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "VikashLoomba/copilot-mcp",
+        "description": "A VSCode extension that lets you find and install Agent Skills and MCP Apps to use with GitHub Copilot, Claude Code, and Codex CLI.",
+        "stars": 477,
+        "forks": 52,
+        "updatedAt": "2026-03-04T00:57:32Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "claude-code-skills",
+          "claude-skills",
+          "codex-skills",
+          "copilot",
+          "copilot-chat",
+          "mcp",
+          "mcp-apps",
+          "mcp-server",
+          "modelcontextprotocol",
+          "skills",
+          "vscode-extension"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 10
+    },
+    {
+      "id": "Code-and-Sorts/awesome-copilot-agents",
+      "url": "https://github.com/Code-and-Sorts/awesome-copilot-agents",
+      "sourceKind": "repo",
+      "repoClass": "awesome-list",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "copilot"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "prompting"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "Code-and-Sorts/awesome-copilot-agents",
+        "description": "✨ A curated list of awesome GitHub instructions, prompt, skills and agent markdown files for enhancing your GitHub Copilot AI experience.",
+        "stars": 427,
+        "forks": 42,
+        "updatedAt": "2026-03-08T16:28:55Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai-agents",
+          "awesome",
+          "awesome-list",
+          "copilot-instructions",
+          "copilot-prompting",
+          "custom-agents",
+          "github-copilot",
+          "prompt-engineering",
+          "vscode-copilot-chat"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 10
+    },
+    {
+      "id": "Shy2593666979/AgentChat",
+      "url": "https://github.com/Shy2593666979/AgentChat",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "mcp"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "Shy2593666979/AgentChat",
+        "description": "AgentChat 是一个基于 LLM 的智能体交流平台，内置默认 Agent 并支持用户自定义 Agent。通过多轮对话和任务协作，Agent 可以理解并协助完成复杂任务。项目集成 LangChain、Function Call、MCP 协议、RAG、Memory、Milvus 和 ElasticSearch 等技术，实现高效的知识检索与工具调用，使用 FastAPI 构建高性能后端服务。",
+        "stars": 409,
+        "forks": 52,
+        "updatedAt": "2026-03-09T02:02:55Z",
+        "archived": false,
+        "topics": [
+          "agent",
+          "agent-memory",
+          "agent-skills",
+          "langchain",
+          "llm",
+          "mcp",
+          "mcp-client",
+          "mcp-server",
+          "mysql",
+          "redis"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 10
+    },
+    {
+      "id": "corespeed-io/zypher-agent",
+      "url": "https://github.com/corespeed-io/zypher-agent",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "codex"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "mcp"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "corespeed-io/zypher-agent",
+        "description": "A minimal yet powerful framework for creating AI agents with full control over tools, providers, and execution flow.",
+        "stars": 405,
+        "forks": 22,
+        "updatedAt": "2026-03-04T20:16:29Z",
+        "archived": false,
+        "topics": [
+          "agent",
+          "agent-skills",
+          "agentic-framework",
+          "ai",
+          "anthropic",
+          "corespeed",
+          "deno",
+          "generative-ai",
+          "llm",
+          "mcp",
+          "mcp-client",
+          "multi-agent-systems",
+          "openai",
+          "typescript",
+          "zypher-agent"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 10
+    },
+    {
+      "id": "TheLunarCompany/lunar",
+      "url": "https://github.com/TheLunarCompany/lunar",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "mcp"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "TheLunarCompany/lunar",
+        "description": "lunar.dev: Agent native MCP Gateway for governance and security",
+        "stars": 405,
+        "forks": 28,
+        "updatedAt": "2026-03-08T18:12:02Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "api-proxy",
+          "mcp",
+          "mcp-client",
+          "mcp-gateway",
+          "mcp-security",
+          "mcp-server",
+          "mcp-servers",
+          "rate-limit",
+          "throttling",
+          "visibility"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 10
+    },
+    {
+      "id": "shinpr/mcp-local-rag",
+      "url": "https://github.com/shinpr/mcp-local-rag",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "mcp"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "shinpr/mcp-local-rag",
+        "description": "Local-first RAG server for developers using MCP. Semantic + keyword search for code and technical docs. Fully private, zero setup.",
+        "stars": 151,
+        "forks": 31,
+        "updatedAt": "2026-03-08T20:41:10Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "claude-code",
+          "code-search",
+          "cursor",
+          "developer-tools",
+          "hybrid-search",
+          "local-rag",
+          "mcp",
+          "mcp-server",
+          "privacy-first",
+          "rag",
+          "semantic-search",
+          "skills"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 10
+    },
+    {
+      "id": "sanjay3290/ai-skills",
+      "url": "https://github.com/sanjay3290/ai-skills",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "gemini"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "mcp",
+        "research"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "sanjay3290/ai-skills",
+        "description": "Collection of agent skills for AI coding assistants",
+        "stars": 135,
+        "forks": 9,
+        "updatedAt": "2026-03-07T12:05:55Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai-skills",
+          "atlassian",
+          "azure-devops",
+          "claude-code",
+          "claude-skills",
+          "confluence",
+          "deep-research",
+          "elevenlabs",
+          "gmail",
+          "google-calendar",
+          "google-drive",
+          "google-workspace",
+          "imagen",
+          "jira",
+          "mcp",
+          "mysql",
+          "notebooklm",
+          "postgresql",
+          "text-to-speech"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 10
+    },
+    {
+      "id": "liyupi/yupi-hot-monitor",
+      "url": "https://github.com/liyupi/yupi-hot-monitor",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "copilot"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "mcp"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "liyupi/yupi-hot-monitor",
+        "description": "2026 年编程导航 AI 编程实战新项目，基于 Node.js + Express + React + OpenRouter 的 AI 热点监控工具，支持多信息源聚合抓取（Twitter / Bing / HackerNews / B 站等 7+ 平台）、AI 查询扩展、AI 真假识别与相关性分析、WebSocket 实时推送、邮件通知、多维度筛选排序，并将热点监控能力封装为 Agent Skills 技能包。覆盖 Prisma + SQLite 数据库、Socket.io 实时通信、Axios + Cheerio 网页爬虫、OpenRouter 大模型接入、Aceternity UI 炫酷前端、node-cron 定时任务、VSCode Copilot Vibe Coding + MCP",
+        "stars": 97,
+        "forks": 12,
+        "updatedAt": "2026-03-09T02:29:17Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai",
+          "backend",
+          "frontend",
+          "javascript",
+          "nodejs",
+          "openrouter",
+          "react",
+          "typescript",
+          "vibe-coding",
+          "web"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 10
+    },
+    {
+      "id": "aahl/skills",
+      "url": "https://github.com/aahl/skills",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "mcp"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "aahl/skills",
+        "description": "AAHL's Agent Skills. 汇集了多种实用的智能体技能，涵盖Home Assistant智能家居控制、微软Edge TTS和智谱GLM-TTS文本转语音、DuckDuckGo搜索、DeepWiki文档检索、加密货币行情、天气预报、Lark/飞书、影视搜索、商品比价等功能",
+        "stars": 79,
+        "forks": 10,
+        "updatedAt": "2026-03-08T06:39:00Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai-agents",
+          "claude-skills",
+          "feishu",
+          "home-assistant",
+          "lark",
+          "llm",
+          "mcp",
+          "skills"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 10
+    },
+    {
+      "id": "besoeasy/open-skills",
+      "url": "https://github.com/besoeasy/open-skills",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "codex"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "mcp"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "besoeasy/open-skills",
+        "description": "Battle-tested skill library for AI agents. Save 98% of API costs with ready-to-use code for crypto, PDFs, search, web scraping & more. No trial-and-error, no expensive APIs.",
+        "stars": 77,
+        "forks": 13,
+        "updatedAt": "2026-03-08T15:06:26Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai",
+          "ai-agents",
+          "claude-code",
+          "clawdbot",
+          "clawdbot-skill",
+          "llm-tools",
+          "mcp-server",
+          "openai",
+          "vibe-coding",
+          "vibecoding"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 10
+    },
+    {
+      "id": "WangRongsheng/awesome-LLM-resources",
+      "url": "https://github.com/WangRongsheng/awesome-LLM-resources",
+      "sourceKind": "repo",
+      "repoClass": "awesome-list",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "codex"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "mcp",
+        "evaluation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "WangRongsheng/awesome-LLM-resources",
+        "description": "🧑‍🚀 全世界最好的LLM资料总结（多模态生成、Agent、辅助编程、AI审稿、数据处理、模型训练、模型推理、o1 模型、MCP、小语言模型、视觉语言模型） | Summary of the world's best LLM resources. ",
+        "stars": 7654,
+        "forks": 742,
+        "updatedAt": "2026-03-09T02:28:02Z",
+        "archived": false,
+        "topics": [
+          "awesome-list",
+          "book",
+          "course",
+          "large-language-models",
+          "llama",
+          "llm",
+          "mistral",
+          "openai",
+          "qwen",
+          "rag",
+          "retrieval-augmented-generation",
+          "webui"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 9
+    },
+    {
+      "id": "AgnosticUI/agnosticui",
+      "url": "https://github.com/AgnosticUI/agnosticui",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "prompting"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "AgnosticUI/agnosticui",
+        "description": "AgnosticUI Local (v2) is a CLI-based UI component library that copies components directly into your project. Works with AI tools, agent-driven UIs, and prompt-ready workflows.",
+        "stars": 780,
+        "forks": 47,
+        "updatedAt": "2026-03-09T03:50:37Z",
+        "archived": false,
+        "topics": [
+          "accessibility",
+          "agent-skills",
+          "ai-agents",
+          "context-engineering",
+          "css",
+          "generative-ui",
+          "javascipt",
+          "lit",
+          "prompt-engineering",
+          "reactjs",
+          "svelte",
+          "ui-components",
+          "vue",
+          "web-components"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 9
+    },
+    {
+      "id": "agentscope-ai/OpenJudge",
+      "url": "https://github.com/agentscope-ai/OpenJudge",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "evaluation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "agentscope-ai/OpenJudge",
+        "description": "OpenJudge: A Unified Framework for Holistic Evaluation and Quality Rewards",
+        "stars": 439,
+        "forks": 35,
+        "updatedAt": "2026-03-09T02:56:54Z",
+        "archived": false,
+        "topics": [
+          "agent",
+          "agent-skills",
+          "ai-agent",
+          "alignment",
+          "evaluation",
+          "grader",
+          "llm",
+          "reward",
+          "reward-model",
+          "rlhf",
+          "skill-md",
+          "skills"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 9
+    },
+    {
+      "id": "jabrena/cursor-rules-java",
+      "url": "https://github.com/jabrena/cursor-rules-java",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "copilot"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "prompting"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "jabrena/cursor-rules-java",
+        "description": "A curated collection of System prompts and Skills for Java Enterprise development that help software engineers & pipelines in their daily programming work.",
+        "stars": 311,
+        "forks": 55,
+        "updatedAt": "2026-03-09T03:51:38Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai-skills",
+          "claude",
+          "claude-code",
+          "claude-code-skills",
+          "claude-code-subagents",
+          "claude-skills",
+          "cursor-agent",
+          "cursor-ai",
+          "cursor-rules",
+          "cursor-rules-java",
+          "cursorai",
+          "github-copilot",
+          "intellij-idea",
+          "java",
+          "prompting",
+          "skills",
+          "skillsjars",
+          "system-prompts",
+          "vscode"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 9
+    },
+    {
+      "id": "FrankChen021/datastoria",
+      "url": "https://github.com/FrankChen021/datastoria",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "databases"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "FrankChen021/datastoria",
+        "description": "AI-native ClickHouse console for your cluster diagnostics and query generation, optimization and data visualization.",
+        "stars": 219,
+        "forks": 11,
+        "updatedAt": "2026-03-09T02:24:29Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai",
+          "ai-agent",
+          "ai-assistant",
+          "clickhouse",
+          "console",
+          "data-visualization",
+          "data-visualizations",
+          "database-management",
+          "monitoring",
+          "nextjs",
+          "query-analysis",
+          "query-optimization",
+          "react",
+          "sql-editor",
+          "text-to-sql",
+          "typescript"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 9
+    },
+    {
+      "id": "shinpr/claude-code-workflows",
+      "url": "https://github.com/shinpr/claude-code-workflows",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "prompting"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "shinpr/claude-code-workflows",
+        "description": "Production-ready development workflows for Claude Code, powered by specialized AI agents.",
+        "stars": 174,
+        "forks": 35,
+        "updatedAt": "2026-03-08T21:37:44Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "agentic-ai",
+          "ai-agents",
+          "automation",
+          "claude-code",
+          "claude-code-plugin",
+          "code-quality",
+          "developer-tools",
+          "development-workflow",
+          "llm-orchestration",
+          "productivity",
+          "prompt-engineering",
+          "skills"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 9
+    },
+    {
+      "id": "VoltAgent/awesome-openclaw-skills",
+      "url": "https://github.com/VoltAgent/awesome-openclaw-skills",
+      "sourceKind": "repo",
+      "repoClass": "awesome-list",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "VoltAgent/awesome-openclaw-skills",
+        "description": "The awesome collection of OpenClaw skills. 5,400+ skills filtered and categorized from the official OpenClaw Skills Registry.🦞",
+        "stars": 32069,
+        "forks": 3063,
+        "updatedAt": "2026-03-09T03:58:55Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "awesome",
+          "awesome-list",
+          "awesome-lists",
+          "clawd",
+          "clawdbot",
+          "clawdbot-skill",
+          "clawdhub",
+          "moltbot",
+          "moltbot-skills",
+          "openclaw",
+          "openclaw-skills"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 8
+    },
+    {
+      "id": "hesreallyhim/awesome-claude-code",
+      "url": "https://github.com/hesreallyhim/awesome-claude-code",
+      "sourceKind": "repo",
+      "repoClass": "awesome-list",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "hesreallyhim/awesome-claude-code",
+        "description": "A curated list of awesome skills, hooks, slash-commands, agent orchestrators, applications, and plugins for Claude Code by Anthropic",
+        "stars": 26943,
+        "forks": 1721,
+        "updatedAt": "2026-03-09T03:57:47Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "agentic-code",
+          "agentic-coding",
+          "ai-workflow-optimization",
+          "ai-workflows",
+          "anthropic",
+          "anthropic-claude",
+          "awesome",
+          "awesome-list",
+          "awesome-lists",
+          "awesome-resources",
+          "claude",
+          "claude-code",
+          "coding-agent",
+          "coding-agents",
+          "coding-assistant",
+          "coding-assistants",
+          "llm"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 8
+    },
+    {
+      "id": "phuryn/pm-skills",
+      "url": "https://github.com/phuryn/pm-skills",
+      "sourceKind": "repo",
+      "repoClass": "marketplace",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "phuryn/pm-skills",
+        "description": "PM Skills Marketplace: 100+ agentic skills, commands, and plugins — from discovery to strategy, execution, launch, and growth.",
+        "stars": 5780,
+        "forks": 532,
+        "updatedAt": "2026-03-09T03:57:21Z",
+        "archived": false,
+        "topics": [
+          "agent-skill-repository",
+          "agent-skills",
+          "agentic-skills",
+          "claude-code-marketplace",
+          "claude-code-plugins",
+          "claude-cowork-plugin",
+          "product-management"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 8
+    },
+    {
+      "id": "JackyST0/awesome-agent-skills",
+      "url": "https://github.com/JackyST0/awesome-agent-skills",
+      "sourceKind": "repo",
+      "repoClass": "awesome-list",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "copilot"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "JackyST0/awesome-agent-skills",
+        "description": "🤖 精选的 AI Agent Skills 列表，适用于 Cursor、Claude Code、GitHub Copilot 等 AI 编程工具",
+        "stars": 329,
+        "forks": 32,
+        "updatedAt": "2026-03-09T03:43:18Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai",
+          "awesome",
+          "awesome-list",
+          "claude",
+          "copilot",
+          "cursor"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 8
+    },
+    {
+      "id": "brucevanfdm/agent-skills-guard",
+      "url": "https://github.com/brucevanfdm/agent-skills-guard",
+      "sourceKind": "repo",
+      "repoClass": "marketplace",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "brucevanfdm/agent-skills-guard",
+        "description": "一款提供Agent Skills安全扫描和可视化管理的桌面应用 | A desktop application that provides security scanning and visual management for Agent Skills.",
+        "stars": 286,
+        "forks": 24,
+        "updatedAt": "2026-03-08T07:00:59Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "claude-code",
+          "skill-marketplace",
+          "skills-guard",
+          "skills-manager"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 8
+    },
+    {
+      "id": "RKiding/Awesome-finance-skills",
+      "url": "https://github.com/RKiding/Awesome-finance-skills",
+      "sourceKind": "repo",
+      "repoClass": "awesome-list",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "RKiding/Awesome-finance-skills",
+        "description": "A collection of Awesome Finance Agent Skills for free and easy to start | 一系列开源免费的金融分析Agent Skills",
+        "stars": 284,
+        "forks": 22,
+        "updatedAt": "2026-03-09T02:53:13Z",
+        "archived": false,
+        "topics": [
+          "agent",
+          "agent-skills",
+          "finances",
+          "fintech"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 8
+    },
+    {
+      "id": "wondelai/skills",
+      "url": "https://github.com/wondelai/skills",
+      "sourceKind": "repo",
+      "repoClass": "marketplace",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "wondelai/skills",
+        "description": "Agent skills for Claude Code and agentskills.io-compatible agents",
+        "stars": 189,
+        "forks": 21,
+        "updatedAt": "2026-03-08T18:52:37Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai-skills",
+          "claude-code",
+          "claude-code-marketplace",
+          "claude-code-plugin",
+          "claude-code-skills",
+          "claude-plugins",
+          "claude-skills",
+          "skill-md",
+          "skillsmp"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 8
+    },
+    {
+      "id": "karanb192/awesome-claude-skills",
+      "url": "https://github.com/karanb192/awesome-claude-skills",
+      "sourceKind": "repo",
+      "repoClass": "awesome-list",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "karanb192/awesome-claude-skills",
+        "description": "🎯 The definitive collection of 50+ verified Awesome Claude Skills for Claude Code, Claude.ai, and API. Boost productivity with TDD, debugging, git workflows, document processing, and more. Community-driven, actively maintained.",
+        "stars": 171,
+        "forks": 28,
+        "updatedAt": "2026-03-08T21:17:29Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai",
+          "anthropic",
+          "anthropic-claude",
+          "artifical-intelligence",
+          "automation",
+          "awesome",
+          "awesome-list",
+          "claude",
+          "claude-ai",
+          "claude-code",
+          "claude-code-skills",
+          "claude-skills",
+          "debugging",
+          "development-tools",
+          "llm",
+          "productivity",
+          "skills",
+          "tdd"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 8
+    },
+    {
+      "id": "lawvable/awesome-legal-skills",
+      "url": "https://github.com/lawvable/awesome-legal-skills",
+      "sourceKind": "repo",
+      "repoClass": "awesome-list",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "lawvable/awesome-legal-skills",
+        "description": "A curated list of awesome Agent Skills for automating legal work",
+        "stars": 149,
+        "forks": 12,
+        "updatedAt": "2026-03-08T11:08:15Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "automation",
+          "law",
+          "legal-work",
+          "workflows"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 8
+    },
+    {
+      "id": "obra/superpowers",
+      "url": "https://github.com/obra/superpowers",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "obra/superpowers",
+        "description": "An agentic skills framework & software development methodology that works.",
+        "stars": 74099,
+        "forks": 5705,
+        "updatedAt": "2026-03-09T03:58:49Z",
+        "archived": false,
+        "topics": [],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "code-yeongyu/oh-my-openagent",
+      "url": "https://github.com/code-yeongyu/oh-my-openagent",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "codex",
+        "gemini"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "code-yeongyu/oh-my-openagent",
+        "description": "omo; the best agent harness - previously oh-my-opencode",
+        "stars": 38192,
+        "forks": 2881,
+        "updatedAt": "2026-03-09T03:58:10Z",
+        "archived": false,
+        "topics": [
+          "ai",
+          "ai-agents",
+          "amp",
+          "anthropic",
+          "chatgpt",
+          "claude",
+          "claude-code",
+          "claude-skills",
+          "cursor",
+          "gemini",
+          "ide",
+          "openai",
+          "opencode",
+          "orchestration",
+          "tui",
+          "typescript"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "thedotmack/claude-mem",
+      "url": "https://github.com/thedotmack/claude-mem",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "thedotmack/claude-mem",
+        "description": "A Claude Code plugin that automatically captures everything Claude does during your coding sessions, compresses it with AI (using Claude's agent-sdk), and injects relevant context back into future sessions.",
+        "stars": 33528,
+        "forks": 2311,
+        "updatedAt": "2026-03-09T03:49:20Z",
+        "archived": false,
+        "topics": [
+          "ai",
+          "ai-agents",
+          "ai-memory",
+          "anthropic",
+          "artificial-intelligence",
+          "chromadb",
+          "claude",
+          "claude-agent-sdk",
+          "claude-agents",
+          "claude-code",
+          "claude-code-plugin",
+          "claude-skills",
+          "embeddings",
+          "long-term-memory",
+          "mem0",
+          "memory-engine",
+          "openmemory",
+          "rag",
+          "sqlite",
+          "supermemory"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "wshobson/agents",
+      "url": "https://github.com/wshobson/agents",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "wshobson/agents",
+        "description": "Intelligent automation and multi-agent orchestration for Claude Code",
+        "stars": 30716,
+        "forks": 3368,
+        "updatedAt": "2026-03-09T03:53:34Z",
+        "archived": false,
+        "topics": [
+          "agents",
+          "anthropic",
+          "anthropic-claude",
+          "automation",
+          "claude",
+          "claude-code",
+          "claude-code-cli",
+          "claude-code-commands",
+          "claude-code-plugin",
+          "claude-code-plugins",
+          "claude-code-skills",
+          "claude-code-subagents",
+          "claude-skills",
+          "claudecode",
+          "claudecode-config",
+          "claudecode-subagents",
+          "orchestration",
+          "sub-agents",
+          "subagents",
+          "workflows"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "bytedance/deer-flow",
+      "url": "https://github.com/bytedance/deer-flow",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "research"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "bytedance/deer-flow",
+        "description": "An open-source SuperAgent harness that researches, codes, and creates. With the help of sandboxes, memories, tools, skills and subagents, it handles different levels of tasks that could take minutes to hours.",
+        "stars": 26136,
+        "forks": 3078,
+        "updatedAt": "2026-03-09T03:58:30Z",
+        "archived": false,
+        "topics": [
+          "agent",
+          "agentic",
+          "agentic-framework",
+          "agentic-workflow",
+          "ai",
+          "ai-agents",
+          "bytedance",
+          "deep-research",
+          "harness",
+          "langchain",
+          "langgraph",
+          "langmanus",
+          "llm",
+          "multi-agent",
+          "nodejs",
+          "podcast",
+          "python",
+          "superagent",
+          "typescript"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "farion1231/cc-switch",
+      "url": "https://github.com/farion1231/cc-switch",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "codex",
+        "gemini"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "mcp"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "farion1231/cc-switch",
+        "description": "A cross-platform desktop All-in-One assistant tool for Claude Code, Codex, OpenCode, openclaw & Gemini CLI.",
+        "stars": 25457,
+        "forks": 1559,
+        "updatedAt": "2026-03-09T03:56:46Z",
+        "archived": false,
+        "topics": [
+          "ai-tools",
+          "claude-code",
+          "codex",
+          "desktop-app",
+          "mcp",
+          "minimax",
+          "omo",
+          "open-source",
+          "openclaw",
+          "openclaw-ui",
+          "opencode",
+          "provider-management",
+          "rust",
+          "skills",
+          "skills-management",
+          "tauri",
+          "typescript",
+          "wsl-support"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "flipped-aurora/gin-vue-admin",
+      "url": "https://github.com/flipped-aurora/gin-vue-admin",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "mcp"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "flipped-aurora/gin-vue-admin",
+        "description": "🚀Vite+Vue3+Gin拥有AI辅助的基础开发平台，企业级业务AI+开发解决方案，内置mcp辅助服务，内置skills管理，支持TS和JS混用。它集成了JWT鉴权、权限管理、动态路由、显隐可控组件、分页封装、多点登录拦截、资源权限、上传下载、代码生成器、表单生成器和可配置的导入导出等开发必备功能。",
+        "stars": 24386,
+        "forks": 7020,
+        "updatedAt": "2026-03-09T02:47:40Z",
+        "archived": false,
+        "topics": [
+          "admin",
+          "ai",
+          "casbin",
+          "element-ui",
+          "gin",
+          "gin-admin",
+          "gin-vue-admin",
+          "go",
+          "go-admin",
+          "golang",
+          "gorm",
+          "i18n",
+          "jwt",
+          "mcp",
+          "skills",
+          "vibecoding",
+          "vite",
+          "vue",
+          "vue-admin",
+          "vue3"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "qwibitai/nanoclaw",
+      "url": "https://github.com/qwibitai/nanoclaw",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "qwibitai/nanoclaw",
+        "description": "A lightweight alternative to OpenClaw that runs in containers for security. Connects to WhatsApp, Telegram, Slack, Discord, Gmail and other messaging apps,, has memory, scheduled jobs, and runs directly on Anthropic's Agents SDK",
+        "stars": 20558,
+        "forks": 3437,
+        "updatedAt": "2026-03-09T03:57:16Z",
+        "archived": false,
+        "topics": [
+          "ai-agents",
+          "ai-assistant",
+          "claude-code",
+          "claude-skills",
+          "openclaw"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "googleworkspace/cli",
+      "url": "https://github.com/googleworkspace/cli",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "gemini"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "googleworkspace/cli",
+        "description": "Google Workspace CLI — one command-line tool for Drive, Gmail, Calendar, Sheets, Docs, Chat, Admin, and more. Dynamically built from Google Discovery Service. Includes AI agent skills.",
+        "stars": 16454,
+        "forks": 631,
+        "updatedAt": "2026-03-09T03:58:59Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai-agent",
+          "automation",
+          "cli",
+          "discovery-api",
+          "gemini-cli-extension",
+          "google-admin",
+          "google-api",
+          "google-calendar",
+          "google-chat",
+          "google-docs",
+          "google-drive",
+          "google-sheets",
+          "google-workspace",
+          "oauth2",
+          "rust"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "OthmanAdi/planning-with-files",
+      "url": "https://github.com/OthmanAdi/planning-with-files",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "OthmanAdi/planning-with-files",
+        "description": "Claude Code skill implementing Manus-style persistent markdown planning — the workflow pattern behind the $2B acquisition.",
+        "stars": 15586,
+        "forks": 1437,
+        "updatedAt": "2026-03-09T03:51:18Z",
+        "archived": false,
+        "topics": [
+          "adal",
+          "agent",
+          "agent-skills",
+          "agents",
+          "antigravity",
+          "claude",
+          "claude-code",
+          "claude-skills",
+          "clawd",
+          "clawdbot",
+          "clawdbot-skill",
+          "clawdhub",
+          "codebuddy",
+          "cursor",
+          "factory-ai",
+          "kilocode",
+          "manus",
+          "manus-ai",
+          "moltbot",
+          "moltbot-skills"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "K-Dense-AI/claude-scientific-skills",
+      "url": "https://github.com/K-Dense-AI/claude-scientific-skills",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "research"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "K-Dense-AI/claude-scientific-skills",
+        "description": "A set of ready to use Agent Skills for research, science, engineering, analysis, finance and writing.",
+        "stars": 13860,
+        "forks": 1495,
+        "updatedAt": "2026-03-09T03:55:40Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai-scientist",
+          "bioinformatics",
+          "chemoinformatics",
+          "claude",
+          "claude-skills",
+          "claudecode",
+          "clinical-research",
+          "computational-biology",
+          "data-analysis",
+          "drug-discovery",
+          "genomics",
+          "materials-science",
+          "metabolomics",
+          "proteomics",
+          "scientific-computing",
+          "scientific-visualization"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "muratcankoylan/Agent-Skills-for-Context-Engineering",
+      "url": "https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "muratcankoylan/Agent-Skills-for-Context-Engineering",
+        "description": "A comprehensive collection of Agent Skills for context engineering, multi-agent architectures, and production agent systems. Use when building, optimizing, or debugging agent systems that require effective context management.",
+        "stars": 13604,
+        "forks": 1046,
+        "updatedAt": "2026-03-09T03:48:19Z",
+        "archived": false,
+        "topics": [],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "kepano/obsidian-skills",
+      "url": "https://github.com/kepano/obsidian-skills",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "codex"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "kepano/obsidian-skills",
+        "description": "Agent skills for Obsidian. Teach your agent to use Markdown, Bases, JSON Canvas, and use the CLI.",
+        "stars": 12785,
+        "forks": 690,
+        "updatedAt": "2026-03-09T03:50:30Z",
+        "archived": false,
+        "topics": [
+          "claude",
+          "clawdbot",
+          "cli",
+          "codex",
+          "defuddle",
+          "obsidian",
+          "openclaw",
+          "opencode",
+          "skills"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "coreyhaines31/marketingskills",
+      "url": "https://github.com/coreyhaines31/marketingskills",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "codex"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "coreyhaines31/marketingskills",
+        "description": "Marketing skills for Claude Code and AI agents. CRO, copywriting, SEO, analytics, and growth engineering.",
+        "stars": 11997,
+        "forks": 1730,
+        "updatedAt": "2026-03-09T03:47:17Z",
+        "archived": false,
+        "topics": [
+          "claude",
+          "codex",
+          "marketing"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "yusufkaraaslan/Skill_Seekers",
+      "url": "https://github.com/yusufkaraaslan/Skill_Seekers",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "mcp"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "yusufkaraaslan/Skill_Seekers",
+        "description": "Convert documentation websites, GitHub repositories, and PDFs into Claude AI skills with automatic conflict detection",
+        "stars": 10396,
+        "forks": 1030,
+        "updatedAt": "2026-03-09T03:54:31Z",
+        "archived": false,
+        "topics": [
+          "ai-tools",
+          "ast-parser",
+          "automation",
+          "claude-ai",
+          "claude-skills",
+          "code-analysis",
+          "conflict-detection",
+          "documentation",
+          "documentation-generator",
+          "github",
+          "github-scraper",
+          "mcp",
+          "mcp-server",
+          "multi-source",
+          "ocr",
+          "pdf",
+          "python",
+          "web-scraping"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "diet103/claude-code-infrastructure-showcase",
+      "url": "https://github.com/diet103/claude-code-infrastructure-showcase",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "diet103/claude-code-infrastructure-showcase",
+        "description": "Examples of my Claude Code infrastructure with skill auto-activation, hooks, and agents",
+        "stars": 9201,
+        "forks": 1186,
+        "updatedAt": "2026-03-09T03:51:43Z",
+        "archived": false,
+        "topics": [],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "JimLiu/baoyu-skills",
+      "url": "https://github.com/JimLiu/baoyu-skills",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "codex"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "JimLiu/baoyu-skills",
+        "description": null,
+        "stars": 7804,
+        "forks": 862,
+        "updatedAt": "2026-03-09T03:53:07Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "claude-skills",
+          "codex-skills",
+          "openclaw-skills"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "htmlstreamofficial/preline",
+      "url": "https://github.com/htmlstreamofficial/preline",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "htmlstreamofficial/preline",
+        "description": "Preline UI is an open-source set of prebuilt UI components based on the utility-first Tailwind CSS framework.",
+        "stars": 6261,
+        "forks": 401,
+        "updatedAt": "2026-03-07T23:24:11Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "css",
+          "html",
+          "javascript",
+          "tailwindcss",
+          "tailwindcss-plugin",
+          "typescript",
+          "ui-components"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "mnfst/manifest",
+      "url": "https://github.com/mnfst/manifest",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "mnfst/manifest",
+        "description": "Smart LLM Routing for OpenClaw. Cut Costs up to 70% 🦞🦚",
+        "stars": 3698,
+        "forks": 186,
+        "updatedAt": "2026-03-09T03:58:57Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai-observability",
+          "clawdbot",
+          "cost-tracking",
+          "llm-observability",
+          "llm-router",
+          "moltbot",
+          "observability",
+          "open",
+          "openclaw",
+          "openclaw-extension",
+          "openclaw-plugin",
+          "opentelemetry",
+          "otlp",
+          "skills",
+          "telemetry",
+          "token-tracking"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "addyosmani/web-quality-skills",
+      "url": "https://github.com/addyosmani/web-quality-skills",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "addyosmani/web-quality-skills",
+        "description": "Agent Skills for optimizing web quality based on Lighthouse and Core Web Vitals.",
+        "stars": 1307,
+        "forks": 119,
+        "updatedAt": "2026-03-09T03:30:01Z",
+        "archived": false,
+        "topics": [
+          "accessibility",
+          "agent-skills",
+          "claude-skills",
+          "core-web-vitals",
+          "lighthouse",
+          "skills",
+          "testing",
+          "web-performance"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "CloudAI-X/claude-workflow-v2",
+      "url": "https://github.com/CloudAI-X/claude-workflow-v2",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "codex"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "CloudAI-X/claude-workflow-v2",
+        "description": "Universal Claude Code workflow plugin with agents, skills, hooks, and commands",
+        "stars": 1291,
+        "forks": 184,
+        "updatedAt": "2026-03-08T11:32:33Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai",
+          "ai-agents",
+          "claude-code",
+          "codex",
+          "cursor",
+          "skills",
+          "workflow"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "cisco-ai-defense/skill-scanner",
+      "url": "https://github.com/cisco-ai-defense/skill-scanner",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "cisco-ai-defense/skill-scanner",
+        "description": "Security Scanner for Agent Skills",
+        "stars": 1185,
+        "forks": 130,
+        "updatedAt": "2026-03-09T03:28:43Z",
+        "archived": false,
+        "topics": [
+          "agent",
+          "agent-skills",
+          "security"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "AvdLee/Swift-Concurrency-Agent-Skill",
+      "url": "https://github.com/AvdLee/Swift-Concurrency-Agent-Skill",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "AvdLee/Swift-Concurrency-Agent-Skill",
+        "description": "Add expert Swift Concurrency guidance to your AI coding tool (Agent Skills open format): safe concurrency, performance optimization, and Swift 6 migration.",
+        "stars": 1184,
+        "forks": 73,
+        "updatedAt": "2026-03-09T02:03:55Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "async-await",
+          "swift",
+          "swift-actor",
+          "swift-concurrency"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "itsmostafa/aws-agent-skills",
+      "url": "https://github.com/itsmostafa/aws-agent-skills",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "codex"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "itsmostafa/aws-agent-skills",
+        "description": "AWS Skills for Agents",
+        "stars": 1014,
+        "forks": 428,
+        "updatedAt": "2026-03-09T03:15:36Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "agentic-ai",
+          "aws",
+          "claude-code",
+          "claude-skills",
+          "codex",
+          "coding-agents"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "softaworks/agent-toolkit",
+      "url": "https://github.com/softaworks/agent-toolkit",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "softaworks/agent-toolkit",
+        "description": "A curated collection of skills for AI coding agents. Skills are packaged instructions and scripts that extend agent capabilities across development, documentation, planning, and professional workflows.",
+        "stars": 952,
+        "forks": 70,
+        "updatedAt": "2026-03-09T03:08:54Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai",
+          "automation",
+          "claude",
+          "claude-code",
+          "coding-agent",
+          "development"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "adithya-s-k/manim_skill",
+      "url": "https://github.com/adithya-s-k/manim_skill",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "adithya-s-k/manim_skill",
+        "description": "Agent skills for Manim to create 3Blue1Brown style animations.",
+        "stars": 664,
+        "forks": 47,
+        "updatedAt": "2026-03-09T03:59:00Z",
+        "archived": false,
+        "topics": [
+          "agent-skills"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "rohitg00/skillkit",
+      "url": "https://github.com/rohitg00/skillkit",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "copilot",
+        "codex",
+        "gemini"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "rohitg00/skillkit",
+        "description": "Supercharge AI coding agents with portable skills. Install, translate & share skills across Claude Code, Cursor, Codex, Copilot & 40 more",
+        "stars": 548,
+        "forks": 46,
+        "updatedAt": "2026-03-09T03:48:47Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "agentskills",
+          "ai",
+          "cli",
+          "codex",
+          "cursor",
+          "gemini",
+          "opencode",
+          "skills"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "ReScienceLab/opc-skills",
+      "url": "https://github.com/ReScienceLab/opc-skills",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "ReScienceLab/opc-skills",
+        "description": "Agent Skills for Solopreneurs",
+        "stars": 542,
+        "forks": 53,
+        "updatedAt": "2026-03-09T00:56:04Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai-tools",
+          "claude-code",
+          "geo",
+          "llm-tools",
+          "opc",
+          "seo"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "23blocks-OS/ai-maestro",
+      "url": "https://github.com/23blocks-OS/ai-maestro",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "codex"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "23blocks-OS/ai-maestro",
+        "description": "AI Agent Orchestrator with Skills System - Give AI Agents superpowers: memory search, code graph queries, agent-to-agent messaging. Manage Claude, Codex or any AI Agent from one dashboard. Move Agents between computers and locations",
+        "stars": 505,
+        "forks": 75,
+        "updatedAt": "2026-03-08T11:33:27Z",
+        "archived": false,
+        "topics": [
+          "agent-communication",
+          "agent-skills",
+          "agentic-ai",
+          "ai-agents",
+          "ai-coding-assistant",
+          "ai-memory",
+          "ai-orchestration",
+          "autonomous-agents",
+          "claude-code",
+          "claude-code-plugins",
+          "claude-code-skills",
+          "clawdbot",
+          "code-graph",
+          "developer-tools",
+          "multi-agent-systems",
+          "openclaw",
+          "pair-programming",
+          "plugin-builder",
+          "tmux"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "rudrankriyam/app-store-connect-cli-skills",
+      "url": "https://github.com/rudrankriyam/app-store-connect-cli-skills",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "rudrankriyam/app-store-connect-cli-skills",
+        "description": "Skills to automate app store deployed and everything related to it using the asc cli",
+        "stars": 451,
+        "forks": 21,
+        "updatedAt": "2026-03-07T10:28:49Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai-skills",
+          "app-store-connect",
+          "apple",
+          "asc",
+          "automation",
+          "cicd",
+          "cli",
+          "devops",
+          "ios",
+          "macos",
+          "testflight",
+          "xcode"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "RoundTable02/tutor-skills",
+      "url": "https://github.com/RoundTable02/tutor-skills",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "RoundTable02/tutor-skills",
+        "description": "A Claude Code skill that turns PDFs, docs, and codebases into Obsidian study vaults",
+        "stars": 425,
+        "forks": 39,
+        "updatedAt": "2026-03-09T03:54:27Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "claude",
+          "claude-code",
+          "claude-skills",
+          "skill",
+          "skills",
+          "skillsmp"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "a5c-ai/babysitter",
+      "url": "https://github.com/a5c-ai/babysitter",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "a5c-ai/babysitter",
+        "description": "Babysitter enforces obedience to agentic workforces and enables them to manage extremely complex tasks and workflows through deterministic, hallucination-free self-orchestration",
+        "stars": 411,
+        "forks": 21,
+        "updatedAt": "2026-03-08T19:34:55Z",
+        "archived": false,
+        "topics": [
+          "agent-orchestration",
+          "agent-skills",
+          "agentic-ai",
+          "agentic-workflow",
+          "ai-agents",
+          "ai-automation",
+          "babysitter",
+          "claude-code",
+          "claude-code-skills",
+          "claude-skills",
+          "trustworthy-ai",
+          "vibe-coding"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "kasperjunge/agent-resources",
+      "url": "https://github.com/kasperjunge/agent-resources",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "kasperjunge/agent-resources",
+        "description": "A package manager for AI agents. Install agent skills from GitHub with a single command.",
+        "stars": 410,
+        "forks": 34,
+        "updatedAt": "2026-03-07T10:03:55Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "claude-code",
+          "claude-code-skills"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "ghostsecurity/skills",
+      "url": "https://github.com/ghostsecurity/skills",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "ghostsecurity/skills",
+        "description": "Ghost Security's collection of AppSec skills for AI coding agents",
+        "stars": 362,
+        "forks": 20,
+        "updatedAt": "2026-03-09T03:37:30Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "agents",
+          "ai",
+          "security"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "luochang212/dive-into-langgraph",
+      "url": "https://github.com/luochang212/dive-into-langgraph",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "luochang212/dive-into-langgraph",
+        "description": "LangGraph 1.0 Tutorial",
+        "stars": 338,
+        "forks": 44,
+        "updatedAt": "2026-03-08T18:31:13Z",
+        "archived": false,
+        "topics": [
+          "agent",
+          "agent-skills",
+          "e-book",
+          "guide",
+          "handbook",
+          "langchain",
+          "langgraph"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "vueuse/skills",
+      "url": "https://github.com/vueuse/skills",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "vueuse/skills",
+        "description": "Agent Skills for VueUse",
+        "stars": 331,
+        "forks": 7,
+        "updatedAt": "2026-03-07T23:31:25Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "agents",
+          "ai",
+          "skills",
+          "vue",
+          "vueuse"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "aaron-he-zhu/seo-geo-claude-skills",
+      "url": "https://github.com/aaron-he-zhu/seo-geo-claude-skills",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "codex"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation",
+        "research"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "aaron-he-zhu/seo-geo-claude-skills",
+        "description": "20 SEO & GEO skills for Claude Code, Cursor, Codex, and 35+ AI agents. Keyword research, content writing, technical audits, rank tracking. CORE-EEAT + CITE frameworks.",
+        "stars": 328,
+        "forks": 44,
+        "updatedAt": "2026-03-09T03:23:40Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai-skills",
+          "claude-code",
+          "claude-skills",
+          "content-optimization",
+          "generative-engine-optimization",
+          "geo",
+          "marketing",
+          "search-engine-optimization",
+          "seo",
+          "seo-tools"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "kazukinagata/shinkoku",
+      "url": "https://github.com/kazukinagata/shinkoku",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "kazukinagata/shinkoku",
+        "description": "確定申告自動化 AI エージェントプラグイン — 帳簿管理から e-Tax 入力代行まで",
+        "stars": 279,
+        "forks": 23,
+        "updatedAt": "2026-03-09T01:19:31Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "bookkeeping",
+          "claude-code-plugin",
+          "claude-code-skills",
+          "japan",
+          "python",
+          "tax-filing"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "AvdLee/Swift-Testing-Agent-Skill",
+      "url": "https://github.com/AvdLee/Swift-Testing-Agent-Skill",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "AvdLee/Swift-Testing-Agent-Skill",
+        "description": "An agent skill focused entirely on Swift Testing, helping you write better tests, migrate from XCTest, improve test architecture, and adopt modern Swift testing patterns with confidence.",
+        "stars": 248,
+        "forks": 11,
+        "updatedAt": "2026-03-08T20:33:58Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "swift",
+          "swift-testing"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "quailyquaily/aqua",
+      "url": "https://github.com/quailyquaily/aqua",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "quailyquaily/aqua",
+        "description": "Aqua, a cli message tool for AI agents ",
+        "stars": 242,
+        "forks": 14,
+        "updatedAt": "2026-03-06T21:50:52Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "agent-tools",
+          "ai-agents"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "milady-ai/milady",
+      "url": "https://github.com/milady-ai/milady",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "milady-ai/milady",
+        "description": "terminally online",
+        "stars": 239,
+        "forks": 52,
+        "updatedAt": "2026-03-09T03:24:39Z",
+        "archived": false,
+        "topics": [
+          "agent",
+          "agent-skills",
+          "agents",
+          "autonomous-agents",
+          "clawd",
+          "clawdbot",
+          "clawdbot-plugin",
+          "eliza",
+          "elizaos",
+          "openclaw",
+          "openclaw-skills"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "awslabs/agent-plugins",
+      "url": "https://github.com/awslabs/agent-plugins",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "awslabs/agent-plugins",
+        "description": "Agent Plugins for AWS equip AI coding agents with the skills to help you architect, deploy, and operate on AWS.",
+        "stars": 217,
+        "forks": 31,
+        "updatedAt": "2026-03-08T17:49:51Z",
+        "archived": false,
+        "topics": [
+          "agent-plugins",
+          "agent-skills",
+          "agents",
+          "aws",
+          "coding-agent-skills",
+          "coding-agents"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "zxkane/aws-skills",
+      "url": "https://github.com/zxkane/aws-skills",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "zxkane/aws-skills",
+        "description": "Claude Agent Skills for AWS",
+        "stars": 200,
+        "forks": 20,
+        "updatedAt": "2026-03-09T01:41:03Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "aws",
+          "aws-agentc",
+          "aws-agentcore",
+          "aws-cdk",
+          "aws-serverless-architecture",
+          "claude-code",
+          "claude-plugin",
+          "claude-skills",
+          "event-driven-architecture"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "bowenliang123/markdown-exporter",
+      "url": "https://github.com/bowenliang123/markdown-exporter",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "bowenliang123/markdown-exporter",
+        "description": "An Agent Skill and Dify plugin to transform Markdown to files of DOCX, PPTX, XLSX, PNG, PDF, Mermaid, HTML, MD, CSV, JSON, XML.",
+        "stars": 188,
+        "forks": 49,
+        "updatedAt": "2026-03-05T06:45:30Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "dify",
+          "dify-plugin",
+          "markdown"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "countbot-ai/CountBot",
+      "url": "https://github.com/countbot-ai/CountBot",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "countbot-ai/CountBot",
+        "description": "专为个人用户打造的开源 AI Agent — 轻量、易用、更适合中文用户 |  智能记忆 · Skills拓展 · 模块化 · 国产大模型深度适配 | 轻量级中文OpenClaw，支持微博龙虾、飞书、钉钉、Telegram远程控制，QQ交流群（1028356423）。",
+        "stars": 184,
+        "forks": 31,
+        "updatedAt": "2026-03-09T03:32:04Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai-agents",
+          "ai-assisted",
+          "assistant",
+          "official"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "shinpr/ai-coding-project-boilerplate",
+      "url": "https://github.com/shinpr/ai-coding-project-boilerplate",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "shinpr/ai-coding-project-boilerplate",
+        "description": "Agentic coding TypeScript boilerplate for Claude Code — sub-agent workflows with built-in quality checks and context engineering.",
+        "stars": 182,
+        "forks": 19,
+        "updatedAt": "2026-03-08T07:38:00Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "agentic-ai",
+          "agentic-workflow",
+          "ai-agents",
+          "boilerplate",
+          "claude-code",
+          "developer-tools",
+          "llm-orchestration",
+          "productivity",
+          "quality-gates",
+          "skills",
+          "typescript"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "DougTrajano/pydantic-ai-skills",
+      "url": "https://github.com/DougTrajano/pydantic-ai-skills",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "DougTrajano/pydantic-ai-skills",
+        "description": "This package implements Agent Skills (https://agentskills.io) support with progressive disclosure for Pydantic AI. Supports filesystem and programmatic skills.",
+        "stars": 147,
+        "forks": 14,
+        "updatedAt": "2026-03-09T03:33:23Z",
+        "archived": false,
+        "topics": [
+          "agent-framework",
+          "agent-skills",
+          "agentic-ai",
+          "ai-agents",
+          "claude-code",
+          "pydantic-ai",
+          "python"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "microsoft/GitHub-Copilot-for-Azure",
+      "url": "https://github.com/microsoft/GitHub-Copilot-for-Azure",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "copilot"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "microsoft/GitHub-Copilot-for-Azure",
+        "description": "GitHub Copilot for Azure",
+        "stars": 143,
+        "forks": 93,
+        "updatedAt": "2026-03-08T15:52:04Z",
+        "archived": false,
+        "topics": [
+          "agent-skills"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "open-gitagent/gitagent",
+      "url": "https://github.com/open-gitagent/gitagent",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "open-gitagent/gitagent",
+        "description": "A framework-agnostic, git-native standard for defining AI agents",
+        "stars": 138,
+        "forks": 14,
+        "updatedAt": "2026-03-08T08:20:23Z",
+        "archived": false,
+        "topics": [
+          "agent",
+          "agent-framework",
+          "agent-skills",
+          "agents",
+          "assistant",
+          "claude-code",
+          "gitagent",
+          "open-standard",
+          "openclaw",
+          "skills"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "wednesday-solutions/ai-agent-skills",
+      "url": "https://github.com/wednesday-solutions/ai-agent-skills",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "copilot"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "wednesday-solutions/ai-agent-skills",
+        "description": "Pre-configured agent skills for Vibe Coded projects. These skills provide AI coding assistants (Claude Code, Cursor, etc.) with specific guidelines for code quality and design standards.",
+        "stars": 134,
+        "forks": 15,
+        "updatedAt": "2026-03-08T02:35:27Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai-agent-skills",
+          "ai-skills",
+          "claude-code",
+          "copilot",
+          "cursor",
+          "frontend-skills",
+          "product-engineering-skills",
+          "vibe-coding",
+          "vibe-coding-skills"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "partme-ai/full-stack-skills",
+      "url": "https://github.com/partme-ai/full-stack-skills",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "partme-ai/full-stack-skills",
+        "description": "这是一个免费的全栈开发所需的技能市场，提供各种实用的 AI 技能集合，支持多种平台。",
+        "stars": 133,
+        "forks": 28,
+        "updatedAt": "2026-03-09T03:49:40Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "claude-code",
+          "codebuddy",
+          "cursor",
+          "qoder",
+          "skills"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "wiz-sec-public/SITF",
+      "url": "https://github.com/wiz-sec-public/SITF",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "wiz-sec-public/SITF",
+        "description": "A comprehensive framework for analyzing and defending against attacks targeting Software Development Life Cycle Infrastructure.",
+        "stars": 130,
+        "forks": 13,
+        "updatedAt": "2026-03-07T17:47:00Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "sdlc-security",
+          "security-tools"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "arpitg1304/robotics-agent-skills",
+      "url": "https://github.com/arpitg1304/robotics-agent-skills",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "copilot"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "arpitg1304/robotics-agent-skills",
+        "description": "Agent skills that make AI coding assistants write production-grade robotics software. ROS1, ROS2, design patterns, SOLID principles, and testing — for Claude Code, Cursor, Copilot, and any SKILL.md-compatible agent.",
+        "stars": 130,
+        "forks": 22,
+        "updatedAt": "2026-03-09T02:50:54Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai-coding-assistant",
+          "claude-skills",
+          "robotics"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "nicepkg/ai-workflow",
+      "url": "https://github.com/nicepkg/ai-workflow",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "codex",
+        "gemini"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "nicepkg/ai-workflow",
+        "description": "  🚀 170+ pre-built skills for Claude Code, Cursor, Codex & 14+ AI tools. Stop re-teaching your AI the same things. One command → instant domain expertise. Marketing, SEO,   Trading, Video, PM workflows included.",
+        "stars": 126,
+        "forks": 23,
+        "updatedAt": "2026-03-07T22:37:01Z",
+        "archived": false,
+        "topics": [
+          "agent",
+          "agent-skills",
+          "ai",
+          "anthropic",
+          "claude",
+          "claude-code",
+          "codex",
+          "cursor",
+          "gemini",
+          "open-code",
+          "openai",
+          "skills",
+          "workflow"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "kevinluosl/deepbot",
+      "url": "https://github.com/kevinluosl/deepbot",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "kevinluosl/deepbot",
+        "description": "DeepBot Terminal 是一个系统 AI 助手，相比于 OpenClaw 的 Geek 风格，DeepBot 提供更便捷的安装使用方式，DeepBot 会更多探索企业生产提效方向",
+        "stars": 126,
+        "forks": 9,
+        "updatedAt": "2026-03-09T03:56:09Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "agentic-workflow",
+          "ai-agents",
+          "openclaw"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "rodydavis/agent-skills-generator",
+      "url": "https://github.com/rodydavis/agent-skills-generator",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "rodydavis/agent-skills-generator",
+        "description": "Generate agent skills from website documentation",
+        "stars": 120,
+        "forks": 6,
+        "updatedAt": "2026-03-06T13:14:08Z",
+        "archived": false,
+        "topics": [
+          "agent",
+          "agent-skills",
+          "ai",
+          "go",
+          "skills"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "aannoo/hcom",
+      "url": "https://github.com/aannoo/hcom",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude",
+        "codex",
+        "gemini"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "aannoo/hcom",
+        "description": "Let AI agents message, watch, and spawn each other across terminals. Claude Code, Gemini CLI, Codex, OpenCode",
+        "stars": 115,
+        "forks": 15,
+        "updatedAt": "2026-03-08T20:37:19Z",
+        "archived": false,
+        "topics": [
+          "agent",
+          "agent-skills",
+          "ai",
+          "ai-agents",
+          "ai-tools",
+          "automation",
+          "claude",
+          "claude-code",
+          "claude-code-hooks",
+          "cli",
+          "codex",
+          "coding-agent",
+          "communication",
+          "developer-tools",
+          "gemini-cli",
+          "multi-agent",
+          "opencode",
+          "orchestration",
+          "subagents",
+          "terminal"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "kevmoo/dash_skills",
+      "url": "https://github.com/kevmoo/dash_skills",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "kevmoo/dash_skills",
+        "description": "Agent Skills for Dart and Flutter ecosytem",
+        "stars": 114,
+        "forks": 14,
+        "updatedAt": "2026-03-08T20:19:45Z",
+        "archived": false,
+        "topics": [
+          "agent-skills"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "Kyure-A/agent-skills-nix",
+      "url": "https://github.com/Kyure-A/agent-skills-nix",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "Kyure-A/agent-skills-nix",
+        "description": "Declarative management of Agent Skills on Nix",
+        "stars": 112,
+        "forks": 8,
+        "updatedAt": "2026-03-04T16:25:14Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "claude-skills",
+          "nix",
+          "skills"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "dean9703111/ai-agent-skill-for-video-workflow",
+      "url": "https://github.com/dean9703111/ai-agent-skill-for-video-workflow",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "dean9703111/ai-agent-skill-for-video-workflow",
+        "description": "這是一個專為影片字幕處理設計的 AI Agent Skills 集合，提供從音訊轉字幕、優化字幕、設計字卡到生成社群媒體摘要的完整工作流程。",
+        "stars": 111,
+        "forks": 28,
+        "updatedAt": "2026-03-08T14:09:08Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "ai",
+          "ai-agent",
+          "ai-agent-skills",
+          "antigravity",
+          "workflow"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "adaptyvbio/protein-design-skills",
+      "url": "https://github.com/adaptyvbio/protein-design-skills",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "adaptyvbio/protein-design-skills",
+        "description": "Claude Code skills for protein design",
+        "stars": 108,
+        "forks": 10,
+        "updatedAt": "2026-03-08T12:22:09Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "claude-code",
+          "protein-design",
+          "protein-engineering"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "PrefectHQ/colin",
+      "url": "https://github.com/PrefectHQ/colin",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "claude"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "PrefectHQ/colin",
+        "description": "A context engine that treats skills as software.",
+        "stars": 106,
+        "forks": 6,
+        "updatedAt": "2026-03-07T18:59:21Z",
+        "archived": false,
+        "topics": [
+          "agent",
+          "agent-skills",
+          "claude",
+          "claude-skills",
+          "context",
+          "context-engineering",
+          "skills"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    },
+    {
+      "id": "Bauhinia-AI/aivilization-claw",
+      "url": "https://github.com/Bauhinia-AI/aivilization-claw",
+      "sourceKind": "repo",
+      "repoClass": "public-implementation",
+      "sourceGroup": "github-discovery",
+      "platformTargets": [
+        "multi-agent"
+      ],
+      "useFor": [
+        "discovery",
+        "taxonomy",
+        "candidate-ranking"
+      ],
+      "taxonomySignals": [
+        "coding",
+        "automation"
+      ],
+      "manualNotes": "Discovered automatically from GitHub topic/search and awesome-list outbound links. Review before using for canonical wording.",
+      "github": {
+        "fullName": "Bauhinia-AI/aivilization-claw",
+        "description": "Bring your Agent like OpenClaw into AIvilization and let it live as a resident in a persistent AI town.",
+        "stars": 103,
+        "forks": 0,
+        "updatedAt": "2026-03-07T02:00:24Z",
+        "archived": false,
+        "topics": [
+          "agent-skills",
+          "aivilization",
+          "skill"
+        ],
+        "isFork": false
+      },
+      "readmeSignals": null,
+      "linkedRepoIds": [],
+      "fetchStatus": "ok",
+      "fetchNotes": [],
+      "discoveryScore": 7
+    }
+  ],
+  "summary": {
+    "directSourceCount": 27,
+    "discoveredRepoCount": 100
+  }
+}

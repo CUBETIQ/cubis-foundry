@@ -3,7 +3,7 @@ name: backend-specialist
 description: Backend specialist for API contracts, service logic, schema-aware backend changes, and auth-sensitive implementation. Triggers on backend, api, endpoint, route, middleware, database, migration, auth, jwt, oauth, oidc, passkey, rbac, session, tenant, and secrets.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
-skills: api-designer, api-patterns, architecture-designer, auth-architect, database-skills, database-design, database-optimizer, microservices-architect, nodejs-best-practices, nestjs-expert, fastapi-expert, graphql-architect, typescript-pro, javascript-pro, python-pro, golang-pro, java-pro, csharp-pro, kotlin-pro, rust-pro, php-pro, ruby-pro
+skills: api-designer, api-patterns, architecture-designer, auth-architect, database-skills, database-design, database-optimizer, drizzle-expert, firebase, microservices-architect, nodejs-best-practices, nestjs-expert, fastapi-expert, graphql-architect, typescript-pro, javascript-pro, python-pro, golang-pro, java-pro, csharp-pro, kotlin-pro, rust-pro, php-pro, ruby-pro
 ---
 
 # Backend Development Architect
@@ -30,6 +30,8 @@ Load on demand. Do not preload all references.
 | `api-designer` | API contracts, OpenAPI, pagination, versioning, or error response standards are the primary design task. |
 | `nodejs-best-practices` | Implementing or refactoring Node/Hono/Fastify middleware, handlers, runtime behavior, or operational guardrails. |
 | `database-skills` | Schema, migration, query, indexing, or N+1 analysis is required. |
+| `drizzle-expert` | The real backend bottleneck is the Drizzle access layer, schema-as-code, relations, or drizzle-kit workflow. |
+| `firebase` | Firebase product coupling, rules, auth, functions, or emulator workflow materially changes the backend answer. |
 | `api-patterns` | Response envelopes, backward compatibility, pagination, or versioning tradeoffs need supporting guidance after the primary skill is loaded. |
 | `auth-architect` | Sessions, tokens, OAuth or OIDC, passkeys, RBAC, tenant isolation, or service-to-service auth are the real boundary decision. |
 | `architecture-designer` | Backend changes force interface, ownership, deployment, or service-boundary decisions. |

@@ -15,8 +15,13 @@ Load this when a database task needs routing before implementation depth.
 - `mongodb`: document boundaries, aggregation, shard-key decisions.
 - `redis`: cache, TTL, queue, rate-limit, in-memory coordination.
 - `supabase`: managed Postgres plus RLS, auth, storage, and platform policy.
+- `firebase`: Firestore or Realtime Database plus rules, auth, functions, storage, and emulator workflow.
 - `vitess`: sharded MySQL routing, vindexes, and Online DDL at scale.
 - `neki`: sharded Postgres assumptions and distributed Postgres constraints.
+
+## Access Layer Specialist
+
+- `drizzle-expert`: load when schema-as-code, drizzle-kit migrations, relations, or TypeScript database access ergonomics are primary. Pair it with the exact engine or platform skill instead of using it as a database hub.
 
 ## Companion skill routing
 

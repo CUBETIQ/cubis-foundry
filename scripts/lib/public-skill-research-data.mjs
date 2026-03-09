@@ -7,6 +7,49 @@ export const DISCOVERY_QUERIES = [
   "site:github.com \"ai agent skills\" github repo coding frameworks databases",
 ];
 
+export const GITHUB_DISCOVERY_QUERIES = [
+  "topic:agent-skills",
+  "\"agent skills\" in:name,description,readme",
+  "\"claude skills\" in:name,description,readme",
+  "\"mcp\" \"skill\" in:name,description,readme",
+  "\"database\" \"skill\" in:name,description,readme",
+];
+
+export const DIRECT_WEB_SOURCES = [
+  {
+    id: "github-topic-agent-skills",
+    url: "https://github.com/topics/agent-skills",
+    sourceKind: "topic-index",
+    sourceGroup: "curated-discovery",
+    platformTargets: ["multi-agent"],
+    useFor: ["discovery", "trend-check", "top-repo-harvest"],
+    taxonomySignals: ["directory", "discovery", "coding", "automation"],
+    mappedOutcome: "packaging_signal_only",
+    mapsToSkills: ["skill-creator", "deep-research"],
+    manualNotes:
+      "Dynamic topic directory for harvesting the top 100 relevant public repos. Use for breadth and trend detection, not canonical wording.",
+  },
+  {
+    id: "agentailor-top-agent-skills-2026",
+    url: "https://blog.agentailor.com/posts/top-agent-skills-for-agent-builders-2026",
+    sourceKind: "blog",
+    sourceGroup: "curated-discovery",
+    platformTargets: ["multi-agent"],
+    useFor: ["agent-builder-taxonomy", "priority-ranking"],
+    taxonomySignals: ["prompting", "evaluation", "mcp", "docs", "research"],
+    mappedOutcome: "strengthen_existing",
+    mapsToSkills: [
+      "prompt-engineer",
+      "skill-creator",
+      "mcp-builder",
+      "agentic-eval",
+      "openai-docs",
+    ],
+    manualNotes:
+      "Strong blog-level prioritization signal for agent-builder skills. Good for ranking and naming, not for canonical wording.",
+  },
+];
+
 export const PUBLIC_REPO_SEEDS = [
   {
     id: "anthropics/skills",
@@ -217,21 +260,75 @@ export const PUBLIC_REPO_SEEDS = [
     manualNotes:
       "Broad library useful for category spread and repeated naming patterns across public skill packs.",
   },
+  {
+    id: "github/awesome-copilot",
+    url: "https://github.com/github/awesome-copilot",
+    repoClass: "awesome-list",
+    sourceGroup: "curated-discovery",
+    platformTargets: ["copilot"],
+    useFor: ["discovery", "agent-builder-taxonomy", "copilot-packaging"],
+    taxonomySignals: ["copilot", "agents", "skills", "evaluation", "automation"],
+    manualNotes:
+      "High-signal list for Copilot-native agents and skills, especially evaluation and repo-aware automation patterns.",
+  },
+  {
+    id: "trailofbits/skills",
+    url: "https://github.com/trailofbits/skills",
+    repoClass: "public-implementation",
+    sourceGroup: "community-library",
+    platformTargets: ["claude", "multi-agent"],
+    useFor: ["security-review", "skill-quality", "narrow-specialists"],
+    taxonomySignals: ["security", "audit", "research", "workflow"],
+    manualNotes:
+      "Security-heavy skill pack useful for quality and bounded-specialist patterns rather than broad coding coverage.",
+  },
+  {
+    id: "antfu/skills",
+    url: "https://github.com/antfu/skills",
+    repoClass: "public-implementation",
+    sourceGroup: "community-library",
+    platformTargets: ["claude", "multi-agent"],
+    useFor: ["coding-specialists", "quality", "workflow-shape"],
+    taxonomySignals: ["coding", "tooling", "automation", "frontend"],
+    manualNotes:
+      "Smaller curated personal library with high-quality coding and tooling specialists.",
+  },
+  {
+    id: "refly-ai/refly",
+    url: "https://github.com/refly-ai/refly",
+    repoClass: "public-implementation",
+    sourceGroup: "workflow-and-planning",
+    platformTargets: ["multi-agent"],
+    useFor: ["skill-builder-patterns", "workflow-authoring", "portability"],
+    taxonomySignals: ["builder", "workflow", "skills", "multi-agent"],
+    manualNotes:
+      "Builder-oriented project that treats skills as workflow infrastructure, useful for authoring ergonomics and portability.",
+  },
+  {
+    id: "agentailor/create-mcp-server",
+    url: "https://github.com/agentailor/create-mcp-server",
+    repoClass: "public-implementation",
+    sourceGroup: "workflow-and-planning",
+    platformTargets: ["multi-agent", "mcp"],
+    useFor: ["mcp-builder", "scaffolding", "agent-builder-taxonomy"],
+    taxonomySignals: ["mcp", "scaffold", "typescript", "python", "automation"],
+    manualNotes:
+      "Strong benchmark for MCP server scaffolding and practical builder workflows. Use as input to mcp-builder, not as a standalone Foundry canonical.",
+  },
+  {
+    id: "hoodini/ai-agents-skills",
+    url: "https://github.com/hoodini/ai-agents-skills",
+    repoClass: "aggregate-library",
+    sourceGroup: "community-library",
+    platformTargets: ["multi-agent"],
+    useFor: ["taxonomy", "missing-family-detection", "packaging-scan"],
+    taxonomySignals: ["coding", "automation", "workflow", "skills"],
+    manualNotes:
+      "Community library requested explicitly by the user. Good for breadth and category detection even if individual skill quality varies.",
+  },
 ];
 
 export const NEW_SKILL_CANDIDATES = [
-  {
-    id: "drizzle-expert",
-    cluster: "architecture-databases",
-    priority: "medium",
-    benchmarkRepoIds: [
-      "vercel-labs/agent-skills",
-      "travisvn/awesome-claude-skills",
-      "Microck/ordinary-claude-skills",
-    ],
-    rationale:
-      "Typed TypeScript database stacks recur often enough that an ORM-specific specialist may be warranted.",
-  },
   {
     id: "github-workflow",
     cluster: "workflow-and-automation",
@@ -257,18 +354,6 @@ export const NEW_SKILL_CANDIDATES = [
       "PR drafting and review-prep appear often enough to justify a narrow workflow skill if GitHub automation becomes first-class.",
   },
   {
-    id: "mcp-builder",
-    cluster: "workflow-and-automation",
-    priority: "medium",
-    benchmarkRepoIds: [
-      "cnemri/google-genai-skills",
-      "VoltAgent/awesome-agent-skills",
-      "Jeffallan/claude-skills",
-    ],
-    rationale:
-      "MCP and agent-tooling construction appears repeatedly enough to justify a first-class Foundry skill family.",
-  },
-  {
     id: "docs-updater",
     cluster: "support-and-noncoding",
     priority: "medium",
@@ -292,36 +377,102 @@ export const NEW_SKILL_CANDIDATES = [
     rationale:
       "Research and evidence synthesis appear across many public skill packs and can complement coding and architecture work.",
   },
+  {
+    id: "clickhouse-analytics",
+    cluster: "architecture-databases",
+    priority: "medium",
+    benchmarkRepoIds: [
+      "Jeffallan/claude-skills",
+      "VoltAgent/awesome-agent-skills",
+      "skillmatic-ai/awesome-agent-skills",
+    ],
+    rationale:
+      "Analytics and event-query workloads appear often enough to justify a separate warehouse-style specialist if the corpus keeps recurring.",
+  },
+  {
+    id: "elasticsearch-opensearch",
+    cluster: "architecture-databases",
+    priority: "medium",
+    benchmarkRepoIds: [
+      "Jeffallan/claude-skills",
+      "VoltAgent/awesome-agent-skills",
+      "github/awesome-copilot",
+    ],
+    rationale:
+      "Search-first data systems recur separately from OLTP databases and need their own indexing, relevance, and ingest boundaries.",
+  },
+  {
+    id: "kafka-streams",
+    cluster: "architecture-databases",
+    priority: "medium",
+    benchmarkRepoIds: [
+      "Jeffallan/claude-skills",
+      "VoltAgent/awesome-agent-skills",
+      "github/awesome-copilot",
+    ],
+    rationale:
+      "Event streaming and log-based data-flow skills recur separately from database design and should stay their own concern if promoted later.",
+  },
+  {
+    id: "pgvector-rag",
+    cluster: "architecture-databases",
+    priority: "medium",
+    benchmarkRepoIds: [
+      "vercel-labs/agent-skills",
+      "Jeffallan/claude-skills",
+      "github/awesome-copilot",
+    ],
+    rationale:
+      "Database-native vector retrieval and hybrid search show up often enough to justify a future specialist separate from generic Postgres or RAG guidance.",
+  },
 ];
 
 export const CLUSTER_REWRITE_PRIORITIES = [
   {
-    cluster: "backend-frameworks",
+    cluster: "api-and-frontend",
     priority: 1,
+    rationale:
+      "Frontend and API design skills still have the highest overlap with public coding skill ecosystems and need clear benchmark ordering.",
+  },
+  {
+    cluster: "backend-frameworks",
+    priority: 2,
     rationale:
       "Highest overlap with public coding skill ecosystems and most likely to benefit from broader benchmark tightening.",
   },
   {
     cluster: "architecture-databases",
-    priority: 2,
+    priority: 3,
     rationale:
       "Current shapes are good, but public breadth can still improve engine, platform, and architecture decision boundaries.",
   },
   {
     cluster: "languages",
-    priority: 3,
+    priority: 4,
     rationale:
       "Language packs are stable, but the public corpus can still identify which need deeper sidecars or should remain intentionally lean.",
   },
   {
     cluster: "workflow-and-automation",
-    priority: 4,
+    priority: 5,
     rationale:
       "Broader public workflow and installer ecosystems are likely to surface the most net-new candidate skills here.",
   },
   {
+    cluster: "agent-builder",
+    priority: 6,
+    rationale:
+      "Direct user-requested builder skills need explicit rewrite specs and stronger public-source mapping than the generic workflow cluster currently provides.",
+  },
+  {
+    cluster: "testing-security-review",
+    priority: 7,
+    rationale:
+      "Testing, review, and security skills remain important, but the current user request prioritizes database and builder waves first.",
+  },
+  {
     cluster: "support-and-noncoding",
-    priority: 5,
+    priority: 8,
     rationale:
       "Everything-scope research should still surface non-coding support families even if implementation happens later.",
   },
@@ -353,6 +504,14 @@ export const DISTRIBUTION_REPOS = [
   "gotalab/skillport",
   "vercel-labs/skills",
   "mhattingpete/claude-skills-marketplace",
+];
+
+export const DIRECT_SOURCE_REPO_IDS = [
+  ...PUBLIC_REPO_SEEDS.map((seed) => seed.id),
+  "skillmatic-ai/awesome-agent-skills",
+  "heilcheng/awesome-agent-skills",
+  "agentailor/create-mcp-server",
+  "hoodini/ai-agents-skills",
 ];
 
 function languageSkillSpec(extra = {}) {
@@ -462,6 +621,26 @@ export const CURRENT_SKILL_REWRITE_SPECS = {
       "The better public pattern is a hub plus narrow engine or concern specialists rather than one giant database manual.",
     ],
   },
+  firebase: {
+    action: "add",
+    cluster: "architecture-databases",
+    benchmarkRepoIds: [
+      "Jeffallan/claude-skills",
+      "VoltAgent/awesome-agent-skills",
+      "github/awesome-copilot",
+    ],
+    decision:
+      "Add as the Firebase platform specialist and keep it separate from generic database and generic backend guidance.",
+    keep:
+      "Firestore or Realtime Database choice, security rules, indexes, auth, storage, functions, hosting, and emulator workflow as the core trigger surface.",
+    change:
+      "Keep the boundary tight around Firebase platform decisions and avoid broadening into generic GCP or generic mobile architecture.",
+    packagingNext:
+      "Root plus Firebase platform-routing checklist and rules/indexes reference; no scripts in the first pass.",
+    publicSignals: [
+      "Public agent-skill libraries repeatedly treat Firebase as a platform workflow, not just a database driver.",
+    ],
+  },
   "database-design": {
     action: "keep-and-tighten",
     cluster: "architecture-databases",
@@ -492,6 +671,27 @@ export const CURRENT_SKILL_REWRITE_SPECS = {
       "Keep root plus query-triage checklist; no scripts until a standard measurement workflow is worth encoding.",
     publicSignals: [
       "Public performance skills are strongest when they stay evidence-first and rollback-aware.",
+    ],
+  },
+  "drizzle-expert": {
+    action: "add",
+    cluster: "architecture-databases",
+    benchmarkRepoIds: [
+      "vercel-labs/agent-skills",
+      "travisvn/awesome-claude-skills",
+      "Microck/ordinary-claude-skills",
+      "github/awesome-copilot",
+    ],
+    decision:
+      "Add as the TypeScript database access-layer specialist and keep it separate from both plain engine guidance and generic TypeScript.",
+    keep:
+      "Schema-as-code, relations, drizzle-kit migrations, typed SQL, runtime pairing, and serverless or edge tradeoffs as the core trigger surface.",
+    change:
+      "Keep engine choice separate by pairing Drizzle with the narrow engine or platform skill rather than broadening this into a giant database manual.",
+    packagingNext:
+      "Root plus schema-layout and runtime-pairing references; no scripts in the first pass.",
+    publicSignals: [
+      "Typed TypeScript DB stacks recur often enough across public libraries that Drizzle merits its own narrow specialist.",
     ],
   },
   "design-system-builder": {
@@ -766,9 +966,89 @@ export const CURRENT_SKILL_REWRITE_SPECS = {
       "Public libraries consistently treat Redis as a distinct concern because cache and coordination semantics differ from primary data stores.",
     ],
   },
+  "agentic-eval": {
+    action: "add",
+    cluster: "agent-builder",
+    benchmarkRepoIds: ["github/awesome-copilot", "VoltAgent/awesome-agent-skills", "anthropics/skills"],
+    decision:
+      "Add as the evaluation-method specialist and keep it separate from debugging, testing, and generic prompt tuning.",
+    keep:
+      "Self-critique loops, evaluator-optimizer pipelines, rubric design, judge-model caveats, and regression evidence as the core boundary.",
+    change:
+      "Keep this focused on evaluation design and evidence quality rather than absorbing broad QA or benchmark infrastructure work.",
+    packagingNext:
+      "Root plus rubric-and-regression references; no scripts until Foundry standardizes a reusable eval scaffold.",
+    publicSignals: [
+      "Agent-builder ecosystems repeatedly separate evaluation design from implementation work because prototype quality and production quality diverge fast.",
+    ],
+  },
+  "deep-research": {
+    action: "add",
+    cluster: "agent-builder",
+    benchmarkRepoIds: ["Jeffallan/claude-skills", "VoltAgent/awesome-agent-skills", "heilcheng/awesome-agent-skills"],
+    decision:
+      "Add as the research-method specialist and keep it separate from domain-specific implementation or documentation writing.",
+    keep:
+      "Multi-round search, gap finding, corroboration, contradiction handling, and source-quality ranking as the core trigger surface.",
+    change:
+      "Keep it procedural and evidence-heavy rather than turning it into a generic writing or browser-usage skill.",
+    packagingNext:
+      "Root plus search-loop and source-ranking references; no scripts in the first pass.",
+    publicSignals: [
+      "Community skill packs increasingly rely on deep-research workflows as a reusable foundational capability rather than ad hoc browsing.",
+    ],
+  },
+  "mcp-builder": {
+    action: "add",
+    cluster: "agent-builder",
+    benchmarkRepoIds: ["anthropics/skills", "agentailor/create-mcp-server", "cnemri/google-genai-skills"],
+    decision:
+      "Add as the canonical MCP server builder skill and keep it focused on server design, transport, schemas, testing, and evaluation.",
+    keep:
+      "Tool design, resource patterns, transport choices, auth, testing, and Python-vs-TypeScript implementation tradeoffs as the core surface.",
+    change:
+      "Keep direct scaffolding examples and evaluation guidance in references rather than bloating the root.",
+    packagingNext:
+      "Root plus transport/testing references; scripts later only if Foundry standardizes MCP scaffolding.",
+    publicSignals: [
+      "MCP builder guidance now recurs across Anthropic, community repos, and builder tools strongly enough to justify a first-class Foundry canonical.",
+    ],
+  },
+  "openai-docs": {
+    action: "add",
+    cluster: "agent-builder",
+    benchmarkRepoIds: ["openai/skills", "agentailor/create-mcp-server", "github/awesome-copilot"],
+    decision:
+      "Add as the live-doc retrieval specialist for OpenAI platform work and keep it separate from generic API design and generic web research.",
+    keep:
+      "Official-doc lookup, citation discipline, stale-knowledge fallback, and version-sensitive OpenAI guidance as the core trigger surface.",
+    change:
+      "Keep it scoped to OpenAI documentation and live-source verification rather than broadening into a universal docs-search skill.",
+    packagingNext:
+      "Root plus official-source and citation reference; no scripts in the first pass.",
+    publicSignals: [
+      "Live docs retrieval is increasingly treated as a distinct capability because model memory alone is not enough for fast-moving platform guidance.",
+    ],
+  },
+  "prompt-engineer": {
+    action: "add",
+    cluster: "agent-builder",
+    benchmarkRepoIds: ["heilcheng/awesome-agent-skills", "agentailor-top-agent-skills-2026", "github/awesome-copilot"],
+    decision:
+      "Add as the prompt and instruction quality specialist and keep it separate from generic writing, evaluation, and skill authoring.",
+    keep:
+      "Ambiguity detection, missing format constraints, prompt injection review, and instruction robustness as the core trigger surface.",
+    change:
+      "Keep it grounded in operational prompt quality and failure prevention instead of broadening into speculative prompt theory.",
+    packagingNext:
+      "Root plus prompt-review checklist and injection-hygiene reference; no scripts in the first pass.",
+    publicSignals: [
+      "Prompt quality review keeps recurring as a foundational builder skill because weak instructions break otherwise solid agent systems.",
+    ],
+  },
   "skill-creator": {
     action: "keep-and-expand",
-    cluster: "workflow-and-automation",
+    cluster: "agent-builder",
     benchmarkRepoIds: [...OFFICIAL_PACKAGING_REPOS, "Jeffallan/claude-skills", "fvadicamo/dev-agent-skills", ...DISTRIBUTION_REPOS],
     decision:
       "Keep as the canonical authoring skill, but deepen its research-refresh and cross-platform packaging playbook as the broader public corpus grows.",

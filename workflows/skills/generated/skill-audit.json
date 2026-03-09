@@ -2,11 +2,20 @@
   "$schema": "cubis-foundry-skill-audit-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
   "summary": {
-    "keep": 45,
+    "keep": 52,
     "review": 0,
     "alias-only": 0
   },
   "entries": [
+    {
+      "id": "agentic-eval",
+      "canonical_id": "agentic-eval",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
     {
       "id": "api-designer",
       "canonical_id": "api-designer",
@@ -116,6 +125,15 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
+      "id": "deep-research",
+      "canonical_id": "deep-research",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
       "id": "design-system-builder",
       "canonical_id": "design-system-builder",
       "status": "keep",
@@ -125,11 +143,29 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
+      "id": "drizzle-expert",
+      "canonical_id": "drizzle-expert",
+      "status": "keep",
+      "layer": "databases",
+      "category": "databases",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
       "id": "fastapi-expert",
       "canonical_id": "fastapi-expert",
       "status": "keep",
       "layer": "frameworks-runtimes",
       "category": "frameworks-runtimes",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "firebase",
+      "canonical_id": "firebase",
+      "status": "keep",
+      "layer": "databases",
+      "category": "databases",
       "tier": "curated",
       "reason": "Canonical skill remains active in the layered catalog."
     },
@@ -197,6 +233,15 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
+      "id": "mcp-builder",
+      "canonical_id": "mcp-builder",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
       "id": "microservices-architect",
       "canonical_id": "microservices-architect",
       "status": "keep",
@@ -260,6 +305,15 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
+      "id": "openai-docs",
+      "canonical_id": "openai-docs",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
       "id": "php-pro",
       "canonical_id": "php-pro",
       "status": "keep",
@@ -284,6 +338,15 @@
       "layer": "databases",
       "category": "databases",
       "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "prompt-engineer",
+      "canonical_id": "prompt-engineer",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
@@ -413,5 +476,5 @@
       "reason": "Canonical skill remains active in the layered catalog."
     }
   ],
-  "contentHash": "bc6a45deb4c53e16"
+  "contentHash": "1fafe7997da9b452"
 }

@@ -2,10 +2,10 @@
   "$schema": "cubis-foundry-skill-catalog-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
   "summary": {
-    "totalEntries": 45,
-    "totalSkills": 45,
+    "totalEntries": 52,
+    "totalSkills": 52,
     "totalSubskills": 0,
-    "canonicalSkills": 45,
+    "canonicalSkills": 52,
     "compatibilityAliases": 0,
     "layers": [
       "core-operating",
@@ -27,6 +27,34 @@
     ]
   },
   "skills": [
+    {
+      "id": "agentic-eval",
+      "package_id": "agentic-eval",
+      "catalog_id": "agentic-eval",
+      "kind": "skill",
+      "path": "workflows/skills/agentic-eval/SKILL.md",
+      "name": "agentic-eval",
+      "description": "Use when evaluating an agent, skill, workflow, or MCP server: rubric design, evaluator-optimizer loops, LLM-as-judge patterns, regression suites, or prototype-vs-production quality gaps.",
+      "canonical": true,
+      "canonical_id": "agentic-eval",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "stable",
+      "tier": "system",
+      "tags": [
+        "agents",
+        "benchmarking",
+        "evaluation",
+        "judge-models",
+        "regression",
+        "rubrics",
+        "workflow-specialists"
+      ],
+      "triggers": []
+    },
     {
       "id": "api-designer",
       "package_id": "api-designer",
@@ -322,7 +350,7 @@
       "kind": "skill",
       "path": "workflows/skills/database-skills/SKILL.md",
       "name": "database-skills",
-      "description": "Use as the primary database hub for engine choice, schema-vs-tuning routing, migration safety framing, and database task triage before engine-specific deep dives.",
+      "description": "Use as the primary database hub for engine or platform choice, schema-vs-tuning routing, access-layer triage, migration safety framing, and database task triage before deeper engine, platform, or ORM specialists.",
       "canonical": true,
       "canonical_id": "database-skills",
       "deprecated": false,
@@ -377,6 +405,34 @@
       "triggers": []
     },
     {
+      "id": "deep-research",
+      "package_id": "deep-research",
+      "catalog_id": "deep-research",
+      "kind": "skill",
+      "path": "workflows/skills/deep-research/SKILL.md",
+      "name": "deep-research",
+      "description": "Use when a task needs multi-round research rather than a quick lookup: iterative search, gap finding, corroboration across sources, contradiction handling, or evidence-led synthesis before planning or implementation.",
+      "canonical": true,
+      "canonical_id": "deep-research",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "stable",
+      "tier": "system",
+      "tags": [
+        "corroboration",
+        "evidence",
+        "planning",
+        "research",
+        "synthesis",
+        "web-search",
+        "workflow-specialists"
+      ],
+      "triggers": []
+    },
+    {
       "id": "design-system-builder",
       "package_id": "design-system-builder",
       "catalog_id": "design-system-builder",
@@ -406,6 +462,35 @@
       "triggers": []
     },
     {
+      "id": "drizzle-expert",
+      "package_id": "drizzle-expert",
+      "catalog_id": "drizzle-expert",
+      "kind": "skill",
+      "path": "workflows/skills/drizzle-expert/SKILL.md",
+      "name": "drizzle-expert",
+      "description": "Use when the task is specifically Drizzle ORM or drizzle-kit: schema-as-code, typed SQL, relations, migrations, config, runtime pairing, or TypeScript database access-layer decisions across Postgres, SQLite/libSQL, Neon, or Supabase.",
+      "canonical": true,
+      "canonical_id": "drizzle-expert",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "databases",
+      "layer": "databases",
+      "maturity": "stable",
+      "tier": "curated",
+      "tags": [
+        "databases",
+        "drizzle",
+        "drizzle-kit",
+        "migrations",
+        "orm",
+        "relations",
+        "sql",
+        "typescript"
+      ],
+      "triggers": []
+    },
+    {
       "id": "fastapi-expert",
       "package_id": "fastapi-expert",
       "catalog_id": "fastapi-expert",
@@ -430,6 +515,35 @@
         "openapi",
         "pydantic",
         "python"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "firebase",
+      "package_id": "firebase",
+      "catalog_id": "firebase",
+      "kind": "skill",
+      "path": "workflows/skills/firebase/SKILL.md",
+      "name": "firebase",
+      "description": "Use when the task is specifically Firebase: Firestore or Realtime Database choice, security rules, indexes, auth, storage, cloud functions, hosting, emulator workflows, or platform-coupled rollout decisions.",
+      "canonical": true,
+      "canonical_id": "firebase",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "databases",
+      "layer": "databases",
+      "maturity": "stable",
+      "tier": "curated",
+      "tags": [
+        "auth",
+        "databases",
+        "firebase",
+        "firestore",
+        "functions",
+        "realtime-database",
+        "rules",
+        "storage"
       ],
       "triggers": []
     },
@@ -636,6 +750,35 @@
       "triggers": []
     },
     {
+      "id": "mcp-builder",
+      "package_id": "mcp-builder",
+      "catalog_id": "mcp-builder",
+      "kind": "skill",
+      "path": "workflows/skills/mcp-builder/SKILL.md",
+      "name": "mcp-builder",
+      "description": "Use when building, extending, or evaluating an MCP server: tool design, resource patterns, transports, auth, schemas, testing, Python or TypeScript implementation, or MCP-specific server architecture decisions.",
+      "canonical": true,
+      "canonical_id": "mcp-builder",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "stable",
+      "tier": "system",
+      "tags": [
+        "evaluation",
+        "mcp",
+        "python",
+        "schemas",
+        "server",
+        "tooling",
+        "typescript",
+        "workflow-specialists"
+      ],
+      "triggers": []
+    },
+    {
       "id": "microservices-architect",
       "package_id": "microservices-architect",
       "catalog_id": "microservices-architect",
@@ -838,6 +981,34 @@
       "triggers": []
     },
     {
+      "id": "openai-docs",
+      "package_id": "openai-docs",
+      "catalog_id": "openai-docs",
+      "kind": "skill",
+      "path": "workflows/skills/openai-docs/SKILL.md",
+      "name": "openai-docs",
+      "description": "Use when the task depends on current OpenAI platform or product documentation: API usage, model behavior, tool features, SDK guidance, or version-sensitive OpenAI docs that should be verified from official sources.",
+      "canonical": true,
+      "canonical_id": "openai-docs",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "stable",
+      "tier": "system",
+      "tags": [
+        "api",
+        "docs",
+        "latest",
+        "official-sources",
+        "openai",
+        "verification",
+        "workflow-specialists"
+      ],
+      "triggers": []
+    },
+    {
       "id": "php-pro",
       "package_id": "php-pro",
       "catalog_id": "php-pro",
@@ -920,6 +1091,34 @@
         "pgvector",
         "postgres",
         "postgresql"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "prompt-engineer",
+      "package_id": "prompt-engineer",
+      "catalog_id": "prompt-engineer",
+      "kind": "skill",
+      "path": "workflows/skills/prompt-engineer/SKILL.md",
+      "name": "prompt-engineer",
+      "description": "Use when a prompt, instruction set, or agent/system message needs quality review: ambiguity, missing format constraints, unsafe assumptions, injection exposure, weak trigger wording, or brittle task framing.",
+      "canonical": true,
+      "canonical_id": "prompt-engineer",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "stable",
+      "tier": "system",
+      "tags": [
+        "formatting",
+        "guardrails",
+        "injection",
+        "instructions",
+        "prompting",
+        "quality",
+        "workflow-specialists"
       ],
       "triggers": []
     },
@@ -1325,5 +1524,5 @@
       "triggers": []
     }
   ],
-  "contentHash": "04f8e0d9bbee476d"
+  "contentHash": "a72985f81ec2c753"
 }

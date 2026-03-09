@@ -1,9 +1,9 @@
 {
-  "$schema": "cubis-foundry-public-skill-gap-matrix-v1",
-  "generatedAt": "2026-03-09T03:17:26.129Z",
+  "$schema": "cubis-foundry-public-skill-gap-matrix-v2",
+  "generatedAt": "2026-03-09T03:59:28.443Z",
   "summary": {
     "currentSkillCount": 45,
-    "newCandidateCount": 6,
+    "newCandidateCount": 8,
     "actionCounts": [
       {
         "key": "keep-and-tighten",
@@ -44,39 +44,343 @@
         "count": 4
       },
       {
-        "key": "workflow-and-automation",
+        "key": "agent-builder",
         "count": 1
       }
     ]
   },
   "clusterPriorities": [
     {
-      "cluster": "backend-frameworks",
+      "cluster": "api-and-frontend",
       "priority": 1,
+      "rationale": "Frontend and API design skills still have the highest overlap with public coding skill ecosystems and need clear benchmark ordering."
+    },
+    {
+      "cluster": "backend-frameworks",
+      "priority": 2,
       "rationale": "Highest overlap with public coding skill ecosystems and most likely to benefit from broader benchmark tightening."
     },
     {
       "cluster": "architecture-databases",
-      "priority": 2,
+      "priority": 3,
       "rationale": "Current shapes are good, but public breadth can still improve engine, platform, and architecture decision boundaries."
     },
     {
       "cluster": "languages",
-      "priority": 3,
+      "priority": 4,
       "rationale": "Language packs are stable, but the public corpus can still identify which need deeper sidecars or should remain intentionally lean."
     },
     {
       "cluster": "workflow-and-automation",
-      "priority": 4,
+      "priority": 5,
       "rationale": "Broader public workflow and installer ecosystems are likely to surface the most net-new candidate skills here."
     },
     {
+      "cluster": "agent-builder",
+      "priority": 6,
+      "rationale": "Direct user-requested builder skills need explicit rewrite specs and stronger public-source mapping than the generic workflow cluster currently provides."
+    },
+    {
+      "cluster": "testing-security-review",
+      "priority": 7,
+      "rationale": "Testing, review, and security skills remain important, but the current user request prioritizes database and builder waves first."
+    },
+    {
       "cluster": "support-and-noncoding",
-      "priority": 5,
+      "priority": 8,
       "rationale": "Everything-scope research should still surface non-coding support families even if implementation happens later."
     }
   ],
   "currentSkills": [
+    {
+      "id": "api-designer",
+      "name": "api-designer",
+      "category": "core-operating",
+      "layer": "core-operating",
+      "tier": "system",
+      "maturity": "stable",
+      "description": "Use when defining or reviewing external API contracts, OpenAPI specifications, resource models, pagination, versioning, and error response standards. Do not use for pure database design or framework-only handler wiring.",
+      "cluster": "api-and-frontend",
+      "action": "keep-and-tighten",
+      "benchmarkRepoIds": [
+        "anthropics/skills",
+        "openai/skills",
+        "vercel-labs/agent-skills",
+        "agentskills/agentskills",
+        "Jeffallan/claude-skills",
+        "VoltAgent/awesome-agent-skills"
+      ],
+      "decision": "Keep as the canonical contract-first skill and continue separating it from framework and database implementation concerns.",
+      "keep": "Resource modeling, versioning, pagination, idempotency, and error semantics as the primary trigger boundary.",
+      "change": "Recheck public API-oriented skill families for missing edge cases such as event APIs, long-running operations, and public-vs-internal contract split guidance.",
+      "packagingNext": "Keep the current root plus checklist reference; add more references only if contract examples or async API guidance become necessary.",
+      "publicSignals": [
+        "Strong public pattern for keeping contract design separate from framework implementation."
+      ],
+      "packaging": {
+        "hasReferences": true,
+        "hasScripts": false,
+        "hasTemplates": false,
+        "hasAssets": false,
+        "hasSteering": false,
+        "referenceFiles": 1,
+        "scriptFiles": 0,
+        "templateFiles": 0
+      },
+      "path": "workflows/skills/api-designer/SKILL.md"
+    },
+    {
+      "id": "api-patterns",
+      "name": "api-patterns",
+      "category": "core-operating",
+      "layer": "core-operating",
+      "tier": "system",
+      "maturity": "stable",
+      "description": "Use when choosing between REST, GraphQL, and type-safe RPC patterns, or when standardizing response envelopes, versioning, pagination, auth shape, and API protection strategy.",
+      "cluster": "api-and-frontend",
+      "action": "keep-and-tighten",
+      "benchmarkRepoIds": [
+        "anthropics/skills",
+        "openai/skills",
+        "vercel-labs/agent-skills",
+        "agentskills/agentskills",
+        "travisvn/awesome-claude-skills",
+        "VoltAgent/awesome-agent-skills"
+      ],
+      "decision": "Keep as the pattern-choice companion skill and continue separating REST-vs-GraphQL-vs-RPC tradeoffs from endpoint implementation.",
+      "keep": "Pattern selection, response vocabulary, auth shape, and versioning strategy as the core surface.",
+      "change": "Recheck public API libraries for whether webhooks, streaming, or event-driven interfaces deserve a distinct adjacent candidate skill rather than broadening this one.",
+      "packagingNext": "Keep root plus pattern checklist; no scripts or templates yet.",
+      "publicSignals": [
+        "Public repos repeatedly split protocol or transport choice from framework-specific code."
+      ],
+      "packaging": {
+        "hasReferences": true,
+        "hasScripts": false,
+        "hasTemplates": false,
+        "hasAssets": false,
+        "hasSteering": false,
+        "referenceFiles": 1,
+        "scriptFiles": 0,
+        "templateFiles": 0
+      },
+      "path": "workflows/skills/api-patterns/SKILL.md"
+    },
+    {
+      "id": "design-system-builder",
+      "name": "design-system-builder",
+      "category": "frameworks-runtimes",
+      "layer": "frameworks-runtimes",
+      "tier": "curated",
+      "maturity": "stable",
+      "description": "Use when creating or reviewing reusable UI components, token-driven styling, variant APIs, theming hooks, and component documentation for a design system.",
+      "cluster": "api-and-frontend",
+      "action": "keep-and-tighten",
+      "benchmarkRepoIds": [
+        "vercel-labs/agent-skills",
+        "travisvn/awesome-claude-skills",
+        "VoltAgent/awesome-agent-skills"
+      ],
+      "decision": "Keep as the reusable-component and token API skill; do not let it absorb one-off product UI guidance.",
+      "keep": "System-vs-product boundary, token-driven APIs, variants, theming, and docs as the core boundary.",
+      "change": "Recheck public component-system skills for missing slot/composition or accessibility contract guidance.",
+      "packagingNext": "Keep root plus component API checklist; templates may be added later if component spec outputs become standardized.",
+      "publicSignals": [
+        "Public UI-system skills degrade when they collapse reusable-system concerns and app-specific UI decisions together."
+      ],
+      "packaging": {
+        "hasReferences": true,
+        "hasScripts": false,
+        "hasTemplates": false,
+        "hasAssets": false,
+        "hasSteering": false,
+        "referenceFiles": 1,
+        "scriptFiles": 0,
+        "templateFiles": 0
+      },
+      "path": "workflows/skills/design-system-builder/SKILL.md"
+    },
+    {
+      "id": "frontend-design",
+      "name": "frontend-design",
+      "category": "frameworks-runtimes",
+      "layer": "frameworks-runtimes",
+      "tier": "curated",
+      "maturity": "stable",
+      "description": "Use for web UI design decisions: layout, hierarchy, typography, color, motion, and interaction clarity. This skill teaches decision-making, not a fixed visual style.",
+      "cluster": "api-and-frontend",
+      "action": "keep-and-tighten",
+      "benchmarkRepoIds": [
+        "Jeffallan/claude-skills",
+        "travisvn/awesome-claude-skills",
+        "VoltAgent/awesome-agent-skills"
+      ],
+      "decision": "Keep as a UI decision-making skill, not a style bundle or aesthetic prompt pack.",
+      "keep": "Hierarchy, typography, color, motion, and interaction-state decision logic.",
+      "change": "Recheck public design skills for whether accessibility critique, state-flow review, and design review deserve adjacent specialists such as frontend-code-review.",
+      "packagingNext": "Keep root plus hierarchy/state checklist; no scripts or templates yet.",
+      "publicSignals": [
+        "Public design skills often drift into vague aesthetic advice; the stronger pattern is decision and state clarity."
+      ],
+      "packaging": {
+        "hasReferences": true,
+        "hasScripts": false,
+        "hasTemplates": false,
+        "hasAssets": false,
+        "hasSteering": false,
+        "referenceFiles": 1,
+        "scriptFiles": 0,
+        "templateFiles": 0
+      },
+      "path": "workflows/skills/frontend-design/SKILL.md"
+    },
+    {
+      "id": "nextjs-developer",
+      "name": "nextjs-developer",
+      "category": "frameworks-runtimes",
+      "layer": "frameworks-runtimes",
+      "tier": "system",
+      "maturity": "stable",
+      "description": "Use for implementing and reviewing Next.js App Router features, React Server Components and Actions, caching strategy, SEO, and production runtime behavior.",
+      "cluster": "api-and-frontend",
+      "action": "keep-and-tighten",
+      "benchmarkRepoIds": [
+        "anthropics/skills",
+        "openai/skills",
+        "vercel-labs/agent-skills",
+        "agentskills/agentskills",
+        "vercel-labs/agent-skills",
+        "travisvn/awesome-claude-skills",
+        "VoltAgent/awesome-agent-skills"
+      ],
+      "decision": "Keep as the Next.js framework specialist and preserve route-level rendering plus cache decisions as the core boundary.",
+      "keep": "App Router, RSC, Server Actions, caching, SEO, and route-level runtime behavior.",
+      "change": "Recheck public Next-specific libraries for missing partial prerendering, streaming, or deployment-path references without absorbing general React advice.",
+      "packagingNext": "Keep root plus App Router/cache playbook; add templates only if route-spec outputs become repeatable.",
+      "publicSignals": [
+        "Vercel and community ecosystems strongly justify a dedicated Next framework skill rather than folding Next into generic React."
+      ],
+      "packaging": {
+        "hasReferences": true,
+        "hasScripts": false,
+        "hasTemplates": false,
+        "hasAssets": false,
+        "hasSteering": false,
+        "referenceFiles": 1,
+        "scriptFiles": 0,
+        "templateFiles": 0
+      },
+      "path": "workflows/skills/nextjs-developer/SKILL.md"
+    },
+    {
+      "id": "react-expert",
+      "name": "react-expert",
+      "category": "frameworks-runtimes",
+      "layer": "frameworks-runtimes",
+      "tier": "system",
+      "maturity": "stable",
+      "description": "Use for framework-agnostic React architecture with React 19 patterns, state design, component boundaries, and rendering-performance decisions.",
+      "cluster": "api-and-frontend",
+      "action": "keep-and-tighten",
+      "benchmarkRepoIds": [
+        "anthropics/skills",
+        "openai/skills",
+        "vercel-labs/agent-skills",
+        "agentskills/agentskills",
+        "vercel-labs/agent-skills",
+        "Jeffallan/claude-skills",
+        "VoltAgent/awesome-agent-skills"
+      ],
+      "decision": "Keep as the React runtime specialist and preserve the framework-agnostic boundary.",
+      "keep": "Component boundaries, state placement, effects, rendering cost, and interaction correctness.",
+      "change": "Recheck public React families for missing compiler, form-action, or Server Component adjacency guidance without turning this into a Next skill.",
+      "packagingNext": "Keep root plus rendering/state checklist; no scripts.",
+      "publicSignals": [
+        "Public React skills are strongest when they stay runtime-focused instead of merging design, framework, and tooling into one pack."
+      ],
+      "packaging": {
+        "hasReferences": true,
+        "hasScripts": false,
+        "hasTemplates": false,
+        "hasAssets": false,
+        "hasSteering": false,
+        "referenceFiles": 1,
+        "scriptFiles": 0,
+        "templateFiles": 0
+      },
+      "path": "workflows/skills/react-expert/SKILL.md"
+    },
+    {
+      "id": "tailwind-patterns",
+      "name": "tailwind-patterns",
+      "category": "frameworks-runtimes",
+      "layer": "frameworks-runtimes",
+      "tier": "curated",
+      "maturity": "stable",
+      "description": "Use for Tailwind CSS v4 architecture, CSS-first theme setup, utility composition, container-query usage, and design-token hygiene.",
+      "cluster": "api-and-frontend",
+      "action": "keep-and-tighten",
+      "benchmarkRepoIds": [
+        "vercel-labs/agent-skills",
+        "Jeffallan/claude-skills",
+        "VoltAgent/awesome-agent-skills"
+      ],
+      "decision": "Keep as the styling-system specialist and preserve a clear split from visual design and framework architecture.",
+      "keep": "Token setup, composition, container queries, and class ergonomics as the core surface.",
+      "change": "Recheck public Tailwind skill families for whether design-token sync or component-extraction references need more depth.",
+      "packagingNext": "Keep root plus token/composition checklist; no scripts.",
+      "publicSignals": [
+        "Public CSS/Tailwind skills are most useful when they separate system hygiene from visual-direction work."
+      ],
+      "packaging": {
+        "hasReferences": true,
+        "hasScripts": false,
+        "hasTemplates": false,
+        "hasAssets": false,
+        "hasSteering": false,
+        "referenceFiles": 1,
+        "scriptFiles": 0,
+        "templateFiles": 0
+      },
+      "path": "workflows/skills/tailwind-patterns/SKILL.md"
+    },
+    {
+      "id": "web-perf",
+      "name": "web-perf",
+      "category": "frameworks-runtimes",
+      "layer": "frameworks-runtimes",
+      "tier": "curated",
+      "maturity": "stable",
+      "description": "Use for measuring and improving web performance with Core Web Vitals, rendering-path analysis, bundle and network prioritization, and framework-aware delivery tradeoffs.",
+      "cluster": "api-and-frontend",
+      "action": "keep-and-tighten",
+      "benchmarkRepoIds": [
+        "anthropics/skills",
+        "openai/skills",
+        "vercel-labs/agent-skills",
+        "agentskills/agentskills",
+        "vercel-labs/agent-skills",
+        "VoltAgent/awesome-agent-skills"
+      ],
+      "decision": "Keep as the browser-performance specialist and preserve a strict measurement-first boundary.",
+      "keep": "CWV, bundle/network/render triage, and framework-aware performance tradeoffs.",
+      "change": "Recheck public performance libraries for whether lab-vs-field, profiling, or server/bundle split references need more depth.",
+      "packagingNext": "Keep root plus CWV triage checklist; no scripts.",
+      "publicSignals": [
+        "The strongest public pattern is still measure-first, then targeted remediation with explicit tradeoffs."
+      ],
+      "packaging": {
+        "hasReferences": true,
+        "hasScripts": false,
+        "hasTemplates": false,
+        "hasAssets": false,
+        "hasSteering": false,
+        "referenceFiles": 1,
+        "scriptFiles": 0,
+        "templateFiles": 0
+      },
+      "path": "workflows/skills/web-perf/SKILL.md"
+    },
     {
       "id": "auth-architect",
       "name": "auth-architect",
@@ -1345,7 +1649,7 @@
       "tier": "system",
       "maturity": "stable",
       "description": "Use when creating, rebuilding, or repairing a Foundry skill package, workflow skill, or agent-facing skill surface across Codex, Claude, Copilot, Antigravity, Cursor, and Windsurf. Do not use for prompt-only tweaks or edits to one generated mirror.",
-      "cluster": "workflow-and-automation",
+      "cluster": "agent-builder",
       "action": "keep-and-expand",
       "benchmarkRepoIds": [
         "anthropics/skills",
@@ -1377,295 +1681,6 @@
         "templateFiles": 0
       },
       "path": "workflows/skills/skill-creator/SKILL.md"
-    },
-    {
-      "id": "api-designer",
-      "name": "api-designer",
-      "category": "core-operating",
-      "layer": "core-operating",
-      "tier": "system",
-      "maturity": "stable",
-      "description": "Use when defining or reviewing external API contracts, OpenAPI specifications, resource models, pagination, versioning, and error response standards. Do not use for pure database design or framework-only handler wiring.",
-      "cluster": "api-and-frontend",
-      "action": "keep-and-tighten",
-      "benchmarkRepoIds": [
-        "anthropics/skills",
-        "openai/skills",
-        "vercel-labs/agent-skills",
-        "agentskills/agentskills",
-        "Jeffallan/claude-skills",
-        "VoltAgent/awesome-agent-skills"
-      ],
-      "decision": "Keep as the canonical contract-first skill and continue separating it from framework and database implementation concerns.",
-      "keep": "Resource modeling, versioning, pagination, idempotency, and error semantics as the primary trigger boundary.",
-      "change": "Recheck public API-oriented skill families for missing edge cases such as event APIs, long-running operations, and public-vs-internal contract split guidance.",
-      "packagingNext": "Keep the current root plus checklist reference; add more references only if contract examples or async API guidance become necessary.",
-      "publicSignals": [
-        "Strong public pattern for keeping contract design separate from framework implementation."
-      ],
-      "packaging": {
-        "hasReferences": true,
-        "hasScripts": false,
-        "hasTemplates": false,
-        "hasAssets": false,
-        "hasSteering": false,
-        "referenceFiles": 1,
-        "scriptFiles": 0,
-        "templateFiles": 0
-      },
-      "path": "workflows/skills/api-designer/SKILL.md"
-    },
-    {
-      "id": "api-patterns",
-      "name": "api-patterns",
-      "category": "core-operating",
-      "layer": "core-operating",
-      "tier": "system",
-      "maturity": "stable",
-      "description": "Use when choosing between REST, GraphQL, and type-safe RPC patterns, or when standardizing response envelopes, versioning, pagination, auth shape, and API protection strategy.",
-      "cluster": "api-and-frontend",
-      "action": "keep-and-tighten",
-      "benchmarkRepoIds": [
-        "anthropics/skills",
-        "openai/skills",
-        "vercel-labs/agent-skills",
-        "agentskills/agentskills",
-        "travisvn/awesome-claude-skills",
-        "VoltAgent/awesome-agent-skills"
-      ],
-      "decision": "Keep as the pattern-choice companion skill and continue separating REST-vs-GraphQL-vs-RPC tradeoffs from endpoint implementation.",
-      "keep": "Pattern selection, response vocabulary, auth shape, and versioning strategy as the core surface.",
-      "change": "Recheck public API libraries for whether webhooks, streaming, or event-driven interfaces deserve a distinct adjacent candidate skill rather than broadening this one.",
-      "packagingNext": "Keep root plus pattern checklist; no scripts or templates yet.",
-      "publicSignals": [
-        "Public repos repeatedly split protocol or transport choice from framework-specific code."
-      ],
-      "packaging": {
-        "hasReferences": true,
-        "hasScripts": false,
-        "hasTemplates": false,
-        "hasAssets": false,
-        "hasSteering": false,
-        "referenceFiles": 1,
-        "scriptFiles": 0,
-        "templateFiles": 0
-      },
-      "path": "workflows/skills/api-patterns/SKILL.md"
-    },
-    {
-      "id": "design-system-builder",
-      "name": "design-system-builder",
-      "category": "frameworks-runtimes",
-      "layer": "frameworks-runtimes",
-      "tier": "curated",
-      "maturity": "stable",
-      "description": "Use when creating or reviewing reusable UI components, token-driven styling, variant APIs, theming hooks, and component documentation for a design system.",
-      "cluster": "api-and-frontend",
-      "action": "keep-and-tighten",
-      "benchmarkRepoIds": [
-        "vercel-labs/agent-skills",
-        "travisvn/awesome-claude-skills",
-        "VoltAgent/awesome-agent-skills"
-      ],
-      "decision": "Keep as the reusable-component and token API skill; do not let it absorb one-off product UI guidance.",
-      "keep": "System-vs-product boundary, token-driven APIs, variants, theming, and docs as the core boundary.",
-      "change": "Recheck public component-system skills for missing slot/composition or accessibility contract guidance.",
-      "packagingNext": "Keep root plus component API checklist; templates may be added later if component spec outputs become standardized.",
-      "publicSignals": [
-        "Public UI-system skills degrade when they collapse reusable-system concerns and app-specific UI decisions together."
-      ],
-      "packaging": {
-        "hasReferences": true,
-        "hasScripts": false,
-        "hasTemplates": false,
-        "hasAssets": false,
-        "hasSteering": false,
-        "referenceFiles": 1,
-        "scriptFiles": 0,
-        "templateFiles": 0
-      },
-      "path": "workflows/skills/design-system-builder/SKILL.md"
-    },
-    {
-      "id": "frontend-design",
-      "name": "frontend-design",
-      "category": "frameworks-runtimes",
-      "layer": "frameworks-runtimes",
-      "tier": "curated",
-      "maturity": "stable",
-      "description": "Use for web UI design decisions: layout, hierarchy, typography, color, motion, and interaction clarity. This skill teaches decision-making, not a fixed visual style.",
-      "cluster": "api-and-frontend",
-      "action": "keep-and-tighten",
-      "benchmarkRepoIds": [
-        "Jeffallan/claude-skills",
-        "travisvn/awesome-claude-skills",
-        "VoltAgent/awesome-agent-skills"
-      ],
-      "decision": "Keep as a UI decision-making skill, not a style bundle or aesthetic prompt pack.",
-      "keep": "Hierarchy, typography, color, motion, and interaction-state decision logic.",
-      "change": "Recheck public design skills for whether accessibility critique, state-flow review, and design review deserve adjacent specialists such as frontend-code-review.",
-      "packagingNext": "Keep root plus hierarchy/state checklist; no scripts or templates yet.",
-      "publicSignals": [
-        "Public design skills often drift into vague aesthetic advice; the stronger pattern is decision and state clarity."
-      ],
-      "packaging": {
-        "hasReferences": true,
-        "hasScripts": false,
-        "hasTemplates": false,
-        "hasAssets": false,
-        "hasSteering": false,
-        "referenceFiles": 1,
-        "scriptFiles": 0,
-        "templateFiles": 0
-      },
-      "path": "workflows/skills/frontend-design/SKILL.md"
-    },
-    {
-      "id": "nextjs-developer",
-      "name": "nextjs-developer",
-      "category": "frameworks-runtimes",
-      "layer": "frameworks-runtimes",
-      "tier": "system",
-      "maturity": "stable",
-      "description": "Use for implementing and reviewing Next.js App Router features, React Server Components and Actions, caching strategy, SEO, and production runtime behavior.",
-      "cluster": "api-and-frontend",
-      "action": "keep-and-tighten",
-      "benchmarkRepoIds": [
-        "anthropics/skills",
-        "openai/skills",
-        "vercel-labs/agent-skills",
-        "agentskills/agentskills",
-        "vercel-labs/agent-skills",
-        "travisvn/awesome-claude-skills",
-        "VoltAgent/awesome-agent-skills"
-      ],
-      "decision": "Keep as the Next.js framework specialist and preserve route-level rendering plus cache decisions as the core boundary.",
-      "keep": "App Router, RSC, Server Actions, caching, SEO, and route-level runtime behavior.",
-      "change": "Recheck public Next-specific libraries for missing partial prerendering, streaming, or deployment-path references without absorbing general React advice.",
-      "packagingNext": "Keep root plus App Router/cache playbook; add templates only if route-spec outputs become repeatable.",
-      "publicSignals": [
-        "Vercel and community ecosystems strongly justify a dedicated Next framework skill rather than folding Next into generic React."
-      ],
-      "packaging": {
-        "hasReferences": true,
-        "hasScripts": false,
-        "hasTemplates": false,
-        "hasAssets": false,
-        "hasSteering": false,
-        "referenceFiles": 1,
-        "scriptFiles": 0,
-        "templateFiles": 0
-      },
-      "path": "workflows/skills/nextjs-developer/SKILL.md"
-    },
-    {
-      "id": "react-expert",
-      "name": "react-expert",
-      "category": "frameworks-runtimes",
-      "layer": "frameworks-runtimes",
-      "tier": "system",
-      "maturity": "stable",
-      "description": "Use for framework-agnostic React architecture with React 19 patterns, state design, component boundaries, and rendering-performance decisions.",
-      "cluster": "api-and-frontend",
-      "action": "keep-and-tighten",
-      "benchmarkRepoIds": [
-        "anthropics/skills",
-        "openai/skills",
-        "vercel-labs/agent-skills",
-        "agentskills/agentskills",
-        "vercel-labs/agent-skills",
-        "Jeffallan/claude-skills",
-        "VoltAgent/awesome-agent-skills"
-      ],
-      "decision": "Keep as the React runtime specialist and preserve the framework-agnostic boundary.",
-      "keep": "Component boundaries, state placement, effects, rendering cost, and interaction correctness.",
-      "change": "Recheck public React families for missing compiler, form-action, or Server Component adjacency guidance without turning this into a Next skill.",
-      "packagingNext": "Keep root plus rendering/state checklist; no scripts.",
-      "publicSignals": [
-        "Public React skills are strongest when they stay runtime-focused instead of merging design, framework, and tooling into one pack."
-      ],
-      "packaging": {
-        "hasReferences": true,
-        "hasScripts": false,
-        "hasTemplates": false,
-        "hasAssets": false,
-        "hasSteering": false,
-        "referenceFiles": 1,
-        "scriptFiles": 0,
-        "templateFiles": 0
-      },
-      "path": "workflows/skills/react-expert/SKILL.md"
-    },
-    {
-      "id": "tailwind-patterns",
-      "name": "tailwind-patterns",
-      "category": "frameworks-runtimes",
-      "layer": "frameworks-runtimes",
-      "tier": "curated",
-      "maturity": "stable",
-      "description": "Use for Tailwind CSS v4 architecture, CSS-first theme setup, utility composition, container-query usage, and design-token hygiene.",
-      "cluster": "api-and-frontend",
-      "action": "keep-and-tighten",
-      "benchmarkRepoIds": [
-        "vercel-labs/agent-skills",
-        "Jeffallan/claude-skills",
-        "VoltAgent/awesome-agent-skills"
-      ],
-      "decision": "Keep as the styling-system specialist and preserve a clear split from visual design and framework architecture.",
-      "keep": "Token setup, composition, container queries, and class ergonomics as the core surface.",
-      "change": "Recheck public Tailwind skill families for whether design-token sync or component-extraction references need more depth.",
-      "packagingNext": "Keep root plus token/composition checklist; no scripts.",
-      "publicSignals": [
-        "Public CSS/Tailwind skills are most useful when they separate system hygiene from visual-direction work."
-      ],
-      "packaging": {
-        "hasReferences": true,
-        "hasScripts": false,
-        "hasTemplates": false,
-        "hasAssets": false,
-        "hasSteering": false,
-        "referenceFiles": 1,
-        "scriptFiles": 0,
-        "templateFiles": 0
-      },
-      "path": "workflows/skills/tailwind-patterns/SKILL.md"
-    },
-    {
-      "id": "web-perf",
-      "name": "web-perf",
-      "category": "frameworks-runtimes",
-      "layer": "frameworks-runtimes",
-      "tier": "curated",
-      "maturity": "stable",
-      "description": "Use for measuring and improving web performance with Core Web Vitals, rendering-path analysis, bundle and network prioritization, and framework-aware delivery tradeoffs.",
-      "cluster": "api-and-frontend",
-      "action": "keep-and-tighten",
-      "benchmarkRepoIds": [
-        "anthropics/skills",
-        "openai/skills",
-        "vercel-labs/agent-skills",
-        "agentskills/agentskills",
-        "vercel-labs/agent-skills",
-        "VoltAgent/awesome-agent-skills"
-      ],
-      "decision": "Keep as the browser-performance specialist and preserve a strict measurement-first boundary.",
-      "keep": "CWV, bundle/network/render triage, and framework-aware performance tradeoffs.",
-      "change": "Recheck public performance libraries for whether lab-vs-field, profiling, or server/bundle split references need more depth.",
-      "packagingNext": "Keep root plus CWV triage checklist; no scripts.",
-      "publicSignals": [
-        "The strongest public pattern is still measure-first, then targeted remediation with explicit tradeoffs."
-      ],
-      "packaging": {
-        "hasReferences": true,
-        "hasScripts": false,
-        "hasTemplates": false,
-        "hasAssets": false,
-        "hasSteering": false,
-        "referenceFiles": 1,
-        "scriptFiles": 0,
-        "templateFiles": 0
-      },
-      "path": "workflows/skills/web-perf/SKILL.md"
     },
     {
       "id": "debugging-strategies",
@@ -1810,17 +1825,6 @@
   ],
   "newCandidateSkills": [
     {
-      "id": "drizzle-expert",
-      "cluster": "architecture-databases",
-      "priority": "medium",
-      "benchmarkRepoIds": [
-        "vercel-labs/agent-skills",
-        "travisvn/awesome-claude-skills",
-        "Microck/ordinary-claude-skills"
-      ],
-      "rationale": "Typed TypeScript database stacks recur often enough that an ORM-specific specialist may be warranted."
-    },
-    {
       "id": "github-workflow",
       "cluster": "workflow-and-automation",
       "priority": "medium",
@@ -1843,17 +1847,6 @@
       "rationale": "PR drafting and review-prep appear often enough to justify a narrow workflow skill if GitHub automation becomes first-class."
     },
     {
-      "id": "mcp-builder",
-      "cluster": "workflow-and-automation",
-      "priority": "medium",
-      "benchmarkRepoIds": [
-        "cnemri/google-genai-skills",
-        "VoltAgent/awesome-agent-skills",
-        "Jeffallan/claude-skills"
-      ],
-      "rationale": "MCP and agent-tooling construction appears repeatedly enough to justify a first-class Foundry skill family."
-    },
-    {
       "id": "docs-updater",
       "cluster": "support-and-noncoding",
       "priority": "medium",
@@ -1874,6 +1867,50 @@
         "Microck/ordinary-claude-skills"
       ],
       "rationale": "Research and evidence synthesis appear across many public skill packs and can complement coding and architecture work."
+    },
+    {
+      "id": "clickhouse-analytics",
+      "cluster": "architecture-databases",
+      "priority": "medium",
+      "benchmarkRepoIds": [
+        "Jeffallan/claude-skills",
+        "VoltAgent/awesome-agent-skills",
+        "skillmatic-ai/awesome-agent-skills"
+      ],
+      "rationale": "Analytics and event-query workloads appear often enough to justify a separate warehouse-style specialist if the corpus keeps recurring."
+    },
+    {
+      "id": "elasticsearch-opensearch",
+      "cluster": "architecture-databases",
+      "priority": "medium",
+      "benchmarkRepoIds": [
+        "Jeffallan/claude-skills",
+        "VoltAgent/awesome-agent-skills",
+        "github/awesome-copilot"
+      ],
+      "rationale": "Search-first data systems recur separately from OLTP databases and need their own indexing, relevance, and ingest boundaries."
+    },
+    {
+      "id": "kafka-streams",
+      "cluster": "architecture-databases",
+      "priority": "medium",
+      "benchmarkRepoIds": [
+        "Jeffallan/claude-skills",
+        "VoltAgent/awesome-agent-skills",
+        "github/awesome-copilot"
+      ],
+      "rationale": "Event streaming and log-based data-flow skills recur separately from database design and should stay their own concern if promoted later."
+    },
+    {
+      "id": "pgvector-rag",
+      "cluster": "architecture-databases",
+      "priority": "medium",
+      "benchmarkRepoIds": [
+        "vercel-labs/agent-skills",
+        "Jeffallan/claude-skills",
+        "github/awesome-copilot"
+      ],
+      "rationale": "Database-native vector retrieval and hybrid search show up often enough to justify a future specialist separate from generic Postgres or RAG guidance."
     }
   ]
 }

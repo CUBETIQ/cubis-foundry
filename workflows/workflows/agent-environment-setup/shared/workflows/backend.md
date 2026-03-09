@@ -19,8 +19,8 @@ Use this when backend architecture, service logic, API contract work, or Postman
 
 ## Skill Routing
 - Primary skills: `api-designer`, `nodejs-best-practices`
-- Supporting skills (optional): `api-patterns`, `architecture-designer`, `auth-architect`, `database-skills`, `database-design`, `database-optimizer`, `microservices-architect`, `nestjs-expert`, `fastapi-expert`, `graphql-architect`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`, `csharp-pro`, `kotlin-pro`, `rust-pro`, `php-pro`, `ruby-pro`, `skill-creator`
-- Load `api-designer` when contract shape, pagination, versioning, or error semantics are primary. Use `api-patterns` for transport-pattern tradeoffs and standard envelopes, `nodejs-best-practices` for general Node service structure, `nestjs-expert` for modular Nest backends, `fastapi-expert` for async Python/FastAPI services, and `graphql-architect` when schema and resolver design are the real problem. Bring in `auth-architect` when sessions, tokens, OAuth, passkeys, RBAC, tenant isolation, or service credentials are the real decision surface. Bring in `database-skills` for schema/query-heavy backend work, `database-design` for migration-heavy changes, `database-optimizer` for plan or index triage, and `microservices-architect` only when service-boundary decisions are active. Keep the matching language skill as a secondary aid and reserve `skill-creator` for skill-package work.
+- Supporting skills (optional): `api-patterns`, `architecture-designer`, `auth-architect`, `database-skills`, `database-design`, `database-optimizer`, `drizzle-expert`, `firebase`, `microservices-architect`, `nestjs-expert`, `fastapi-expert`, `graphql-architect`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`, `csharp-pro`, `kotlin-pro`, `rust-pro`, `php-pro`, `ruby-pro`, `skill-creator`
+- Load `api-designer` when contract shape, pagination, versioning, or error semantics are primary. Use `api-patterns` for transport-pattern tradeoffs and standard envelopes, `nodejs-best-practices` for general Node service structure, `nestjs-expert` for modular Nest backends, `fastapi-expert` for async Python/FastAPI services, and `graphql-architect` when schema and resolver design are the real problem. Bring in `auth-architect` when sessions, tokens, OAuth, passkeys, RBAC, tenant isolation, or service credentials are the real decision surface. Bring in `database-skills` for schema/query-heavy backend work, `database-design` for migration-heavy changes, `database-optimizer` for plan or index triage, `drizzle-expert` when the TypeScript access layer is the real bottleneck, `firebase` when platform-coupled Firebase behavior changes the answer, and `microservices-architect` only when service-boundary decisions are active. Keep the matching language skill as a secondary aid and reserve `skill-creator` for skill-package work.
 
 ## Context notes
 - This workflow file, active platform rules, and selected agents/skills guide execution.
@@ -44,7 +44,7 @@ BACKEND_WORKFLOW_RESULT:
   primary_agent_id: "backend-specialist"
   supporting_agent_ids: ["database-architect", "security-auditor"]
   primary_skill_ids: ["api-designer", "nodejs-best-practices"]
-  supporting_skill_ids: ["api-patterns", "auth-architect", "database-skills", "database-design", "database-optimizer"]
+  supporting_skill_ids: ["api-patterns", "auth-architect", "database-skills", "database-design", "database-optimizer", "drizzle-expert?", "firebase?"]
   contract_changes:
     summary: "Describe contract deltas"
     openapi_spec_path: null

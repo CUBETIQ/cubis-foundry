@@ -1,10 +1,89 @@
 # Rewrite Specs
 
-Generated: 2026-03-09T03:17:26.129Z
+Generated: 2026-03-09T03:59:28.443Z
+
+## api-and-frontend
+
+- Priority: 1
+- Rationale: Frontend and API design skills still have the highest overlap with public coding skill ecosystems and need clear benchmark ordering.
+
+### api-designer
+- Action: `keep-and-tighten`
+- Benchmarks: `anthropics/skills`, `openai/skills`, `vercel-labs/agent-skills`, `agentskills/agentskills`, `Jeffallan/claude-skills`, `VoltAgent/awesome-agent-skills`
+- Keep: Resource modeling, versioning, pagination, idempotency, and error semantics as the primary trigger boundary.
+- Change: Recheck public API-oriented skill families for missing edge cases such as event APIs, long-running operations, and public-vs-internal contract split guidance.
+- Packaging next: Keep the current root plus checklist reference; add more references only if contract examples or async API guidance become necessary.
+- Current packaging: references=yes, scripts=no, templates=no
+- Public signals: Strong public pattern for keeping contract design separate from framework implementation.
+
+### api-patterns
+- Action: `keep-and-tighten`
+- Benchmarks: `anthropics/skills`, `openai/skills`, `vercel-labs/agent-skills`, `agentskills/agentskills`, `travisvn/awesome-claude-skills`, `VoltAgent/awesome-agent-skills`
+- Keep: Pattern selection, response vocabulary, auth shape, and versioning strategy as the core surface.
+- Change: Recheck public API libraries for whether webhooks, streaming, or event-driven interfaces deserve a distinct adjacent candidate skill rather than broadening this one.
+- Packaging next: Keep root plus pattern checklist; no scripts or templates yet.
+- Current packaging: references=yes, scripts=no, templates=no
+- Public signals: Public repos repeatedly split protocol or transport choice from framework-specific code.
+
+### design-system-builder
+- Action: `keep-and-tighten`
+- Benchmarks: `vercel-labs/agent-skills`, `travisvn/awesome-claude-skills`, `VoltAgent/awesome-agent-skills`
+- Keep: System-vs-product boundary, token-driven APIs, variants, theming, and docs as the core boundary.
+- Change: Recheck public component-system skills for missing slot/composition or accessibility contract guidance.
+- Packaging next: Keep root plus component API checklist; templates may be added later if component spec outputs become standardized.
+- Current packaging: references=yes, scripts=no, templates=no
+- Public signals: Public UI-system skills degrade when they collapse reusable-system concerns and app-specific UI decisions together.
+
+### frontend-design
+- Action: `keep-and-tighten`
+- Benchmarks: `Jeffallan/claude-skills`, `travisvn/awesome-claude-skills`, `VoltAgent/awesome-agent-skills`
+- Keep: Hierarchy, typography, color, motion, and interaction-state decision logic.
+- Change: Recheck public design skills for whether accessibility critique, state-flow review, and design review deserve adjacent specialists such as frontend-code-review.
+- Packaging next: Keep root plus hierarchy/state checklist; no scripts or templates yet.
+- Current packaging: references=yes, scripts=no, templates=no
+- Public signals: Public design skills often drift into vague aesthetic advice; the stronger pattern is decision and state clarity.
+
+### nextjs-developer
+- Action: `keep-and-tighten`
+- Benchmarks: `anthropics/skills`, `openai/skills`, `vercel-labs/agent-skills`, `agentskills/agentskills`, `vercel-labs/agent-skills`, `travisvn/awesome-claude-skills`, `VoltAgent/awesome-agent-skills`
+- Keep: App Router, RSC, Server Actions, caching, SEO, and route-level runtime behavior.
+- Change: Recheck public Next-specific libraries for missing partial prerendering, streaming, or deployment-path references without absorbing general React advice.
+- Packaging next: Keep root plus App Router/cache playbook; add templates only if route-spec outputs become repeatable.
+- Current packaging: references=yes, scripts=no, templates=no
+- Public signals: Vercel and community ecosystems strongly justify a dedicated Next framework skill rather than folding Next into generic React.
+
+### react-expert
+- Action: `keep-and-tighten`
+- Benchmarks: `anthropics/skills`, `openai/skills`, `vercel-labs/agent-skills`, `agentskills/agentskills`, `vercel-labs/agent-skills`, `Jeffallan/claude-skills`, `VoltAgent/awesome-agent-skills`
+- Keep: Component boundaries, state placement, effects, rendering cost, and interaction correctness.
+- Change: Recheck public React families for missing compiler, form-action, or Server Component adjacency guidance without turning this into a Next skill.
+- Packaging next: Keep root plus rendering/state checklist; no scripts.
+- Current packaging: references=yes, scripts=no, templates=no
+- Public signals: Public React skills are strongest when they stay runtime-focused instead of merging design, framework, and tooling into one pack.
+
+### tailwind-patterns
+- Action: `keep-and-tighten`
+- Benchmarks: `vercel-labs/agent-skills`, `Jeffallan/claude-skills`, `VoltAgent/awesome-agent-skills`
+- Keep: Token setup, composition, container queries, and class ergonomics as the core surface.
+- Change: Recheck public Tailwind skill families for whether design-token sync or component-extraction references need more depth.
+- Packaging next: Keep root plus token/composition checklist; no scripts.
+- Current packaging: references=yes, scripts=no, templates=no
+- Public signals: Public CSS/Tailwind skills are most useful when they separate system hygiene from visual-direction work.
+
+### web-perf
+- Action: `keep-and-tighten`
+- Benchmarks: `anthropics/skills`, `openai/skills`, `vercel-labs/agent-skills`, `agentskills/agentskills`, `vercel-labs/agent-skills`, `VoltAgent/awesome-agent-skills`
+- Keep: CWV, bundle/network/render triage, and framework-aware performance tradeoffs.
+- Change: Recheck public performance libraries for whether lab-vs-field, profiling, or server/bundle split references need more depth.
+- Packaging next: Keep root plus CWV triage checklist; no scripts.
+- Current packaging: references=yes, scripts=no, templates=no
+- Public signals: The strongest public pattern is still measure-first, then targeted remediation with explicit tradeoffs.
+
+
 
 ## backend-frameworks
 
-- Priority: 1
+- Priority: 2
 - Rationale: Highest overlap with public coding skill ecosystems and most likely to benefit from broader benchmark tightening.
 
 ### auth-architect
@@ -56,7 +135,7 @@ Generated: 2026-03-09T03:17:26.129Z
 
 ## architecture-databases
 
-- Priority: 2
+- Priority: 3
 - Rationale: Current shapes are good, but public breadth can still improve engine, platform, and architecture decision boundaries.
 
 ### architecture-designer
@@ -177,11 +256,14 @@ Generated: 2026-03-09T03:17:26.129Z
 - Public signals: Even though examples are rarer, the operational surface is distinct enough that Vitess should stay separate.
 
 ### Candidate additions
-- `drizzle-expert` (medium): Typed TypeScript database stacks recur often enough that an ORM-specific specialist may be warranted. Benchmarks: `vercel-labs/agent-skills`, `travisvn/awesome-claude-skills`, `Microck/ordinary-claude-skills`.
+- `clickhouse-analytics` (medium): Analytics and event-query workloads appear often enough to justify a separate warehouse-style specialist if the corpus keeps recurring. Benchmarks: `Jeffallan/claude-skills`, `VoltAgent/awesome-agent-skills`, `skillmatic-ai/awesome-agent-skills`.
+- `elasticsearch-opensearch` (medium): Search-first data systems recur separately from OLTP databases and need their own indexing, relevance, and ingest boundaries. Benchmarks: `Jeffallan/claude-skills`, `VoltAgent/awesome-agent-skills`, `github/awesome-copilot`.
+- `kafka-streams` (medium): Event streaming and log-based data-flow skills recur separately from database design and should stay their own concern if promoted later. Benchmarks: `Jeffallan/claude-skills`, `VoltAgent/awesome-agent-skills`, `github/awesome-copilot`.
+- `pgvector-rag` (medium): Database-native vector retrieval and hybrid search show up often enough to justify a future specialist separate from generic Postgres or RAG guidance. Benchmarks: `vercel-labs/agent-skills`, `Jeffallan/claude-skills`, `github/awesome-copilot`.
 
 ## languages
 
-- Priority: 3
+- Priority: 4
 - Rationale: Language packs are stable, but the public corpus can still identify which need deeper sidecars or should remain intentionally lean.
 
 ### c-pro
@@ -314,8 +396,18 @@ Generated: 2026-03-09T03:17:26.129Z
 
 ## workflow-and-automation
 
-- Priority: 4
+- Priority: 5
 - Rationale: Broader public workflow and installer ecosystems are likely to surface the most net-new candidate skills here.
+
+
+### Candidate additions
+- `github-workflow` (medium): GitHub automation, PR flow, branch hygiene, and CI interactions show up frequently in public dev-skill libraries. Benchmarks: `fvadicamo/dev-agent-skills`, `VoltAgent/awesome-agent-skills`, `travisvn/awesome-claude-skills`.
+- `pr-creator` (medium): PR drafting and review-prep appear often enough to justify a narrow workflow skill if GitHub automation becomes first-class. Benchmarks: `fvadicamo/dev-agent-skills`, `mhattingpete/claude-skills-marketplace`, `VoltAgent/awesome-agent-skills`.
+
+## agent-builder
+
+- Priority: 6
+- Rationale: Direct user-requested builder skills need explicit rewrite specs and stronger public-source mapping than the generic workflow cluster currently provides.
 
 ### skill-creator
 - Action: `keep-and-expand`
@@ -326,14 +418,54 @@ Generated: 2026-03-09T03:17:26.129Z
 - Current packaging: references=yes, scripts=yes, templates=no
 - Public signals: Public ecosystems repeatedly need a skill-authoring or installer surface, but quality varies widely and reinforces the need for a stricter Foundry-owned creator skill.
 
-### Candidate additions
-- `github-workflow` (medium): GitHub automation, PR flow, branch hygiene, and CI interactions show up frequently in public dev-skill libraries. Benchmarks: `fvadicamo/dev-agent-skills`, `VoltAgent/awesome-agent-skills`, `travisvn/awesome-claude-skills`.
-- `pr-creator` (medium): PR drafting and review-prep appear often enough to justify a narrow workflow skill if GitHub automation becomes first-class. Benchmarks: `fvadicamo/dev-agent-skills`, `mhattingpete/claude-skills-marketplace`, `VoltAgent/awesome-agent-skills`.
-- `mcp-builder` (medium): MCP and agent-tooling construction appears repeatedly enough to justify a first-class Foundry skill family. Benchmarks: `cnemri/google-genai-skills`, `VoltAgent/awesome-agent-skills`, `Jeffallan/claude-skills`.
+
+
+## testing-security-review
+
+- Priority: 7
+- Rationale: Testing, review, and security skills remain important, but the current user request prioritizes database and builder waves first.
+
+### debugging-strategies
+- Action: `keep-and-tighten`
+- Benchmarks: `Jeffallan/claude-skills`, `Microck/ordinary-claude-skills`, `VoltAgent/awesome-agent-skills`
+- Keep: Evidence-first debugging, minimal reproductions, instrumentation discipline, and regression-proof closure as the core surface.
+- Change: Recheck public debugging and bug-hunt libraries for missing CI-only failure, flaky test, and release-regression guidance without drifting into observability setup.
+- Packaging next: Keep root plus reproduce/isolate/verify checklist; add templates only if bug-report or repro capture outputs become standardized.
+- Current packaging: references=yes, scripts=no, templates=no
+- Public signals: Public skill ecosystems repeatedly separate debugging method from language implementation details, especially for flaky or cross-layer failures.
+
+### frontend-code-review
+- Action: `keep-and-tighten`
+- Benchmarks: `vercel-labs/agent-skills`, `Jeffallan/claude-skills`, `VoltAgent/awesome-agent-skills`
+- Keep: Accessibility, interaction states, responsive regressions, render-cost review, and component API quality as the core trigger surface.
+- Change: Recheck public frontend review and UX audit families for whether accessibility-only or design-system-review adjacencies deserve future companion skills rather than broadening this one.
+- Packaging next: Keep root plus UI regression checklist; no scripts until review outputs need a standard template.
+- Current packaging: references=yes, scripts=no, templates=no
+- Public signals: Public repos repeatedly separate frontend review from generic code review because UI state, semantics, and accessibility failures need different checks.
+
+### playwright-e2e
+- Action: `keep-and-tighten`
+- Benchmarks: `vercel-labs/agent-skills`, `travisvn/awesome-claude-skills`, `VoltAgent/awesome-agent-skills`
+- Keep: Locator quality, trace-driven debugging, auth setup, flaky browser triage, and CI artifact discipline as the core boundary.
+- Change: Recheck public browser-testing libraries for gaps around component testing, visual diffs, or setup-project patterns without broadening beyond Playwright-specific work.
+- Packaging next: Keep root plus locator/trace checklist; add templates or scripts only if Foundry standardizes browser test scaffolds later.
+- Current packaging: references=yes, scripts=no, templates=no
+- Public signals: Public coding-skill repos repeatedly justify a distinct Playwright specialist because selector choice, traces, and CI flakes change the implementation guidance.
+
+### webapp-testing
+- Action: `keep-and-tighten`
+- Benchmarks: `anthropics/skills`, `openai/skills`, `vercel-labs/agent-skills`, `agentskills/agentskills`, `vercel-labs/agent-skills`, `VoltAgent/awesome-agent-skills`, `travisvn/awesome-claude-skills`
+- Keep: Test-depth choice, browser-vs-integration tradeoffs, accessibility coverage, and release-confidence framing as the core surface.
+- Change: Recheck public web-testing libraries for whether contract-testing or visual-regression adjacencies deserve separate companions rather than broadening this skill into a giant QA catalog.
+- Packaging next: Keep root plus browser/API/state checklist; no scripts until the project wants a stable Foundry-owned test scaffold.
+- Current packaging: references=yes, scripts=no, templates=no
+- Public signals: Public repos often separate browser automation from broader web-testing strategy, which keeps both skills sharper and easier to trigger correctly.
+
+
 
 ## support-and-noncoding
 
-- Priority: 5
+- Priority: 8
 - Rationale: Everything-scope research should still surface non-coding support families even if implementation happens later.
 
 

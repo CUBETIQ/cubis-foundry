@@ -17,6 +17,11 @@ export const CORE_OPERATING_IDS = new Set([
   "parallel-agents",
   "sub-agents",
   "skill-creator",
+  "mcp-builder",
+  "deep-research",
+  "prompt-engineer",
+  "agentic-eval",
+  "openai-docs",
 ]);
 
 export const LANGUAGE_IDS = new Set([
@@ -40,7 +45,9 @@ export const DATABASE_IDS = new Set([
   "database-skills",
   "database-design",
   "database-optimizer",
+  "drizzle-expert",
   "drift-flutter",
+  "firebase",
   "postgres",
   "mysql",
   "sqlite",

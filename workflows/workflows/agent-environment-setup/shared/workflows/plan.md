@@ -23,8 +23,8 @@ Use this when execution needs a stable specification.
 
 ## Skill Routing
 - Primary skills: `architecture-designer`, `skill-creator`
-- Supporting skills (optional): `api-designer`, `api-patterns`, `database-skills`, `database-design`, `database-optimizer`, `microservices-architect`, `nodejs-best-practices`, `nestjs-expert`, `fastapi-expert`, `graphql-architect`, `react-expert`, `nextjs-developer`, `tailwind-patterns`, `frontend-design`, `design-system-builder`, `web-perf`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`, `csharp-pro`, `kotlin-pro`, `rust-pro`, `php-pro`, `ruby-pro`, `c-pro`, `cpp-pro`, `dart-pro`, `swift-pro`
-- Use `architecture-designer` for system-shape, interface, and boundary planning; use `skill-creator` for skill-catalog planning. Add the narrowest restored specialist first, then one matching language skill only if the plan needs language-level constraints.
+- Supporting skills (optional): `api-designer`, `api-patterns`, `database-skills`, `database-design`, `database-optimizer`, `drizzle-expert`, `firebase`, `deep-research`, `mcp-builder`, `agentic-eval`, `openai-docs`, `prompt-engineer`, `microservices-architect`, `nodejs-best-practices`, `nestjs-expert`, `fastapi-expert`, `graphql-architect`, `react-expert`, `nextjs-developer`, `tailwind-patterns`, `frontend-design`, `design-system-builder`, `web-perf`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`, `csharp-pro`, `kotlin-pro`, `rust-pro`, `php-pro`, `ruby-pro`, `c-pro`, `cpp-pro`, `dart-pro`, `swift-pro`
+- Use `architecture-designer` for system-shape, interface, and boundary planning; use `skill-creator` for skill-catalog planning. Add `deep-research` when public evidence or latest-source verification matters, `mcp-builder` for MCP server design, `agentic-eval` for benchmark or rubric planning, `openai-docs` for OpenAI-specific latest-doc work, `prompt-engineer` for instruction quality review, and the narrowest domain specialist first when the plan already has a clear implementation surface.
 
 ## Workflow steps
 1. Lock scope and non-goals.

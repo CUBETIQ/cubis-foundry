@@ -1,14 +1,18 @@
 {
   "$schema": "cubis-foundry-mcp-manifest-v1",
-  "generatedAt": "2026-03-09T03:16:34.010Z",
-  "contentHash": "4eae86f3a21f60c8",
+  "generatedAt": "2026-03-09T04:01:15.612Z",
+  "contentHash": "bd090b5eaf0a2ebf",
   "summary": {
-    "totalSkills": 47,
-    "totalCategories": 9,
-    "totalBytes": 113122,
-    "estimatedTokens": 28281
+    "totalSkills": 54,
+    "totalCategories": 11,
+    "totalBytes": 129134,
+    "estimatedTokens": 32284
   },
   "categories": [
+    {
+      "name": "ai",
+      "skillCount": 1
+    },
     {
       "name": "api",
       "skillCount": 2
@@ -35,7 +39,11 @@
     },
     {
       "name": "general",
-      "skillCount": 18
+      "skillCount": 23
+    },
+    {
+      "name": "mcp",
+      "skillCount": 1
     },
     {
       "name": "performance",
@@ -47,6 +55,29 @@
     }
   ],
   "skills": [
+    {
+      "id": "agentic-eval",
+      "name": "agentic-eval",
+      "displayName": null,
+      "description": "Use when evaluating an agent, skill, workflow, or MCP server: rubric design, evaluator-optimizer loops, LLM-as-judge patterns, regression suites, or prototype-vs-production quality gaps.",
+      "category": "general",
+      "keywords": [],
+      "triggers": [],
+      "path": "workflows/skills/agentic-eval/SKILL.md",
+      "metadata": {
+        "source": "https://github.com/github/awesome-copilot",
+        "snapshot": "Rebuilt for Foundry on 2026-03-09 using public agent-builder evaluation patterns.",
+        "category": "workflow-specialists",
+        "layer": "workflow-specialists",
+        "canonical": "true",
+        "maturity": "stable",
+        "tags": "[\"evaluation\", \"rubrics\", \"regression\", \"judge-models\", \"benchmarking\", \"agents\"]"
+      },
+      "fileBytes": 1890,
+      "warnings": [
+        "no keywords or triggers"
+      ]
+    },
     {
       "id": "api-designer",
       "name": "api-designer",
@@ -298,7 +329,7 @@
       "id": "database-skills",
       "name": "database-skills",
       "displayName": null,
-      "description": "Use as the primary database hub for engine choice, schema-vs-tuning routing, migration safety framing, and database task triage before engine-specific deep dives.",
+      "description": "Use as the primary database hub for engine or platform choice, schema-vs-tuning routing, access-layer triage, migration safety framing, and database task triage before deeper engine, platform, or ORM specialists.",
       "category": "data",
       "keywords": [],
       "triggers": [],
@@ -315,8 +346,9 @@
         "baseline": "cross-engine database planning",
         "tags": "[\"database\", \"sql\", \"nosql\", \"migrations\", \"indexing\", \"query-plans\", \"routing\"]"
       },
-      "fileBytes": 2636,
+      "fileBytes": 2818,
       "warnings": [
+        "description too long (212 chars)",
         "no keywords or triggers"
       ]
     },
@@ -347,6 +379,30 @@
       ]
     },
     {
+      "id": "deep-research",
+      "name": "deep-research",
+      "displayName": null,
+      "description": "Use when a task needs multi-round research rather than a quick lookup: iterative search, gap finding, corroboration across sources, contradiction handling, or evidence-led synthesis before planning or implementation.",
+      "category": "general",
+      "keywords": [],
+      "triggers": [],
+      "path": "workflows/skills/deep-research/SKILL.md",
+      "metadata": {
+        "source": "community benchmark synthesis",
+        "snapshot": "Rebuilt for Foundry on 2026-03-09 using public deep-research style skill patterns and Foundry research workflow needs.",
+        "category": "workflow-specialists",
+        "layer": "workflow-specialists",
+        "canonical": "true",
+        "maturity": "stable",
+        "tags": "[\"research\", \"web-search\", \"corroboration\", \"evidence\", \"synthesis\", \"planning\"]"
+      },
+      "fileBytes": 1936,
+      "warnings": [
+        "description too long (216 chars)",
+        "no keywords or triggers"
+      ]
+    },
+    {
       "id": "design-system-builder",
       "name": "design-system-builder",
       "displayName": "Design System Builder",
@@ -373,6 +429,30 @@
       ]
     },
     {
+      "id": "drizzle-expert",
+      "name": "drizzle-expert",
+      "displayName": null,
+      "description": "Use when the task is specifically Drizzle ORM or drizzle-kit: schema-as-code, typed SQL, relations, migrations, config, runtime pairing, or TypeScript database access-layer decisions across Postgres, SQLite/libSQL, Neon, or Supabase.",
+      "category": "general",
+      "keywords": [],
+      "triggers": [],
+      "path": "workflows/skills/drizzle-expert/SKILL.md",
+      "metadata": {
+        "source": "https://orm.drizzle.team/docs/overview",
+        "snapshot": "Rebuilt for Foundry on 2026-03-09 using Drizzle docs plus public agent-skill repo benchmarks.",
+        "category": "databases",
+        "layer": "databases",
+        "canonical": "true",
+        "maturity": "stable",
+        "tags": "[\"drizzle\", \"drizzle-kit\", \"orm\", \"typescript\", \"sql\", \"migrations\", \"relations\"]"
+      },
+      "fileBytes": 2911,
+      "warnings": [
+        "description too long (233 chars)",
+        "no keywords or triggers"
+      ]
+    },
+    {
       "id": "fastapi-expert",
       "name": "fastapi-expert",
       "displayName": null,
@@ -395,6 +475,30 @@
       },
       "fileBytes": 2782,
       "warnings": [
+        "no keywords or triggers"
+      ]
+    },
+    {
+      "id": "firebase",
+      "name": "firebase",
+      "displayName": null,
+      "description": "Use when the task is specifically Firebase: Firestore or Realtime Database choice, security rules, indexes, auth, storage, cloud functions, hosting, emulator workflows, or platform-coupled rollout decisions.",
+      "category": "general",
+      "keywords": [],
+      "triggers": [],
+      "path": "workflows/skills/firebase/SKILL.md",
+      "metadata": {
+        "source": "https://firebase.google.com/docs",
+        "snapshot": "Rebuilt for Foundry on 2026-03-09 using Firebase docs plus public agent-skill repo benchmarks.",
+        "category": "databases",
+        "layer": "databases",
+        "canonical": "true",
+        "maturity": "stable",
+        "tags": "[\"firebase\", \"firestore\", \"realtime-database\", \"rules\", \"auth\", \"storage\", \"functions\"]"
+      },
+      "fileBytes": 2572,
+      "warnings": [
+        "description too long (207 chars)",
         "no keywords or triggers"
       ]
     },
@@ -577,6 +681,30 @@
       },
       "fileBytes": 2321,
       "warnings": [
+        "no keywords or triggers"
+      ]
+    },
+    {
+      "id": "mcp-builder",
+      "name": "mcp-builder",
+      "displayName": null,
+      "description": "Use when building, extending, or evaluating an MCP server: tool design, resource patterns, transports, auth, schemas, testing, Python or TypeScript implementation, or MCP-specific server architecture decisions.",
+      "category": "mcp",
+      "keywords": [],
+      "triggers": [],
+      "path": "workflows/skills/mcp-builder/SKILL.md",
+      "metadata": {
+        "source": "https://github.com/anthropics/skills/tree/main/skills/mcp-builder",
+        "snapshot": "Rebuilt for Foundry on 2026-03-09 using Anthropic mcp-builder, agentailor/create-mcp-server, and public builder-skill benchmarks.",
+        "category": "workflow-specialists",
+        "layer": "workflow-specialists",
+        "canonical": "true",
+        "maturity": "stable",
+        "tags": "[\"mcp\", \"server\", \"tooling\", \"typescript\", \"python\", \"schemas\", \"evaluation\"]"
+      },
+      "fileBytes": 2546,
+      "warnings": [
+        "description too long (210 chars)",
         "no keywords or triggers"
       ]
     },
@@ -766,6 +894,30 @@
       ]
     },
     {
+      "id": "openai-docs",
+      "name": "openai-docs",
+      "displayName": null,
+      "description": "Use when the task depends on current OpenAI platform or product documentation: API usage, model behavior, tool features, SDK guidance, or version-sensitive OpenAI docs that should be verified from official sources.",
+      "category": "general",
+      "keywords": [],
+      "triggers": [],
+      "path": "workflows/skills/openai-docs/SKILL.md",
+      "metadata": {
+        "source": "https://github.com/openai/skills",
+        "snapshot": "Rebuilt for Foundry on 2026-03-09 using official OpenAI docs patterns and public agent-builder benchmarks.",
+        "category": "workflow-specialists",
+        "layer": "workflow-specialists",
+        "canonical": "true",
+        "maturity": "stable",
+        "tags": "[\"openai\", \"docs\", \"api\", \"latest\", \"verification\", \"official-sources\"]"
+      },
+      "fileBytes": 1953,
+      "warnings": [
+        "description too long (214 chars)",
+        "no keywords or triggers"
+      ]
+    },
+    {
       "id": "php-pro",
       "name": "php-pro",
       "displayName": null,
@@ -837,6 +989,30 @@
       "fileBytes": 2417,
       "warnings": [
         "description too long (202 chars)",
+        "no keywords or triggers"
+      ]
+    },
+    {
+      "id": "prompt-engineer",
+      "name": "prompt-engineer",
+      "displayName": null,
+      "description": "Use when a prompt, instruction set, or agent/system message needs quality review: ambiguity, missing format constraints, unsafe assumptions, injection exposure, weak trigger wording, or brittle task framing.",
+      "category": "ai",
+      "keywords": [],
+      "triggers": [],
+      "path": "workflows/skills/prompt-engineer/SKILL.md",
+      "metadata": {
+        "source": "https://blog.agentailor.com/posts/top-agent-skills-for-agent-builders-2026",
+        "snapshot": "Rebuilt for Foundry on 2026-03-09 using public agent-builder benchmarks and instruction-quality patterns.",
+        "category": "workflow-specialists",
+        "layer": "workflow-specialists",
+        "canonical": "true",
+        "maturity": "stable",
+        "tags": "[\"prompting\", \"instructions\", \"injection\", \"formatting\", \"guardrails\", \"quality\"]"
+      },
+      "fileBytes": 2022,
+      "warnings": [
+        "description too long (207 chars)",
         "no keywords or triggers"
       ]
     },
