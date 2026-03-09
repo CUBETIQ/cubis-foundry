@@ -43,8 +43,8 @@ Use this when deployment pipeline, infrastructure, release execution, or inciden
 DEVOPS_WORKFLOW_RESULT:
   primary_agent: devops-engineer
   supporting_agents: [security-auditor?, test-engineer?]
-  primary_skills: [devops-engineer, sre-engineer]
-  supporting_skills: [monitoring-expert?, terraform-engineer?, wrangler?]
+  primary_skills: [javascript-pro?, typescript-pro?, python-pro?, golang-pro?]
+  supporting_skills: [nodejs-best-practices?, debugging-strategies?, webapp-testing?, skill-creator?]
   deployment_plan: [<string>]
   rollback_conditions: [<string>]
   validation_checks: [<command or test>]

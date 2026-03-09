@@ -11,7 +11,9 @@
     "database-optimizer",
     "database-skills",
     "design-system-builder",
+    "debugging-strategies",
     "fastapi-expert",
+    "frontend-code-review",
     "frontend-design",
     "graphql-architect",
     "microservices-architect",
@@ -21,6 +23,7 @@
     "nextjs-developer",
     "nodejs-best-practices",
     "neki",
+    "playwright-e2e",
     "postgres",
     "redis",
     "react-expert",
@@ -28,6 +31,7 @@
     "supabase",
     "tailwind-patterns",
     "vitess",
+    "webapp-testing",
     "web-perf"
   ]
 }

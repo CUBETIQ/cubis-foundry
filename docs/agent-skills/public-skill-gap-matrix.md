@@ -1,13 +1,13 @@
 # Public Skill Gap Matrix
 
-Generated: 2026-03-08T18:37:03.476Z
+Generated: 2026-03-09T03:17:26.129Z
 
 ## Summary
 
-- Current skills reviewed: 41
-- New candidate skills: 10
-- Actions: `keep-and-tighten` (25), `keep` (14), `experimental-keep` (1), `keep-and-expand` (1)
-- Clusters: `languages` (14), `architecture-databases` (13), `api-and-frontend` (8), `backend-frameworks` (5), `workflow-and-automation` (1)
+- Current skills reviewed: 45
+- New candidate skills: 6
+- Actions: `keep-and-tighten` (29), `keep` (14), `experimental-keep` (1), `keep-and-expand` (1)
+- Clusters: `languages` (14), `architecture-databases` (13), `api-and-frontend` (8), `backend-frameworks` (5), `testing-security-review` (4), `workflow-and-automation` (1)
 
 ## Current Skills
 
@@ -54,18 +54,18 @@ Generated: 2026-03-08T18:37:03.476Z
 | `react-expert` | api-and-frontend | keep-and-tighten | yes | no | no | `anthropics/skills`, `openai/skills`, `vercel-labs/agent-skills`, `agentskills/agentskills` |
 | `tailwind-patterns` | api-and-frontend | keep-and-tighten | yes | no | no | `vercel-labs/agent-skills`, `Jeffallan/claude-skills`, `VoltAgent/awesome-agent-skills` |
 | `web-perf` | api-and-frontend | keep-and-tighten | yes | no | no | `anthropics/skills`, `openai/skills`, `vercel-labs/agent-skills`, `agentskills/agentskills` |
+| `debugging-strategies` | testing-security-review | keep-and-tighten | yes | no | no | `Jeffallan/claude-skills`, `Microck/ordinary-claude-skills`, `VoltAgent/awesome-agent-skills` |
+| `frontend-code-review` | testing-security-review | keep-and-tighten | yes | no | no | `vercel-labs/agent-skills`, `Jeffallan/claude-skills`, `VoltAgent/awesome-agent-skills` |
+| `playwright-e2e` | testing-security-review | keep-and-tighten | yes | no | no | `vercel-labs/agent-skills`, `travisvn/awesome-claude-skills`, `VoltAgent/awesome-agent-skills` |
+| `webapp-testing` | testing-security-review | keep-and-tighten | yes | no | no | `anthropics/skills`, `openai/skills`, `vercel-labs/agent-skills`, `agentskills/agentskills` |
 
 ## New Candidate Skills
 
 | Skill | Cluster | Priority | Benchmark repos |
 | --- | --- | --- | --- |
-| `playwright-e2e` | testing-security-review | high | `vercel-labs/agent-skills`, `VoltAgent/awesome-agent-skills`, `travisvn/awesome-claude-skills` |
-| `frontend-code-review` | testing-security-review | high | `Jeffallan/claude-skills`, `VoltAgent/awesome-agent-skills`, `Microck/ordinary-claude-skills` |
 | `drizzle-expert` | architecture-databases | medium | `vercel-labs/agent-skills`, `travisvn/awesome-claude-skills`, `Microck/ordinary-claude-skills` |
 | `github-workflow` | workflow-and-automation | medium | `fvadicamo/dev-agent-skills`, `VoltAgent/awesome-agent-skills`, `travisvn/awesome-claude-skills` |
 | `pr-creator` | workflow-and-automation | medium | `fvadicamo/dev-agent-skills`, `mhattingpete/claude-skills-marketplace`, `VoltAgent/awesome-agent-skills` |
-| `debugging-strategies` | testing-security-review | medium | `Jeffallan/claude-skills`, `Microck/ordinary-claude-skills`, `VoltAgent/awesome-agent-skills` |
-| `webapp-testing` | testing-security-review | medium | `vercel-labs/agent-skills`, `VoltAgent/awesome-agent-skills`, `travisvn/awesome-claude-skills` |
 | `mcp-builder` | workflow-and-automation | medium | `cnemri/google-genai-skills`, `VoltAgent/awesome-agent-skills`, `Jeffallan/claude-skills` |
 | `docs-updater` | support-and-noncoding | medium | `Jeffallan/claude-skills`, `Microck/ordinary-claude-skills`, `travisvn/awesome-claude-skills` |
 | `research-librarian` | support-and-noncoding | medium | `Jeffallan/claude-skills`, `VoltAgent/awesome-agent-skills`, `Microck/ordinary-claude-skills` |

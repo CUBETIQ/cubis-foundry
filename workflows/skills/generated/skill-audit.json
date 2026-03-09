@@ -2,7 +2,7 @@
   "$schema": "cubis-foundry-skill-audit-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
   "summary": {
-    "keep": 41,
+    "keep": 45,
     "review": 0,
     "alias-only": 0
   },
@@ -107,6 +107,15 @@
       "reason": "Database hub stays active but routes into engine-specific subskills instead of duplicating engine detail."
     },
     {
+      "id": "debugging-strategies",
+      "canonical_id": "debugging-strategies",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
       "id": "design-system-builder",
       "canonical_id": "design-system-builder",
       "status": "keep",
@@ -121,6 +130,15 @@
       "status": "keep",
       "layer": "frameworks-runtimes",
       "category": "frameworks-runtimes",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "frontend-code-review",
+      "canonical_id": "frontend-code-review",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
       "tier": "curated",
       "reason": "Canonical skill remains active in the layered catalog."
     },
@@ -251,6 +269,15 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
+      "id": "playwright-e2e",
+      "canonical_id": "playwright-e2e",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
       "id": "postgres",
       "canonical_id": "postgres",
       "status": "keep",
@@ -375,7 +402,16 @@
       "category": "frameworks-runtimes",
       "tier": "curated",
       "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "webapp-testing",
+      "canonical_id": "webapp-testing",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
     }
   ],
-  "contentHash": "5a2453494a259302"
+  "contentHash": "bc6a45deb4c53e16"
 }

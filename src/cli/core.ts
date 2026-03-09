@@ -4207,11 +4207,44 @@ async function syncRulesForPlatform({
 async function safeRemove(targetPath, dryRun = false) {
   if (await pathExists(targetPath)) {
     if (!dryRun) {
-      await rm(targetPath, { recursive: true, force: true });
+      await removePathWithRetry(targetPath);
     }
     return true;
   }
   return false;
+}
+
+function shouldRetryRm(error) {
+  const code = String(error?.code || "").toUpperCase();
+  return code === "EPERM" || code === "EBUSY" || code === "ENOTEMPTY";
+}
+
+async function sleep(ms) {
+  await new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function removePathWithRetry(
+  targetPath,
+  { attempts = 5, initialDelayMs = 40 } = {},
+) {
+  let lastError = null;
+  let delayMs = initialDelayMs;
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      await rm(targetPath, { recursive: true, force: true });
+      return;
+    } catch (error) {
+      lastError = error;
+      if (!shouldRetryRm(error) || attempt === attempts) {
+        throw error;
+      }
+      await sleep(delayMs);
+      delayMs *= 2;
+    }
+  }
+
+  if (lastError) throw lastError;
 }
 
 async function copyArtifact({

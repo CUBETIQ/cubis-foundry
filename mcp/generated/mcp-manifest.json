@@ -1,12 +1,12 @@
 {
   "$schema": "cubis-foundry-mcp-manifest-v1",
-  "generatedAt": "2026-03-08T18:36:56.389Z",
-  "contentHash": "c5e6147f3dc26a41",
+  "generatedAt": "2026-03-09T03:16:34.010Z",
+  "contentHash": "4eae86f3a21f60c8",
   "summary": {
-    "totalSkills": 43,
-    "totalCategories": 8,
-    "totalBytes": 102279,
-    "estimatedTokens": 25570
+    "totalSkills": 47,
+    "totalCategories": 9,
+    "totalBytes": 113122,
+    "estimatedTokens": 28281
   },
   "categories": [
     {
@@ -31,14 +31,18 @@
     },
     {
       "name": "frontend",
-      "skillCount": 4
+      "skillCount": 5
     },
     {
       "name": "general",
-      "skillCount": 16
+      "skillCount": 18
     },
     {
       "name": "performance",
+      "skillCount": 1
+    },
+    {
+      "name": "testing",
       "skillCount": 1
     }
   ],
@@ -317,6 +321,32 @@
       ]
     },
     {
+      "id": "debugging-strategies",
+      "name": "debugging-strategies",
+      "displayName": null,
+      "description": "Use when isolating bugs, regressions, flaky tests, or cross-layer failures with an evidence-first reproduce, narrow, verify workflow.",
+      "category": "general",
+      "keywords": [],
+      "triggers": [],
+      "path": "workflows/skills/debugging-strategies/SKILL.md",
+      "metadata": {
+        "version": "1.0.0",
+        "domain": "quality",
+        "role": "specialist",
+        "stack": "cross-stack",
+        "category": "workflow-specialists",
+        "layer": "workflow-specialists",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "evidence-first debugging across browser, service, and data paths",
+        "tags": "[\"debugging\", \"bugs\", \"triage\", \"root-cause\", \"regression\", \"flaky-tests\", \"investigation\"]"
+      },
+      "fileBytes": 2614,
+      "warnings": [
+        "no keywords or triggers"
+      ]
+    },
+    {
       "id": "design-system-builder",
       "name": "design-system-builder",
       "displayName": "Design System Builder",
@@ -364,6 +394,32 @@
         "tags": "[\"fastapi\", \"python\", \"pydantic\", \"async\", \"backend\", \"openapi\"]"
       },
       "fileBytes": 2782,
+      "warnings": [
+        "no keywords or triggers"
+      ]
+    },
+    {
+      "id": "frontend-code-review",
+      "name": "frontend-code-review",
+      "displayName": null,
+      "description": "Use when reviewing web UI code for regressions in accessibility, state flow, responsiveness, loading and error behavior, rendering cost, and design-system consistency.",
+      "category": "frontend",
+      "keywords": [],
+      "triggers": [],
+      "path": "workflows/skills/frontend-code-review/SKILL.md",
+      "metadata": {
+        "version": "1.0.0",
+        "domain": "frontend",
+        "role": "specialist",
+        "stack": "react-web",
+        "category": "workflow-specialists",
+        "layer": "workflow-specialists",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "modern frontend review for React, Next.js, Tailwind, and component-system code",
+        "tags": "[\"frontend\", \"code-review\", \"accessibility\", \"ui\", \"react\", \"nextjs\", \"performance\", \"review\"]"
+      },
+      "fileBytes": 2690,
       "warnings": [
         "no keywords or triggers"
       ]
@@ -727,6 +783,33 @@
       },
       "fileBytes": 1073,
       "warnings": [
+        "no keywords or triggers"
+      ]
+    },
+    {
+      "id": "playwright-e2e",
+      "name": "playwright-e2e",
+      "displayName": null,
+      "description": "Use when writing or reviewing browser end-to-end tests with Playwright, debugging flaky UI automation, validating auth or checkout flows, or tightening CI evidence with traces and web-first assertions.",
+      "category": "testing",
+      "keywords": [],
+      "triggers": [],
+      "path": "workflows/skills/playwright-e2e/SKILL.md",
+      "metadata": {
+        "version": "1.0.0",
+        "domain": "quality",
+        "role": "specialist",
+        "stack": "playwright",
+        "category": "workflow-specialists",
+        "layer": "workflow-specialists",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "current Playwright locator, trace, and isolation guidance",
+        "tags": "[\"playwright\", \"e2e\", \"browser-testing\", \"qa\", \"flaky-tests\", \"ui\", \"ci\"]"
+      },
+      "fileBytes": 2733,
+      "warnings": [
+        "description too long (201 chars)",
         "no keywords or triggers"
       ]
     },
@@ -1112,6 +1195,32 @@
         "tags": "[\"performance\", \"core-web-vitals\", \"lcp\", \"inp\", \"cls\", \"bundles\", \"network\"]"
       },
       "fileBytes": 2351,
+      "warnings": [
+        "no keywords or triggers"
+      ]
+    },
+    {
+      "id": "webapp-testing",
+      "name": "webapp-testing",
+      "displayName": null,
+      "description": "Use when choosing test depth for a web product, balancing unit, integration, browser, accessibility, and contract checks, or reviewing whether a change has the right verification shape before release.",
+      "category": "general",
+      "keywords": [],
+      "triggers": [],
+      "path": "workflows/skills/webapp-testing/SKILL.md",
+      "metadata": {
+        "version": "1.0.0",
+        "domain": "quality",
+        "role": "specialist",
+        "stack": "web",
+        "category": "workflow-specialists",
+        "layer": "workflow-specialists",
+        "canonical": "true",
+        "maturity": "stable",
+        "baseline": "modern web testing strategy across component, integration, and browser layers",
+        "tags": "[\"testing\", \"qa\", \"web\", \"integration\", \"e2e\", \"accessibility\", \"coverage\", \"release\"]"
+      },
+      "fileBytes": 2806,
       "warnings": [
         "no keywords or triggers"
       ]

@@ -1,48 +1,46 @@
 ---
 command: "/debug"
-description: "Isolate root cause quickly and apply the smallest safe remediation with verification."
+description: "Isolate root cause quickly, apply the smallest safe remediation, and leave behind regression evidence."
 triggers: ["debug", "bug", "error", "incident", "stack trace"]
 ---
 # Debug Workflow
 
-# CHANGED: routing — added explicit debug ownership and supporting specialists — prevents route manifest fallback to orchestrator during bug work.
-# CHANGED: output contract — converted free-form bullets into structured YAML — makes root-cause handoff deterministic.
-
 ## When to use
-Use this when behavior is failing or inconsistent.
+Use this when behavior is failing, inconsistent, flaky, or only reproducible under certain conditions.
 
 ## Routing
 - Primary specialist: `@debugger`
-- Domain implementation support: `@backend-specialist`
+- Domain implementation support: `@backend-specialist`, `@frontend-specialist`
 - Verification support: `@test-engineer`
 
 ## Context notes
-- This workflow file, active platform rules, and selected agents/skills guide execution.
-- Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
+- This workflow file, active platform rules, and selected agents or skills guide execution.
+- Attach stack traces, request ids, traces, repro steps, recent diffs, and environment notes when context is incomplete.
 
 ## Skill Routing
-- Primary skills: `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`, `csharp-pro`, `kotlin-pro`, `rust-pro`
-- Supporting skills (optional): `skill-creator`
-- Pick the language skill that matches the failing path. Use `skill-creator` only when the bug is in a skill package or generator surface.
+- Primary skills: `debugging-strategies`
+- Supporting skills (optional): `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`, `csharp-pro`, `kotlin-pro`, `rust-pro`, `webapp-testing`, `playwright-e2e`, `skill-creator`
+- Start with `debugging-strategies` for reproduce, isolate, instrument, and verify flow. Add the dominant language skill for exact code-path analysis, `webapp-testing` or `playwright-e2e` when the failure lives in browser or release verification, and `skill-creator` only for bugs in skills, generators, or mirrors.
 
 ## Workflow steps
-1. Reproduce issue and collect evidence.
-2. Narrow fault domain and identify root cause.
-3. Apply focused fix with low regression risk.
-4. Verify resolution and monitor for recurrence.
+1. Reproduce the issue and record expected versus actual behavior.
+2. Narrow the fault domain with the smallest useful evidence.
+3. Fix the confirmed cause with the lowest regression risk.
+4. Add or update the regression proof.
+5. Document any remaining uncertainty or environment-specific gaps.
 
 ## Verification
-- Run focused checks/tests for the changed scope.
-- Confirm no regressions in adjacent behavior.
-- Note any gaps that were not validated.
+- Re-run the failing scenario first.
+- Run focused regression checks on adjacent high-risk paths.
+- Call out any remaining gaps if the full environment could not be reproduced.
 
 ## Output Contract
 ```yaml
 DEBUG_WORKFLOW_RESULT:
   primary_agent: debugger
-  supporting_agents: [backend-specialist?, test-engineer?]
-  primary_skills: [systematic-debugging, find-bugs]
-  supporting_skills: [monitoring-expert?, error-ux-observability?]
+  supporting_agents: [backend-specialist?, frontend-specialist?, test-engineer?]
+  primary_skills: [debugging-strategies]
+  supporting_skills: [typescript-pro?, javascript-pro?, python-pro?, golang-pro?, java-pro?, csharp-pro?, kotlin-pro?, rust-pro?, webapp-testing?, playwright-e2e?, skill-creator?]
   reproduction:
     steps: [<string>]
     expected_vs_actual: <string>

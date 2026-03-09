@@ -1,6 +1,6 @@
 # Workflow Prompt: /debug
 
-Isolate root cause quickly and apply the smallest safe remediation with verification.
+Isolate root cause quickly, apply the smallest safe remediation, and leave behind regression evidence.
 
 Use this prompt with the matching workflow file:
 - Workflow: ../copilot/workflows/debug.md

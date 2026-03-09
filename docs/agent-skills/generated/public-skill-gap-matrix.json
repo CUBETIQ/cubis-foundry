@@ -1,13 +1,13 @@
 {
   "$schema": "cubis-foundry-public-skill-gap-matrix-v1",
-  "generatedAt": "2026-03-08T18:37:03.476Z",
+  "generatedAt": "2026-03-09T03:17:26.129Z",
   "summary": {
-    "currentSkillCount": 41,
-    "newCandidateCount": 10,
+    "currentSkillCount": 45,
+    "newCandidateCount": 6,
     "actionCounts": [
       {
         "key": "keep-and-tighten",
-        "count": 25
+        "count": 29
       },
       {
         "key": "keep",
@@ -38,6 +38,10 @@
       {
         "key": "backend-frameworks",
         "count": 5
+      },
+      {
+        "key": "testing-security-review",
+        "count": 4
       },
       {
         "key": "workflow-and-automation",
@@ -1662,31 +1666,149 @@
         "templateFiles": 0
       },
       "path": "workflows/skills/web-perf/SKILL.md"
-    }
-  ],
-  "newCandidateSkills": [
+    },
+    {
+      "id": "debugging-strategies",
+      "name": "debugging-strategies",
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "tier": "system",
+      "maturity": "stable",
+      "description": "Use when isolating bugs, regressions, flaky tests, or cross-layer failures with an evidence-first reproduce, narrow, verify workflow.",
+      "cluster": "testing-security-review",
+      "action": "keep-and-tighten",
+      "benchmarkRepoIds": [
+        "Jeffallan/claude-skills",
+        "Microck/ordinary-claude-skills",
+        "VoltAgent/awesome-agent-skills"
+      ],
+      "decision": "Keep as the cross-stack debugging methodology skill and preserve a strict reproduce, isolate, verify boundary separate from language and framework implementation.",
+      "keep": "Evidence-first debugging, minimal reproductions, instrumentation discipline, and regression-proof closure as the core surface.",
+      "change": "Recheck public debugging and bug-hunt libraries for missing CI-only failure, flaky test, and release-regression guidance without drifting into observability setup.",
+      "packagingNext": "Keep root plus reproduce/isolate/verify checklist; add templates only if bug-report or repro capture outputs become standardized.",
+      "publicSignals": [
+        "Public skill ecosystems repeatedly separate debugging method from language implementation details, especially for flaky or cross-layer failures."
+      ],
+      "packaging": {
+        "hasReferences": true,
+        "hasScripts": false,
+        "hasTemplates": false,
+        "hasAssets": false,
+        "hasSteering": false,
+        "referenceFiles": 1,
+        "scriptFiles": 0,
+        "templateFiles": 0
+      },
+      "path": "workflows/skills/debugging-strategies/SKILL.md"
+    },
+    {
+      "id": "frontend-code-review",
+      "name": "frontend-code-review",
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "tier": "curated",
+      "maturity": "stable",
+      "description": "Use when reviewing web UI code for regressions in accessibility, state flow, responsiveness, loading and error behavior, rendering cost, and design-system consistency.",
+      "cluster": "testing-security-review",
+      "action": "keep-and-tighten",
+      "benchmarkRepoIds": [
+        "vercel-labs/agent-skills",
+        "Jeffallan/claude-skills",
+        "VoltAgent/awesome-agent-skills"
+      ],
+      "decision": "Keep as the UI-review specialist and preserve a clear separation from implementation, generic architecture, and browser automation work.",
+      "keep": "Accessibility, interaction states, responsive regressions, render-cost review, and component API quality as the core trigger surface.",
+      "change": "Recheck public frontend review and UX audit families for whether accessibility-only or design-system-review adjacencies deserve future companion skills rather than broadening this one.",
+      "packagingNext": "Keep root plus UI regression checklist; no scripts until review outputs need a standard template.",
+      "publicSignals": [
+        "Public repos repeatedly separate frontend review from generic code review because UI state, semantics, and accessibility failures need different checks."
+      ],
+      "packaging": {
+        "hasReferences": true,
+        "hasScripts": false,
+        "hasTemplates": false,
+        "hasAssets": false,
+        "hasSteering": false,
+        "referenceFiles": 1,
+        "scriptFiles": 0,
+        "templateFiles": 0
+      },
+      "path": "workflows/skills/frontend-code-review/SKILL.md"
+    },
     {
       "id": "playwright-e2e",
+      "name": "playwright-e2e",
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "tier": "curated",
+      "maturity": "stable",
+      "description": "Use when writing or reviewing browser end-to-end tests with Playwright, debugging flaky UI automation, validating auth or checkout flows, or tightening CI evidence with traces and web-first assertions.",
       "cluster": "testing-security-review",
-      "priority": "high",
+      "action": "keep-and-tighten",
       "benchmarkRepoIds": [
+        "vercel-labs/agent-skills",
+        "travisvn/awesome-claude-skills",
+        "VoltAgent/awesome-agent-skills"
+      ],
+      "decision": "Keep as the browser-automation specialist and maintain a clear split from general web testing strategy and generic frontend review.",
+      "keep": "Locator quality, trace-driven debugging, auth setup, flaky browser triage, and CI artifact discipline as the core boundary.",
+      "change": "Recheck public browser-testing libraries for gaps around component testing, visual diffs, or setup-project patterns without broadening beyond Playwright-specific work.",
+      "packagingNext": "Keep root plus locator/trace checklist; add templates or scripts only if Foundry standardizes browser test scaffolds later.",
+      "publicSignals": [
+        "Public coding-skill repos repeatedly justify a distinct Playwright specialist because selector choice, traces, and CI flakes change the implementation guidance."
+      ],
+      "packaging": {
+        "hasReferences": true,
+        "hasScripts": false,
+        "hasTemplates": false,
+        "hasAssets": false,
+        "hasSteering": false,
+        "referenceFiles": 1,
+        "scriptFiles": 0,
+        "templateFiles": 0
+      },
+      "path": "workflows/skills/playwright-e2e/SKILL.md"
+    },
+    {
+      "id": "webapp-testing",
+      "name": "webapp-testing",
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "tier": "curated",
+      "maturity": "stable",
+      "description": "Use when choosing test depth for a web product, balancing unit, integration, browser, accessibility, and contract checks, or reviewing whether a change has the right verification shape before release.",
+      "cluster": "testing-security-review",
+      "action": "keep-and-tighten",
+      "benchmarkRepoIds": [
+        "anthropics/skills",
+        "openai/skills",
+        "vercel-labs/agent-skills",
+        "agentskills/agentskills",
         "vercel-labs/agent-skills",
         "VoltAgent/awesome-agent-skills",
         "travisvn/awesome-claude-skills"
       ],
-      "rationale": "Repeated public demand around browser automation and validation-heavy coding work justifies a dedicated E2E skill."
-    },
-    {
-      "id": "frontend-code-review",
-      "cluster": "testing-security-review",
-      "priority": "high",
-      "benchmarkRepoIds": [
-        "Jeffallan/claude-skills",
-        "VoltAgent/awesome-agent-skills",
-        "Microck/ordinary-claude-skills"
+      "decision": "Keep as the web verification strategy skill and preserve a clear split between test-layer selection and tool-specific browser automation.",
+      "keep": "Test-depth choice, browser-vs-integration tradeoffs, accessibility coverage, and release-confidence framing as the core surface.",
+      "change": "Recheck public web-testing libraries for whether contract-testing or visual-regression adjacencies deserve separate companions rather than broadening this skill into a giant QA catalog.",
+      "packagingNext": "Keep root plus browser/API/state checklist; no scripts until the project wants a stable Foundry-owned test scaffold.",
+      "publicSignals": [
+        "Public repos often separate browser automation from broader web-testing strategy, which keeps both skills sharper and easier to trigger correctly."
       ],
-      "rationale": "Public skill ecosystems repeatedly separate UI and UX review from implementation and generic code review."
-    },
+      "packaging": {
+        "hasReferences": true,
+        "hasScripts": false,
+        "hasTemplates": false,
+        "hasAssets": false,
+        "hasSteering": false,
+        "referenceFiles": 1,
+        "scriptFiles": 0,
+        "templateFiles": 0
+      },
+      "path": "workflows/skills/webapp-testing/SKILL.md"
+    }
+  ],
+  "newCandidateSkills": [
     {
       "id": "drizzle-expert",
       "cluster": "architecture-databases",
@@ -1719,28 +1841,6 @@
         "VoltAgent/awesome-agent-skills"
       ],
       "rationale": "PR drafting and review-prep appear often enough to justify a narrow workflow skill if GitHub automation becomes first-class."
-    },
-    {
-      "id": "debugging-strategies",
-      "cluster": "testing-security-review",
-      "priority": "medium",
-      "benchmarkRepoIds": [
-        "Jeffallan/claude-skills",
-        "Microck/ordinary-claude-skills",
-        "VoltAgent/awesome-agent-skills"
-      ],
-      "rationale": "Debugging is broad enough to deserve a methodology-focused skill separate from language or framework implementation skills."
-    },
-    {
-      "id": "webapp-testing",
-      "cluster": "testing-security-review",
-      "priority": "medium",
-      "benchmarkRepoIds": [
-        "vercel-labs/agent-skills",
-        "VoltAgent/awesome-agent-skills",
-        "travisvn/awesome-claude-skills"
-      ],
-      "rationale": "Public repos frequently separate browser validation from generic QA or unit-test guidance."
     },
     {
       "id": "mcp-builder",

@@ -1,49 +1,46 @@
 ---
 command: "/review"
-description: "Run a strict review for bugs, regressions, and security issues with prioritized findings."
+description: "Run a strict review for bugs, regressions, accessibility issues, and security risk with prioritized findings."
 triggers: ["review", "audit", "pr", "quality", "security review"]
 ---
 # Review Workflow
 
-# CHANGED: output contract — converted free-form bullets into structured YAML — keeps findings and remediation guidance machine-readable.
-# CHANGED: skill routing — added `skill-creator` for skill package audits, metadata review, and sidecar repair work.
-
 ## When to use
-Use this for pull request or branch quality review.
+Use this for pull request, branch, or release-candidate review when the goal is finding defects before merge.
 
 ## Routing
 - Code quality and legacy risk: `@code-archaeologist`
-- Frontend quality: `@frontend-specialist`
-- Security checks: `@security-auditor`
-- Test adequacy: `@test-engineer`
+- Frontend quality and UI regressions: `@frontend-specialist`
+- Security findings: `@security-auditor`
+- Test adequacy and regression proof: `@test-engineer`
 
 ## Context notes
-- This workflow file, active platform rules, and selected agents/skills guide execution.
-- Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
+- This workflow file, active platform rules, and selected agents or skills guide execution.
+- Attach changed files, failing checks, screenshots, traces, and risk areas when context is incomplete.
 
 ## Skill Routing
 - Primary skills: `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `rust-pro`
-- Supporting skills (optional): `skill-creator`
-- Reviews should load the language skill that matches the changed code. Use `skill-creator` when the review target is a skill package, skill metadata, or mirror output.
+- Supporting skills (optional): `frontend-code-review`, `auth-architect`, `webapp-testing`, `playwright-e2e`, `debugging-strategies`, `skill-creator`
+- Start with the dominant language skill for the changed code. Add `frontend-code-review` when the review target includes UI behavior, accessibility, rendering cost, or design-system drift; `auth-architect` for identity or policy risk; `webapp-testing` or `playwright-e2e` when the missing proof is test-shape or browser-flow coverage; `debugging-strategies` when review findings already need root-cause isolation; and `skill-creator` for skill-package or mirror-output reviews.
 
 ## Workflow steps
-1. Inspect changed behavior and risk surface.
-2. Identify defects by severity.
-3. Validate tests and missing coverage.
-4. Produce actionable remediation guidance.
+1. Inspect changed behavior and identify the highest-risk user or system paths.
+2. Find defects by severity, prioritizing correctness, security, and regression risk over style.
+3. Check whether current tests actually prove the changed behavior.
+4. Report actionable remediation guidance with file or area references.
 
 ## Verification
-- Run focused checks/tests for the changed scope.
-- Confirm no regressions in adjacent behavior.
-- Note any gaps that were not validated.
+- Run focused checks for the reviewed surface when possible.
+- Confirm whether findings are already covered by tests or still require new proof.
+- Note what was not validated directly.
 
 ## Output Contract
 ```yaml
 REVIEW_WORKFLOW_RESULT:
   primary_agent: code-archaeologist
   supporting_agents: [frontend-specialist?, security-auditor?, test-engineer?]
-  primary_skills: [code-reviewer, security-reviewer]
-  supporting_skills: [semgrep?, static-analysis?, variant-analysis?]
+  primary_skills: [typescript-pro?, javascript-pro?, python-pro?, golang-pro?, rust-pro?]
+  supporting_skills: [frontend-code-review?, auth-architect?, webapp-testing?, playwright-e2e?, debugging-strategies?, skill-creator?]
   findings:
     - severity: <critical|high|medium|low>
       summary: <string>

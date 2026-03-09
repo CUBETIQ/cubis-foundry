@@ -1,6 +1,6 @@
 # Public Skill Corpus
 
-Generated: 2026-03-08T18:37:03.476Z
+Generated: 2026-03-09T03:17:26.129Z
 
 ## Summary
 
@@ -22,17 +22,17 @@ Generated: 2026-03-08T18:37:03.476Z
 
 | Repo | Class | Platforms | Stars | Updated | Use for |
 | --- | --- | --- | ---: | --- | --- |
-| [anthropics/skills](https://github.com/anthropics/skills) | official | claude | 0 | n/a | packaging, trigger-quality, skill-authoring |
-| [openai/skills](https://github.com/openai/skills) | official | codex | 0 | n/a | catalog-discipline, tiering, packaging |
-| [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) | public-implementation | multi-agent | 0 | n/a | coding-specialists, framework-scope, production-guardrails |
-| [agentskills/agentskills](https://github.com/agentskills/agentskills) | open-standard | multi-agent | 0 | n/a | portability, metadata, packaging |
-| [travisvn/awesome-claude-skills](https://github.com/travisvn/awesome-claude-skills) | awesome-list | claude | 0 | n/a | discovery, taxonomy, demand-signals |
-| [Jeffallan/claude-skills](https://github.com/Jeffallan/claude-skills) | aggregate-library | claude | 0 | n/a | taxonomy, category-breadth, missing-family-detection |
-| [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) | awesome-list | multi-agent | 0 | n/a | discovery, ecosystem-breadth, cross-platform-demand |
-| [Microck/ordinary-claude-skills](https://github.com/Microck/ordinary-claude-skills) | aggregate-library | claude | 0 | n/a | taxonomy, breadth, naming-collisions |
-| [MoizIbnYousaf/Ai-Agent-Skills](https://github.com/MoizIbnYousaf/Ai-Agent-Skills) | installer-registry | multi-agent | 0 | n/a | distribution, install-flow, taxonomy |
-| [gotalab/skillport](https://github.com/gotalab/skillport) | installer-registry | multi-agent | 0 | n/a | manage-once-serve-anywhere, portability, registry-shape |
-| [cnemri/google-genai-skills](https://github.com/cnemri/google-genai-skills) | public-implementation | gemini, google-genai | 0 | n/a | google-platform-patterns, packaging |
+| [anthropics/skills](https://github.com/anthropics/skills) | official | claude | 87423 | 2026-03-09 | packaging, trigger-quality, skill-authoring |
+| [openai/skills](https://github.com/openai/skills) | official | codex | 13321 | 2026-03-09 | catalog-discipline, tiering, packaging |
+| [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) | public-implementation | multi-agent | 22426 | 2026-03-09 | coding-specialists, framework-scope, production-guardrails |
+| [agentskills/agentskills](https://github.com/agentskills/agentskills) | open-standard | multi-agent | 12356 | 2026-03-09 | portability, metadata, packaging |
+| [travisvn/awesome-claude-skills](https://github.com/travisvn/awesome-claude-skills) | awesome-list | claude | 8475 | 2026-03-09 | discovery, taxonomy, demand-signals |
+| [Jeffallan/claude-skills](https://github.com/Jeffallan/claude-skills) | aggregate-library | claude | 5775 | 2026-03-09 | taxonomy, category-breadth, missing-family-detection |
+| [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) | awesome-list | multi-agent | 10211 | 2026-03-09 | discovery, ecosystem-breadth, cross-platform-demand |
+| [Microck/ordinary-claude-skills](https://github.com/Microck/ordinary-claude-skills) | aggregate-library | claude | 133 | 2026-03-09 | taxonomy, breadth, naming-collisions |
+| [MoizIbnYousaf/Ai-Agent-Skills](https://github.com/MoizIbnYousaf/Ai-Agent-Skills) | installer-registry | multi-agent | 894 | 2026-03-08 | distribution, install-flow, taxonomy |
+| [gotalab/skillport](https://github.com/gotalab/skillport) | installer-registry | multi-agent | 336 | 2026-03-08 | manage-once-serve-anywhere, portability, registry-shape |
+| [cnemri/google-genai-skills](https://github.com/cnemri/google-genai-skills) | public-implementation | gemini, google-genai | 109 | 2026-03-08 | google-platform-patterns, packaging |
 | [fvadicamo/dev-agent-skills](https://github.com/fvadicamo/dev-agent-skills) | public-implementation | multi-agent | 0 | n/a | workflow-examples, coding-specialists, skill-authoring |
 | [vercel-labs/skills](https://github.com/vercel-labs/skills) | installer-registry | multi-agent | 0 | n/a | distribution, sync, install-ergonomics |
 | [skillmatic-ai/awesome-agent-skills](https://github.com/skillmatic-ai/awesome-agent-skills) | awesome-list | multi-agent | 0 | n/a | discovery, breadth, new-candidate-finding |
@@ -48,19 +48,19 @@ Generated: 2026-03-08T18:37:03.476Z
 - Class: `official`
 - Signals: coding, automation, research, writing
 - Notes: Primary baseline for compact roots, selective sidecars, and skill-creator style lifecycle guidance.
-- README signals: skill.md=no, references=no, scripts=no, install=no, marketplace=no
+- README signals: skill.md=yes, references=no, scripts=no, install=yes, marketplace=yes
 
 ### openai/skills
 - Class: `official`
 - Signals: coding, automation, system, curated
 - Notes: Primary baseline for system/curated/experimental catalog discipline and Codex-oriented packaging.
-- README signals: skill.md=no, references=no, scripts=no, install=no, marketplace=no
+- README signals: skill.md=no, references=no, scripts=no, install=yes, marketplace=no
 
 ### vercel-labs/agent-skills
 - Class: `public-implementation`
 - Signals: frontend, backend, frameworks, deployment
 - Notes: High-signal coding specialists that help keep framework/runtime skills narrow and practical.
-- README signals: skill.md=no, references=no, scripts=no, install=no, marketplace=no
+- README signals: skill.md=yes, references=yes, scripts=yes, install=no, marketplace=no
 
 ### agentskills/agentskills
 - Class: `open-standard`
@@ -72,19 +72,19 @@ Generated: 2026-03-08T18:37:03.476Z
 - Class: `awesome-list`
 - Signals: coding, design, writing, research, automation
 - Notes: High-signal curated inventory of official and community Claude skill repos. Good for breadth and naming patterns.
-- README signals: skill.md=no, references=no, scripts=no, install=no, marketplace=no
+- README signals: skill.md=yes, references=no, scripts=yes, install=yes, marketplace=yes
 
 ### Jeffallan/claude-skills
 - Class: `aggregate-library`
 - Signals: coding, business, design, research, product, automation
 - Notes: Large community library with many categories. Valuable for category breadth and spotting missing Foundry families.
-- README signals: skill.md=no, references=no, scripts=no, install=no, marketplace=no
+- README signals: skill.md=yes, references=yes, scripts=no, install=yes, marketplace=yes
 
 ### VoltAgent/awesome-agent-skills
 - Class: `awesome-list`
 - Signals: coding, automation, security, testing, docs, product
 - Notes: Very broad cross-agent view. Good for demand sensing and surfacing families outside Claude/Codex-only ecosystems.
-- README signals: skill.md=no, references=no, scripts=no, install=no, marketplace=no
+- README signals: skill.md=yes, references=no, scripts=no, install=no, marketplace=no
 
 ### Microck/ordinary-claude-skills
 - Class: `aggregate-library`
@@ -96,19 +96,19 @@ Generated: 2026-03-08T18:37:03.476Z
 - Class: `installer-registry`
 - Signals: registry, install, coding, automation
 - Notes: Useful for install/distribution ergonomics and category breadth. Do not treat as canonical wording source.
-- README signals: skill.md=no, references=no, scripts=no, install=no, marketplace=no
+- README signals: skill.md=yes, references=yes, scripts=yes, install=yes, marketplace=yes
 
 ### gotalab/skillport
 - Class: `installer-registry`
 - Signals: registry, mcp, portability, automation
 - Notes: Strong signal for multi-agent portability and central skill management patterns.
-- README signals: skill.md=no, references=no, scripts=no, install=no, marketplace=no
+- README signals: skill.md=yes, references=no, scripts=no, install=yes, marketplace=no
 
 ### cnemri/google-genai-skills
 - Class: `public-implementation`
 - Signals: coding, automation, gemini, google
 - Notes: Useful for Google/Gemini packaging and skill-family portability beyond Claude/Codex.
-- README signals: skill.md=no, references=no, scripts=no, install=no, marketplace=no
+- README signals: skill.md=yes, references=no, scripts=no, install=yes, marketplace=no
 
 ### fvadicamo/dev-agent-skills
 - Class: `public-implementation`

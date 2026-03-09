@@ -349,8 +349,8 @@ python .agent/skills/frontend-design/scripts/ux_audit.py .
 # P3: Lighthouse (requires running server)
 python .agent/skills/performance-profiling/scripts/lighthouse_audit.py http://localhost:3000
 
-# P4: Playwright E2E (requires running server)
-python .agent/skills/webapp-testing/scripts/playwright_runner.py http://localhost:3000 --screenshot
+# P4: Playwright E2E (requires running server and local Playwright tests)
+npx playwright test --reporter=line
 ```
 
 #### 3. Build Verification
@@ -366,7 +366,7 @@ npm run build
 npm run dev
 
 # Optional: Run Playwright tests if available
-python .agent/skills/webapp-testing/scripts/playwright_runner.py http://localhost:3000 --screenshot
+npx playwright test --reporter=line
 ```
 
 #### 4. Rule Compliance (Manual Check)

@@ -1,7 +1,7 @@
 {
   "$schema": "cubis-foundry-route-manifest-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
-  "contentHash": "34275ca951025123",
+  "contentHash": "3a23dfe912700d4a",
   "summary": {
     "totalRoutes": 32,
     "workflows": 15,
@@ -174,23 +174,18 @@
       "id": "debugger",
       "command": null,
       "displayName": "debugger",
-      "description": "Expert in systematic debugging, root cause analysis, and crash investigation. Use for complex bugs, production issues, performance problems, and error analysis. Triggers on bug, error, crash, not working, broken, investigate, fix.",
-      "triggers": [
-        "bug",
-        "error",
-        "crash",
-        "not working",
-        "broken",
-        "investigate",
-        "fix"
-      ],
+      "description": "Expert in evidence-first debugging, root-cause isolation, regression triage, and flaky failure investigation across browser, backend, and data paths.",
+      "triggers": [],
       "primaryAgent": "debugger",
       "supportingAgents": [],
       "primarySkills": [
-        "typescript-pro",
-        "javascript-pro"
+        "debugging-strategies",
+        "webapp-testing"
       ],
       "supportingSkills": [
+        "playwright-e2e",
+        "typescript-pro",
+        "javascript-pro",
         "python-pro",
         "golang-pro",
         "java-pro",
@@ -235,7 +230,10 @@
       ],
       "supportingSkills": [
         "python-pro",
-        "golang-pro"
+        "golang-pro",
+        "nodejs-best-practices",
+        "debugging-strategies",
+        "webapp-testing"
       ],
       "artifacts": {
         "codex": {
@@ -291,7 +289,7 @@
       "id": "frontend-specialist",
       "command": null,
       "displayName": "frontend-specialist",
-      "description": "Senior Frontend Architect who builds maintainable React/Next.js systems with a performance-first mindset. Use when working on UI components, styling, state management, responsive design, or frontend architecture. Triggers on component, react, next, ui, ux, css, tailwind, responsive, app router.",
+      "description": "Senior frontend specialist for React, Next.js, UI architecture, interaction quality, accessibility, rendering performance, and design-system consistency.",
       "triggers": [
         "component",
         "react",
@@ -301,7 +299,9 @@
         "css",
         "tailwind",
         "responsive",
-        "app router"
+        "app router",
+        "accessibility",
+        "frontend review"
       ],
       "primaryAgent": "frontend-specialist",
       "supportingAgents": [],
@@ -310,10 +310,11 @@
         "nextjs-developer"
       ],
       "supportingSkills": [
-        "tailwind-patterns",
         "frontend-design",
+        "tailwind-patterns",
         "design-system-builder",
         "web-perf",
+        "frontend-code-review",
         "typescript-pro",
         "javascript-pro"
       ],
@@ -395,6 +396,8 @@
       "supportingSkills": [
         "kotlin-pro",
         "react-expert",
+        "debugging-strategies",
+        "webapp-testing",
         "typescript-pro",
         "javascript-pro"
       ],
@@ -679,7 +682,7 @@
       "id": "test-engineer",
       "command": null,
       "displayName": "test-engineer",
-      "description": "Expert in testing, TDD, and test automation. Use for writing tests, improving coverage, debugging test failures. Triggers on test, spec, coverage, jest, pytest, playwright, e2e, unit test.",
+      "description": "Expert in test strategy, browser verification, coverage triage, and regression-proof automation. Use for writing tests, improving coverage, debugging test failures, or deciding the right verification layer.",
       "triggers": [
         "test",
         "spec",
@@ -691,17 +694,20 @@
         "unit test",
         "automation",
         "pipeline",
-        "cypress",
         "regression",
         "qa"
       ],
       "primaryAgent": "test-engineer",
       "supportingAgents": [],
       "primarySkills": [
-        "typescript-pro",
-        "javascript-pro"
+        "webapp-testing",
+        "playwright-e2e"
       ],
       "supportingSkills": [
+        "debugging-strategies",
+        "frontend-code-review",
+        "typescript-pro",
+        "javascript-pro",
         "python-pro",
         "golang-pro",
         "java-pro"
@@ -959,7 +965,7 @@
       "id": "debug",
       "command": "/debug",
       "displayName": "debug",
-      "description": "Isolate root cause quickly and apply the smallest safe remediation with verification.",
+      "description": "Isolate root cause quickly, apply the smallest safe remediation, and leave behind regression evidence.",
       "triggers": [
         "debug",
         "bug",
@@ -970,9 +976,13 @@
       "primaryAgent": "debugger",
       "supportingAgents": [
         "backend-specialist",
+        "frontend-specialist",
         "test-engineer"
       ],
       "primarySkills": [
+        "debugging-strategies"
+      ],
+      "supportingSkills": [
         "typescript-pro",
         "javascript-pro",
         "python-pro",
@@ -980,9 +990,9 @@
         "java-pro",
         "csharp-pro",
         "kotlin-pro",
-        "rust-pro"
-      ],
-      "supportingSkills": [
+        "rust-pro",
+        "webapp-testing",
+        "playwright-e2e",
         "skill-creator"
       ],
       "artifacts": {
@@ -1378,7 +1388,7 @@
       "id": "review",
       "command": "/review",
       "displayName": "review",
-      "description": "Run a strict review for bugs, regressions, and security issues with prioritized findings.",
+      "description": "Run a strict review for bugs, regressions, accessibility issues, and security risk with prioritized findings.",
       "triggers": [
         "review",
         "audit",
@@ -1400,6 +1410,11 @@
         "rust-pro"
       ],
       "supportingSkills": [
+        "frontend-code-review",
+        "auth-architect",
+        "webapp-testing",
+        "playwright-e2e",
+        "debugging-strategies",
         "skill-creator"
       ],
       "artifacts": {
@@ -1470,7 +1485,7 @@
       "id": "test",
       "command": "/test",
       "displayName": "test",
-      "description": "Design and execute verification and QA strategy aligned to risk and acceptance criteria.",
+      "description": "Design and execute verification strategy aligned to user risk, release confidence, and regression evidence.",
       "triggers": [
         "test",
         "verify",
@@ -1480,16 +1495,22 @@
       ],
       "primaryAgent": "test-engineer",
       "supportingAgents": [
-        "debugger"
+        "debugger",
+        "frontend-specialist",
+        "backend-specialist"
       ],
       "primarySkills": [
+        "webapp-testing"
+      ],
+      "supportingSkills": [
+        "playwright-e2e",
+        "frontend-code-review",
+        "debugging-strategies",
         "typescript-pro",
         "javascript-pro",
         "python-pro",
         "golang-pro",
-        "java-pro"
-      ],
-      "supportingSkills": [
+        "java-pro",
         "skill-creator"
       ],
       "artifacts": {

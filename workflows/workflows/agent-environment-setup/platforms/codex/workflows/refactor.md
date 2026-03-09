@@ -41,8 +41,8 @@ Use this for design improvement without intentional behavior changes.
 REFACTOR_WORKFLOW_RESULT:
   primary_agent: code-archaeologist
   supporting_agents: [backend-specialist?, test-engineer?]
-  primary_skills: [refactor, legacy-modernizer]
-  supporting_skills: [architecture-designer?, code-reviewer?]
+  primary_skills: [<dominant-language-skill>]
+  supporting_skills: [architecture-designer?, debugging-strategies?, frontend-code-review?, webapp-testing?, skill-creator?]
   scope:
     summary: <string>
     invariants: [<string>]

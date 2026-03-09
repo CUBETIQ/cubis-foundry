@@ -1,6 +1,6 @@
 # Rewrite Specs
 
-Generated: 2026-03-08T18:37:03.476Z
+Generated: 2026-03-09T03:17:26.129Z
 
 ## backend-frameworks
 

@@ -1,4 +1,4 @@
-description = "Isolate root cause quickly and apply the smallest safe remediation with verification."
+description = "Isolate root cause quickly, apply the smallest safe remediation, and leave behind regression evidence."
 prompt = '''
 Follow the /debug workflow from .agent/workflows/debug.md.
 

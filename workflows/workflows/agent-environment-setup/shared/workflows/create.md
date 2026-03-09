@@ -44,8 +44,8 @@ Use this for net-new implementation after design is stable.
 CREATE_WORKFLOW_RESULT:
   primary_agent_id: "orchestrator"
   supporting_agent_ids: ["backend-specialist", "frontend-specialist", "mobile-developer", "test-engineer"]
-  primary_skill_ids: ["feature-forge", "architecture-designer"]
-  supporting_skill_ids: ["lint-and-validate", "test-master"]
+  primary_skill_ids: ["<dominant-language-skill>"]
+  supporting_skill_ids: ["api-designer?", "api-patterns?", "nodejs-best-practices?", "nestjs-expert?", "fastapi-expert?", "graphql-architect?", "react-expert?", "nextjs-developer?", "tailwind-patterns?", "frontend-design?", "design-system-builder?", "web-perf?", "webapp-testing?", "playwright-e2e?", "skill-creator?"]
   implemented_scope:
     summary: "Describe the implemented increment"
     changed_artifacts: ["<path-or-artifact>"]

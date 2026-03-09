@@ -41,8 +41,8 @@ Use this before deployment to production-like environments.
 RELEASE_WORKFLOW_RESULT:
   primary_agent: devops-engineer
   supporting_agents: [security-auditor?, test-engineer?, product-manager?]
-  primary_skills: [devops-engineer, sre-engineer]
-  supporting_skills: [monitoring-expert?, test-master?]
+  primary_skills: [javascript-pro?, typescript-pro?, python-pro?, golang-pro?]
+  supporting_skills: [nodejs-best-practices?, debugging-strategies?, webapp-testing?, playwright-e2e?, skill-creator?]
   release_checklist_status: [<string>]
   rollout_strategy: [<string>]
   rollback_conditions: [<string>]

@@ -1,6 +1,6 @@
 # Workflow Prompt: /review
 
-Run a strict review for bugs, regressions, and security issues with prioritized findings.
+Run a strict review for bugs, regressions, accessibility issues, and security risk with prioritized findings.
 
 Use this prompt with the matching workflow file:
 - Workflow: ../copilot/workflows/review.md
