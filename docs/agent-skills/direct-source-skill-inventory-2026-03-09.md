@@ -561,3 +561,73 @@ The strongest next additions from the direct-source pass are:
 8. `django-expert`
 9. `spring-boot-engineer`
 10. `react-native-expert`
+
+## Broader High-Signal Candidate Set
+
+The first shortlist above was intentionally conservative. After widening the benchmark with the broader public ecosystem, these are the stronger candidate skills that still fit Foundry's current direction.
+
+### Agent builder and workflow
+
+- `github-workflow`
+- `mcp-developer`
+- `pr-creator`
+- `docs-updater`
+- `spec-miner`
+- `monitoring-expert`
+- `honest-agent`
+
+### Platform and cloud
+
+- `cloudflare`
+- `railway`
+- `sentry`
+- `atlassian-mcp`
+- `copilot-docs`
+- `copilot-sdk`
+
+### Web and application development
+
+- `web-accessibility`
+- `figma`
+- `react-native-expert`
+- `django-expert`
+- `spring-boot-engineer`
+- `laravel-specialist`
+- `bun`
+- `vue-expert`
+- `angular-architect`
+
+### Data and AI application engineering
+
+- `mcp-developer`
+- `langchain`
+- `rag-architect`
+- `pandas-pro`
+- `spark-engineer`
+- `ml-pipeline`
+
+### Infrastructure and operations
+
+- `terraform-engineer`
+- `kubernetes-specialist`
+- `sre-engineer`
+- `secure-code-guardian`
+- `security-reviewer`
+- `owasp-security`
+
+## Best Next-Wave Picks
+
+If the goal is to add the highest-value missing skills without bloating the catalog, the best next wave is:
+
+1. `github-workflow`
+2. `mcp-developer`
+3. `web-accessibility`
+4. `cloudflare`
+5. `sentry`
+6. `figma`
+7. `atlassian-mcp`
+8. `django-expert`
+9. `spring-boot-engineer`
+10. `react-native-expert`
+11. `terraform-engineer`
+12. `kubernetes-specialist`
