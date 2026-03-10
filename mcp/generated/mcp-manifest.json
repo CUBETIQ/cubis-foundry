@@ -1,12 +1,12 @@
 {
   "$schema": "cubis-foundry-mcp-manifest-v1",
-  "generatedAt": "2026-03-10T14:53:12.889Z",
-  "contentHash": "ead5c5a2be99907b",
+  "generatedAt": "2026-03-10T15:58:12.578Z",
+  "contentHash": "192b6cd9a03069bf",
   "summary": {
     "totalSkills": 73,
     "totalCategories": 15,
-    "totalBytes": 259152,
-    "estimatedTokens": 64788
+    "totalBytes": 253793,
+    "estimatedTokens": 63449
   },
   "categories": [
     {
@@ -88,7 +88,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 4602
+      "fileBytes": 4511
     },
     {
       "id": "agentic-eval",
@@ -113,7 +113,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 2385
+      "fileBytes": 2326
     },
     {
       "id": "api-designer",
@@ -136,7 +136,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 2523,
+      "fileBytes": 2457,
       "warnings": [
         "description too long (219 chars)"
       ]
@@ -162,7 +162,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 2609
+      "fileBytes": 2543
     },
     {
       "id": "architecture-designer",
@@ -183,7 +183,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 2583
+      "fileBytes": 2517
     },
     {
       "id": "auth-architect",
@@ -206,7 +206,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 3070,
+      "fileBytes": 3004,
       "warnings": [
         "description too long (212 chars)"
       ]
@@ -232,7 +232,7 @@
         "author": "cubis-foundry",
         "version": "2.0"
       },
-      "fileBytes": 5718
+      "fileBytes": 5616
     },
     {
       "id": "ci-cd-pipelines",
@@ -259,7 +259,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 6464,
+      "fileBytes": 6311,
       "warnings": [
         "description too long (262 chars)"
       ]
@@ -285,7 +285,7 @@
         "author": "cubis-foundry",
         "version": "2.0"
       },
-      "fileBytes": 6152
+      "fileBytes": 6044
     },
     {
       "id": "csharp-pro",
@@ -308,7 +308,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 6043
+      "fileBytes": 5978
     },
     {
       "id": "dart-pro",
@@ -331,7 +331,7 @@
         "author": "cubis-foundry",
         "version": "2.0"
       },
-      "fileBytes": 5619
+      "fileBytes": 5554
     },
     {
       "id": "database-design",
@@ -354,7 +354,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 2400
+      "fileBytes": 2334
     },
     {
       "id": "database-optimizer",
@@ -379,7 +379,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 2517
+      "fileBytes": 2451
     },
     {
       "id": "database-skills",
@@ -402,7 +402,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 3123,
+      "fileBytes": 3055,
       "warnings": [
         "description too long (212 chars)"
       ]
@@ -428,7 +428,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 2760
+      "fileBytes": 2694
     },
     {
       "id": "deep-research",
@@ -453,7 +453,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 2399,
+      "fileBytes": 2340,
       "warnings": [
         "description too long (216 chars)"
       ]
@@ -477,7 +477,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 2555
+      "fileBytes": 2489
     },
     {
       "id": "docker-kubernetes",
@@ -502,7 +502,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 4751
+      "fileBytes": 4660
     },
     {
       "id": "drizzle-expert",
@@ -525,7 +525,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 3223,
+      "fileBytes": 3160,
       "warnings": [
         "description too long (233 chars)"
       ]
@@ -551,7 +551,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 3087
+      "fileBytes": 3017
     },
     {
       "id": "firebase",
@@ -570,7 +570,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 2948,
+      "fileBytes": 2886,
       "warnings": [
         "description too long (207 chars)"
       ]
@@ -596,7 +596,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 2331,
+      "fileBytes": 2271,
       "warnings": [
         "description too long (258 chars)"
       ]
@@ -624,7 +624,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 2070,
+      "fileBytes": 2008,
       "warnings": [
         "description too long (214 chars)"
       ]
@@ -652,7 +652,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 2515
+      "fileBytes": 2453
     },
     {
       "id": "flutter-go-router",
@@ -679,7 +679,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 2055
+      "fileBytes": 1994
     },
     {
       "id": "flutter-offline-sync",
@@ -706,7 +706,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 1958
+      "fileBytes": 1899
     },
     {
       "id": "flutter-repository",
@@ -731,7 +731,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 2196,
+      "fileBytes": 2135,
       "warnings": [
         "description too long (233 chars)"
       ]
@@ -759,7 +759,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 3095,
+      "fileBytes": 3028,
       "warnings": [
         "description too long (220 chars)"
       ]
@@ -789,7 +789,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 2082,
+      "fileBytes": 2023,
       "warnings": [
         "description too long (251 chars)"
       ]
@@ -817,7 +817,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 2099,
+      "fileBytes": 2038,
       "warnings": [
         "description too long (232 chars)"
       ]
@@ -843,7 +843,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 2867
+      "fileBytes": 2801
     },
     {
       "id": "frontend-design",
@@ -866,7 +866,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 2616
+      "fileBytes": 2550
     },
     {
       "id": "game-development",
@@ -891,7 +891,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 3420
+      "fileBytes": 3336
     },
     {
       "id": "geo-fundamentals",
@@ -916,7 +916,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 3756
+      "fileBytes": 3663
     },
     {
       "id": "git-workflow",
@@ -939,7 +939,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 5767,
+      "fileBytes": 5635,
       "warnings": [
         "description too long (252 chars)"
       ]
@@ -965,7 +965,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 5373
+      "fileBytes": 5306
     },
     {
       "id": "graphql-architect",
@@ -988,7 +988,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 2781
+      "fileBytes": 2713
     },
     {
       "id": "java-pro",
@@ -1011,7 +1011,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 5271
+      "fileBytes": 5206
     },
     {
       "id": "javascript-pro",
@@ -1034,7 +1034,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 4942
+      "fileBytes": 4874
     },
     {
       "id": "kotlin-pro",
@@ -1057,7 +1057,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 5918
+      "fileBytes": 5855
     },
     {
       "id": "legacy-modernizer",
@@ -1082,7 +1082,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 2741
+      "fileBytes": 2674
     },
     {
       "id": "mcp-builder",
@@ -1105,7 +1105,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 2819,
+      "fileBytes": 2757,
       "warnings": [
         "description too long (210 chars)"
       ]
@@ -1131,7 +1131,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 2592
+      "fileBytes": 2526
     },
     {
       "id": "mongodb",
@@ -1150,7 +1150,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 2472
+      "fileBytes": 2408
     },
     {
       "id": "mysql",
@@ -1169,7 +1169,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 2472
+      "fileBytes": 2408
     },
     {
       "id": "neki",
@@ -1188,7 +1188,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 2770,
+      "fileBytes": 2706,
       "warnings": [
         "description too long (217 chars)"
       ]
@@ -1214,7 +1214,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 2942,
+      "fileBytes": 2874,
       "warnings": [
         "description too long (229 chars)"
       ]
@@ -1240,7 +1240,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 2552
+      "fileBytes": 2486
     },
     {
       "id": "nodejs-best-practices",
@@ -1263,7 +1263,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 3041,
+      "fileBytes": 2973,
       "warnings": [
         "description too long (204 chars)"
       ]
@@ -1285,7 +1285,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 5772,
+      "fileBytes": 5666,
       "warnings": [
         "description too long (284 chars)"
       ]
@@ -1313,7 +1313,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 2383,
+      "fileBytes": 2325,
       "warnings": [
         "description too long (214 chars)"
       ]
@@ -1341,7 +1341,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 3893
+      "fileBytes": 3803
     },
     {
       "id": "php-pro",
@@ -1364,7 +1364,7 @@
         "author": "cubis-foundry",
         "version": "2.0"
       },
-      "fileBytes": 6261
+      "fileBytes": 6148
     },
     {
       "id": "playwright-e2e",
@@ -1389,7 +1389,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 2933,
+      "fileBytes": 2867,
       "warnings": [
         "description too long (201 chars)"
       ]
@@ -1411,7 +1411,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 2669,
+      "fileBytes": 2605,
       "warnings": [
         "description too long (202 chars)"
       ]
@@ -1437,7 +1437,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 2456,
+      "fileBytes": 2397,
       "warnings": [
         "description too long (207 chars)"
       ]
@@ -1463,7 +1463,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 4658,
+      "fileBytes": 4591,
       "warnings": [
         "description too long (248 chars)"
       ]
@@ -1489,7 +1489,7 @@
         "author": "cubis-foundry",
         "version": "2.0.0"
       },
-      "fileBytes": 4245
+      "fileBytes": 4169
     },
     {
       "id": "react-expert",
@@ -1512,7 +1512,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 2371
+      "fileBytes": 2305
     },
     {
       "id": "redis",
@@ -1531,7 +1531,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 2468
+      "fileBytes": 2404
     },
     {
       "id": "ruby-pro",
@@ -1554,7 +1554,7 @@
         "author": "cubis-foundry",
         "version": "2.0"
       },
-      "fileBytes": 6359
+      "fileBytes": 6244
     },
     {
       "id": "rust-pro",
@@ -1577,7 +1577,7 @@
         "author": "cubis-foundry",
         "version": "2.0"
       },
-      "fileBytes": 5652
+      "fileBytes": 5589
     },
     {
       "id": "seo-fundamentals",
@@ -1602,7 +1602,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 3256
+      "fileBytes": 3170
     },
     {
       "id": "skill-creator",
@@ -1625,7 +1625,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 5090,
+      "fileBytes": 5003,
       "warnings": [
         "description too long (273 chars)"
       ]
@@ -1653,7 +1653,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 3166
+      "fileBytes": 3092
     },
     {
       "id": "sqlite",
@@ -1672,7 +1672,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 2581
+      "fileBytes": 2517
     },
     {
       "id": "supabase",
@@ -1691,7 +1691,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 2669
+      "fileBytes": 2605
     },
     {
       "id": "swift-pro",
@@ -1714,7 +1714,7 @@
         "author": "cubis-foundry",
         "version": "2.0"
       },
-      "fileBytes": 6733
+      "fileBytes": 6618
     },
     {
       "id": "tailwind-patterns",
@@ -1737,7 +1737,7 @@
         "author": "cubis-foundry",
         "version": "4.0"
       },
-      "fileBytes": 5299
+      "fileBytes": 5199
     },
     {
       "id": "typescript-pro",
@@ -1760,7 +1760,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 5019,
+      "fileBytes": 4950,
       "warnings": [
         "description too long (267 chars)"
       ]
@@ -1782,7 +1782,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 2624,
+      "fileBytes": 2560,
       "warnings": [
         "description too long (210 chars)"
       ]
@@ -1810,7 +1810,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 2575
+      "fileBytes": 2509
     },
     {
       "id": "webapp-testing",
@@ -1835,7 +1835,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 2976
+      "fileBytes": 2910
     }
   ],
   "builtinTools": [

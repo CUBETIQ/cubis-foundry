@@ -50,6 +50,10 @@ function parseFrontmatter(markdown) {
   return { raw: match[1], body: markdown.slice(match[0].length) };
 }
 
+function normalizeLineEndings(text) {
+  return String(text || "").replace(/\r\n/g, "\n");
+}
+
 function getScalar(frontmatterRaw, key) {
   const match = frontmatterRaw.match(
     new RegExp(`^\\s*${key}\\s*:\\s*(.+)$`, "m"),
@@ -587,7 +591,7 @@ async function scanSkills(verbose) {
     }
 
     try {
-      const raw = await fs.readFile(skillFile, "utf8");
+      const raw = normalizeLineEndings(await fs.readFile(skillFile, "utf8"));
       const fm = parseFrontmatter(raw);
       const metadata = getMetadataBlock(fm.raw);
 
@@ -616,8 +620,8 @@ async function scanSkills(verbose) {
         keywords,
       );
       const category = deriveCategory(skillId);
-      const stat = await fs.stat(skillFile);
       const relativePath = path.relative(ROOT, skillFile).replaceAll("\\", "/");
+      const normalizedBytes = Buffer.byteLength(raw, "utf8");
 
       // Validation warnings
       const warnings = [];
@@ -637,7 +641,7 @@ async function scanSkills(verbose) {
         triggers,
         path: relativePath,
         metadata: Object.keys(metadata).length > 0 ? metadata : undefined,
-        fileBytes: stat.size,
+        fileBytes: normalizedBytes,
         warnings: warnings.length > 0 ? warnings : undefined,
       });
 
@@ -663,7 +667,7 @@ async function scanSkills(verbose) {
           metadata: {
             alias_of: skillId,
           },
-          fileBytes: stat.size,
+          fileBytes: normalizedBytes,
         });
       }
     } catch (err) {
