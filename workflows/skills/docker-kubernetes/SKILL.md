@@ -1,36 +1,20 @@
 ---
-name: "docker-kubernetes"
+name: docker-kubernetes
 description: "Use for containerization strategy, Dockerfile optimization, Kubernetes deployment patterns, Helm charts, and container orchestration decisions."
 license: MIT
 metadata:
-  version: "1.0.0"
-  domain: "infrastructure"
-  role: "specialist"
-  stack: "docker-kubernetes"
-  category: "frameworks-runtimes"
-  layer: "frameworks-runtimes"
-  canonical: true
-  maturity: "stable"
-  baseline: "Docker 27 + Kubernetes 1.31"
-  tags:
-    [
-      "docker",
-      "kubernetes",
-      "containers",
-      "k8s",
-      "helm",
-      "devops",
-      "orchestration",
-      "deployment",
-    ]
-  provenance:
-    source: "cubis-foundry canonical"
-    snapshot: "2026-03-09 initial from research on platform-sre-kubernetes and devops agent patterns"
+  author: cubis-foundry
+  version: "1.0"
+compatibility: Claude Code, Codex, GitHub Copilot
 ---
 
 # Docker & Kubernetes
 
-## When to use
+## Purpose
+
+Use for containerization strategy, Dockerfile optimization, Kubernetes deployment patterns, Helm charts, and container orchestration decisions.
+
+## When to Use
 
 - Writing or optimizing Dockerfiles for production builds.
 - Designing Kubernetes deployment, service, and ingress manifests.
@@ -39,13 +23,7 @@ metadata:
 - Writing Helm charts or Kustomize overlays.
 - Debugging container startup failures, crashloops, or networking issues.
 
-## When not to use
-
-- Pure application code with no container or deployment concern.
-- Cloud provider-specific IaC (use terraform/cloud-specific skills instead).
-- CI/CD pipeline design with no container build step.
-
-## Core workflow
+## Instructions
 
 1. Define the build target: minimal base image, multi-stage build, layer caching.
 2. Set resource requests and limits based on measured usage, not guesses.
@@ -53,7 +31,7 @@ metadata:
 4. Design the deployment strategy matching the service's availability requirements.
 5. Verify the container runs as non-root, has no secrets baked in, and scans clean.
 
-## Dockerfile standards
+### Dockerfile standards
 
 - Use multi-stage builds to separate build dependencies from runtime.
 - Pin base image versions to digest or specific tag — never use `latest` in production.
@@ -63,7 +41,7 @@ metadata:
 - Use `.dockerignore` to exclude `.git`, `node_modules`, test fixtures, and local configs.
 - Keep final image minimal: `distroless`, `alpine`, or `slim` variants.
 
-## Kubernetes standards
+### Kubernetes standards
 
 - Always set resource requests AND limits for CPU and memory.
 - Define liveness probes (restart on deadlock), readiness probes (remove from service on overload), and startup probes (slow initialization).
@@ -73,7 +51,7 @@ metadata:
 - Label everything: `app`, `version`, `component`, `part-of`, `managed-by`.
 - Use `topologySpreadConstraints` or pod anti-affinity for high-availability across zones.
 
-## Debugging patterns
+### Debugging patterns
 
 - CrashLoopBackOff: check `kubectl logs --previous`, verify probes aren't too aggressive.
 - ImagePullBackOff: verify image name, tag, registry auth, and network access.
@@ -81,14 +59,18 @@ metadata:
 - OOMKilled: increase memory limits or fix the memory leak — never just raise limits blindly.
 - Network issues: verify service selectors match pod labels, check NetworkPolicy rules.
 
-## Avoid
+### Constraints
 
-- Storing secrets in Dockerfiles, environment variables baked at build time, or ConfigMaps.
-- Running as root in production containers.
-- Using `latest` tag for base images or application images.
-- Setting CPU limits without measuring — over-limiting causes throttling.
-- Single-replica deployments for stateless services that need availability.
-- Skipping health probes — Kubernetes cannot manage what it cannot observe.
+- Avoid storing secrets in Dockerfiles, environment variables baked at build time, or ConfigMaps.
+- Avoid running as root in production containers.
+- Avoid using `latest` tag for base images or application images.
+- Avoid setting CPU limits without measuring — over-limiting causes throttling.
+- Avoid single-replica deployments for stateless services that need availability.
+- Avoid skipping health probes — Kubernetes cannot manage what it cannot observe.
+
+## Output Format
+
+Provide implementation guidance, code examples, and configuration as appropriate to the task.
 
 ## References
 
@@ -98,3 +80,12 @@ Load on demand. Do not preload all reference files.
 | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
 | `references/dockerfile-optimization-checklist.md` | The task focuses on Dockerfile writing, multi-stage builds, layer caching, or image size reduction.       |
 | `references/kubernetes-deployment-patterns.md`    | The task involves deployment strategies, autoscaling, Helm charts, or production Kubernetes architecture. |
+
+## Scripts
+
+No helper scripts are required for this skill right now. Keep execution in `SKILL.md` and `references/` unless repeated automation becomes necessary.
+
+## Examples
+
+- "Help me with docker kubernetes best practices in this project"
+- "Review my docker kubernetes implementation for issues"

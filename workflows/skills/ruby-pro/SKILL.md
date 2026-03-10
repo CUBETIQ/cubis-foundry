@@ -1,34 +1,26 @@
 ---
-name: "ruby-pro"
+name: ruby-pro
 description: "Use for modern Ruby 3.4-era backend, scripting, and application engineering with clear object boundaries, concurrency awareness, and test discipline."
+license: MIT
 metadata:
-  version: "2.0.0"
-  domain: "language"
-  role: "specialist"
-  stack: "ruby"
-  category: "languages"
-  layer: "languages"
-  canonical: true
-  maturity: "stable"
-  baseline: "Ruby 3.4"
-  tags: ["ruby", "language", "backend", "scripting", "bundler"]
+  author: cubis-foundry
+  version: "2.0"
+compatibility: Claude Code, Codex, GitHub Copilot
 ---
 
 # Ruby Pro
 
-## When to use
+## Purpose
+
+Use for modern Ruby 3.4-era backend, scripting, and application engineering with clear object boundaries, concurrency awareness, and test discipline.
+
+## When to Use
 
 - Building or refactoring Ruby services, scripts, or app-layer code.
 - Clarifying object boundaries, service layers, and package structure.
 - Improving background jobs, test coverage, and runtime safety.
 
-## When not to use
-
-- Rails-only policy questions that need a framework specialist.
-- Pure infrastructure or database operations.
-- One-off shell work with no Ruby code involved.
-
-## Core workflow
+## Instructions
 
 1. Confirm runtime and app structure before editing.
 2. Keep object responsibilities small and explicit.
@@ -36,7 +28,7 @@ metadata:
 4. Make concurrency, I/O, and retries explicit when present.
 5. Validate with focused tests and dependency-aware Bundler hygiene.
 
-## Baseline standards
+### Baseline standards
 
 - Use Ruby 3.4+ features: pattern matching (`in`/`=>` patterns), Data classes, and frozen string literals.
 - Add `# frozen_string_literal: true` to every file. Mutable strings must be explicit (`String.new` or `.dup`).
@@ -44,7 +36,7 @@ metadata:
 - Use Sorbet or RBS type signatures at module boundaries for large codebases.
 - Pin gems to exact versions in `Gemfile.lock`. Run `bundle audit` in CI for vulnerability checks.
 
-## Object design
+### Object design
 
 - Keep classes focused on a single responsibility. Extract service objects, value objects, and query objects.
 - Prefer composition over inheritance. Use modules for shared behavior, not deep class hierarchies.
@@ -52,7 +44,7 @@ metadata:
 - Use pattern matching with `case`/`in` for structured data decomposition.
 - Make method visibility explicit (`public`, `private`, `protected`). Default to private.
 
-## Concurrency
+### Concurrency
 
 - Use Ractors for CPU-bound parallelism that needs true thread safety.
 - Use Fibers and `Async` gem for I/O-bound concurrency within a single thread.
@@ -60,14 +52,14 @@ metadata:
 - Background jobs (Sidekiq, GoodJob) are the preferred pattern for async work in web apps.
 - Never share mutable state between Ractors — pass messages or use shareable frozen objects.
 
-## Error handling
+### Error handling
 
 - Rescue specific exceptions, not bare `rescue` or `rescue Exception`.
 - Use custom exception classes per failure domain. Include context in the error message.
 - Prefer returning result objects (Success/Failure) for expected failures over exception-based control flow.
 - Always re-raise or log rescued exceptions — never swallow errors silently.
 
-## Testing
+### Testing
 
 - Use RSpec or Minitest. Keep test files mirroring the source structure.
 - Use `let`, `subject`, and `context` blocks for readable test organization in RSpec.
@@ -75,7 +67,7 @@ metadata:
 - Use FactoryBot or fixtures for test data. Never depend on production database state.
 - Run tests with SimpleCov for coverage reporting. Focus on meaningful coverage over percentage targets.
 
-## Performance
+### Performance
 
 - Profile with `ruby-prof`, `stackprof`, or `memory_profiler` before optimizing.
 - Use `Enumerable` methods (`map`, `select`, `reduce`) over manual loops. They express intent clearly.
@@ -83,23 +75,27 @@ metadata:
 - Use connection pooling for database connections. Never create connections per-request.
 - Cache expensive computations with `Rails.cache`, `Dalli`, or application-level memoization.
 
-## Bundler hygiene
+### Bundler hygiene
 
 - Group gems by purpose in `Gemfile`: `:development`, `:test`, `:production`.
 - Run `bundle outdated` regularly. Update gems in small batches with test verification.
 - Audit gems with `bundle audit` before deploy. Block deploys on critical vulnerabilities.
 - Prefer gems with active maintainers and recent releases. Avoid abandoned gems.
 
-## Avoid
+### Constraints
 
-- `method_missing` without `respond_to_missing?` — makes debugging impossible.
-- `eval` and `instance_eval` with user input — injection risk.
-- `OpenStruct` in production code — slow, no type safety, memory-heavy.
-- Monkey-patching core classes — use Refinements instead when behavior extension is needed.
-- Bare `rescue` without exception class — catches everything including `SystemExit`.
-- Deep callback chains (Rails `before_action`, `after_commit`) — make control flow invisible.
+- Avoid `method_missing` without `respond_to_missing?` — makes debugging impossible.
+- Avoid `eval` and `instance_eval` with user input — injection risk.
+- Avoid `OpenStruct` in production code — slow, no type safety, memory-heavy.
+- Avoid monkey-patching core classes — use Refinements instead when behavior extension is needed.
+- Avoid bare `rescue` without exception class — catches everything including `SystemExit`.
+- Avoid deep callback chains (Rails `before_action`, `after_commit`) — make control flow invisible.
 
-## Reference files
+## Output Format
+
+Provide implementation guidance, code examples, and configuration as appropriate to the task.
+
+## References
 
 | File                                         | Load when                                                                                                        |
 | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
@@ -108,3 +104,12 @@ metadata:
 | `references/object-design-patterns.md`       | You need service objects, value objects, query objects, result monads, or composition-over-inheritance patterns. |
 | `references/testing-and-rspec.md`            | You need RSpec patterns, shared examples, request specs, FactoryBot strategies, or SimpleCov CI setup.           |
 | `references/performance-and-profiling.md`    | You need profiling with stackprof/ruby-prof, memory analysis, GC tuning, Yjit, or caching strategies.            |
+
+## Scripts
+
+No helper scripts are required for this skill right now. Keep execution in `SKILL.md` and `references/` unless repeated automation becomes necessary.
+
+## Examples
+
+- "Help me with ruby pro best practices in this project"
+- "Review my ruby pro implementation for issues"

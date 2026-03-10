@@ -3,83 +3,46 @@ name: "java-pro"
 description: "Use for modern Java backend and platform engineering with Java 25-era language/runtime practices."
 license: MIT
 metadata:
-  version: "1.0.0"
-  domain: "language"
-  role: "specialist"
-  stack: "java"
-  category: "languages"
-  layer: "languages"
-  canonical: true
-  maturity: "stable"
-  baseline: "Java SE 25"
-  tags: ["java", "jvm", "backend", "services", "observability"]
+  author: cubis-foundry
+  version: "1.0"
+compatibility: Claude Code, Codex, GitHub Copilot
 ---
 
 # Java Pro
 
-## When to use
+## Purpose
+
+Expert-level guidance for modern Java backend and platform engineering. Covers records, sealed types, virtual threads (Project Loom), null handling, performance profiling, and production observability using current JDK practices.
+
+## When to Use
 
 - Building or modernizing Java backend services.
 - Designing JVM architecture for high-throughput systems.
-- Improving reliability, observability, and maintainability.
+- Improving reliability, observability, and maintainability of Java codebases.
 
-## When not to use
+## Instructions
 
-- Frontend-only tasks with no JVM component.
-- Pure schema/index work better handled as database design or optimization.
-- Low-level native systems work where Rust/Go is the actual project stack.
+1. **Clarify runtime target and deployment constraints** — confirm the JDK baseline approved by project policy and deployment environment before choosing language features.
 
-## Core workflow
+2. **Define module boundaries and API contracts** — separate domain, service, and infrastructure layers. Use records for immutable data carriers (API responses, DTOs, event payloads). Use sealed classes/interfaces for closed domain hierarchies with exhaustive pattern matching.
 
-1. Clarify runtime target and deployment constraints.
-2. Define module boundaries and API contracts.
-3. Implement with clear domain/service/infrastructure separation.
-4. Add tests and performance checks for critical paths.
+3. **Implement with explicit null handling** — use `Optional<T>` for return types that may legitimately have no value, but never for parameters or fields. Use `@Nullable`/`@NonNull` annotations from JSpecify or Checker Framework. Fail fast with `Objects.requireNonNull()` at method entry. Do not return raw `null` from methods that could return `Optional` or empty collections because it creates silent NPE pathways.
 
-## Baseline standards
+4. **Use virtual threads for blocking I/O workloads** — HTTP calls, database queries, and file reads benefit from virtual threads via `Executors.newVirtualThreadPerTaskExecutor()`. Do not use virtual threads for CPU-bound work because they share carrier threads and cause starvation. Do not use `synchronized` blocks in virtual-thread code because it causes carrier-thread pinning — use `ReentrantLock` instead.
 
-- Use current LTS/JDK baseline approved by project policy.
-- Prefer records/sealed hierarchies where they simplify modeling.
-- Keep null-handling explicit; avoid silent NPE pathways.
-- Use structured logging and trace propagation.
-- Enforce dependency and API compatibility checks in CI.
+5. **Add structured logging and trace propagation** — capture request/job correlation IDs in logs and traces. Keep exception handling consistent between transport, service, and persistence layers. Do not expose stack traces in production responses.
 
-## Records and sealed types
+6. **Enforce dependency and API compatibility checks in CI** — use current JDK tooling, static analysis, and dependency verification. Separate transport DTOs from domain and persistence models to reduce cascade failures.
 
-- Use records for immutable data carriers: API responses, DTOs, event payloads.
-- Use sealed classes/interfaces for closed domain hierarchies with exhaustive pattern matching.
-- Records are final, transparent, and generate `equals`/`hashCode`/`toString` — do not override unless domain semantics differ.
-- Sealed hierarchies + pattern matching replace visitor patterns with less boilerplate.
+7. **Profile before optimizing** — use `jcmd`, `async-profiler`, or JFR for production diagnostics without restart. Profile GC behavior with `-Xlog:gc*` before tuning heap sizes. Use escape analysis awareness to avoid large short-lived objects in hot loops. Prefer explicit timeouts, bulkheads, and retry budgets at I/O boundaries.
 
-## Virtual threads (Project Loom)
+8. **Add tests and performance checks for critical paths** — use JUnit 5, parameterized tests, and Testcontainers for integration testing. Do not use `Thread.sleep()` for retry logic because it blocks threads — use structured retry with backoff. Do not leak persistence entities directly into API contracts because it couples layers.
 
-- Use virtual threads for blocking I/O workloads: HTTP calls, database queries, file reads.
-- Do not use virtual threads for CPU-bound work — they share carrier threads and can cause starvation.
-- Avoid `synchronized` blocks in virtual-thread code — use `ReentrantLock` instead to prevent carrier-thread pinning.
-- Use `Executors.newVirtualThreadPerTaskExecutor()` for task-per-request servers.
-- Keep thread-local storage minimal — virtual threads are cheap to create but share carrier thread locals.
+9. **Do not use reflection-heavy magic when explicit code is clearer** because it hurts readability and debuggability. Do not build monolithic service classes with mixed responsibilities because they resist testing and change.
 
-## Null handling
+## Output Format
 
-- Use `Optional<T>` for return types that may legitimately have no value. Never use `Optional` for parameters or fields.
-- Use `@Nullable`/`@NonNull` annotations from JSpecify or Checker Framework for compile-time null safety.
-- Fail fast with `Objects.requireNonNull()` at method entry for required parameters.
-- Prefer returning empty collections over `null` for collection-typed returns.
-
-## Debugging and observability
-
-- Capture request/job correlation IDs in logs and traces.
-- Keep exception handling consistent between transport, service, and persistence layers.
-- Reproduce performance or memory issues with focused benchmarks/profilers before redesigning.
-- Use `jcmd`, `async-profiler`, or JFR for production diagnostics without restart.
-
-## Performance and reliability
-
-- Prefer explicit timeouts, bulkheads, and retry budgets at I/O boundaries.
-- Keep thread/virtual-thread usage bounded and observable.
-- Separate transport DTOs from domain and persistence models to reduce cascade failures.
-- Profile GC behavior with `-Xlog:gc*` or GC viewers before tuning heap sizes.
-- Use escape analysis awareness: avoid creating large short-lived objects in hot loops.
+Produces Java code using records, sealed types, and modern JDK APIs with clear layer separation, explicit null handling, and structured error propagation. Includes virtual-thread-aware patterns where applicable.
 
 ## References
 
@@ -91,11 +54,12 @@ metadata:
 | `references/modern-testing.md`           | JUnit 5 patterns, parameterized tests, Testcontainers, or test architecture decisions need detail.       |
 | `references/gc-and-allocation.md`        | GC tuning, allocation profiling, escape analysis, or memory-sensitive design decisions need detail.      |
 
-## Avoid
+## Scripts
 
-- Monolithic service classes with mixed responsibilities.
-- Reflection-heavy magic when explicit code is clearer.
-- Leaking persistence entities directly into API contracts.
-- `synchronized` blocks in virtual-thread code — causes carrier-thread pinning.
-- Raw `null` returns from methods that could return `Optional` or empty collections.
-- `Thread.sleep()` for retry logic — use structured retry with backoff.
+No helper scripts are required for this skill right now. Keep execution in `SKILL.md` and `references/` unless repeated automation becomes necessary.
+
+## Examples
+
+- "Migrate this blocking HTTP client code to use virtual threads with proper carrier-thread pinning avoidance."
+- "Refactor this service to use sealed classes and pattern matching instead of the visitor pattern."
+- "Design the null-handling strategy for this API layer using Optional returns and JSpecify annotations."

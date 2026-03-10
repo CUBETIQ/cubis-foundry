@@ -1,98 +1,87 @@
 ---
-name: "skill-creator"
-description: "Use when creating, rebuilding, or repairing a Foundry skill package, workflow skill, or agent-facing skill surface across Codex, Claude, Copilot, Antigravity, Cursor, and Windsurf. Do not use for prompt-only tweaks or edits to one generated mirror."
+name: skill-creator
+description: Create, test, improve, and package portable AI skills using the Agent Skills SKILL.md format across Claude Code, Codex, and GitHub Copilot, with Gemini conversion when needed. Use this when the user wants to build, repair, benchmark, or iterate on a reusable skill package.
+license: Apache-2.0
 metadata:
-  provenance:
-    source: "https://github.com/anthropics/skills/tree/main/skills/skill-creator"
-    snapshot: "Rebuilt for Foundry on 2026-03-08 after removing the repo-owned .system source layer."
-  maintenance: "Pinned rewrite; refresh deliberately against upstream patterns rather than mirroring third-party skills directly."
-  category: "workflow-specialists"
-  layer: "workflow-specialists"
-  canonical: true
-  maturity: "stable"
-  tags: ["skill-creation", "skill-packaging", "workflow-automation", "platform-adapters"]
+  author: cubis-foundry
+  version: "1.0"
+compatibility: Claude Code, Codex, GitHub Copilot
 ---
 
 # Skill Creator
 
-## IDENTITY
+## Purpose
 
-You are Foundry's canonical skill-package designer and repairer.
-
-Your job is to turn user intent into a clean canonical skill package under `workflows/skills/<id>`, then make sure generated platform mirrors stay valid.
-
-Keep the canonical source lean, procedural, and adapter-friendly. Treat external skills as research input, not shippable source.
-
-## BOUNDARIES
-
-- Never hand-edit generated mirrors first.
-- Never recreate a repo-owned `.system` skill source.
-- Never leave compatibility logic undocumented when renaming or replacing a live skill.
-- Never copy third-party skill content directly into Foundry without rewriting it for Foundry metadata, routing, and packaging rules.
-- Never leave extra top-level markdown files in a skill root.
-- Never keep legacy power-file artifacts in canonical skills or mirrored bundles.
+Create and improve reusable AI skill packages with a human-in-the-loop loop: define the skill, draft it, test it with the skill enabled, evaluate results qualitatively and quantitatively, rewrite based on signal, and repeat until the package is good enough to scale.
 
 ## When to Use
 
-- Creating a new canonical skill under `workflows/skills/<id>`.
-- Rebuilding an existing skill from web research and internal migration goals.
-- Fixing `SKILL.md` metadata, references, sidecars, helper scripts, or packaging drift.
-- Renaming, merging, or retiring skills and updating route/runtime wiring accordingly.
-- Adapting one canonical skill so generated Codex, Claude, Copilot, Antigravity, Cursor, and Windsurf mirrors all stay correct.
+- The user wants to create a new skill package under `workflows/skills/<name>`.
+- The user wants to repair or modernize an existing `SKILL.md` package.
+- The user wants evals, benchmarks, or review tooling for a skill package.
+- The user wants to package one canonical skill for Claude Code, Codex, GitHub Copilot, and optionally Gemini.
 
-## When Not to Use
+## Instructions
 
-- Pure prompt tuning with no package change.
-- Editing only one generated mirror while ignoring the canonical source.
-- General feature work that belongs to a domain implementation skill instead.
-- Broad repo refactors that do not materially change skills, workflows, agents, or routing metadata.
+1. Decide what the skill should do before writing files. Confirm the task boundary, activation phrases, expected outputs, supported platforms, and whether the skill needs objective evals.
 
-## STANDARD OPERATING PROCEDURE (SOP)
+2. Write a first draft of the skill package. Keep one canonical `SKILL.md` as the source of truth. Add sidecars only when they reduce prompt bloat or remove repeated work.
 
-1. Define the trigger boundary.
-2. Decide whether the work is a new canonical skill, a rewrite of an existing skill, or a compatibility alias.
-3. Author only the canonical source under `workflows/skills/<id>`.
-4. Keep root instructions short and procedural; move platform details and deep examples into selective sidecars.
-5. Add scripts only when they remove repetition, improve determinism, or standardize scaffolding and validation.
-6. If the change affects skill names, routing, or runtime discovery, update shared workflows, shared agents, MCP routing/tests, and validation rules in the same change.
-7. Regenerate catalogs and mirrors after canonical edits.
-8. Validate frontmatter, links, packaging, route resolution, and generated outputs before finishing.
+3. Create a small test set first. Add a few realistic prompts to `evals/` and keep them representative of the skill's actual use cases, not just ideal happy paths.
 
-## Foundry Skill Contract
+4. Run the skill with the skill enabled on the test prompts. Prefer Claude with access to the skill for the first qualitative pass so you can inspect whether the instructions actually trigger the right behavior.
 
-- Required file: `SKILL.md`
-- Optional folders: `references/`, `steering/`, `templates/`, `scripts/`, `assets/`
-- Keep `SKILL.md` as the only top-level markdown entry file.
-- Use relative paths from the skill root.
-- Keep sidecars one level deep and tell the agent when to load them.
-- Canonical metadata may be richer than platform mirrors; let generators sanitize adapter-specific output.
+5. While runs are happening, draft or refine the quantitative evals. If quantitative evals already exist, review them, keep the ones that are still useful, and adjust only the ones that no longer match the intended behavior.
+
+6. Explain the evals to the user before over-optimizing against them. The user should understand what each prompt, assertion, or benchmark is measuring and what a pass or fail means.
+
+7. Review the outputs both qualitatively and quantitatively. Use `eval-viewer/generate_review.py` so the user can inspect side-by-side outputs and benchmark summaries instead of relying only on raw JSON.
+
+8. Rewrite the skill based on user feedback and the strongest benchmark signal. Fix root causes, not just individual failing prompts, and treat obvious flaws in the quantitative results as design feedback for the skill.
+
+9. Repeat the loop until the results are stable enough. Keep iterating until the user is satisfied or the skill behavior has clearly plateaued.
+
+10. Expand the test set and rerun at larger scale only after the small-set loop is working. Do not scale weak evals or unclear instructions.
+
+11. Use the right script for the job:
+    - `scripts/run_loop.py` is the original Claude-oriented optimization loop built on `run_eval.py`.
+    - `scripts/run_loop_universal.py` is the portable loop built on `run_eval_universal.py` and `platform_adapter.py`.
+    - Prefer the universal loop when the package is intended to stay portable across Claude Code, Codex, Copilot, and Gemini-style workflows.
+
+## Output Format
+
+Produce a canonical skill package with:
+
+- a valid root `SKILL.md`
+- any needed `references/`, `scripts/`, `assets/`, `evals/`, and `eval-viewer/` files
+- a small initial prompt/eval set
+- review outputs the user can inspect
+- clear next-step changes when another iteration is required
 
 ## References
 
-Load on demand. Do not preload all reference files.
+Load only what the current step needs.
 
 | File | Load when |
 | --- | --- |
-| `references/foundry-platform-parity.md` | Mapping one canonical skill package into the generated platform adapters and understanding platform-specific constraints. |
-| `references/foundry-skill-checklist.md` | Verifying naming, frontmatter, sidecars, routing, and validation before shipping a skill update. |
-| `references/universal-skill-schema.md` | Designing or reviewing the root `IDENTITY`, `BOUNDARIES`, and `SOP` structure for new skills. |
-| `references/research-benchmarks.md` | Rewriting from Anthropic/OpenAI/GitHub/public examples without copying third-party skills directly. |
+| `references/platform-formats.md` | You need deployment or compatibility rules for Claude Code, Codex, Copilot, or Gemini conversion. |
+| `references/schemas.md` | You need the JSON structure for evals, grading artifacts, or review payloads. |
 
-## Helper Scripts
+## Scripts
 
-Load or run only when the task needs them.
+Use the existing tooling instead of re-inventing the loop:
 
-| File | Load when |
-| --- | --- |
-| `scripts/init_skill.py` | Scaffolding a new canonical skill directory and starter `SKILL.md` with the universal section layout. |
-| `scripts/quick_validate.py` | Checking frontmatter, broken markdown references, empty sidecars, and packaging safety for a skill directory. |
+- `scripts/run_eval.py` for the original Claude-oriented eval pass
+- `scripts/run_loop.py` for iterative improvement on the original eval path
+- `scripts/run_eval_universal.py` for the cross-platform eval path
+- `scripts/run_loop_universal.py` for the portable iterative loop
+- `scripts/aggregate_benchmark.py` to summarize quantitative benchmark results
+- `eval-viewer/generate_review.py` to generate a reviewable output bundle for the user
+- `scripts/package_skill.py` when the skill is ready to distribute
+- `scripts/platform_adapter.py` when Gemini conversion or cross-platform deployment is required
 
-## Rules
+## Examples
 
-- Prefer one canonical skill package that generates clean mirrors on every platform.
-- Prefer a narrow specialist over a broad “do everything” skill.
-- Rewrite external ideas into Foundry-owned canonicals instead of vendoring third-party text.
-- Keep references one level deep from `SKILL.md`.
-- Never bulk-load `references/` or `steering/`; pick only the file needed for the current step.
-- If a task is clearly about skill creation or maintenance, load this skill directly instead of starting with `skill_search`.
-- When cross-platform behavior changes, verify the generated outputs instead of assuming canonical text alone is enough.
+- "Create a skill for reviewing Flutter Riverpod code and set up a first batch of eval prompts."
+- "Repair this skill package, rerun the viewer, and help me interpret the benchmark regressions."
+- "Turn this prompt workflow into a reusable skill and iterate until the user-approved eval set passes."

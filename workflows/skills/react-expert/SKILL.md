@@ -1,36 +1,27 @@
 ---
-name: "react-expert"
+name: react-expert
 description: "Use for framework-agnostic React architecture with React 19 patterns, state design, component boundaries, and rendering-performance decisions."
 license: MIT
 metadata:
-  version: "3.0.0"
-  domain: "frontend"
-  role: "specialist"
-  stack: "react"
-  category: "frameworks-runtimes"
-  layer: "frameworks-runtimes"
-  canonical: true
-  maturity: "stable"
-  baseline: "React 19"
-  tags: ["react", "components", "state", "performance", "frontend", "hooks"]
+  author: cubis-foundry
+  version: "3.0"
+compatibility: Claude Code, Codex, GitHub Copilot
 ---
 
 # React Expert
 
-## When to use
+## Purpose
+
+Use for framework-agnostic React architecture with React 19 patterns, state design, component boundaries, and rendering-performance decisions.
+
+## When to Use
 
 - Designing reusable component and state boundaries.
 - Refactoring React code for predictable rendering and side-effect control.
 - Choosing local, shared, server, or async UI state placement.
 - Reviewing hooks, forms, transitions, and accessibility-sensitive UI flows.
 
-## When not to use
-
-- Next.js App Router and route-level rendering policy when framework behavior is primary.
-- Pure CSS, design-token, or database concerns.
-- Plain JavaScript questions with no React runtime impact.
-
-## Core workflow
+## Instructions
 
 1. Define component ownership and server/client boundaries first.
 2. Place state at the lowest level that preserves correctness.
@@ -38,7 +29,7 @@ metadata:
 4. Profile rerender behavior before reaching for memoization.
 5. Validate accessible interaction states and error/loading behavior.
 
-## Baseline standards
+### Baseline standards
 
 - Prefer pure render logic and explicit mutation boundaries.
 - Derive state instead of duplicating it.
@@ -46,12 +37,16 @@ metadata:
 - Keep form and async flows predictable.
 - Pair implementation with focused component or interaction tests.
 
-## Avoid
+### Constraints
 
-- Blanket memoization with no evidence.
-- Effect-driven derived-state loops.
-- Hidden shared mutable module state.
-- Client-only patterns when server rendering would simplify the surface.
+- Avoid blanket memoization with no evidence.
+- Avoid effect-driven derived-state loops.
+- Avoid hidden shared mutable module state.
+- Avoid client-only patterns when server rendering would simplify the surface.
+
+## Output Format
+
+Provide implementation guidance, code examples, and configuration as appropriate to the task.
 
 ## References
 
@@ -60,3 +55,12 @@ Load on demand. Do not preload all reference files.
 | File | Load when |
 | --- | --- |
 | `references/rendering-state-checklist.md` | The task needs a deeper playbook for state placement, effect discipline, rendering cost, and interaction-level verification. |
+
+## Scripts
+
+No helper scripts are required for this skill right now. Keep execution in `SKILL.md` and `references/` unless repeated automation becomes necessary.
+
+## Examples
+
+- "Help me with react expert best practices in this project"
+- "Review my react expert implementation for issues"

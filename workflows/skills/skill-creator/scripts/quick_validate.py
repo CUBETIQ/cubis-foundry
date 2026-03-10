@@ -1,148 +1,111 @@
 #!/usr/bin/env python3
 """
-Validate a Foundry skill package without external dependencies.
+Quick validation script for skills - minimal version
 """
 
-import re
 import sys
+import os
+import re
+import yaml
 from pathlib import Path
 
-MAX_SKILL_NAME_LENGTH = 64
-ALLOWED_KEYS = {
-    "name",
-    "description",
-    "license",
-    "allowed-tools",
-    "metadata",
-    "compatibility",
-}
-SIDECAR_DIRS = {"references", "steering", "templates"}
+def validate_skill(skill_path):
+    """Basic validation of a skill"""
+    skill_path = Path(skill_path)
 
-
-def extract_frontmatter(markdown: str):
-    match = re.match(r"^---\n(.*?)\n---\n?", markdown, re.DOTALL)
-    if not match:
-        return None, markdown
-    return match.group(1), markdown[match.end():]
-
-
-def parse_top_level_keys(frontmatter: str):
-    keys = []
-    values = {}
-    for line in frontmatter.splitlines():
-        if not line or line.startswith((" ", "\t")):
-            continue
-        match = re.match(r"^([A-Za-z0-9_-]+)\s*:\s*(.*)$", line)
-        if not match:
-            continue
-        key = match.group(1)
-        raw_value = match.group(2).strip()
-        keys.append(key)
-        values[key] = raw_value.strip("\"'")
-    return keys, values
-
-
-def extract_markdown_targets(markdown: str):
-    stripped = re.sub(r"```[\s\S]*?```", "", markdown)
-    return [match.group(1).strip() for match in re.finditer(r"\[[^\]]+\]\(([^)]+)\)", stripped)]
-
-
-def validate(skill_dir: Path):
-    errors = []
-    skill_md = skill_dir / "SKILL.md"
+    # Check SKILL.md exists
+    skill_md = skill_path / 'SKILL.md'
     if not skill_md.exists():
-        return ["SKILL.md not found"]
+        return False, "SKILL.md not found"
 
-    content = skill_md.read_text(encoding="utf8")
-    frontmatter, _body = extract_frontmatter(content)
-    if not frontmatter:
-        return ["SKILL.md is missing YAML frontmatter"]
+    # Read and validate frontmatter
+    content = skill_md.read_text(encoding='utf-8')
+    if not content.startswith('---'):
+        return False, "No YAML frontmatter found"
 
-    keys, values = parse_top_level_keys(frontmatter)
-    unexpected = sorted(set(keys) - ALLOWED_KEYS)
-    if unexpected:
-        errors.append(
-            "Unexpected frontmatter keys: " + ", ".join(unexpected)
+    # Extract frontmatter
+    match = re.match(r'^---\n(.*?)\n---', content, re.DOTALL)
+    if not match:
+        return False, "Invalid frontmatter format"
+
+    frontmatter_text = match.group(1)
+
+    # Parse YAML frontmatter
+    try:
+        frontmatter = yaml.safe_load(frontmatter_text)
+        if not isinstance(frontmatter, dict):
+            return False, "Frontmatter must be a YAML dictionary"
+    except yaml.YAMLError as e:
+        return False, f"Invalid YAML in frontmatter: {e}"
+
+    # Define allowed properties
+    ALLOWED_PROPERTIES = {'name', 'description', 'license', 'allowed-tools', 'metadata', 'compatibility'}
+
+    # Check for unexpected properties (excluding nested keys under metadata)
+    unexpected_keys = set(frontmatter.keys()) - ALLOWED_PROPERTIES
+    if unexpected_keys:
+        return False, (
+            f"Unexpected key(s) in SKILL.md frontmatter: {', '.join(sorted(unexpected_keys))}. "
+            f"Allowed properties are: {', '.join(sorted(ALLOWED_PROPERTIES))}"
         )
 
-    name = values.get("name", "").strip()
-    description = values.get("description", "").strip()
-    if not name:
-        errors.append("Missing name in frontmatter")
-    elif not re.fullmatch(r"[a-z0-9-]+", name):
-        errors.append("name must be lowercase hyphen-case")
-    elif "--" in name or name.startswith("-") or name.endswith("-"):
-        errors.append("name cannot start/end with '-' or contain consecutive hyphens")
-    elif len(name) > MAX_SKILL_NAME_LENGTH:
-        errors.append(
-            f"name is too long ({len(name)} > {MAX_SKILL_NAME_LENGTH})"
-        )
+    # Check required fields
+    if 'name' not in frontmatter:
+        return False, "Missing 'name' in frontmatter"
+    if 'description' not in frontmatter:
+        return False, "Missing 'description' in frontmatter"
 
-    if not description:
-        errors.append("Missing description in frontmatter")
+    # Extract name for validation
+    name = frontmatter.get('name', '')
+    if not isinstance(name, str):
+        return False, f"Name must be a string, got {type(name).__name__}"
+    name = name.strip()
+    if name:
+        # Check naming convention (kebab-case: lowercase with hyphens)
+        if not re.match(r'^[a-z0-9-]+$', name):
+            return False, f"Name '{name}' should be kebab-case (lowercase letters, digits, and hyphens only)"
+        if name.startswith('-') or name.endswith('-') or '--' in name:
+            return False, f"Name '{name}' cannot start/end with hyphen or contain consecutive hyphens"
+        # Check name length (max 64 characters per spec)
+        if len(name) > 64:
+            return False, f"Name is too long ({len(name)} characters). Maximum is 64 characters."
 
-    if (skill_dir / "POWER.md").exists():
-        errors.append("POWER.md must not exist")
+    # Extract and validate description
+    description = frontmatter.get('description', '')
+    if not isinstance(description, str):
+        return False, f"Description must be a string, got {type(description).__name__}"
+    description = description.strip()
+    if description:
+        # Check for angle brackets
+        if '<' in description or '>' in description:
+            return False, "Description cannot contain angle brackets (< or >)"
+        # Check description length (max 1024 characters per spec)
+        if len(description) > 1024:
+            return False, f"Description is too long ({len(description)} characters). Maximum is 1024 characters."
 
-    top_level_markdown = sorted(
-        item.name
-        for item in skill_dir.iterdir()
-        if item.is_file() and item.suffix == ".md"
-    )
-    extras = [name for name in top_level_markdown if name != "SKILL.md"]
-    if extras:
-        errors.append(
-            "Extra top-level markdown files found: " + ", ".join(extras)
-        )
+    # Validate compatibility field if present (optional)
+    # Accepts either a string or a dict (e.g. {tools: [bash, python]})
+    compatibility = frontmatter.get('compatibility')
+    if compatibility:
+        if isinstance(compatibility, str):
+            if len(compatibility) > 500:
+                return False, f"Compatibility is too long ({len(compatibility)} characters). Maximum is 500 characters."
+        elif isinstance(compatibility, dict):
+            # Validate known sub-keys
+            allowed_compat_keys = {'tools'}
+            unexpected = set(compatibility.keys()) - allowed_compat_keys
+            if unexpected:
+                return False, f"Unexpected key(s) in compatibility: {', '.join(sorted(unexpected))}"
+        else:
+            return False, f"Compatibility must be a string or dict, got {type(compatibility).__name__}"
 
-    markdown_files = [skill_md]
-    for folder_name in SIDECAR_DIRS:
-        folder = skill_dir / folder_name
-        if not folder.exists():
-            continue
-        markdown_files.extend(sorted(folder.rglob("*.md")))
-
-    for markdown_file in markdown_files:
-        text = markdown_file.read_text(encoding="utf8")
-        if markdown_file != skill_md and not text.strip():
-            errors.append(f"{markdown_file.relative_to(skill_dir)} is empty")
-        for target in extract_markdown_targets(text):
-            if target.startswith(("http://", "https://", "#", "mailto:", "/")):
-                continue
-            target_path = (markdown_file.parent / target.split("#")[0].split("?")[0]).resolve()
-            if not target_path.exists():
-                errors.append(
-                    f"{markdown_file.relative_to(skill_dir)} references missing file {target}"
-                )
-                continue
-            if target_path.suffix == ".md" and not target_path.read_text(encoding="utf8").strip():
-                errors.append(
-                    f"{markdown_file.relative_to(skill_dir)} references empty markdown file {target}"
-                )
-
-    return errors
-
-
-def main() -> int:
-    if len(sys.argv) != 2:
-        print("Usage: python quick_validate.py <skill_directory>")
-        return 1
-
-    skill_dir = Path(sys.argv[1]).resolve()
-    if not skill_dir.exists() or not skill_dir.is_dir():
-        print(f"Skill directory not found: {skill_dir}")
-        return 1
-
-    errors = validate(skill_dir)
-    if errors:
-        print("Skill validation failed:")
-        for item in errors:
-            print(f"- {item}")
-        return 1
-
-    print("Skill is valid.")
-    return 0
-
+    return True, "Skill is valid!"
 
 if __name__ == "__main__":
-    sys.exit(main())
+    if len(sys.argv) != 2:
+        print("Usage: python quick_validate.py <skill_directory>")
+        sys.exit(1)
+    
+    valid, message = validate_skill(sys.argv[1])
+    print(message)
+    sys.exit(0 if valid else 1)

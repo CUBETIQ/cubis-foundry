@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Cubis Foundry Skill Frontmatter",
+  "description": "Validates YAML frontmatter in SKILL.md files against the universal-skill-creator portable format.",
+  "type": "object",
+  "required": ["name", "description"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
+      "description": "Kebab-case skill identifier. Must match the directory name."
+    },
+    "description": {
+      "type": "string",
+      "minLength": 20,
+      "description": "What the skill does and when to use it. Include 3-5 trigger phrases."
+    },
+    "license": {
+      "type": "string",
+      "description": "SPDX license identifier (e.g. MIT, Apache-2.0)."
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "author": { "type": "string" },
+        "version": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "compatibility": {
+      "type": "string",
+      "description": "Target platforms (e.g. Claude Code, Codex, GitHub Copilot)."
+    }
+  },
+  "additionalProperties": false
+}

@@ -5,6 +5,7 @@ import process from "node:process";
 import { promises as fs } from "node:fs";
 import {
   getMetadataBlock,
+  getScalar,
   normalizeBoolean,
   normalizeNullableString,
   parseFrontmatter,
@@ -12,6 +13,70 @@ import {
 
 const ROOT = process.cwd();
 const CANONICAL_SKILLS_ROOT = path.join(ROOT, "workflows", "skills");
+
+// ─── Universal skill template constants ─────────────────────
+
+const ALLOWED_FRONTMATTER_KEYS = new Set([
+  "name",
+  "description",
+  "license",
+  "metadata",
+  "compatibility",
+]);
+
+const REQUIRED_HEADINGS = [
+  /^# .+/m, // # Title
+  /^## Purpose$/m, // ## Purpose
+  /^## When to Use$/m, // ## When to Use
+  /^## Instructions$/m, // ## Instructions
+  /^## Output Format$/m, // ## Output Format
+];
+
+const REQUIRED_HEADING_NAMES = [
+  "# Title",
+  "## Purpose",
+  "## When to Use",
+  "## Instructions",
+  "## Output Format",
+];
+
+const OPTIONAL_HEADINGS = ["## References", "## Scripts", "## Examples"];
+
+const RETIRED_HEADINGS = [
+  "## Core workflow",
+  "## SOP",
+  "## STANDARD OPERATING PROCEDURE",
+  "## IDENTITY",
+  "## BOUNDARIES",
+  "## Baseline standards",
+  "## Avoid",
+  "## When Not to Use",
+  "## When not to use",
+  "## Implementation guidance",
+  "## Reference files",
+  "## Helper Scripts",
+  "## Rules",
+  "## Related Powers",
+];
+
+const REJECTED_METADATA_KEYS = new Set([
+  "domain",
+  "role",
+  "stack",
+  "category",
+  "layer",
+  "canonical",
+  "maturity",
+  "baseline",
+  "provenance",
+  "transition",
+  "aliases",
+  "tags",
+  "deprecated",
+  "replaced_by",
+]);
+
+const KEBAB_CASE_RE = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
 const SHARED_ROOT = path.join(
   ROOT,
   "workflows",
@@ -72,7 +137,8 @@ function extractMarkdownLinks(markdown) {
 }
 
 function extractBacktickedMarkdownPaths(markdown) {
-  return [...markdown.matchAll(/`([^`\n]+\.md)`/g)]
+  const content = markdown.replace(/```[\s\S]*?```/g, "");
+  return [...content.matchAll(/`([^`\n]+\.md)`/g)]
     .map((match) => match[1].trim())
     .filter(Boolean);
 }
@@ -82,8 +148,12 @@ function shouldValidateLink(target) {
   if (target.startsWith("http://") || target.startsWith("https://"))
     return false;
   if (target.startsWith("mailto:") || target.startsWith("#")) return false;
-  if (target.startsWith("/")) return false;
+  if (target.startsWith("/") || target.startsWith("~/")) return false;
   if (target.includes("{") || target.includes("}")) return false;
+  if (target.includes("<") || target.includes(">")) return false;
+  // Skip well-known generated or platform-external files
+  if (target === "GEMINI.md") return false;
+  if (target.startsWith(".idx/") || target.startsWith(".codex/")) return false;
   return true;
 }
 
@@ -157,18 +227,141 @@ async function validateMarkdownTargets(markdownFile, errors, prefix) {
   }
 }
 
-async function validateCanonicalSkillReferences(errors) {
-  const legacySystemRoot = path.join(CANONICAL_SKILLS_ROOT, ".system");
-  if (await exists(legacySystemRoot)) {
-    errors.push(`${legacySystemRoot}: repo-owned .system skill source must not exist`);
+// ─── Universal skill template validation ────────────────────
+
+function extractFrontmatterKeys(frontmatterRaw) {
+  const keys = [];
+  for (const line of frontmatterRaw.split(/\r?\n/)) {
+    const match = line.match(/^([A-Za-z0-9_-]+)\s*:/);
+    if (match) keys.push(match[1]);
+  }
+  return keys;
+}
+
+function extractMetadataSubkeys(frontmatterRaw) {
+  const lines = frontmatterRaw.split(/\r?\n/);
+  const subkeys = [];
+  let inMetadata = false;
+  for (const line of lines) {
+    if (!inMetadata) {
+      if (/^metadata\s*:\s*$/.test(line)) inMetadata = true;
+      continue;
+    }
+    if (!line.trim()) continue;
+    if (!/^\s+/.test(line)) break;
+    const match = line.match(/^\s+([A-Za-z0-9_-]+)\s*:/);
+    if (match) subkeys.push(match[1]);
+  }
+  return subkeys;
+}
+
+function validateUniversalFrontmatter(
+  skillFile,
+  skillId,
+  frontmatterRaw,
+  errors,
+) {
+  const name = getScalar(frontmatterRaw, "name");
+  const description = getScalar(frontmatterRaw, "description");
+
+  // Required fields
+  if (!name) {
+    errors.push(`${skillFile}: missing required frontmatter field 'name'`);
+  } else if (!KEBAB_CASE_RE.test(name)) {
+    errors.push(`${skillFile}: 'name' must be kebab-case, got '${name}'`);
+  } else if (name !== skillId) {
+    errors.push(
+      `${skillFile}: 'name' (${name}) must match directory name (${skillId})`,
+    );
   }
 
-  const legacySkillAuthoringRoot = path.join(CANONICAL_SKILLS_ROOT, "skill-authoring");
+  if (!description) {
+    errors.push(
+      `${skillFile}: missing required frontmatter field 'description'`,
+    );
+  } else if (description.length < 20) {
+    errors.push(
+      `${skillFile}: 'description' must be at least 20 characters (got ${description.length})`,
+    );
+  }
+
+  // Reject disallowed top-level keys
+  const topKeys = extractFrontmatterKeys(frontmatterRaw);
+  for (const key of topKeys) {
+    if (!ALLOWED_FRONTMATTER_KEYS.has(key)) {
+      errors.push(
+        `${skillFile}: disallowed frontmatter key '${key}' (only name, description, license, metadata, compatibility allowed)`,
+      );
+    }
+  }
+
+  // Reject disallowed metadata subkeys
+  const metaSubkeys = extractMetadataSubkeys(frontmatterRaw);
+  const ALLOWED_META_SUBKEYS = new Set(["author", "version"]);
+  for (const key of metaSubkeys) {
+    if (!ALLOWED_META_SUBKEYS.has(key)) {
+      errors.push(
+        `${skillFile}: disallowed metadata subkey '${key}' (only author, version allowed)`,
+      );
+    }
+  }
+}
+
+function validateUniversalHeadings(skillFile, body, errors, warnings) {
+  // Check required headings
+  for (let i = 0; i < REQUIRED_HEADINGS.length; i++) {
+    if (!REQUIRED_HEADINGS[i].test(body)) {
+      errors.push(
+        `${skillFile}: missing required heading '${REQUIRED_HEADING_NAMES[i]}'`,
+      );
+    }
+  }
+
+  // Check retired headings
+  for (const heading of RETIRED_HEADINGS) {
+    const re = new RegExp(
+      `^${heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*$`,
+      "m",
+    );
+    if (re.test(body)) {
+      errors.push(
+        `${skillFile}: retired heading '${heading}' must be migrated (see _schema/SKILL_FORMAT.md)`,
+      );
+    }
+  }
+
+  // Warn on missing optional headings
+  for (const heading of OPTIONAL_HEADINGS) {
+    const re = new RegExp(
+      `^${heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*$`,
+      "m",
+    );
+    if (!re.test(body)) {
+      warnings.push(`${skillFile}: optional heading '${heading}' not found`);
+    }
+  }
+}
+
+async function validateCanonicalSkillReferences(errors, warnings) {
+  const legacySystemRoot = path.join(CANONICAL_SKILLS_ROOT, ".system");
+  if (await exists(legacySystemRoot)) {
+    errors.push(
+      `${legacySystemRoot}: repo-owned .system skill source must not exist`,
+    );
+  }
+
+  const legacySkillAuthoringRoot = path.join(
+    CANONICAL_SKILLS_ROOT,
+    "skill-authoring",
+  );
   if (await exists(legacySkillAuthoringRoot)) {
-    errors.push(`${legacySkillAuthoringRoot}: legacy skill-authoring package must be removed or renamed to skill-creator`);
+    errors.push(
+      `${legacySkillAuthoringRoot}: legacy skill-authoring package must be removed or renamed to skill-creator`,
+    );
   }
 
   for (const skillId of await listDirs(CANONICAL_SKILLS_ROOT)) {
+    if (skillId.startsWith("_")) continue;
     const skillRoot = path.join(CANONICAL_SKILLS_ROOT, skillId);
     const skillFile = path.join(skillRoot, "SKILL.md");
     if (!(await exists(skillFile))) continue;
@@ -179,7 +372,13 @@ async function validateCanonicalSkillReferences(errors) {
     }
 
     const markdown = await readUtf8(skillFile);
-    const metadata = getMetadataBlock(parseFrontmatter(markdown).raw);
+    const { raw: frontmatterRaw, body } = parseFrontmatter(markdown);
+    const metadata = getMetadataBlock(frontmatterRaw);
+
+    // Universal template validation
+    validateUniversalFrontmatter(skillFile, skillId, frontmatterRaw, errors);
+    validateUniversalHeadings(skillFile, body, errors, warnings);
+
     if (markdown.includes("skill-authoring")) {
       errors.push(`${skillFile}: stale skill-authoring reference`);
     }
@@ -306,14 +505,23 @@ async function validatePlatformBundles(errors) {
 
 async function main() {
   const errors = [];
-  await validateCanonicalSkillReferences(errors);
+  const warnings = [];
+  await validateCanonicalSkillReferences(errors, warnings);
   await validateSharedPowerRefs(errors);
   await validatePlatformBundles(errors);
+
+  if (warnings.length > 0) {
+    console.warn("Skill packaging warnings:");
+    for (const item of warnings) {
+      console.warn(`  ⚠ ${item}`);
+    }
+    console.warn("");
+  }
 
   if (errors.length > 0) {
     console.error("Skill packaging validation failed:");
     for (const item of errors) {
-      console.error(`- ${item}`);
+      console.error(`  ✗ ${item}`);
     }
     process.exit(1);
   }

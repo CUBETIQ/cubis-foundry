@@ -1,39 +1,24 @@
 ---
 name: observability
-description: Use when designing or reviewing logging, monitoring, tracing, and alerting for production services. Covers structured logging, distributed tracing, metric collection, dashboard design, alert hygiene, SLO definition, and incident readiness across application and infrastructure layers.
+description: "Use when designing or reviewing logging, monitoring, tracing, and alerting for production services. Covers structured logging, distributed tracing, metric collection, dashboard design, alert hygiene, SLO definition, and incident readiness across application and infrastructure layers."
+license: MIT
 metadata:
-  version: 1.0.0
-  domain: operations
-  role: observability-architect
-  stack:
-    [opentelemetry, prometheus, grafana, datadog, elk, general-observability]
-  category: engineering
-  layer: workflow-specialists
-  canonical: true
-  maturity: stable
-  baseline: 2026-06
-  tags:
-    [
-      observability,
-      logging,
-      monitoring,
-      tracing,
-      alerting,
-      slo,
-      metrics,
-      opentelemetry,
-      prometheus,
-      grafana,
-      datadog,
-    ]
-  provenance: cubis-foundry-original
+  author: cubis-foundry
+  version: "1.0"
+compatibility: Claude Code, Codex, GitHub Copilot
 ---
 
 # Observability
 
-Build systems that tell you what is wrong before users do.
+## Purpose
 
-## Core workflow
+Use when designing or reviewing logging, monitoring, tracing, and alerting for production services. Covers structured logging, distributed tracing, metric collection, dashboard design, alert hygiene, SLO definition, and incident readiness across application and infrastructure layers.
+
+## When to Use
+
+- Working on observability related tasks
+
+## Instructions
 
 1. **Define SLOs first** — decide what "healthy" means before instrumenting. SLOs drive alerting, not the other way around.
 2. **Instrument the golden signals** — latency, traffic, errors, saturation. Every service must expose these four.
@@ -41,7 +26,7 @@ Build systems that tell you what is wrong before users do.
 4. **Distributed tracing** — propagate trace context across service boundaries. Instrument entry points, database calls, and external API calls.
 5. **Alert on symptoms, not causes** — alert on SLO burn rate, not on CPU percentage. Alerts must be actionable.
 
-## Three pillars
+### Three pillars
 
 ### Logs
 
@@ -68,14 +53,14 @@ Build systems that tell you what is wrong before users do.
 - Propagate W3C Trace Context headers across all service boundaries.
 - Sample appropriately: 100% for errors, tail-sampled for high-volume happy paths.
 
-## SLO design
+### SLO design
 
 - Define SLIs (Service Level Indicators) from the user's perspective — e.g., "percentage of requests completing in under 200ms."
 - Set SLOs at realistic targets — 99.9% is very different from 99.99%.
 - Calculate error budget: `1 - SLO target`. When budget is consumed, prioritize reliability over features.
 - Review SLOs quarterly. Adjust based on actual user impact data.
 
-## Alerting hygiene
+### Alerting hygiene
 
 - Every alert must have: a clear title, expected impact, runbook link, and escalation path.
 - Use multi-window burn rate alerts for SLO-based alerting.
@@ -83,7 +68,7 @@ Build systems that tell you what is wrong before users do.
 - Page only for user-facing impact. Use tickets for slow-burn degradation.
 - Review alert fatigue monthly. If an alert fires more than weekly without action, fix or remove it.
 
-## Dashboard design
+### Dashboard design
 
 - Start with a service overview dashboard: golden signals, SLO status, recent deployments.
 - Use consistent time ranges and refresh intervals across dashboards.
@@ -91,14 +76,18 @@ Build systems that tell you what is wrong before users do.
 - Every graph must have: title, unit, and a brief description of what abnormal looks like.
 - Avoid vanity dashboards — every panel must answer a question someone would ask during an incident.
 
-## Avoid
+### Constraints
 
-- Logging at DEBUG level in production — volume overwhelms analysis.
-- High-cardinality metric labels (user ID, IP address, full URL path).
-- Alert on every error — alert on error rate exceeding SLO budget.
-- Dashboard sprawl — ten dashboards nobody checks are worse than two good ones.
-- Instrumenting everything with traces — sample and focus on critical paths.
-- Using averages instead of percentiles for latency metrics.
+- Avoid logging at DEBUG level in production — volume overwhelms analysis.
+- Avoid high-cardinality metric labels (user ID, IP address, full URL path).
+- Avoid alert on every error — alert on error rate exceeding SLO budget.
+- Avoid dashboard sprawl — ten dashboards nobody checks are worse than two good ones.
+- Avoid instrumenting everything with traces — sample and focus on critical paths.
+- Avoid using averages instead of percentiles for latency metrics.
+
+## Output Format
+
+Provide implementation guidance, code examples, and configuration as appropriate to the task.
 
 ## References
 
@@ -106,3 +95,12 @@ Build systems that tell you what is wrong before users do.
 | ------------------------------------------ | ----------------------------------------------------------------------------------------------- |
 | `references/opentelemetry-setup-guide.md`  | OTel SDK setup, auto-instrumentation, exporter configuration, and sampling strategy.            |
 | `references/alerting-and-slo-checklist.md` | SLO definition template, burn-rate alert formulas, runbook structure, and alert review process. |
+
+## Scripts
+
+No helper scripts are required for this skill right now. Keep execution in `SKILL.md` and `references/` unless repeated automation becomes necessary.
+
+## Examples
+
+- "Help me with observability best practices in this project"
+- "Review my observability implementation for issues"

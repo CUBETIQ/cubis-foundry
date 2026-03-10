@@ -1,94 +1,50 @@
 ---
 name: "dart-pro"
-description: "Use for modern Dart engineering across Flutter, server, and CLI code with Dart 3.9-era language features, package hygiene, isolates, and testing discipline."
+description: "Use for modern Dart engineering across Flutter, server, and CLI code with Dart 3.11-era language features, package hygiene, isolates, and testing discipline."
+license: MIT
 metadata:
-  version: "2.0.0"
-  domain: "language"
-  role: "specialist"
-  stack: "dart"
-  category: "languages"
-  layer: "languages"
-  canonical: true
-  maturity: "stable"
-  baseline: "Dart 3.9"
-  tags: ["dart", "flutter", "language", "packages", "isolates"]
+  author: cubis-foundry
+  version: "2.0"
+compatibility: Claude Code, Codex, GitHub Copilot
 ---
 
 # Dart Pro
 
-## When to use
+## Purpose
+
+Expert-level guidance for modern Dart development across Flutter app logic, server applications, and CLI tooling. Covers null safety, sealed classes with pattern matching, async and isolate patterns, package hygiene, and testing discipline using current Dart language features.
+
+## When to Use
 
 - Designing Dart libraries, Flutter app logic, or Dart CLI tooling.
 - Refactoring null-safety, sealed classes, records, or pattern matching.
 - Improving package structure, async correctness, and testability.
 
-## When not to use
+## Instructions
 
-- Pure Flutter design-system or platform UX decisions — use `mobile-developer`.
-- Database-only tuning with no Dart code changes.
-- Simple config edits with no language-level consequence.
+1. **Confirm runtime context** — identify whether the code targets Flutter UI, server, or CLI. This determines available APIs, isolate patterns, and testing approaches.
 
-## Core workflow
+2. **Keep null safety and type intent explicit** — prefer non-nullable types by default. Use `?` only when null is a valid domain value. Use `late` only when initialization is guaranteed before access. Target sound null safety with no `// ignore: null_check` suppressions without justification. Do not use `!` (null assertion) in production code without a preceding null check because it crashes at runtime.
 
-1. Confirm runtime context: Flutter UI, server, or CLI.
-2. Keep null safety and type intent explicit.
-3. Prefer sealed models, records, and pattern matching for state clarity.
-4. Isolate heavy compute from UI-sensitive paths when needed.
-5. Validate with focused tests and analyzer-clean output.
+3. **Use sealed models, records, and pattern matching** — use sealed classes for closed type hierarchies with exhaustive `switch` that catches missing cases at compile time. Use records `(int, String)` for lightweight grouped returns. Use `switch` expressions with pattern matching for state machines. Prefer destructuring in `if-case` and `switch` over manual `is` checks and casts.
 
-## Baseline standards
+4. **Design async flows with proper lifecycle** — use `async`/`await` for I/O-bound work. Keep `Future` chains flat. Use `Stream` for event-driven data with `StreamController.broadcast()` only when multiple listeners are needed. Cancel subscriptions and close controllers in `dispose()` to prevent memory leaks. Do not block the main isolate with synchronous I/O or heavy computation because it freezes the UI.
 
-- Target sound null safety — no `// ignore: null_check` suppressions without justification.
-- Run `dart analyze` with zero warnings before committing. Treat analyzer warnings as defects.
-- Use `dart format` for consistent style. Do not override formatter rules per-file.
-- Pin SDK constraint in `pubspec.yaml` to the minimum required version.
-- Keep `pubspec.lock` in version control for applications (not for libraries).
+5. **Offload compute to isolates when needed** — use `Isolate.run()` or `compute()` in Flutter for CPU-heavy work. Keep the main isolate responsive for UI and event handling.
 
-## Null safety and types
+6. **Maintain package hygiene** — keep `pubspec.yaml` dependencies minimal. Use `dart pub outdated` to identify stale dependencies. Export only the public API from `lib/src/` via a barrel file. Pin SDK constraint to the minimum required version. Keep `pubspec.lock` in version control for applications (not for libraries). Do not import implementation files from `lib/src/` directly in other packages because it breaks encapsulation.
 
-- Prefer non-nullable types by default. Use `?` only when null is a valid domain value.
-- Use `late` only when initialization is guaranteed before access and a non-nullable type is required.
-- Avoid `!` (null assertion) except in tests or after an explicit null check in the same scope.
-- Use sealed classes for closed type hierarchies — exhaustive `switch` catches missing cases at compile time.
-- Use records `(int, String)` for lightweight grouped returns instead of creating one-off classes.
+7. **Run analysis before committing** — run `dart analyze` with zero warnings. Treat analyzer warnings as defects. Use `dart format` for consistent style. Do not override formatter rules per-file. Do not ignore analyzer warnings with `// ignore:` comments without a justification comment because it hides real defects.
 
-## Pattern matching
+8. **Test business logic independently** — use `package:test` for unit tests, `package:mocktail` or `package:mockito` for mocking. Test logic in plain Dart classes independent of Flutter widgets. Run tests with `--coverage` and review uncovered branches. Do not mix business logic into widget `build()` methods because it prevents isolated testing.
 
-- Use `switch` expressions with pattern matching for state machines and variant handling.
-- Prefer destructuring in `if-case` and `switch` over manual `is` checks and casts.
-- Exhaustive matching on sealed types ensures new variants cause compile errors, not runtime surprises.
+9. **Do not use `dynamic` as a type** because it disables all static checking — use `Object` or generics instead.
 
-## Async and isolates
+## Output Format
 
-- Use `async`/`await` for I/O-bound work. Keep `Future` chains flat — avoid nested `.then()`.
-- Use `Stream` for event-driven data. Prefer `StreamController.broadcast()` only when multiple listeners are needed.
-- Offload CPU-heavy work to isolates via `Isolate.run()` or `compute()` in Flutter.
-- Never block the main isolate with synchronous I/O or heavy computation.
-- Cancel subscriptions and close controllers in `dispose()` to prevent memory leaks.
+Produces Dart code with sound null safety, sealed class hierarchies, pattern matching, and clean async patterns. Includes barrel exports and analyzer-clean output with proper package structure.
 
-## Package hygiene
-
-- Keep `pubspec.yaml` dependencies minimal. Audit transitive dependencies periodically.
-- Use `dart pub outdated` to identify stale dependencies.
-- Export only the public API from `lib/src/` via a barrel file. Keep implementation details private.
-- Split large packages into focused sub-packages when responsibilities diverge.
-
-## Testing
-
-- Use `package:test` for unit tests, `package:mockito` or `package:mocktail` for mocking.
-- Test business logic independently of Flutter widgets — keep logic in plain Dart classes.
-- Use `setUp`/`tearDown` for shared fixture setup. Avoid test interdependence.
-- Run tests with `--coverage` and review uncovered branches.
-
-## Avoid
-
-- `dynamic` as a type — it disables all static checking. Use `Object` or generics instead.
-- `!` null assertions in production code without a preceding null check.
-- Importing implementation files from `lib/src/` directly in other packages.
-- Ignoring analyzer warnings with `// ignore:` comments without a justification comment.
-- Mixing business logic into widget `build()` methods.
-
-## Reference files
+## References
 
 | File                                           | Load when                                                                                                           |
 | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
@@ -97,3 +53,13 @@ metadata:
 | `references/isolate-and-concurrency.md`        | You need isolate architecture, compute offload, port communication, or Flutter isolate integration patterns.        |
 | `references/package-structure-and-linting.md`  | You need pub workspace layout, barrel exports, analysis_options rules, or dependency audit workflow.                |
 | `references/testing-and-mocking.md`            | You need test patterns with mockito/mocktail, widget testing, golden tests, or coverage-driven CI.                  |
+
+## Scripts
+
+No helper scripts are required for this skill right now. Keep execution in `SKILL.md` and `references/` unless repeated automation becomes necessary.
+
+## Examples
+
+- "Refactor this state management code to use sealed classes with exhaustive pattern matching instead of enum flags."
+- "Design the isolate architecture for this image processing pipeline in a Flutter app."
+- "Set up the package structure for this shared Dart library with proper barrel exports and analysis_options."

@@ -1,83 +1,67 @@
 ---
-name: "python-pro"
-description: "Use for production Python with 3.14-era typing, async, packaging, and testing standards."
+name: python-pro
+description: "Use for production Python with 3.14-era typing, async, packaging, and testing standards. Use when building Python backend services, migrating legacy Python to typed architecture, implementing async I/O, or setting up pytest and packaging workflows."
 license: MIT
 metadata:
-  version: "2.0.0"
-  domain: "language"
-  role: "specialist"
-  stack: "python"
-  category: "languages"
-  layer: "languages"
-  canonical: true
-  maturity: "stable"
-  aliases: ["python-patterns"]
-  baseline: "Python 3.14"
-  tags: ["python", "typing", "async", "pytest", "packaging"]
+  author: cubis-foundry
+  version: "3.0"
+compatibility: Claude Code, Codex, GitHub Copilot
 ---
 
 # Python Pro
 
-## When to use
+## Purpose
+
+Provide language-layer guidance for production Python — type annotations, async patterns, packaging, testing, and ecosystem tooling. Acts as the foundation before framework skills like `fastapi-expert` are loaded.
+
+## When to Use
 
 - Building backend services, automation, or data pipelines in Python.
 - Migrating legacy Python to typed and testable architecture.
-- Implementing async I/O with predictable behavior.
-- Serving as the language-layer baseline before framework skills like `fastapi-expert` are loaded.
+- Implementing async I/O with structured concurrency.
+- Setting up pytest, packaging, or toolchain workflows.
+- Serving as the language-layer baseline before loading framework-specific skills.
 
-## When not to use
+## Instructions
 
-- Frontend-only tasks with no Python runtime involved.
-- Database-only tuning or migration work with no Python code change.
-- Tiny shell-first automation where Python adds unnecessary packaging/runtime cost.
+1. Establish interpreter and runtime constraints before writing code, because Python version determines which typing and async features are available.
+2. Type annotate public functions and critical internal APIs using `Protocol` for structural subtyping and `TypeVar`/`ParamSpec` for generic boundaries. Use `object` over `Any` at public boundaries because `Any` silences the type checker.
+3. Use `pyproject.toml`-first packaging with `hatchling`, `setuptools`, or `flit` as build backend. Do not use `setup.py` for new projects because `pyproject.toml` is the current standard.
+4. Use `dataclass(frozen=True, slots=True)` for plain value objects and Pydantic `BaseModel` for external data validation (API input, config files) because Pydantic provides runtime schema enforcement.
+5. Use `TaskGroup` (3.11+) for structured concurrency — child tasks are automatically cancelled if any raises. Use `asyncio.timeout` instead of `asyncio.wait_for` for cleaner timeout handling.
+6. Keep sync and async call paths separate. Do not call `asyncio.run()` inside an already-running loop. Use `asyncio.to_thread()` to bridge sync-blocking code into async context.
+7. Set explicit timeout and concurrency limits on external I/O because unbounded fan-out is the most common async performance bug.
+8. Use `pytest` for tests with `@pytest.mark.parametrize` for edge cases. Use `hypothesis` for property-based testing when input domains are large.
+9. Use `ruff` for all-in-one linting and formatting. Use `mypy` for strict type checking in CI and `pyright` for IDE feedback.
+10. Use `uv` for fast dependency resolution and virtual environment management. Fall back to `pip` + `venv` when `uv` is unavailable.
+11. Preserve exception context at service boundaries — do not swallow root causes. Keep business logic separate from framework glue.
+12. Do not use untyped public APIs in shared modules because they propagate type uncertainty to consumers.
+13. Do not use hidden global state in request paths because it creates unpredictable concurrency behavior.
+14. Do not mix sync and async call graphs without clear adapters because it leads to blocking the event loop.
 
-## Core workflow
+## Output Format
 
-1. Establish interpreter/runtime constraints.
-2. Define typed interfaces and domain models.
-3. Implement sync/async boundaries explicitly.
-4. Validate with tests, type checks, and linting.
+- Python source files with type annotations on public APIs.
+- `pyproject.toml` for packaging configuration.
+- Test files under `tests/` using pytest conventions.
+- Structured as modules with explicit `__init__.py` exports.
 
-## Baseline standards
+## References
 
-- Type annotate public functions and critical internal APIs.
-- Use `pyproject.toml`-first packaging and tooling.
-- Use `pytest` for tests and parametrize edge cases.
-- Keep business logic separate from framework glue.
-- Prefer stdlib clarity before adding dependencies.
+| File                             | Load when                                                               |
+| -------------------------------- | ----------------------------------------------------------------------- |
+| `references/type-system.md`      | Typing strategy, protocols, generics, or boundary models need detail.   |
+| `references/async-patterns.md`   | Async I/O, task groups, or cancellation semantics need detail.          |
+| `references/testing.md`          | Pytest strategy, fixtures, or concurrency-safe tests are needed.        |
+| `references/packaging.md`        | Packaging, dependency layout, or toolchain reproducibility is in scope. |
+| `references/standard-library.md` | Standard-library-first options need review before adding dependencies.  |
 
-## Implementation guidance
+## Scripts
 
-- Use `dataclass`/Pydantic models for domain boundaries.
-- Use `TaskGroup`-style structured concurrency where possible.
-- Preserve exception context; do not swallow root causes.
-- Keep I/O async and CPU work isolated where needed.
-- Treat free-threaded mode as opt-in until dependencies are validated.
+No helper scripts are required for this skill right now. Keep execution in `SKILL.md` and `references/` unless repeated automation becomes necessary.
 
-## Debugging and observability
+## Examples
 
-- Preserve exception context and structured log fields at service boundaries.
-- Reproduce async bugs with deterministic fixtures before widening scope.
-- Use profiling and trace tooling before speculative concurrency changes.
-
-## Performance and reliability
-
-- Set timeout/retry budgets explicitly for external I/O.
-- Isolate CPU-heavy work from event loops or request handlers.
-- Keep dependency and packaging state reproducible with `pyproject.toml` tooling.
-
-## Avoid
-
-- Untyped public APIs in shared modules.
-- Hidden global state in request paths.
-- Mixed sync/async call graphs without clear adapters.
-
-## Reference files
-
-| File | Load when |
-| --- | --- |
-| `references/type-system.md` | Typing strategy, protocols, generics, or boundary models need detail. |
-| `references/async-patterns.md` | Async I/O, task groups, or cancellation semantics need detail. |
-| `references/testing.md` | Pytest strategy, fixtures, or concurrency-safe tests are needed. |
-| `references/packaging.md` | Packaging, dependency layout, or toolchain reproducibility is in scope. |
-| `references/standard-library.md` | Standard-library-first options need review before adding dependencies. |
+- "Set up a Python FastAPI project with proper typing and async patterns"
+- "Migrate this legacy Python module to use dataclasses and type annotations"
+- "Configure pytest with parametrize for this validation function"

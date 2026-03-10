@@ -77,6 +77,7 @@ export const FRAMEWORK_IDS = new Set([
   "flutter-code-reviewer",
   "flutter-security-reviewer",
   "flutter-test-master",
+  "flutter-riverpod",
   "riverpod-3",
   "gorouter-restoration",
   "oneup-design",

@@ -10,24 +10,10 @@ const ROOT = path.resolve(__dirname, "..");
 
 const CANONICAL_ROOTS = [path.join(ROOT, "workflows", "skills")];
 const MIRRORS = {
-  copilot: path.join(
-    ROOT,
-    "workflows",
-    "workflows",
-    "agent-environment-setup",
-    "platforms",
-    "copilot",
-    "skills",
-  ),
-  claude: path.join(
-    ROOT,
-    "workflows",
-    "workflows",
-    "agent-environment-setup",
-    "platforms",
-    "claude",
-    "skills",
-  ),
+  // Platform skill mirrors removed — platform folders deleted.
+  // To re-enable, add entries like:
+  //   copilot: path.join(ROOT, "workflows", "workflows", "agent-environment-setup", "platforms", "copilot", "skills"),
+  //   claude:  path.join(ROOT, "workflows", "workflows", "agent-environment-setup", "platforms", "claude", "skills"),
 };
 
 const COPILOT_ALLOWED_SKILL_FRONTMATTER_KEYS = new Set([
@@ -136,10 +122,7 @@ function sanitizeSkillMarkdownForCopilot(markdown) {
     .join("\n")
     .replace(/\n{3,}/g, "\n\n")
     .trimEnd();
-  const bodyWithoutLeadingNewlines = extracted.body.replace(
-    /^(?:\r?\n)+/,
-    "",
-  );
+  const bodyWithoutLeadingNewlines = extracted.body.replace(/^(?:\r?\n)+/, "");
   return `---\n${cleanedFrontmatter}\n---\n${bodyWithoutLeadingNewlines}`;
 }
 
@@ -243,7 +226,7 @@ async function main() {
 
   if (targets.length === 0) {
     throw new Error(
-      `Unknown --only target '${only}'. Use one of: all, copilot, claude.`,
+      `Unknown --only target '${only}'. No mirror targets configured.`,
     );
   }
 

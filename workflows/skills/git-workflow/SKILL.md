@@ -1,36 +1,24 @@
 ---
 name: git-workflow
-description: Use when establishing or reviewing git branching strategies, PR conventions, commit hygiene, merge policies, monorepo workflows, and release tagging. Covers trunk-based development, GitFlow alternatives, conventional commits, and code review standards.
+description: "Use when establishing or reviewing git branching strategies, PR conventions, commit hygiene, merge policies, monorepo workflows, and release tagging. Covers trunk-based development, GitFlow alternatives, conventional commits, and code review standards."
+license: MIT
 metadata:
-  version: 1.0.0
-  domain: engineering
-  role: git-strategist
-  stack: [git, github, gitlab, general-vcs]
-  category: engineering
-  layer: workflow-specialists
-  canonical: true
-  maturity: stable
-  baseline: 2026-06
-  tags:
-    [
-      git,
-      branching,
-      pr,
-      merge,
-      commit,
-      release,
-      trunk-based,
-      conventional-commits,
-      code-review,
-    ]
-  provenance: cubis-foundry-original
+  author: cubis-foundry
+  version: "1.0"
+compatibility: Claude Code, Codex, GitHub Copilot
 ---
 
 # Git Workflow
 
-Ship code confidently with clean history and safe merge paths.
+## Purpose
 
-## Core workflow
+Use when establishing or reviewing git branching strategies, PR conventions, commit hygiene, merge policies, monorepo workflows, and release tagging. Covers trunk-based development, GitFlow alternatives, conventional commits, and code review standards.
+
+## When to Use
+
+- Working on git workflow related tasks
+
+## Instructions
 
 1. **Choose a branching model** — trunk-based for high-velocity teams, short-lived feature branches for teams needing review gates.
 2. **Keep branches short-lived** — merge within 1-2 days. Long-lived branches create merge pain and integration risk.
@@ -38,7 +26,7 @@ Ship code confidently with clean history and safe merge paths.
 4. **Review before merge** — every change to protected branches goes through PR review. No direct pushes.
 5. **Automate what you can** — branch protection, CI gating, auto-merge on approval, changelog generation.
 
-## Branching strategies
+### Branching strategies
 
 ### Trunk-based development (recommended)
 
@@ -63,7 +51,7 @@ Ship code confidently with clean history and safe merge paths.
 - Tag releases from the release branch.
 - Delete release branch after final patch version.
 
-## Commit conventions
+### Commit conventions
 
 ### Conventional Commits
 
@@ -87,7 +75,7 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`
 - Body: explain WHY, not WHAT (the diff shows what changed).
 - One logical change per commit. Do not mix refactoring with behavior changes.
 
-## Pull request standards
+### Pull request standards
 
 - Title follows conventional commit format.
 - Description includes: what changed, why it changed, how to test.
@@ -95,7 +83,7 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`
 - Keep PRs under 400 lines of meaningful change. Split larger work into stacked PRs.
 - Request review from domain owners, not random team members.
 
-## Merge strategy
+### Merge strategy
 
 | Strategy     | When to use                                                         |
 | ------------ | ------------------------------------------------------------------- |
@@ -106,7 +94,7 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`
 - Configure repository default in GitHub settings.
 - Delete branches after merge — do not accumulate stale branches.
 
-## Protected branch rules
+### Protected branch rules
 
 - [ ] Require PR reviews (minimum 1 reviewer)
 - [ ] Require status checks to pass (CI, lint, test)
@@ -115,17 +103,30 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`
 - [ ] Require signed commits (optional but recommended for regulated environments)
 - [ ] Enable merge queue for high-traffic repositories
 
-## Avoid
+### Constraints
 
-- Long-lived feature branches (>3 days) — merge pain grows exponentially.
-- Merge commits from `main` into feature branches — rebase instead.
-- Commit messages like "fix", "wip", "stuff" — they provide no value in history.
-- Bypassing CI checks with `--no-verify` — fix the issue instead.
-- Cherry-picking without tracking — document which commits were cherry-picked and why.
-- Force-pushing to shared branches — coordinate with collaborators first.
+- Avoid long-lived feature branches (>3 days) — merge pain grows exponentially.
+- Avoid merge commits from `main` into feature branches — rebase instead.
+- Avoid commit messages like "fix", "wip", "stuff" — they provide no value in history.
+- Avoid bypassing CI checks with `--no-verify` — fix the issue instead.
+- Avoid cherry-picking without tracking — document which commits were cherry-picked and why.
+- Avoid force-pushing to shared branches — coordinate with collaborators first.
+
+## Output Format
+
+Provide implementation guidance, code examples, and configuration as appropriate to the task.
 
 ## References
 
 | File                                | Purpose                                                                                             |
 | ----------------------------------- | --------------------------------------------------------------------------------------------------- |
 | `references/pr-review-checklist.md` | Code review process, reviewer responsibilities, approval criteria, and common review anti-patterns. |
+
+## Scripts
+
+No helper scripts are required for this skill right now. Keep execution in `SKILL.md` and `references/` unless repeated automation becomes necessary.
+
+## Examples
+
+- "Help me with git workflow best practices in this project"
+- "Review my git workflow implementation for issues"
