@@ -1,11 +1,11 @@
 {
   "$schema": "cubis-foundry-route-manifest-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
-  "contentHash": "d99eadc235925bb4",
+  "contentHash": "156e92dad58bd8f9",
   "summary": {
-    "totalRoutes": 37,
+    "totalRoutes": 40,
     "workflows": 18,
-    "agents": 19
+    "agents": 22
   },
   "routes": [
     {
@@ -101,9 +101,11 @@
       "supportingAgents": [],
       "primarySkills": [
         "skill-creator",
-        "typescript-pro"
+        "spec-miner"
       ],
       "supportingSkills": [
+        "legacy-modernizer",
+        "typescript-pro",
         "javascript-pro",
         "python-pro"
       ],
@@ -249,7 +251,11 @@
         "golang-pro",
         "nodejs-best-practices",
         "debugging-strategies",
-        "webapp-testing"
+        "webapp-testing",
+        "ci-cd-pipelines",
+        "docker-kubernetes",
+        "observability",
+        "git-workflow"
       ],
       "artifacts": {
         "codex": {
@@ -337,6 +343,7 @@
         "design-system-builder",
         "web-perf",
         "frontend-code-review",
+        "react-best-practices",
         "typescript-pro",
         "javascript-pro"
       ],
@@ -376,10 +383,11 @@
       "primaryAgent": "game-developer",
       "supportingAgents": [],
       "primarySkills": [
-        "typescript-pro",
-        "javascript-pro"
+        "game-development",
+        "typescript-pro"
       ],
       "supportingSkills": [
+        "javascript-pro",
         "cpp-pro",
         "c-pro",
         "csharp-pro"
@@ -427,7 +435,16 @@
         "debugging-strategies",
         "webapp-testing",
         "typescript-pro",
-        "javascript-pro"
+        "javascript-pro",
+        "flutter-design-system",
+        "flutter-drift",
+        "flutter-feature",
+        "flutter-go-router",
+        "flutter-offline-sync",
+        "flutter-repository",
+        "flutter-riverpod",
+        "flutter-state-machine",
+        "flutter-testing"
       ],
       "artifacts": {
         "codex": {
@@ -494,6 +511,58 @@
     },
     {
       "kind": "agent",
+      "id": "penetration-tester",
+      "command": null,
+      "displayName": "penetration-tester",
+      "description": "Offensive security specialist for attack-surface mapping, exploitation validation, DAST/SAST analysis, and red-team exercises. Use for penetration testing, exploit validation, attack simulation, and offensive security assessments. Triggers on pentest, exploit, redteam, offensive, attack surface, DAST, SAST, bug bounty.",
+      "triggers": [
+        "pentest",
+        "exploit",
+        "redteam",
+        "red team",
+        "offensive",
+        "attack surface",
+        "DAST",
+        "SAST",
+        "bug bounty",
+        "exploitation",
+        "payload",
+        "fuzzing",
+        "lateral movement",
+        "privilege escalation",
+        "exfiltration"
+      ],
+      "primaryAgent": "penetration-tester",
+      "supportingAgents": [],
+      "primarySkills": [
+        "auth-architect",
+        "api-designer"
+      ],
+      "supportingSkills": [
+        "typescript-pro",
+        "javascript-pro",
+        "python-pro",
+        "golang-pro",
+        "rust-pro"
+      ],
+      "artifacts": {
+        "codex": {
+          "agentFile": "penetration-tester.md",
+          "compatibilityAlias": "$agent-penetration-tester"
+        },
+        "copilot": {
+          "agentFile": "penetration-tester.md"
+        },
+        "antigravity": {
+          "agentFile": "penetration-tester.md"
+        },
+        "claude": {
+          "agentFile": "penetration-tester.md"
+        }
+      }
+    },
+    {
+      "kind": "agent",
       "id": "performance-optimizer",
       "command": null,
       "displayName": "performance-optimizer",
@@ -511,10 +580,11 @@
       "primaryAgent": "performance-optimizer",
       "supportingAgents": [],
       "primarySkills": [
-        "typescript-pro",
-        "javascript-pro"
+        "performance-profiling",
+        "typescript-pro"
       ],
       "supportingSkills": [
+        "javascript-pro",
         "python-pro",
         "golang-pro",
         "rust-pro",
@@ -627,6 +697,55 @@
         },
         "claude": {
           "agentFile": "project-planner.md"
+        }
+      }
+    },
+    {
+      "kind": "agent",
+      "id": "qa-automation-engineer",
+      "command": null,
+      "displayName": "qa-automation-engineer",
+      "description": "QA automation specialist for test strategy, regression suite design, test matrix planning, and continuous quality pipelines. Use for test automation architecture, regression prevention, quality pipeline design, and test data management. Triggers on QA, automation, regression, smoke test, test plan, test matrix, quality pipeline.",
+      "triggers": [
+        "qa automation",
+        "test automation",
+        "regression suite",
+        "smoke test",
+        "test plan",
+        "test matrix",
+        "quality pipeline",
+        "test data",
+        "test infrastructure",
+        "flaky tests",
+        "test coverage",
+        "continuous testing"
+      ],
+      "primaryAgent": "qa-automation-engineer",
+      "supportingAgents": [],
+      "primarySkills": [
+        "webapp-testing",
+        "playwright-e2e"
+      ],
+      "supportingSkills": [
+        "agentic-eval",
+        "debugging-strategies",
+        "typescript-pro",
+        "javascript-pro",
+        "python-pro"
+      ],
+      "artifacts": {
+        "codex": {
+          "agentFile": "qa-automation-engineer.md",
+          "compatibilityAlias": "$agent-qa-automation-engineer"
+        },
+        "copilot": {
+          "agentFile": "qa-automation-engineer.md"
+        },
+        "antigravity": {
+          "agentFile": "qa-automation-engineer.md"
+        },
+        "claude": {
+          "agentFile": "qa-automation-engineer.md"
         }
       }
     },
@@ -757,10 +876,12 @@
       "primaryAgent": "seo-specialist",
       "supportingAgents": [],
       "primarySkills": [
-        "typescript-pro",
-        "javascript-pro"
+        "seo-fundamentals",
+        "geo-fundamentals"
       ],
       "supportingSkills": [
+        "typescript-pro",
+        "javascript-pro",
         "python-pro"
       ],
       "artifacts": {
@@ -776,6 +897,59 @@
         },
         "claude": {
           "agentFile": "seo-specialist.md"
+        }
+      }
+    },
+    {
+      "kind": "agent",
+      "id": "sre-engineer",
+      "command": null,
+      "displayName": "sre-engineer",
+      "description": "Site reliability engineer for SLO-driven operations, incident management, toil reduction, and production reliability. Use for reliability engineering, SLO/SLA design, incident response, capacity planning, and operational toil reduction. Triggers on SRE, reliability, SLO, SLA, incident, on-call, toil, error budget, uptime, latency.",
+      "triggers": [
+        "sre",
+        "reliability",
+        "slo",
+        "sla",
+        "incident",
+        "on-call",
+        "toil",
+        "error budget",
+        "uptime",
+        "latency",
+        "availability",
+        "capacity",
+        "chaos",
+        "runbook",
+        "postmortem",
+        "observability"
+      ],
+      "primaryAgent": "sre-engineer",
+      "supportingAgents": [],
+      "primarySkills": [
+        "observability",
+        "docker-kubernetes"
+      ],
+      "supportingSkills": [
+        "ci-cd-pipelines",
+        "debugging-strategies",
+        "python-pro",
+        "golang-pro",
+        "typescript-pro"
+      ],
+      "artifacts": {
+        "codex": {
+          "agentFile": "sre-engineer.md",
+          "compatibilityAlias": "$agent-sre-engineer"
+        },
+        "copilot": {
+          "agentFile": "sre-engineer.md"
+        },
+        "antigravity": {
+          "agentFile": "sre-engineer.md"
+        },
+        "claude": {
+          "agentFile": "sre-engineer.md"
         }
       }
     },
@@ -854,6 +1028,7 @@
       ],
       "supportingSkills": [
         "playwright-e2e",
+        "agentic-eval",
         "typescript-pro",
         "javascript-pro",
         "python-pro"
@@ -1087,6 +1262,7 @@
         "firebase",
         "mcp-builder",
         "react-expert",
+        "react-best-practices",
         "nextjs-developer",
         "tailwind-patterns",
         "frontend-design",
@@ -1720,6 +1896,7 @@
         "golang-pro"
       ],
       "supportingSkills": [
+        "observability",
         "skill-creator"
       ],
       "artifacts": {
@@ -1772,6 +1949,7 @@
         "webapp-testing",
         "playwright-e2e",
         "debugging-strategies",
+        "agentic-eval",
         "skill-creator"
       ],
       "artifacts": {

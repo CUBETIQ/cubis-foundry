@@ -59,6 +59,12 @@ Source of truth inside this repo:
 - Active generated skill mirrors are maintained for `copilot` and `claude`.
 - Any leftover `cursor` or `windsurf` folders under `platforms/*` should be treated as legacy artifacts, not active CLI targets.
 
+Recommended edit and verification loop:
+
+- Edit canonical files under `workflows/skills/*` and `workflows/workflows/agent-environment-setup/shared/*` only.
+- Regenerate all platform mirrors and managed files with `npm run generate:all`.
+- Verify generated mirrors, rules, manifest, attributes, and smoke coverage with `npm run test:ci`.
+
 ## Install
 
 ```bash

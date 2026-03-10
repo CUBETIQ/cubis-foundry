@@ -1,12 +1,12 @@
 {
   "$schema": "cubis-foundry-mcp-manifest-v1",
-  "generatedAt": "2026-03-09T09:39:54.097Z",
-  "contentHash": "de230a0f88504d2a",
+  "generatedAt": "2026-03-10T09:16:09.861Z",
+  "contentHash": "192b6cd9a03069bf",
   "summary": {
-    "totalSkills": 59,
-    "totalCategories": 12,
-    "totalBytes": 182282,
-    "estimatedTokens": 45571
+    "totalSkills": 73,
+    "totalCategories": 15,
+    "totalBytes": 253793,
+    "estimatedTokens": 63449
   },
   "categories": [
     {
@@ -23,7 +23,7 @@
     },
     {
       "name": "backend",
-      "skillCount": 13
+      "skillCount": 11
     },
     {
       "name": "data",
@@ -35,19 +35,31 @@
     },
     {
       "name": "frontend",
-      "skillCount": 5
+      "skillCount": 6
+    },
+    {
+      "name": "game-dev",
+      "skillCount": 1
     },
     {
       "name": "general",
-      "skillCount": 26
+      "skillCount": 28
+    },
+    {
+      "name": "marketing",
+      "skillCount": 2
     },
     {
       "name": "mcp",
       "skillCount": 1
     },
     {
+      "name": "mobile",
+      "skillCount": 9
+    },
+    {
       "name": "performance",
-      "skillCount": 1
+      "skillCount": 2
     },
     {
       "name": "testing",
@@ -66,30 +78,17 @@
       "description": "Use when auditing, implementing, or reviewing web accessibility (WCAG, ARIA, keyboard navigation, screen reader support, and inclusive interaction patterns).",
       "category": "design",
       "keywords": [
-        "web-accessibility",
-        "frontend",
         "accessibility"
       ],
       "triggers": [
-        "web-accessibility",
-        "accessibility",
-        "frontend"
+        "accessibility"
       ],
       "path": "workflows/skills/accessibility/SKILL.md",
       "metadata": {
-        "version": "1.0.0",
-        "domain": "frontend",
-        "role": "specialist",
-        "stack": "web-accessibility",
-        "category": "frameworks-runtimes",
-        "layer": "frameworks-runtimes",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "WCAG 2.2 AA",
-        "source": "cubis-foundry canonical",
-        "snapshot": "2026-03-09 initial from deep research on awesome-copilot a11y agents and WCAG 2.2"
+        "author": "cubis-foundry",
+        "version": "1.0"
       },
-      "fileBytes": 4625
+      "fileBytes": 4511
     },
     {
       "id": "agentic-eval",
@@ -98,24 +97,12 @@
       "description": "Use when evaluating an agent, skill, workflow, or MCP server: rubric design, evaluator-optimizer loops, LLM-as-judge patterns, regression suites, or prototype-vs-production quality gaps.",
       "category": "general",
       "keywords": [
-        "evaluation",
-        "rubrics",
-        "regression",
-        "judge-models",
-        "benchmarking",
-        "agents",
         "agentic-eval",
         "agentic eval",
         "agentic",
         "eval"
       ],
       "triggers": [
-        "evaluation",
-        "rubrics",
-        "regression",
-        "judge-models",
-        "benchmarking",
-        "agents",
         "agentic-eval",
         "agentic eval",
         "agentic",
@@ -123,22 +110,10 @@
       ],
       "path": "workflows/skills/agentic-eval/SKILL.md",
       "metadata": {
-        "source": "https://github.com/github/awesome-copilot",
-        "snapshot": "Rebuilt for Foundry on 2026-03-09 using public agent-builder evaluation patterns.",
-        "category": "workflow-specialists",
-        "layer": "workflow-specialists",
-        "canonical": true,
-        "maturity": "stable",
-        "tags": [
-          "evaluation",
-          "rubrics",
-          "regression",
-          "judge-models",
-          "benchmarking",
-          "agents"
-        ]
+        "author": "cubis-foundry",
+        "version": "1.0"
       },
-      "fileBytes": 1890
+      "fileBytes": 2326
     },
     {
       "id": "api-designer",
@@ -147,48 +122,21 @@
       "description": "Use when defining or reviewing external API contracts, OpenAPI specifications, resource models, pagination, versioning, and error response standards. Do not use for pure database design or framework-only handler wiring.",
       "category": "api",
       "keywords": [
-        "api",
-        "openapi",
-        "rest",
-        "graphql",
-        "versioning",
-        "pagination",
-        "api-design",
         "api-designer",
-        "api designer"
+        "api designer",
+        "api"
       ],
       "triggers": [
-        "api",
-        "openapi",
-        "rest",
-        "graphql",
-        "versioning",
-        "pagination",
-        "api-design",
         "api-designer",
-        "api designer"
+        "api designer",
+        "api"
       ],
       "path": "workflows/skills/api-designer/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "api",
-        "role": "specialist",
-        "stack": "api-design",
-        "category": "core-operating",
-        "layer": "core-operating",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "OpenAPI 3.1 and current HTTP API practices",
-        "tags": [
-          "api",
-          "openapi",
-          "rest",
-          "graphql",
-          "versioning",
-          "pagination"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2214,
+      "fileBytes": 2457,
       "warnings": [
         "description too long (219 chars)"
       ]
@@ -200,51 +148,21 @@
       "description": "Use when choosing between REST, GraphQL, and type-safe RPC patterns, or when standardizing response envelopes, versioning, pagination, auth shape, and API protection strategy.",
       "category": "api",
       "keywords": [
-        "api",
-        "rest",
-        "graphql",
-        "rpc",
-        "pagination",
-        "versioning",
-        "auth",
-        "api-design",
         "api-patterns",
-        "api patterns"
+        "api patterns",
+        "api"
       ],
       "triggers": [
-        "api",
-        "rest",
-        "graphql",
-        "rpc",
-        "pagination",
-        "versioning",
-        "auth",
-        "api-design",
         "api-patterns",
-        "api patterns"
+        "api patterns",
+        "api"
       ],
       "path": "workflows/skills/api-patterns/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "api",
-        "role": "specialist",
-        "stack": "api-design",
-        "category": "core-operating",
-        "layer": "core-operating",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "modern HTTP and graph API patterns",
-        "tags": [
-          "api",
-          "rest",
-          "graphql",
-          "rpc",
-          "pagination",
-          "versioning",
-          "auth"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2310
+      "fileBytes": 2543
     },
     {
       "id": "architecture-designer",
@@ -253,45 +171,19 @@
       "description": "Use when designing or reviewing system architecture, interface boundaries, tradeoffs, ADRs, scalability posture, and the smallest durable target shape for a product or platform.",
       "category": "architecture",
       "keywords": [
-        "architecture",
-        "system-design",
-        "adrs",
-        "boundaries",
-        "tradeoffs",
-        "scalability",
         "architecture-designer",
         "architecture designer"
       ],
       "triggers": [
-        "system-design",
-        "adrs",
-        "boundaries",
-        "tradeoffs",
-        "scalability",
         "architecture-designer",
         "architecture designer"
       ],
       "path": "workflows/skills/architecture-designer/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "architecture",
-        "role": "specialist",
-        "stack": "system-design",
-        "category": "core-operating",
-        "layer": "core-operating",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "pragmatic modern system design",
-        "tags": [
-          "architecture",
-          "system-design",
-          "adrs",
-          "boundaries",
-          "tradeoffs",
-          "scalability"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2337
+      "fileBytes": 2517
     },
     {
       "id": "auth-architect",
@@ -300,58 +192,21 @@
       "description": "Use when designing or reviewing authentication and authorization for backend systems, including sessions, tokens, OAuth or OIDC, RBAC or ABAC, passkeys, service-to-service auth, and policy enforcement boundaries.",
       "category": "general",
       "keywords": [
-        "auth",
-        "authorization",
-        "oauth",
-        "oidc",
-        "rbac",
-        "abac",
-        "sessions",
-        "jwt",
-        "passkeys",
-        "security",
         "auth-architect",
-        "auth architect"
+        "auth architect",
+        "auth"
       ],
       "triggers": [
-        "auth",
-        "authorization",
-        "oauth",
-        "oidc",
-        "rbac",
-        "abac",
-        "sessions",
-        "jwt",
-        "passkeys",
-        "security",
         "auth-architect",
-        "auth architect"
+        "auth architect",
+        "auth"
       ],
       "path": "workflows/skills/auth-architect/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "security",
-        "role": "specialist",
-        "stack": "auth",
-        "category": "frameworks-runtimes",
-        "layer": "frameworks-runtimes",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "modern auth for web and service platforms",
-        "tags": [
-          "auth",
-          "authorization",
-          "oauth",
-          "oidc",
-          "rbac",
-          "abac",
-          "sessions",
-          "jwt",
-          "passkeys",
-          "security"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2825,
+      "fileBytes": 3004,
       "warnings": [
         "description too long (212 chars)"
       ]
@@ -363,41 +218,21 @@
       "description": "Use for modern C23-era systems and embedded engineering with memory safety discipline, build reproducibility, and low-level debugging awareness.",
       "category": "general",
       "keywords": [
-        "c",
-        "language",
-        "systems",
-        "embedded",
-        "memory-safety",
         "c-pro",
-        "c pro"
+        "c pro",
+        "c"
       ],
       "triggers": [
-        "c",
-        "embedded",
-        "memory-safety",
         "c-pro",
-        "c pro"
+        "c pro",
+        "c"
       ],
       "path": "workflows/skills/c-pro/SKILL.md",
       "metadata": {
-        "version": "2.0.0",
-        "domain": "language",
-        "role": "specialist",
-        "stack": "c",
-        "category": "languages",
-        "layer": "languages",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "C23",
-        "tags": [
-          "c",
-          "language",
-          "systems",
-          "embedded",
-          "memory-safety"
-        ]
+        "author": "cubis-foundry",
+        "version": "2.0"
       },
-      "fileBytes": 4665
+      "fileBytes": 5616
     },
     {
       "id": "ci-cd-pipelines",
@@ -406,11 +241,6 @@
       "description": "Use when designing, reviewing, or debugging CI/CD pipelines across GitHub Actions, GitLab CI, and similar platforms. Covers pipeline architecture, job sequencing, caching, artifact management, environment promotion, security hardening, and flaky-pipeline triage.",
       "category": "general",
       "keywords": [
-        "github-actions",
-        "gitlab-ci",
-        "jenkins",
-        "general-ci",
-        "devops",
         "ci-cd-pipelines",
         "ci cd pipelines",
         "ci",
@@ -418,36 +248,18 @@
         "pipelines"
       ],
       "triggers": [
-        "github-actions",
-        "gitlab-ci",
-        "jenkins",
-        "general-ci",
         "ci-cd-pipelines",
         "ci cd pipelines",
         "ci",
         "cd",
-        "pipelines",
-        "devops"
+        "pipelines"
       ],
       "path": "workflows/skills/ci-cd-pipelines/SKILL.md",
       "metadata": {
-        "version": "1.0.0",
-        "domain": "devops",
-        "role": "pipeline-architect",
-        "stack": [
-          "github-actions",
-          "gitlab-ci",
-          "jenkins",
-          "general-ci"
-        ],
-        "category": "engineering",
-        "layer": "workflow-specialists",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "2026-06",
-        "provenance": "cubis-foundry-original"
+        "author": "cubis-foundry",
+        "version": "1.0"
       },
-      "fileBytes": 6054,
+      "fileBytes": 6311,
       "warnings": [
         "description too long (262 chars)"
       ]
@@ -459,131 +271,67 @@
       "description": "Use for modern C++23-era systems and application engineering with RAII, value semantics, toolchain awareness, and performance-safe design.",
       "category": "general",
       "keywords": [
-        "cpp",
-        "c++",
-        "language",
-        "systems",
-        "performance",
         "cpp-pro",
-        "cpp pro"
+        "cpp pro",
+        "cpp"
       ],
       "triggers": [
-        "cpp",
-        "c++",
-        "performance",
         "cpp-pro",
-        "cpp pro"
+        "cpp pro",
+        "cpp"
       ],
       "path": "workflows/skills/cpp-pro/SKILL.md",
       "metadata": {
-        "version": "2.0.0",
-        "domain": "language",
-        "role": "specialist",
-        "stack": "cpp",
-        "category": "languages",
-        "layer": "languages",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "C++23",
-        "tags": [
-          "cpp",
-          "c++",
-          "language",
-          "systems",
-          "performance"
-        ]
+        "author": "cubis-foundry",
+        "version": "2.0"
       },
-      "fileBytes": 5080
+      "fileBytes": 6044
     },
     {
       "id": "csharp-pro",
       "name": "csharp-pro",
       "displayName": null,
-      "description": "Use for modern C# backend/application engineering with C# 14 and .NET 10-era production practices.",
+      "description": "Use for modern C# backend/application engineering with C# 15 and .NET 11-era production practices.",
       "category": "backend",
       "keywords": [
-        "csharp",
-        "dotnet",
-        "async",
-        "apis",
-        "services",
-        "language",
         "csharp-pro",
-        "csharp pro"
+        "csharp pro",
+        "csharp"
       ],
       "triggers": [
-        "csharp",
-        "dotnet",
-        "async",
-        "apis",
-        "services",
         "csharp-pro",
-        "csharp pro"
+        "csharp pro",
+        "csharp"
       ],
       "path": "workflows/skills/csharp-pro/SKILL.md",
       "metadata": {
-        "version": "1.0.0",
-        "domain": "language",
-        "role": "specialist",
-        "stack": "csharp",
-        "category": "languages",
-        "layer": "languages",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "C# 14 / .NET 10",
-        "tags": [
-          "csharp",
-          "dotnet",
-          "async",
-          "apis",
-          "services"
-        ]
+        "author": "cubis-foundry",
+        "version": "1.0"
       },
-      "fileBytes": 2297
+      "fileBytes": 5978
     },
     {
       "id": "dart-pro",
       "name": "dart-pro",
       "displayName": null,
-      "description": "Use for modern Dart engineering across Flutter, server, and CLI code with Dart 3.9-era language features, package hygiene, isolates, and testing discipline.",
+      "description": "Use for modern Dart engineering across Flutter, server, and CLI code with Dart 3.11-era language features, package hygiene, isolates, and testing discipline.",
       "category": "general",
       "keywords": [
-        "dart",
-        "flutter",
-        "language",
-        "packages",
-        "isolates",
         "dart-pro",
-        "dart pro"
+        "dart pro",
+        "dart"
       ],
       "triggers": [
-        "dart",
-        "flutter",
-        "packages",
-        "isolates",
         "dart-pro",
-        "dart pro"
+        "dart pro",
+        "dart"
       ],
       "path": "workflows/skills/dart-pro/SKILL.md",
       "metadata": {
-        "version": "2.0.0",
-        "domain": "language",
-        "role": "specialist",
-        "stack": "dart",
-        "category": "languages",
-        "layer": "languages",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "Dart 3.9",
-        "tags": [
-          "dart",
-          "flutter",
-          "language",
-          "packages",
-          "isolates"
-        ]
+        "author": "cubis-foundry",
+        "version": "2.0"
       },
-      "fileBytes": 4581
+      "fileBytes": 5554
     },
     {
       "id": "database-design",
@@ -592,48 +340,21 @@
       "description": "Use when designing schemas, relationships, indexes, ORM boundaries, and safe migration plans for relational or document-oriented workloads.",
       "category": "data",
       "keywords": [
-        "database",
-        "schema",
-        "migrations",
-        "indexing",
-        "orm",
-        "modeling",
-        "database-design",
-        "data",
-        "database design"
-      ],
-      "triggers": [
-        "database",
-        "schema",
-        "migrations",
-        "indexing",
-        "orm",
-        "modeling",
         "database-design",
         "database design",
-        "data"
+        "database"
+      ],
+      "triggers": [
+        "database-design",
+        "database design",
+        "database"
       ],
       "path": "workflows/skills/database-design/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "data",
-        "role": "specialist",
-        "stack": "database-design",
-        "category": "databases",
-        "layer": "databases",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "modern schema and migration design",
-        "tags": [
-          "database",
-          "schema",
-          "migrations",
-          "indexing",
-          "orm",
-          "modeling"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2162
+      "fileBytes": 2334
     },
     {
       "id": "database-optimizer",
@@ -642,52 +363,23 @@
       "description": "Use for database performance triage across engines: query-plan analysis, indexing changes, wait and contention diagnosis, config tuning, and safe before/after validation.",
       "category": "data",
       "keywords": [
-        "database",
-        "performance",
-        "query-plans",
-        "indexing",
-        "locks",
-        "tuning",
-        "database-performance",
-        "data",
         "database-optimizer",
         "database optimizer",
+        "database",
         "optimizer"
       ],
       "triggers": [
-        "database",
-        "performance",
-        "query-plans",
-        "indexing",
-        "locks",
-        "tuning",
-        "database-performance",
         "database-optimizer",
         "database optimizer",
-        "optimizer",
-        "data"
+        "database",
+        "optimizer"
       ],
       "path": "workflows/skills/database-optimizer/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "data",
-        "role": "specialist",
-        "stack": "database-performance",
-        "category": "databases",
-        "layer": "databases",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "modern query and workload optimization",
-        "tags": [
-          "database",
-          "performance",
-          "query-plans",
-          "indexing",
-          "locks",
-          "tuning"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2245
+      "fileBytes": 2451
     },
     {
       "id": "database-skills",
@@ -696,53 +388,21 @@
       "description": "Use as the primary database hub for engine or platform choice, schema-vs-tuning routing, access-layer triage, migration safety framing, and database task triage before deeper engine, platform, or ORM specialists.",
       "category": "data",
       "keywords": [
-        "database",
-        "sql",
-        "nosql",
-        "migrations",
-        "indexing",
-        "query-plans",
-        "routing",
-        "databases",
-        "data",
-        "database-skills",
-        "database skills"
-      ],
-      "triggers": [
-        "database",
-        "sql",
-        "nosql",
-        "migrations",
-        "indexing",
-        "query-plans",
-        "routing",
-        "databases",
         "database-skills",
         "database skills",
-        "data"
+        "database"
+      ],
+      "triggers": [
+        "database-skills",
+        "database skills",
+        "database"
       ],
       "path": "workflows/skills/database-skills/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "data",
-        "role": "hub",
-        "stack": "databases",
-        "category": "databases",
-        "layer": "databases",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "cross-engine database planning",
-        "tags": [
-          "database",
-          "sql",
-          "nosql",
-          "migrations",
-          "indexing",
-          "query-plans",
-          "routing"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2818,
+      "fileBytes": 3055,
       "warnings": [
         "description too long (212 chars)"
       ]
@@ -754,53 +414,21 @@
       "description": "Use when isolating bugs, regressions, flaky tests, or cross-layer failures with an evidence-first reproduce, narrow, verify workflow.",
       "category": "general",
       "keywords": [
-        "debugging",
-        "bugs",
-        "triage",
-        "root-cause",
-        "regression",
-        "flaky-tests",
-        "investigation",
-        "cross-stack",
-        "quality",
-        "debugging-strategies",
-        "debugging strategies"
-      ],
-      "triggers": [
-        "debugging",
-        "bugs",
-        "triage",
-        "root-cause",
-        "regression",
-        "flaky-tests",
-        "investigation",
-        "cross-stack",
         "debugging-strategies",
         "debugging strategies",
-        "quality"
+        "debugging"
+      ],
+      "triggers": [
+        "debugging-strategies",
+        "debugging strategies",
+        "debugging"
       ],
       "path": "workflows/skills/debugging-strategies/SKILL.md",
       "metadata": {
-        "version": "1.0.0",
-        "domain": "quality",
-        "role": "specialist",
-        "stack": "cross-stack",
-        "category": "workflow-specialists",
-        "layer": "workflow-specialists",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "evidence-first debugging across browser, service, and data paths",
-        "tags": [
-          "debugging",
-          "bugs",
-          "triage",
-          "root-cause",
-          "regression",
-          "flaky-tests",
-          "investigation"
-        ]
+        "author": "cubis-foundry",
+        "version": "1.0"
       },
-      "fileBytes": 2614
+      "fileBytes": 2694
     },
     {
       "id": "deep-research",
@@ -809,45 +437,23 @@
       "description": "Use when a task needs multi-round research rather than a quick lookup: iterative search, gap finding, corroboration across sources, contradiction handling, or evidence-led synthesis before planning or implementation.",
       "category": "general",
       "keywords": [
-        "research",
-        "web-search",
-        "corroboration",
-        "evidence",
-        "synthesis",
-        "planning",
         "deep-research",
         "deep research",
-        "deep"
+        "deep",
+        "research"
       ],
       "triggers": [
-        "research",
-        "web-search",
-        "corroboration",
-        "evidence",
-        "synthesis",
-        "planning",
         "deep-research",
         "deep research",
-        "deep"
+        "deep",
+        "research"
       ],
       "path": "workflows/skills/deep-research/SKILL.md",
       "metadata": {
-        "source": "community benchmark synthesis",
-        "snapshot": "Rebuilt for Foundry on 2026-03-09 using public deep-research style skill patterns and Foundry research workflow needs.",
-        "category": "workflow-specialists",
-        "layer": "workflow-specialists",
-        "canonical": true,
-        "maturity": "stable",
-        "tags": [
-          "research",
-          "web-search",
-          "corroboration",
-          "evidence",
-          "synthesis",
-          "planning"
-        ]
+        "author": "cubis-foundry",
+        "version": "1.0"
       },
-      "fileBytes": 1936,
+      "fileBytes": 2340,
       "warnings": [
         "description too long (216 chars)"
       ]
@@ -855,52 +461,23 @@
     {
       "id": "design-system-builder",
       "name": "design-system-builder",
-      "displayName": "Design System Builder",
+      "displayName": null,
       "description": "Use when creating or reviewing reusable UI components, token-driven styling, variant APIs, theming hooks, and component documentation for a design system.",
       "category": "design",
       "keywords": [
-        "design-system",
-        "components",
-        "tokens",
-        "theming",
-        "variants",
-        "ui",
-        "frontend",
         "design-system-builder",
         "design system builder"
       ],
       "triggers": [
-        "design-system",
-        "components",
-        "tokens",
-        "theming",
-        "variants",
-        "ui",
         "design-system-builder",
-        "design system builder",
-        "frontend"
+        "design system builder"
       ],
       "path": "workflows/skills/design-system-builder/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "frontend",
-        "role": "specialist",
-        "stack": "design-system",
-        "category": "frameworks-runtimes",
-        "layer": "frameworks-runtimes",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "token-driven component systems",
-        "tags": [
-          "design-system",
-          "components",
-          "tokens",
-          "theming",
-          "variants",
-          "ui"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2338
+      "fileBytes": 2489
     },
     {
       "id": "docker-kubernetes",
@@ -910,7 +487,6 @@
       "category": "general",
       "keywords": [
         "docker-kubernetes",
-        "infrastructure",
         "docker kubernetes",
         "docker",
         "kubernetes"
@@ -919,24 +495,14 @@
         "docker-kubernetes",
         "docker kubernetes",
         "docker",
-        "kubernetes",
-        "infrastructure"
+        "kubernetes"
       ],
       "path": "workflows/skills/docker-kubernetes/SKILL.md",
       "metadata": {
-        "version": "1.0.0",
-        "domain": "infrastructure",
-        "role": "specialist",
-        "stack": "docker-kubernetes",
-        "category": "frameworks-runtimes",
-        "layer": "frameworks-runtimes",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "Docker 27 + Kubernetes 1.31",
-        "source": "cubis-foundry canonical",
-        "snapshot": "2026-03-09 initial from research on platform-sre-kubernetes and devops agent patterns"
+        "author": "cubis-foundry",
+        "version": "1.0"
       },
-      "fileBytes": 4830
+      "fileBytes": 4660
     },
     {
       "id": "drizzle-expert",
@@ -945,46 +511,21 @@
       "description": "Use when the task is specifically Drizzle ORM or drizzle-kit: schema-as-code, typed SQL, relations, migrations, config, runtime pairing, or TypeScript database access-layer decisions across Postgres, SQLite/libSQL, Neon, or Supabase.",
       "category": "general",
       "keywords": [
-        "drizzle",
-        "drizzle-kit",
-        "orm",
-        "typescript",
-        "sql",
-        "migrations",
-        "relations",
         "drizzle-expert",
-        "drizzle expert"
+        "drizzle expert",
+        "drizzle"
       ],
       "triggers": [
-        "drizzle",
-        "drizzle-kit",
-        "orm",
-        "typescript",
-        "sql",
-        "migrations",
-        "relations",
         "drizzle-expert",
-        "drizzle expert"
+        "drizzle expert",
+        "drizzle"
       ],
       "path": "workflows/skills/drizzle-expert/SKILL.md",
       "metadata": {
-        "source": "https://orm.drizzle.team/docs/overview",
-        "snapshot": "Rebuilt for Foundry on 2026-03-09 using Drizzle docs plus public agent-skill repo benchmarks.",
-        "category": "databases",
-        "layer": "databases",
-        "canonical": true,
-        "maturity": "stable",
-        "tags": [
-          "drizzle",
-          "drizzle-kit",
-          "orm",
-          "typescript",
-          "sql",
-          "migrations",
-          "relations"
-        ]
+        "author": "cubis-foundry",
+        "version": "1.0"
       },
-      "fileBytes": 2911,
+      "fileBytes": 3160,
       "warnings": [
         "description too long (233 chars)"
       ]
@@ -996,46 +537,21 @@
       "description": "Use when building FastAPI services with async Python, Pydantic v2, lifespan-managed resources, dependency-based auth, background task boundaries, and OpenAPI-safe request handling.",
       "category": "backend",
       "keywords": [
-        "fastapi",
-        "python",
-        "pydantic",
-        "async",
-        "backend",
-        "openapi",
         "fastapi-expert",
-        "fastapi expert"
+        "fastapi expert",
+        "fastapi"
       ],
       "triggers": [
-        "fastapi",
-        "python",
-        "pydantic",
-        "async",
-        "backend",
-        "openapi",
         "fastapi-expert",
-        "fastapi expert"
+        "fastapi expert",
+        "fastapi"
       ],
       "path": "workflows/skills/fastapi-expert/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "backend",
-        "role": "specialist",
-        "stack": "fastapi",
-        "category": "frameworks-runtimes",
-        "layer": "frameworks-runtimes",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "FastAPI + Pydantic v2 + modern async Python",
-        "tags": [
-          "fastapi",
-          "python",
-          "pydantic",
-          "async",
-          "backend",
-          "openapi"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2782
+      "fileBytes": 3017
     },
     {
       "id": "firebase",
@@ -1044,44 +560,266 @@
       "description": "Use when the task is specifically Firebase: Firestore or Realtime Database choice, security rules, indexes, auth, storage, cloud functions, hosting, emulator workflows, or platform-coupled rollout decisions.",
       "category": "general",
       "keywords": [
-        "firebase",
-        "firestore",
-        "realtime-database",
-        "rules",
-        "auth",
-        "storage",
-        "functions"
+        "firebase"
       ],
       "triggers": [
-        "firebase",
-        "firestore",
-        "realtime-database",
-        "rules",
-        "auth",
-        "storage",
-        "functions"
+        "firebase"
       ],
       "path": "workflows/skills/firebase/SKILL.md",
       "metadata": {
-        "source": "https://firebase.google.com/docs",
-        "snapshot": "Rebuilt for Foundry on 2026-03-09 using Firebase docs plus public agent-skill repo benchmarks.",
-        "category": "databases",
-        "layer": "databases",
-        "canonical": true,
-        "maturity": "stable",
-        "tags": [
-          "firebase",
-          "firestore",
-          "realtime-database",
-          "rules",
-          "auth",
-          "storage",
-          "functions"
-        ]
+        "author": "cubis-foundry",
+        "version": "1.0"
       },
-      "fileBytes": 2572,
+      "fileBytes": 2886,
       "warnings": [
         "description too long (207 chars)"
+      ]
+    },
+    {
+      "id": "flutter-design-system",
+      "name": "flutter-design-system",
+      "displayName": null,
+      "description": "Use when creating, auditing, or extending shared Flutter theme tokens, ThemeData, and reusable cross-feature UI primitives such as loading, error, empty, dead-letter, and sync-status components. Do not use for one-off screen styling that should remain local.",
+      "category": "mobile",
+      "keywords": [
+        "flutter-design-system",
+        "flutter design system",
+        "flutter"
+      ],
+      "triggers": [
+        "flutter-design-system",
+        "flutter design system",
+        "flutter"
+      ],
+      "path": "workflows/skills/flutter-design-system/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 2271,
+      "warnings": [
+        "description too long (258 chars)"
+      ]
+    },
+    {
+      "id": "flutter-drift",
+      "name": "flutter-drift",
+      "displayName": null,
+      "description": "Use when implementing or refactoring Flutter local persistence with Drift: tables, DAOs, typed queries, indexes, transactions, and migrations. Do not use for simple key-value storage or remote-only networking work.",
+      "category": "mobile",
+      "keywords": [
+        "flutter-drift",
+        "flutter drift",
+        "flutter",
+        "drift"
+      ],
+      "triggers": [
+        "flutter-drift",
+        "flutter drift",
+        "flutter",
+        "drift"
+      ],
+      "path": "workflows/skills/flutter-drift/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 2008,
+      "warnings": [
+        "description too long (214 chars)"
+      ]
+    },
+    {
+      "id": "flutter-feature",
+      "name": "flutter-feature",
+      "displayName": null,
+      "description": "Use when scaffolding a full Flutter feature across data, domain, presentation, routing, offline sync, and tests. Do not use for isolated single-layer work when a narrower Flutter skill already fits.",
+      "category": "mobile",
+      "keywords": [
+        "flutter-feature",
+        "flutter feature",
+        "flutter",
+        "feature"
+      ],
+      "triggers": [
+        "flutter-feature",
+        "flutter feature",
+        "flutter",
+        "feature"
+      ],
+      "path": "workflows/skills/flutter-feature/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 2453
+    },
+    {
+      "id": "flutter-go-router",
+      "name": "flutter-go-router",
+      "displayName": null,
+      "description": "Use when adding or refactoring typed GoRouter navigation, guards, shell routes, deep links, or notification-driven routing in Flutter. Do not use for state management or feature business logic.",
+      "category": "mobile",
+      "keywords": [
+        "flutter-go-router",
+        "flutter go router",
+        "flutter",
+        "go",
+        "router"
+      ],
+      "triggers": [
+        "flutter-go-router",
+        "flutter go router",
+        "flutter",
+        "go",
+        "router"
+      ],
+      "path": "workflows/skills/flutter-go-router/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 1994
+    },
+    {
+      "id": "flutter-offline-sync",
+      "name": "flutter-offline-sync",
+      "displayName": null,
+      "description": "Use when implementing or auditing offline-first sync in Flutter with a local database, outbox queue, retry policy, conflict handling, and dead-letter behavior. Do not use for simple online-only CRUD.",
+      "category": "mobile",
+      "keywords": [
+        "flutter-offline-sync",
+        "flutter offline sync",
+        "flutter",
+        "offline",
+        "sync"
+      ],
+      "triggers": [
+        "flutter-offline-sync",
+        "flutter offline sync",
+        "flutter",
+        "offline",
+        "sync"
+      ],
+      "path": "workflows/skills/flutter-offline-sync/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 1899
+    },
+    {
+      "id": "flutter-repository",
+      "name": "flutter-repository",
+      "displayName": null,
+      "description": "Use when building or refactoring a Flutter feature data layer: Drift tables and DAOs, DTOs, mappers, Retrofit APIs, and repository orchestration. Do not use when the task needs a full feature scaffold across presentation and routing.",
+      "category": "mobile",
+      "keywords": [
+        "flutter-repository",
+        "flutter repository",
+        "flutter",
+        "repository"
+      ],
+      "triggers": [
+        "flutter-repository",
+        "flutter repository",
+        "flutter",
+        "repository"
+      ],
+      "path": "workflows/skills/flutter-repository/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 2135,
+      "warnings": [
+        "description too long (233 chars)"
+      ]
+    },
+    {
+      "id": "flutter-riverpod",
+      "name": "flutter-riverpod",
+      "displayName": null,
+      "description": "Use when creating, refactoring, or auditing Riverpod 3 providers and notifiers in Flutter with code generation and correct lifecycle boundaries. Do not use for widget-local ephemeral state that should stay inside the UI.",
+      "category": "mobile",
+      "keywords": [
+        "flutter-riverpod",
+        "flutter riverpod",
+        "flutter",
+        "riverpod"
+      ],
+      "triggers": [
+        "flutter-riverpod",
+        "flutter riverpod",
+        "flutter",
+        "riverpod"
+      ],
+      "path": "workflows/skills/flutter-riverpod/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 3028,
+      "warnings": [
+        "description too long (220 chars)"
+      ]
+    },
+    {
+      "id": "flutter-state-machine",
+      "name": "flutter-state-machine",
+      "displayName": null,
+      "description": "Use when implementing or auditing the shared Flutter screen-state contract: loading, data, empty, error, and dead-letter rendering plus consistent error mapping. Do not use for generic Riverpod work when the project does not use this AppState pattern.",
+      "category": "mobile",
+      "keywords": [
+        "flutter-state-machine",
+        "flutter state machine",
+        "flutter",
+        "state",
+        "machine"
+      ],
+      "triggers": [
+        "flutter-state-machine",
+        "flutter state machine",
+        "flutter",
+        "state",
+        "machine"
+      ],
+      "path": "workflows/skills/flutter-state-machine/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 2023,
+      "warnings": [
+        "description too long (251 chars)"
+      ]
+    },
+    {
+      "id": "flutter-testing",
+      "name": "flutter-testing",
+      "displayName": null,
+      "description": "Use when adding or refactoring Flutter tests for repositories, services, Riverpod notifiers, widgets, and golden coverage around a feature. Do not use for production feature implementation unless the task is explicitly test-focused.",
+      "category": "mobile",
+      "keywords": [
+        "flutter-testing",
+        "flutter testing",
+        "flutter",
+        "testing"
+      ],
+      "triggers": [
+        "flutter-testing",
+        "flutter testing",
+        "flutter",
+        "testing"
+      ],
+      "path": "workflows/skills/flutter-testing/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 2038,
+      "warnings": [
+        "description too long (232 chars)"
       ]
     },
     {
@@ -1091,53 +829,21 @@
       "description": "Use when reviewing web UI code for regressions in accessibility, state flow, responsiveness, loading and error behavior, rendering cost, and design-system consistency.",
       "category": "frontend",
       "keywords": [
-        "frontend",
-        "code-review",
-        "accessibility",
-        "ui",
-        "react",
-        "nextjs",
-        "performance",
-        "review",
-        "react-web",
         "frontend-code-review",
-        "frontend code review"
+        "frontend code review",
+        "frontend"
       ],
       "triggers": [
-        "frontend",
-        "code-review",
-        "accessibility",
-        "ui",
-        "react",
-        "nextjs",
-        "performance",
-        "react-web",
         "frontend-code-review",
-        "frontend code review"
+        "frontend code review",
+        "frontend"
       ],
       "path": "workflows/skills/frontend-code-review/SKILL.md",
       "metadata": {
-        "version": "1.0.0",
-        "domain": "frontend",
-        "role": "specialist",
-        "stack": "react-web",
-        "category": "workflow-specialists",
-        "layer": "workflow-specialists",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "modern frontend review for React, Next.js, Tailwind, and component-system code",
-        "tags": [
-          "frontend",
-          "code-review",
-          "accessibility",
-          "ui",
-          "react",
-          "nextjs",
-          "performance",
-          "review"
-        ]
+        "author": "cubis-foundry",
+        "version": "1.0"
       },
-      "fileBytes": 2690
+      "fileBytes": 2801
     },
     {
       "id": "frontend-design",
@@ -1146,50 +852,71 @@
       "description": "Use for web UI design decisions: layout, hierarchy, typography, color, motion, and interaction clarity. This skill teaches decision-making, not a fixed visual style.",
       "category": "frontend",
       "keywords": [
-        "design",
-        "ui",
-        "ux",
-        "layout",
-        "typography",
-        "color",
-        "motion",
-        "frontend",
         "frontend-design",
-        "frontend design"
+        "frontend design",
+        "frontend"
       ],
       "triggers": [
-        "ui",
-        "ux",
-        "layout",
-        "typography",
-        "color",
-        "motion",
         "frontend-design",
         "frontend design",
         "frontend"
       ],
       "path": "workflows/skills/frontend-design/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "frontend",
-        "role": "specialist",
-        "stack": "design",
-        "category": "frameworks-runtimes",
-        "layer": "frameworks-runtimes",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "modern web product UI",
-        "tags": [
-          "design",
-          "ui",
-          "ux",
-          "layout",
-          "typography",
-          "color",
-          "motion"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2353
+      "fileBytes": 2550
+    },
+    {
+      "id": "game-development",
+      "name": "game-development",
+      "displayName": null,
+      "description": "Use when implementing game mechanics, game loops, physics, AI, collision detection, or performance optimization for web, mobile, PC, or VR/AR games.",
+      "category": "game-dev",
+      "keywords": [
+        "game-development",
+        "game development",
+        "game",
+        "development"
+      ],
+      "triggers": [
+        "game-development",
+        "game development",
+        "game",
+        "development"
+      ],
+      "path": "workflows/skills/game-development/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 3336
+    },
+    {
+      "id": "geo-fundamentals",
+      "name": "geo-fundamentals",
+      "displayName": null,
+      "description": "Use when optimizing content for AI search engines (ChatGPT, Claude, Perplexity) using Generative Engine Optimization techniques and citation-worthy content patterns.",
+      "category": "marketing",
+      "keywords": [
+        "geo-fundamentals",
+        "geo fundamentals",
+        "geo",
+        "fundamentals"
+      ],
+      "triggers": [
+        "geo-fundamentals",
+        "geo fundamentals",
+        "geo",
+        "fundamentals"
+      ],
+      "path": "workflows/skills/geo-fundamentals/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 3663
     },
     {
       "id": "git-workflow",
@@ -1198,41 +925,21 @@
       "description": "Use when establishing or reviewing git branching strategies, PR conventions, commit hygiene, merge policies, monorepo workflows, and release tagging. Covers trunk-based development, GitFlow alternatives, conventional commits, and code review standards.",
       "category": "tooling",
       "keywords": [
-        "git",
-        "github",
-        "gitlab",
-        "general-vcs",
-        "engineering",
         "git-workflow",
-        "git workflow"
+        "git workflow",
+        "git"
       ],
       "triggers": [
-        "git",
-        "github",
-        "gitlab",
-        "general-vcs",
         "git-workflow",
-        "git workflow"
+        "git workflow",
+        "git"
       ],
       "path": "workflows/skills/git-workflow/SKILL.md",
       "metadata": {
-        "version": "1.0.0",
-        "domain": "engineering",
-        "role": "git-strategist",
-        "stack": [
-          "git",
-          "github",
-          "gitlab",
-          "general-vcs"
-        ],
-        "category": "engineering",
-        "layer": "workflow-specialists",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "2026-06",
-        "provenance": "cubis-foundry-original"
+        "author": "cubis-foundry",
+        "version": "1.0"
       },
-      "fileBytes": 5370,
+      "fileBytes": 5635,
       "warnings": [
         "description too long (252 chars)"
       ]
@@ -1244,43 +951,21 @@
       "description": "Use for modern Go services and tooling with Go 1.26-era language/runtime patterns, concurrency safety, and production operations.",
       "category": "backend",
       "keywords": [
-        "go",
-        "golang",
-        "concurrency",
-        "services",
-        "tooling",
-        "language",
         "golang-pro",
-        "golang pro"
+        "golang pro",
+        "golang"
       ],
       "triggers": [
-        "go",
-        "golang",
-        "concurrency",
-        "services",
         "golang-pro",
-        "golang pro"
+        "golang pro",
+        "golang"
       ],
       "path": "workflows/skills/golang-pro/SKILL.md",
       "metadata": {
-        "version": "2.0.0",
-        "domain": "language",
-        "role": "specialist",
-        "stack": "go",
-        "category": "languages",
-        "layer": "languages",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "Go 1.26",
-        "tags": [
-          "go",
-          "golang",
-          "concurrency",
-          "services",
-          "tooling"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2945
+      "fileBytes": 5306
     },
     {
       "id": "graphql-architect",
@@ -1289,48 +974,21 @@
       "description": "Use when designing GraphQL schemas, resolver boundaries, batching strategy, auth and policy enforcement, federation shape, query safety, and real-time graph behavior.",
       "category": "data",
       "keywords": [
-        "graphql",
-        "schema",
-        "resolvers",
-        "dataloader",
-        "federation",
-        "api",
-        "api-architecture",
-        "graphql-architect",
-        "graphql architect"
-      ],
-      "triggers": [
-        "graphql",
-        "schema",
-        "resolvers",
-        "dataloader",
-        "federation",
-        "api",
         "graphql-architect",
         "graphql architect",
-        "api-architecture"
+        "graphql"
+      ],
+      "triggers": [
+        "graphql-architect",
+        "graphql architect",
+        "graphql"
       ],
       "path": "workflows/skills/graphql-architect/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "api-architecture",
-        "role": "specialist",
-        "stack": "graphql",
-        "category": "frameworks-runtimes",
-        "layer": "frameworks-runtimes",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "modern GraphQL schema and resolver practices",
-        "tags": [
-          "graphql",
-          "schema",
-          "resolvers",
-          "dataloader",
-          "federation",
-          "api"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2534
+      "fileBytes": 2713
     },
     {
       "id": "java-pro",
@@ -1339,44 +997,21 @@
       "description": "Use for modern Java backend and platform engineering with Java 25-era language/runtime practices.",
       "category": "backend",
       "keywords": [
-        "java",
-        "jvm",
-        "backend",
-        "services",
-        "observability",
-        "language",
         "java-pro",
-        "java pro"
+        "java pro",
+        "java"
       ],
       "triggers": [
-        "java",
-        "jvm",
-        "backend",
-        "services",
-        "observability",
         "java-pro",
-        "java pro"
+        "java pro",
+        "java"
       ],
       "path": "workflows/skills/java-pro/SKILL.md",
       "metadata": {
-        "version": "1.0.0",
-        "domain": "language",
-        "role": "specialist",
-        "stack": "java",
-        "category": "languages",
-        "layer": "languages",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "Java SE 25",
-        "tags": [
-          "java",
-          "jvm",
-          "backend",
-          "services",
-          "observability"
-        ]
+        "author": "cubis-foundry",
+        "version": "1.0"
       },
-      "fileBytes": 2355
+      "fileBytes": 5206
     },
     {
       "id": "javascript-pro",
@@ -1385,44 +1020,21 @@
       "description": "Use for modern JavaScript architecture and implementation across browser, Node, and edge runtimes with runtime-aware production practices.",
       "category": "backend",
       "keywords": [
-        "javascript",
-        "runtime",
-        "node",
-        "browser",
-        "edge",
-        "language",
         "javascript-pro",
-        "javascript pro"
+        "javascript pro",
+        "javascript"
       ],
       "triggers": [
-        "javascript",
-        "runtime",
-        "node",
-        "browser",
-        "edge",
         "javascript-pro",
-        "javascript pro"
+        "javascript pro",
+        "javascript"
       ],
       "path": "workflows/skills/javascript-pro/SKILL.md",
       "metadata": {
-        "version": "2.0.0",
-        "domain": "language",
-        "role": "specialist",
-        "stack": "javascript",
-        "category": "languages",
-        "layer": "languages",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "Runtime-policy baseline (Node/browser/edge)",
-        "tags": [
-          "javascript",
-          "runtime",
-          "node",
-          "browser",
-          "edge"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 3129
+      "fileBytes": 4874
     },
     {
       "id": "kotlin-pro",
@@ -1431,44 +1043,46 @@
       "description": "Use for modern Kotlin backend/mobile/shared code with Kotlin 2.3-era language tooling and production patterns.",
       "category": "backend",
       "keywords": [
-        "kotlin",
-        "coroutines",
-        "android",
-        "jvm",
-        "multiplatform",
-        "language",
         "kotlin-pro",
-        "kotlin pro"
+        "kotlin pro",
+        "kotlin"
       ],
       "triggers": [
-        "kotlin",
-        "coroutines",
-        "android",
-        "jvm",
-        "multiplatform",
         "kotlin-pro",
-        "kotlin pro"
+        "kotlin pro",
+        "kotlin"
       ],
       "path": "workflows/skills/kotlin-pro/SKILL.md",
       "metadata": {
-        "version": "1.0.0",
-        "domain": "language",
-        "role": "specialist",
-        "stack": "kotlin",
-        "category": "languages",
-        "layer": "languages",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "Kotlin 2.3 line (2.2.20+ compatible)",
-        "tags": [
-          "kotlin",
-          "coroutines",
-          "android",
-          "jvm",
-          "multiplatform"
-        ]
+        "author": "cubis-foundry",
+        "version": "1.0"
       },
-      "fileBytes": 2321
+      "fileBytes": 5855
+    },
+    {
+      "id": "legacy-modernizer",
+      "name": "legacy-modernizer",
+      "displayName": null,
+      "description": "Use when planning and executing incremental migration of legacy systems using strangler fig, branch by abstraction, and feature-flag-controlled rollouts.",
+      "category": "general",
+      "keywords": [
+        "legacy-modernizer",
+        "legacy modernizer",
+        "legacy",
+        "modernizer"
+      ],
+      "triggers": [
+        "legacy-modernizer",
+        "legacy modernizer",
+        "legacy",
+        "modernizer"
+      ],
+      "path": "workflows/skills/legacy-modernizer/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 2674
     },
     {
       "id": "mcp-builder",
@@ -1477,45 +1091,21 @@
       "description": "Use when building, extending, or evaluating an MCP server: tool design, resource patterns, transports, auth, schemas, testing, Python or TypeScript implementation, or MCP-specific server architecture decisions.",
       "category": "mcp",
       "keywords": [
-        "mcp",
-        "server",
-        "tooling",
-        "typescript",
-        "python",
-        "schemas",
-        "evaluation",
         "mcp-builder",
-        "mcp builder"
+        "mcp builder",
+        "mcp"
       ],
       "triggers": [
-        "mcp",
-        "server",
-        "typescript",
-        "python",
-        "schemas",
-        "evaluation",
         "mcp-builder",
-        "mcp builder"
+        "mcp builder",
+        "mcp"
       ],
       "path": "workflows/skills/mcp-builder/SKILL.md",
       "metadata": {
-        "source": "https://github.com/anthropics/skills/tree/main/skills/mcp-builder",
-        "snapshot": "Rebuilt for Foundry on 2026-03-09 using Anthropic mcp-builder, agentailor/create-mcp-server, and public builder-skill benchmarks.",
-        "category": "workflow-specialists",
-        "layer": "workflow-specialists",
-        "canonical": true,
-        "maturity": "stable",
-        "tags": [
-          "mcp",
-          "server",
-          "tooling",
-          "typescript",
-          "python",
-          "schemas",
-          "evaluation"
-        ]
+        "author": "cubis-foundry",
+        "version": "1.0"
       },
-      "fileBytes": 2546,
+      "fileBytes": 2757,
       "warnings": [
         "description too long (210 chars)"
       ]
@@ -1527,47 +1117,21 @@
       "description": "Use when decomposing systems into services, designing service boundaries, choosing sync and async integration patterns, and managing distributed-system reliability tradeoffs.",
       "category": "architecture",
       "keywords": [
-        "microservices",
-        "ddd",
-        "distributed-systems",
-        "events",
-        "services",
-        "resilience",
-        "architecture",
         "microservices-architect",
-        "microservices architect"
+        "microservices architect",
+        "microservices"
       ],
       "triggers": [
-        "microservices",
-        "ddd",
-        "distributed-systems",
-        "events",
-        "services",
-        "resilience",
         "microservices-architect",
-        "microservices architect"
+        "microservices architect",
+        "microservices"
       ],
       "path": "workflows/skills/microservices-architect/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "architecture",
-        "role": "specialist",
-        "stack": "distributed-systems",
-        "category": "frameworks-runtimes",
-        "layer": "frameworks-runtimes",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "modern distributed-service architecture",
-        "tags": [
-          "microservices",
-          "ddd",
-          "distributed-systems",
-          "events",
-          "services",
-          "resilience"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2355
+      "fileBytes": 2526
     },
     {
       "id": "mongodb",
@@ -1576,44 +1140,17 @@
       "description": "Use when the task is specifically MongoDB: document-model design, aggregation pipelines, index strategy, shard-key tradeoffs, and operational guidance for document workloads.",
       "category": "general",
       "keywords": [
-        "mongodb",
-        "documents",
-        "aggregation",
-        "indexes",
-        "sharding",
-        "schema",
-        "data"
+        "mongodb"
       ],
       "triggers": [
-        "mongodb",
-        "documents",
-        "aggregation",
-        "indexes",
-        "sharding",
-        "schema",
-        "data"
+        "mongodb"
       ],
       "path": "workflows/skills/mongodb/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "data",
-        "role": "specialist",
-        "stack": "mongodb",
-        "category": "databases",
-        "layer": "databases",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "modern mongodb engineering",
-        "tags": [
-          "mongodb",
-          "documents",
-          "aggregation",
-          "indexes",
-          "sharding",
-          "schema"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2271
+      "fileBytes": 2408
     },
     {
       "id": "mysql",
@@ -1622,44 +1159,17 @@
       "description": "Use when the task is specifically MySQL or InnoDB: schema/index design, transaction behavior, replication-aware migrations, query tuning, and managed MySQL operational tradeoffs.",
       "category": "general",
       "keywords": [
-        "mysql",
-        "innodb",
-        "replication",
-        "online-ddl",
-        "indexes",
-        "transactions",
-        "data"
+        "mysql"
       ],
       "triggers": [
-        "mysql",
-        "innodb",
-        "replication",
-        "online-ddl",
-        "indexes",
-        "transactions",
-        "data"
+        "mysql"
       ],
       "path": "workflows/skills/mysql/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "data",
-        "role": "specialist",
-        "stack": "mysql",
-        "category": "databases",
-        "layer": "databases",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "modern mysql engineering",
-        "tags": [
-          "mysql",
-          "innodb",
-          "replication",
-          "online-ddl",
-          "indexes",
-          "transactions"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2243
+      "fileBytes": 2408
     },
     {
       "id": "neki",
@@ -1668,44 +1178,17 @@
       "description": "Use when the task is specifically Neki, PlanetScale’s sharded Postgres architecture: shard-key design, distributed Postgres tradeoffs, routing constraints, and operational decisions for large-scale Postgres workloads.",
       "category": "general",
       "keywords": [
-        "neki",
-        "postgres",
-        "sharding",
-        "planetscale",
-        "distributed-postgres",
-        "routing",
-        "data"
+        "neki"
       ],
       "triggers": [
-        "neki",
-        "postgres",
-        "sharding",
-        "planetscale",
-        "distributed-postgres",
-        "routing",
-        "data"
+        "neki"
       ],
       "path": "workflows/skills/neki/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "data",
-        "role": "specialist",
-        "stack": "neki",
-        "category": "databases",
-        "layer": "databases",
-        "canonical": true,
-        "maturity": "experimental",
-        "baseline": "neki-aware sharded postgres design",
-        "tags": [
-          "neki",
-          "postgres",
-          "sharding",
-          "planetscale",
-          "distributed-postgres",
-          "routing"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2472,
+      "fileBytes": 2706,
       "warnings": [
         "description too long (217 chars)"
       ]
@@ -1717,49 +1200,21 @@
       "description": "Use when building NestJS services that need strong module boundaries, dependency injection, DTO validation, guards or interceptors, auth boundaries, transport-aware module design, and production-safe TypeScript backend structure.",
       "category": "backend",
       "keywords": [
-        "nestjs",
-        "typescript",
-        "backend",
-        "di",
-        "modules",
-        "guards",
-        "dto",
         "nestjs-expert",
-        "nestjs expert"
+        "nestjs expert",
+        "nestjs"
       ],
       "triggers": [
-        "nestjs",
-        "typescript",
-        "backend",
-        "di",
-        "modules",
-        "guards",
-        "dto",
         "nestjs-expert",
-        "nestjs expert"
+        "nestjs expert",
+        "nestjs"
       ],
       "path": "workflows/skills/nestjs-expert/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "backend",
-        "role": "specialist",
-        "stack": "nestjs",
-        "category": "frameworks-runtimes",
-        "layer": "frameworks-runtimes",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "NestJS 11-era backend patterns",
-        "tags": [
-          "nestjs",
-          "typescript",
-          "backend",
-          "di",
-          "modules",
-          "guards",
-          "dto"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2624,
+      "fileBytes": 2874,
       "warnings": [
         "description too long (229 chars)"
       ]
@@ -1767,52 +1222,25 @@
     {
       "id": "nextjs-developer",
       "name": "nextjs-developer",
-      "displayName": "Next.js Developer",
+      "displayName": null,
       "description": "Use for implementing and reviewing Next.js App Router features, React Server Components and Actions, caching strategy, SEO, and production runtime behavior.",
       "category": "frontend",
       "keywords": [
-        "nextjs",
-        "app-router",
-        "rsc",
-        "server-actions",
-        "seo",
-        "web-vitals",
-        "frontend",
-        "nextjs-developer",
-        "nextjs developer"
-      ],
-      "triggers": [
-        "nextjs",
-        "app-router",
-        "rsc",
-        "server-actions",
-        "seo",
-        "web-vitals",
         "nextjs-developer",
         "nextjs developer",
-        "frontend"
+        "nextjs"
+      ],
+      "triggers": [
+        "nextjs-developer",
+        "nextjs developer",
+        "nextjs"
       ],
       "path": "workflows/skills/nextjs-developer/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "frontend",
-        "role": "specialist",
-        "stack": "nextjs",
-        "category": "frameworks-runtimes",
-        "layer": "frameworks-runtimes",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "Next.js 16 + React 19",
-        "tags": [
-          "nextjs",
-          "app-router",
-          "rsc",
-          "server-actions",
-          "seo",
-          "web-vitals"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2319
+      "fileBytes": 2486
     },
     {
       "id": "nodejs-best-practices",
@@ -1821,46 +1249,21 @@
       "description": "Use for modern Node.js backend architecture, runtime choices, worker or queue boundaries, edge-vs-server tradeoffs, reliability controls, and production-safe service implementation in the current LTS era.",
       "category": "backend",
       "keywords": [
-        "nodejs",
-        "backend",
-        "runtime",
-        "services",
-        "reliability",
-        "security",
         "nodejs-best-practices",
-        "nodejs best practices"
+        "nodejs best practices",
+        "nodejs"
       ],
       "triggers": [
-        "nodejs",
-        "backend",
-        "runtime",
-        "services",
-        "reliability",
-        "security",
         "nodejs-best-practices",
-        "nodejs best practices"
+        "nodejs best practices",
+        "nodejs"
       ],
       "path": "workflows/skills/nodejs-best-practices/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "backend",
-        "role": "specialist",
-        "stack": "nodejs",
-        "category": "frameworks-runtimes",
-        "layer": "frameworks-runtimes",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "Node 22/24 LTS era",
-        "tags": [
-          "nodejs",
-          "backend",
-          "runtime",
-          "services",
-          "reliability",
-          "security"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2710,
+      "fileBytes": 2973,
       "warnings": [
         "description too long (204 chars)"
       ]
@@ -1872,26 +1275,17 @@
       "description": "Use when designing or reviewing logging, monitoring, tracing, and alerting for production services. Covers structured logging, distributed tracing, metric collection, dashboard design, alert hygiene, SLO definition, and incident readiness across application and infrastructure layers.",
       "category": "general",
       "keywords": [
-        "operations",
         "observability"
       ],
       "triggers": [
-        "observability",
-        "operations"
+        "observability"
       ],
       "path": "workflows/skills/observability/SKILL.md",
       "metadata": {
-        "version": "1.0.0",
-        "domain": "operations",
-        "role": "observability-architect",
-        "category": "engineering",
-        "layer": "workflow-specialists",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "2026-06",
-        "provenance": "cubis-foundry-original"
+        "author": "cubis-foundry",
+        "version": "1.0"
       },
-      "fileBytes": 5425,
+      "fileBytes": 5666,
       "warnings": [
         "description too long (284 chars)"
       ]
@@ -1903,46 +1297,51 @@
       "description": "Use when the task depends on current OpenAI platform or product documentation: API usage, model behavior, tool features, SDK guidance, or version-sensitive OpenAI docs that should be verified from official sources.",
       "category": "general",
       "keywords": [
-        "openai",
-        "docs",
-        "api",
-        "latest",
-        "verification",
-        "official-sources",
         "openai-docs",
-        "openai docs"
+        "openai docs",
+        "openai",
+        "docs"
       ],
       "triggers": [
-        "openai",
-        "docs",
-        "api",
-        "latest",
-        "verification",
-        "official-sources",
         "openai-docs",
-        "openai docs"
+        "openai docs",
+        "openai",
+        "docs"
       ],
       "path": "workflows/skills/openai-docs/SKILL.md",
       "metadata": {
-        "source": "https://github.com/openai/skills",
-        "snapshot": "Rebuilt for Foundry on 2026-03-09 using official OpenAI docs patterns and public agent-builder benchmarks.",
-        "category": "workflow-specialists",
-        "layer": "workflow-specialists",
-        "canonical": true,
-        "maturity": "stable",
-        "tags": [
-          "openai",
-          "docs",
-          "api",
-          "latest",
-          "verification",
-          "official-sources"
-        ]
+        "author": "cubis-foundry",
+        "version": "1.0"
       },
-      "fileBytes": 1953,
+      "fileBytes": 2325,
       "warnings": [
         "description too long (214 chars)"
       ]
+    },
+    {
+      "id": "performance-profiling",
+      "name": "performance-profiling",
+      "displayName": null,
+      "description": "Use when measuring, analyzing, and optimizing application performance with Core Web Vitals, bundle analysis, runtime profiling, and lighthouse audits.",
+      "category": "performance",
+      "keywords": [
+        "performance-profiling",
+        "performance profiling",
+        "performance",
+        "profiling"
+      ],
+      "triggers": [
+        "performance-profiling",
+        "performance profiling",
+        "performance",
+        "profiling"
+      ],
+      "path": "workflows/skills/performance-profiling/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 3803
     },
     {
       "id": "php-pro",
@@ -1951,42 +1350,21 @@
       "description": "Use for modern PHP 8.4-era backend and application engineering with strict typing, framework-aware architecture, testing, and operational safety.",
       "category": "general",
       "keywords": [
-        "php",
-        "backend",
-        "language",
-        "strict-types",
-        "composer",
         "php-pro",
-        "php pro"
+        "php pro",
+        "php"
       ],
       "triggers": [
-        "php",
-        "backend",
-        "strict-types",
-        "composer",
         "php-pro",
-        "php pro"
+        "php pro",
+        "php"
       ],
       "path": "workflows/skills/php-pro/SKILL.md",
       "metadata": {
-        "version": "2.0.0",
-        "domain": "language",
-        "role": "specialist",
-        "stack": "php",
-        "category": "languages",
-        "layer": "languages",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "PHP 8.4",
-        "tags": [
-          "php",
-          "backend",
-          "language",
-          "strict-types",
-          "composer"
-        ]
+        "author": "cubis-foundry",
+        "version": "2.0"
       },
-      "fileBytes": 5204
+      "fileBytes": 6148
     },
     {
       "id": "playwright-e2e",
@@ -1995,51 +1373,23 @@
       "description": "Use when writing or reviewing browser end-to-end tests with Playwright, debugging flaky UI automation, validating auth or checkout flows, or tightening CI evidence with traces and web-first assertions.",
       "category": "testing",
       "keywords": [
-        "playwright",
-        "e2e",
-        "browser-testing",
-        "qa",
-        "flaky-tests",
-        "ui",
-        "ci",
-        "quality",
-        "playwright-e2e",
-        "playwright e2e"
-      ],
-      "triggers": [
-        "playwright",
-        "e2e",
-        "browser-testing",
-        "qa",
-        "flaky-tests",
-        "ui",
-        "ci",
         "playwright-e2e",
         "playwright e2e",
-        "quality"
+        "playwright",
+        "e2e"
+      ],
+      "triggers": [
+        "playwright-e2e",
+        "playwright e2e",
+        "playwright",
+        "e2e"
       ],
       "path": "workflows/skills/playwright-e2e/SKILL.md",
       "metadata": {
-        "version": "1.0.0",
-        "domain": "quality",
-        "role": "specialist",
-        "stack": "playwright",
-        "category": "workflow-specialists",
-        "layer": "workflow-specialists",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "current Playwright locator, trace, and isolation guidance",
-        "tags": [
-          "playwright",
-          "e2e",
-          "browser-testing",
-          "qa",
-          "flaky-tests",
-          "ui",
-          "ci"
-        ]
+        "author": "cubis-foundry",
+        "version": "1.0"
       },
-      "fileBytes": 2733,
+      "fileBytes": 2867,
       "warnings": [
         "description too long (201 chars)"
       ]
@@ -2051,44 +1401,17 @@
       "description": "Use when the task is specifically PostgreSQL: schema design with Postgres features, query plans, indexes, JSONB, extensions, partitioning, logical replication, or managed Postgres operational tradeoffs.",
       "category": "general",
       "keywords": [
-        "postgres",
-        "postgresql",
-        "jsonb",
-        "pgvector",
-        "indexes",
-        "partitioning",
-        "data"
+        "postgres"
       ],
       "triggers": [
-        "postgres",
-        "postgresql",
-        "jsonb",
-        "pgvector",
-        "indexes",
-        "partitioning",
-        "data"
+        "postgres"
       ],
       "path": "workflows/skills/postgres/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "data",
-        "role": "specialist",
-        "stack": "postgres",
-        "category": "databases",
-        "layer": "databases",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "modern postgres engineering",
-        "tags": [
-          "postgres",
-          "postgresql",
-          "jsonb",
-          "pgvector",
-          "indexes",
-          "partitioning"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2417,
+      "fileBytes": 2605,
       "warnings": [
         "description too long (202 chars)"
       ]
@@ -2100,113 +1423,73 @@
       "description": "Use when a prompt, instruction set, or agent/system message needs quality review: ambiguity, missing format constraints, unsafe assumptions, injection exposure, weak trigger wording, or brittle task framing.",
       "category": "ai",
       "keywords": [
-        "prompting",
-        "instructions",
-        "injection",
-        "formatting",
-        "guardrails",
-        "quality",
         "prompt-engineer",
         "prompt engineer",
         "prompt"
       ],
       "triggers": [
-        "prompting",
-        "instructions",
-        "injection",
-        "formatting",
-        "guardrails",
-        "quality",
         "prompt-engineer",
         "prompt engineer",
         "prompt"
       ],
       "path": "workflows/skills/prompt-engineer/SKILL.md",
       "metadata": {
-        "source": "https://blog.agentailor.com/posts/top-agent-skills-for-agent-builders-2026",
-        "snapshot": "Rebuilt for Foundry on 2026-03-09 using public agent-builder benchmarks and instruction-quality patterns.",
-        "category": "workflow-specialists",
-        "layer": "workflow-specialists",
-        "canonical": true,
-        "maturity": "stable",
-        "tags": [
-          "prompting",
-          "instructions",
-          "injection",
-          "formatting",
-          "guardrails",
-          "quality"
-        ]
+        "author": "cubis-foundry",
+        "version": "1.0"
       },
-      "fileBytes": 2022,
+      "fileBytes": 2397,
       "warnings": [
         "description too long (207 chars)"
       ]
     },
     {
-      "id": "python-patterns",
-      "name": "python-patterns",
-      "displayName": "python-patterns",
-      "description": "Use for production Python with 3.14-era typing, async, packaging, and testing standards.",
-      "category": "backend",
-      "keywords": [],
-      "triggers": [],
-      "path": "workflows/skills/python-pro/SKILL.md",
-      "metadata": {
-        "alias_of": "python-pro"
-      },
-      "fileBytes": 3088
-    },
-    {
       "id": "python-pro",
       "name": "python-pro",
       "displayName": null,
-      "description": "Use for production Python with 3.14-era typing, async, packaging, and testing standards.",
+      "description": "Use for production Python with 3.14-era typing, async, packaging, and testing standards. Use when building Python backend services, migrating legacy Python to typed architecture, implementing async I/O, or setting up pytest and packaging workflows.",
       "category": "backend",
       "keywords": [
-        "python",
-        "typing",
-        "async",
-        "pytest",
-        "packaging",
-        "language",
-        "python-patterns",
         "python-pro",
-        "python pro"
+        "python pro",
+        "python"
       ],
       "triggers": [
-        "python-patterns",
-        "python",
-        "typing",
-        "async",
-        "pytest",
-        "packaging",
         "python-pro",
-        "python pro"
+        "python pro",
+        "python"
       ],
       "path": "workflows/skills/python-pro/SKILL.md",
       "metadata": {
-        "version": "2.0.0",
-        "domain": "language",
-        "role": "specialist",
-        "stack": "python",
-        "category": "languages",
-        "layer": "languages",
-        "canonical": true,
-        "maturity": "stable",
-        "aliases": [
-          "python-patterns"
-        ],
-        "baseline": "Python 3.14",
-        "tags": [
-          "python",
-          "typing",
-          "async",
-          "pytest",
-          "packaging"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 3088
+      "fileBytes": 4591,
+      "warnings": [
+        "description too long (248 chars)"
+      ]
+    },
+    {
+      "id": "react-best-practices",
+      "name": "react-best-practices",
+      "displayName": null,
+      "description": "Use for performance-focused React and Next.js optimization audits, rerender analysis, bundle reduction, and server-rendering efficiency reviews.",
+      "category": "frontend",
+      "keywords": [
+        "react-best-practices",
+        "react best practices",
+        "react"
+      ],
+      "triggers": [
+        "react-best-practices",
+        "react best practices",
+        "react"
+      ],
+      "path": "workflows/skills/react-best-practices/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "2.0.0"
+      },
+      "fileBytes": 4169
     },
     {
       "id": "react-expert",
@@ -2215,46 +1498,21 @@
       "description": "Use for framework-agnostic React architecture with React 19 patterns, state design, component boundaries, and rendering-performance decisions.",
       "category": "frontend",
       "keywords": [
-        "react",
-        "components",
-        "state",
-        "performance",
-        "frontend",
-        "hooks",
         "react-expert",
-        "react expert"
+        "react expert",
+        "react"
       ],
       "triggers": [
-        "react",
-        "components",
-        "state",
-        "performance",
-        "frontend",
-        "hooks",
         "react-expert",
-        "react expert"
+        "react expert",
+        "react"
       ],
       "path": "workflows/skills/react-expert/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "frontend",
-        "role": "specialist",
-        "stack": "react",
-        "category": "frameworks-runtimes",
-        "layer": "frameworks-runtimes",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "React 19",
-        "tags": [
-          "react",
-          "components",
-          "state",
-          "performance",
-          "frontend",
-          "hooks"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2125
+      "fileBytes": 2305
     },
     {
       "id": "redis",
@@ -2263,44 +1521,17 @@
       "description": "Use when the task is specifically Redis: cache design, key strategy, TTLs, queues, rate limiting, pub/sub, memory tradeoffs, and safe persistence or eviction decisions.",
       "category": "general",
       "keywords": [
-        "redis",
-        "cache",
-        "ttl",
-        "queues",
-        "rate-limits",
-        "eviction",
-        "data"
+        "redis"
       ],
       "triggers": [
-        "redis",
-        "cache",
-        "ttl",
-        "queues",
-        "rate-limits",
-        "eviction",
-        "data"
+        "redis"
       ],
       "path": "workflows/skills/redis/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "data",
-        "role": "specialist",
-        "stack": "redis",
-        "category": "databases",
-        "layer": "databases",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "modern redis engineering",
-        "tags": [
-          "redis",
-          "cache",
-          "ttl",
-          "queues",
-          "rate-limits",
-          "eviction"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2265
+      "fileBytes": 2404
     },
     {
       "id": "ruby-pro",
@@ -2309,151 +1540,120 @@
       "description": "Use for modern Ruby 3.4-era backend, scripting, and application engineering with clear object boundaries, concurrency awareness, and test discipline.",
       "category": "general",
       "keywords": [
-        "ruby",
-        "language",
-        "backend",
-        "scripting",
-        "bundler",
         "ruby-pro",
-        "ruby pro"
+        "ruby pro",
+        "ruby"
       ],
       "triggers": [
-        "ruby",
-        "backend",
-        "scripting",
-        "bundler",
         "ruby-pro",
-        "ruby pro"
+        "ruby pro",
+        "ruby"
       ],
       "path": "workflows/skills/ruby-pro/SKILL.md",
       "metadata": {
-        "version": "2.0.0",
-        "domain": "language",
-        "role": "specialist",
-        "stack": "ruby",
-        "category": "languages",
-        "layer": "languages",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "Ruby 3.4",
-        "tags": [
-          "ruby",
-          "language",
-          "backend",
-          "scripting",
-          "bundler"
-        ]
+        "author": "cubis-foundry",
+        "version": "2.0"
       },
-      "fileBytes": 5272
-    },
-    {
-      "id": "rust-engineer",
-      "name": "rust-engineer",
-      "displayName": "rust-engineer",
-      "description": "Use for modern Rust systems/services with stable 1.91-era patterns, async correctness, and performance-focused design.",
-      "category": "backend",
-      "keywords": [],
-      "triggers": [],
-      "path": "workflows/skills/rust-pro/SKILL.md",
-      "metadata": {
-        "alias_of": "rust-pro"
-      },
-      "fileBytes": 2680
+      "fileBytes": 6244
     },
     {
       "id": "rust-pro",
       "name": "rust-pro",
       "displayName": null,
-      "description": "Use for modern Rust systems/services with stable 1.91-era patterns, async correctness, and performance-focused design.",
+      "description": "Use for modern Rust systems/services with stable 1.94-era patterns, async correctness, and performance-focused design.",
       "category": "backend",
       "keywords": [
-        "rust",
-        "async",
-        "systems",
-        "performance",
-        "services",
-        "language",
-        "rust-engineer",
         "rust-pro",
-        "rust pro"
+        "rust pro",
+        "rust"
       ],
       "triggers": [
-        "rust-engineer",
-        "rust",
-        "async",
-        "performance",
-        "services",
         "rust-pro",
-        "rust pro"
+        "rust pro",
+        "rust"
       ],
       "path": "workflows/skills/rust-pro/SKILL.md",
       "metadata": {
-        "version": "2.0.0",
-        "domain": "language",
-        "role": "specialist",
-        "stack": "rust",
-        "category": "languages",
-        "layer": "languages",
-        "canonical": true,
-        "maturity": "stable",
-        "aliases": [
-          "rust-engineer"
-        ],
-        "baseline": "Rust stable 1.91",
-        "tags": [
-          "rust",
-          "async",
-          "systems",
-          "performance",
-          "services"
-        ]
+        "author": "cubis-foundry",
+        "version": "2.0"
       },
-      "fileBytes": 2680
+      "fileBytes": 5589
+    },
+    {
+      "id": "seo-fundamentals",
+      "name": "seo-fundamentals",
+      "displayName": null,
+      "description": "Use when implementing technical SEO, content optimization, schema markup, or Core Web Vitals improvements for search engine visibility.",
+      "category": "marketing",
+      "keywords": [
+        "seo-fundamentals",
+        "seo fundamentals",
+        "seo",
+        "fundamentals"
+      ],
+      "triggers": [
+        "seo-fundamentals",
+        "seo fundamentals",
+        "seo",
+        "fundamentals"
+      ],
+      "path": "workflows/skills/seo-fundamentals/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 3170
     },
     {
       "id": "skill-creator",
       "name": "skill-creator",
       "displayName": null,
-      "description": "Use when creating, rebuilding, or repairing a Foundry skill package, workflow skill, or agent-facing skill surface across Codex, Claude, Copilot, Antigravity, Cursor, and Windsurf. Do not use for prompt-only tweaks or edits to one generated mirror.",
+      "description": "Create, test, improve, and package portable AI skills using the Agent Skills SKILL.md format across Claude Code, Codex, and GitHub Copilot, with Gemini conversion when needed. Use this when the user wants to build, repair, benchmark, or iterate on a reusable skill package.",
       "category": "general",
       "keywords": [
-        "skill-creation",
-        "skill-packaging",
-        "workflow-automation",
-        "platform-adapters",
         "skill-creator",
         "skill creator",
         "creator"
       ],
       "triggers": [
-        "skill-creation",
-        "skill-packaging",
-        "workflow-automation",
-        "platform-adapters",
         "skill-creator",
         "skill creator",
         "creator"
       ],
       "path": "workflows/skills/skill-creator/SKILL.md",
       "metadata": {
-        "source": "https://github.com/anthropics/skills/tree/main/skills/skill-creator",
-        "snapshot": "Rebuilt for Foundry on 2026-03-08 after removing the repo-owned .system source layer.",
-        "maintenance": "Pinned rewrite; refresh deliberately against upstream patterns rather than mirroring third-party skills directly.",
-        "category": "workflow-specialists",
-        "layer": "workflow-specialists",
-        "canonical": true,
-        "maturity": "stable",
-        "tags": [
-          "skill-creation",
-          "skill-packaging",
-          "workflow-automation",
-          "platform-adapters"
-        ]
+        "author": "cubis-foundry",
+        "version": "1.0"
       },
-      "fileBytes": 5431,
+      "fileBytes": 5003,
       "warnings": [
-        "description too long (248 chars)"
+        "description too long (273 chars)"
       ]
+    },
+    {
+      "id": "spec-miner",
+      "name": "spec-miner",
+      "displayName": null,
+      "description": "Use when reverse-engineering legacy or undocumented systems into structured specifications with code-grounded evidence and EARS-format requirements.",
+      "category": "general",
+      "keywords": [
+        "spec-miner",
+        "spec miner",
+        "spec",
+        "miner"
+      ],
+      "triggers": [
+        "spec-miner",
+        "spec miner",
+        "spec",
+        "miner"
+      ],
+      "path": "workflows/skills/spec-miner/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 3092
     },
     {
       "id": "sqlite",
@@ -2462,44 +1662,17 @@
       "description": "Use when the task is specifically SQLite or libSQL/Turso-style SQLite: local-first schema design, WAL/concurrency tradeoffs, embedded deployments, and lightweight migration strategy.",
       "category": "general",
       "keywords": [
-        "sqlite",
-        "libsql",
-        "turso",
-        "embedded",
-        "wal",
-        "local-first",
-        "data"
+        "sqlite"
       ],
       "triggers": [
-        "sqlite",
-        "libsql",
-        "turso",
-        "embedded",
-        "wal",
-        "local-first",
-        "data"
+        "sqlite"
       ],
       "path": "workflows/skills/sqlite/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "data",
-        "role": "specialist",
-        "stack": "sqlite",
-        "category": "databases",
-        "layer": "databases",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "modern sqlite engineering",
-        "tags": [
-          "sqlite",
-          "libsql",
-          "turso",
-          "embedded",
-          "wal",
-          "local-first"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2368
+      "fileBytes": 2517
     },
     {
       "id": "supabase",
@@ -2508,44 +1681,17 @@
       "description": "Use when the task is specifically Supabase: managed Postgres with RLS, auth, storage, edge functions, branching, and product decisions that depend on Supabase platform behavior.",
       "category": "general",
       "keywords": [
-        "supabase",
-        "postgres",
-        "rls",
-        "auth",
-        "storage",
-        "edge-functions",
-        "data"
+        "supabase"
       ],
       "triggers": [
-        "supabase",
-        "postgres",
-        "rls",
-        "auth",
-        "storage",
-        "edge-functions",
-        "data"
+        "supabase"
       ],
       "path": "workflows/skills/supabase/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "data",
-        "role": "specialist",
-        "stack": "supabase",
-        "category": "databases",
-        "layer": "databases",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "supabase platform-aware database engineering",
-        "tags": [
-          "supabase",
-          "postgres",
-          "rls",
-          "auth",
-          "storage",
-          "edge-functions"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2452
+      "fileBytes": 2605
     },
     {
       "id": "swift-pro",
@@ -2554,42 +1700,21 @@
       "description": "Use for modern Swift 6.1-era application and systems engineering with strong concurrency, protocol boundaries, package structure, and Apple-platform correctness.",
       "category": "general",
       "keywords": [
-        "swift",
-        "language",
-        "concurrency",
-        "spm",
-        "apple-platforms",
         "swift-pro",
-        "swift pro"
+        "swift pro",
+        "swift"
       ],
       "triggers": [
-        "swift",
-        "concurrency",
-        "spm",
-        "apple-platforms",
         "swift-pro",
-        "swift pro"
+        "swift pro",
+        "swift"
       ],
       "path": "workflows/skills/swift-pro/SKILL.md",
       "metadata": {
-        "version": "2.0.0",
-        "domain": "language",
-        "role": "specialist",
-        "stack": "swift",
-        "category": "languages",
-        "layer": "languages",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "Swift 6.1",
-        "tags": [
-          "swift",
-          "language",
-          "concurrency",
-          "spm",
-          "apple-platforms"
-        ]
+        "author": "cubis-foundry",
+        "version": "2.0"
       },
-      "fileBytes": 5591
+      "fileBytes": 6618
     },
     {
       "id": "tailwind-patterns",
@@ -2598,81 +1723,47 @@
       "description": "Use for Tailwind CSS v4 architecture, CSS-first theme setup, utility composition, container-query usage, design-token hygiene, and dark-mode strategy.",
       "category": "frontend",
       "keywords": [
-        "tailwindcss",
-        "frontend",
         "tailwind-patterns",
         "tailwind patterns",
         "tailwind"
       ],
       "triggers": [
-        "tailwindcss",
         "tailwind-patterns",
         "tailwind patterns",
-        "tailwind",
-        "frontend"
+        "tailwind"
       ],
       "path": "workflows/skills/tailwind-patterns/SKILL.md",
       "metadata": {
-        "version": "4.0.0",
-        "domain": "frontend",
-        "role": "specialist",
-        "stack": "tailwindcss",
-        "category": "frameworks-runtimes",
-        "layer": "frameworks-runtimes",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "Tailwind CSS v4",
-        "source": "cubis-foundry canonical",
-        "snapshot": "2026-03-09 enhanced with v4 depth, dark-mode, variant strategy, and performance guidance"
+        "author": "cubis-foundry",
+        "version": "4.0"
       },
-      "fileBytes": 5322
+      "fileBytes": 5199
     },
     {
       "id": "typescript-pro",
       "name": "typescript-pro",
       "displayName": null,
-      "description": "Use for TypeScript architecture and implementation with TS 5.9+ production baselines and TS 6/7 transition readiness.",
+      "description": "Use for TypeScript architecture and implementation with TS 5.9+ production baselines and TS 6/7 transition readiness. Use when designing type-safe APIs, refactoring to strict TypeScript, reducing type regressions in monorepos, or preparing for TS 6/7 behavior shifts.",
       "category": "backend",
       "keywords": [
-        "typescript",
-        "types",
-        "strictness",
-        "api-contracts",
-        "monorepo",
-        "language",
         "typescript-pro",
-        "typescript pro"
+        "typescript pro",
+        "typescript"
       ],
       "triggers": [
-        "typescript",
-        "types",
-        "strictness",
-        "api-contracts",
-        "monorepo",
         "typescript-pro",
-        "typescript pro"
+        "typescript pro",
+        "typescript"
       ],
       "path": "workflows/skills/typescript-pro/SKILL.md",
       "metadata": {
-        "version": "2.0.0",
-        "domain": "language",
-        "role": "specialist",
-        "stack": "typescript",
-        "category": "languages",
-        "layer": "languages",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "TypeScript 5.9 stable",
-        "transition": "TypeScript 6 compatibility prep",
-        "tags": [
-          "typescript",
-          "types",
-          "strictness",
-          "api-contracts",
-          "monorepo"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 3356
+      "fileBytes": 4950,
+      "warnings": [
+        "description too long (267 chars)"
+      ]
     },
     {
       "id": "vitess",
@@ -2681,44 +1772,17 @@
       "description": "Use when the task is specifically Vitess or Vitess-backed MySQL platforms: shard-key design, vindexes, resharding, query-routing constraints, Online DDL, and operational tradeoffs for horizontally scaled MySQL.",
       "category": "general",
       "keywords": [
-        "vitess",
-        "sharding",
-        "mysql",
-        "vindexes",
-        "online-ddl",
-        "routing",
-        "data"
+        "vitess"
       ],
       "triggers": [
-        "vitess",
-        "sharding",
-        "mysql",
-        "vindexes",
-        "online-ddl",
-        "routing",
-        "data"
+        "vitess"
       ],
       "path": "workflows/skills/vitess/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "data",
-        "role": "specialist",
-        "stack": "vitess",
-        "category": "databases",
-        "layer": "databases",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "vitess-aware sharded mysql design",
-        "tags": [
-          "vitess",
-          "sharding",
-          "mysql",
-          "vindexes",
-          "online-ddl",
-          "routing"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2330,
+      "fileBytes": 2560,
       "warnings": [
         "description too long (210 chars)"
       ]
@@ -2730,29 +1794,12 @@
       "description": "Use for measuring and improving web performance with Core Web Vitals, rendering-path analysis, bundle and network prioritization, and framework-aware delivery tradeoffs.",
       "category": "performance",
       "keywords": [
-        "performance",
-        "core-web-vitals",
-        "lcp",
-        "inp",
-        "cls",
-        "bundles",
-        "network",
-        "web-performance",
-        "frontend",
         "web-perf",
         "web perf",
         "web",
         "perf"
       ],
       "triggers": [
-        "performance",
-        "core-web-vitals",
-        "lcp",
-        "inp",
-        "cls",
-        "bundles",
-        "network",
-        "web-performance",
         "web-perf",
         "web perf",
         "web",
@@ -2760,26 +1807,10 @@
       ],
       "path": "workflows/skills/web-perf/SKILL.md",
       "metadata": {
-        "version": "3.0.0",
-        "domain": "frontend",
-        "role": "specialist",
-        "stack": "web-performance",
-        "category": "frameworks-runtimes",
-        "layer": "frameworks-runtimes",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "Core Web Vitals era with INP",
-        "tags": [
-          "performance",
-          "core-web-vitals",
-          "lcp",
-          "inp",
-          "cls",
-          "bundles",
-          "network"
-        ]
+        "author": "cubis-foundry",
+        "version": "3.0"
       },
-      "fileBytes": 2351
+      "fileBytes": 2509
     },
     {
       "id": "webapp-testing",
@@ -2788,56 +1819,23 @@
       "description": "Use when choosing test depth for a web product, balancing unit, integration, browser, accessibility, and contract checks, or reviewing whether a change has the right verification shape before release.",
       "category": "general",
       "keywords": [
-        "testing",
-        "qa",
-        "web",
-        "integration",
-        "e2e",
-        "accessibility",
-        "coverage",
-        "release",
-        "quality",
-        "webapp-testing",
-        "webapp testing",
-        "webapp"
-      ],
-      "triggers": [
-        "testing",
-        "qa",
-        "web",
-        "integration",
-        "e2e",
-        "accessibility",
-        "coverage",
-        "release",
         "webapp-testing",
         "webapp testing",
         "webapp",
-        "quality"
+        "testing"
+      ],
+      "triggers": [
+        "webapp-testing",
+        "webapp testing",
+        "webapp",
+        "testing"
       ],
       "path": "workflows/skills/webapp-testing/SKILL.md",
       "metadata": {
-        "version": "1.0.0",
-        "domain": "quality",
-        "role": "specialist",
-        "stack": "web",
-        "category": "workflow-specialists",
-        "layer": "workflow-specialists",
-        "canonical": true,
-        "maturity": "stable",
-        "baseline": "modern web testing strategy across component, integration, and browser layers",
-        "tags": [
-          "testing",
-          "qa",
-          "web",
-          "integration",
-          "e2e",
-          "accessibility",
-          "coverage",
-          "release"
-        ]
+        "author": "cubis-foundry",
+        "version": "1.0"
       },
-      "fileBytes": 2806
+      "fileBytes": 2910
     }
   ],
   "builtinTools": [

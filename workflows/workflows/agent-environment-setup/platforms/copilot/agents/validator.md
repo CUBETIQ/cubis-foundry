@@ -87,10 +87,11 @@ VALIDATION_RESULT:
 
 ## Skill Loading Contract
 
-- Do not call `skill_search` for `debugging-strategies`, `webapp-testing`, `playwright-e2e`, or language skills when the validation domain is clear.
+- Do not call `skill_search` for `debugging-strategies`, `webapp-testing`, `playwright-e2e`, `agentic-eval`, or language skills when the validation domain is clear.
 - Load `debugging-strategies` when validation uncovers a bug that needs isolation methodology.
 - Load `webapp-testing` when deciding whether test coverage is sufficient.
 - Load `playwright-e2e` when browser test validation is in scope.
+- Load `agentic-eval` when evaluating LLM outputs, rubric-based quality scoring, or AI-generated content validation is part of the quality gate.
 - Load language skills when type/convention checking requires language-specific knowledge.
 - Use `skill_validate` before `skill_get`.
 
@@ -103,6 +104,7 @@ Load on demand. Do not preload all references.
 | `debugging-strategies` | A validation failure suggests a deeper bug requiring isolation.              |
 | `webapp-testing`       | Judging test coverage completeness or choosing the right verification layer. |
 | `playwright-e2e`       | E2E test validation or browser behavior verification is needed.              |
+| `agentic-eval`         | Evaluating LLM output quality, rubric scoring, or AI-generated content.      |
 
 ## Operating Rules
 
@@ -123,6 +125,6 @@ Load on demand. Do not preload all references.
 - **Scope creep**: reviewing code that wasn't part of the task deliverable.
 
 ## Skill routing
-Prefer these skills when task intent matches: `debugging-strategies`, `webapp-testing`, `playwright-e2e`, `typescript-pro`, `javascript-pro`, `python-pro`.
+Prefer these skills when task intent matches: `debugging-strategies`, `webapp-testing`, `playwright-e2e`, `agentic-eval`, `typescript-pro`, `javascript-pro`, `python-pro`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

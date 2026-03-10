@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import path from "node:path";
+import os from "node:os";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 import { promises as fs } from "node:fs";
@@ -10,10 +11,24 @@ const ROOT = path.resolve(__dirname, "..");
 
 const CANONICAL_ROOTS = [path.join(ROOT, "workflows", "skills")];
 const MIRRORS = {
-  // Platform skill mirrors removed — platform folders deleted.
-  // To re-enable, add entries like:
-  //   copilot: path.join(ROOT, "workflows", "workflows", "agent-environment-setup", "platforms", "copilot", "skills"),
-  //   claude:  path.join(ROOT, "workflows", "workflows", "agent-environment-setup", "platforms", "claude", "skills"),
+  copilot: path.join(
+    ROOT,
+    "workflows",
+    "workflows",
+    "agent-environment-setup",
+    "platforms",
+    "copilot",
+    "skills",
+  ),
+  claude: path.join(
+    ROOT,
+    "workflows",
+    "workflows",
+    "agent-environment-setup",
+    "platforms",
+    "claude",
+    "skills",
+  ),
 };
 
 const COPILOT_ALLOWED_SKILL_FRONTMATTER_KEYS = new Set([
@@ -29,6 +44,7 @@ function parseArgs(argv) {
   const onlyArg = argv.find((item, idx) => argv[idx - 1] === "--only") || "all";
   const only = String(onlyArg).toLowerCase();
   return {
+    check: args.has("--check"),
     dryRun: args.has("--dry-run"),
     deleteMissing: !args.has("--no-delete"),
     only,
@@ -209,8 +225,84 @@ async function syncMirror({
   };
 }
 
+async function collectFiles(rootDir) {
+  const files = new Map();
+
+  async function walk(currentDir) {
+    const entries = await fs.readdir(currentDir, { withFileTypes: true });
+    for (const entry of entries) {
+      if (entry.name.startsWith(".")) continue;
+      const fullPath = path.join(currentDir, entry.name);
+      if (entry.isDirectory()) {
+        await walk(fullPath);
+        continue;
+      }
+      if (!entry.isFile()) continue;
+      const relativePath = path.relative(rootDir, fullPath);
+      const content = await fs.readFile(fullPath, "utf8");
+      files.set(relativePath, content);
+    }
+  }
+
+  if (await pathExists(rootDir)) {
+    await walk(rootDir);
+  }
+
+  return files;
+}
+
+async function checkMirror({ label, mirrorRoot, canonicalById }) {
+  const tempRoot = await fs.mkdtemp(
+    path.join(os.tmpdir(), `cbx-skill-mirror-${label}-`),
+  );
+  const expectedRoot = path.join(tempRoot, label);
+
+  try {
+    await syncMirror({
+      label,
+      mirrorRoot: expectedRoot,
+      canonicalById,
+      dryRun: false,
+      deleteMissing: true,
+    });
+
+    const expectedFiles = await collectFiles(expectedRoot);
+    const actualFiles = await collectFiles(mirrorRoot);
+    const problems = [];
+
+    actualFiles.delete("skills_index.json");
+
+    for (const [relativePath, expectedContent] of expectedFiles) {
+      if (!actualFiles.has(relativePath)) {
+        problems.push(`missing ${relativePath}`);
+        continue;
+      }
+
+      const actualContent = actualFiles.get(relativePath);
+      if (actualContent !== expectedContent) {
+        problems.push(`stale ${relativePath}`);
+      }
+    }
+
+    for (const relativePath of actualFiles.keys()) {
+      if (!expectedFiles.has(relativePath)) {
+        problems.push(`unexpected ${relativePath}`);
+      }
+    }
+
+    return {
+      label,
+      mirrorRoot,
+      ok: problems.length === 0,
+      problems,
+    };
+  } finally {
+    await fs.rm(tempRoot, { recursive: true, force: true });
+  }
+}
+
 async function main() {
-  const { dryRun, deleteMissing, only } = parseArgs(process.argv);
+  const { check, dryRun, deleteMissing, only } = parseArgs(process.argv);
 
   const canonicalById = await buildCanonicalSkillSourceMap();
   if (canonicalById.size === 0) {
@@ -228,6 +320,30 @@ async function main() {
     throw new Error(
       `Unknown --only target '${only}'. No mirror targets configured.`,
     );
+  }
+
+  if (check) {
+    let hasProblems = false;
+
+    for (const [label, mirrorRoot] of targets) {
+      const result = await checkMirror({ label, mirrorRoot, canonicalById });
+      if (result.ok) {
+        console.log(`checked ${label}: OK (${result.mirrorRoot})`);
+        continue;
+      }
+
+      hasProblems = true;
+      console.error(`checked ${label}: stale (${result.mirrorRoot})`);
+      for (const problem of result.problems) {
+        console.error(`  - ${problem}`);
+      }
+    }
+
+    if (hasProblems) {
+      process.exit(1);
+    }
+
+    return;
   }
 
   for (const [label, mirrorRoot] of targets) {

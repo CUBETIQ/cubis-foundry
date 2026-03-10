@@ -2,8 +2,8 @@
   "$schema": "cubis-foundry-skill-audit-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
   "summary": {
-    "keep": 67,
-    "review": 0,
+    "keep": 70,
+    "review": 3,
     "alias-only": 0
   },
   "entries": [
@@ -296,6 +296,24 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
+      "id": "game-development",
+      "canonical_id": "game-development",
+      "status": "review",
+      "layer": "vertical-composed",
+      "category": "vertical-composed",
+      "tier": "experimental",
+      "reason": "Broad orchestration skill should stay thin and defer detail to lower-layer canonical skills."
+    },
+    {
+      "id": "geo-fundamentals",
+      "canonical_id": "geo-fundamentals",
+      "status": "review",
+      "layer": "vertical-composed",
+      "category": "vertical-composed",
+      "tier": "experimental",
+      "reason": "Broad orchestration skill should stay thin and defer detail to lower-layer canonical skills."
+    },
+    {
       "id": "git-workflow",
       "canonical_id": "git-workflow",
       "status": "keep",
@@ -347,6 +365,15 @@
       "layer": "languages",
       "category": "languages",
       "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "legacy-modernizer",
+      "canonical_id": "legacy-modernizer",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
@@ -440,6 +467,15 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
+      "id": "performance-profiling",
+      "canonical_id": "performance-profiling",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
       "id": "php-pro",
       "canonical_id": "php-pro",
       "status": "keep",
@@ -530,12 +566,30 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
+      "id": "seo-fundamentals",
+      "canonical_id": "seo-fundamentals",
+      "status": "review",
+      "layer": "vertical-composed",
+      "category": "vertical-composed",
+      "tier": "experimental",
+      "reason": "Broad orchestration skill should stay thin and defer detail to lower-layer canonical skills."
+    },
+    {
       "id": "skill-creator",
       "canonical_id": "skill-creator",
       "status": "keep",
       "layer": "core-operating",
       "category": "core-operating",
       "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "spec-miner",
+      "canonical_id": "spec-miner",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
@@ -611,5 +665,5 @@
       "reason": "Canonical skill remains active in the layered catalog."
     }
   ],
-  "contentHash": "9567dfd0b55100bd"
+  "contentHash": "70bea0fe55fa371b"
 }

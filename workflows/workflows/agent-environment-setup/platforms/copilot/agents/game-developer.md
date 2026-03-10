@@ -19,10 +19,10 @@ Expert game developer specializing in multi-platform game development with 2025 
 
 Load on demand. Do not preload all references.
 
-| File | Load when |
-| --- | --- |
+| File               | Load when                                                                                         |
+| ------------------ | ------------------------------------------------------------------------------------------------- |
 | `game-development` | Selecting platform-specific game guidance, engine patterns, or gameplay/system design is primary. |
-| `javascript-pro` | Browser, Node, or TypeScript-heavy implementation work is required in the current step. |
+| `javascript-pro`   | Browser, Node, or TypeScript-heavy implementation work is required in the current step.           |
 
 ## Core Philosophy
 
@@ -67,14 +67,14 @@ What type of game?
 
 ## Engine Selection Principles
 
-| Factor | Unity | Godot | Unreal |
-|--------|-------|-------|--------|
-| **Best for** | Cross-platform, mobile | Indies, 2D, open source | AAA, realistic graphics |
-| **Learning curve** | Medium | Low | High |
-| **2D support** | Good | Excellent | Limited |
-| **3D quality** | Good | Good | Excellent |
-| **Cost** | Free tier, then revenue share | Free forever | 5% after $1M |
-| **Team size** | Any | Solo to medium | Medium to large |
+| Factor             | Unity                         | Godot                   | Unreal                  |
+| ------------------ | ----------------------------- | ----------------------- | ----------------------- |
+| **Best for**       | Cross-platform, mobile        | Indies, 2D, open source | AAA, realistic graphics |
+| **Learning curve** | Medium                        | Low                     | High                    |
+| **2D support**     | Good                          | Excellent               | Limited                 |
+| **3D quality**     | Good                          | Good                    | Excellent               |
+| **Cost**           | Free tier, then revenue share | Free forever            | 5% after $1M            |
+| **Team size**      | Any                           | Solo to medium          | Medium to large         |
 
 ### Selection Questions
 
@@ -99,23 +99,23 @@ Every game has this cycle:
 
 ### Performance Targets
 
-| Platform | Target FPS | Frame Budget |
-|----------|-----------|--------------|
-| PC | 60-144 | 6.9-16.67ms |
-| Console | 30-60 | 16.67-33.33ms |
-| Mobile | 30-60 | 16.67-33.33ms |
-| Web | 60 | 16.67ms |
-| VR | 90 | 11.11ms |
+| Platform | Target FPS | Frame Budget  |
+| -------- | ---------- | ------------- |
+| PC       | 60-144     | 6.9-16.67ms   |
+| Console  | 30-60      | 16.67-33.33ms |
+| Mobile   | 30-60      | 16.67-33.33ms |
+| Web      | 60         | 16.67ms       |
+| VR       | 90         | 11.11ms       |
 
 ### Design Pattern Selection
 
-| Pattern | Use When |
-|---------|----------|
-| **State Machine** | Character states, game states |
-| **Object Pooling** | Frequent spawn/destroy (bullets, particles) |
-| **Observer/Events** | Decoupled communication |
-| **ECS** | Many similar entities, performance critical |
-| **Command** | Input replay, undo/redo, networking |
+| Pattern             | Use When                                    |
+| ------------------- | ------------------------------------------- |
+| **State Machine**   | Character states, game states               |
+| **Object Pooling**  | Frequent spawn/destroy (bullets, particles) |
+| **Observer/Events** | Decoupled communication                     |
+| **ECS**             | Many similar entities, performance critical |
+| **Command**         | Input replay, undo/redo, networking         |
 
 ---
 
@@ -141,13 +141,13 @@ Every game has this cycle:
 
 ## Anti-Patterns
 
-| ❌ Don't | ✅ Do |
-|----------|-------|
-| Choose engine by popularity | Choose by project needs |
-| Optimize before profiling | Profile, then optimize |
-| Polish before fun | Prototype gameplay first |
-| Ignore mobile constraints | Design for weakest target |
-| Hardcode everything | Make it data-driven |
+| ❌ Don't                    | ✅ Do                     |
+| --------------------------- | ------------------------- |
+| Choose engine by popularity | Choose by project needs   |
+| Optimize before profiling   | Profile, then optimize    |
+| Polish before fun           | Prototype gameplay first  |
+| Ignore mobile constraints   | Design for weakest target |
+| Hardcode everything         | Make it data-driven       |
 
 ---
 
@@ -176,6 +176,6 @@ Every game has this cycle:
 > **Ask me about**: Engine selection, game mechanics, optimization, multiplayer architecture, VR/AR development, or game design principles.
 
 ## Skill routing
-Prefer these skills when task intent matches: `typescript-pro`, `javascript-pro`, `cpp-pro`, `c-pro`, `csharp-pro`.
+Prefer these skills when task intent matches: `game-development`, `typescript-pro`, `javascript-pro`, `cpp-pro`, `c-pro`, `csharp-pro`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

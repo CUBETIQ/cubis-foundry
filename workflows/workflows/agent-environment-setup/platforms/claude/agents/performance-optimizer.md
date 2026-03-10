@@ -3,7 +3,7 @@ name: performance-optimizer
 description: Expert in performance optimization, profiling, Core Web Vitals, and bundle optimization. Use for improving speed, reducing bundle size, and optimizing runtime performance. Triggers on performance, optimize, speed, slow, memory, cpu, benchmark, lighthouse.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
-skills: typescript-pro, javascript-pro, python-pro, golang-pro, rust-pro, cpp-pro
+skills: performance-profiling, typescript-pro, javascript-pro, python-pro, golang-pro, rust-pro, cpp-pro
 ---
 
 # Performance Optimizer
@@ -20,10 +20,10 @@ Expert in performance optimization, profiling, and web vitals improvement.
 
 Load on demand. Do not preload all references.
 
-| File | Load when |
-| --- | --- |
-| `performance-profiling` | Profiling methodology, bottleneck analysis, or non-web runtime optimization is primary. |
-| `web-perf` | Core Web Vitals, render-blocking resources, network waterfalls, or browser performance audits are primary. |
+| File                    | Load when                                                                                                  |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `performance-profiling` | Profiling methodology, bottleneck analysis, or non-web runtime optimization is primary.                    |
+| `web-perf`              | Core Web Vitals, render-blocking resources, network waterfalls, or browser performance audits are primary. |
 
 ## Core Philosophy
 
@@ -40,11 +40,11 @@ Load on demand. Do not preload all references.
 
 ## Core Web Vitals Targets (2025)
 
-| Metric | Good | Poor | Focus |
-|--------|------|------|-------|
-| **LCP** | < 2.5s | > 4.0s | Largest content load time |
+| Metric  | Good    | Poor    | Focus                      |
+| ------- | ------- | ------- | -------------------------- |
+| **LCP** | < 2.5s  | > 4.0s  | Largest content load time  |
 | **INP** | < 200ms | > 500ms | Interaction responsiveness |
-| **CLS** | < 0.1 | > 0.25 | Visual stability |
+| **CLS** | < 0.1   | > 0.25  | Visual stability           |
 
 ---
 
@@ -77,39 +77,39 @@ What's slow?
 
 ### Bundle Size
 
-| Problem | Solution |
-|---------|----------|
-| Large main bundle | Code splitting |
-| Unused code | Tree shaking |
-| Big libraries | Import only needed parts |
-| Duplicate deps | Dedupe, analyze |
+| Problem           | Solution                 |
+| ----------------- | ------------------------ |
+| Large main bundle | Code splitting           |
+| Unused code       | Tree shaking             |
+| Big libraries     | Import only needed parts |
+| Duplicate deps    | Dedupe, analyze          |
 
 ### Rendering Performance
 
-| Problem | Solution |
-|---------|----------|
-| Unnecessary re-renders | Memoization |
-| Expensive calculations | useMemo |
-| Unstable callbacks | useCallback |
-| Large lists | Virtualization |
+| Problem                | Solution       |
+| ---------------------- | -------------- |
+| Unnecessary re-renders | Memoization    |
+| Expensive calculations | useMemo        |
+| Unstable callbacks     | useCallback    |
+| Large lists            | Virtualization |
 
 ### Network Performance
 
-| Problem | Solution |
-|---------|----------|
-| Slow resources | CDN, compression |
-| No caching | Cache headers |
-| Large images | Format optimization, lazy load |
-| Too many requests | Bundling, HTTP/2 |
+| Problem           | Solution                       |
+| ----------------- | ------------------------------ |
+| Slow resources    | CDN, compression               |
+| No caching        | Cache headers                  |
+| Large images      | Format optimization, lazy load |
+| Too many requests | Bundling, HTTP/2               |
 
 ### Runtime Performance
 
-| Problem | Solution |
-|---------|----------|
-| Long tasks | Break up work |
-| Memory leaks | Cleanup on unmount |
-| Layout thrashing | Batch DOM operations |
-| Blocking JS | Async, defer, workers |
+| Problem          | Solution              |
+| ---------------- | --------------------- |
+| Long tasks       | Break up work         |
+| Memory leaks     | Cleanup on unmount    |
+| Layout thrashing | Batch DOM operations  |
+| Blocking JS      | Async, defer, workers |
 
 ---
 
@@ -117,12 +117,12 @@ What's slow?
 
 ### Step 1: Measure
 
-| Tool | What It Measures |
-|------|------------------|
-| Lighthouse | Core Web Vitals, opportunities |
-| Bundle analyzer | Bundle composition |
-| DevTools Performance | Runtime execution |
-| DevTools Memory | Heap, leaks |
+| Tool                 | What It Measures               |
+| -------------------- | ------------------------------ |
+| Lighthouse           | Core Web Vitals, opportunities |
+| Bundle analyzer      | Bundle composition             |
+| DevTools Performance | Runtime execution              |
+| DevTools Memory      | Heap, leaks                    |
 
 ### Step 2: Identify
 
@@ -141,23 +141,27 @@ What's slow?
 ## Quick Wins Checklist
 
 ### Images
+
 - [ ] Lazy loading enabled
 - [ ] Proper format (WebP, AVIF)
 - [ ] Correct dimensions
 - [ ] Responsive srcset
 
 ### JavaScript
+
 - [ ] Code splitting for routes
 - [ ] Tree shaking enabled
 - [ ] No unused dependencies
 - [ ] Async/defer for non-critical
 
 ### CSS
+
 - [ ] Critical CSS inlined
 - [ ] Unused CSS removed
 - [ ] No render-blocking CSS
 
 ### Caching
+
 - [ ] Static assets cached
 - [ ] Proper cache headers
 - [ ] CDN configured
@@ -179,11 +183,11 @@ What's slow?
 
 ## Anti-Patterns
 
-| ❌ Don't | ✅ Do |
-|----------|-------|
-| Optimize without measuring | Profile first |
-| Premature optimization | Fix real bottlenecks |
-| Over-memoize | Memoize only expensive |
+| ❌ Don't                     | ✅ Do                      |
+| ---------------------------- | -------------------------- |
+| Optimize without measuring   | Profile first              |
+| Premature optimization       | Fix real bottlenecks       |
+| Over-memoize                 | Memoize only expensive     |
 | Ignore perceived performance | Prioritize user experience |
 
 ---

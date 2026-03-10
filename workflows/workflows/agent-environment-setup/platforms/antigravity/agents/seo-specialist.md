@@ -3,7 +3,7 @@ name: seo-specialist
 description: SEO and GEO (Generative Engine Optimization) expert. Handles SEO audits, Core Web Vitals, E-E-A-T optimization, and AI search visibility. Use for SEO improvements, content optimization, or AI citation strategies. Triggers on SEO audit, Core Web Vitals, metadata, schema markup, GEO, AI search, citation strategy.
 tools: Read, Grep, Glob, Bash, Write
 model: inherit
-skills: typescript-pro, javascript-pro, python-pro
+skills: seo-fundamentals, geo-fundamentals, typescript-pro, javascript-pro, python-pro
 ---
 
 # SEO Specialist
@@ -20,11 +20,11 @@ Expert in SEO and GEO (Generative Engine Optimization) for traditional and AI-po
 
 Load on demand. Do not preload all references.
 
-| File | Load when |
-| --- | --- |
-| `seo-fundamentals` | Metadata, crawlability, on-page structure, and classical search optimization are primary. |
+| File               | Load when                                                                                  |
+| ------------------ | ------------------------------------------------------------------------------------------ |
+| `seo-fundamentals` | Metadata, crawlability, on-page structure, and classical search optimization are primary.  |
 | `geo-fundamentals` | LLM visibility, citation likelihood, entity clarity, or AI-search distribution is primary. |
-| `web-perf` | Core Web Vitals, render bottlenecks, and performance-driven SEO regressions are primary. |
+| `web-perf`         | Core Web Vitals, render bottlenecks, and performance-driven SEO regressions are primary.   |
 
 ## Core Philosophy
 
@@ -41,33 +41,33 @@ Load on demand. Do not preload all references.
 
 ## SEO vs GEO
 
-| Aspect | SEO | GEO |
-|--------|-----|-----|
-| Goal | Rank #1 in Google | Be cited in AI responses |
-| Platform | Google, Bing | ChatGPT, Claude, Perplexity |
-| Metrics | Rankings, CTR | Citation rate, appearances |
-| Focus | Keywords, backlinks | Entities, data, credentials |
+| Aspect   | SEO                 | GEO                         |
+| -------- | ------------------- | --------------------------- |
+| Goal     | Rank #1 in Google   | Be cited in AI responses    |
+| Platform | Google, Bing        | ChatGPT, Claude, Perplexity |
+| Metrics  | Rankings, CTR       | Citation rate, appearances  |
+| Focus    | Keywords, backlinks | Entities, data, credentials |
 
 ---
 
 ## Core Web Vitals Targets
 
-| Metric | Good | Poor |
-|--------|------|------|
-| **LCP** | < 2.5s | > 4.0s |
+| Metric  | Good    | Poor    |
+| ------- | ------- | ------- |
+| **LCP** | < 2.5s  | > 4.0s  |
 | **INP** | < 200ms | > 500ms |
-| **CLS** | < 0.1 | > 0.25 |
+| **CLS** | < 0.1   | > 0.25  |
 
 ---
 
 ## E-E-A-T Framework
 
-| Principle | How to Demonstrate |
-|-----------|-------------------|
-| **Experience** | First-hand knowledge, real stories |
-| **Expertise** | Credentials, certifications |
-| **Authoritativeness** | Backlinks, mentions, recognition |
-| **Trustworthiness** | HTTPS, transparency, reviews |
+| Principle             | How to Demonstrate                 |
+| --------------------- | ---------------------------------- |
+| **Experience**        | First-hand knowledge, real stories |
+| **Expertise**         | Credentials, certifications        |
+| **Authoritativeness** | Backlinks, mentions, recognition   |
+| **Trustworthiness**   | HTTPS, transparency, reviews       |
 
 ---
 
@@ -102,13 +102,13 @@ Load on demand. Do not preload all references.
 
 ## Content That Gets Cited
 
-| Element | Why AI Cites It |
-|---------|-----------------|
-| Original statistics | Unique data |
-| Expert quotes | Authority |
-| Clear definitions | Extractable |
-| Step-by-step guides | Useful |
-| Comparison tables | Structured |
+| Element             | Why AI Cites It |
+| ------------------- | --------------- |
+| Original statistics | Unique data     |
+| Expert quotes       | Authority       |
+| Clear definitions   | Extractable     |
+| Step-by-step guides | Useful          |
+| Comparison tables   | Structured      |
 
 ---
 

@@ -20,6 +20,42 @@ fi
 TMP_DIR="$(mktemp -d /tmp/cbx-fulltest.XXXXXX)"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
+rg() {
+  if type -P rg >/dev/null 2>&1; then
+    command rg "$@"
+    return
+  fi
+
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      -n)
+        shift
+        ;;
+      --)
+        shift
+        break
+        ;;
+      -*)
+        echo "[FAIL] smoke-workflows.sh fallback rg does not support option: $1" >&2
+        return 2
+        ;;
+      *)
+        break
+        ;;
+    esac
+  done
+
+  if [ "$#" -lt 2 ]; then
+    echo "[FAIL] smoke-workflows.sh fallback rg expects a pattern and at least one file" >&2
+    return 2
+  fi
+
+  local pattern="$1"
+  shift
+
+  perl -ne 'BEGIN { $re = shift @ARGV; $found = 0; } if (/$re/) { $found = 1; } END { exit($found ? 0 : 1); }' -- "$pattern" "$@"
+}
+
 log_ok() {
   echo "[OK] $1"
 }
@@ -167,7 +203,7 @@ fi
 [ -f .agent/terminal-integration/verify-task.ps1 ]
 [ -f .agent/terminal-integration/verify-task.sh ]
 rg -n '"provider": "codex"' .agent/terminal-integration/config.json >/dev/null
-rg -n 'cbx:terminal:verification:start provider=codex version=1' .agent/rules/GEMINI.md >/dev/null
+rg -n '^<!-- cbx:terminal:verification:start provider=codex version=1 -->' .agent/rules/GEMINI.md >/dev/null
 assert_workflow_contract .agent/workflows "Antigravity"
 log_ok "Antigravity files installed"
 
@@ -185,12 +221,12 @@ const cleaned = text.replace(/\n?<!--\s*cbx:workflows:auto:start[\s\S]*?<!--\s*c
 fs.writeFileSync(file, cleaned, 'utf8');
 NODE
 echo "Custom antigravity workspace rule must stay" >>.agent/rules/GEMINI.md
-if rg -n 'cbx:workflows:auto:start' .agent/rules/GEMINI.md >/dev/null; then
+if rg -n '^<!-- cbx:workflows:auto:start' .agent/rules/GEMINI.md >/dev/null; then
   echo "[FAIL] Failed to clear Antigravity managed block before global precedence sync test" >&2
   exit 1
 fi
 node "$CLI" workflows sync-rules --platform antigravity --scope global >/tmp/cbx-a22.log
-rg -n 'cbx:workflows:auto:start platform=antigravity version=1' .agent/rules/GEMINI.md >/dev/null
+rg -n '^<!-- cbx:workflows:auto:start platform=antigravity version=1 -->' .agent/rules/GEMINI.md >/dev/null
 rg -n 'Custom antigravity workspace rule must stay' .agent/rules/GEMINI.md >/dev/null
 rg -n 'Workspace rule file detected at' /tmp/cbx-a22.log >/dev/null
 rg -n 'Workspace rule managed block sync action:' /tmp/cbx-a22.log >/dev/null
@@ -200,7 +236,7 @@ log_step "A2.3 Rules init (Antigravity)"
 node "$CLI" rules init --platform antigravity --scope project --overwrite >/tmp/cbx-a23.log
 [ -f .agent/rules/ENGINEERING_RULES.md ]
 [ -f TECH.md ]
-rg -n 'cbx:engineering:auto:start platform=antigravity version=1' .agent/rules/GEMINI.md >/dev/null
+rg -n '^<!-- cbx:engineering:auto:start platform=antigravity version=1 -->' .agent/rules/GEMINI.md >/dev/null
 rg -n 'YAGNI' .agent/rules/ENGINEERING_RULES.md >/dev/null
 rg -n '^# TECH\.md$' TECH.md >/dev/null
 log_ok "Antigravity rules init creates ENGINEERING_RULES.md, TECH.md, and rule block"
@@ -224,7 +260,7 @@ node "$CLI" workflows remove agent-environment-setup --platform antigravity --sc
 [ ! -d .agent/terminal-integration ]
 [ ! -f .gemini/commands/backend.toml ]
 rg -n 'No installed workflows found yet\.' .agent/rules/GEMINI.md >/dev/null
-if rg -n 'cbx:terminal:verification:start' .agent/rules/GEMINI.md >/dev/null; then
+if rg -n '^<!-- cbx:terminal:verification:start' .agent/rules/GEMINI.md >/dev/null; then
   echo "[FAIL] Antigravity terminal verification block was not removed" >&2
   exit 1
 fi
@@ -321,12 +357,12 @@ const cleaned = text.replace(/\n?<!--\s*cbx:workflows:auto:start[\s\S]*?<!--\s*c
 fs.writeFileSync(file, cleaned, 'utf8');
 NODE
 echo "Custom workspace rule must stay" >>AGENTS.md
-if rg -n 'cbx:workflows:auto:start' AGENTS.md >/dev/null; then
+if rg -n '^<!-- cbx:workflows:auto:start' AGENTS.md >/dev/null; then
   echo "[FAIL] Failed to clear managed block before global precedence sync test" >&2
   exit 1
 fi
 node "$CLI" workflows sync-rules --platform codex --scope global >/tmp/cbx-c22.log
-rg -n 'cbx:workflows:auto:start platform=codex version=1' AGENTS.md >/dev/null
+rg -n '^<!-- cbx:workflows:auto:start platform=codex version=1 -->' AGENTS.md >/dev/null
 rg -n 'Custom workspace rule must stay' AGENTS.md >/dev/null
 rg -n 'Workspace rule file detected at' /tmp/cbx-c22.log >/dev/null
 rg -n 'Workspace rule managed block sync action:' /tmp/cbx-c22.log >/dev/null
@@ -349,7 +385,7 @@ log_step "C2.3 Rules init (Codex)"
 node "$CLI" rules init --platform codex --scope project --overwrite >/tmp/cbx-c23.log
 [ -f ENGINEERING_RULES.md ]
 [ -f TECH.md ]
-rg -n 'cbx:engineering:auto:start platform=codex version=1' AGENTS.md >/dev/null
+rg -n '^<!-- cbx:engineering:auto:start platform=codex version=1 -->' AGENTS.md >/dev/null
 rg -n 'YAGNI' ENGINEERING_RULES.md >/dev/null
 rg -n '^# TECH\.md$' TECH.md >/dev/null
 log_ok "Codex rules init creates ENGINEERING_RULES.md, TECH.md, and rule block"
@@ -561,12 +597,12 @@ const cleaned = text.replace(/\n?<!--\s*cbx:workflows:auto:start[\s\S]*?<!--\s*c
 fs.writeFileSync(file, cleaned, 'utf8');
 NODE
 echo "Custom copilot workspace rule must stay" >>.github/copilot-instructions.md
-if rg -n 'cbx:workflows:auto:start' .github/copilot-instructions.md >/dev/null; then
+if rg -n '^<!-- cbx:workflows:auto:start' .github/copilot-instructions.md >/dev/null; then
   echo "[FAIL] Failed to clear Copilot managed block before global precedence sync test" >&2
   exit 1
 fi
 node "$CLI" workflows sync-rules --platform copilot --scope global >/tmp/cbx-p22.log
-rg -n 'cbx:workflows:auto:start platform=copilot version=1' .github/copilot-instructions.md >/dev/null
+rg -n '^<!-- cbx:workflows:auto:start platform=copilot version=1 -->' .github/copilot-instructions.md >/dev/null
 rg -n 'Custom copilot workspace rule must stay' .github/copilot-instructions.md >/dev/null
 rg -n 'Workspace rule file detected at' /tmp/cbx-p22.log >/dev/null
 rg -n 'Workspace rule managed block sync action:' /tmp/cbx-p22.log >/dev/null
@@ -576,7 +612,7 @@ log_step "P2.3 Rules init (Copilot)"
 node "$CLI" rules init --platform copilot --scope project --overwrite >/tmp/cbx-p23.log
 [ -f ENGINEERING_RULES.md ]
 [ -f TECH.md ]
-rg -n 'cbx:engineering:auto:start platform=copilot version=1' .github/copilot-instructions.md >/dev/null
+rg -n '^<!-- cbx:engineering:auto:start platform=copilot version=1 -->' .github/copilot-instructions.md >/dev/null
 rg -n 'YAGNI' ENGINEERING_RULES.md >/dev/null
 rg -n '^# TECH\.md$' TECH.md >/dev/null
 log_ok "Copilot rules init creates ENGINEERING_RULES.md, TECH.md, and copilot-instructions rule block"

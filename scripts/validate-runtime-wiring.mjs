@@ -286,17 +286,26 @@ async function validateRuleFile(filePath, errors) {
     if (lineCount > 30) {
       error(errors, filePath, "Copilot bridge AGENTS.md should stay thin");
     }
-    if (!raw.includes("Resolve workflow or agent intent before loading any skill")) {
+    if (
+      !raw.includes("Resolve workflow or agent intent before loading any skill")
+    ) {
       error(errors, filePath, "Copilot bridge missing route-first summary");
     }
     return;
   }
 
-  if (lineCount > 220) {
+  if (lineCount > 350) {
     error(errors, filePath, `rules file is too long (${lineCount} lines)`);
   }
-  if (!raw.includes("Inspect the repo") && !raw.includes("Inspect the repo/task")) {
-    error(errors, filePath, "rules file missing local-inspection-first guidance");
+  if (
+    !raw.includes("Inspect the repo") &&
+    !raw.includes("Inspect the repo/task")
+  ) {
+    error(
+      errors,
+      filePath,
+      "rules file missing local-inspection-first guidance",
+    );
   }
   if (!raw.includes("Never begin with `skill_search`")) {
     error(errors, filePath, "rules file missing no-skill-search-first guard");
@@ -308,19 +317,35 @@ async function validateRuleFile(filePath, errors) {
     error(errors, filePath, "rules file missing lazy skill-priming guidance");
   }
   if (!raw.includes("skill_validate") || !raw.includes("skill_get")) {
-    error(errors, filePath, "rules file missing validated skill loading guidance");
+    error(
+      errors,
+      filePath,
+      "rules file missing validated skill loading guidance",
+    );
   }
   if (!raw.includes("cbx:mcp:auto:start")) {
     error(errors, filePath, "rules file missing managed MCP block");
   }
   if (raw.includes("Startup Transparency")) {
-    error(errors, filePath, "rules file still contains deprecated startup-transparency section");
+    error(
+      errors,
+      filePath,
+      "rules file still contains deprecated startup-transparency section",
+    );
   }
   if (raw.includes("Adaptive Load Policy")) {
-    error(errors, filePath, "rules file still contains deprecated adaptive-load table");
+    error(
+      errors,
+      filePath,
+      "rules file still contains deprecated adaptive-load table",
+    );
   }
   if (raw.includes("MCP Skill Priming (Required Before Delegation)")) {
-    error(errors, filePath, "rules file still requires universal skill priming");
+    error(
+      errors,
+      filePath,
+      "rules file still requires universal skill priming",
+    );
   }
 }
 

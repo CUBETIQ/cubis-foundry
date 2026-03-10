@@ -5608,7 +5608,8 @@ async function resolvePostmanInstallSelection({
   const mcpToolSync = options.mcpToolSync !== false;
   const foundryMcpEnabled = options.foundryMcp !== false;
 
-  const canPrompt = !options.yes && process.stdin.isTTY;
+  const canPrompt =
+    !options.yes && !options.dryRun && !process.env.CI && process.stdin.isTTY;
   if (postmanRequested && canPrompt && !hasWorkspaceOption) {
     const workspaceSelection = await promptPostmanWorkspaceSelection({
       apiKey: envApiKey,
@@ -7227,7 +7228,7 @@ function printPostmanSetupSummary({ postmanSetup }) {
     `- MCP tool sync: ${postmanSetup.mcpToolSync ? "enabled" : "disabled"}`,
   );
   console.log(
-    `- Foundry MCP side-by-side: ${postmanSetup.foundryMcpEnabled ? postmanSetup.effectiveMcpRuntime === "docker" ? "enabled (docker endpoint)" : "enabled (cbx mcp serve)" : "disabled"}`,
+    `- Foundry MCP side-by-side: ${postmanSetup.foundryMcpEnabled ? (postmanSetup.effectiveMcpRuntime === "docker" ? "enabled (docker endpoint)" : "enabled (cbx mcp serve)") : "disabled"}`,
   );
   if (postmanSetup.postmanEnabled) {
     console.log(`- Postman API key source: ${postmanSetup.apiKeySource}`);
@@ -7922,7 +7923,8 @@ async function resolveAntigravityTerminalVerifierSelection({
   let enabled = hasTerminalIntegrationFlag || Boolean(normalizedVerifier);
   let provider = normalizedVerifier;
 
-  const canPrompt = !options.yes && process.stdin.isTTY;
+  const canPrompt =
+    !options.yes && !options.dryRun && !process.env.CI && process.stdin.isTTY;
   if (!enabled && !provider && canPrompt) {
     enabled = await confirm({
       message: "Enable Antigravity terminal verification integration?",

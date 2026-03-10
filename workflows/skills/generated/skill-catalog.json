@@ -2,16 +2,17 @@
   "$schema": "cubis-foundry-skill-catalog-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
   "summary": {
-    "totalEntries": 67,
-    "totalSkills": 67,
+    "totalEntries": 73,
+    "totalSkills": 73,
     "totalSubskills": 0,
-    "canonicalSkills": 67,
+    "canonicalSkills": 73,
     "compatibilityAliases": 0,
     "layers": [
       "core-operating",
       "databases",
       "frameworks-runtimes",
       "languages",
+      "vertical-composed",
       "workflow-specialists"
     ],
     "categories": [
@@ -19,6 +20,7 @@
       "databases",
       "frameworks-runtimes",
       "languages",
+      "vertical-composed",
       "workflow-specialists"
     ],
     "tiers": [
@@ -765,6 +767,52 @@
       "triggers": []
     },
     {
+      "id": "game-development",
+      "package_id": "game-development",
+      "catalog_id": "game-development",
+      "kind": "skill",
+      "path": "workflows/skills/game-development/SKILL.md",
+      "name": "game-development",
+      "description": "Use when implementing game mechanics, game loops, physics, AI, collision detection, or performance optimization for web, mobile, PC, or VR/AR games.",
+      "canonical": true,
+      "canonical_id": "game-development",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "vertical-composed",
+      "layer": "vertical-composed",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "game-development",
+        "vertical-composed"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "geo-fundamentals",
+      "package_id": "geo-fundamentals",
+      "catalog_id": "geo-fundamentals",
+      "kind": "skill",
+      "path": "workflows/skills/geo-fundamentals/SKILL.md",
+      "name": "geo-fundamentals",
+      "description": "Use when optimizing content for AI search engines (ChatGPT, Claude, Perplexity) using Generative Engine Optimization techniques and citation-worthy content patterns.",
+      "canonical": true,
+      "canonical_id": "geo-fundamentals",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "vertical-composed",
+      "layer": "vertical-composed",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "geo-fundamentals",
+        "vertical-composed"
+      ],
+      "triggers": []
+    },
+    {
       "id": "git-workflow",
       "package_id": "git-workflow",
       "catalog_id": "git-workflow",
@@ -899,6 +947,29 @@
       "tags": [
         "kotlin-pro",
         "languages"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "legacy-modernizer",
+      "package_id": "legacy-modernizer",
+      "catalog_id": "legacy-modernizer",
+      "kind": "skill",
+      "path": "workflows/skills/legacy-modernizer/SKILL.md",
+      "name": "legacy-modernizer",
+      "description": "Use when planning and executing incremental migration of legacy systems using strangler fig, branch by abstraction, and feature-flag-controlled rollouts.",
+      "canonical": true,
+      "canonical_id": "legacy-modernizer",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "legacy-modernizer",
+        "workflow-specialists"
       ],
       "triggers": []
     },
@@ -1133,6 +1204,29 @@
       "triggers": []
     },
     {
+      "id": "performance-profiling",
+      "package_id": "performance-profiling",
+      "catalog_id": "performance-profiling",
+      "kind": "skill",
+      "path": "workflows/skills/performance-profiling/SKILL.md",
+      "name": "performance-profiling",
+      "description": "Use when measuring, analyzing, and optimizing application performance with Core Web Vitals, bundle analysis, runtime profiling, and lighthouse audits.",
+      "canonical": true,
+      "canonical_id": "performance-profiling",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "performance-profiling",
+        "workflow-specialists"
+      ],
+      "triggers": []
+    },
+    {
       "id": "php-pro",
       "package_id": "php-pro",
       "catalog_id": "php-pro",
@@ -1363,6 +1457,29 @@
       "triggers": []
     },
     {
+      "id": "seo-fundamentals",
+      "package_id": "seo-fundamentals",
+      "catalog_id": "seo-fundamentals",
+      "kind": "skill",
+      "path": "workflows/skills/seo-fundamentals/SKILL.md",
+      "name": "seo-fundamentals",
+      "description": "Use when implementing technical SEO, content optimization, schema markup, or Core Web Vitals improvements for search engine visibility.",
+      "canonical": true,
+      "canonical_id": "seo-fundamentals",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "vertical-composed",
+      "layer": "vertical-composed",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "seo-fundamentals",
+        "vertical-composed"
+      ],
+      "triggers": []
+    },
+    {
       "id": "skill-creator",
       "package_id": "skill-creator",
       "catalog_id": "skill-creator",
@@ -1382,6 +1499,29 @@
       "tags": [
         "core-operating",
         "skill-creator"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "spec-miner",
+      "package_id": "spec-miner",
+      "catalog_id": "spec-miner",
+      "kind": "skill",
+      "path": "workflows/skills/spec-miner/SKILL.md",
+      "name": "spec-miner",
+      "description": "Use when reverse-engineering legacy or undocumented systems into structured specifications with code-grounded evidence and EARS-format requirements.",
+      "canonical": true,
+      "canonical_id": "spec-miner",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "spec-miner",
+        "workflow-specialists"
       ],
       "triggers": []
     },
@@ -1570,5 +1710,5 @@
       "triggers": []
     }
   ],
-  "contentHash": "aa6a6650925266b6"
+  "contentHash": "ead11b65c65ea673"
 }

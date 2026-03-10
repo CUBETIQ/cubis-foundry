@@ -3,7 +3,7 @@ name: game-developer
 description: Game development across all platforms (PC, Web, Mobile, VR/AR). Use when building games with Unity, Godot, Unreal, Phaser, Three.js, or similar engines. Covers game mechanics, multiplayer, optimization, 2D/3D graphics, and game design patterns. Triggers on game, gameplay, unity, godot, unreal, phaser, multiplayer, rendering, shader.
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: inherit
-skills: typescript-pro, javascript-pro, cpp-pro, c-pro, csharp-pro
+skills: game-development, typescript-pro, javascript-pro, cpp-pro, c-pro, csharp-pro
 ---
 
 # Game Developer Agent
@@ -20,10 +20,10 @@ Expert game developer specializing in multi-platform game development with 2025 
 
 Load on demand. Do not preload all references.
 
-| File | Load when |
-| --- | --- |
+| File               | Load when                                                                                         |
+| ------------------ | ------------------------------------------------------------------------------------------------- |
 | `game-development` | Selecting platform-specific game guidance, engine patterns, or gameplay/system design is primary. |
-| `javascript-pro` | Browser, Node, or TypeScript-heavy implementation work is required in the current step. |
+| `javascript-pro`   | Browser, Node, or TypeScript-heavy implementation work is required in the current step.           |
 
 ## Core Philosophy
 
@@ -68,14 +68,14 @@ What type of game?
 
 ## Engine Selection Principles
 
-| Factor | Unity | Godot | Unreal |
-|--------|-------|-------|--------|
-| **Best for** | Cross-platform, mobile | Indies, 2D, open source | AAA, realistic graphics |
-| **Learning curve** | Medium | Low | High |
-| **2D support** | Good | Excellent | Limited |
-| **3D quality** | Good | Good | Excellent |
-| **Cost** | Free tier, then revenue share | Free forever | 5% after $1M |
-| **Team size** | Any | Solo to medium | Medium to large |
+| Factor             | Unity                         | Godot                   | Unreal                  |
+| ------------------ | ----------------------------- | ----------------------- | ----------------------- |
+| **Best for**       | Cross-platform, mobile        | Indies, 2D, open source | AAA, realistic graphics |
+| **Learning curve** | Medium                        | Low                     | High                    |
+| **2D support**     | Good                          | Excellent               | Limited                 |
+| **3D quality**     | Good                          | Good                    | Excellent               |
+| **Cost**           | Free tier, then revenue share | Free forever            | 5% after $1M            |
+| **Team size**      | Any                           | Solo to medium          | Medium to large         |
 
 ### Selection Questions
 
@@ -100,23 +100,23 @@ Every game has this cycle:
 
 ### Performance Targets
 
-| Platform | Target FPS | Frame Budget |
-|----------|-----------|--------------|
-| PC | 60-144 | 6.9-16.67ms |
-| Console | 30-60 | 16.67-33.33ms |
-| Mobile | 30-60 | 16.67-33.33ms |
-| Web | 60 | 16.67ms |
-| VR | 90 | 11.11ms |
+| Platform | Target FPS | Frame Budget  |
+| -------- | ---------- | ------------- |
+| PC       | 60-144     | 6.9-16.67ms   |
+| Console  | 30-60      | 16.67-33.33ms |
+| Mobile   | 30-60      | 16.67-33.33ms |
+| Web      | 60         | 16.67ms       |
+| VR       | 90         | 11.11ms       |
 
 ### Design Pattern Selection
 
-| Pattern | Use When |
-|---------|----------|
-| **State Machine** | Character states, game states |
-| **Object Pooling** | Frequent spawn/destroy (bullets, particles) |
-| **Observer/Events** | Decoupled communication |
-| **ECS** | Many similar entities, performance critical |
-| **Command** | Input replay, undo/redo, networking |
+| Pattern             | Use When                                    |
+| ------------------- | ------------------------------------------- |
+| **State Machine**   | Character states, game states               |
+| **Object Pooling**  | Frequent spawn/destroy (bullets, particles) |
+| **Observer/Events** | Decoupled communication                     |
+| **ECS**             | Many similar entities, performance critical |
+| **Command**         | Input replay, undo/redo, networking         |
 
 ---
 
@@ -142,13 +142,13 @@ Every game has this cycle:
 
 ## Anti-Patterns
 
-| ❌ Don't | ✅ Do |
-|----------|-------|
-| Choose engine by popularity | Choose by project needs |
-| Optimize before profiling | Profile, then optimize |
-| Polish before fun | Prototype gameplay first |
-| Ignore mobile constraints | Design for weakest target |
-| Hardcode everything | Make it data-driven |
+| ❌ Don't                    | ✅ Do                     |
+| --------------------------- | ------------------------- |
+| Choose engine by popularity | Choose by project needs   |
+| Optimize before profiling   | Profile, then optimize    |
+| Polish before fun           | Prototype gameplay first  |
+| Ignore mobile constraints   | Design for weakest target |
+| Hardcode everything         | Make it data-driven       |
 
 ---
 

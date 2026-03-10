@@ -60,7 +60,7 @@ function buildMcpBlock(manifest) {
   );
   lines.push("");
   lines.push(
-    "1. Inspect the repo/task locally first. Do not start with `skill_search`.",
+    "1. Never begin with `skill_search`. Inspect the repo/task locally first.",
   );
   lines.push(
     "2. Resolve workflows, agents, or free-text route intent with `route_resolve` before loading any skills.",
@@ -71,9 +71,7 @@ function buildMcpBlock(manifest) {
   lines.push(
     "4. Always run `skill_validate` on the exact selected ID before `skill_get`.",
   );
-  lines.push(
-    "5. Call `skill_get` with `includeReferences:false` by default.",
-  );
+  lines.push("5. Call `skill_get` with `includeReferences:false` by default.");
   lines.push(
     "6. Load at most one sidecar markdown file at a time with `skill_get_reference`.",
   );

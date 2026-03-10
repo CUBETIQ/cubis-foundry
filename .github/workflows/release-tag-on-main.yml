@@ -32,8 +32,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run attribute checks
-        run: npm run test:attributes
+      - name: Install smoke test dependencies
+        run: sudo apt-get update && sudo apt-get install -y expect
+
+      - name: Run CI validation suite
+        run: npm run test:ci
 
       - name: Build CLI runtime
         run: npm run build:cli
