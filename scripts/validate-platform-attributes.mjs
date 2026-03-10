@@ -3,8 +3,7 @@
 import path from "node:path";
 import process from "node:process";
 import { promises as fs } from "node:fs";
-import { execFile as execFileCallback } from "node:child_process";
-import { promisify } from "node:util";
+import { checkPlatformAssets } from "./generate-platform-assets.mjs";
 
 const ROOT = process.cwd();
 const ASSETS_ROOT = path.join(ROOT, "workflows");
@@ -31,7 +30,6 @@ const MIRROR_SKILL_ROOTS = {
 
 const CLI_ARGS = new Set(process.argv.slice(2));
 const STRICT_MODE = CLI_ARGS.has("--strict");
-const execFile = promisify(execFileCallback);
 
 const COPILOT_ALLOWED_SKILL_KEYS = new Set([
   "compatibility",
@@ -875,22 +873,29 @@ async function validateSharedSourceAndGeneratedParity({
   }
 
   try {
-    await execFile(
-      process.execPath,
-      [GENERATE_PLATFORM_ASSETS_SCRIPT, "--check"],
-      {
-        cwd: ROOT,
-        env: process.env,
-      },
-    );
-  } catch (runError) {
-    const stderr = String(runError?.stderr || "").trim();
-    const stdout = String(runError?.stdout || "").trim();
-    const detail = stderr || stdout || runError.message;
+    const checkResult = await checkPlatformAssets();
+    if (checkResult.drift.length === 0) {
+      return;
+    }
+    const detail = checkResult.drift
+      .map((item) => {
+        const parts = [];
+        if (item.diff.missing.length > 0) parts.push("missing");
+        if (item.diff.changed.length > 0) parts.push("changed");
+        if (item.diff.extra.length > 0) parts.push("extra");
+        return `${item.label}: ${parts.join("/")}`;
+      })
+      .join("; ");
     error(
       errors,
       GENERATE_PLATFORM_ASSETS_SCRIPT,
       `generated assets drift detected (${detail})`,
+    );
+  } catch (runError) {
+    error(
+      errors,
+      GENERATE_PLATFORM_ASSETS_SCRIPT,
+      `generated assets validation failed (${runError.message || runError})`,
     );
   }
 }

@@ -349,6 +349,13 @@ async function validateRuleFile(filePath, errors) {
   }
 }
 
+async function validateOptionalRuleFile(filePath, errors) {
+  if (!(await exists(filePath))) {
+    return;
+  }
+  await validateRuleFile(filePath, errors);
+}
+
 async function canonicalSkillExists(skillId) {
   if (!skillId) return false;
   canonicalSkillIdsPromise ||= collectCanonicalSkillIds();
@@ -379,7 +386,7 @@ async function main() {
     path.join(PLATFORM_ROOTS.antigravity, "rules", "GEMINI.md"),
     errors,
   );
-  await validateRuleFile(
+  await validateOptionalRuleFile(
     path.join(PLATFORM_ROOTS.copilot, "rules", "AGENTS.md"),
     errors,
   );

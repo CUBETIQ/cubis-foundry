@@ -4,6 +4,7 @@ import path from "node:path";
 import process from "node:process";
 import { promises as fs } from "node:fs";
 import { createHash } from "node:crypto";
+import { pathToFileURL } from "node:url";
 
 const ROOT = process.cwd();
 const BUNDLE_ROOT = path.join(
@@ -597,18 +598,8 @@ function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
   };
 }
 
-async function run({ checkOnly = false }) {
-  const sharedAgents = await loadSharedFiles(SHARED_AGENTS_DIR);
-  const sharedWorkflows = await loadSharedFiles(SHARED_WORKFLOWS_DIR, [
-    "When to use",
-    "Workflow steps",
-    "Context notes",
-    "Verification",
-  ]);
-
-  const maps = buildExpectedMaps({ sharedAgents, sharedWorkflows });
-
-  const targets = [
+function buildTargets(maps) {
+  return [
     {
       label: "codex agents",
       dir: path.join(PLATFORM_DIRS.codex, "agents"),
@@ -676,30 +667,59 @@ async function run({ checkOnly = false }) {
       filter: (name) => name === ROUTE_MANIFEST_FILE,
     },
   ];
+}
+
+function formatDriftMessage(drift) {
+  return drift
+    .map((item) => {
+      const lines = [`Drift detected for ${item.label}:`];
+      if (item.diff.missing.length > 0) {
+        lines.push(`- missing: ${item.diff.missing.join(", ")}`);
+      }
+      if (item.diff.changed.length > 0) {
+        lines.push(`- changed: ${item.diff.changed.join(", ")}`);
+      }
+      if (item.diff.extra.length > 0) {
+        lines.push(`- extra: ${item.diff.extra.join(", ")}`);
+      }
+      return lines.join("\n");
+    })
+    .join("\n");
+}
+
+export async function checkPlatformAssets() {
+  const sharedAgents = await loadSharedFiles(SHARED_AGENTS_DIR);
+  const sharedWorkflows = await loadSharedFiles(SHARED_WORKFLOWS_DIR, [
+    "When to use",
+    "Workflow steps",
+    "Context notes",
+    "Verification",
+  ]);
+
+  const maps = buildExpectedMaps({ sharedAgents, sharedWorkflows });
+  const targets = buildTargets(maps);
+  const drift = [];
+  for (const target of targets) {
+    const actual = await readFileMap(target.dir, target.filter);
+    const diff = diffSet(target.expected, actual);
+    if (diff.missing.length || diff.changed.length || diff.extra.length) {
+      drift.push({ label: target.label, diff });
+    }
+  }
+
+  return {
+    sharedAgents: sharedAgents.length,
+    sharedWorkflows: sharedWorkflows.length,
+    drift,
+  };
+}
+
+export async function run({ checkOnly = false } = {}) {
+  const checkResult = await checkPlatformAssets();
 
   if (checkOnly) {
-    const drift = [];
-    for (const target of targets) {
-      const actual = await readFileMap(target.dir, target.filter);
-      const diff = diffSet(target.expected, actual);
-      if (diff.missing.length || diff.changed.length || diff.extra.length) {
-        drift.push({ label: target.label, diff });
-      }
-    }
-
-    if (drift.length > 0) {
-      for (const item of drift) {
-        console.error(`Drift detected for ${item.label}:`);
-        if (item.diff.missing.length > 0) {
-          console.error(`- missing: ${item.diff.missing.join(", ")}`);
-        }
-        if (item.diff.changed.length > 0) {
-          console.error(`- changed: ${item.diff.changed.join(", ")}`);
-        }
-        if (item.diff.extra.length > 0) {
-          console.error(`- extra: ${item.diff.extra.join(", ")}`);
-        }
-      }
+    if (checkResult.drift.length > 0) {
+      console.error(formatDriftMessage(checkResult.drift));
       process.exit(1);
     }
 
@@ -707,8 +727,8 @@ async function run({ checkOnly = false }) {
       JSON.stringify(
         {
           mode: "check",
-          sharedAgents: sharedAgents.length,
-          sharedWorkflows: sharedWorkflows.length,
+          sharedAgents: checkResult.sharedAgents,
+          sharedWorkflows: checkResult.sharedWorkflows,
           status: "ok",
         },
         null,
@@ -718,6 +738,14 @@ async function run({ checkOnly = false }) {
     return;
   }
 
+  const sharedAgents = await loadSharedFiles(SHARED_AGENTS_DIR);
+  const sharedWorkflows = await loadSharedFiles(SHARED_WORKFLOWS_DIR, [
+    "When to use",
+    "Workflow steps",
+    "Context notes",
+    "Verification",
+  ]);
+  const maps = buildExpectedMaps({ sharedAgents, sharedWorkflows });
   const written = [];
   written.push(
     ...(await applyOutputMap({
@@ -813,8 +841,13 @@ async function run({ checkOnly = false }) {
 
 const args = new Set(process.argv.slice(2));
 const checkOnly = args.has("--check") || args.has("--dry-run");
+const isEntrypoint =
+  Boolean(process.argv[1]) &&
+  import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
 
-run({ checkOnly }).catch((error) => {
-  console.error(error.message || error);
-  process.exit(1);
-});
+if (isEntrypoint) {
+  run({ checkOnly }).catch((error) => {
+    console.error(error.message || error);
+    process.exit(1);
+  });
+}
