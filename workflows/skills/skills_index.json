@@ -10,15 +10,13 @@
     "deprecated": false,
     "replaced_by": null,
     "aliases": [],
-    "category": "frameworks-runtimes",
-    "layer": "frameworks-runtimes",
-    "maturity": "stable",
+    "category": "workflow-specialists",
+    "layer": "workflow-specialists",
+    "maturity": "incubating",
     "tier": "experimental",
     "tags": [
       "accessibility",
-      "frameworks-runtimes",
-      "frontend",
-      "web-accessibility"
+      "workflow-specialists"
     ],
     "path": ".agents/skills/accessibility/SKILL.md",
     "description": "Use when auditing, implementing, or reviewing web accessibility (WCAG, ARIA, keyboard navigation, screen reader support, and inclusive interaction patterns).",
@@ -35,18 +33,13 @@
     "deprecated": false,
     "replaced_by": null,
     "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
+    "category": "core-operating",
+    "layer": "core-operating",
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "agents",
-      "benchmarking",
-      "evaluation",
-      "judge-models",
-      "regression",
-      "rubrics",
-      "workflow-specialists"
+      "agentic-eval",
+      "core-operating"
     ],
     "path": ".agents/skills/agentic-eval/SKILL.md",
     "description": "Use when evaluating an agent, skill, workflow, or MCP server: rubric design, evaluator-optimizer loops, LLM-as-judge patterns, regression suites, or prototype-vs-production quality gaps.",
@@ -68,14 +61,8 @@
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "api",
-      "api-design",
-      "core-operating",
-      "graphql",
-      "openapi",
-      "pagination",
-      "rest",
-      "versioning"
+      "api-designer",
+      "core-operating"
     ],
     "path": ".agents/skills/api-designer/SKILL.md",
     "description": "Use when defining or reviewing external API contracts, OpenAPI specifications, resource models, pagination, versioning, and error response standards. Do not use for pure database design or framework-only handler wiring.",
@@ -97,15 +84,8 @@
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "api",
-      "api-design",
-      "auth",
-      "core-operating",
-      "graphql",
-      "pagination",
-      "rest",
-      "rpc",
-      "versioning"
+      "api-patterns",
+      "core-operating"
     ],
     "path": ".agents/skills/api-patterns/SKILL.md",
     "description": "Use when choosing between REST, GraphQL, and type-safe RPC patterns, or when standardizing response envelopes, versioning, pagination, auth shape, and API protection strategy.",
@@ -127,13 +107,8 @@
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "adrs",
-      "architecture",
-      "boundaries",
-      "core-operating",
-      "scalability",
-      "system-design",
-      "tradeoffs"
+      "architecture-designer",
+      "core-operating"
     ],
     "path": ".agents/skills/architecture-designer/SKILL.md",
     "description": "Use when designing or reviewing system architecture, interface boundaries, tradeoffs, ADRs, scalability posture, and the smallest durable target shape for a product or platform.",
@@ -150,22 +125,13 @@
     "deprecated": false,
     "replaced_by": null,
     "aliases": [],
-    "category": "frameworks-runtimes",
-    "layer": "frameworks-runtimes",
+    "category": "workflow-specialists",
+    "layer": "workflow-specialists",
     "maturity": "stable",
     "tier": "curated",
     "tags": [
-      "abac",
-      "auth",
-      "authorization",
-      "frameworks-runtimes",
-      "jwt",
-      "oauth",
-      "oidc",
-      "passkeys",
-      "rbac",
-      "security",
-      "sessions"
+      "auth-architect",
+      "workflow-specialists"
     ],
     "path": ".agents/skills/auth-architect/SKILL.md",
     "description": "Use when designing or reviewing authentication and authorization for backend systems, including sessions, tokens, OAuth or OIDC, RBAC or ABAC, passkeys, service-to-service auth, and policy enforcement boundaries.",
@@ -187,12 +153,8 @@
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "c",
-      "embedded",
-      "language",
-      "languages",
-      "memory-safety",
-      "systems"
+      "c-pro",
+      "languages"
     ],
     "path": ".agents/skills/c-pro/SKILL.md",
     "description": "Use for modern C23-era systems and embedded engineering with memory safety discipline, build reproducibility, and low-level debugging awareness.",
@@ -209,15 +171,12 @@
     "deprecated": false,
     "replaced_by": null,
     "aliases": [],
-    "category": "engineering",
+    "category": "workflow-specialists",
     "layer": "workflow-specialists",
-    "maturity": "stable",
+    "maturity": "incubating",
     "tier": "experimental",
     "tags": [
       "ci-cd-pipelines",
-      "devops",
-      "engineering",
-      "github-actions,gitlab-ci,jenkins,general-ci",
       "workflow-specialists"
     ],
     "path": ".agents/skills/ci-cd-pipelines/SKILL.md",
@@ -240,12 +199,8 @@
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "c++",
-      "cpp",
-      "language",
-      "languages",
-      "performance",
-      "systems"
+      "cpp-pro",
+      "languages"
     ],
     "path": ".agents/skills/cpp-pro/SKILL.md",
     "description": "Use for modern C++23-era systems and application engineering with RAII, value semantics, toolchain awareness, and performance-safe design.",
@@ -267,16 +222,11 @@
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "apis",
-      "async",
-      "csharp",
-      "dotnet",
-      "language",
-      "languages",
-      "services"
+      "csharp-pro",
+      "languages"
     ],
     "path": ".agents/skills/csharp-pro/SKILL.md",
-    "description": "Use for modern C# backend/application engineering with C# 14 and .NET 10-era production practices.",
+    "description": "Use for modern C# backend/application engineering with C# 15 and .NET 11-era production practices.",
     "triggers": []
   },
   {
@@ -295,15 +245,11 @@
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "dart",
-      "flutter",
-      "isolates",
-      "language",
-      "languages",
-      "packages"
+      "dart-pro",
+      "languages"
     ],
     "path": ".agents/skills/dart-pro/SKILL.md",
-    "description": "Use for modern Dart engineering across Flutter, server, and CLI code with Dart 3.9-era language features, package hygiene, isolates, and testing discipline.",
+    "description": "Use for modern Dart engineering across Flutter, server, and CLI code with Dart 3.11-era language features, package hygiene, isolates, and testing discipline.",
     "triggers": []
   },
   {
@@ -322,15 +268,8 @@
     "maturity": "stable",
     "tier": "curated",
     "tags": [
-      "data",
-      "database",
       "database-design",
-      "databases",
-      "indexing",
-      "migrations",
-      "modeling",
-      "orm",
-      "schema"
+      "databases"
     ],
     "path": ".agents/skills/database-design/SKILL.md",
     "description": "Use when designing schemas, relationships, indexes, ORM boundaries, and safe migration plans for relational or document-oriented workloads.",
@@ -352,15 +291,8 @@
     "maturity": "stable",
     "tier": "curated",
     "tags": [
-      "data",
-      "database",
-      "database-performance",
-      "databases",
-      "indexing",
-      "locks",
-      "performance",
-      "query-plans",
-      "tuning"
+      "database-optimizer",
+      "databases"
     ],
     "path": ".agents/skills/database-optimizer/SKILL.md",
     "description": "Use for database performance triage across engines: query-plan analysis, indexing changes, wait and contention diagnosis, config tuning, and safe before/after validation.",
@@ -382,15 +314,8 @@
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "data",
-      "database",
-      "databases",
-      "indexing",
-      "migrations",
-      "nosql",
-      "query-plans",
-      "routing",
-      "sql"
+      "database-skills",
+      "databases"
     ],
     "path": ".agents/skills/database-skills/SKILL.md",
     "description": "Use as the primary database hub for engine or platform choice, schema-vs-tuning routing, access-layer triage, migration safety framing, and database task triage before deeper engine, platform, or ORM specialists.",
@@ -412,15 +337,7 @@
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "bugs",
-      "cross-stack",
-      "debugging",
-      "flaky-tests",
-      "investigation",
-      "quality",
-      "regression",
-      "root-cause",
-      "triage",
+      "debugging-strategies",
       "workflow-specialists"
     ],
     "path": ".agents/skills/debugging-strategies/SKILL.md",
@@ -438,18 +355,13 @@
     "deprecated": false,
     "replaced_by": null,
     "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
+    "category": "core-operating",
+    "layer": "core-operating",
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "corroboration",
-      "evidence",
-      "planning",
-      "research",
-      "synthesis",
-      "web-search",
-      "workflow-specialists"
+      "core-operating",
+      "deep-research"
     ],
     "path": ".agents/skills/deep-research/SKILL.md",
     "description": "Use when a task needs multi-round research rather than a quick lookup: iterative search, gap finding, corroboration across sources, contradiction handling, or evidence-led synthesis before planning or implementation.",
@@ -471,14 +383,8 @@
     "maturity": "stable",
     "tier": "curated",
     "tags": [
-      "components",
-      "design-system",
-      "frameworks-runtimes",
-      "frontend",
-      "theming",
-      "tokens",
-      "ui",
-      "variants"
+      "design-system-builder",
+      "frameworks-runtimes"
     ],
     "path": ".agents/skills/design-system-builder/SKILL.md",
     "description": "Use when creating or reviewing reusable UI components, token-driven styling, variant APIs, theming hooks, and component documentation for a design system.",
@@ -495,14 +401,13 @@
     "deprecated": false,
     "replaced_by": null,
     "aliases": [],
-    "category": "frameworks-runtimes",
-    "layer": "frameworks-runtimes",
-    "maturity": "stable",
+    "category": "workflow-specialists",
+    "layer": "workflow-specialists",
+    "maturity": "incubating",
     "tier": "experimental",
     "tags": [
       "docker-kubernetes",
-      "frameworks-runtimes",
-      "infrastructure"
+      "workflow-specialists"
     ],
     "path": ".agents/skills/docker-kubernetes/SKILL.md",
     "description": "Use for containerization strategy, Dockerfile optimization, Kubernetes deployment patterns, Helm charts, and container orchestration decisions.",
@@ -525,13 +430,7 @@
     "tier": "curated",
     "tags": [
       "databases",
-      "drizzle",
-      "drizzle-kit",
-      "migrations",
-      "orm",
-      "relations",
-      "sql",
-      "typescript"
+      "drizzle-expert"
     ],
     "path": ".agents/skills/drizzle-expert/SKILL.md",
     "description": "Use when the task is specifically Drizzle ORM or drizzle-kit: schema-as-code, typed SQL, relations, migrations, config, runtime pairing, or TypeScript database access-layer decisions across Postgres, SQLite/libSQL, Neon, or Supabase.",
@@ -553,13 +452,8 @@
     "maturity": "stable",
     "tier": "curated",
     "tags": [
-      "async",
-      "backend",
-      "fastapi",
-      "frameworks-runtimes",
-      "openapi",
-      "pydantic",
-      "python"
+      "fastapi-expert",
+      "frameworks-runtimes"
     ],
     "path": ".agents/skills/fastapi-expert/SKILL.md",
     "description": "Use when building FastAPI services with async Python, Pydantic v2, lifespan-managed resources, dependency-based auth, background task boundaries, and OpenAPI-safe request handling.",
@@ -581,17 +475,218 @@
     "maturity": "stable",
     "tier": "curated",
     "tags": [
-      "auth",
       "databases",
-      "firebase",
-      "firestore",
-      "functions",
-      "realtime-database",
-      "rules",
-      "storage"
+      "firebase"
     ],
     "path": ".agents/skills/firebase/SKILL.md",
     "description": "Use when the task is specifically Firebase: Firestore or Realtime Database choice, security rules, indexes, auth, storage, cloud functions, hosting, emulator workflows, or platform-coupled rollout decisions.",
+    "triggers": []
+  },
+  {
+    "id": "flutter-design-system",
+    "package_id": "flutter-design-system",
+    "catalog_id": "flutter-design-system",
+    "kind": "skill",
+    "name": "flutter-design-system",
+    "canonical": true,
+    "canonical_id": "flutter-design-system",
+    "deprecated": false,
+    "replaced_by": null,
+    "aliases": [],
+    "category": "workflow-specialists",
+    "layer": "workflow-specialists",
+    "maturity": "incubating",
+    "tier": "experimental",
+    "tags": [
+      "flutter-design-system",
+      "workflow-specialists"
+    ],
+    "path": ".agents/skills/flutter-design-system/SKILL.md",
+    "description": "Use when creating, auditing, or extending shared Flutter theme tokens, ThemeData, and reusable cross-feature UI primitives such as loading, error, empty, dead-letter, and sync-status components. Do not use for one-off screen styling that should remain local.",
+    "triggers": []
+  },
+  {
+    "id": "flutter-drift",
+    "package_id": "flutter-drift",
+    "catalog_id": "flutter-drift",
+    "kind": "skill",
+    "name": "flutter-drift",
+    "canonical": true,
+    "canonical_id": "flutter-drift",
+    "deprecated": false,
+    "replaced_by": null,
+    "aliases": [],
+    "category": "workflow-specialists",
+    "layer": "workflow-specialists",
+    "maturity": "incubating",
+    "tier": "experimental",
+    "tags": [
+      "flutter-drift",
+      "workflow-specialists"
+    ],
+    "path": ".agents/skills/flutter-drift/SKILL.md",
+    "description": "Use when implementing or refactoring Flutter local persistence with Drift: tables, DAOs, typed queries, indexes, transactions, and migrations. Do not use for simple key-value storage or remote-only networking work.",
+    "triggers": []
+  },
+  {
+    "id": "flutter-feature",
+    "package_id": "flutter-feature",
+    "catalog_id": "flutter-feature",
+    "kind": "skill",
+    "name": "flutter-feature",
+    "canonical": true,
+    "canonical_id": "flutter-feature",
+    "deprecated": false,
+    "replaced_by": null,
+    "aliases": [],
+    "category": "workflow-specialists",
+    "layer": "workflow-specialists",
+    "maturity": "incubating",
+    "tier": "experimental",
+    "tags": [
+      "flutter-feature",
+      "workflow-specialists"
+    ],
+    "path": ".agents/skills/flutter-feature/SKILL.md",
+    "description": "Use when scaffolding a full Flutter feature across data, domain, presentation, routing, offline sync, and tests. Do not use for isolated single-layer work when a narrower Flutter skill already fits.",
+    "triggers": []
+  },
+  {
+    "id": "flutter-go-router",
+    "package_id": "flutter-go-router",
+    "catalog_id": "flutter-go-router",
+    "kind": "skill",
+    "name": "flutter-go-router",
+    "canonical": true,
+    "canonical_id": "flutter-go-router",
+    "deprecated": false,
+    "replaced_by": null,
+    "aliases": [],
+    "category": "workflow-specialists",
+    "layer": "workflow-specialists",
+    "maturity": "incubating",
+    "tier": "experimental",
+    "tags": [
+      "flutter-go-router",
+      "workflow-specialists"
+    ],
+    "path": ".agents/skills/flutter-go-router/SKILL.md",
+    "description": "Use when adding or refactoring typed GoRouter navigation, guards, shell routes, deep links, or notification-driven routing in Flutter. Do not use for state management or feature business logic.",
+    "triggers": []
+  },
+  {
+    "id": "flutter-offline-sync",
+    "package_id": "flutter-offline-sync",
+    "catalog_id": "flutter-offline-sync",
+    "kind": "skill",
+    "name": "flutter-offline-sync",
+    "canonical": true,
+    "canonical_id": "flutter-offline-sync",
+    "deprecated": false,
+    "replaced_by": null,
+    "aliases": [],
+    "category": "workflow-specialists",
+    "layer": "workflow-specialists",
+    "maturity": "incubating",
+    "tier": "experimental",
+    "tags": [
+      "flutter-offline-sync",
+      "workflow-specialists"
+    ],
+    "path": ".agents/skills/flutter-offline-sync/SKILL.md",
+    "description": "Use when implementing or auditing offline-first sync in Flutter with a local database, outbox queue, retry policy, conflict handling, and dead-letter behavior. Do not use for simple online-only CRUD.",
+    "triggers": []
+  },
+  {
+    "id": "flutter-repository",
+    "package_id": "flutter-repository",
+    "catalog_id": "flutter-repository",
+    "kind": "skill",
+    "name": "flutter-repository",
+    "canonical": true,
+    "canonical_id": "flutter-repository",
+    "deprecated": false,
+    "replaced_by": null,
+    "aliases": [],
+    "category": "workflow-specialists",
+    "layer": "workflow-specialists",
+    "maturity": "incubating",
+    "tier": "experimental",
+    "tags": [
+      "flutter-repository",
+      "workflow-specialists"
+    ],
+    "path": ".agents/skills/flutter-repository/SKILL.md",
+    "description": "Use when building or refactoring a Flutter feature data layer: Drift tables and DAOs, DTOs, mappers, Retrofit APIs, and repository orchestration. Do not use when the task needs a full feature scaffold across presentation and routing.",
+    "triggers": []
+  },
+  {
+    "id": "flutter-riverpod",
+    "package_id": "flutter-riverpod",
+    "catalog_id": "flutter-riverpod",
+    "kind": "skill",
+    "name": "flutter-riverpod",
+    "canonical": true,
+    "canonical_id": "flutter-riverpod",
+    "deprecated": false,
+    "replaced_by": null,
+    "aliases": [],
+    "category": "frameworks-runtimes",
+    "layer": "frameworks-runtimes",
+    "maturity": "incubating",
+    "tier": "experimental",
+    "tags": [
+      "flutter-riverpod",
+      "frameworks-runtimes"
+    ],
+    "path": ".agents/skills/flutter-riverpod/SKILL.md",
+    "description": "Use when creating, refactoring, or auditing Riverpod 3 providers and notifiers in Flutter with code generation and correct lifecycle boundaries. Do not use for widget-local ephemeral state that should stay inside the UI.",
+    "triggers": []
+  },
+  {
+    "id": "flutter-state-machine",
+    "package_id": "flutter-state-machine",
+    "catalog_id": "flutter-state-machine",
+    "kind": "skill",
+    "name": "flutter-state-machine",
+    "canonical": true,
+    "canonical_id": "flutter-state-machine",
+    "deprecated": false,
+    "replaced_by": null,
+    "aliases": [],
+    "category": "workflow-specialists",
+    "layer": "workflow-specialists",
+    "maturity": "incubating",
+    "tier": "experimental",
+    "tags": [
+      "flutter-state-machine",
+      "workflow-specialists"
+    ],
+    "path": ".agents/skills/flutter-state-machine/SKILL.md",
+    "description": "Use when implementing or auditing the shared Flutter screen-state contract: loading, data, empty, error, and dead-letter rendering plus consistent error mapping. Do not use for generic Riverpod work when the project does not use this AppState pattern.",
+    "triggers": []
+  },
+  {
+    "id": "flutter-testing",
+    "package_id": "flutter-testing",
+    "catalog_id": "flutter-testing",
+    "kind": "skill",
+    "name": "flutter-testing",
+    "canonical": true,
+    "canonical_id": "flutter-testing",
+    "deprecated": false,
+    "replaced_by": null,
+    "aliases": [],
+    "category": "workflow-specialists",
+    "layer": "workflow-specialists",
+    "maturity": "incubating",
+    "tier": "experimental",
+    "tags": [
+      "flutter-testing",
+      "workflow-specialists"
+    ],
+    "path": ".agents/skills/flutter-testing/SKILL.md",
+    "description": "Use when adding or refactoring Flutter tests for repositories, services, Riverpod notifiers, widgets, and golden coverage around a feature. Do not use for production feature implementation unless the task is explicitly test-focused.",
     "triggers": []
   },
   {
@@ -610,15 +705,7 @@
     "maturity": "stable",
     "tier": "curated",
     "tags": [
-      "accessibility",
-      "code-review",
-      "frontend",
-      "nextjs",
-      "performance",
-      "react",
-      "react-web",
-      "review",
-      "ui",
+      "frontend-code-review",
       "workflow-specialists"
     ],
     "path": ".agents/skills/frontend-code-review/SKILL.md",
@@ -641,15 +728,8 @@
     "maturity": "stable",
     "tier": "curated",
     "tags": [
-      "color",
-      "design",
       "frameworks-runtimes",
-      "frontend",
-      "layout",
-      "motion",
-      "typography",
-      "ui",
-      "ux"
+      "frontend-design"
     ],
     "path": ".agents/skills/frontend-design/SKILL.md",
     "description": "Use for web UI design decisions: layout, hierarchy, typography, color, motion, and interaction clarity. This skill teaches decision-making, not a fixed visual style.",
@@ -666,14 +746,12 @@
     "deprecated": false,
     "replaced_by": null,
     "aliases": [],
-    "category": "engineering",
+    "category": "workflow-specialists",
     "layer": "workflow-specialists",
-    "maturity": "stable",
+    "maturity": "incubating",
     "tier": "experimental",
     "tags": [
-      "engineering",
       "git-workflow",
-      "git,github,gitlab,general-vcs",
       "workflow-specialists"
     ],
     "path": ".agents/skills/git-workflow/SKILL.md",
@@ -696,13 +774,8 @@
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "concurrency",
-      "go",
-      "golang",
-      "language",
-      "languages",
-      "services",
-      "tooling"
+      "golang-pro",
+      "languages"
     ],
     "path": ".agents/skills/golang-pro/SKILL.md",
     "description": "Use for modern Go services and tooling with Go 1.26-era language/runtime patterns, concurrency safety, and production operations.",
@@ -724,14 +797,8 @@
     "maturity": "stable",
     "tier": "curated",
     "tags": [
-      "api",
-      "api-architecture",
-      "dataloader",
-      "federation",
       "frameworks-runtimes",
-      "graphql",
-      "resolvers",
-      "schema"
+      "graphql-architect"
     ],
     "path": ".agents/skills/graphql-architect/SKILL.md",
     "description": "Use when designing GraphQL schemas, resolver boundaries, batching strategy, auth and policy enforcement, federation shape, query safety, and real-time graph behavior.",
@@ -753,13 +820,8 @@
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "backend",
-      "java",
-      "jvm",
-      "language",
-      "languages",
-      "observability",
-      "services"
+      "java-pro",
+      "languages"
     ],
     "path": ".agents/skills/java-pro/SKILL.md",
     "description": "Use for modern Java backend and platform engineering with Java 25-era language/runtime practices.",
@@ -781,13 +843,8 @@
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "browser",
-      "edge",
-      "javascript",
-      "language",
-      "languages",
-      "node",
-      "runtime"
+      "javascript-pro",
+      "languages"
     ],
     "path": ".agents/skills/javascript-pro/SKILL.md",
     "description": "Use for modern JavaScript architecture and implementation across browser, Node, and edge runtimes with runtime-aware production practices.",
@@ -809,13 +866,8 @@
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "android",
-      "coroutines",
-      "jvm",
-      "kotlin",
-      "language",
-      "languages",
-      "multiplatform"
+      "kotlin-pro",
+      "languages"
     ],
     "path": ".agents/skills/kotlin-pro/SKILL.md",
     "description": "Use for modern Kotlin backend/mobile/shared code with Kotlin 2.3-era language tooling and production patterns.",
@@ -832,19 +884,13 @@
     "deprecated": false,
     "replaced_by": null,
     "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
+    "category": "core-operating",
+    "layer": "core-operating",
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "evaluation",
-      "mcp",
-      "python",
-      "schemas",
-      "server",
-      "tooling",
-      "typescript",
-      "workflow-specialists"
+      "core-operating",
+      "mcp-builder"
     ],
     "path": ".agents/skills/mcp-builder/SKILL.md",
     "description": "Use when building, extending, or evaluating an MCP server: tool design, resource patterns, transports, auth, schemas, testing, Python or TypeScript implementation, or MCP-specific server architecture decisions.",
@@ -861,19 +907,13 @@
     "deprecated": false,
     "replaced_by": null,
     "aliases": [],
-    "category": "frameworks-runtimes",
-    "layer": "frameworks-runtimes",
+    "category": "workflow-specialists",
+    "layer": "workflow-specialists",
     "maturity": "stable",
     "tier": "curated",
     "tags": [
-      "architecture",
-      "ddd",
-      "distributed-systems",
-      "events",
-      "frameworks-runtimes",
-      "microservices",
-      "resilience",
-      "services"
+      "microservices-architect",
+      "workflow-specialists"
     ],
     "path": ".agents/skills/microservices-architect/SKILL.md",
     "description": "Use when decomposing systems into services, designing service boundaries, choosing sync and async integration patterns, and managing distributed-system reliability tradeoffs.",
@@ -895,14 +935,8 @@
     "maturity": "stable",
     "tier": "curated",
     "tags": [
-      "aggregation",
-      "data",
       "databases",
-      "documents",
-      "indexes",
-      "mongodb",
-      "schema",
-      "sharding"
+      "mongodb"
     ],
     "path": ".agents/skills/mongodb/SKILL.md",
     "description": "Use when the task is specifically MongoDB: document-model design, aggregation pipelines, index strategy, shard-key tradeoffs, and operational guidance for document workloads.",
@@ -924,14 +958,8 @@
     "maturity": "stable",
     "tier": "curated",
     "tags": [
-      "data",
       "databases",
-      "indexes",
-      "innodb",
-      "mysql",
-      "online-ddl",
-      "replication",
-      "transactions"
+      "mysql"
     ],
     "path": ".agents/skills/mysql/SKILL.md",
     "description": "Use when the task is specifically MySQL or InnoDB: schema/index design, transaction behavior, replication-aware migrations, query tuning, and managed MySQL operational tradeoffs.",
@@ -950,17 +978,11 @@
     "aliases": [],
     "category": "databases",
     "layer": "databases",
-    "maturity": "experimental",
+    "maturity": "stable",
     "tier": "curated",
     "tags": [
-      "data",
       "databases",
-      "distributed-postgres",
-      "neki",
-      "planetscale",
-      "postgres",
-      "routing",
-      "sharding"
+      "neki"
     ],
     "path": ".agents/skills/neki/SKILL.md",
     "description": "Use when the task is specifically Neki, PlanetScale’s sharded Postgres architecture: shard-key design, distributed Postgres tradeoffs, routing constraints, and operational decisions for large-scale Postgres workloads.",
@@ -982,14 +1004,8 @@
     "maturity": "stable",
     "tier": "curated",
     "tags": [
-      "backend",
-      "di",
-      "dto",
       "frameworks-runtimes",
-      "guards",
-      "modules",
-      "nestjs",
-      "typescript"
+      "nestjs-expert"
     ],
     "path": ".agents/skills/nestjs-expert/SKILL.md",
     "description": "Use when building NestJS services that need strong module boundaries, dependency injection, DTO validation, guards or interceptors, auth boundaries, transport-aware module design, and production-safe TypeScript backend structure.",
@@ -1011,14 +1027,8 @@
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "app-router",
       "frameworks-runtimes",
-      "frontend",
-      "nextjs",
-      "rsc",
-      "seo",
-      "server-actions",
-      "web-vitals"
+      "nextjs-developer"
     ],
     "path": ".agents/skills/nextjs-developer/SKILL.md",
     "description": "Use for implementing and reviewing Next.js App Router features, React Server Components and Actions, caching strategy, SEO, and production runtime behavior.",
@@ -1040,13 +1050,8 @@
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "backend",
       "frameworks-runtimes",
-      "nodejs",
-      "reliability",
-      "runtime",
-      "security",
-      "services"
+      "nodejs-best-practices"
     ],
     "path": ".agents/skills/nodejs-best-practices/SKILL.md",
     "description": "Use for modern Node.js backend architecture, runtime choices, worker or queue boundaries, edge-vs-server tradeoffs, reliability controls, and production-safe service implementation in the current LTS era.",
@@ -1063,14 +1068,12 @@
     "deprecated": false,
     "replaced_by": null,
     "aliases": [],
-    "category": "engineering",
+    "category": "workflow-specialists",
     "layer": "workflow-specialists",
-    "maturity": "stable",
+    "maturity": "incubating",
     "tier": "experimental",
     "tags": [
-      "engineering",
       "observability",
-      "operations",
       "workflow-specialists"
     ],
     "path": ".agents/skills/observability/SKILL.md",
@@ -1088,18 +1091,13 @@
     "deprecated": false,
     "replaced_by": null,
     "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
+    "category": "core-operating",
+    "layer": "core-operating",
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "api",
-      "docs",
-      "latest",
-      "official-sources",
-      "openai",
-      "verification",
-      "workflow-specialists"
+      "core-operating",
+      "openai-docs"
     ],
     "path": ".agents/skills/openai-docs/SKILL.md",
     "description": "Use when the task depends on current OpenAI platform or product documentation: API usage, model behavior, tool features, SDK guidance, or version-sensitive OpenAI docs that should be verified from official sources.",
@@ -1121,12 +1119,8 @@
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "backend",
-      "composer",
-      "language",
       "languages",
-      "php",
-      "strict-types"
+      "php-pro"
     ],
     "path": ".agents/skills/php-pro/SKILL.md",
     "description": "Use for modern PHP 8.4-era backend and application engineering with strict typing, framework-aware architecture, testing, and operational safety.",
@@ -1148,14 +1142,7 @@
     "maturity": "stable",
     "tier": "curated",
     "tags": [
-      "browser-testing",
-      "ci",
-      "e2e",
-      "flaky-tests",
-      "playwright",
-      "qa",
-      "quality",
-      "ui",
+      "playwright-e2e",
       "workflow-specialists"
     ],
     "path": ".agents/skills/playwright-e2e/SKILL.md",
@@ -1178,14 +1165,8 @@
     "maturity": "stable",
     "tier": "curated",
     "tags": [
-      "data",
       "databases",
-      "indexes",
-      "jsonb",
-      "partitioning",
-      "pgvector",
-      "postgres",
-      "postgresql"
+      "postgres"
     ],
     "path": ".agents/skills/postgres/SKILL.md",
     "description": "Use when the task is specifically PostgreSQL: schema design with Postgres features, query plans, indexes, JSONB, extensions, partitioning, logical replication, or managed Postgres operational tradeoffs.",
@@ -1202,18 +1183,13 @@
     "deprecated": false,
     "replaced_by": null,
     "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
+    "category": "core-operating",
+    "layer": "core-operating",
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "formatting",
-      "guardrails",
-      "injection",
-      "instructions",
-      "prompting",
-      "quality",
-      "workflow-specialists"
+      "core-operating",
+      "prompt-engineer"
     ],
     "path": ".agents/skills/prompt-engineer/SKILL.md",
     "description": "Use when a prompt, instruction set, or agent/system message needs quality review: ambiguity, missing format constraints, unsafe assumptions, injection exposure, weak trigger wording, or brittle task framing.",
@@ -1229,24 +1205,40 @@
     "canonical_id": "python-pro",
     "deprecated": false,
     "replaced_by": null,
-    "aliases": [
-      "python-patterns"
-    ],
+    "aliases": [],
     "category": "languages",
     "layer": "languages",
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "async",
-      "language",
       "languages",
-      "packaging",
-      "pytest",
-      "python",
-      "typing"
+      "python-pro"
     ],
     "path": ".agents/skills/python-pro/SKILL.md",
-    "description": "Use for production Python with 3.14-era typing, async, packaging, and testing standards.",
+    "description": "Use for production Python with 3.14-era typing, async, packaging, and testing standards. Use when building Python backend services, migrating legacy Python to typed architecture, implementing async I/O, or setting up pytest and packaging workflows.",
+    "triggers": []
+  },
+  {
+    "id": "react-best-practices",
+    "package_id": "react-best-practices",
+    "catalog_id": "react-best-practices",
+    "kind": "skill",
+    "name": "react-best-practices",
+    "canonical": true,
+    "canonical_id": "react-best-practices",
+    "deprecated": false,
+    "replaced_by": null,
+    "aliases": [],
+    "category": "frameworks-runtimes",
+    "layer": "frameworks-runtimes",
+    "maturity": "incubating",
+    "tier": "experimental",
+    "tags": [
+      "frameworks-runtimes",
+      "react-best-practices"
+    ],
+    "path": ".agents/skills/react-best-practices/SKILL.md",
+    "description": "Use for performance-focused React and Next.js optimization audits, rerender analysis, bundle reduction, and server-rendering efficiency reviews.",
     "triggers": []
   },
   {
@@ -1265,13 +1257,8 @@
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "components",
       "frameworks-runtimes",
-      "frontend",
-      "hooks",
-      "performance",
-      "react",
-      "state"
+      "react-expert"
     ],
     "path": ".agents/skills/react-expert/SKILL.md",
     "description": "Use for framework-agnostic React architecture with React 19 patterns, state design, component boundaries, and rendering-performance decisions.",
@@ -1293,14 +1280,8 @@
     "maturity": "stable",
     "tier": "curated",
     "tags": [
-      "cache",
-      "data",
       "databases",
-      "eviction",
-      "queues",
-      "rate-limits",
-      "redis",
-      "ttl"
+      "redis"
     ],
     "path": ".agents/skills/redis/SKILL.md",
     "description": "Use when the task is specifically Redis: cache design, key strategy, TTLs, queues, rate limiting, pub/sub, memory tradeoffs, and safe persistence or eviction decisions.",
@@ -1322,12 +1303,8 @@
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "backend",
-      "bundler",
-      "language",
       "languages",
-      "ruby",
-      "scripting"
+      "ruby-pro"
     ],
     "path": ".agents/skills/ruby-pro/SKILL.md",
     "description": "Use for modern Ruby 3.4-era backend, scripting, and application engineering with clear object boundaries, concurrency awareness, and test discipline.",
@@ -1343,24 +1320,17 @@
     "canonical_id": "rust-pro",
     "deprecated": false,
     "replaced_by": null,
-    "aliases": [
-      "rust-engineer"
-    ],
+    "aliases": [],
     "category": "languages",
     "layer": "languages",
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "async",
-      "language",
       "languages",
-      "performance",
-      "rust",
-      "services",
-      "systems"
+      "rust-pro"
     ],
     "path": ".agents/skills/rust-pro/SKILL.md",
-    "description": "Use for modern Rust systems/services with stable 1.91-era patterns, async correctness, and performance-focused design.",
+    "description": "Use for modern Rust systems/services with stable 1.94-era patterns, async correctness, and performance-focused design.",
     "triggers": []
   },
   {
@@ -1374,19 +1344,16 @@
     "deprecated": false,
     "replaced_by": null,
     "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
+    "category": "core-operating",
+    "layer": "core-operating",
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "platform-adapters",
-      "skill-creation",
-      "skill-packaging",
-      "workflow-automation",
-      "workflow-specialists"
+      "core-operating",
+      "skill-creator"
     ],
     "path": ".agents/skills/skill-creator/SKILL.md",
-    "description": "Use when creating, rebuilding, or repairing a Foundry skill package, workflow skill, or agent-facing skill surface across Codex, Claude, Copilot, Antigravity, Cursor, and Windsurf. Do not use for prompt-only tweaks or edits to one generated mirror.",
+    "description": "Create, test, improve, and package portable AI skills using the Agent Skills SKILL.md format across Claude Code, Codex, and GitHub Copilot, with Gemini conversion when needed. Use this when the user wants to build, repair, benchmark, or iterate on a reusable skill package.",
     "triggers": []
   },
   {
@@ -1405,14 +1372,8 @@
     "maturity": "stable",
     "tier": "curated",
     "tags": [
-      "data",
       "databases",
-      "embedded",
-      "libsql",
-      "local-first",
-      "sqlite",
-      "turso",
-      "wal"
+      "sqlite"
     ],
     "path": ".agents/skills/sqlite/SKILL.md",
     "description": "Use when the task is specifically SQLite or libSQL/Turso-style SQLite: local-first schema design, WAL/concurrency tradeoffs, embedded deployments, and lightweight migration strategy.",
@@ -1434,13 +1395,7 @@
     "maturity": "stable",
     "tier": "curated",
     "tags": [
-      "auth",
-      "data",
       "databases",
-      "edge-functions",
-      "postgres",
-      "rls",
-      "storage",
       "supabase"
     ],
     "path": ".agents/skills/supabase/SKILL.md",
@@ -1463,12 +1418,8 @@
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "apple-platforms",
-      "concurrency",
-      "language",
       "languages",
-      "spm",
-      "swift"
+      "swift-pro"
     ],
     "path": ".agents/skills/swift-pro/SKILL.md",
     "description": "Use for modern Swift 6.1-era application and systems engineering with strong concurrency, protocol boundaries, package structure, and Apple-platform correctness.",
@@ -1491,9 +1442,7 @@
     "tier": "curated",
     "tags": [
       "frameworks-runtimes",
-      "frontend",
-      "tailwind-patterns",
-      "tailwindcss"
+      "tailwind-patterns"
     ],
     "path": ".agents/skills/tailwind-patterns/SKILL.md",
     "description": "Use for Tailwind CSS v4 architecture, CSS-first theme setup, utility composition, container-query usage, design-token hygiene, and dark-mode strategy.",
@@ -1515,16 +1464,11 @@
     "maturity": "stable",
     "tier": "system",
     "tags": [
-      "api-contracts",
-      "language",
       "languages",
-      "monorepo",
-      "strictness",
-      "types",
-      "typescript"
+      "typescript-pro"
     ],
     "path": ".agents/skills/typescript-pro/SKILL.md",
-    "description": "Use for TypeScript architecture and implementation with TS 5.9+ production baselines and TS 6/7 transition readiness.",
+    "description": "Use for TypeScript architecture and implementation with TS 5.9+ production baselines and TS 6/7 transition readiness. Use when designing type-safe APIs, refactoring to strict TypeScript, reducing type regressions in monorepos, or preparing for TS 6/7 behavior shifts.",
     "triggers": []
   },
   {
@@ -1543,13 +1487,7 @@
     "maturity": "stable",
     "tier": "curated",
     "tags": [
-      "data",
       "databases",
-      "mysql",
-      "online-ddl",
-      "routing",
-      "sharding",
-      "vindexes",
       "vitess"
     ],
     "path": ".agents/skills/vitess/SKILL.md",
@@ -1572,16 +1510,8 @@
     "maturity": "stable",
     "tier": "curated",
     "tags": [
-      "bundles",
-      "cls",
-      "core-web-vitals",
       "frameworks-runtimes",
-      "frontend",
-      "inp",
-      "lcp",
-      "network",
-      "performance",
-      "web-performance"
+      "web-perf"
     ],
     "path": ".agents/skills/web-perf/SKILL.md",
     "description": "Use for measuring and improving web performance with Core Web Vitals, rendering-path analysis, bundle and network prioritization, and framework-aware delivery tradeoffs.",
@@ -1598,21 +1528,13 @@
     "deprecated": false,
     "replaced_by": null,
     "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
+    "category": "frameworks-runtimes",
+    "layer": "frameworks-runtimes",
     "maturity": "stable",
     "tier": "curated",
     "tags": [
-      "accessibility",
-      "coverage",
-      "e2e",
-      "integration",
-      "qa",
-      "quality",
-      "release",
-      "testing",
-      "web",
-      "workflow-specialists"
+      "frameworks-runtimes",
+      "webapp-testing"
     ],
     "path": ".agents/skills/webapp-testing/SKILL.md",
     "description": "Use when choosing test depth for a web product, balancing unit, integration, browser, accessibility, and contract checks, or reviewing whether a change has the right verification shape before release.",

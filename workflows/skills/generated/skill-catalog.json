@@ -2,10 +2,10 @@
   "$schema": "cubis-foundry-skill-catalog-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
   "summary": {
-    "totalEntries": 57,
-    "totalSkills": 57,
+    "totalEntries": 67,
+    "totalSkills": 67,
     "totalSubskills": 0,
-    "canonicalSkills": 57,
+    "canonicalSkills": 67,
     "compatibilityAliases": 0,
     "layers": [
       "core-operating",
@@ -17,7 +17,6 @@
     "categories": [
       "core-operating",
       "databases",
-      "engineering",
       "frameworks-runtimes",
       "languages",
       "workflow-specialists"
@@ -42,15 +41,13 @@
       "deprecated": false,
       "replaced_by": null,
       "aliases": [],
-      "category": "frameworks-runtimes",
-      "layer": "frameworks-runtimes",
-      "maturity": "stable",
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
       "tier": "experimental",
       "tags": [
         "accessibility",
-        "frameworks-runtimes",
-        "frontend",
-        "web-accessibility"
+        "workflow-specialists"
       ],
       "triggers": []
     },
@@ -67,18 +64,13 @@
       "deprecated": false,
       "replaced_by": null,
       "aliases": [],
-      "category": "workflow-specialists",
-      "layer": "workflow-specialists",
+      "category": "core-operating",
+      "layer": "core-operating",
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "agents",
-        "benchmarking",
-        "evaluation",
-        "judge-models",
-        "regression",
-        "rubrics",
-        "workflow-specialists"
+        "agentic-eval",
+        "core-operating"
       ],
       "triggers": []
     },
@@ -100,14 +92,8 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "api",
-        "api-design",
-        "core-operating",
-        "graphql",
-        "openapi",
-        "pagination",
-        "rest",
-        "versioning"
+        "api-designer",
+        "core-operating"
       ],
       "triggers": []
     },
@@ -129,15 +115,8 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "api",
-        "api-design",
-        "auth",
-        "core-operating",
-        "graphql",
-        "pagination",
-        "rest",
-        "rpc",
-        "versioning"
+        "api-patterns",
+        "core-operating"
       ],
       "triggers": []
     },
@@ -159,13 +138,8 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "adrs",
-        "architecture",
-        "boundaries",
-        "core-operating",
-        "scalability",
-        "system-design",
-        "tradeoffs"
+        "architecture-designer",
+        "core-operating"
       ],
       "triggers": []
     },
@@ -182,22 +156,13 @@
       "deprecated": false,
       "replaced_by": null,
       "aliases": [],
-      "category": "frameworks-runtimes",
-      "layer": "frameworks-runtimes",
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
       "maturity": "stable",
       "tier": "curated",
       "tags": [
-        "abac",
-        "auth",
-        "authorization",
-        "frameworks-runtimes",
-        "jwt",
-        "oauth",
-        "oidc",
-        "passkeys",
-        "rbac",
-        "security",
-        "sessions"
+        "auth-architect",
+        "workflow-specialists"
       ],
       "triggers": []
     },
@@ -219,12 +184,8 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "c",
-        "embedded",
-        "language",
-        "languages",
-        "memory-safety",
-        "systems"
+        "c-pro",
+        "languages"
       ],
       "triggers": []
     },
@@ -241,15 +202,12 @@
       "deprecated": false,
       "replaced_by": null,
       "aliases": [],
-      "category": "engineering",
+      "category": "workflow-specialists",
       "layer": "workflow-specialists",
-      "maturity": "stable",
+      "maturity": "incubating",
       "tier": "experimental",
       "tags": [
         "ci-cd-pipelines",
-        "devops",
-        "engineering",
-        "github-actions,gitlab-ci,jenkins,general-ci",
         "workflow-specialists"
       ],
       "triggers": []
@@ -272,12 +230,8 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "c++",
-        "cpp",
-        "language",
-        "languages",
-        "performance",
-        "systems"
+        "cpp-pro",
+        "languages"
       ],
       "triggers": []
     },
@@ -288,7 +242,7 @@
       "kind": "skill",
       "path": "workflows/skills/csharp-pro/SKILL.md",
       "name": "csharp-pro",
-      "description": "Use for modern C# backend/application engineering with C# 14 and .NET 10-era production practices.",
+      "description": "Use for modern C# backend/application engineering with C# 15 and .NET 11-era production practices.",
       "canonical": true,
       "canonical_id": "csharp-pro",
       "deprecated": false,
@@ -299,13 +253,8 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "apis",
-        "async",
-        "csharp",
-        "dotnet",
-        "language",
-        "languages",
-        "services"
+        "csharp-pro",
+        "languages"
       ],
       "triggers": []
     },
@@ -316,7 +265,7 @@
       "kind": "skill",
       "path": "workflows/skills/dart-pro/SKILL.md",
       "name": "dart-pro",
-      "description": "Use for modern Dart engineering across Flutter, server, and CLI code with Dart 3.9-era language features, package hygiene, isolates, and testing discipline.",
+      "description": "Use for modern Dart engineering across Flutter, server, and CLI code with Dart 3.11-era language features, package hygiene, isolates, and testing discipline.",
       "canonical": true,
       "canonical_id": "dart-pro",
       "deprecated": false,
@@ -327,12 +276,8 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "dart",
-        "flutter",
-        "isolates",
-        "language",
-        "languages",
-        "packages"
+        "dart-pro",
+        "languages"
       ],
       "triggers": []
     },
@@ -354,15 +299,8 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
-        "data",
-        "database",
         "database-design",
-        "databases",
-        "indexing",
-        "migrations",
-        "modeling",
-        "orm",
-        "schema"
+        "databases"
       ],
       "triggers": []
     },
@@ -384,15 +322,8 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
-        "data",
-        "database",
-        "database-performance",
-        "databases",
-        "indexing",
-        "locks",
-        "performance",
-        "query-plans",
-        "tuning"
+        "database-optimizer",
+        "databases"
       ],
       "triggers": []
     },
@@ -414,15 +345,8 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "data",
-        "database",
-        "databases",
-        "indexing",
-        "migrations",
-        "nosql",
-        "query-plans",
-        "routing",
-        "sql"
+        "database-skills",
+        "databases"
       ],
       "triggers": []
     },
@@ -444,15 +368,7 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "bugs",
-        "cross-stack",
-        "debugging",
-        "flaky-tests",
-        "investigation",
-        "quality",
-        "regression",
-        "root-cause",
-        "triage",
+        "debugging-strategies",
         "workflow-specialists"
       ],
       "triggers": []
@@ -470,18 +386,13 @@
       "deprecated": false,
       "replaced_by": null,
       "aliases": [],
-      "category": "workflow-specialists",
-      "layer": "workflow-specialists",
+      "category": "core-operating",
+      "layer": "core-operating",
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "corroboration",
-        "evidence",
-        "planning",
-        "research",
-        "synthesis",
-        "web-search",
-        "workflow-specialists"
+        "core-operating",
+        "deep-research"
       ],
       "triggers": []
     },
@@ -503,14 +414,8 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
-        "components",
-        "design-system",
-        "frameworks-runtimes",
-        "frontend",
-        "theming",
-        "tokens",
-        "ui",
-        "variants"
+        "design-system-builder",
+        "frameworks-runtimes"
       ],
       "triggers": []
     },
@@ -527,14 +432,13 @@
       "deprecated": false,
       "replaced_by": null,
       "aliases": [],
-      "category": "frameworks-runtimes",
-      "layer": "frameworks-runtimes",
-      "maturity": "stable",
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
       "tier": "experimental",
       "tags": [
         "docker-kubernetes",
-        "frameworks-runtimes",
-        "infrastructure"
+        "workflow-specialists"
       ],
       "triggers": []
     },
@@ -557,13 +461,7 @@
       "tier": "curated",
       "tags": [
         "databases",
-        "drizzle",
-        "drizzle-kit",
-        "migrations",
-        "orm",
-        "relations",
-        "sql",
-        "typescript"
+        "drizzle-expert"
       ],
       "triggers": []
     },
@@ -585,13 +483,8 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
-        "async",
-        "backend",
-        "fastapi",
-        "frameworks-runtimes",
-        "openapi",
-        "pydantic",
-        "python"
+        "fastapi-expert",
+        "frameworks-runtimes"
       ],
       "triggers": []
     },
@@ -613,14 +506,215 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
-        "auth",
         "databases",
-        "firebase",
-        "firestore",
-        "functions",
-        "realtime-database",
-        "rules",
-        "storage"
+        "firebase"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "flutter-design-system",
+      "package_id": "flutter-design-system",
+      "catalog_id": "flutter-design-system",
+      "kind": "skill",
+      "path": "workflows/skills/flutter-design-system/SKILL.md",
+      "name": "flutter-design-system",
+      "description": "Use when creating, auditing, or extending shared Flutter theme tokens, ThemeData, and reusable cross-feature UI primitives such as loading, error, empty, dead-letter, and sync-status components. Do not use for one-off screen styling that should remain local.",
+      "canonical": true,
+      "canonical_id": "flutter-design-system",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "flutter-design-system",
+        "workflow-specialists"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "flutter-drift",
+      "package_id": "flutter-drift",
+      "catalog_id": "flutter-drift",
+      "kind": "skill",
+      "path": "workflows/skills/flutter-drift/SKILL.md",
+      "name": "flutter-drift",
+      "description": "Use when implementing or refactoring Flutter local persistence with Drift: tables, DAOs, typed queries, indexes, transactions, and migrations. Do not use for simple key-value storage or remote-only networking work.",
+      "canonical": true,
+      "canonical_id": "flutter-drift",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "flutter-drift",
+        "workflow-specialists"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "flutter-feature",
+      "package_id": "flutter-feature",
+      "catalog_id": "flutter-feature",
+      "kind": "skill",
+      "path": "workflows/skills/flutter-feature/SKILL.md",
+      "name": "flutter-feature",
+      "description": "Use when scaffolding a full Flutter feature across data, domain, presentation, routing, offline sync, and tests. Do not use for isolated single-layer work when a narrower Flutter skill already fits.",
+      "canonical": true,
+      "canonical_id": "flutter-feature",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "flutter-feature",
+        "workflow-specialists"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "flutter-go-router",
+      "package_id": "flutter-go-router",
+      "catalog_id": "flutter-go-router",
+      "kind": "skill",
+      "path": "workflows/skills/flutter-go-router/SKILL.md",
+      "name": "flutter-go-router",
+      "description": "Use when adding or refactoring typed GoRouter navigation, guards, shell routes, deep links, or notification-driven routing in Flutter. Do not use for state management or feature business logic.",
+      "canonical": true,
+      "canonical_id": "flutter-go-router",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "flutter-go-router",
+        "workflow-specialists"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "flutter-offline-sync",
+      "package_id": "flutter-offline-sync",
+      "catalog_id": "flutter-offline-sync",
+      "kind": "skill",
+      "path": "workflows/skills/flutter-offline-sync/SKILL.md",
+      "name": "flutter-offline-sync",
+      "description": "Use when implementing or auditing offline-first sync in Flutter with a local database, outbox queue, retry policy, conflict handling, and dead-letter behavior. Do not use for simple online-only CRUD.",
+      "canonical": true,
+      "canonical_id": "flutter-offline-sync",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "flutter-offline-sync",
+        "workflow-specialists"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "flutter-repository",
+      "package_id": "flutter-repository",
+      "catalog_id": "flutter-repository",
+      "kind": "skill",
+      "path": "workflows/skills/flutter-repository/SKILL.md",
+      "name": "flutter-repository",
+      "description": "Use when building or refactoring a Flutter feature data layer: Drift tables and DAOs, DTOs, mappers, Retrofit APIs, and repository orchestration. Do not use when the task needs a full feature scaffold across presentation and routing.",
+      "canonical": true,
+      "canonical_id": "flutter-repository",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "flutter-repository",
+        "workflow-specialists"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "flutter-riverpod",
+      "package_id": "flutter-riverpod",
+      "catalog_id": "flutter-riverpod",
+      "kind": "skill",
+      "path": "workflows/skills/flutter-riverpod/SKILL.md",
+      "name": "flutter-riverpod",
+      "description": "Use when creating, refactoring, or auditing Riverpod 3 providers and notifiers in Flutter with code generation and correct lifecycle boundaries. Do not use for widget-local ephemeral state that should stay inside the UI.",
+      "canonical": true,
+      "canonical_id": "flutter-riverpod",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "frameworks-runtimes",
+      "layer": "frameworks-runtimes",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "flutter-riverpod",
+        "frameworks-runtimes"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "flutter-state-machine",
+      "package_id": "flutter-state-machine",
+      "catalog_id": "flutter-state-machine",
+      "kind": "skill",
+      "path": "workflows/skills/flutter-state-machine/SKILL.md",
+      "name": "flutter-state-machine",
+      "description": "Use when implementing or auditing the shared Flutter screen-state contract: loading, data, empty, error, and dead-letter rendering plus consistent error mapping. Do not use for generic Riverpod work when the project does not use this AppState pattern.",
+      "canonical": true,
+      "canonical_id": "flutter-state-machine",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "flutter-state-machine",
+        "workflow-specialists"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "flutter-testing",
+      "package_id": "flutter-testing",
+      "catalog_id": "flutter-testing",
+      "kind": "skill",
+      "path": "workflows/skills/flutter-testing/SKILL.md",
+      "name": "flutter-testing",
+      "description": "Use when adding or refactoring Flutter tests for repositories, services, Riverpod notifiers, widgets, and golden coverage around a feature. Do not use for production feature implementation unless the task is explicitly test-focused.",
+      "canonical": true,
+      "canonical_id": "flutter-testing",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "flutter-testing",
+        "workflow-specialists"
       ],
       "triggers": []
     },
@@ -642,15 +736,7 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
-        "accessibility",
-        "code-review",
-        "frontend",
-        "nextjs",
-        "performance",
-        "react",
-        "react-web",
-        "review",
-        "ui",
+        "frontend-code-review",
         "workflow-specialists"
       ],
       "triggers": []
@@ -673,15 +759,8 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
-        "color",
-        "design",
         "frameworks-runtimes",
-        "frontend",
-        "layout",
-        "motion",
-        "typography",
-        "ui",
-        "ux"
+        "frontend-design"
       ],
       "triggers": []
     },
@@ -698,14 +777,12 @@
       "deprecated": false,
       "replaced_by": null,
       "aliases": [],
-      "category": "engineering",
+      "category": "workflow-specialists",
       "layer": "workflow-specialists",
-      "maturity": "stable",
+      "maturity": "incubating",
       "tier": "experimental",
       "tags": [
-        "engineering",
         "git-workflow",
-        "git,github,gitlab,general-vcs",
         "workflow-specialists"
       ],
       "triggers": []
@@ -728,13 +805,8 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "concurrency",
-        "go",
-        "golang",
-        "language",
-        "languages",
-        "services",
-        "tooling"
+        "golang-pro",
+        "languages"
       ],
       "triggers": []
     },
@@ -756,14 +828,8 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
-        "api",
-        "api-architecture",
-        "dataloader",
-        "federation",
         "frameworks-runtimes",
-        "graphql",
-        "resolvers",
-        "schema"
+        "graphql-architect"
       ],
       "triggers": []
     },
@@ -785,13 +851,8 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "backend",
-        "java",
-        "jvm",
-        "language",
-        "languages",
-        "observability",
-        "services"
+        "java-pro",
+        "languages"
       ],
       "triggers": []
     },
@@ -813,13 +874,8 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "browser",
-        "edge",
-        "javascript",
-        "language",
-        "languages",
-        "node",
-        "runtime"
+        "javascript-pro",
+        "languages"
       ],
       "triggers": []
     },
@@ -841,13 +897,8 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "android",
-        "coroutines",
-        "jvm",
-        "kotlin",
-        "language",
-        "languages",
-        "multiplatform"
+        "kotlin-pro",
+        "languages"
       ],
       "triggers": []
     },
@@ -864,19 +915,13 @@
       "deprecated": false,
       "replaced_by": null,
       "aliases": [],
-      "category": "workflow-specialists",
-      "layer": "workflow-specialists",
+      "category": "core-operating",
+      "layer": "core-operating",
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "evaluation",
-        "mcp",
-        "python",
-        "schemas",
-        "server",
-        "tooling",
-        "typescript",
-        "workflow-specialists"
+        "core-operating",
+        "mcp-builder"
       ],
       "triggers": []
     },
@@ -893,19 +938,13 @@
       "deprecated": false,
       "replaced_by": null,
       "aliases": [],
-      "category": "frameworks-runtimes",
-      "layer": "frameworks-runtimes",
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
       "maturity": "stable",
       "tier": "curated",
       "tags": [
-        "architecture",
-        "ddd",
-        "distributed-systems",
-        "events",
-        "frameworks-runtimes",
-        "microservices",
-        "resilience",
-        "services"
+        "microservices-architect",
+        "workflow-specialists"
       ],
       "triggers": []
     },
@@ -927,14 +966,8 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
-        "aggregation",
-        "data",
         "databases",
-        "documents",
-        "indexes",
-        "mongodb",
-        "schema",
-        "sharding"
+        "mongodb"
       ],
       "triggers": []
     },
@@ -956,14 +989,8 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
-        "data",
         "databases",
-        "indexes",
-        "innodb",
-        "mysql",
-        "online-ddl",
-        "replication",
-        "transactions"
+        "mysql"
       ],
       "triggers": []
     },
@@ -982,17 +1009,11 @@
       "aliases": [],
       "category": "databases",
       "layer": "databases",
-      "maturity": "experimental",
+      "maturity": "stable",
       "tier": "curated",
       "tags": [
-        "data",
         "databases",
-        "distributed-postgres",
-        "neki",
-        "planetscale",
-        "postgres",
-        "routing",
-        "sharding"
+        "neki"
       ],
       "triggers": []
     },
@@ -1014,14 +1035,8 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
-        "backend",
-        "di",
-        "dto",
         "frameworks-runtimes",
-        "guards",
-        "modules",
-        "nestjs",
-        "typescript"
+        "nestjs-expert"
       ],
       "triggers": []
     },
@@ -1043,14 +1058,8 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "app-router",
         "frameworks-runtimes",
-        "frontend",
-        "nextjs",
-        "rsc",
-        "seo",
-        "server-actions",
-        "web-vitals"
+        "nextjs-developer"
       ],
       "triggers": []
     },
@@ -1072,13 +1081,8 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "backend",
         "frameworks-runtimes",
-        "nodejs",
-        "reliability",
-        "runtime",
-        "security",
-        "services"
+        "nodejs-best-practices"
       ],
       "triggers": []
     },
@@ -1095,14 +1099,12 @@
       "deprecated": false,
       "replaced_by": null,
       "aliases": [],
-      "category": "engineering",
+      "category": "workflow-specialists",
       "layer": "workflow-specialists",
-      "maturity": "stable",
+      "maturity": "incubating",
       "tier": "experimental",
       "tags": [
-        "engineering",
         "observability",
-        "operations",
         "workflow-specialists"
       ],
       "triggers": []
@@ -1120,18 +1122,13 @@
       "deprecated": false,
       "replaced_by": null,
       "aliases": [],
-      "category": "workflow-specialists",
-      "layer": "workflow-specialists",
+      "category": "core-operating",
+      "layer": "core-operating",
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "api",
-        "docs",
-        "latest",
-        "official-sources",
-        "openai",
-        "verification",
-        "workflow-specialists"
+        "core-operating",
+        "openai-docs"
       ],
       "triggers": []
     },
@@ -1153,12 +1150,8 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "backend",
-        "composer",
-        "language",
         "languages",
-        "php",
-        "strict-types"
+        "php-pro"
       ],
       "triggers": []
     },
@@ -1180,14 +1173,7 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
-        "browser-testing",
-        "ci",
-        "e2e",
-        "flaky-tests",
-        "playwright",
-        "qa",
-        "quality",
-        "ui",
+        "playwright-e2e",
         "workflow-specialists"
       ],
       "triggers": []
@@ -1210,14 +1196,8 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
-        "data",
         "databases",
-        "indexes",
-        "jsonb",
-        "partitioning",
-        "pgvector",
-        "postgres",
-        "postgresql"
+        "postgres"
       ],
       "triggers": []
     },
@@ -1234,18 +1214,13 @@
       "deprecated": false,
       "replaced_by": null,
       "aliases": [],
-      "category": "workflow-specialists",
-      "layer": "workflow-specialists",
+      "category": "core-operating",
+      "layer": "core-operating",
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "formatting",
-        "guardrails",
-        "injection",
-        "instructions",
-        "prompting",
-        "quality",
-        "workflow-specialists"
+        "core-operating",
+        "prompt-engineer"
       ],
       "triggers": []
     },
@@ -1256,26 +1231,42 @@
       "kind": "skill",
       "path": "workflows/skills/python-pro/SKILL.md",
       "name": "python-pro",
-      "description": "Use for production Python with 3.14-era typing, async, packaging, and testing standards.",
+      "description": "Use for production Python with 3.14-era typing, async, packaging, and testing standards. Use when building Python backend services, migrating legacy Python to typed architecture, implementing async I/O, or setting up pytest and packaging workflows.",
       "canonical": true,
       "canonical_id": "python-pro",
       "deprecated": false,
       "replaced_by": null,
-      "aliases": [
-        "python-patterns"
-      ],
+      "aliases": [],
       "category": "languages",
       "layer": "languages",
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "async",
-        "language",
         "languages",
-        "packaging",
-        "pytest",
-        "python",
-        "typing"
+        "python-pro"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "react-best-practices",
+      "package_id": "react-best-practices",
+      "catalog_id": "react-best-practices",
+      "kind": "skill",
+      "path": "workflows/skills/react-best-practices/SKILL.md",
+      "name": "react-best-practices",
+      "description": "Use for performance-focused React and Next.js optimization audits, rerender analysis, bundle reduction, and server-rendering efficiency reviews.",
+      "canonical": true,
+      "canonical_id": "react-best-practices",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "frameworks-runtimes",
+      "layer": "frameworks-runtimes",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "frameworks-runtimes",
+        "react-best-practices"
       ],
       "triggers": []
     },
@@ -1297,13 +1288,8 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "components",
         "frameworks-runtimes",
-        "frontend",
-        "hooks",
-        "performance",
-        "react",
-        "state"
+        "react-expert"
       ],
       "triggers": []
     },
@@ -1325,14 +1311,8 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
-        "cache",
-        "data",
         "databases",
-        "eviction",
-        "queues",
-        "rate-limits",
-        "redis",
-        "ttl"
+        "redis"
       ],
       "triggers": []
     },
@@ -1354,12 +1334,8 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "backend",
-        "bundler",
-        "language",
         "languages",
-        "ruby",
-        "scripting"
+        "ruby-pro"
       ],
       "triggers": []
     },
@@ -1370,26 +1346,19 @@
       "kind": "skill",
       "path": "workflows/skills/rust-pro/SKILL.md",
       "name": "rust-pro",
-      "description": "Use for modern Rust systems/services with stable 1.91-era patterns, async correctness, and performance-focused design.",
+      "description": "Use for modern Rust systems/services with stable 1.94-era patterns, async correctness, and performance-focused design.",
       "canonical": true,
       "canonical_id": "rust-pro",
       "deprecated": false,
       "replaced_by": null,
-      "aliases": [
-        "rust-engineer"
-      ],
+      "aliases": [],
       "category": "languages",
       "layer": "languages",
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "async",
-        "language",
         "languages",
-        "performance",
-        "rust",
-        "services",
-        "systems"
+        "rust-pro"
       ],
       "triggers": []
     },
@@ -1400,22 +1369,19 @@
       "kind": "skill",
       "path": "workflows/skills/skill-creator/SKILL.md",
       "name": "skill-creator",
-      "description": "Use when creating, rebuilding, or repairing a Foundry skill package, workflow skill, or agent-facing skill surface across Codex, Claude, Copilot, Antigravity, Cursor, and Windsurf. Do not use for prompt-only tweaks or edits to one generated mirror.",
+      "description": "Create, test, improve, and package portable AI skills using the Agent Skills SKILL.md format across Claude Code, Codex, and GitHub Copilot, with Gemini conversion when needed. Use this when the user wants to build, repair, benchmark, or iterate on a reusable skill package.",
       "canonical": true,
       "canonical_id": "skill-creator",
       "deprecated": false,
       "replaced_by": null,
       "aliases": [],
-      "category": "workflow-specialists",
-      "layer": "workflow-specialists",
+      "category": "core-operating",
+      "layer": "core-operating",
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "platform-adapters",
-        "skill-creation",
-        "skill-packaging",
-        "workflow-automation",
-        "workflow-specialists"
+        "core-operating",
+        "skill-creator"
       ],
       "triggers": []
     },
@@ -1437,14 +1403,8 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
-        "data",
         "databases",
-        "embedded",
-        "libsql",
-        "local-first",
-        "sqlite",
-        "turso",
-        "wal"
+        "sqlite"
       ],
       "triggers": []
     },
@@ -1466,13 +1426,7 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
-        "auth",
-        "data",
         "databases",
-        "edge-functions",
-        "postgres",
-        "rls",
-        "storage",
         "supabase"
       ],
       "triggers": []
@@ -1495,12 +1449,8 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "apple-platforms",
-        "concurrency",
-        "language",
         "languages",
-        "spm",
-        "swift"
+        "swift-pro"
       ],
       "triggers": []
     },
@@ -1523,9 +1473,7 @@
       "tier": "curated",
       "tags": [
         "frameworks-runtimes",
-        "frontend",
-        "tailwind-patterns",
-        "tailwindcss"
+        "tailwind-patterns"
       ],
       "triggers": []
     },
@@ -1536,7 +1484,7 @@
       "kind": "skill",
       "path": "workflows/skills/typescript-pro/SKILL.md",
       "name": "typescript-pro",
-      "description": "Use for TypeScript architecture and implementation with TS 5.9+ production baselines and TS 6/7 transition readiness.",
+      "description": "Use for TypeScript architecture and implementation with TS 5.9+ production baselines and TS 6/7 transition readiness. Use when designing type-safe APIs, refactoring to strict TypeScript, reducing type regressions in monorepos, or preparing for TS 6/7 behavior shifts.",
       "canonical": true,
       "canonical_id": "typescript-pro",
       "deprecated": false,
@@ -1547,13 +1495,8 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
-        "api-contracts",
-        "language",
         "languages",
-        "monorepo",
-        "strictness",
-        "types",
-        "typescript"
+        "typescript-pro"
       ],
       "triggers": []
     },
@@ -1575,13 +1518,7 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
-        "data",
         "databases",
-        "mysql",
-        "online-ddl",
-        "routing",
-        "sharding",
-        "vindexes",
         "vitess"
       ],
       "triggers": []
@@ -1604,16 +1541,8 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
-        "bundles",
-        "cls",
-        "core-web-vitals",
         "frameworks-runtimes",
-        "frontend",
-        "inp",
-        "lcp",
-        "network",
-        "performance",
-        "web-performance"
+        "web-perf"
       ],
       "triggers": []
     },
@@ -1630,24 +1559,16 @@
       "deprecated": false,
       "replaced_by": null,
       "aliases": [],
-      "category": "workflow-specialists",
-      "layer": "workflow-specialists",
+      "category": "frameworks-runtimes",
+      "layer": "frameworks-runtimes",
       "maturity": "stable",
       "tier": "curated",
       "tags": [
-        "accessibility",
-        "coverage",
-        "e2e",
-        "integration",
-        "qa",
-        "quality",
-        "release",
-        "testing",
-        "web",
-        "workflow-specialists"
+        "frameworks-runtimes",
+        "webapp-testing"
       ],
       "triggers": []
     }
   ],
-  "contentHash": "8c916d2a21497ee6"
+  "contentHash": "aa6a6650925266b6"
 }
