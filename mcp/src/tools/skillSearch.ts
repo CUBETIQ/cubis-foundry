@@ -7,7 +7,6 @@
 
 import { z } from "zod";
 import type { VaultManifest } from "../vault/types.js";
-import { enrichWithDescriptions } from "../vault/manifest.js";
 import {
   buildSkillToolMetrics,
   estimateTokensFromBytes,
@@ -74,6 +73,20 @@ function isWrapperSkillId(id: string): boolean {
   return id.startsWith("workflow-") || id.startsWith("agent-");
 }
 
+function normalizeSignalList(values: string[] | undefined): string {
+  return normalizeSearchText((values || []).join(" "));
+}
+
+function summarizeDescription(
+  description: string | undefined,
+  maxLength: number,
+): string {
+  const text = String(description || "").trim();
+  if (!text) return "(no description)";
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, Math.max(0, maxLength - 3))}...`;
+}
+
 export async function handleSkillSearch(
   args: z.infer<typeof skillSearchSchema>,
   manifest: VaultManifest,
@@ -83,17 +96,20 @@ export async function handleSkillSearch(
   const { query } = args;
   const normalizedQuery = normalizeSearchText(query);
   const queryTokens = extractQueryTokens(query);
-  const enriched = await enrichWithDescriptions(manifest.skills, summaryMaxLength);
-  const rankedMatches = enriched
+  const rankedMatches = manifest.skills
     .filter((skill) => !isWrapperSkillId(skill.id))
     .map((skill) => {
       const normalizedId = normalizeSearchText(skill.id);
       const normalizedCategory = normalizeSearchText(skill.category);
       const normalizedDescription = normalizeSearchText(skill.description ?? "");
+      const normalizedKeywords = normalizeSignalList(skill.keywords);
+      const normalizedTriggers = normalizeSignalList(skill.triggers);
 
       const idPhraseMatch = normalizedId.includes(normalizedQuery);
       const categoryPhraseMatch = normalizedCategory.includes(normalizedQuery);
       const descriptionPhraseMatch = normalizedDescription.includes(normalizedQuery);
+      const keywordPhraseMatch = normalizedKeywords.includes(normalizedQuery);
+      const triggerPhraseMatch = normalizedTriggers.includes(normalizedQuery);
 
       const idTokenMatches = countMatchedTokens(normalizedId, queryTokens);
       const categoryTokenMatches = countMatchedTokens(
@@ -104,15 +120,31 @@ export async function handleSkillSearch(
         normalizedDescription,
         queryTokens,
       );
+      const keywordTokenMatches = countMatchedTokens(
+        normalizedKeywords,
+        queryTokens,
+      );
+      const triggerTokenMatches = countMatchedTokens(
+        normalizedTriggers,
+        queryTokens,
+      );
 
       const totalTokenMatches =
-        idTokenMatches + categoryTokenMatches + descriptionTokenMatches;
+        idTokenMatches +
+        categoryTokenMatches +
+        descriptionTokenMatches +
+        keywordTokenMatches +
+        triggerTokenMatches;
 
       const score =
         (idPhraseMatch ? 500 : 0) +
-        (descriptionPhraseMatch ? 250 : 0) +
+        (triggerPhraseMatch ? 425 : 0) +
+        (keywordPhraseMatch ? 350 : 0) +
+        (descriptionPhraseMatch ? 225 : 0) +
         (categoryPhraseMatch ? 150 : 0) +
         idTokenMatches * 50 +
+        triggerTokenMatches * 45 +
+        keywordTokenMatches * 35 +
         categoryTokenMatches * 25 +
         descriptionTokenMatches * 15;
 
@@ -134,7 +166,7 @@ export async function handleSkillSearch(
   const results = matches.map((s) => ({
     id: s.id,
     category: s.category,
-    description: s.description ?? "(no description)",
+    description: summarizeDescription(s.description, summaryMaxLength),
   }));
   const payload = { query, results, count: results.length };
   const text = JSON.stringify(payload, null, 2);

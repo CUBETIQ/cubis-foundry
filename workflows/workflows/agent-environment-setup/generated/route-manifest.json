@@ -1,11 +1,11 @@
 {
   "$schema": "cubis-foundry-route-manifest-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
-  "contentHash": "093a5a4059e42832",
+  "contentHash": "d99eadc235925bb4",
   "summary": {
-    "totalRoutes": 32,
-    "workflows": 15,
-    "agents": 17
+    "totalRoutes": 37,
+    "workflows": 18,
+    "agents": 19
   },
   "routes": [
     {
@@ -72,6 +72,9 @@
         },
         "antigravity": {
           "agentFile": "backend-specialist.md"
+        },
+        "claude": {
+          "agentFile": "backend-specialist.md"
         }
       }
     },
@@ -113,6 +116,9 @@
           "agentFile": "code-archaeologist.md"
         },
         "antigravity": {
+          "agentFile": "code-archaeologist.md"
+        },
+        "claude": {
           "agentFile": "code-archaeologist.md"
         }
       }
@@ -170,6 +176,9 @@
         },
         "antigravity": {
           "agentFile": "database-architect.md"
+        },
+        "claude": {
+          "agentFile": "database-architect.md"
         }
       }
     },
@@ -206,6 +215,9 @@
           "agentFile": "debugger.md"
         },
         "antigravity": {
+          "agentFile": "debugger.md"
+        },
+        "claude": {
           "agentFile": "debugger.md"
         }
       }
@@ -249,6 +261,9 @@
         },
         "antigravity": {
           "agentFile": "devops-engineer.md"
+        },
+        "claude": {
+          "agentFile": "devops-engineer.md"
         }
       }
     },
@@ -284,6 +299,9 @@
           "agentFile": "documentation-writer.md"
         },
         "antigravity": {
+          "agentFile": "documentation-writer.md"
+        },
+        "claude": {
           "agentFile": "documentation-writer.md"
         }
       }
@@ -332,6 +350,9 @@
         },
         "antigravity": {
           "agentFile": "frontend-specialist.md"
+        },
+        "claude": {
+          "agentFile": "frontend-specialist.md"
         }
       }
     },
@@ -372,6 +393,9 @@
           "agentFile": "game-developer.md"
         },
         "antigravity": {
+          "agentFile": "game-developer.md"
+        },
+        "claude": {
           "agentFile": "game-developer.md"
         }
       }
@@ -415,6 +439,9 @@
         },
         "antigravity": {
           "agentFile": "mobile-developer.md"
+        },
+        "claude": {
+          "agentFile": "mobile-developer.md"
         }
       }
     },
@@ -423,7 +450,7 @@
       "id": "orchestrator",
       "command": null,
       "displayName": "orchestrator",
-      "description": "Multi-agent coordination and task orchestration. Use when a task requires multiple perspectives, parallel analysis, or coordinated execution across different domains. Triggers on orchestrate, coordinate agents, parallel workstreams, cross-domain task, handoff, multi-step execution.",
+      "description": "Pure orchestration agent using Repeat-Until-Good (RUG) pattern. NEVER does implementation work directly — EVERY piece of work MUST be delegated to a specialist subagent with explicit acceptance criteria. Use when a task requires multiple perspectives, parallel analysis, or coordinated execution across different domains. Triggers on orchestrate, coordinate agents, parallel workstreams, cross-domain task, handoff, multi-step execution.",
       "triggers": [
         "orchestrate",
         "coordinate agents",
@@ -458,6 +485,9 @@
           "agentFile": "orchestrator.md"
         },
         "antigravity": {
+          "agentFile": "orchestrator.md"
+        },
+        "claude": {
           "agentFile": "orchestrator.md"
         }
       }
@@ -499,6 +529,9 @@
           "agentFile": "performance-optimizer.md"
         },
         "antigravity": {
+          "agentFile": "performance-optimizer.md"
+        },
+        "claude": {
           "agentFile": "performance-optimizer.md"
         }
       }
@@ -544,6 +577,9 @@
         },
         "antigravity": {
           "agentFile": "product-manager.md"
+        },
+        "claude": {
+          "agentFile": "product-manager.md"
         }
       }
     },
@@ -588,6 +624,54 @@
         },
         "antigravity": {
           "agentFile": "project-planner.md"
+        },
+        "claude": {
+          "agentFile": "project-planner.md"
+        }
+      }
+    },
+    {
+      "kind": "agent",
+      "id": "researcher",
+      "command": null,
+      "displayName": "researcher",
+      "description": "Deep research and codebase exploration agent. Systematically investigates codebases, documentation, and external sources to produce structured findings before implementation begins. Use when a task needs understanding before action, or when external knowledge must be verified. Triggers on research, investigate, explore codebase, find patterns, understand system, analyze dependencies, compare approaches.",
+      "triggers": [
+        "research",
+        "investigate",
+        "explore",
+        "survey",
+        "analyze",
+        "understand",
+        "discover",
+        "find patterns",
+        "compare approaches",
+        "deep dive"
+      ],
+      "primaryAgent": "researcher",
+      "supportingAgents": [],
+      "primarySkills": [
+        "deep-research",
+        "architecture-designer"
+      ],
+      "supportingSkills": [
+        "database-skills",
+        "openai-docs",
+        "prompt-engineer"
+      ],
+      "artifacts": {
+        "codex": {
+          "agentFile": "researcher.md",
+          "compatibilityAlias": "$agent-researcher"
+        },
+        "copilot": {
+          "agentFile": "researcher.md"
+        },
+        "antigravity": {
+          "agentFile": "researcher.md"
+        },
+        "claude": {
+          "agentFile": "researcher.md"
         }
       }
     },
@@ -649,6 +733,9 @@
         },
         "antigravity": {
           "agentFile": "security-auditor.md"
+        },
+        "claude": {
+          "agentFile": "security-auditor.md"
         }
       }
     },
@@ -685,6 +772,9 @@
           "agentFile": "seo-specialist.md"
         },
         "antigravity": {
+          "agentFile": "seo-specialist.md"
+        },
+        "claude": {
           "agentFile": "seo-specialist.md"
         }
       }
@@ -734,6 +824,53 @@
         },
         "antigravity": {
           "agentFile": "test-engineer.md"
+        },
+        "claude": {
+          "agentFile": "test-engineer.md"
+        }
+      }
+    },
+    {
+      "kind": "agent",
+      "id": "validator",
+      "command": null,
+      "displayName": "validator",
+      "description": "Independent validation agent that reviews work output against acceptance criteria. Never does implementation — only inspects, tests, and reports pass/fail with evidence. Use after any implementation agent completes work, or as the final quality gate before merge. Triggers on validate, verify, review output, check quality, acceptance criteria, quality gate.",
+      "triggers": [
+        "validate",
+        "verify",
+        "review output",
+        "quality gate",
+        "check quality",
+        "acceptance criteria",
+        "qa",
+        "audit output"
+      ],
+      "primaryAgent": "validator",
+      "supportingAgents": [],
+      "primarySkills": [
+        "debugging-strategies",
+        "webapp-testing"
+      ],
+      "supportingSkills": [
+        "playwright-e2e",
+        "typescript-pro",
+        "javascript-pro",
+        "python-pro"
+      ],
+      "artifacts": {
+        "codex": {
+          "agentFile": "validator.md",
+          "compatibilityAlias": "$agent-validator"
+        },
+        "copilot": {
+          "agentFile": "validator.md"
+        },
+        "antigravity": {
+          "agentFile": "validator.md"
+        },
+        "claude": {
+          "agentFile": "validator.md"
         }
       }
     },
@@ -777,6 +914,55 @@
         },
         "antigravity": {
           "agentFile": "vercel-expert.md"
+        },
+        "claude": {
+          "agentFile": "vercel-expert.md"
+        }
+      }
+    },
+    {
+      "kind": "workflow",
+      "id": "accessibility",
+      "command": "/accessibility",
+      "displayName": "accessibility",
+      "description": "Run a structured accessibility audit on web UI code with WCAG 2.2 AA compliance checks, ARIA validation, keyboard navigation testing, and screen reader verification.",
+      "triggers": [
+        "accessibility",
+        "a11y",
+        "wcag",
+        "aria",
+        "screen reader",
+        "keyboard navigation"
+      ],
+      "primaryAgent": "frontend-specialist",
+      "supportingAgents": [
+        "security-auditor",
+        "test-engineer"
+      ],
+      "primarySkills": [
+        "accessibility"
+      ],
+      "supportingSkills": [
+        "react-expert",
+        "nextjs-developer",
+        "design-system-builder",
+        "tailwind-patterns"
+      ],
+      "artifacts": {
+        "codex": {
+          "workflowFile": "accessibility.md",
+          "compatibilityAlias": "$workflow-accessibility"
+        },
+        "copilot": {
+          "workflowFile": "accessibility.md",
+          "promptFile": "workflow-accessibility.prompt.md"
+        },
+        "antigravity": {
+          "workflowFile": "accessibility.md",
+          "commandFile": "accessibility.toml"
+        },
+        "claude": {
+          "workflowFile": "accessibility.md"
         }
       }
     },
@@ -848,6 +1034,9 @@
         "antigravity": {
           "workflowFile": "backend.md",
           "commandFile": "backend.toml"
+        },
+        "claude": {
+          "workflowFile": "backend.md"
         }
       }
     },
@@ -917,6 +1106,9 @@
         "antigravity": {
           "workflowFile": "create.md",
           "commandFile": "create.toml"
+        },
+        "claude": {
+          "workflowFile": "create.md"
         }
       }
     },
@@ -976,6 +1168,9 @@
         "antigravity": {
           "workflowFile": "database.md",
           "commandFile": "database.toml"
+        },
+        "claude": {
+          "workflowFile": "database.md"
         }
       }
     },
@@ -1026,6 +1221,9 @@
         "antigravity": {
           "workflowFile": "debug.md",
           "commandFile": "debug.toml"
+        },
+        "claude": {
+          "workflowFile": "debug.md"
         }
       }
     },
@@ -1078,6 +1276,9 @@
         "antigravity": {
           "workflowFile": "devops.md",
           "commandFile": "devops.toml"
+        },
+        "claude": {
+          "workflowFile": "devops.md"
         }
       }
     },
@@ -1130,6 +1331,63 @@
         "antigravity": {
           "workflowFile": "implement-track.md",
           "commandFile": "implement-track.toml"
+        },
+        "claude": {
+          "workflowFile": "implement-track.md"
+        }
+      }
+    },
+    {
+      "kind": "workflow",
+      "id": "migrate",
+      "command": "/migrate",
+      "displayName": "migrate",
+      "description": "Plan and execute technology migrations, framework upgrades, and dependency updates with rollback safety, incremental verification, and zero-downtime transition.",
+      "triggers": [
+        "migrate",
+        "upgrade",
+        "update dependency",
+        "framework upgrade",
+        "version bump",
+        "major update"
+      ],
+      "primaryAgent": "orchestrator",
+      "supportingAgents": [
+        "researcher",
+        "backend-specialist",
+        "frontend-specialist",
+        "database-architect",
+        "code-archaeologist",
+        "security-auditor",
+        "test-engineer",
+        "devops-engineer",
+        "validator"
+      ],
+      "primarySkills": [
+        "react-expert",
+        "nextjs-developer",
+        "typescript-pro"
+      ],
+      "supportingSkills": [
+        "debugging-strategies",
+        "web-perf",
+        "webapp-testing"
+      ],
+      "artifacts": {
+        "codex": {
+          "workflowFile": "migrate.md",
+          "compatibilityAlias": "$workflow-migrate"
+        },
+        "copilot": {
+          "workflowFile": "migrate.md",
+          "promptFile": "workflow-migrate.prompt.md"
+        },
+        "antigravity": {
+          "workflowFile": "migrate.md",
+          "commandFile": "migrate.toml"
+        },
+        "claude": {
+          "workflowFile": "migrate.md"
         }
       }
     },
@@ -1173,6 +1431,65 @@
         "antigravity": {
           "workflowFile": "mobile.md",
           "commandFile": "mobile.toml"
+        },
+        "claude": {
+          "workflowFile": "mobile.md"
+        }
+      }
+    },
+    {
+      "kind": "workflow",
+      "id": "onboard",
+      "command": "/onboard",
+      "displayName": "onboard",
+      "description": "Survey an unfamiliar codebase, map its architecture, identify patterns and conventions, and produce a structured orientation report for new contributors.",
+      "triggers": [
+        "onboard",
+        "explore codebase",
+        "understand project",
+        "new to this repo",
+        "codebase survey"
+      ],
+      "primaryAgent": "researcher",
+      "supportingAgents": [
+        "code-archaeologist",
+        "documentation-writer"
+      ],
+      "primarySkills": [
+        "deep-research"
+      ],
+      "supportingSkills": [
+        "architecture-designer",
+        "typescript-pro",
+        "javascript-pro",
+        "python-pro",
+        "golang-pro",
+        "java-pro",
+        "csharp-pro",
+        "kotlin-pro",
+        "rust-pro",
+        "php-pro",
+        "ruby-pro",
+        "c-pro",
+        "cpp-pro",
+        "dart-pro",
+        "swift-pro"
+      ],
+      "artifacts": {
+        "codex": {
+          "workflowFile": "onboard.md",
+          "compatibilityAlias": "$workflow-onboard"
+        },
+        "copilot": {
+          "workflowFile": "onboard.md",
+          "promptFile": "workflow-onboard.prompt.md"
+        },
+        "antigravity": {
+          "workflowFile": "onboard.md",
+          "commandFile": "onboard.toml"
+        },
+        "claude": {
+          "workflowFile": "onboard.md"
         }
       }
     },
@@ -1181,7 +1498,7 @@
       "id": "orchestrate",
       "command": "/orchestrate",
       "displayName": "orchestrate",
-      "description": "Coordinate multiple specialists to solve cross-cutting tasks with explicit ownership and handoff.",
+      "description": "Coordinate multiple specialists to solve cross-cutting tasks with explicit ownership, validation gates, and repeat-until-good iteration.",
       "triggers": [
         "orchestrate",
         "coordinate",
@@ -1191,11 +1508,13 @@
       ],
       "primaryAgent": "orchestrator",
       "supportingAgents": [
+        "researcher",
         "backend-specialist",
         "database-architect",
         "frontend-specialist",
         "security-auditor",
         "test-engineer",
+        "validator",
         "devops-engineer"
       ],
       "primarySkills": [
@@ -1229,6 +1548,9 @@
         "antigravity": {
           "workflowFile": "orchestrate.md",
           "commandFile": "orchestrate.toml"
+        },
+        "claude": {
+          "workflowFile": "orchestrate.md"
         }
       }
     },
@@ -1311,6 +1633,9 @@
         "antigravity": {
           "workflowFile": "plan.md",
           "commandFile": "plan.toml"
+        },
+        "claude": {
+          "workflowFile": "plan.md"
         }
       }
     },
@@ -1363,6 +1688,9 @@
         "antigravity": {
           "workflowFile": "refactor.md",
           "commandFile": "refactor.toml"
+        },
+        "claude": {
+          "workflowFile": "refactor.md"
         }
       }
     },
@@ -1406,6 +1734,9 @@
         "antigravity": {
           "workflowFile": "release.md",
           "commandFile": "release.toml"
+        },
+        "claude": {
+          "workflowFile": "release.md"
         }
       }
     },
@@ -1455,6 +1786,9 @@
         "antigravity": {
           "workflowFile": "review.md",
           "commandFile": "review.toml"
+        },
+        "claude": {
+          "workflowFile": "review.md"
         }
       }
     },
@@ -1503,6 +1837,9 @@
         "antigravity": {
           "workflowFile": "security.md",
           "commandFile": "security.toml"
+        },
+        "claude": {
+          "workflowFile": "security.md"
         }
       }
     },
@@ -1551,6 +1888,9 @@
         "antigravity": {
           "workflowFile": "test.md",
           "commandFile": "test.toml"
+        },
+        "claude": {
+          "workflowFile": "test.md"
         }
       }
     },
@@ -1599,6 +1939,9 @@
         "antigravity": {
           "workflowFile": "vercel.md",
           "commandFile": "vercel.toml"
+        },
+        "claude": {
+          "workflowFile": "vercel.md"
         }
       }
     }

@@ -15,6 +15,10 @@ export interface SkillPointer {
   fileBytes: number;
   /** Short description extracted from frontmatter (truncated). */
   description?: string;
+  /** Structured keywords from the generated manifest. */
+  keywords?: string[];
+  /** Structured triggers from the generated manifest. */
+  triggers?: string[];
 }
 
 export interface VaultManifest {

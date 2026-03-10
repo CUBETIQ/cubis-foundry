@@ -1,6 +1,6 @@
 # Workflow Prompt: /orchestrate
 
-Coordinate multiple specialists to solve cross-cutting tasks with explicit ownership and handoff.
+Coordinate multiple specialists to solve cross-cutting tasks with explicit ownership, validation gates, and repeat-until-good iteration.
 
 Use this prompt with the matching workflow file:
 - Workflow: ../copilot/workflows/orchestrate.md

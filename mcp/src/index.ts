@@ -14,7 +14,11 @@
 import { loadServerConfig } from "./config/index.js";
 import { loadGeneratedRouteManifest } from "./routes/loadGeneratedRouteManifest.js";
 import { scanVaultRoots } from "./vault/scanner.js";
-import { buildManifest, enrichWithDescriptions } from "./vault/manifest.js";
+import { buildManifest } from "./vault/manifest.js";
+import {
+  loadGeneratedSkillManifest,
+  mergeGeneratedSkillMetadata,
+} from "./vault/generatedManifest.js";
 import { createServer } from "./server.js";
 import { createStdioTransport } from "./transports/stdio.js";
 import {
@@ -167,16 +171,15 @@ async function main(): Promise<void> {
   // Resolve vault roots relative to the mcp package root.
   // `index.ts` is in `<pkg>/src` during dev and `<pkg>/dist` after build.
   const basePath = path.resolve(__dirname, "..");
-  const skills = await scanVaultRoots(serverConfig.vault.roots, basePath);
+  const scannedSkills = await scanVaultRoots(serverConfig.vault.roots, basePath);
+  const generatedSkillManifest = await loadGeneratedSkillManifest(basePath);
+  const skills = mergeGeneratedSkillMetadata(
+    scannedSkills,
+    generatedSkillManifest,
+  );
   const charsPerToken = serverConfig.telemetry.charsPerToken;
   const manifest = buildManifest(skills, charsPerToken);
   const routeManifest = await loadGeneratedRouteManifest(basePath);
-
-  // Enrich with descriptions for faster browse/search at runtime
-  await enrichWithDescriptions(
-    manifest.skills,
-    serverConfig.vault.summaryMaxLength,
-  );
 
   // Scan-only mode: print and exit
   if (args.scanOnly) {

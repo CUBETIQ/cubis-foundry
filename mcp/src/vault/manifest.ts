@@ -2,10 +2,11 @@
  * Cubis Foundry MCP Server – vault manifest.
  *
  * Browse/search operations extract frontmatter description only (truncated).
- * Full SKILL.md content (and direct referenced markdown files) is read by skill_get.
+ * Full SKILL.md content is read by skill_get; direct referenced markdown files
+ * are loaded only when requested.
  */
 
-import { readdir, readFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import path from "node:path";
 import type { SkillPointer, VaultManifest } from "./types.js";
 import { logger } from "../utils/logger.js";
@@ -211,10 +212,7 @@ async function readReferencedMarkdownFiles(
   skillContent: string,
 ): Promise<ReferencedSkillFile[]> {
   const skillDir = path.dirname(skillPath);
-  let targets = collectReferencedMarkdownTargets(skillContent);
-  if (targets.length === 0) {
-    targets = await collectSiblingMarkdownTargets(skillDir);
-  }
+  const targets = collectReferencedMarkdownTargets(skillContent);
   const references: ReferencedSkillFile[] = [];
 
   for (const target of targets) {
@@ -242,54 +240,17 @@ async function readReferencedMarkdownFiles(
   return references;
 }
 
-async function collectSiblingMarkdownTargets(
-  skillDir: string,
-): Promise<string[]> {
-  const entries = await readdir(skillDir, { withFileTypes: true }).catch(
-    () => [],
-  );
-  const targets: string[] = [];
-
-  for (const entry of entries) {
-    if (entry.name.startsWith(".")) continue;
-
-    if (entry.isDirectory()) {
-      // One level deep: scan subdirectories like references/, steering/, parts/
-      const subEntries = await readdir(path.join(skillDir, entry.name), {
-        withFileTypes: true,
-      }).catch(() => []);
-      for (const sub of subEntries) {
-        if (!sub.isFile()) continue;
-        if (sub.name.startsWith(".")) continue;
-        if (!sub.name.toLowerCase().endsWith(".md")) continue;
-        targets.push(`${entry.name}/${sub.name}`);
-        if (targets.length >= MAX_REFERENCED_FILES) break;
-      }
-    } else if (entry.isFile()) {
-      if (!entry.name.toLowerCase().endsWith(".md")) continue;
-      if (entry.name.toLowerCase() === "skill.md") continue;
-      targets.push(entry.name);
-    }
-
-    if (targets.length >= MAX_REFERENCED_FILES) break;
-  }
-
-  targets.sort((a, b) => a.localeCompare(b));
-  return targets;
-}
-
 export async function listReferencedMarkdownPaths(
   skillPath: string,
   skillContent?: string,
 ): Promise<string[]> {
   const source = skillContent ?? (await readFullSkillContent(skillPath));
   const skillDir = path.dirname(skillPath);
-  const explicitTargets = collectReferencedMarkdownTargets(source)
+  return collectReferencedMarkdownTargets(source)
     .map((target) => normalizeInSkillMarkdownTarget(skillDir, target))
-    .filter((target): target is string => Boolean(target));
-  const siblingTargets = await collectSiblingMarkdownTargets(skillDir);
-  const merged = new Set<string>([...explicitTargets, ...siblingTargets]);
-  return [...merged].sort((a, b) => a.localeCompare(b)).slice(0, MAX_REFERENCED_FILES);
+    .filter((target): target is string => Boolean(target))
+    .sort((a, b) => a.localeCompare(b))
+    .slice(0, MAX_REFERENCED_FILES);
 }
 
 export async function readSkillReferenceFile(

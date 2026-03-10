@@ -67,54 +67,6 @@ const DEFAULT_TARGETS = {
     ),
     indexPathPrefix: ".claude/skills",
   },
-  cursor: {
-    roots: [
-      path.join(
-        ROOT,
-        "workflows",
-        "workflows",
-        "agent-environment-setup",
-        "platforms",
-        "cursor",
-        "skills",
-      ),
-    ],
-    outFile: path.join(
-      ROOT,
-      "workflows",
-      "workflows",
-      "agent-environment-setup",
-      "platforms",
-      "cursor",
-      "skills",
-      "skills_index.json",
-    ),
-    indexPathPrefix: ".cursor/skills",
-  },
-  windsurf: {
-    roots: [
-      path.join(
-        ROOT,
-        "workflows",
-        "workflows",
-        "agent-environment-setup",
-        "platforms",
-        "windsurf",
-        "skills",
-      ),
-    ],
-    outFile: path.join(
-      ROOT,
-      "workflows",
-      "workflows",
-      "agent-environment-setup",
-      "platforms",
-      "windsurf",
-      "skills",
-      "skills_index.json",
-    ),
-    indexPathPrefix: ".windsurf/skills",
-  },
 };
 
 function parseArgs(argv) {
@@ -321,7 +273,7 @@ async function main() {
 
   if (targetLabels.length === 0) {
     throw new Error(
-      `Unknown target '${target}'. Use one of: all, canonical, copilot, claude, cursor, windsurf.`,
+      `Unknown target '${target}'. Use one of: all, canonical, copilot, claude.`,
     );
   }
 

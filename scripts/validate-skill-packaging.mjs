@@ -38,24 +38,6 @@ const PLATFORM_SKILL_ROOTS = [
     "claude",
     "skills",
   ),
-  path.join(
-    ROOT,
-    "workflows",
-    "workflows",
-    "agent-environment-setup",
-    "platforms",
-    "cursor",
-    "skills",
-  ),
-  path.join(
-    ROOT,
-    "workflows",
-    "workflows",
-    "agent-environment-setup",
-    "platforms",
-    "windsurf",
-    "skills",
-  ),
 ];
 
 async function exists(target) {

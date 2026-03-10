@@ -6,7 +6,6 @@
 
 import { z } from "zod";
 import type { VaultManifest } from "../vault/types.js";
-import { enrichWithDescriptions } from "../vault/manifest.js";
 import { notFound } from "../utils/errors.js";
 import {
   buildSkillToolMetrics,
@@ -25,6 +24,16 @@ export const skillBrowseCategorySchema = z.object({
     .describe("The category name to browse (from skill_list_categories)"),
 });
 
+function summarizeDescription(
+  description: string | undefined,
+  maxLength: number,
+): string {
+  const text = String(description || "").trim();
+  if (!text) return "(no description)";
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, Math.max(0, maxLength - 3))}...`;
+}
+
 export async function handleSkillBrowseCategory(
   args: z.infer<typeof skillBrowseCategorySchema>,
   manifest: VaultManifest,
@@ -38,11 +47,9 @@ export async function handleSkillBrowseCategory(
   }
 
   const matching = manifest.skills.filter((s) => s.category === category);
-  const enriched = await enrichWithDescriptions(matching, summaryMaxLength);
-
-  const skills = enriched.map((s) => ({
+  const skills = matching.map((s) => ({
     id: s.id,
-    description: s.description ?? "(no description)",
+    description: summarizeDescription(s.description, summaryMaxLength),
   }));
   const payload = { category, skills, count: skills.length };
   const text = JSON.stringify(payload, null, 2);

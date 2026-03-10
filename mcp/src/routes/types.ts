@@ -25,6 +25,7 @@ export interface RouteEntry {
     codex?: RoutePlatformArtifacts;
     copilot?: RoutePlatformArtifacts;
     antigravity?: RoutePlatformArtifacts;
+    claude?: RoutePlatformArtifacts;
   };
 }
 

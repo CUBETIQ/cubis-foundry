@@ -6210,7 +6210,7 @@ async function applyPostmanConfigArtifacts({
   let mcpRuntimeResult = null;
   if (!platform) {
     warnings.push(
-      "Skipped platform runtime MCP target patch because platform could not be resolved. Re-run with --platform <codex|antigravity|copilot>.",
+      "Skipped platform runtime MCP target patch because platform could not be resolved. Re-run with --platform <codex|antigravity|copilot|claude>.",
     );
   } else {
     mcpRuntimeResult = await applyPostmanMcpForPlatform({
@@ -8582,7 +8582,7 @@ function resolveRemoveAllPlatforms(platformOption) {
   for (const candidate of candidates) {
     if (!WORKFLOW_PROFILES[candidate]) {
       throw new Error(
-        `Unknown platform '${candidate}'. Use codex|antigravity|copilot|all.`,
+        `Unknown platform '${candidate}'. Use codex|antigravity|copilot|claude|all.`,
       );
     }
     if (!normalized.includes(candidate)) {

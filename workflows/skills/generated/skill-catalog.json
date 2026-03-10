@@ -2,10 +2,10 @@
   "$schema": "cubis-foundry-skill-catalog-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
   "summary": {
-    "totalEntries": 52,
-    "totalSkills": 52,
+    "totalEntries": 57,
+    "totalSkills": 57,
     "totalSubskills": 0,
-    "canonicalSkills": 52,
+    "canonicalSkills": 57,
     "compatibilityAliases": 0,
     "layers": [
       "core-operating",
@@ -17,16 +17,43 @@
     "categories": [
       "core-operating",
       "databases",
+      "engineering",
       "frameworks-runtimes",
       "languages",
       "workflow-specialists"
     ],
     "tiers": [
       "curated",
+      "experimental",
       "system"
     ]
   },
   "skills": [
+    {
+      "id": "accessibility",
+      "package_id": "accessibility",
+      "catalog_id": "accessibility",
+      "kind": "skill",
+      "path": "workflows/skills/accessibility/SKILL.md",
+      "name": "accessibility",
+      "description": "Use when auditing, implementing, or reviewing web accessibility (WCAG, ARIA, keyboard navigation, screen reader support, and inclusive interaction patterns).",
+      "canonical": true,
+      "canonical_id": "accessibility",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "frameworks-runtimes",
+      "layer": "frameworks-runtimes",
+      "maturity": "stable",
+      "tier": "experimental",
+      "tags": [
+        "accessibility",
+        "frameworks-runtimes",
+        "frontend",
+        "web-accessibility"
+      ],
+      "triggers": []
+    },
     {
       "id": "agentic-eval",
       "package_id": "agentic-eval",
@@ -198,6 +225,32 @@
         "languages",
         "memory-safety",
         "systems"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "ci-cd-pipelines",
+      "package_id": "ci-cd-pipelines",
+      "catalog_id": "ci-cd-pipelines",
+      "kind": "skill",
+      "path": "workflows/skills/ci-cd-pipelines/SKILL.md",
+      "name": "ci-cd-pipelines",
+      "description": "Use when designing, reviewing, or debugging CI/CD pipelines across GitHub Actions, GitLab CI, and similar platforms. Covers pipeline architecture, job sequencing, caching, artifact management, environment promotion, security hardening, and flaky-pipeline triage.",
+      "canonical": true,
+      "canonical_id": "ci-cd-pipelines",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "engineering",
+      "layer": "workflow-specialists",
+      "maturity": "stable",
+      "tier": "experimental",
+      "tags": [
+        "ci-cd-pipelines",
+        "devops",
+        "engineering",
+        "github-actions,gitlab-ci,jenkins,general-ci",
+        "workflow-specialists"
       ],
       "triggers": []
     },
@@ -462,6 +515,30 @@
       "triggers": []
     },
     {
+      "id": "docker-kubernetes",
+      "package_id": "docker-kubernetes",
+      "catalog_id": "docker-kubernetes",
+      "kind": "skill",
+      "path": "workflows/skills/docker-kubernetes/SKILL.md",
+      "name": "docker-kubernetes",
+      "description": "Use for containerization strategy, Dockerfile optimization, Kubernetes deployment patterns, Helm charts, and container orchestration decisions.",
+      "canonical": true,
+      "canonical_id": "docker-kubernetes",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "frameworks-runtimes",
+      "layer": "frameworks-runtimes",
+      "maturity": "stable",
+      "tier": "experimental",
+      "tags": [
+        "docker-kubernetes",
+        "frameworks-runtimes",
+        "infrastructure"
+      ],
+      "triggers": []
+    },
+    {
       "id": "drizzle-expert",
       "package_id": "drizzle-expert",
       "catalog_id": "drizzle-expert",
@@ -605,6 +682,31 @@
         "typography",
         "ui",
         "ux"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "git-workflow",
+      "package_id": "git-workflow",
+      "catalog_id": "git-workflow",
+      "kind": "skill",
+      "path": "workflows/skills/git-workflow/SKILL.md",
+      "name": "git-workflow",
+      "description": "Use when establishing or reviewing git branching strategies, PR conventions, commit hygiene, merge policies, monorepo workflows, and release tagging. Covers trunk-based development, GitFlow alternatives, conventional commits, and code review standards.",
+      "canonical": true,
+      "canonical_id": "git-workflow",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "engineering",
+      "layer": "workflow-specialists",
+      "maturity": "stable",
+      "tier": "experimental",
+      "tags": [
+        "engineering",
+        "git-workflow",
+        "git,github,gitlab,general-vcs",
+        "workflow-specialists"
       ],
       "triggers": []
     },
@@ -977,6 +1079,31 @@
         "runtime",
         "security",
         "services"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "observability",
+      "package_id": "observability",
+      "catalog_id": "observability",
+      "kind": "skill",
+      "path": "workflows/skills/observability/SKILL.md",
+      "name": "observability",
+      "description": "Use when designing or reviewing logging, monitoring, tracing, and alerting for production services. Covers structured logging, distributed tracing, metric collection, dashboard design, alert hygiene, SLO definition, and incident readiness across application and infrastructure layers.",
+      "canonical": true,
+      "canonical_id": "observability",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "engineering",
+      "layer": "workflow-specialists",
+      "maturity": "stable",
+      "tier": "experimental",
+      "tags": [
+        "engineering",
+        "observability",
+        "operations",
+        "workflow-specialists"
       ],
       "triggers": []
     },
@@ -1384,7 +1511,7 @@
       "kind": "skill",
       "path": "workflows/skills/tailwind-patterns/SKILL.md",
       "name": "tailwind-patterns",
-      "description": "Use for Tailwind CSS v4 architecture, CSS-first theme setup, utility composition, container-query usage, and design-token hygiene.",
+      "description": "Use for Tailwind CSS v4 architecture, CSS-first theme setup, utility composition, container-query usage, design-token hygiene, and dark-mode strategy.",
       "canonical": true,
       "canonical_id": "tailwind-patterns",
       "deprecated": false,
@@ -1395,11 +1522,9 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
-        "container-queries",
-        "css",
-        "design-tokens",
         "frameworks-runtimes",
         "frontend",
+        "tailwind-patterns",
         "tailwindcss"
       ],
       "triggers": []
@@ -1524,5 +1649,5 @@
       "triggers": []
     }
   ],
-  "contentHash": "a72985f81ec2c753"
+  "contentHash": "8c916d2a21497ee6"
 }

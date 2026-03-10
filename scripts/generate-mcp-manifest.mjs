@@ -58,11 +58,35 @@ function getScalar(frontmatterRaw, key) {
   return match[1].trim().replace(/^['\"]|['\"]$/g, "");
 }
 
+function normalizeNullableString(value) {
+  if (value == null) return null;
+  const normalized = String(value)
+    .trim()
+    .replace(/^['"]|['"]$/g, "");
+  const lower = normalized.toLowerCase();
+  if (!normalized || lower === "null" || lower === "~") return null;
+  return normalized;
+}
+
 function parseInlineList(text) {
   return String(text || "")
     .split(",")
     .map((item) => item.trim().replace(/^['"]|['"]$/g, ""))
     .filter(Boolean);
+}
+
+function parseValue(raw) {
+  const trimmed = String(raw || "").trim();
+  if (!trimmed) return "";
+  if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
+    return parseInlineList(trimmed.slice(1, -1));
+  }
+  const unquoted = trimmed.replace(/^['"]|['"]$/g, "");
+  const normalized = unquoted.toLowerCase();
+  if (normalized === "true") return true;
+  if (normalized === "false") return false;
+  if (normalized === "null" || normalized === "~") return null;
+  return unquoted;
 }
 
 function getListField(frontmatterRaw, key) {
@@ -114,17 +138,51 @@ function getMetadataBlock(frontmatterRaw) {
   const lines = frontmatterRaw.split(/\r?\n/);
   const metadata = {};
   let inMetadata = false;
-  for (const line of lines) {
-    if (/^metadata\s*:\s*$/.test(line)) {
-      inMetadata = true;
+
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i];
+    if (!inMetadata) {
+      if (/^metadata\s*:\s*$/.test(line)) {
+        inMetadata = true;
+      }
       continue;
     }
-    if (!inMetadata) continue;
+
     if (!line.trim()) continue;
     if (!/^\s+/.test(line)) break;
-    const kv = line.match(/^\s+([A-Za-z0-9_-]+)\s*:\s*(.+)\s*$/);
-    if (!kv) continue;
-    metadata[kv[1]] = kv[2].trim().replace(/^['\"]|['\"]$/g, "");
+
+    const keyMatch = line.match(/^\s+([A-Za-z0-9_-]+)\s*:\s*(.*)$/);
+    if (!keyMatch) continue;
+
+    const key = keyMatch[1];
+    const rest = keyMatch[2];
+    if (rest.trim()) {
+      metadata[key] = parseValue(rest);
+      continue;
+    }
+
+    const values = [];
+    for (let j = i + 1; j < lines.length; j += 1) {
+      const next = lines[j];
+      if (!next.trim()) continue;
+      if (!/^\s+/.test(next) || /^\s+[A-Za-z0-9_-]+\s*:/.test(next)) {
+        i = j - 1;
+        break;
+      }
+
+      const bullet = next.match(/^\s+-\s*(.+)$/);
+      if (bullet) {
+        values.push(parseValue(bullet[1]));
+      }
+
+      if (j === lines.length - 1) {
+        i = j;
+      }
+    }
+
+    if (values.length > 0) {
+      metadata[key] = values;
+    }
   }
   return metadata;
 }
@@ -180,6 +238,139 @@ function getMetadataAliases(frontmatterRaw) {
   }
 
   return [...new Set(aliases.filter(Boolean))];
+}
+
+const SIGNAL_STOP_WORDS = new Set([
+  "a",
+  "an",
+  "and",
+  "architect",
+  "architecture",
+  "best",
+  "builder",
+  "code",
+  "contract",
+  "design",
+  "designer",
+  "developer",
+  "engineering",
+  "engineer",
+  "expert",
+  "experts",
+  "for",
+  "guide",
+  "guidance",
+  "in",
+  "language",
+  "of",
+  "on",
+  "or",
+  "patterns",
+  "practices",
+  "pro",
+  "review",
+  "skill",
+  "skills",
+  "specialist",
+  "strategies",
+  "strategy",
+  "system",
+  "systems",
+  "the",
+  "tooling",
+  "use",
+  "when",
+  "with",
+  "workflow",
+]);
+
+function normalizeSignalValue(value, { allowSingleCharacter = false } = {}) {
+  const normalized = normalizeNullableString(value)?.toLowerCase();
+  if (!normalized) return null;
+  if (!allowSingleCharacter && normalized.length < 2) return null;
+  return normalized.replace(/\s+/g, " ").trim();
+}
+
+function normalizeSignalList(values, options) {
+  if (!Array.isArray(values)) return [];
+
+  const normalized = [];
+  for (const value of values) {
+    const signal = normalizeSignalValue(value, options);
+    if (signal) normalized.push(signal);
+  }
+  return [...new Set(normalized)];
+}
+
+function collectMetadataSignals(metadata, key) {
+  const raw = metadata[key];
+  if (Array.isArray(raw)) {
+    return raw;
+  }
+  const single = normalizeNullableString(raw);
+  return single ? [single] : [];
+}
+
+function deriveIdSignals(skillId) {
+  const normalizedId = String(skillId || "").trim().toLowerCase();
+  if (!normalizedId) return [];
+
+  const variants = new Set([normalizedId]);
+  const phrase = normalizedId.replace(/[-_/]+/g, " ").trim();
+  if (phrase) variants.add(phrase);
+
+  for (const token of phrase.split(/\s+/)) {
+    const allowSingleCharacter = token.length === 1;
+    const normalized = normalizeSignalValue(token, { allowSingleCharacter });
+    if (!normalized || SIGNAL_STOP_WORDS.has(normalized)) continue;
+    variants.add(normalized);
+  }
+
+  return [...variants];
+}
+
+function deriveKeywords(skillId, metadata, explicitKeywords, aliases) {
+  const orderedSignals = [
+    ...normalizeSignalList(explicitKeywords, { allowSingleCharacter: true }),
+    ...normalizeSignalList(collectMetadataSignals(metadata, "tags"), {
+      allowSingleCharacter: true,
+    }),
+    ...normalizeSignalList(collectMetadataSignals(metadata, "stack"), {
+      allowSingleCharacter: true,
+    }),
+    ...normalizeSignalList(collectMetadataSignals(metadata, "domain"), {
+      allowSingleCharacter: true,
+    }),
+    ...normalizeSignalList(aliases, { allowSingleCharacter: true }),
+    ...deriveIdSignals(skillId),
+  ];
+
+  return [...new Set(orderedSignals)];
+}
+
+function deriveTriggers(skillId, metadata, explicitTriggers, aliases, keywords) {
+  const orderedSignals = [
+    ...normalizeSignalList(explicitTriggers, { allowSingleCharacter: true }),
+    ...normalizeSignalList(aliases, { allowSingleCharacter: true }),
+    ...normalizeSignalList(collectMetadataSignals(metadata, "tags"), {
+      allowSingleCharacter: true,
+    }),
+    ...normalizeSignalList(collectMetadataSignals(metadata, "stack"), {
+      allowSingleCharacter: true,
+    }),
+    ...deriveIdSignals(skillId),
+    ...keywords,
+  ];
+
+  const ranked = [];
+  for (const signal of orderedSignals) {
+    if (!signal) continue;
+    if (SIGNAL_STOP_WORDS.has(signal)) continue;
+    if (signal.length < 2 && !["c", "r"].includes(signal)) continue;
+    ranked.push(signal);
+  }
+
+  return [...new Set(ranked)].slice(0, 12);
 }
 
 // ─── Category derivation (mirrors mcp/src/vault/scanner.ts) ───
@@ -408,9 +599,22 @@ async function scanSkills(verbose) {
       const name = getScalar(fm.raw, "name") || skillId;
       const displayName = getScalar(fm.raw, "displayName") || null;
       const description = getScalar(fm.raw, "description") || "";
-      const keywords = getListField(fm.raw, "keywords");
-      const triggers = getListField(fm.raw, "triggers");
+      const explicitKeywords = getListField(fm.raw, "keywords");
+      const explicitTriggers = getListField(fm.raw, "triggers");
       const aliases = getMetadataAliases(fm.raw);
+      const keywords = deriveKeywords(
+        skillId,
+        metadata,
+        explicitKeywords,
+        aliases,
+      );
+      const triggers = deriveTriggers(
+        skillId,
+        metadata,
+        explicitTriggers,
+        aliases,
+        keywords,
+      );
       const category = deriveCategory(skillId);
       const stat = await fs.stat(skillFile);
       const relativePath = path.relative(ROOT, skillFile).replaceAll("\\", "/");

@@ -28,24 +28,6 @@ const MIRRORS = {
     "claude",
     "skills",
   ),
-  cursor: path.join(
-    ROOT,
-    "workflows",
-    "workflows",
-    "agent-environment-setup",
-    "platforms",
-    "cursor",
-    "skills",
-  ),
-  windsurf: path.join(
-    ROOT,
-    "workflows",
-    "workflows",
-    "agent-environment-setup",
-    "platforms",
-    "windsurf",
-    "skills",
-  ),
 };
 
 const COPILOT_ALLOWED_SKILL_FRONTMATTER_KEYS = new Set([
@@ -261,7 +243,7 @@ async function main() {
 
   if (targets.length === 0) {
     throw new Error(
-      `Unknown --only target '${only}'. Use one of: all, copilot, claude, cursor, windsurf.`,
+      `Unknown --only target '${only}'. Use one of: all, copilot, claude.`,
     );
   }
 

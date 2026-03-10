@@ -14,8 +14,48 @@ KEEP_CONTAINER="${CBX_MCP_KEEP_CONTAINER:-0}"
 REQUIRE_KEYS="${CBX_MCP_REQUIRE_KEYS:-0}"
 USE_HOST_SKILLS="${CBX_MCP_USE_HOST_SKILLS:-0}"
 HOST_SKILLS_DIR="${CBX_MCP_HOST_SKILLS_DIR:-$HOME/.agents/skills}"
+REPO_SKILLS_DIR="${CBX_MCP_REPO_SKILLS_DIR:-$ROOT_DIR/workflows/skills}"
+REPO_WORKFLOWS_DIR="${CBX_MCP_REPO_WORKFLOWS_DIR:-$ROOT_DIR/workflows/workflows}"
+CONTAINER_CONFIG_PATH="//root/.cbx/mcp-config.json"
 
-TMP_HOME="$(mktemp -d /tmp/cbx-mcp-docker.XXXXXX)"
+resolve_tmp_root() {
+  if [ -n "${TMPDIR:-}" ]; then
+    echo "$TMPDIR"
+    return
+  fi
+  if command -v cygpath >/dev/null 2>&1; then
+    if [ -n "${TEMP:-}" ]; then
+      cygpath -u "$TEMP"
+      return
+    fi
+    if [ -n "${TMP:-}" ]; then
+      cygpath -u "$TMP"
+      return
+    fi
+  fi
+  if [ -n "${TEMP:-}" ]; then
+    echo "$TEMP"
+    return
+  fi
+  if [ -n "${TMP:-}" ]; then
+    echo "$TMP"
+    return
+  fi
+  echo "/tmp"
+}
+
+to_docker_host_path() {
+  local target="$1"
+  if command -v cygpath >/dev/null 2>&1; then
+    cygpath -m "$target"
+    return
+  fi
+  echo "$target"
+}
+
+TMP_ROOT="$(resolve_tmp_root)"
+mkdir -p "$TMP_ROOT"
+TMP_HOME="$(mktemp -d "$TMP_ROOT/cbx-mcp-docker.XXXXXX")"
 
 log_step() {
   echo ""
@@ -99,12 +139,23 @@ log_ok "temp config ready at $TMP_HOME/.cbx/cbx_config.json"
 
 log_step "Prepare temp skill vault"
 SKILLS_MOUNT_SOURCE="$TMP_HOME/skills"
+WORKFLOWS_MOUNT_SOURCE=""
 if [ "$USE_HOST_SKILLS" = "1" ]; then
   if [ ! -d "$HOST_SKILLS_DIR" ]; then
     fail_with_diagnostics "CBX_MCP_USE_HOST_SKILLS=1 but host skills dir not found: $HOST_SKILLS_DIR"
   fi
   SKILLS_MOUNT_SOURCE="$HOST_SKILLS_DIR"
+  if [ ! -d "$REPO_WORKFLOWS_DIR" ]; then
+    fail_with_diagnostics "route assets dir not found: $REPO_WORKFLOWS_DIR"
+  fi
+  WORKFLOWS_MOUNT_SOURCE="$REPO_WORKFLOWS_DIR"
   log_ok "using host skills: $SKILLS_MOUNT_SOURCE"
+  log_ok "using repo workflow assets: $WORKFLOWS_MOUNT_SOURCE"
+elif [ -d "$REPO_SKILLS_DIR" ] && [ -d "$REPO_WORKFLOWS_DIR" ]; then
+  SKILLS_MOUNT_SOURCE="$REPO_SKILLS_DIR"
+  WORKFLOWS_MOUNT_SOURCE="$REPO_WORKFLOWS_DIR"
+  log_ok "using repo skills: $SKILLS_MOUNT_SOURCE"
+  log_ok "using repo workflow assets: $WORKFLOWS_MOUNT_SOURCE"
 else
   mkdir -p "$TMP_HOME/skills/sample-smoke-skill"
   cat >"$TMP_HOME/skills/sample-smoke-skill/SKILL.md" <<'MD'
@@ -154,15 +205,31 @@ if docker ps -a --format '{{.Names}}' | rg -x "$CONTAINER_NAME" >/dev/null 2>&1;
   docker rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true
 fi
 
-docker run -d \
-  --name "$CONTAINER_NAME" \
-  -p "$PORT:3100" \
-  -e POSTMAN_API_KEY_DEFAULT \
-  -e STITCH_API_KEY_DEFAULT \
-  -v "$TMP_HOME/.cbx:/root/.cbx" \
-  -v "$SKILLS_MOUNT_SOURCE:/workflows/skills:ro" \
+DOCKER_CBX_SOURCE="$(to_docker_host_path "$TMP_HOME/.cbx")"
+DOCKER_SKILLS_SOURCE="$(to_docker_host_path "$SKILLS_MOUNT_SOURCE")"
+DOCKER_WORKFLOWS_SOURCE=""
+if [ -n "$WORKFLOWS_MOUNT_SOURCE" ]; then
+  DOCKER_WORKFLOWS_SOURCE="$(to_docker_host_path "$WORKFLOWS_MOUNT_SOURCE")"
+fi
+
+DOCKER_RUN_ARGS=(
+  -d
+  --name "$CONTAINER_NAME"
+  -p "$PORT:3100"
+  -e POSTMAN_API_KEY_DEFAULT
+  -e STITCH_API_KEY_DEFAULT
+  -v "$DOCKER_CBX_SOURCE:/root/.cbx"
+  -v "$DOCKER_SKILLS_SOURCE:/workflows/skills:ro"
+)
+
+if [ -n "$DOCKER_WORKFLOWS_SOURCE" ]; then
+  DOCKER_RUN_ARGS+=(-v "$DOCKER_WORKFLOWS_SOURCE:/workflows/workflows:ro")
+fi
+
+docker run \
+  "${DOCKER_RUN_ARGS[@]}" \
   "$IMAGE_NAME" \
-  --config /root/.cbx/mcp-config.json >/tmp/cbx-mcp-docker-run.log 2>&1 || {
+  --config "$CONTAINER_CONFIG_PATH" >/tmp/cbx-mcp-docker-run.log 2>&1 || {
   cat /tmp/cbx-mcp-docker-run.log >&2 || true
   fail_with_diagnostics "docker run failed"
 }

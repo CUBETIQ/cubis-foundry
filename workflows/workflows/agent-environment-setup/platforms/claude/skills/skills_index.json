@@ -1,5 +1,30 @@
 [
   {
+    "id": "accessibility",
+    "package_id": "accessibility",
+    "catalog_id": "accessibility",
+    "kind": "skill",
+    "name": "accessibility",
+    "canonical": true,
+    "canonical_id": "accessibility",
+    "deprecated": false,
+    "replaced_by": null,
+    "aliases": [],
+    "category": "frameworks-runtimes",
+    "layer": "frameworks-runtimes",
+    "maturity": "stable",
+    "tier": "experimental",
+    "tags": [
+      "accessibility",
+      "frameworks-runtimes",
+      "frontend",
+      "web-accessibility"
+    ],
+    "path": ".claude/skills/accessibility/SKILL.md",
+    "description": "Use when auditing, implementing, or reviewing web accessibility (WCAG, ARIA, keyboard navigation, screen reader support, and inclusive interaction patterns).",
+    "triggers": []
+  },
+  {
     "id": "agentic-eval",
     "package_id": "agentic-eval",
     "catalog_id": "agentic-eval",
@@ -171,6 +196,32 @@
     ],
     "path": ".claude/skills/c-pro/SKILL.md",
     "description": "Use for modern C23-era systems and embedded engineering with memory safety discipline, build reproducibility, and low-level debugging awareness.",
+    "triggers": []
+  },
+  {
+    "id": "ci-cd-pipelines",
+    "package_id": "ci-cd-pipelines",
+    "catalog_id": "ci-cd-pipelines",
+    "kind": "skill",
+    "name": "ci-cd-pipelines",
+    "canonical": true,
+    "canonical_id": "ci-cd-pipelines",
+    "deprecated": false,
+    "replaced_by": null,
+    "aliases": [],
+    "category": "engineering",
+    "layer": "workflow-specialists",
+    "maturity": "stable",
+    "tier": "experimental",
+    "tags": [
+      "ci-cd-pipelines",
+      "devops",
+      "engineering",
+      "github-actions,gitlab-ci,jenkins,general-ci",
+      "workflow-specialists"
+    ],
+    "path": ".claude/skills/ci-cd-pipelines/SKILL.md",
+    "description": "Use when designing, reviewing, or debugging CI/CD pipelines across GitHub Actions, GitLab CI, and similar platforms. Covers pipeline architecture, job sequencing, caching, artifact management, environment promotion, security hardening, and flaky-pipeline triage.",
     "triggers": []
   },
   {
@@ -434,6 +485,30 @@
     "triggers": []
   },
   {
+    "id": "docker-kubernetes",
+    "package_id": "docker-kubernetes",
+    "catalog_id": "docker-kubernetes",
+    "kind": "skill",
+    "name": "docker-kubernetes",
+    "canonical": true,
+    "canonical_id": "docker-kubernetes",
+    "deprecated": false,
+    "replaced_by": null,
+    "aliases": [],
+    "category": "frameworks-runtimes",
+    "layer": "frameworks-runtimes",
+    "maturity": "stable",
+    "tier": "experimental",
+    "tags": [
+      "docker-kubernetes",
+      "frameworks-runtimes",
+      "infrastructure"
+    ],
+    "path": ".claude/skills/docker-kubernetes/SKILL.md",
+    "description": "Use for containerization strategy, Dockerfile optimization, Kubernetes deployment patterns, Helm charts, and container orchestration decisions.",
+    "triggers": []
+  },
+  {
     "id": "drizzle-expert",
     "package_id": "drizzle-expert",
     "catalog_id": "drizzle-expert",
@@ -578,6 +653,31 @@
     ],
     "path": ".claude/skills/frontend-design/SKILL.md",
     "description": "Use for web UI design decisions: layout, hierarchy, typography, color, motion, and interaction clarity. This skill teaches decision-making, not a fixed visual style.",
+    "triggers": []
+  },
+  {
+    "id": "git-workflow",
+    "package_id": "git-workflow",
+    "catalog_id": "git-workflow",
+    "kind": "skill",
+    "name": "git-workflow",
+    "canonical": true,
+    "canonical_id": "git-workflow",
+    "deprecated": false,
+    "replaced_by": null,
+    "aliases": [],
+    "category": "engineering",
+    "layer": "workflow-specialists",
+    "maturity": "stable",
+    "tier": "experimental",
+    "tags": [
+      "engineering",
+      "git-workflow",
+      "git,github,gitlab,general-vcs",
+      "workflow-specialists"
+    ],
+    "path": ".claude/skills/git-workflow/SKILL.md",
+    "description": "Use when establishing or reviewing git branching strategies, PR conventions, commit hygiene, merge policies, monorepo workflows, and release tagging. Covers trunk-based development, GitFlow alternatives, conventional commits, and code review standards.",
     "triggers": []
   },
   {
@@ -950,6 +1050,31 @@
     ],
     "path": ".claude/skills/nodejs-best-practices/SKILL.md",
     "description": "Use for modern Node.js backend architecture, runtime choices, worker or queue boundaries, edge-vs-server tradeoffs, reliability controls, and production-safe service implementation in the current LTS era.",
+    "triggers": []
+  },
+  {
+    "id": "observability",
+    "package_id": "observability",
+    "catalog_id": "observability",
+    "kind": "skill",
+    "name": "observability",
+    "canonical": true,
+    "canonical_id": "observability",
+    "deprecated": false,
+    "replaced_by": null,
+    "aliases": [],
+    "category": "engineering",
+    "layer": "workflow-specialists",
+    "maturity": "stable",
+    "tier": "experimental",
+    "tags": [
+      "engineering",
+      "observability",
+      "operations",
+      "workflow-specialists"
+    ],
+    "path": ".claude/skills/observability/SKILL.md",
+    "description": "Use when designing or reviewing logging, monitoring, tracing, and alerting for production services. Covers structured logging, distributed tracing, metric collection, dashboard design, alert hygiene, SLO definition, and incident readiness across application and infrastructure layers.",
     "triggers": []
   },
   {
@@ -1365,15 +1490,13 @@
     "maturity": "stable",
     "tier": "curated",
     "tags": [
-      "container-queries",
-      "css",
-      "design-tokens",
       "frameworks-runtimes",
       "frontend",
+      "tailwind-patterns",
       "tailwindcss"
     ],
     "path": ".claude/skills/tailwind-patterns/SKILL.md",
-    "description": "Use for Tailwind CSS v4 architecture, CSS-first theme setup, utility composition, container-query usage, and design-token hygiene.",
+    "description": "Use for Tailwind CSS v4 architecture, CSS-first theme setup, utility composition, container-query usage, design-token hygiene, and dark-mode strategy.",
     "triggers": []
   },
   {

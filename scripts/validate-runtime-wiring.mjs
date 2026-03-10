@@ -436,9 +436,7 @@ async function main() {
       const claudeWorkflow = path.join(
         PLATFORM_ROOTS.claude,
         "workflows",
-        route.artifacts?.claude?.workflowFile ||
-          route.artifacts?.codex?.workflowFile ||
-          "",
+        route.artifacts?.claude?.workflowFile || "",
       );
       await validateWorkflowFile(
         claudeWorkflow,
@@ -505,9 +503,7 @@ async function main() {
       path.join(
         PLATFORM_ROOTS.claude,
         "agents",
-        route.artifacts?.claude?.agentFile ||
-          route.artifacts?.codex?.agentFile ||
-          "",
+        route.artifacts?.claude?.agentFile || "",
       ),
       route,
       true,

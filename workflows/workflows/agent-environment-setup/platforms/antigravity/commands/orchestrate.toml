@@ -1,4 +1,4 @@
-description = "Coordinate multiple specialists to solve cross-cutting tasks with explicit ownership and handoff."
+description = "Coordinate multiple specialists to solve cross-cutting tasks with explicit ownership, validation gates, and repeat-until-good iteration."
 prompt = '''
 Follow the /orchestrate workflow from .agent/workflows/orchestrate.md.
 

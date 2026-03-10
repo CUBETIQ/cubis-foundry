@@ -25,7 +25,7 @@ export const skillGetSchema = z.object({
     .boolean()
     .optional()
     .describe(
-      "Whether to include direct local markdown references from SKILL.md (default: true)",
+      "Whether to include direct local markdown references from SKILL.md (default: false)",
     ),
 });
 
@@ -34,7 +34,7 @@ export async function handleSkillGet(
   manifest: VaultManifest,
   charsPerToken: number,
 ) {
-  const { id, includeReferences = true } = args;
+  const { id, includeReferences = false } = args;
 
   if (id.startsWith("workflow-") || id.startsWith("agent-")) {
     invalidInput(

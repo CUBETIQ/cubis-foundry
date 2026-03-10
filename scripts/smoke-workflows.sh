@@ -4,9 +4,12 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 export ROOT_DIR
 CLI="$ROOT_DIR/bin/cubis.js"
+EXPECTED_WORKFLOW_COUNT="$(find "$ROOT_DIR/workflows/workflows/agent-environment-setup/shared/workflows" -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')"
+EXPECTED_AGENT_COUNT="$(find "$ROOT_DIR/workflows/workflows/agent-environment-setup/shared/agents" -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')"
 ANTIGRAVITY_GLOBAL_SKILLS="$HOME/.gemini/antigravity/skills"
 CODEX_GLOBAL_SKILLS="$HOME/.agents/skills"
 COPILOT_GLOBAL_SKILLS="$HOME/.copilot/skills"
+export EXPECTED_WORKFLOW_COUNT EXPECTED_AGENT_COUNT
 export ANTIGRAVITY_GLOBAL_SKILLS CODEX_GLOBAL_SKILLS COPILOT_GLOBAL_SKILLS
 
 if [ ! -f "$CLI" ]; then
@@ -146,16 +149,16 @@ node "$CLI" workflows install --platform antigravity --bundle agent-environment-
 [ -f .gemini/commands/backend.toml ]
 [ -f .gemini/commands/review.toml ]
 [ -f .gemini/commands/vercel.toml ]
-if [ "$(find .agent/workflows -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "15" ]; then
-  echo "[FAIL] Antigravity expected exactly 15 workflow files" >&2
+if [ "$(find .agent/workflows -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "$EXPECTED_WORKFLOW_COUNT" ]; then
+  echo "[FAIL] Antigravity expected exactly $EXPECTED_WORKFLOW_COUNT workflow files" >&2
   exit 1
 fi
-if [ "$(find .gemini/commands -maxdepth 1 -type f -name '*.toml' | wc -l | tr -d ' ')" -ne "15" ]; then
-  echo "[FAIL] Antigravity expected exactly 15 Gemini command files" >&2
+if [ "$(find .gemini/commands -maxdepth 1 -type f -name '*.toml' | wc -l | tr -d ' ')" -ne "$EXPECTED_WORKFLOW_COUNT" ]; then
+  echo "[FAIL] Antigravity expected exactly $EXPECTED_WORKFLOW_COUNT Gemini command files" >&2
   exit 1
 fi
-if [ "$(find .agent/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "17" ]; then
-  echo "[FAIL] Antigravity expected exactly 17 agent files" >&2
+if [ "$(find .agent/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "$EXPECTED_AGENT_COUNT" ]; then
+  echo "[FAIL] Antigravity expected exactly $EXPECTED_AGENT_COUNT agent files" >&2
   exit 1
 fi
 [ -d "$ANTIGRAVITY_GLOBAL_SKILLS/api-designer" ]
@@ -243,8 +246,8 @@ node "$CLI" workflows install --platform codex --bundle agent-environment-setup 
 [ -f .agents/workflows/database.md ]
 [ -f .agents/workflows/mobile.md ]
 [ -f .agents/workflows/devops.md ]
-if [ "$(find .agents/workflows -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "15" ]; then
-  echo "[FAIL] Codex expected exactly 15 workflow files" >&2
+if [ "$(find .agents/workflows -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "$EXPECTED_WORKFLOW_COUNT" ]; then
+  echo "[FAIL] Codex expected exactly $EXPECTED_WORKFLOW_COUNT workflow files" >&2
   exit 1
 fi
 [ ! -d .agents/agents ]
@@ -334,12 +337,13 @@ node "$CLI" workflows sync-rules --platform codex --scope global --dry-run --jso
 node - <<'NODE'
 const fs = require('fs');
 const payload = JSON.parse(fs.readFileSync('./cbx-c221.json', 'utf8'));
-if (payload.workflowsCount !== 15) {
-  console.error(`[FAIL] Expected workflowsCount=15 for codex global sync dry-run, got ${payload.workflowsCount}`);
+const expected = Number(process.env.EXPECTED_WORKFLOW_COUNT || '0');
+if (payload.workflowsCount !== expected) {
+  console.error(`[FAIL] Expected workflowsCount=${expected} for codex global sync dry-run, got ${payload.workflowsCount}`);
   process.exit(1);
 }
 NODE
-log_ok "Codex global sync dry-run reports workflowsCount=15"
+log_ok "Codex global sync dry-run reports workflowsCount=$EXPECTED_WORKFLOW_COUNT"
 
 log_step "C2.3 Rules init (Codex)"
 node "$CLI" rules init --platform codex --scope project --overwrite >/tmp/cbx-c23.log
@@ -454,8 +458,8 @@ node "$CLI" workflows install --platform copilot --bundle agent-environment-setu
 [ -f .github/copilot/workflows/database.md ]
 [ -f .github/copilot/workflows/mobile.md ]
 [ -f .github/copilot/workflows/devops.md ]
-if [ "$(find .github/copilot/workflows -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "15" ]; then
-  echo "[FAIL] Copilot expected exactly 15 workflow files" >&2
+if [ "$(find .github/copilot/workflows -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "$EXPECTED_WORKFLOW_COUNT" ]; then
+  echo "[FAIL] Copilot expected exactly $EXPECTED_WORKFLOW_COUNT workflow files" >&2
   exit 1
 fi
 [ -f .github/agents/backend-specialist.md ]
@@ -466,12 +470,12 @@ fi
 [ -f .github/prompts/workflow-backend.prompt.md ]
 [ -f .github/prompts/workflow-review.prompt.md ]
 [ -f .github/prompts/workflow-vercel.prompt.md ]
-if [ "$(find .github/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "17" ]; then
-  echo "[FAIL] Copilot expected exactly 17 agent files" >&2
+if [ "$(find .github/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "$EXPECTED_AGENT_COUNT" ]; then
+  echo "[FAIL] Copilot expected exactly $EXPECTED_AGENT_COUNT agent files" >&2
   exit 1
 fi
-if [ "$(find .github/prompts -maxdepth 1 -type f -name '*.prompt.md' | wc -l | tr -d ' ')" -ne "15" ]; then
-  echo "[FAIL] Copilot expected exactly 15 prompt files" >&2
+if [ "$(find .github/prompts -maxdepth 1 -type f -name '*.prompt.md' | wc -l | tr -d ' ')" -ne "$EXPECTED_WORKFLOW_COUNT" ]; then
+  echo "[FAIL] Copilot expected exactly $EXPECTED_WORKFLOW_COUNT prompt files" >&2
   exit 1
 fi
 [ ! -d .github/skills ]

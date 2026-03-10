@@ -206,6 +206,8 @@ function buildSearchText(route: RouteEntry): string {
       route.artifacts.codex?.compatibilityAlias || "",
       route.artifacts.antigravity?.commandFile || "",
       route.artifacts.copilot?.promptFile || "",
+      route.artifacts.claude?.workflowFile || "",
+      route.artifacts.claude?.agentFile || "",
     ].join(" "),
   );
 }

@@ -169,7 +169,7 @@ async function loadGeneratedRouteManifest(mcpPackageRoot) {
 import { open, readdir, stat } from "fs/promises";
 import path3 from "path";
 async function scanVaultRoots(roots, basePath) {
-  const skills = [];
+  const skillsById = /* @__PURE__ */ new Map();
   for (const rootRel of roots) {
     const rootAbs = path3.resolve(basePath, rootRel);
     let entries;
@@ -191,21 +191,35 @@ async function scanVaultRoots(roots, basePath) {
         logger.warn(`Skipping empty SKILL.md: ${skillFile}`);
         continue;
       }
-      const wrapperKind = await detectWrapperKind(entry, skillFile);
+      const rawPreview = await readFrontmatterPreview(skillFile);
+      const frontmatter = rawPreview ? parseFrontmatter(rawPreview) : null;
+      const wrapperKind = detectWrapperKind(entry, frontmatter);
       if (wrapperKind) {
         logger.debug(
           `Skipping wrapper skill ${entry} (${wrapperKind}) at ${skillFile}`
         );
         continue;
       }
-      skills.push({
+      const skillPointer = {
         id: entry,
         category: deriveCategory(entry),
         path: skillFile,
         fileBytes: skillStat.size
-      });
+      };
+      registerSkillPointer(skillsById, skillPointer);
+      for (const aliasId of extractMetadataAliases(frontmatter)) {
+        if (aliasId === entry) continue;
+        registerSkillPointer(skillsById, {
+          id: aliasId,
+          canonicalId: entry,
+          category: skillPointer.category,
+          path: skillFile,
+          fileBytes: skillStat.size
+        });
+      }
     }
   }
+  const skills = [...skillsById.values()].sort((a, b) => a.id.localeCompare(b.id));
   logger.info(`Vault scan complete: ${skills.length} skills discovered`);
   return skills;
 }
@@ -238,6 +252,9 @@ function parseFrontmatter(rawPreview) {
   const match = rawPreview.match(/^---\s*\n([\s\S]*?)\n---/);
   return match?.[1] ?? null;
 }
+function parseInlineList(raw) {
+  return String(raw || "").split(",").map((item) => item.trim().replace(/^['"]|['"]$/g, "")).filter(Boolean);
+}
 function extractMetadataWrapper(frontmatter) {
   const lines = frontmatter.split(/\r?\n/);
   let inMetadata = false;
@@ -259,12 +276,74 @@ function extractMetadataWrapper(frontmatter) {
   }
   return null;
 }
-async function detectWrapperKind(skillId, skillFile) {
+function extractMetadataAliases(frontmatter) {
+  if (!frontmatter) return [];
+  const lines = frontmatter.split(/\r?\n/);
+  let inMetadata = false;
+  const aliases = [];
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i];
+    if (!inMetadata) {
+      if (/^\s*metadata\s*:\s*$/.test(line)) {
+        inMetadata = true;
+      }
+      continue;
+    }
+    if (!line.trim()) continue;
+    if (!/^\s+/.test(line)) break;
+    const inlineMatch = line.match(/^\s+aliases\s*:\s*(.+)\s*$/);
+    if (!inlineMatch) continue;
+    const rest = inlineMatch[1].trim();
+    if (rest.startsWith("[") && rest.endsWith("]")) {
+      aliases.push(...parseInlineList(rest.slice(1, -1)));
+      break;
+    }
+    if (rest) {
+      aliases.push(...parseInlineList(rest));
+      break;
+    }
+    for (let j = i + 1; j < lines.length; j += 1) {
+      const next = lines[j];
+      if (!next.trim()) continue;
+      if (/^\s+[A-Za-z0-9_-]+\s*:/.test(next)) {
+        i = j - 1;
+        break;
+      }
+      const bullet = next.match(/^\s+-\s*(.+)$/);
+      if (bullet) {
+        aliases.push(bullet[1].trim().replace(/^['"]|['"]$/g, ""));
+      }
+      if (j === lines.length - 1) {
+        i = j;
+      }
+    }
+  }
+  return [...new Set(aliases.filter(Boolean))];
+}
+function registerSkillPointer(skillsById, pointer) {
+  const key = pointer.id.toLowerCase();
+  if (!skillsById.has(key)) {
+    skillsById.set(key, pointer);
+    return;
+  }
+  const existing = skillsById.get(key);
+  if (!existing) {
+    skillsById.set(key, pointer);
+    return;
+  }
+  if (existing.canonicalId && !pointer.canonicalId) {
+    skillsById.set(key, pointer);
+    return;
+  }
+  if (existing.path !== pointer.path || existing.canonicalId !== pointer.canonicalId) {
+    logger.warn(
+      `Duplicate skill id '${pointer.id}' discovered; keeping first registration at ${existing.path}`
+    );
+  }
+}
+function detectWrapperKind(skillId, frontmatter) {
   const byId = extractWrapperKindFromId(skillId);
   if (byId) return byId;
-  const rawPreview = await readFrontmatterPreview(skillFile);
-  if (!rawPreview) return null;
-  const frontmatter = parseFrontmatter(rawPreview);
   if (!frontmatter) return null;
   const byMetadata = extractMetadataWrapper(frontmatter);
   if (byMetadata === "workflow" || byMetadata === "agent") {
@@ -357,7 +436,7 @@ function deriveCategory(skillId) {
 }
 
 // src/vault/manifest.ts
-import { readdir as readdir2, readFile as readFile2 } from "fs/promises";
+import { readFile as readFile2 } from "fs/promises";
 import path4 from "path";
 
 // src/telemetry/tokenBudget.ts
@@ -439,15 +518,6 @@ function buildManifest(skills, charsPerToken) {
       charsPerToken
     )
   };
-}
-async function extractDescription(skillPath, maxLength) {
-  try {
-    const content = await readFile2(skillPath, "utf8");
-    return parseDescriptionFromFrontmatter(content, maxLength);
-  } catch (err) {
-    logger.debug(`Failed to read description from ${skillPath}: ${err}`);
-    return void 0;
-  }
 }
 function parseDescriptionFromFrontmatter(content, maxLength) {
   const fmMatch = content.match(/^---\s*\n([\s\S]*?)\n---/);
@@ -544,10 +614,7 @@ function normalizeInSkillMarkdownTarget(skillDir, target) {
 }
 async function readReferencedMarkdownFiles(skillPath, skillContent) {
   const skillDir = path4.dirname(skillPath);
-  let targets = collectReferencedMarkdownTargets(skillContent);
-  if (targets.length === 0) {
-    targets = await collectSiblingMarkdownTargets(skillDir);
-  }
+  const targets = collectReferencedMarkdownTargets(skillContent);
   const references = [];
   for (const target of targets) {
     const resolved = path4.resolve(skillDir, target);
@@ -568,41 +635,10 @@ async function readReferencedMarkdownFiles(skillPath, skillContent) {
   }
   return references;
 }
-async function collectSiblingMarkdownTargets(skillDir) {
-  const entries = await readdir2(skillDir, { withFileTypes: true }).catch(
-    () => []
-  );
-  const targets = [];
-  for (const entry of entries) {
-    if (entry.name.startsWith(".")) continue;
-    if (entry.isDirectory()) {
-      const subEntries = await readdir2(path4.join(skillDir, entry.name), {
-        withFileTypes: true
-      }).catch(() => []);
-      for (const sub of subEntries) {
-        if (!sub.isFile()) continue;
-        if (sub.name.startsWith(".")) continue;
-        if (!sub.name.toLowerCase().endsWith(".md")) continue;
-        targets.push(`${entry.name}/${sub.name}`);
-        if (targets.length >= MAX_REFERENCED_FILES) break;
-      }
-    } else if (entry.isFile()) {
-      if (!entry.name.toLowerCase().endsWith(".md")) continue;
-      if (entry.name.toLowerCase() === "skill.md") continue;
-      targets.push(entry.name);
-    }
-    if (targets.length >= MAX_REFERENCED_FILES) break;
-  }
-  targets.sort((a, b) => a.localeCompare(b));
-  return targets;
-}
 async function listReferencedMarkdownPaths(skillPath, skillContent) {
   const source = skillContent ?? await readFullSkillContent(skillPath);
   const skillDir = path4.dirname(skillPath);
-  const explicitTargets = collectReferencedMarkdownTargets(source).map((target) => normalizeInSkillMarkdownTarget(skillDir, target)).filter((target) => Boolean(target));
-  const siblingTargets = await collectSiblingMarkdownTargets(skillDir);
-  const merged = /* @__PURE__ */ new Set([...explicitTargets, ...siblingTargets]);
-  return [...merged].sort((a, b) => a.localeCompare(b)).slice(0, MAX_REFERENCED_FILES);
+  return collectReferencedMarkdownTargets(source).map((target) => normalizeInSkillMarkdownTarget(skillDir, target)).filter((target) => Boolean(target)).sort((a, b) => a.localeCompare(b)).slice(0, MAX_REFERENCED_FILES);
 }
 async function readSkillReferenceFile(skillPath, relativePath) {
   const normalized = String(relativePath || "").trim();
@@ -638,14 +674,54 @@ async function readSkillFrontmatter(skillPath) {
   const content = await readFullSkillContent(skillPath);
   return parseSkillFrontmatter(content);
 }
-async function enrichWithDescriptions(skills, maxLength) {
-  return Promise.all(
-    skills.map(async (skill) => {
-      if (skill.description) return skill;
-      const description = await extractDescription(skill.path, maxLength);
-      return { ...skill, description };
-    })
+
+// src/vault/generatedManifest.ts
+import { readFile as readFile3 } from "fs/promises";
+import path5 from "path";
+function normalizeStringArray(values) {
+  if (!Array.isArray(values)) return [];
+  return [...new Set(values.map((value) => String(value || "").trim()).filter(Boolean))];
+}
+async function loadGeneratedSkillManifest(mcpPackageRoot) {
+  const filePath = path5.resolve(mcpPackageRoot, "generated", "mcp-manifest.json");
+  try {
+    const raw = await readFile3(filePath, "utf8");
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed.skills)) {
+      throw new Error("missing skills array");
+    }
+    return parsed;
+  } catch (error) {
+    logger.warn(
+      `Generated skill manifest unavailable at ${filePath}: ${String(error)}`
+    );
+    return null;
+  }
+}
+function mergeGeneratedSkillMetadata(scannedSkills, generatedManifest) {
+  if (!generatedManifest?.skills?.length) {
+    return scannedSkills;
+  }
+  const generatedById = new Map(
+    generatedManifest.skills.map((entry) => [entry.id.toLowerCase(), entry])
   );
+  const missingIds = scannedSkills.filter((skill) => !generatedById.has(skill.id.toLowerCase())).map((skill) => skill.id).sort((a, b) => a.localeCompare(b));
+  if (missingIds.length > 0) {
+    logger.warn(
+      `Generated skill manifest is missing ${missingIds.length} scanned skill(s): ${missingIds.slice(0, 8).join(", ")}${missingIds.length > 8 ? ", ..." : ""}. Run node scripts/generate-mcp-manifest.mjs to refresh the runtime index.`
+    );
+  }
+  return scannedSkills.map((skill) => {
+    const generated = generatedById.get(skill.id.toLowerCase());
+    if (!generated) return skill;
+    return {
+      ...skill,
+      category: generated.category || skill.category,
+      description: generated.description || skill.description,
+      keywords: normalizeStringArray(generated.keywords),
+      triggers: normalizeStringArray(generated.triggers)
+    };
+  });
 }
 
 // src/server.ts
@@ -653,7 +729,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z as z16 } from "zod";
 
 // src/tools/routeResolve.ts
-import path5 from "path";
+import path6 from "path";
 import process2 from "process";
 import { promises as fs } from "fs";
 import { z as z2 } from "zod";
@@ -683,7 +759,7 @@ var ROUTE_STOP_WORDS = /* @__PURE__ */ new Set([
   "to",
   "with"
 ]);
-var SKILL_AUTHORING_OBJECT_SIGNALS = [
+var SKILL_CREATOR_OBJECT_SIGNALS = [
   "skill",
   "skills",
   "skill authoring",
@@ -701,7 +777,7 @@ var SKILL_AUTHORING_OBJECT_SIGNALS = [
   "mirror",
   "mirrors"
 ];
-var SKILL_AUTHORING_ACTION_SIGNALS = [
+var SKILL_CREATOR_ACTION_SIGNALS = [
   "adapt",
   "author",
   "build",
@@ -721,9 +797,9 @@ var SKILL_AUTHORING_ACTION_SIGNALS = [
   "validate",
   "wire"
 ];
-var SKILL_AUTHORING_PLAN_SIGNALS = ["design", "plan", "spec"];
-var SKILL_AUTHORING_REVIEW_SIGNALS = ["audit", "check", "review", "validate"];
-var SKILL_AUTHORING_ORCHESTRATE_SIGNALS = [
+var SKILL_CREATOR_PLAN_SIGNALS = ["design", "plan", "spec"];
+var SKILL_CREATOR_REVIEW_SIGNALS = ["audit", "check", "review", "validate"];
+var SKILL_CREATOR_ORCHESTRATE_SIGNALS = [
   "all platform",
   "all platforms",
   "cross platform",
@@ -741,8 +817,24 @@ var LANGUAGE_SIGNAL_FILES = [
   { skillId: "rust-pro", files: ["Cargo.toml"] },
   { skillId: "csharp-pro", files: [".sln", ".csproj"] },
   { skillId: "java-pro", files: ["pom.xml", "build.gradle"] },
-  { skillId: "kotlin-pro", files: ["build.gradle.kts", "settings.gradle.kts"] }
+  { skillId: "kotlin-pro", files: ["build.gradle.kts", "settings.gradle.kts"] },
+  { skillId: "dart-pro", files: ["pubspec.yaml"] },
+  { skillId: "php-pro", files: ["composer.json"] },
+  { skillId: "ruby-pro", files: ["Gemfile"] },
+  { skillId: "swift-pro", files: ["Package.swift"] }
 ];
+var LEGACY_WORKFLOW_ALIASES = {
+  brainstorm: "plan",
+  qa: "test",
+  incident: "devops",
+  postman: "backend"
+};
+var LEGACY_AGENT_ALIASES = {
+  "penetration-tester": "security-auditor",
+  "qa-automation-engineer": "test-engineer",
+  "product-owner": "product-manager",
+  "explorer-agent": "code-archaeologist"
+};
 function normalize(value) {
   return value.toLowerCase().replace(/[^a-z0-9@/$+-]+/g, " ").trim();
 }
@@ -764,24 +856,24 @@ function countTokenMatches(haystack, tokens) {
 function includesAnyPhrase(normalizedIntent, phrases) {
   return phrases.some((phrase) => normalizedIntent.includes(phrase));
 }
-function isSkillAuthoringIntent(intent) {
+function isSkillCreatorIntent(intent) {
   const normalizedIntent = normalize(intent);
   const hasObjectSignal = includesAnyPhrase(
     normalizedIntent,
-    SKILL_AUTHORING_OBJECT_SIGNALS
+    SKILL_CREATOR_OBJECT_SIGNALS
   );
   if (!hasObjectSignal) return false;
-  return includesAnyPhrase(normalizedIntent, SKILL_AUTHORING_ACTION_SIGNALS);
+  return includesAnyPhrase(normalizedIntent, SKILL_CREATOR_ACTION_SIGNALS);
 }
-function chooseSkillAuthoringRoute(intent, manifest) {
-  if (!isSkillAuthoringIntent(intent)) return null;
+function chooseSkillCreatorRoute(intent, manifest) {
+  if (!isSkillCreatorIntent(intent)) return null;
   const normalizedIntent = normalize(intent);
   let preferredRouteId = "create";
-  if (includesAnyPhrase(normalizedIntent, SKILL_AUTHORING_REVIEW_SIGNALS)) {
+  if (includesAnyPhrase(normalizedIntent, SKILL_CREATOR_REVIEW_SIGNALS)) {
     preferredRouteId = "review";
-  } else if (includesAnyPhrase(normalizedIntent, SKILL_AUTHORING_PLAN_SIGNALS)) {
+  } else if (includesAnyPhrase(normalizedIntent, SKILL_CREATOR_PLAN_SIGNALS)) {
     preferredRouteId = "plan";
-  } else if (includesAnyPhrase(normalizedIntent, SKILL_AUTHORING_ORCHESTRATE_SIGNALS)) {
+  } else if (includesAnyPhrase(normalizedIntent, SKILL_CREATOR_ORCHESTRATE_SIGNALS)) {
     preferredRouteId = "orchestrate";
   }
   return manifest.routes.find(
@@ -803,7 +895,9 @@ function buildSearchText(route) {
       ...route.supportingSkills,
       route.artifacts.codex?.compatibilityAlias || "",
       route.artifacts.antigravity?.commandFile || "",
-      route.artifacts.copilot?.promptFile || ""
+      route.artifacts.copilot?.promptFile || "",
+      route.artifacts.claude?.workflowFile || "",
+      route.artifacts.claude?.agentFile || ""
     ].join(" ")
   );
 }
@@ -814,6 +908,13 @@ function findExplicitRoute(intent, manifest) {
       (entry) => entry.kind === "workflow" && entry.command?.toLowerCase() === trimmed.toLowerCase()
     );
     if (route) return { route, matchedBy: "explicit-workflow-command" };
+    const legacyWorkflowId = LEGACY_WORKFLOW_ALIASES[trimmed.slice(1).toLowerCase()];
+    if (legacyWorkflowId) {
+      const legacyRoute = manifest.routes.find(
+        (entry) => entry.kind === "workflow" && entry.id === legacyWorkflowId
+      );
+      if (legacyRoute) return { route: legacyRoute, matchedBy: "legacy-workflow-alias" };
+    }
   }
   if (trimmed.startsWith("@")) {
     const normalizedAgent = trimmed.slice(1).toLowerCase();
@@ -821,6 +922,13 @@ function findExplicitRoute(intent, manifest) {
       (entry) => entry.kind === "agent" && entry.id.toLowerCase() === normalizedAgent
     );
     if (route) return { route, matchedBy: "explicit-agent" };
+    const legacyAgentId = LEGACY_AGENT_ALIASES[normalizedAgent];
+    if (legacyAgentId) {
+      const legacyRoute = manifest.routes.find(
+        (entry) => entry.kind === "agent" && entry.id.toLowerCase() === legacyAgentId
+      );
+      if (legacyRoute) return { route: legacyRoute, matchedBy: "legacy-agent-alias" };
+    }
   }
   if (trimmed.startsWith("$")) {
     const normalizedAlias = trimmed.toLowerCase();
@@ -858,7 +966,7 @@ function resolveByIntent(intent, manifest) {
   return best;
 }
 function buildResolvedPayload(input, route, matchedBy, detectedLanguageSkill) {
-  const primarySkillHint = isSkillAuthoringIntent(input) ? "skill-authoring" : route.primarySkills[0] || null;
+  const primarySkillHint = isSkillCreatorIntent(input) ? "skill-creator" : route.primarySkills[0] || null;
   return {
     input,
     resolved: true,
@@ -872,7 +980,7 @@ function buildResolvedPayload(input, route, matchedBy, detectedLanguageSkill) {
     detectedLanguageSkill,
     fallbackSkillSearchRecommended: false,
     matchedBy,
-    explanation: matchedBy === "explicit-workflow-command" ? `Matched explicit workflow command ${route.command}.` : matchedBy === "explicit-agent" ? `Matched explicit agent @${route.id}.` : matchedBy === "compatibility-alias" ? `Matched compatibility alias ${route.artifacts.codex?.compatibilityAlias}.` : matchedBy === "skill-authoring-intent" ? `Matched workflow '${route.id}' and selected skill-authoring as the primary skill hint for skill package work.` : `Matched ${route.kind} '${route.id}' from installed route metadata.`,
+    explanation: matchedBy === "explicit-workflow-command" ? `Matched explicit workflow command ${route.command}.` : matchedBy === "explicit-agent" ? `Matched explicit agent @${route.id}.` : matchedBy === "legacy-workflow-alias" ? `Matched legacy workflow alias and routed to canonical workflow '${route.id}'.` : matchedBy === "legacy-agent-alias" ? `Matched legacy agent alias and routed to canonical agent @${route.id}.` : matchedBy === "compatibility-alias" ? `Matched compatibility alias ${route.artifacts.codex?.compatibilityAlias}.` : matchedBy === "skill-creator-intent" ? `Matched workflow '${route.id}' and selected skill-creator as the primary skill hint for skill package work.` : `Matched ${route.kind} '${route.id}' from installed route metadata.`,
     artifacts: route.artifacts
   };
 }
@@ -896,7 +1004,7 @@ async function detectLanguageSkillHint() {
         }
         continue;
       }
-      if (has(fileName) || await fileExists(path5.join(cwd, fileName))) {
+      if (has(fileName) || await fileExists(path6.join(cwd, fileName))) {
         if (entry.skillId === "javascript-pro") {
           const tsSignals = ["tsconfig.json", "tsconfig.base.json", "deno.json"];
           if (tsSignals.some((signal) => has(signal))) {
@@ -925,12 +1033,12 @@ async function handleRouteResolve(args, routeManifest) {
       structuredContent: payload2
     };
   }
-  const skillAuthoringRoute = chooseSkillAuthoringRoute(intent, routeManifest);
-  if (skillAuthoringRoute) {
+  const skillCreatorRoute = chooseSkillCreatorRoute(intent, routeManifest);
+  if (skillCreatorRoute) {
     const payload2 = buildResolvedPayload(
       intent,
-      skillAuthoringRoute,
-      "skill-authoring-intent",
+      skillCreatorRoute,
+      "skill-creator-intent",
       detectedLanguageSkill
     );
     return {
@@ -1041,16 +1149,21 @@ var skillBrowseCategoryDescription = "Browse skills within a specific category. 
 var skillBrowseCategorySchema = z4.object({
   category: z4.string().describe("The category name to browse (from skill_list_categories)")
 });
+function summarizeDescription(description, maxLength) {
+  const text = String(description || "").trim();
+  if (!text) return "(no description)";
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, Math.max(0, maxLength - 3))}...`;
+}
 async function handleSkillBrowseCategory(args, manifest, summaryMaxLength, charsPerToken) {
   const { category } = args;
   if (!manifest.categories.includes(category)) {
     notFound("Category", category);
   }
   const matching = manifest.skills.filter((s) => s.category === category);
-  const enriched = await enrichWithDescriptions(matching, summaryMaxLength);
-  const skills = enriched.map((s) => ({
+  const skills = matching.map((s) => ({
     id: s.id,
-    description: s.description ?? "(no description)"
+    description: summarizeDescription(s.description, summaryMaxLength)
   }));
   const payload = { category, skills, count: skills.length };
   const text = JSON.stringify(payload, null, 2);
@@ -1127,18 +1240,30 @@ function countMatchedTokens(haystack, tokens) {
 function isWrapperSkillId(id) {
   return id.startsWith("workflow-") || id.startsWith("agent-");
 }
+function normalizeSignalList(values) {
+  return normalizeSearchText((values || []).join(" "));
+}
+function summarizeDescription2(description, maxLength) {
+  const text = String(description || "").trim();
+  if (!text) return "(no description)";
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, Math.max(0, maxLength - 3))}...`;
+}
 async function handleSkillSearch(args, manifest, summaryMaxLength, charsPerToken) {
   const { query } = args;
   const normalizedQuery = normalizeSearchText(query);
   const queryTokens = extractQueryTokens(query);
-  const enriched = await enrichWithDescriptions(manifest.skills, summaryMaxLength);
-  const rankedMatches = enriched.filter((skill) => !isWrapperSkillId(skill.id)).map((skill) => {
+  const rankedMatches = manifest.skills.filter((skill) => !isWrapperSkillId(skill.id)).map((skill) => {
     const normalizedId = normalizeSearchText(skill.id);
     const normalizedCategory = normalizeSearchText(skill.category);
     const normalizedDescription = normalizeSearchText(skill.description ?? "");
+    const normalizedKeywords = normalizeSignalList(skill.keywords);
+    const normalizedTriggers = normalizeSignalList(skill.triggers);
     const idPhraseMatch = normalizedId.includes(normalizedQuery);
     const categoryPhraseMatch = normalizedCategory.includes(normalizedQuery);
     const descriptionPhraseMatch = normalizedDescription.includes(normalizedQuery);
+    const keywordPhraseMatch = normalizedKeywords.includes(normalizedQuery);
+    const triggerPhraseMatch = normalizedTriggers.includes(normalizedQuery);
     const idTokenMatches = countMatchedTokens(normalizedId, queryTokens);
     const categoryTokenMatches = countMatchedTokens(
       normalizedCategory,
@@ -1148,8 +1273,16 @@ async function handleSkillSearch(args, manifest, summaryMaxLength, charsPerToken
       normalizedDescription,
       queryTokens
     );
-    const totalTokenMatches = idTokenMatches + categoryTokenMatches + descriptionTokenMatches;
-    const score = (idPhraseMatch ? 500 : 0) + (descriptionPhraseMatch ? 250 : 0) + (categoryPhraseMatch ? 150 : 0) + idTokenMatches * 50 + categoryTokenMatches * 25 + descriptionTokenMatches * 15;
+    const keywordTokenMatches = countMatchedTokens(
+      normalizedKeywords,
+      queryTokens
+    );
+    const triggerTokenMatches = countMatchedTokens(
+      normalizedTriggers,
+      queryTokens
+    );
+    const totalTokenMatches = idTokenMatches + categoryTokenMatches + descriptionTokenMatches + keywordTokenMatches + triggerTokenMatches;
+    const score = (idPhraseMatch ? 500 : 0) + (triggerPhraseMatch ? 425 : 0) + (keywordPhraseMatch ? 350 : 0) + (descriptionPhraseMatch ? 225 : 0) + (categoryPhraseMatch ? 150 : 0) + idTokenMatches * 50 + triggerTokenMatches * 45 + keywordTokenMatches * 35 + categoryTokenMatches * 25 + descriptionTokenMatches * 15;
     return {
       skill,
       score,
@@ -1162,7 +1295,7 @@ async function handleSkillSearch(args, manifest, summaryMaxLength, charsPerToken
   const results = matches.map((s) => ({
     id: s.id,
     category: s.category,
-    description: s.description ?? "(no description)"
+    description: summarizeDescription2(s.description, summaryMaxLength)
   }));
   const payload = { query, results, count: results.length };
   const text = JSON.stringify(payload, null, 2);
@@ -1235,8 +1368,11 @@ async function handleSkillValidate(args, manifest, charsPerToken) {
     };
   }
   const frontmatter = await readSkillFrontmatter(skill.path);
-  const replacementId = frontmatter.metadata.replaced_by || frontmatter.metadata.alias_of || null;
-  const isAlias = Boolean(replacementId || frontmatter.metadata.deprecated);
+  const frontmatterReplacementId = frontmatter.metadata.replaced_by || frontmatter.metadata.alias_of || null;
+  const replacementId = skill.canonicalId || frontmatterReplacementId || null;
+  const isAlias = Boolean(
+    skill.canonicalId || frontmatterReplacementId || frontmatter.metadata.deprecated
+  );
   const availableReferences = await listReferencedMarkdownPaths(skill.path);
   const payload = {
     id,
@@ -1270,11 +1406,11 @@ var skillGetDescription = "Get full content of a specific skill by ID. Returns S
 var skillGetSchema = z7.object({
   id: z7.string().describe("The skill ID (directory name) to retrieve"),
   includeReferences: z7.boolean().optional().describe(
-    "Whether to include direct local markdown references from SKILL.md (default: true)"
+    "Whether to include direct local markdown references from SKILL.md (default: false)"
   )
 });
 async function handleSkillGet(args, manifest, charsPerToken) {
-  const { id, includeReferences = true } = args;
+  const { id, includeReferences = false } = args;
   if (id.startsWith("workflow-") || id.startsWith("agent-")) {
     invalidInput(
       `Skill id "${id}" appears to be a wrapper id. Use route_resolve with an explicit workflow command, @agent mention, or compatibility alias before loading concrete skills.`
@@ -1350,7 +1486,7 @@ function assertConcreteSkillId2(id) {
   }
 }
 async function handleSkillGetReference(args, manifest, charsPerToken) {
-  const { id, path: path10 } = args;
+  const { id, path: path11 } = args;
   assertConcreteSkillId2(id);
   const skill = manifest.skills.find((entry) => entry.id === id);
   if (!skill) {
@@ -1358,7 +1494,7 @@ async function handleSkillGetReference(args, manifest, charsPerToken) {
   }
   let reference;
   try {
-    reference = await readSkillReferenceFile(skill.path, path10);
+    reference = await readSkillReferenceFile(skill.path, path11);
   } catch (error) {
     invalidInput(error instanceof Error ? error.message : String(error));
   }
@@ -1482,15 +1618,18 @@ function handleSkillBudgetReport(args, manifest, charsPerToken) {
 import { z as z10 } from "zod";
 
 // src/cbxConfig/paths.ts
-import path6 from "path";
+import path7 from "path";
 import os from "os";
 import { existsSync } from "fs";
+function resolveHomeDir() {
+  return process.env.HOME || process.env.USERPROFILE || os.homedir();
+}
 function globalConfigPath() {
-  return path6.join(os.homedir(), ".cbx", "cbx_config.json");
+  return path7.join(resolveHomeDir(), ".cbx", "cbx_config.json");
 }
 function projectConfigPath(workspaceRoot) {
   const root = workspaceRoot ?? process.cwd();
-  return path6.join(root, "cbx_config.json");
+  return path7.join(root, "cbx_config.json");
 }
 function resolveConfigPath(scope, workspaceRoot) {
   if (scope === "global") {
@@ -1566,7 +1705,7 @@ import {
   mkdirSync,
   existsSync as existsSync3
 } from "fs";
-import path7 from "path";
+import path8 from "path";
 import { parse as parseJsonc2 } from "jsonc-parser";
 function writeConfigField(fieldPath, value, scope, workspaceRoot) {
   const resolved = resolveConfigPath(scope, workspaceRoot);
@@ -1592,7 +1731,7 @@ function writeConfigField(fieldPath, value, scope, workspaceRoot) {
     current = current[key];
   }
   current[parts[parts.length - 1]] = value;
-  const dir = path7.dirname(configPath);
+  const dir = path8.dirname(configPath);
   if (!existsSync3(dir)) {
     mkdirSync(dir, { recursive: true });
   }
@@ -2175,16 +2314,16 @@ var TOOL_REGISTRY = [
 ];
 
 // src/upstream/passthrough.ts
-import { mkdir, readFile as readFile3, writeFile } from "fs/promises";
-import path8 from "path";
+import { mkdir, readFile as readFile4, writeFile } from "fs/promises";
+import path9 from "path";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 function resolveCatalogDir(configPath) {
-  const configDir = path8.dirname(configPath);
-  if (path8.basename(configDir) === ".cbx") {
-    return path8.join(configDir, "mcp", "catalog");
+  const configDir = path9.dirname(configPath);
+  if (path9.basename(configDir) === ".cbx") {
+    return path9.join(configDir, "mcp", "catalog");
   }
-  return path8.join(configDir, ".cbx", "mcp", "catalog");
+  return path9.join(configDir, ".cbx", "mcp", "catalog");
 }
 function buildPassthroughAliasName(service, toolName) {
   const normalizedTool = String(toolName || "").trim().replace(/([a-z0-9])([A-Z])/g, "$1_$2").replace(/[^A-Za-z0-9]+/g, "_").replace(/^_+|_+$/g, "").replace(/_+/g, "_").toLowerCase();
@@ -2212,9 +2351,9 @@ async function loadCachedCatalogTools({
 }) {
   if (!configPath) return [];
   const catalogDir = resolveCatalogDir(configPath);
-  const catalogPath = path8.join(catalogDir, `${service}.json`);
+  const catalogPath = path9.join(catalogDir, `${service}.json`);
   try {
-    const raw = await readFile3(catalogPath, "utf8");
+    const raw = await readFile4(catalogPath, "utf8");
     const parsed = JSON.parse(raw);
     if (scope && typeof parsed.scope === "string" && parsed.scope.trim() && parsed.scope !== scope) {
       return [];
@@ -2298,7 +2437,7 @@ async function withUpstreamClient({
 async function persistCatalog(catalog) {
   if (!catalog.configPath) return;
   const catalogDir = resolveCatalogDir(catalog.configPath);
-  const catalogPath = path8.join(catalogDir, `${catalog.service}.json`);
+  const catalogPath = path9.join(catalogDir, `${catalog.service}.json`);
   const payload = {
     schemaVersion: 1,
     generatedAt: (/* @__PURE__ */ new Date()).toISOString(),
@@ -2719,9 +2858,9 @@ function createMultiSessionHttpServer(options, serverFactory) {
 }
 
 // src/index.ts
-import path9 from "path";
+import path10 from "path";
 import { fileURLToPath as fileURLToPath2 } from "url";
-var __dirname2 = path9.dirname(fileURLToPath2(import.meta.url));
+var __dirname2 = path10.dirname(fileURLToPath2(import.meta.url));
 function parseArgs(argv) {
   let transport = "stdio";
   let scope = "auto";
@@ -2820,15 +2959,16 @@ async function main() {
     setLogLevel("debug");
   }
   const serverConfig = loadServerConfig(args.configPath);
-  const basePath = path9.resolve(__dirname2, "..");
-  const skills = await scanVaultRoots(serverConfig.vault.roots, basePath);
+  const basePath = path10.resolve(__dirname2, "..");
+  const scannedSkills = await scanVaultRoots(serverConfig.vault.roots, basePath);
+  const generatedSkillManifest = await loadGeneratedSkillManifest(basePath);
+  const skills = mergeGeneratedSkillMetadata(
+    scannedSkills,
+    generatedSkillManifest
+  );
   const charsPerToken = serverConfig.telemetry.charsPerToken;
   const manifest = buildManifest(skills, charsPerToken);
   const routeManifest = await loadGeneratedRouteManifest(basePath);
-  await enrichWithDescriptions(
-    manifest.skills,
-    serverConfig.vault.summaryMaxLength
-  );
   if (args.scanOnly) {
     logger.info(
       `Scan complete: ${manifest.skills.length} skills in ${manifest.categories.length} categories`

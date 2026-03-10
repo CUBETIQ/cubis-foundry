@@ -28,7 +28,7 @@ export function registerWorkflowCommands(
   const workflowsCommand = program
     .command("workflows")
     .description(
-      "Install and manage workflow bundles for Antigravity, Codex, and Copilot",
+      "Install and manage workflow bundles for Antigravity, Codex, Copilot, and Claude",
     );
 
   workflowsCommand

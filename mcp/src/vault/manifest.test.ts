@@ -192,7 +192,7 @@ describe("skill content IO", () => {
     expect(result.references).toEqual([]);
   });
 
-  it("falls back to sibling markdown files when SKILL.md has no links", async () => {
+  it("does not load sibling markdown files when SKILL.md has no explicit links", async () => {
     const dir = createTempDir("mcp-refs-fallback-");
     const file = path.join(dir, "SKILL.md");
     const siblingRef = path.join(dir, "overview.md");
@@ -206,12 +206,10 @@ describe("skill content IO", () => {
     writeFileSync(siblingRef, "# Overview\nSibling content", "utf8");
 
     const result = await readSkillContentWithReferences(file, true);
-    expect(result.references).toEqual([
-      { relativePath: "overview.md", content: "# Overview\nSibling content" },
-    ]);
+    expect(result.references).toEqual([]);
   });
 
-  it("lists available reference paths from explicit and sibling markdown files", async () => {
+  it("lists available reference paths only from explicit markdown links", async () => {
     const dir = createTempDir("mcp-refs-list-");
     const file = path.join(dir, "SKILL.md");
     const refsDir = path.join(dir, "references");
@@ -232,7 +230,6 @@ describe("skill content IO", () => {
     writeFileSync(path.join(dir, "overview.md"), "# Overview", "utf8");
 
     await expect(listReferencedMarkdownPaths(file)).resolves.toEqual([
-      "overview.md",
       "references/guide.md",
     ]);
   });

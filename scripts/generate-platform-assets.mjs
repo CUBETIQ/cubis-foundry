@@ -261,6 +261,9 @@ function buildRouteManifest({ sharedAgents, sharedWorkflows }) {
           workflowFile: workflow.fileName,
           commandFile: `${commandId}.toml`,
         },
+        claude: {
+          workflowFile: workflow.fileName,
+        },
       },
     };
   });
@@ -288,6 +291,9 @@ function buildRouteManifest({ sharedAgents, sharedWorkflows }) {
           agentFile: agent.fileName,
         },
         antigravity: {
+          agentFile: agent.fileName,
+        },
+        claude: {
           agentFile: agent.fileName,
         },
       },

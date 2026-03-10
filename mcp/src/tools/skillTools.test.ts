@@ -65,12 +65,14 @@ function createManifest(): VaultManifest {
         category: "frontend",
         path: reactFile,
         fileBytes: reactBytes,
+        description: "React performance and architecture guidance",
       },
       {
         id: "fastapi-expert",
         category: "backend",
         path: fastapiFile,
         fileBytes: fastapiBytes,
+        description: "FastAPI async backend patterns",
       },
     ],
     fullCatalogBytes,
@@ -117,6 +119,7 @@ function createRouteManifest(): RouteManifest {
           codex: { compatibilityAlias: "$workflow-mobile", workflowFile: "mobile.md" },
           copilot: { workflowFile: "mobile.md", promptFile: "workflow-mobile.prompt.md" },
           antigravity: { workflowFile: "mobile.md", commandFile: "mobile.toml" },
+          claude: { workflowFile: "mobile.md" },
         },
       },
       {
@@ -445,6 +448,49 @@ describe("skill tools", () => {
     );
   });
 
+  it("prioritizes keyword and trigger matches ahead of description-only matches", async () => {
+    const apiFile = createSkillFile(
+      "api-designer",
+      "Contract design guidance",
+    );
+    const docsFile = createSkillFile(
+      "documentation-writer",
+      "Writes OpenAPI and Swagger documentation",
+    );
+    const apiBytes = statSync(apiFile).size;
+    const docsBytes = statSync(docsFile).size;
+    const manifest: VaultManifest = {
+      categories: ["api", "documentation"],
+      skills: [
+        {
+          id: "api-designer",
+          category: "api",
+          path: apiFile,
+          fileBytes: apiBytes,
+          description: "Contract design guidance",
+          keywords: ["openapi"],
+          triggers: ["swagger"],
+        },
+        {
+          id: "documentation-writer",
+          category: "documentation",
+          path: docsFile,
+          fileBytes: docsBytes,
+          description: "Writes OpenAPI and Swagger documentation",
+        },
+      ],
+      fullCatalogBytes: apiBytes + docsBytes,
+      fullCatalogEstimatedTokens: Math.ceil((apiBytes + docsBytes) / 4),
+    };
+
+    const result = payload(
+      await handleSkillSearch({ query: "swagger" }, manifest, 200, 4),
+    );
+
+    expect(result.count).toBe(2);
+    expect(result.results[0]).toMatchObject({ id: "api-designer" });
+  });
+
   it("resolves an explicit workflow command before skill discovery", async () => {
     const result = payload(
       await handleRouteResolve({ intent: "/mobile" }, createRouteManifest()),
@@ -455,6 +501,9 @@ describe("skill tools", () => {
       id: "mobile",
       agent: "mobile-developer",
       matchedBy: "explicit-workflow-command",
+    });
+    expect(result.artifacts).toMatchObject({
+      claude: { workflowFile: "mobile.md" },
     });
   });
 
@@ -675,6 +724,7 @@ describe("skill tools", () => {
         "  replaced_by: canonical-skill",
         "---",
         "# Skill",
+        "See [Guide](references/guide.md).",
       ].join("\n"),
       "utf8",
     );
@@ -815,7 +865,7 @@ describe("skill tools", () => {
     ).rejects.toThrow("appears to be a wrapper id");
   });
 
-  it("includes referenced markdown files in skill_get by default", async () => {
+  it("skips referenced markdown files in skill_get by default", async () => {
     const dir = mkdtempSync(path.join(os.tmpdir(), "mcp-skill-ref-default-"));
     const skillFile = path.join(dir, "SKILL.md");
     const referencesDir = path.join(dir, "references");
@@ -854,6 +904,54 @@ describe("skill tools", () => {
     };
 
     const result = await handleSkillGet({ id: "referenced-skill" }, manifest, 4);
+    expect(result.content[0].text).not.toContain("## Referenced Files");
+    expect(result.content[0].text).not.toContain("### references/guide.md");
+    expect(result.content[0].text).not.toContain("Referenced content");
+  });
+
+  it("includes referenced markdown files when includeReferences is true", async () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), "mcp-skill-ref-include-"));
+    const skillFile = path.join(dir, "SKILL.md");
+    const referencesDir = path.join(dir, "references");
+    mkdirSync(referencesDir, { recursive: true });
+    writeFileSync(
+      skillFile,
+      [
+        "---",
+        "name: referenced-skill-include-refs",
+        "description: skill with refs",
+        "---",
+        "# Skill",
+        "See [Guide](references/guide.md).",
+      ].join("\n"),
+      "utf8",
+    );
+    writeFileSync(
+      path.join(referencesDir, "guide.md"),
+      "# Guide\nReferenced content",
+      "utf8",
+    );
+
+    const skillBytes = statSync(skillFile).size;
+    const manifest: VaultManifest = {
+      categories: ["general"],
+      skills: [
+        {
+          id: "referenced-skill-include-refs",
+          category: "general",
+          path: skillFile,
+          fileBytes: skillBytes,
+        },
+      ],
+      fullCatalogBytes: skillBytes,
+      fullCatalogEstimatedTokens: Math.ceil(skillBytes / 4),
+    };
+
+    const result = await handleSkillGet(
+      { id: "referenced-skill-include-refs", includeReferences: true },
+      manifest,
+      4,
+    );
     expect(result.content[0].text).toContain("## Referenced Files");
     expect(result.content[0].text).toContain("### references/guide.md");
     expect(result.content[0].text).toContain("Referenced content");
@@ -902,7 +1000,7 @@ describe("skill tools", () => {
     expect(result.content[0].text).not.toContain("### references/guide.md");
   });
 
-  it("loads sibling markdown files when SKILL.md has no explicit links", async () => {
+  it("does not load sibling markdown files when SKILL.md has no explicit links", async () => {
     const dir = mkdtempSync(path.join(os.tmpdir(), "mcp-skill-ref-fallback-"));
     const skillFile = path.join(dir, "SKILL.md");
     writeFileSync(
@@ -938,9 +1036,9 @@ describe("skill tools", () => {
       manifest,
       4,
     );
-    expect(result.content[0].text).toContain("## Referenced Files");
-    expect(result.content[0].text).toContain("### overview.md");
-    expect(result.content[0].text).toContain("Sibling");
+    expect(result.content[0].text).not.toContain("## Referenced Files");
+    expect(result.content[0].text).not.toContain("### overview.md");
+    expect(result.content[0].text).not.toContain("Sibling");
   });
 
   it("throws when skill_get cannot find the requested skill", async () => {

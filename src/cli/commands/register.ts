@@ -52,7 +52,7 @@ export function registerCommands(deps: CliRegistrationDeps) {
     .option("--bundle <bundleId>", "workflow bundle id")
     .option(
       "--platforms <items>",
-      "comma-separated platforms: codex,antigravity,copilot",
+      "comma-separated platforms: codex,antigravity,copilot,claude",
     )
     .option(
       "--skill-profile <profile>",

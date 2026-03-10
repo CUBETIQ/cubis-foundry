@@ -13,6 +13,7 @@ ENV NODE_ENV=production
 COPY --from=build /app/package*.json ./
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
+COPY --from=build /app/generated ./generated
 COPY --from=build /app/config.json ./config.json
 
 EXPOSE 3100

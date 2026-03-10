@@ -1,6 +1,6 @@
 {
   "id": "agent-environment-setup",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Workflow-first AI agent environment setup for Antigravity, Codex, Copilot, and Claude Code.",
   "platforms": {
     "antigravity": {
@@ -19,7 +19,10 @@
         "database.md",
         "mobile.md",
         "devops.md",
-        "vercel.md"
+        "vercel.md",
+        "accessibility.md",
+        "migrate.md",
+        "onboard.md"
       ],
       "agents": [
         "backend-specialist.md",
@@ -35,9 +38,11 @@
         "performance-optimizer.md",
         "product-manager.md",
         "project-planner.md",
+        "researcher.md",
         "security-auditor.md",
         "seo-specialist.md",
         "test-engineer.md",
+        "validator.md",
         "vercel-expert.md"
       ],
       "skills": [
@@ -92,7 +97,12 @@
         "typescript-pro",
         "vitess",
         "webapp-testing",
-        "web-perf"
+        "web-perf",
+        "accessibility",
+        "ci-cd-pipelines",
+        "docker-kubernetes",
+        "git-workflow",
+        "observability"
       ],
       "rulesTemplate": "platforms/antigravity/rules/GEMINI.md",
       "hooks": [
@@ -117,7 +127,10 @@
         "database.toml",
         "mobile.toml",
         "devops.toml",
-        "vercel.toml"
+        "vercel.toml",
+        "accessibility.toml",
+        "migrate.toml",
+        "onboard.toml"
       ]
     },
     "codex": {
@@ -136,7 +149,10 @@
         "database.md",
         "mobile.md",
         "devops.md",
-        "vercel.md"
+        "vercel.md",
+        "accessibility.md",
+        "migrate.md",
+        "onboard.md"
       ],
       "agents": [
         "backend-specialist.md",
@@ -152,9 +168,11 @@
         "performance-optimizer.md",
         "product-manager.md",
         "project-planner.md",
+        "researcher.md",
         "security-auditor.md",
         "seo-specialist.md",
         "test-engineer.md",
+        "validator.md",
         "vercel-expert.md"
       ],
       "skills": [
@@ -209,7 +227,12 @@
         "typescript-pro",
         "vitess",
         "webapp-testing",
-        "web-perf"
+        "web-perf",
+        "accessibility",
+        "ci-cd-pipelines",
+        "docker-kubernetes",
+        "git-workflow",
+        "observability"
       ],
       "rulesTemplate": "platforms/codex/rules/AGENTS.md",
       "hooks": [
@@ -236,7 +259,10 @@
         "database.md",
         "mobile.md",
         "devops.md",
-        "vercel.md"
+        "vercel.md",
+        "accessibility.md",
+        "migrate.md",
+        "onboard.md"
       ],
       "agents": [
         "backend-specialist.md",
@@ -252,9 +278,11 @@
         "performance-optimizer.md",
         "product-manager.md",
         "project-planner.md",
+        "researcher.md",
         "security-auditor.md",
         "seo-specialist.md",
         "test-engineer.md",
+        "validator.md",
         "vercel-expert.md"
       ],
       "skills": [
@@ -309,7 +337,12 @@
         "typescript-pro",
         "vitess",
         "webapp-testing",
-        "web-perf"
+        "web-perf",
+        "accessibility",
+        "ci-cd-pipelines",
+        "docker-kubernetes",
+        "git-workflow",
+        "observability"
       ],
       "rulesTemplate": "platforms/copilot/rules/copilot-instructions.md",
       "hooks": [
@@ -334,7 +367,10 @@
         "workflow-database.prompt.md",
         "workflow-mobile.prompt.md",
         "workflow-devops.prompt.md",
-        "workflow-vercel.prompt.md"
+        "workflow-vercel.prompt.md",
+        "workflow-accessibility.prompt.md",
+        "workflow-migrate.prompt.md",
+        "workflow-onboard.prompt.md"
       ]
     },
     "claude": {
@@ -353,7 +389,10 @@
         "database.md",
         "mobile.md",
         "devops.md",
-        "vercel.md"
+        "vercel.md",
+        "accessibility.md",
+        "migrate.md",
+        "onboard.md"
       ],
       "agents": [
         "backend-specialist.md",
@@ -369,9 +408,11 @@
         "performance-optimizer.md",
         "product-manager.md",
         "project-planner.md",
+        "researcher.md",
         "security-auditor.md",
         "seo-specialist.md",
         "test-engineer.md",
+        "validator.md",
         "vercel-expert.md"
       ],
       "skills": [
@@ -426,7 +467,12 @@
         "typescript-pro",
         "vitess",
         "webapp-testing",
-        "web-perf"
+        "web-perf",
+        "accessibility",
+        "ci-cd-pipelines",
+        "docker-kubernetes",
+        "git-workflow",
+        "observability"
       ],
       "rulesTemplate": "platforms/claude/rules/CLAUDE.md",
       "hooks": [

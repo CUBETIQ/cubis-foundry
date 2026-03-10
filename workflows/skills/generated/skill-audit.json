@@ -2,11 +2,20 @@
   "$schema": "cubis-foundry-skill-audit-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
   "summary": {
-    "keep": 52,
+    "keep": 57,
     "review": 0,
     "alias-only": 0
   },
   "entries": [
+    {
+      "id": "accessibility",
+      "canonical_id": "accessibility",
+      "status": "keep",
+      "layer": "frameworks-runtimes",
+      "category": "frameworks-runtimes",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
     {
       "id": "agentic-eval",
       "canonical_id": "agentic-eval",
@@ -59,6 +68,15 @@
       "layer": "languages",
       "category": "languages",
       "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "ci-cd-pipelines",
+      "canonical_id": "ci-cd-pipelines",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "engineering",
+      "tier": "experimental",
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
@@ -143,6 +161,15 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
+      "id": "docker-kubernetes",
+      "canonical_id": "docker-kubernetes",
+      "status": "keep",
+      "layer": "frameworks-runtimes",
+      "category": "frameworks-runtimes",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
       "id": "drizzle-expert",
       "canonical_id": "drizzle-expert",
       "status": "keep",
@@ -185,6 +212,15 @@
       "layer": "frameworks-runtimes",
       "category": "frameworks-runtimes",
       "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "git-workflow",
+      "canonical_id": "git-workflow",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "engineering",
+      "tier": "experimental",
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
@@ -302,6 +338,15 @@
       "layer": "frameworks-runtimes",
       "category": "frameworks-runtimes",
       "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "observability",
+      "canonical_id": "observability",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "engineering",
+      "tier": "experimental",
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
@@ -476,5 +521,5 @@
       "reason": "Canonical skill remains active in the layered catalog."
     }
   ],
-  "contentHash": "1fafe7997da9b452"
+  "contentHash": "222caf18978a8bc2"
 }

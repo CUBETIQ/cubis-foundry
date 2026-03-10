@@ -51,6 +51,14 @@ Generated rule files are intentionally route-first and lazy about skill loading:
 - execute directly for simple tasks
 - load skills only when the user names one or the domain is still unclear
 
+Source of truth inside this repo:
+
+- `workflows/skills/<id>` is the canonical source for skill packages.
+- `workflows/workflows/agent-environment-setup/shared/{agents,workflows}` is the canonical source for custom agents and workflows.
+- `workflows/workflows/agent-environment-setup/platforms/*` contains generated platform adapters and mirrors, not the authoring source.
+- Active generated skill mirrors are maintained for `copilot` and `claude`.
+- Any leftover `cursor` or `windsurf` folders under `platforms/*` should be treated as legacy artifacts, not active CLI targets.
+
 ## Install
 
 ```bash
@@ -77,7 +85,7 @@ Wizard flow:
 
 - Welcome screen (Cubis Foundry banner + version)
 - Bundle selection
-- Multi-platform selection (`codex`, `antigravity`, `copilot`)
+- Multi-platform selection (`codex`, `antigravity`, `copilot`, `claude`)
 - Skills profile selection (`core`, `web-backend`, `full`)
 - MCP selection (`Cubis Foundry`, `Postman`, `Stitch`)
 - Separate scope selection for Skills and MCP (`project` or `global`)
@@ -142,6 +150,12 @@ This also manages default `StitchMCP` wiring for Antigravity.
 
 ```bash
 cbx workflows install --platform copilot --scope global --bundle agent-environment-setup --postman --postman-mode full
+```
+
+### Claude
+
+```bash
+cbx workflows install --platform claude --scope global --bundle agent-environment-setup --postman --postman-mode full
 ```
 
 ## Scope Model (Global vs Project)
@@ -375,7 +389,7 @@ Copilot:
 ### Install / Remove / Doctor / Rule Sync
 
 ```bash
-cbx workflows install --platform <codex|antigravity|copilot> --bundle agent-environment-setup
+cbx workflows install --platform <codex|antigravity|copilot|claude> --bundle agent-environment-setup
 cbx workflows remove <bundle-or-workflow> --platform <platform>
 cbx workflows remove-all --scope <project|global|all> --platform <platform|all>
 cbx workflows prune-skills --platform <platform> --scope <project|global> --skill-profile <core|web-backend|full> [--include-mcp] [--dry-run]

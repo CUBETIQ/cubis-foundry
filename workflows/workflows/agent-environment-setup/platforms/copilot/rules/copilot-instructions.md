@@ -61,7 +61,21 @@ Use the best specialist first:
 - DevOps/release: `@devops-engineer`
 - Testing/QA: `@test-engineer`, `@qa-automation-engineer`
 - Debugging/performance: `@debugger`, `@performance-optimizer`
+- Research/exploration: `@researcher`
+- Validation/quality gate: `@validator`
 - Cross-domain orchestration: `@orchestrator`
+
+Orchestrator rules:
+
+- `@orchestrator` uses the RUG (Repeat-Until-Good) pattern: it NEVER implements directly, only delegates to specialists with acceptance criteria and validates output independently.
+- After each specialist delivers, route through `@validator` for independent quality gate before accepting.
+- If validation fails, re-delegate to the specialist with specific feedback (max 3 iterations).
+
+New workflow routes:
+
+- Accessibility audit: `/accessibility` or `@frontend-specialist` with `accessibility` skill
+- Technology migration: `/migrate` for framework upgrades, dependency updates, or technology transitions
+- Codebase onboarding: `/onboard` for surveying unfamiliar repos and producing orientation reports
 
 When authoring Copilot assets:
 
@@ -106,6 +120,7 @@ Selection policy:
 <!-- cbx:workflows:auto:end -->
 
 <!-- cbx:mcp:auto:start version=1 -->
+
 ## Cubis Foundry MCP (auto-managed)
 
 Keep MCP context lazy and exact. Skills are supporting context, not the route layer.

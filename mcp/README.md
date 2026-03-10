@@ -33,6 +33,8 @@ This server exposes built-in tools plus dynamic passthrough tools discovered fro
 
 The MCP layer now uses a **route-first, lazy content model**: workflow/custom-agent intent resolves through `route_resolve` first, exact skill selection is validated via `skill_validate`, `skill_get` loads the core `SKILL.md`, and sidecar markdown is loaded only when needed via `skill_get_reference`.
 
+At startup, the server scans the vault for concrete skill files and merges that with `mcp/generated/mcp-manifest.json` so browse/search can use indexed descriptions, keywords, and triggers instead of rereading every `SKILL.md`.
+
 ## Architecture
 
 ```
@@ -131,6 +133,8 @@ Controls vault roots, transport defaults, and summary truncation:
 ```
 
 > **Security**: `config.json` must NEVER contain credential fields (`apiKey`, `secret`, `token`, `password`). The server rejects startup if any are detected.
+
+If `mcp/generated/mcp-manifest.json` is stale relative to the scanned vault, startup warns and recommends `node scripts/generate-mcp-manifest.mjs`.
 
 ### User Configuration (`cbx_config.json`)
 
@@ -340,7 +344,7 @@ Get the full SKILL.md content for a specific skill.
 **Output**: Full markdown content of the skill file (as `type: "text"` content block).
 `structuredContent.metrics` includes `loadedSkillEstimatedTokens` and estimated savings vs full catalog.
 
-By policy, agents should call `includeReferences: false` by default and fetch sidecar docs only when needed.
+By policy, agents should call `includeReferences: false` by default and fetch sidecar docs only when needed. Sidecars are discoverable only when `SKILL.md` links them explicitly.
 
 #### `skill_get_reference`
 

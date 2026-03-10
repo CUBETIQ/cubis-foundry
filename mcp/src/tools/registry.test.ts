@@ -45,6 +45,7 @@ function createTestContext(): ToolRuntimeContext {
           codex: { workflowFile: "mobile.md", compatibilityAlias: "$workflow-mobile" },
           copilot: { workflowFile: "mobile.md", promptFile: "workflow-mobile.prompt.md" },
           antigravity: { workflowFile: "mobile.md", commandFile: "mobile.toml" },
+          claude: { workflowFile: "mobile.md" },
         },
       },
     ],
