@@ -1,6 +1,6 @@
 ---
 command: "/review"
-description: "Run a strict review for bugs, regressions, accessibility issues, and security risk with prioritized findings."
+description: "Run a strict review for bugs, regressions, accessibility issues, security risk, and code quality with prioritized findings."
 triggers: ["review", "audit", "pr", "quality", "security review"]
 ---
 
@@ -8,51 +8,57 @@ triggers: ["review", "audit", "pr", "quality", "security review"]
 
 ## When to use
 
-Use this for pull request, branch, or release-candidate review when the goal is finding defects before merge.
+Use this for code review, PR review, or quality audit of existing code changes.
 
 ## Routing
 
-- Code quality and legacy risk: `@code-archaeologist`
-- Frontend quality and UI regressions: `@frontend-specialist`
-- Security findings: `@security-auditor`
-- Test adequacy and regression proof: `@test-engineer`
+- Primary specialist: `@frontend-specialist` (for frontend code) or `@backend-specialist` (for backend code)
+- Security review: `@security-auditor`
+- Quality validation: `@validator`
+- Verification support: `@test-engineer`
 
 ## Context notes
 
 - This workflow file, active platform rules, and selected agents or skills guide execution.
-- Attach changed files, failing checks, screenshots, traces, and risk areas when context is incomplete.
+- Attach the PR diff, changed files, or specific code paths to review.
 
 ## Skill Routing
 
-- Primary skills: `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `rust-pro`
-- Supporting skills (optional): `frontend-code-review`, `auth-architect`, `webapp-testing`, `playwright-e2e`, `debugging-strategies`, `agentic-eval`, `skill-creator`
-- Start with the dominant language skill for the changed code. Add `frontend-code-review` when the review target includes UI behavior, accessibility, rendering cost, or design-system drift; `auth-architect` for identity or policy risk; `webapp-testing` or `playwright-e2e` when the missing proof is test-shape or browser-flow coverage; `debugging-strategies` when review findings already need root-cause isolation; and `skill-creator` for skill-package or mirror-output reviews.
+- Primary skills: `frontend-code-review`, `static-analysis`, `testing-patterns`
+- Supporting skills (optional): `security-engineer`, `vulnerability-scanner`, `web-perf`, `react-expert`, `nextjs-developer`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`
+- Start with `frontend-code-review` for UI code or `static-analysis` for backend code. Add `testing-patterns` when evaluating test quality. Add `security-engineer` for security-sensitive changes.
 
 ## Workflow steps
 
-1. Inspect changed behavior and identify the highest-risk user or system paths.
-2. Find defects by severity, prioritizing correctness, security, and regression risk over style.
-3. Check whether current tests actually prove the changed behavior.
-4. Report actionable remediation guidance with file or area references.
+1. Understand the intent and scope of the changes.
+2. Review for correctness — logic bugs, edge cases, and regressions.
+3. Review for security — input validation, auth, secrets exposure.
+4. Review for accessibility — WCAG compliance, keyboard navigation, screen readers.
+5. Review for performance — unnecessary re-renders, N+1 queries, bundle impact.
+6. Prioritize findings by severity and provide actionable feedback.
 
 ## Verification
 
-- Run focused checks for the reviewed surface when possible.
-- Confirm whether findings are already covered by tests or still require new proof.
-- Note what was not validated directly.
+- Each finding has severity, location, and suggested fix.
+- Findings prioritized: critical > high > medium > low.
+- Positive observations noted alongside issues.
+- Reviewed against codebase conventions.
 
 ## Output Contract
 
 ```yaml
 REVIEW_WORKFLOW_RESULT:
-  primary_agent: code-archaeologist
-  supporting_agents: [frontend-specialist?, security-auditor?, test-engineer?]
-  primary_skills: [typescript-pro?, javascript-pro?, python-pro?, golang-pro?, rust-pro?]
-  supporting_skills: [frontend-code-review?, auth-architect?, webapp-testing?, playwright-e2e?, debugging-strategies?, skill-creator?]
+  primary_agent: <frontend-specialist | backend-specialist>
+  supporting_agents: [security-auditor?, validator?, test-engineer?]
+  primary_skills: [frontend-code-review?, static-analysis?, testing-patterns?]
+  supporting_skills: [security-engineer?, vulnerability-scanner?, web-perf?]
   findings:
-    - severity: <critical|high|medium|low>
-      summary: <string>
-      affected_areas: [<path-or-area>]
-      recommended_fix: <string>
-  residual_risks: [<string>] | []
+    - severity: critical | high | medium | low
+      category: correctness | security | accessibility | performance | style
+      location: <file:line>
+      description: <string>
+      suggestion: <string>
+  overall_assessment: approve | request_changes | reject
+  positive_observations: [<string>] | []
+  follow_up_items: [<string>] | []
 ```

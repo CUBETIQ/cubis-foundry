@@ -5,7 +5,7 @@ license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+compatibility: Claude Code, Codex, GitHub Copilot, Gemini CLI
 ---
 
 # Auth Architect

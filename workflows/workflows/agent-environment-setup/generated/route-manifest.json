@@ -1,7 +1,7 @@
 {
   "$schema": "cubis-foundry-route-manifest-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
-  "contentHash": "156e92dad58bd8f9",
+  "contentHash": "25bb2895132afb32",
   "summary": {
     "totalRoutes": 40,
     "workflows": 18,
@@ -13,7 +13,7 @@
       "id": "backend-specialist",
       "command": null,
       "displayName": "backend-specialist",
-      "description": "Backend specialist for API contracts, service logic, schema-aware backend changes, and auth-sensitive implementation. Triggers on backend, api, endpoint, route, middleware, database, migration, auth, jwt, oauth, oidc, passkey, rbac, session, tenant, and secrets.",
+      "description": "Backend specialist for API contracts, service logic, schema-aware backend changes, auth-sensitive implementation, payment integrations, and serverless architecture. Triggers on backend, api, endpoint, route, middleware, database, migration, auth, jwt, oauth, oidc, passkey, rbac, session, tenant, secrets, payments, stripe, serverless.",
       "triggers": [
         "backend",
         "api",
@@ -30,7 +30,10 @@
         "rbac",
         "session",
         "tenant",
-        "and secrets"
+        "secrets",
+        "payments",
+        "stripe",
+        "serverless"
       ],
       "primaryAgent": "backend-specialist",
       "supportingAgents": [],
@@ -51,6 +54,9 @@
         "nestjs-expert",
         "fastapi-expert",
         "graphql-architect",
+        "stripe-best-practices",
+        "serverless-patterns",
+        "i18n-localization",
         "typescript-pro",
         "javascript-pro",
         "python-pro",
@@ -83,7 +89,7 @@
       "id": "code-archaeologist",
       "command": null,
       "displayName": "code-archaeologist",
-      "description": "Expert in legacy code, refactoring, and understanding undocumented systems. Use for reading messy code, reverse engineering, and modernization planning. Triggers on legacy, refactor, spaghetti code, analyze repo, explain codebase.",
+      "description": "Expert in legacy code, refactoring, and understanding undocumented systems. Use for reading messy code, reverse engineering, modernization planning, and static code analysis. Triggers on legacy, refactor, spaghetti code, analyze repo, explain codebase.",
       "triggers": [
         "legacy",
         "refactor",
@@ -105,6 +111,7 @@
       ],
       "supportingSkills": [
         "legacy-modernizer",
+        "static-analysis",
         "typescript-pro",
         "javascript-pro",
         "python-pro"
@@ -189,15 +196,17 @@
       "id": "debugger",
       "command": null,
       "displayName": "debugger",
-      "description": "Expert in evidence-first debugging, root-cause isolation, regression triage, and flaky failure investigation across browser, backend, and data paths.",
+      "description": "Expert in evidence-first debugging, root-cause isolation, regression triage, flaky failure investigation, and structured error observability across browser, backend, and data paths.",
       "triggers": [],
       "primaryAgent": "debugger",
       "supportingAgents": [],
       "primarySkills": [
         "debugging-strategies",
-        "webapp-testing"
+        "error-ux-observability"
       ],
       "supportingSkills": [
+        "testing-patterns",
+        "webapp-testing",
         "playwright-e2e",
         "typescript-pro",
         "javascript-pro",
@@ -229,7 +238,7 @@
       "id": "devops-engineer",
       "command": null,
       "displayName": "devops-engineer",
-      "description": "Expert in deployment, server management, CI/CD, and production operations. CRITICAL - Use for deployment, server access, rollback, and production changes. HIGH RISK operations. Triggers on deploy, production, server, pm2, ssh, release, rollback, ci/cd.",
+      "description": "Expert in deployment, server management, CI/CD, production operations, infrastructure-as-code, and serverless architecture. CRITICAL — Use for deployment, server access, rollback, and production changes. HIGH RISK operations. Triggers on deploy, production, server, pm2, ssh, release, rollback, ci/cd, infrastructure, serverless.",
       "triggers": [
         "deploy",
         "production",
@@ -238,24 +247,28 @@
         "ssh",
         "release",
         "rollback",
-        "ci/cd"
+        "ci/cd",
+        "infrastructure",
+        "serverless"
       ],
       "primaryAgent": "devops-engineer",
       "supportingAgents": [],
       "primarySkills": [
-        "javascript-pro",
-        "typescript-pro"
+        "devops-engineer",
+        "sre-engineer"
       ],
       "supportingSkills": [
-        "python-pro",
-        "golang-pro",
-        "nodejs-best-practices",
-        "debugging-strategies",
-        "webapp-testing",
         "ci-cd-pipelines",
         "docker-kubernetes",
         "observability",
-        "git-workflow"
+        "serverless-patterns",
+        "git-workflow",
+        "debugging-strategies",
+        "nodejs-best-practices",
+        "typescript-pro",
+        "javascript-pro",
+        "python-pro",
+        "golang-pro"
       ],
       "artifacts": {
         "codex": {
@@ -290,10 +303,12 @@
       "primaryAgent": "documentation-writer",
       "supportingAgents": [],
       "primarySkills": [
-        "typescript-pro",
-        "javascript-pro"
+        "documentation-templates",
+        "changelog-generator"
       ],
       "supportingSkills": [
+        "typescript-pro",
+        "javascript-pro",
         "python-pro"
       ],
       "artifacts": {
@@ -317,7 +332,7 @@
       "id": "frontend-specialist",
       "command": null,
       "displayName": "frontend-specialist",
-      "description": "Senior frontend specialist for React, Next.js, UI architecture, interaction quality, accessibility, rendering performance, and design-system consistency.",
+      "description": "Senior frontend specialist for React, Next.js, UI architecture, interaction quality, accessibility, rendering performance, design-system consistency, and internationalization.",
       "triggers": [
         "component",
         "react",
@@ -344,6 +359,8 @@
         "web-perf",
         "frontend-code-review",
         "react-best-practices",
+        "i18n-localization",
+        "error-ux-observability",
         "typescript-pro",
         "javascript-pro"
       ],
@@ -426,10 +443,12 @@
       "primaryAgent": "mobile-developer",
       "supportingAgents": [],
       "primarySkills": [
-        "dart-pro",
-        "swift-pro"
+        "mobile-design",
+        "i18n-localization"
       ],
       "supportingSkills": [
+        "dart-pro",
+        "swift-pro",
         "kotlin-pro",
         "react-expert",
         "debugging-strategies",
@@ -514,7 +533,7 @@
       "id": "penetration-tester",
       "command": null,
       "displayName": "penetration-tester",
-      "description": "Offensive security specialist for attack-surface mapping, exploitation validation, DAST/SAST analysis, and red-team exercises. Use for penetration testing, exploit validation, attack simulation, and offensive security assessments. Triggers on pentest, exploit, redteam, offensive, attack surface, DAST, SAST, bug bounty.",
+      "description": "Offensive security specialist for attack-surface mapping, exploitation validation, DAST/SAST analysis, vulnerability scanning, and red-team exercises. Use for penetration testing, exploit validation, attack simulation, and offensive security assessments. Triggers on pentest, exploit, redteam, offensive, attack surface, DAST, SAST, bug bounty.",
       "triggers": [
         "pentest",
         "exploit",
@@ -535,10 +554,12 @@
       "primaryAgent": "penetration-tester",
       "supportingAgents": [],
       "primarySkills": [
-        "auth-architect",
-        "api-designer"
+        "security-engineer",
+        "vulnerability-scanner"
       ],
       "supportingSkills": [
+        "auth-architect",
+        "api-designer",
         "typescript-pro",
         "javascript-pro",
         "python-pro",
@@ -566,7 +587,7 @@
       "id": "performance-optimizer",
       "command": null,
       "displayName": "performance-optimizer",
-      "description": "Expert in performance optimization, profiling, Core Web Vitals, and bundle optimization. Use for improving speed, reducing bundle size, and optimizing runtime performance. Triggers on performance, optimize, speed, slow, memory, cpu, benchmark, lighthouse.",
+      "description": "Expert in performance optimization, profiling, Core Web Vitals, bundle optimization, and static analysis. Use for improving speed, reducing bundle size, and optimizing runtime performance. Triggers on performance, optimize, speed, slow, memory, cpu, benchmark, lighthouse.",
       "triggers": [
         "performance",
         "optimize",
@@ -581,9 +602,11 @@
       "supportingAgents": [],
       "primarySkills": [
         "performance-profiling",
-        "typescript-pro"
+        "web-perf"
       ],
       "supportingSkills": [
+        "static-analysis",
+        "typescript-pro",
         "javascript-pro",
         "python-pro",
         "golang-pro",
@@ -705,7 +728,7 @@
       "id": "qa-automation-engineer",
       "command": null,
       "displayName": "qa-automation-engineer",
-      "description": "QA automation specialist for test strategy, regression suite design, test matrix planning, and continuous quality pipelines. Use for test automation architecture, regression prevention, quality pipeline design, and test data management. Triggers on QA, automation, regression, smoke test, test plan, test matrix, quality pipeline.",
+      "description": "QA automation specialist for test strategy, regression suite design, test matrix planning, continuous quality pipelines, and structured testing patterns. Use for test automation architecture, regression prevention, quality pipeline design, and test data management. Triggers on QA, automation, regression, smoke test, test plan, test matrix, quality pipeline.",
       "triggers": [
         "qa automation",
         "test automation",
@@ -727,6 +750,8 @@
         "playwright-e2e"
       ],
       "supportingSkills": [
+        "testing-patterns",
+        "static-analysis",
         "agentic-eval",
         "debugging-strategies",
         "typescript-pro",
@@ -799,7 +824,7 @@
       "id": "security-auditor",
       "command": null,
       "displayName": "security-auditor",
-      "description": "Security auditor for exploitability-first review, auth and policy design, secret handling, and code-path hardening. Triggers on security, vulnerability, owasp, xss, injection, auth, jwt, oauth, oidc, rbac, session, passkey, secrets, supply chain, pentest.",
+      "description": "Security auditor for exploitability-first review, auth and policy design, secret handling, code-path hardening, vulnerability scanning, and static analysis. Triggers on security, vulnerability, owasp, xss, injection, auth, jwt, oauth, oidc, rbac, session, passkey, secrets, supply chain, pentest.",
       "triggers": [
         "security",
         "vulnerability",
@@ -828,10 +853,13 @@
       "primaryAgent": "security-auditor",
       "supportingAgents": [],
       "primarySkills": [
-        "auth-architect",
-        "api-designer"
+        "security-engineer",
+        "auth-architect"
       ],
       "supportingSkills": [
+        "vulnerability-scanner",
+        "static-analysis",
+        "api-designer",
         "graphql-architect",
         "nodejs-best-practices",
         "nestjs-expert",
@@ -905,7 +933,7 @@
       "id": "sre-engineer",
       "command": null,
       "displayName": "sre-engineer",
-      "description": "Site reliability engineer for SLO-driven operations, incident management, toil reduction, and production reliability. Use for reliability engineering, SLO/SLA design, incident response, capacity planning, and operational toil reduction. Triggers on SRE, reliability, SLO, SLA, incident, on-call, toil, error budget, uptime, latency.",
+      "description": "Site reliability engineer for SLO-driven operations, incident management, toil reduction, production reliability, and structured error observability. Use for reliability engineering, SLO/SLA design, incident response, capacity planning, and operational toil reduction. Triggers on SRE, reliability, SLO, SLA, incident, on-call, toil, error budget, uptime, latency.",
       "triggers": [
         "sre",
         "reliability",
@@ -927,10 +955,14 @@
       "primaryAgent": "sre-engineer",
       "supportingAgents": [],
       "primarySkills": [
-        "observability",
-        "docker-kubernetes"
+        "sre-engineer",
+        "devops-engineer"
       ],
       "supportingSkills": [
+        "error-ux-observability",
+        "observability",
+        "serverless-patterns",
+        "docker-kubernetes",
         "ci-cd-pipelines",
         "debugging-strategies",
         "python-pro",
@@ -958,7 +990,7 @@
       "id": "test-engineer",
       "command": null,
       "displayName": "test-engineer",
-      "description": "Expert in test strategy, browser verification, coverage triage, and regression-proof automation. Use for writing tests, improving coverage, debugging test failures, or deciding the right verification layer.",
+      "description": "Expert in test strategy, browser verification, coverage triage, regression-proof automation, and structured testing patterns. Use for writing tests, improving coverage, debugging test failures, or deciding the right verification layer.",
       "triggers": [
         "test",
         "spec",
@@ -980,6 +1012,8 @@
         "playwright-e2e"
       ],
       "supportingSkills": [
+        "testing-patterns",
+        "error-ux-observability",
         "debugging-strategies",
         "frontend-code-review",
         "typescript-pro",
@@ -1024,9 +1058,11 @@
       "supportingAgents": [],
       "primarySkills": [
         "debugging-strategies",
-        "webapp-testing"
+        "testing-patterns"
       ],
       "supportingSkills": [
+        "static-analysis",
+        "webapp-testing",
         "playwright-e2e",
         "agentic-eval",
         "typescript-pro",
@@ -1075,6 +1111,7 @@
       "supportingSkills": [
         "tailwind-patterns",
         "web-perf",
+        "serverless-patterns",
         "nodejs-best-practices",
         "typescript-pro",
         "javascript-pro"
@@ -1111,17 +1148,22 @@
       ],
       "primaryAgent": "frontend-specialist",
       "supportingAgents": [
-        "security-auditor",
-        "test-engineer"
+        "test-engineer",
+        "validator"
       ],
       "primarySkills": [
-        "accessibility"
+        "frontend-code-review",
+        "frontend-design"
       ],
       "supportingSkills": [
+        "i18n-localization",
+        "web-perf",
         "react-expert",
         "nextjs-developer",
-        "design-system-builder",
-        "tailwind-patterns"
+        "tailwind-patterns",
+        "playwright-e2e",
+        "typescript-pro",
+        "javascript-pro"
       ],
       "artifacts": {
         "codex": {
@@ -1170,32 +1212,26 @@
       ],
       "primarySkills": [
         "api-designer",
+        "api-patterns",
         "nodejs-best-practices"
       ],
       "supportingSkills": [
-        "api-patterns",
-        "architecture-designer",
         "auth-architect",
         "database-skills",
         "database-design",
-        "database-optimizer",
-        "drizzle-expert",
-        "firebase",
-        "microservices-architect",
         "nestjs-expert",
         "fastapi-expert",
         "graphql-architect",
+        "microservices-architect",
+        "drizzle-expert",
+        "firebase",
+        "stripe-best-practices",
+        "serverless-patterns",
+        "i18n-localization",
         "typescript-pro",
         "javascript-pro",
         "python-pro",
-        "golang-pro",
-        "java-pro",
-        "csharp-pro",
-        "kotlin-pro",
-        "rust-pro",
-        "php-pro",
-        "ruby-pro",
-        "skill-creator"
+        "golang-pro"
       ],
       "artifacts": {
         "codex": {
@@ -1268,7 +1304,10 @@
         "frontend-design",
         "design-system-builder",
         "web-perf",
-        "skill-creator"
+        "skill-creator",
+        "stripe-best-practices",
+        "serverless-patterns",
+        "i18n-localization"
       ],
       "artifacts": {
         "codex": {
@@ -1307,11 +1346,11 @@
         "test-engineer"
       ],
       "primarySkills": [
-        "database-skills",
-        "database-design"
+        "database-design",
+        "database-optimizer",
+        "database-skills"
       ],
       "supportingSkills": [
-        "database-optimizer",
         "drizzle-expert",
         "postgres",
         "mysql",
@@ -1321,16 +1360,9 @@
         "supabase",
         "firebase",
         "vitess",
-        "neki",
-        "architecture-designer",
         "typescript-pro",
         "javascript-pro",
-        "python-pro",
-        "golang-pro",
-        "java-pro",
-        "php-pro",
-        "ruby-pro",
-        "skill-creator"
+        "python-pro"
       ],
       "artifacts": {
         "codex": {
@@ -1370,9 +1402,11 @@
         "test-engineer"
       ],
       "primarySkills": [
-        "debugging-strategies"
+        "debugging-strategies",
+        "error-ux-observability"
       ],
       "supportingSkills": [
+        "testing-patterns",
         "typescript-pro",
         "javascript-pro",
         "python-pro",
@@ -1425,20 +1459,24 @@
       ],
       "primaryAgent": "devops-engineer",
       "supportingAgents": [
-        "debugger",
-        "backend-specialist",
-        "database-architect",
-        "security-auditor",
-        "test-engineer"
+        "sre-engineer",
+        "validator"
       ],
       "primarySkills": [
-        "javascript-pro",
-        "typescript-pro",
-        "python-pro",
-        "golang-pro"
+        "devops-engineer",
+        "ci-cd-pipelines",
+        "docker-kubernetes"
       ],
       "supportingSkills": [
-        "skill-creator"
+        "sre-engineer",
+        "observability",
+        "serverless-patterns",
+        "git-workflow",
+        "debugging-strategies",
+        "typescript-pro",
+        "javascript-pro",
+        "python-pro",
+        "golang-pro"
       ],
       "artifacts": {
         "codex": {
@@ -1473,27 +1511,20 @@
       ],
       "primaryAgent": "orchestrator",
       "supportingAgents": [
-        "project-planner",
-        "test-engineer"
+        "validator"
       ],
       "primarySkills": [
+        "architecture-designer",
+        "api-designer"
+      ],
+      "supportingSkills": [
+        "database-skills",
         "typescript-pro",
         "javascript-pro",
         "python-pro",
         "golang-pro",
-        "java-pro",
-        "csharp-pro",
-        "kotlin-pro",
-        "rust-pro",
-        "php-pro",
-        "ruby-pro",
-        "c-pro",
-        "cpp-pro",
-        "dart-pro",
-        "swift-pro"
-      ],
-      "supportingSkills": [
-        "skill-creator"
+        "react-expert",
+        "nextjs-developer"
       ],
       "artifacts": {
         "codex": {
@@ -1527,27 +1558,24 @@
         "version bump",
         "major update"
       ],
-      "primaryAgent": "orchestrator",
+      "primaryAgent": "code-archaeologist",
       "supportingAgents": [
-        "researcher",
         "backend-specialist",
         "frontend-specialist",
-        "database-architect",
-        "code-archaeologist",
-        "security-auditor",
         "test-engineer",
-        "devops-engineer",
         "validator"
       ],
       "primarySkills": [
-        "react-expert",
-        "nextjs-developer",
-        "typescript-pro"
+        "legacy-modernizer",
+        "architecture-designer"
       ],
       "supportingSkills": [
-        "debugging-strategies",
-        "web-perf",
-        "webapp-testing"
+        "static-analysis",
+        "testing-patterns",
+        "typescript-pro",
+        "javascript-pro",
+        "python-pro",
+        "golang-pro"
       ],
       "artifacts": {
         "codex": {
@@ -1586,14 +1614,22 @@
         "test-engineer"
       ],
       "primarySkills": [
-        "dart-pro",
-        "swift-pro",
-        "kotlin-pro",
-        "typescript-pro",
-        "javascript-pro"
+        "flutter-feature",
+        "mobile-design"
       ],
       "supportingSkills": [
-        "skill-creator"
+        "i18n-localization",
+        "flutter-riverpod",
+        "flutter-go-router",
+        "flutter-design-system",
+        "flutter-testing",
+        "flutter-drift",
+        "flutter-offline-sync",
+        "flutter-state-machine",
+        "flutter-repository",
+        "dart-pro",
+        "swift-pro",
+        "kotlin-pro"
       ],
       "artifacts": {
         "codex": {
@@ -1629,27 +1665,19 @@
       "primaryAgent": "researcher",
       "supportingAgents": [
         "code-archaeologist",
-        "documentation-writer"
+        "backend-specialist",
+        "frontend-specialist"
       ],
       "primarySkills": [
-        "deep-research"
+        "deep-research",
+        "architecture-designer"
       ],
       "supportingSkills": [
-        "architecture-designer",
+        "legacy-modernizer",
+        "database-skills",
         "typescript-pro",
         "javascript-pro",
-        "python-pro",
-        "golang-pro",
-        "java-pro",
-        "csharp-pro",
-        "kotlin-pro",
-        "rust-pro",
-        "php-pro",
-        "ruby-pro",
-        "c-pro",
-        "cpp-pro",
-        "dart-pro",
-        "swift-pro"
+        "python-pro"
       ],
       "artifacts": {
         "codex": {
@@ -1684,33 +1712,26 @@
       ],
       "primaryAgent": "orchestrator",
       "supportingAgents": [
-        "researcher",
         "backend-specialist",
-        "database-architect",
         "frontend-specialist",
+        "database-architect",
         "security-auditor",
+        "devops-engineer",
         "test-engineer",
-        "validator",
-        "devops-engineer"
+        "mobile-developer",
+        "validator"
       ],
       "primarySkills": [
-        "skill-creator"
+        "architecture-designer",
+        "api-designer"
       ],
       "supportingSkills": [
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro",
-        "golang-pro",
-        "java-pro",
-        "csharp-pro",
-        "kotlin-pro",
-        "rust-pro",
-        "php-pro",
-        "ruby-pro",
-        "c-pro",
-        "cpp-pro",
-        "dart-pro",
-        "swift-pro"
+        "database-skills",
+        "deep-research",
+        "mcp-builder",
+        "openai-docs",
+        "prompt-engineer",
+        "skill-creator"
       ],
       "artifacts": {
         "codex": {
@@ -1750,52 +1771,22 @@
       ],
       "primaryAgent": "project-planner",
       "supportingAgents": [
-        "product-manager",
+        "orchestrator",
         "backend-specialist",
-        "test-engineer"
+        "frontend-specialist",
+        "database-architect"
       ],
       "primarySkills": [
         "architecture-designer",
-        "skill-creator"
+        "api-designer"
       ],
       "supportingSkills": [
-        "api-designer",
-        "api-patterns",
         "database-skills",
-        "database-design",
-        "database-optimizer",
-        "drizzle-expert",
-        "firebase",
         "deep-research",
         "mcp-builder",
-        "agentic-eval",
         "openai-docs",
         "prompt-engineer",
-        "microservices-architect",
-        "nodejs-best-practices",
-        "nestjs-expert",
-        "fastapi-expert",
-        "graphql-architect",
-        "react-expert",
-        "nextjs-developer",
-        "tailwind-patterns",
-        "frontend-design",
-        "design-system-builder",
-        "web-perf",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro",
-        "golang-pro",
-        "java-pro",
-        "csharp-pro",
-        "kotlin-pro",
-        "rust-pro",
-        "php-pro",
-        "ruby-pro",
-        "c-pro",
-        "cpp-pro",
-        "dart-pro",
-        "swift-pro"
+        "skill-creator"
       ],
       "artifacts": {
         "codex": {
@@ -1831,26 +1822,21 @@
       "primaryAgent": "code-archaeologist",
       "supportingAgents": [
         "backend-specialist",
-        "test-engineer"
+        "frontend-specialist",
+        "test-engineer",
+        "validator"
       ],
       "primarySkills": [
+        "static-analysis",
+        "legacy-modernizer"
+      ],
+      "supportingSkills": [
+        "testing-patterns",
+        "architecture-designer",
         "typescript-pro",
         "javascript-pro",
         "python-pro",
-        "golang-pro",
-        "java-pro",
-        "csharp-pro",
-        "kotlin-pro",
-        "rust-pro",
-        "php-pro",
-        "ruby-pro",
-        "c-pro",
-        "cpp-pro",
-        "dart-pro",
-        "swift-pro"
-      ],
-      "supportingSkills": [
-        "skill-creator"
+        "golang-pro"
       ],
       "artifacts": {
         "codex": {
@@ -1885,19 +1871,23 @@
       ],
       "primaryAgent": "devops-engineer",
       "supportingAgents": [
-        "security-auditor",
         "test-engineer",
-        "product-manager"
+        "validator",
+        "documentation-writer"
       ],
       "primarySkills": [
-        "javascript-pro",
-        "typescript-pro",
-        "python-pro",
-        "golang-pro"
+        "ci-cd-pipelines",
+        "git-workflow"
       ],
       "supportingSkills": [
+        "changelog-generator",
+        "devops-engineer",
+        "sre-engineer",
+        "docker-kubernetes",
         "observability",
-        "skill-creator"
+        "serverless-patterns",
+        "typescript-pro",
+        "javascript-pro"
       ],
       "artifacts": {
         "codex": {
@@ -1922,7 +1912,7 @@
       "id": "review",
       "command": "/review",
       "displayName": "review",
-      "description": "Run a strict review for bugs, regressions, accessibility issues, and security risk with prioritized findings.",
+      "description": "Run a strict review for bugs, regressions, accessibility issues, security risk, and code quality with prioritized findings.",
       "triggers": [
         "review",
         "audit",
@@ -1930,27 +1920,28 @@
         "quality",
         "security review"
       ],
-      "primaryAgent": "code-archaeologist",
+      "primaryAgent": "frontend-specialist",
       "supportingAgents": [
-        "frontend-specialist",
+        "backend-specialist",
         "security-auditor",
+        "validator",
         "test-engineer"
       ],
       "primarySkills": [
+        "frontend-code-review",
+        "static-analysis",
+        "testing-patterns"
+      ],
+      "supportingSkills": [
+        "security-engineer",
+        "vulnerability-scanner",
+        "web-perf",
+        "react-expert",
+        "nextjs-developer",
         "typescript-pro",
         "javascript-pro",
         "python-pro",
-        "golang-pro",
-        "rust-pro"
-      ],
-      "supportingSkills": [
-        "frontend-code-review",
-        "auth-architect",
-        "webapp-testing",
-        "playwright-e2e",
-        "debugging-strategies",
-        "agentic-eval",
-        "skill-creator"
+        "golang-pro"
       ],
       "artifacts": {
         "codex": {
@@ -1985,23 +1976,25 @@
       ],
       "primaryAgent": "security-auditor",
       "supportingAgents": [
-        "test-engineer"
+        "penetration-tester",
+        "backend-specialist",
+        "frontend-specialist",
+        "validator"
       ],
       "primarySkills": [
+        "security-engineer",
         "auth-architect"
       ],
       "supportingSkills": [
+        "vulnerability-scanner",
+        "static-analysis",
         "api-designer",
         "graphql-architect",
-        "nodejs-best-practices",
-        "nestjs-expert",
-        "fastapi-expert",
         "typescript-pro",
         "javascript-pro",
         "python-pro",
         "golang-pro",
-        "rust-pro",
-        "skill-creator"
+        "rust-pro"
       ],
       "artifacts": {
         "codex": {
@@ -2036,23 +2029,26 @@
       ],
       "primaryAgent": "test-engineer",
       "supportingAgents": [
-        "debugger",
+        "qa-automation-engineer",
+        "backend-specialist",
         "frontend-specialist",
-        "backend-specialist"
+        "validator"
       ],
       "primarySkills": [
+        "testing-patterns",
         "webapp-testing"
       ],
       "supportingSkills": [
         "playwright-e2e",
-        "frontend-code-review",
+        "error-ux-observability",
         "debugging-strategies",
+        "frontend-code-review",
+        "static-analysis",
         "typescript-pro",
         "javascript-pro",
         "python-pro",
         "golang-pro",
-        "java-pro",
-        "skill-creator"
+        "java-pro"
       ],
       "artifacts": {
         "codex": {
@@ -2090,20 +2086,19 @@
       "primaryAgent": "vercel-expert",
       "supportingAgents": [
         "devops-engineer",
-        "security-auditor",
         "test-engineer"
       ],
       "primarySkills": [
         "nextjs-developer",
-        "react-expert"
+        "serverless-patterns"
       ],
       "supportingSkills": [
-        "tailwind-patterns",
         "web-perf",
-        "typescript-pro",
-        "javascript-pro",
+        "react-expert",
+        "tailwind-patterns",
         "nodejs-best-practices",
-        "skill-creator"
+        "typescript-pro",
+        "javascript-pro"
       ],
       "artifacts": {
         "codex": {

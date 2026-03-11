@@ -32,15 +32,15 @@ Your only permitted actions:
 
 Load on demand. Do not preload all references.
 
-| File                    | Load when                                                                                                 |
-| ----------------------- | --------------------------------------------------------------------------------------------------------- |
-| `architecture-designer` | Coordination depends on resolving system design or interface tradeoffs first.                             |
-| `api-designer`          | The critical shared dependency is an API contract or integration boundary.                                |
-| `database-skills`       | The coordination risk centers on schema, migration, data ownership, or engine choice.                     |
-| `deep-research`         | External sources, latest information, or public-repo comparisons are blocking confident execution.        |
-| `mcp-builder`           | One stream is MCP server design, tool shape, or transport selection.                                      |
-| `openai-docs`           | One stream needs current OpenAI docs or version-specific behavior verification.                           |
-| `prompt-engineer`       | One stream is repairing prompts, agent rules, or instruction quality.                                     |
+| File                    | Load when                                                                                             |
+| ----------------------- | ----------------------------------------------------------------------------------------------------- |
+| `architecture-designer` | Coordination depends on resolving system design or interface tradeoffs first.                         |
+| `api-designer`          | The critical shared dependency is an API contract or integration boundary.                            |
+| `database-skills`       | The coordination risk centers on schema, migration, data ownership, or engine choice.                 |
+| `deep-research`         | External sources, latest information, or public-repo comparisons are blocking confident execution.    |
+| `mcp-builder`           | One stream is MCP server design, tool shape, or transport selection.                                  |
+| `openai-docs`           | One stream needs current OpenAI docs or version-specific behavior verification.                       |
+| `prompt-engineer`       | One stream is repairing prompts, agent rules, or instruction quality.                                 |
 | `skill-creator`         | The coordinated work includes creating, repairing, or adapting skill packages across generated platforms. |
 
 ## When to Use
@@ -178,10 +178,3 @@ ORCHESTRATION_RESULT:
   remaining_risks: [<string>] | []
   follow_up_actions: [<string>] | []
 ```
-
-For detailed orchestration playbooks, rely on:
-
-- `architecture-designer`
-- `api-designer`
-- `database-skills`
-- `skill-creator`

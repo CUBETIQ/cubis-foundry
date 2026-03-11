@@ -3,61 +3,64 @@ command: "/plan"
 description: "Build a decision-complete implementation plan with interfaces, failure modes, and acceptance criteria."
 triggers: ["plan", "spec", "design", "roadmap", "acceptance", "brainstorm", "idea", "options", "tradeoff", "approach"]
 ---
+
 # Plan Workflow
 
-# CHANGED: output contract — upgraded to canonical PLAN_HANDOFF schema — lets implementation agents continue task 1→N without re-routing or user restatement.
-# CHANGED: skill routing — added `skill-creator` as a planning support skill for skill package design and maintenance work.
-
 ## When to use
-Use this when execution needs a stable specification.
+
+Use this when starting a new feature, project, or significant change that needs a structured implementation plan before coding begins.
 
 ## Routing
-- Primary specialist: `@project-planner`
-- Scope clarification: `@product-manager`
-- Architecture review: `@backend-specialist`
-- Verification planning: `@test-engineer`
+
+- Primary coordinator: `@project-planner`
+- Architecture support: `@orchestrator`
+- Domain validation: `@backend-specialist`, `@frontend-specialist`, `@database-architect`
 
 ## Context notes
-- This workflow file, active platform rules, and selected agents/skills guide execution.
-- Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
+
+- This workflow file, active platform rules, and selected agents or skills guide execution.
+- Attach the feature request, problem statement, constraints, and any existing design documents.
 
 ## Skill Routing
-- Primary skills: `architecture-designer`, `skill-creator`
-- Supporting skills (optional): `api-designer`, `api-patterns`, `database-skills`, `database-design`, `database-optimizer`, `drizzle-expert`, `firebase`, `deep-research`, `mcp-builder`, `agentic-eval`, `openai-docs`, `prompt-engineer`, `microservices-architect`, `nodejs-best-practices`, `nestjs-expert`, `fastapi-expert`, `graphql-architect`, `react-expert`, `nextjs-developer`, `tailwind-patterns`, `frontend-design`, `design-system-builder`, `web-perf`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`, `csharp-pro`, `kotlin-pro`, `rust-pro`, `php-pro`, `ruby-pro`, `c-pro`, `cpp-pro`, `dart-pro`, `swift-pro`
-- Use `architecture-designer` for system-shape, interface, and boundary planning; use `skill-creator` for skill-catalog planning. Add `deep-research` when public evidence or latest-source verification matters, `mcp-builder` for MCP server design, `agentic-eval` for benchmark or rubric planning, `openai-docs` for OpenAI-specific latest-doc work, `prompt-engineer` for instruction quality review, and the narrowest domain specialist first when the plan already has a clear implementation surface.
+
+- Primary skills: `architecture-designer`, `api-designer`
+- Supporting skills (optional): `database-skills`, `deep-research`, `mcp-builder`, `openai-docs`, `prompt-engineer`, `skill-creator`
+- Start with `architecture-designer` for system design and `api-designer` for API contracts. Add `database-skills` when data modeling is central, `deep-research` when external knowledge is needed.
 
 ## Workflow steps
-1. Lock scope and non-goals.
-2. Define architecture, boundaries, and data flow.
-3. Specify interfaces and validation rules.
-4. Document failure modes and mitigations.
-5. Define tests and release acceptance criteria.
+
+1. Clarify scope, success criteria, and constraints.
+2. Research existing patterns and dependencies.
+3. Decompose into tasks with ownership and dependencies.
+4. Define interfaces, contracts, and failure modes.
+5. Produce acceptance criteria for each milestone.
+6. Identify risks, unknowns, and mitigation strategies.
 
 ## Verification
-- Run focused checks/tests for the changed scope.
-- Confirm no regressions in adjacent behavior.
-- Note any gaps that were not validated.
+
+- Every task has an owner, acceptance criteria, and verification approach.
+- Dependencies form a valid DAG with no cycles.
+- Risk assessment covers top 3 failure scenarios.
+- Plan reviewed against existing codebase conventions.
 
 ## Output Contract
+
 ```yaml
-PLAN_HANDOFF:
-  tasks:
-    - id: 1
-      title: "Describe the first implementation task"
-      domain: "backend"
-      skill_hint: "api-designer"
-      depends_on: []
-      output_artifact: "path-or-artifact"
-      stop_if_failed: true
-  shared_context:
-    stack: "Describe the target stack"
-    constraints: "List hard requirements and guardrails"
-    active_files: ["path-or-artifact"]
-  execution_mode: "sequential"
-  loaded_skills: ["api-designer"]
-  stop_conditions:
-    - "output_artifact missing AND stop_if_failed: true"
-    - "destructive or irreversible action not in plan"
-    - "required skill missing after 1 skill_search attempt"
-    - "explicit user pause or redirect"
+PLAN_WORKFLOW_RESULT:
+  primary_agent: project-planner
+  supporting_agents: [orchestrator?, backend-specialist?, frontend-specialist?, database-architect?]
+  primary_skills: [architecture-designer, api-designer]
+  supporting_skills: [database-skills?, deep-research?, mcp-builder?]
+  plan:
+    scope_summary: <string>
+    tasks:
+      - id: <task-id>
+        description: <string>
+        owner: <agent-name>
+        dependencies: [<task-id>]
+        acceptance_criteria: [<string>]
+    interfaces: [<string>]
+    risks: [<string>]
+    milestones: [<string>]
+  follow_up_items: [<string>] | []
 ```

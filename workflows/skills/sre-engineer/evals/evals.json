@@ -1,0 +1,22 @@
+{
+  "evals": [
+    {
+      "prompt": "Define SLOs for our payment processing API that handles $10M/month in transactions",
+      "assertions": [
+        "defines SLIs for availability, latency, and correctness",
+        "sets appropriate SLO targets (high reliability for financial operations)",
+        "calculates error budget with monthly downtime allowance",
+        "recommends alerting on SLO burn rate"
+      ]
+    },
+    {
+      "prompt": "Our e-commerce site goes down every Black Friday due to traffic spikes",
+      "assertions": [
+        "analyzes failure mode (capacity, connections, cold starts)",
+        "recommends auto-scaling with pre-warming or provisioned capacity",
+        "suggests load shedding for non-critical features under pressure",
+        "recommends load testing at 2x expected peak before the event"
+      ]
+    }
+  ]
+}

@@ -1,107 +1,67 @@
 ---
 command: "/accessibility"
 description: "Run a structured accessibility audit on web UI code with WCAG 2.2 AA compliance checks, ARIA validation, keyboard navigation testing, and screen reader verification."
-triggers:
-  [
-    "accessibility",
-    "a11y",
-    "wcag",
-    "aria",
-    "screen reader",
-    "keyboard navigation",
-  ]
+triggers: ["accessibility", "a11y", "wcag", "aria", "screen reader", "keyboard navigation"]
 ---
 
-# Accessibility Audit Workflow
-
-# Run this when UI code needs accessibility verification or when building new interactive components.
+# Accessibility Workflow
 
 ## When to use
 
-Use this when building or reviewing web UI — forms, modals, navigation, data tables, or any interactive component that users operate with keyboard, screen reader, or assistive technology.
+Use this for accessibility audits, WCAG compliance review, or improving accessible user experience.
 
 ## Routing
 
-- Primary auditor: `@frontend-specialist`
-- Detailed ARIA patterns: `@frontend-specialist` with `accessibility` skill
-- Security context (auth flows): `@security-auditor`
-- Automated testing: `@test-engineer` with `playwright-e2e` skill
-
-## Workflow steps
-
-### Phase 1: Automated scan
-
-1. Run axe-core or similar automated checker against the target pages/components.
-2. Collect all violations grouped by severity (critical, serious, moderate, minor).
-3. Document which WCAG success criteria are violated.
-
-### Phase 2: Keyboard audit
-
-4. Tab through every interactive element — verify logical focus order.
-5. Verify all actions are reachable without a mouse.
-6. Check visible focus indicators on every focusable element.
-7. Test Escape key dismisses overlays (modals, dropdowns, tooltips).
-8. Verify no keyboard traps exist.
-
-### Phase 3: Screen reader check
-
-9. Navigate with VoiceOver (macOS) or NVDA (Windows).
-10. Verify all images have meaningful alt text (or empty alt for decorative).
-11. Check form labels are programmatically associated with inputs.
-12. Verify dynamic content changes are announced via aria-live regions.
-13. Check landmark roles are present and meaningful (main, nav, aside, etc.).
-
-### Phase 4: Visual and cognitive
-
-14. Check color contrast meets WCAG AA (4.5:1 for text, 3:1 for large text and UI components).
-15. Verify content is readable at 200% zoom.
-16. Check motion and animation respect prefers-reduced-motion.
-17. Verify error messages are clear, specific, and associated with inputs.
-
-### Phase 5: Fix and verify
-
-18. Prioritize fixes: critical > serious > moderate > minor.
-19. Fix issues with correct ARIA patterns (not ARIA overuse).
-20. Re-run automated scan after fixes to confirm resolution.
-21. Manual retest of keyboard and screen reader for fixed components.
+- Primary specialist: `@frontend-specialist`
+- Verification support: `@test-engineer`
+- Review support: `@validator`
 
 ## Context notes
 
-- This workflow file, active platform rules, and selected agents/skills guide execution.
-- Attach screenshots, component names, or URLs when context is incomplete.
-- Focus on WCAG 2.2 AA as the baseline. Escalate to AAA only when explicitly requested.
-- Prioritize fixes that affect the most users first (keyboard > screen reader > color contrast > cognitive).
+- This workflow file, active platform rules, and selected agents or skills guide execution.
+- Attach the target components, pages, or routes to audit. Include any existing axe or Lighthouse results.
 
 ## Skill Routing
 
-- Primary skills: `accessibility`
-- Supporting skills (optional): `react-expert`, `nextjs-developer`, `design-system-builder`, `tailwind-patterns`
-- Load `accessibility` for WCAG criteria reference and ARIA pattern guidance.
+- Primary skills: `frontend-code-review`, `frontend-design`
+- Supporting skills (optional): `i18n-localization`, `web-perf`, `react-expert`, `nextjs-developer`, `tailwind-patterns`, `playwright-e2e`, `typescript-pro`, `javascript-pro`
+- Start with `frontend-code-review` for WCAG compliance checks. Add `frontend-design` for accessible design patterns. Add `i18n-localization` for RTL and locale-specific accessibility.
+
+## Workflow steps
+
+1. Inventory components and user flows to audit.
+2. Run automated accessibility checks (axe, Lighthouse).
+3. Manual keyboard navigation and focus management review.
+4. ARIA validation — correct roles, states, and properties.
+5. Screen reader compatibility assessment.
+6. Prioritize findings and provide remediation guidance.
 
 ## Verification
 
-- axe-core scan passes with zero critical or serious violations.
-- All interactive elements are keyboard-accessible.
-- Screen reader announces all content in logical order.
-- Color contrast meets WCAG AA thresholds.
+- All critical WCAG 2.2 AA violations identified.
+- Keyboard navigation works for all interactive elements.
+- ARIA attributes are semantically correct.
+- Color contrast meets minimum ratios.
+- Focus management is logical and visible.
 
 ## Output Contract
 
 ```yaml
-A11Y_AUDIT_RESULT:
+ACCESSIBILITY_WORKFLOW_RESULT:
   primary_agent: frontend-specialist
-  supporting_agents: [test-engineer?]
-  primary_skills: [accessibility]
-  pages_audited: [<string>]
-  violations:
-    critical: <number>
-    serious: <number>
-    moderate: <number>
-    minor: <number>
-  wcag_criteria_failed: [<string>]
-  keyboard_issues: [<string>] | []
-  screen_reader_issues: [<string>] | []
-  fixes_applied: [<string>]
-  remaining_issues: [<string>] | []
-  verdict: PASS | FAIL | PASS_WITH_WARNINGS
+  supporting_agents: [test-engineer?, validator?]
+  primary_skills: [frontend-code-review, frontend-design]
+  supporting_skills: [i18n-localization?, web-perf?, playwright-e2e?]
+  audit_scope: [<component-or-route>]
+  findings:
+    - severity: critical | high | medium | low
+      wcag_criterion: <string>
+      element: <string>
+      description: <string>
+      remediation: <string>
+  automated_results:
+    tool: <axe | lighthouse | other>
+    violations: <number>
+    passes: <number>
+  follow_up_items: [<string>] | []
 ```

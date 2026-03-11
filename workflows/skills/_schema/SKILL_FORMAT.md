@@ -1,8 +1,8 @@
 # Cubis Foundry — Canonical Skill Format
 
-All canonical skills under `workflows/skills/<id>/SKILL.md` follow the **Agent Skills open standard** (universal-skill-creator portable format).
+All canonical skills under `workflows/skills/<id>/SKILL.md` follow the **[Agent Skills open standard](https://agentskills.io/specification)** — the portable format adopted by Claude Code, Codex, GitHub Copilot, Gemini CLI, Cursor, and 15+ other agent products.
 
-One `SKILL.md` works natively on Claude Code, OpenAI Codex, and GitHub Copilot. Only Google Gemini requires conversion to `GEMINI.md`.
+This document extends the official spec with Cubis Foundry conventions (required markdown sections, writing principles, validation rules). One `SKILL.md` works natively on all supported platforms.
 
 ---
 
@@ -33,39 +33,48 @@ Rules:
 
 ```yaml
 ---
-name: skill-identifier # REQUIRED — kebab-case
-description: > # REQUIRED — min 20 chars
+name: skill-identifier # REQUIRED — max 64 chars, kebab-case
+description: > # REQUIRED — max 1024 chars
   What it does. Use when [phrase 1], [phrase 2], [phrase 3].
   Include 3-5 trigger phrases for routing accuracy.
 license: MIT # OPTIONAL
-metadata: # OPTIONAL
+compatibility: Claude Code, Codex, GitHub Copilot, Gemini CLI # OPTIONAL — max 500 chars
+metadata: # OPTIONAL — arbitrary key-value map
   author: cubis-foundry
   version: "1.0"
-compatibility: Claude Code, Codex, GitHub Copilot # OPTIONAL
+allowed-tools: Bash(git:*) Read # OPTIONAL — space-delimited (experimental)
 ---
 ```
 
-### Required fields
+### Required fields (per Agent Skills spec)
 
-| Field         | Rules                                                                  |
-| ------------- | ---------------------------------------------------------------------- |
-| `name`        | kebab-case, matches directory name                                     |
-| `description` | Min 20 characters. Must contain action phrases describing when to use. |
+| Field         | Rules                                                                                          |
+| ------------- | ---------------------------------------------------------------------------------------------- |
+| `name`        | Max 64 chars. Lowercase letters, numbers, hyphens only. Must match the directory name.         |
+| `description` | Max 1024 chars. Must describe what the skill does AND when to use it. Include trigger phrases. |
 
-### Allowed optional fields
+### Optional fields (per Agent Skills spec)
 
-| Field              | Purpose          |
-| ------------------ | ---------------- |
-| `license`          | SPDX identifier  |
-| `metadata.author`  | Maintainer       |
-| `metadata.version` | Semver string    |
-| `compatibility`    | Target platforms |
+| Field           | Purpose                                                                                |
+| --------------- | -------------------------------------------------------------------------------------- |
+| `license`       | License name or reference to bundled license file (e.g. MIT, Apache-2.0)               |
+| `compatibility` | Max 500 chars. Environment requirements: platforms, system packages, network access.   |
+| `metadata`      | Arbitrary key-value map for additional properties (author, version, etc.)              |
+| `allowed-tools` | Space-delimited list of pre-approved tools (experimental, support varies by platform). |
 
-### Rejected fields (must not appear)
+### Progressive disclosure (per Agent Skills spec)
+
+Skills are loaded in three tiers:
+
+1. **Metadata** (~100 tokens): `name` and `description` loaded at startup for all skills
+2. **Instructions** (< 5000 tokens recommended): Full `SKILL.md` body loaded when skill is activated
+3. **Resources** (as needed): Files in `references/`, `scripts/`, `assets/` loaded only when required
+
+### Rejected fields (must not appear in frontmatter)
 
 `domain`, `role`, `stack`, `category`, `layer`, `canonical`, `maturity`, `baseline`, `provenance`, `transition`, `aliases`, `tags`, `deprecated`, `replaced_by`
 
-Compatibility aliases are handled by separate alias skills, not metadata fields.
+These are derived by the build system (skill-catalog.mjs), not declared in frontmatter. Compatibility aliases are handled by separate alias skills.
 
 ---
 

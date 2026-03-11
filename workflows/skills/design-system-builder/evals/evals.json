@@ -1,0 +1,45 @@
+{
+  "evals": [
+    {
+      "prompt": "Create a Button component for our React design system with primary, secondary, and ghost variants in small, medium, and large sizes",
+      "assertions": [
+        "uses design tokens (CSS custom properties) for colors, spacing, and radii",
+        "uses variant prop with union type, not boolean flags",
+        "includes all three variants: primary, secondary, ghost",
+        "includes all three sizes: sm, md, lg",
+        "includes accessible focus indicator",
+        "forwards ref and spreads remaining props"
+      ]
+    },
+    {
+      "prompt": "Set up a design token system for a new project with light and dark themes",
+      "assertions": [
+        "defines primitive tokens (raw color palette values)",
+        "defines semantic tokens referencing primitives",
+        "includes color, spacing, typography, radius, and shadow categories",
+        "implements dark mode via data-theme attribute or CSS custom properties",
+        "adjusts chroma or saturation for dark mode, not just inverting"
+      ]
+    },
+    {
+      "prompt": "Audit our components for design token compliance — we have hardcoded hex colors and px spacing throughout",
+      "assertions": [
+        "identifies specific hardcoded values to replace",
+        "maps each hardcoded value to the appropriate token",
+        "proposes token names following a consistent convention",
+        "provides before/after code showing the migration",
+        "does not create tokens for one-off values"
+      ]
+    },
+    {
+      "prompt": "Review this component API: <Card title={string} subtitle={string} image={string} onClick={fn} primary={bool} outlined={bool} rounded={bool} shadow={bool}>",
+      "assertions": [
+        "identifies boolean prop explosion as an anti-pattern",
+        "suggests variant prop with union type instead",
+        "recommends composition pattern (children/slots) for content",
+        "addresses accessibility concerns for interactive card",
+        "suggests token-based styling for visual properties"
+      ]
+    }
+  ]
+}

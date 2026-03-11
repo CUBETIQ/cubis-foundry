@@ -1,9 +1,3 @@
 {
-  "servers": {
-    "cubis-foundry": {
-      "type": "http",
-      "url": "http://127.0.0.1:3310/mcp",
-      "headers": {}
-    }
-  }
+  "servers": {}
 }

@@ -1,12 +1,12 @@
 {
   "$schema": "cubis-foundry-mcp-manifest-v1",
-  "generatedAt": "2026-03-10T15:58:12.578Z",
-  "contentHash": "192b6cd9a03069bf",
+  "generatedAt": "2026-03-11T17:33:27.199Z",
+  "contentHash": "acf37084243b9f7f",
   "summary": {
-    "totalSkills": 73,
-    "totalCategories": 15,
-    "totalBytes": 253793,
-    "estimatedTokens": 63449
+    "totalSkills": 87,
+    "totalCategories": 20,
+    "totalBytes": 343577,
+    "estimatedTokens": 85895
   },
   "categories": [
     {
@@ -31,6 +31,14 @@
     },
     {
       "name": "design",
+      "skillCount": 3
+    },
+    {
+      "name": "devops",
+      "skillCount": 1
+    },
+    {
+      "name": "documentation",
       "skillCount": 2
     },
     {
@@ -43,7 +51,11 @@
     },
     {
       "name": "general",
-      "skillCount": 28
+      "skillCount": 32
+    },
+    {
+      "name": "localization",
+      "skillCount": 1
     },
     {
       "name": "marketing",
@@ -58,16 +70,24 @@
       "skillCount": 9
     },
     {
+      "name": "payments",
+      "skillCount": 1
+    },
+    {
       "name": "performance",
       "skillCount": 2
     },
     {
+      "name": "security",
+      "skillCount": 2
+    },
+    {
       "name": "testing",
-      "skillCount": 1
+      "skillCount": 2
     },
     {
       "name": "tooling",
-      "skillCount": 1
+      "skillCount": 2
     }
   ],
   "skills": [
@@ -206,7 +226,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 3004,
+      "fileBytes": 3016,
       "warnings": [
         "description too long (212 chars)"
       ]
@@ -233,6 +253,31 @@
         "version": "2.0"
       },
       "fileBytes": 5616
+    },
+    {
+      "id": "changelog-generator",
+      "name": "changelog-generator",
+      "displayName": null,
+      "description": "Generate changelogs from conventional commits, semantic versioning, release notes, and automated version management workflows.",
+      "category": "documentation",
+      "keywords": [
+        "changelog-generator",
+        "changelog generator",
+        "changelog",
+        "generator"
+      ],
+      "triggers": [
+        "changelog-generator",
+        "changelog generator",
+        "changelog",
+        "generator"
+      ],
+      "path": "workflows/skills/changelog-generator/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "3.0"
+      },
+      "fileBytes": 4632
     },
     {
       "id": "ci-cd-pipelines",
@@ -263,6 +308,29 @@
       "warnings": [
         "description too long (262 chars)"
       ]
+    },
+    {
+      "id": "cli-developer",
+      "name": "cli-developer",
+      "displayName": null,
+      "description": "Build command-line interfaces with argument parsing, subcommands, interactive prompts, terminal UX, output formatting, and cross-platform compatibility.",
+      "category": "tooling",
+      "keywords": [
+        "cli-developer",
+        "cli developer",
+        "cli"
+      ],
+      "triggers": [
+        "cli-developer",
+        "cli developer",
+        "cli"
+      ],
+      "path": "workflows/skills/cli-developer/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "3.0"
+      },
+      "fileBytes": 4931
     },
     {
       "id": "cpp-pro",
@@ -462,7 +530,7 @@
       "id": "design-system-builder",
       "name": "design-system-builder",
       "displayName": null,
-      "description": "Use when creating or reviewing reusable UI components, token-driven styling, variant APIs, theming hooks, and component documentation for a design system.",
+      "description": "Build and maintain token-driven design systems with reusable components, semantic APIs, variant patterns, and theming support across frameworks.",
       "category": "design",
       "keywords": [
         "design-system-builder",
@@ -477,7 +545,30 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 2489
+      "fileBytes": 6727
+    },
+    {
+      "id": "devops-engineer",
+      "name": "devops-engineer",
+      "displayName": null,
+      "description": "Design CI/CD pipelines, infrastructure-as-code, monitoring, deployment strategies, and incident response procedures for reliable software delivery.",
+      "category": "devops",
+      "keywords": [
+        "devops-engineer",
+        "devops engineer",
+        "devops"
+      ],
+      "triggers": [
+        "devops-engineer",
+        "devops engineer",
+        "devops"
+      ],
+      "path": "workflows/skills/devops-engineer/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "3.0"
+      },
+      "fileBytes": 5063
     },
     {
       "id": "docker-kubernetes",
@@ -505,6 +596,31 @@
       "fileBytes": 4660
     },
     {
+      "id": "documentation-templates",
+      "name": "documentation-templates",
+      "displayName": null,
+      "description": "Create API documentation, architecture decision records, runbooks, onboarding guides, and technical writing using proven templates and standards.",
+      "category": "documentation",
+      "keywords": [
+        "documentation-templates",
+        "documentation templates",
+        "documentation",
+        "templates"
+      ],
+      "triggers": [
+        "documentation-templates",
+        "documentation templates",
+        "documentation",
+        "templates"
+      ],
+      "path": "workflows/skills/documentation-templates/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "3.0"
+      },
+      "fileBytes": 5272
+    },
+    {
       "id": "drizzle-expert",
       "name": "drizzle-expert",
       "displayName": null,
@@ -529,6 +645,33 @@
       "warnings": [
         "description too long (233 chars)"
       ]
+    },
+    {
+      "id": "error-ux-observability",
+      "name": "error-ux-observability",
+      "displayName": null,
+      "description": "Design error experiences, structured logging, distributed tracing, alerting strategies, and user-facing error handling for production systems.",
+      "category": "general",
+      "keywords": [
+        "error-ux-observability",
+        "error ux observability",
+        "error",
+        "ux",
+        "observability"
+      ],
+      "triggers": [
+        "error-ux-observability",
+        "error ux observability",
+        "error",
+        "ux",
+        "observability"
+      ],
+      "path": "workflows/skills/error-ux-observability/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "3.0"
+      },
+      "fileBytes": 5641
     },
     {
       "id": "fastapi-expert",
@@ -826,7 +969,7 @@
       "id": "frontend-code-review",
       "name": "frontend-code-review",
       "displayName": null,
-      "description": "Use when reviewing web UI code for regressions in accessibility, state flow, responsiveness, loading and error behavior, rendering cost, and design-system consistency.",
+      "description": "Review frontend code for accessibility, performance, state management, rendering efficiency, and design system compliance.",
       "category": "frontend",
       "keywords": [
         "frontend-code-review",
@@ -841,15 +984,15 @@
       "path": "workflows/skills/frontend-code-review/SKILL.md",
       "metadata": {
         "author": "cubis-foundry",
-        "version": "1.0"
+        "version": "3.0"
       },
-      "fileBytes": 2801
+      "fileBytes": 5743
     },
     {
       "id": "frontend-design",
       "name": "frontend-design",
       "displayName": null,
-      "description": "Use for web UI design decisions: layout, hierarchy, typography, color, motion, and interaction clarity. This skill teaches decision-making, not a fixed visual style.",
+      "description": "Create distinctive, production-grade frontend interfaces with high design quality. Use when building pages, dashboards, or applications. Generates polished code that avoids generic AI aesthetics.",
       "category": "frontend",
       "keywords": [
         "frontend-design",
@@ -866,7 +1009,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 2550
+      "fileBytes": 13349
     },
     {
       "id": "game-development",
@@ -989,6 +1132,31 @@
         "version": "3.0"
       },
       "fileBytes": 2713
+    },
+    {
+      "id": "i18n-localization",
+      "name": "i18n-localization",
+      "displayName": null,
+      "description": "Implement internationalization and localization including RTL support, pluralization, date/number formatting, translation workflows, and locale-aware UI.",
+      "category": "localization",
+      "keywords": [
+        "i18n-localization",
+        "i18n localization",
+        "i18n",
+        "localization"
+      ],
+      "triggers": [
+        "i18n-localization",
+        "i18n localization",
+        "i18n",
+        "localization"
+      ],
+      "path": "workflows/skills/i18n-localization/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "3.0"
+      },
+      "fileBytes": 4858
     },
     {
       "id": "java-pro",
@@ -1132,6 +1300,29 @@
         "version": "3.0"
       },
       "fileBytes": 2526
+    },
+    {
+      "id": "mobile-design",
+      "name": "mobile-design",
+      "displayName": null,
+      "description": "Design mobile interfaces with touch psychology, platform-native patterns, iOS and Android guidelines, gesture handling, and responsive mobile layouts.",
+      "category": "design",
+      "keywords": [
+        "mobile-design",
+        "mobile design",
+        "mobile"
+      ],
+      "triggers": [
+        "mobile-design",
+        "mobile design",
+        "mobile"
+      ],
+      "path": "workflows/skills/mobile-design/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "3.0"
+      },
+      "fileBytes": 5420
     },
     {
       "id": "mongodb",
@@ -1580,6 +1771,29 @@
       "fileBytes": 5589
     },
     {
+      "id": "security-engineer",
+      "name": "security-engineer",
+      "displayName": null,
+      "description": "Apply secure coding practices, OWASP Top 10 mitigations, threat modeling, input validation, and vulnerability prevention across web, API, and backend systems.",
+      "category": "security",
+      "keywords": [
+        "security-engineer",
+        "security engineer",
+        "security"
+      ],
+      "triggers": [
+        "security-engineer",
+        "security engineer",
+        "security"
+      ],
+      "path": "workflows/skills/security-engineer/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "3.0"
+      },
+      "fileBytes": 4878
+    },
+    {
       "id": "seo-fundamentals",
       "name": "seo-fundamentals",
       "displayName": null,
@@ -1603,6 +1817,29 @@
         "version": "1.0"
       },
       "fileBytes": 3170
+    },
+    {
+      "id": "serverless-patterns",
+      "name": "serverless-patterns",
+      "displayName": null,
+      "description": "Design serverless architectures with Lambda, Edge Functions, event-driven patterns, cold start optimization, and cost management strategies.",
+      "category": "general",
+      "keywords": [
+        "serverless-patterns",
+        "serverless patterns",
+        "serverless"
+      ],
+      "triggers": [
+        "serverless-patterns",
+        "serverless patterns",
+        "serverless"
+      ],
+      "path": "workflows/skills/serverless-patterns/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "3.0"
+      },
+      "fileBytes": 5600
     },
     {
       "id": "skill-creator",
@@ -1675,6 +1912,77 @@
       "fileBytes": 2517
     },
     {
+      "id": "sre-engineer",
+      "name": "sre-engineer",
+      "displayName": null,
+      "description": "Apply site reliability engineering practices including SLOs, error budgets, capacity planning, chaos engineering, and incident management for production systems.",
+      "category": "general",
+      "keywords": [
+        "sre-engineer",
+        "sre engineer",
+        "sre"
+      ],
+      "triggers": [
+        "sre-engineer",
+        "sre engineer",
+        "sre"
+      ],
+      "path": "workflows/skills/sre-engineer/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "3.0"
+      },
+      "fileBytes": 5003
+    },
+    {
+      "id": "static-analysis",
+      "name": "static-analysis",
+      "displayName": null,
+      "description": "Configure and use static analysis tools including linters, formatters, type checkers, and custom rules to enforce code quality and consistency.",
+      "category": "general",
+      "keywords": [
+        "static-analysis",
+        "static analysis",
+        "static",
+        "analysis"
+      ],
+      "triggers": [
+        "static-analysis",
+        "static analysis",
+        "static",
+        "analysis"
+      ],
+      "path": "workflows/skills/static-analysis/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "3.0"
+      },
+      "fileBytes": 4784
+    },
+    {
+      "id": "stripe-best-practices",
+      "name": "stripe-best-practices",
+      "displayName": null,
+      "description": "Implement Stripe payments, subscriptions, webhooks, checkout flows, and billing management with security and compliance best practices.",
+      "category": "payments",
+      "keywords": [
+        "stripe-best-practices",
+        "stripe best practices",
+        "stripe"
+      ],
+      "triggers": [
+        "stripe-best-practices",
+        "stripe best practices",
+        "stripe"
+      ],
+      "path": "workflows/skills/stripe-best-practices/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "3.0"
+      },
+      "fileBytes": 5677
+    },
+    {
       "id": "supabase",
       "name": "supabase",
       "displayName": null,
@@ -1740,6 +2048,29 @@
       "fileBytes": 5199
     },
     {
+      "id": "testing-patterns",
+      "name": "testing-patterns",
+      "displayName": null,
+      "description": "Design test strategies with unit, integration, and e2e testing. Apply TDD, mocking, fixtures, coverage analysis, and test architecture best practices.",
+      "category": "testing",
+      "keywords": [
+        "testing-patterns",
+        "testing patterns",
+        "testing"
+      ],
+      "triggers": [
+        "testing-patterns",
+        "testing patterns",
+        "testing"
+      ],
+      "path": "workflows/skills/testing-patterns/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "3.0"
+      },
+      "fileBytes": 5072
+    },
+    {
       "id": "typescript-pro",
       "name": "typescript-pro",
       "displayName": null,
@@ -1786,6 +2117,31 @@
       "warnings": [
         "description too long (210 chars)"
       ]
+    },
+    {
+      "id": "vulnerability-scanner",
+      "name": "vulnerability-scanner",
+      "displayName": null,
+      "description": "Scan dependencies for CVEs, perform SAST/DAST analysis, manage security advisories, and implement automated vulnerability management workflows.",
+      "category": "security",
+      "keywords": [
+        "vulnerability-scanner",
+        "vulnerability scanner",
+        "vulnerability",
+        "scanner"
+      ],
+      "triggers": [
+        "vulnerability-scanner",
+        "vulnerability scanner",
+        "vulnerability",
+        "scanner"
+      ],
+      "path": "workflows/skills/vulnerability-scanner/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "3.0"
+      },
+      "fileBytes": 4962
     },
     {
       "id": "web-perf",

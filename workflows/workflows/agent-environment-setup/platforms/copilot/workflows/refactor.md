@@ -3,52 +3,60 @@ command: "/refactor"
 description: "Improve maintainability while preserving behavior through incremental safe refactoring."
 triggers: ["refactor", "cleanup", "maintainability", "debt", "modularize"]
 ---
+
 # Refactor Workflow
 
-# CHANGED: routing — added explicit refactor ownership and regression support — prevents fallback routing and makes the preservation strategy clear.
-# CHANGED: output contract — converted free-form bullets into structured YAML — makes invariant and parity reporting machine-readable.
-
 ## When to use
-Use this for design improvement without intentional behavior changes.
+
+Use this when improving code structure, reducing tech debt, or modularizing without changing behavior.
 
 ## Routing
+
 - Primary specialist: `@code-archaeologist`
-- Domain implementation support: `@backend-specialist`
-- Regression verification: `@test-engineer`
+- Domain support: `@backend-specialist`, `@frontend-specialist`
+- Verification support: `@test-engineer`, `@validator`
 
 ## Context notes
-- This workflow file, active platform rules, and selected agents/skills guide execution.
-- Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
+
+- This workflow file, active platform rules, and selected agents or skills guide execution.
+- Attach the target code, pain points, and any constraints on what can change.
 
 ## Skill Routing
-- Primary skills: `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`, `csharp-pro`, `kotlin-pro`, `rust-pro`, `php-pro`, `ruby-pro`, `c-pro`, `cpp-pro`, `dart-pro`, `swift-pro`
-- Supporting skills (optional): `skill-creator`
-- Refactors should stay anchored to the dominant language in scope. Use `skill-creator` only when refactoring skill packages, generators, or mirror wiring.
+
+- Primary skills: `static-analysis`, `legacy-modernizer`
+- Supporting skills (optional): `testing-patterns`, `architecture-designer`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`
+- Start with `static-analysis` for automated code quality assessment. Add `legacy-modernizer` for modernization patterns. Add `testing-patterns` when refactoring needs test coverage to proceed safely.
 
 ## Workflow steps
-1. Define behavior invariants and guardrails.
-2. Isolate refactor slices with low coupling.
-3. Apply changes incrementally with tests.
-4. Confirm behavior parity and performance baseline.
+
+1. Map the current structure and identify refactoring targets.
+2. Ensure adequate test coverage before modifying (add tests if needed).
+3. Apply one refactoring at a time with behavior preservation.
+4. Verify behavior unchanged after each step.
+5. Document the improved structure and any conventions established.
 
 ## Verification
-- Run focused checks/tests for the changed scope.
-- Confirm no regressions in adjacent behavior.
-- Note any gaps that were not validated.
+
+- All existing tests pass after each refactoring step.
+- No behavioral changes introduced (unless explicitly intended).
+- Code quality metrics improved (complexity, coupling, cohesion).
+- New tests added for any gaps discovered during refactoring.
 
 ## Output Contract
+
 ```yaml
 REFACTOR_WORKFLOW_RESULT:
   primary_agent: code-archaeologist
-  supporting_agents: [backend-specialist?, test-engineer?]
-  primary_skills: [<dominant-language-skill>]
-  supporting_skills: [architecture-designer?, debugging-strategies?, frontend-code-review?, webapp-testing?, skill-creator?]
-  scope:
-    summary: <string>
-    invariants: [<string>]
-  structural_changes: [<string>]
-  behavior_parity_evidence: [<command or test>]
-  deferred_technical_debt: [<string>] | []
-  next_handoff:
-    plan_handoff: <PLAN_HANDOFF|null>
+  supporting_agents: [backend-specialist?, frontend-specialist?, test-engineer?, validator?]
+  primary_skills: [static-analysis, legacy-modernizer]
+  supporting_skills: [testing-patterns?, architecture-designer?]
+  refactoring_summary:
+    targets: [<string>]
+    changes_applied: [<string>]
+    behavior_preserved: true | false
+  quality_improvement:
+    complexity_before: <string>
+    complexity_after: <string>
+  tests_added: [<test-file-path>] | []
+  follow_up_items: [<string>] | []
 ```

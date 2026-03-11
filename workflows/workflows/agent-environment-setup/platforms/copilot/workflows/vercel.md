@@ -3,50 +3,63 @@ command: "/vercel"
 description: "Drive Vercel implementation and operations via vercel-expert with deployment, runtime, security, and observability guardrails."
 triggers: ["vercel", "deployment", "preview", "edge", "functions", "domains", "vercel cli"]
 ---
+
 # Vercel Workflow
 
-# CHANGED: output contract — converted free-form bullets into structured YAML — keeps Vercel platform changes and rollout notes machine-readable.
-
 ## When to use
-Use this workflow when the primary concern is Vercel platform behavior, deployment safety, or Vercel-specific automation.
+
+Use this for Vercel-specific deployment, configuration, runtime optimization, or platform operations.
 
 ## Routing
+
 - Primary specialist: `@vercel-expert`
-- Add `@devops-engineer` for CI/CD and rollout policy design.
-- Add `@security-auditor` for WAF, auth, and network-hardening decisions.
-- Add `@test-engineer` for release quality gates.
+- Infrastructure support: `@devops-engineer`
+- Verification support: `@test-engineer`
 
 ## Context notes
-- This workflow file, active platform rules, and selected agents/skills guide execution.
-- Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
+
+- This workflow file, active platform rules, and selected agents or skills guide execution.
+- Attach the Vercel project config, deployment target, and any specific Vercel feature requirements.
 
 ## Skill Routing
-- Primary skills: `nextjs-developer`, `react-expert`
-- Supporting skills (optional): `tailwind-patterns`, `web-perf`, `typescript-pro`, `javascript-pro`, `nodejs-best-practices`, `skill-creator`
-- Prefer `nextjs-developer` for App Router, rendering, cache, and deployment behavior. Add `react-expert` for component/state issues, `tailwind-patterns` for styling-system work, `web-perf` for delivery bottlenecks, keep the web language skill as support, and use `skill-creator` only for skill-package work.
+
+- Primary skills: `nextjs-developer`, `serverless-patterns`
+- Supporting skills (optional): `web-perf`, `react-expert`, `tailwind-patterns`, `nodejs-best-practices`, `typescript-pro`, `javascript-pro`
+- Start with `nextjs-developer` for Next.js on Vercel and `serverless-patterns` for runtime behavior. Add `web-perf` for performance optimization.
 
 ## Workflow steps
-1. Confirm environment targets, success criteria, and rollback constraints.
-2. Design the smallest Vercel-specific change that solves the issue.
-3. Implement and verify using focused checks with logs/traces evidence.
-4. Summarize risk, residual gaps, and next operational actions.
+
+1. Assess deployment requirements and runtime selection (Edge vs Serverless vs Static).
+2. Configure project settings and environment variables.
+3. Set up deployment pipeline with preview deployments.
+4. Verify deployment health and performance.
+5. Configure monitoring and alerting.
 
 ## Verification
-- Run focused checks/tests for the changed scope.
-- Confirm no regressions in adjacent behavior.
-- Note any gaps that were not validated.
+
+- Deployment successful with no build errors.
+- Runtime selection appropriate for each route.
+- Environment variables correctly configured per environment.
+- Preview deployments working for PRs.
+- Performance metrics within acceptable ranges.
 
 ## Output Contract
+
 ```yaml
 VERCEL_WORKFLOW_RESULT:
   primary_agent: vercel-expert
-  supporting_agents: [devops-engineer?, security-auditor?, test-engineer?]
-  primary_skills: [vercel-platform, vercel-runtime]
-  supporting_skills: [vercel-delivery?, vercel-security?, vercel-ai?, vercel-storage?]
-  affected_components: [<string>]
-  deployment_notes: [<string>]
-  rollback_notes: [<string>]
-  security_and_observability_impact: [<string>]
-  verification_evidence: [<string>]
+  supporting_agents: [devops-engineer?, test-engineer?]
+  primary_skills: [nextjs-developer, serverless-patterns]
+  supporting_skills: [web-perf?, react-expert?]
+  deployment:
+    project: <string>
+    runtime: <edge | serverless | static>
+    environment: <development | preview | production>
+    status: success | failure
+  configuration:
+    env_vars: [<string>]
+    domains: [<string>]
+    caching: <string>
+  monitoring: <string>
   follow_up_items: [<string>] | []
 ```

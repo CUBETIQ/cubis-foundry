@@ -3,55 +3,61 @@ command: "/implement-track"
 description: "Execute large work in milestones with explicit quality gates and status updates."
 triggers: ["track", "milestone", "delivery", "progress", "execution"]
 ---
+
 # Implement Track Workflow
 
-# CHANGED: routing — added explicit milestone coordination owners — prevents generic fallback and clarifies who runs long execution tracks.
-# CHANGED: output contract — converted free-form bullets into structured YAML — keeps milestone state machine-readable for resumability.
-
 ## When to use
-Use this for medium/large efforts where progress visibility is required.
+
+Use this for large-scale implementation work that spans multiple sessions or milestones and needs progress tracking with quality gates.
 
 ## Routing
+
 - Primary coordinator: `@orchestrator`
-- Milestone planning: `@project-planner`
-- Verification gates: `@test-engineer`
+- Implementation agents: determined by task domain
+- Quality gate: `@validator`
 
 ## Context notes
-- This workflow file, active platform rules, and selected agents/skills guide execution.
-- Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
+
+- This workflow file, active platform rules, and selected agents or skills guide execution.
+- Attach the implementation plan, milestone definitions, and acceptance criteria per milestone.
 
 ## Skill Routing
-- Primary skills: `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`, `csharp-pro`, `kotlin-pro`, `rust-pro`, `php-pro`, `ruby-pro`, `c-pro`, `cpp-pro`, `dart-pro`, `swift-pro`
-- Supporting skills (optional): `skill-creator`
-- Keep one primary language skill per milestone. Add `skill-creator` only when a milestone is specifically about rebuilding the skill catalog.
+
+- Primary skills: `architecture-designer`, `api-designer`
+- Supporting skills (optional): `database-skills`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `react-expert`, `nextjs-developer`
+- Start with `architecture-designer` for milestone planning. Load domain-specific skills per milestone based on implementation needs.
 
 ## Workflow steps
-1. Split into milestone-sized deliverables.
-2. Define done criteria per milestone.
-3. Execute one milestone at a time.
-4. Validate before moving forward.
-5. Publish progress and remaining risks.
+
+1. Review implementation plan and confirm milestone boundaries.
+2. Execute current milestone with focused implementation.
+3. Run quality gate validation at milestone completion.
+4. Update progress tracking and capture status.
+5. Adjust remaining plan based on learnings.
+6. Proceed to next milestone or report completion.
 
 ## Verification
-- Run focused checks/tests for the changed scope.
-- Confirm no regressions in adjacent behavior.
-- Note any gaps that were not validated.
+
+- Each milestone has clear acceptance criteria that are verified.
+- Quality gate passed before proceeding to next milestone.
+- Progress tracker updated with evidence of completion.
+- Remaining milestones adjusted for any scope changes.
 
 ## Output Contract
+
 ```yaml
 IMPLEMENT_TRACK_WORKFLOW_RESULT:
   primary_agent: orchestrator
-  supporting_agents: [project-planner?, test-engineer?]
-  primary_skills: [architecture-designer, skill-creator]
-  supporting_skills: [api-designer?, database-skills?, typescript-pro?]
+  supporting_agents: [<milestone-agents>]
+  primary_skills: [architecture-designer, api-designer]
+  supporting_skills: [database-skills?, typescript-pro?, javascript-pro?, python-pro?, golang-pro?, react-expert?, nextjs-developer?]
   milestones:
-    done: [<string>]
-    in_progress: [<string>]
-    next: [<string>]
-  gate_status: [<string>]
-  blockers: [<string>] | []
-  dependencies: [<string>] | []
-  eta_confidence: <low|medium|high>
-  next_handoff:
-    plan_handoff: <PLAN_HANDOFF|null>
+    - id: <milestone-id>
+      description: <string>
+      status: completed | in_progress | pending
+      acceptance_criteria_met: [<string>]
+      validation_evidence: <string>
+  overall_progress: <percentage>
+  scope_changes: [<string>] | []
+  follow_up_items: [<string>] | []
 ```

@@ -2,10 +2,10 @@
   "$schema": "cubis-foundry-skill-catalog-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
   "summary": {
-    "totalEntries": 73,
-    "totalSkills": 73,
+    "totalEntries": 87,
+    "totalSkills": 87,
     "totalSubskills": 0,
-    "canonicalSkills": 73,
+    "canonicalSkills": 87,
     "compatibilityAliases": 0,
     "layers": [
       "core-operating",
@@ -192,6 +192,29 @@
       "triggers": []
     },
     {
+      "id": "changelog-generator",
+      "package_id": "changelog-generator",
+      "catalog_id": "changelog-generator",
+      "kind": "skill",
+      "path": "workflows/skills/changelog-generator/SKILL.md",
+      "name": "changelog-generator",
+      "description": "Generate changelogs from conventional commits, semantic versioning, release notes, and automated version management workflows.",
+      "canonical": true,
+      "canonical_id": "changelog-generator",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "changelog-generator",
+        "workflow-specialists"
+      ],
+      "triggers": []
+    },
+    {
       "id": "ci-cd-pipelines",
       "package_id": "ci-cd-pipelines",
       "catalog_id": "ci-cd-pipelines",
@@ -210,6 +233,29 @@
       "tier": "experimental",
       "tags": [
         "ci-cd-pipelines",
+        "workflow-specialists"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "cli-developer",
+      "package_id": "cli-developer",
+      "catalog_id": "cli-developer",
+      "kind": "skill",
+      "path": "workflows/skills/cli-developer/SKILL.md",
+      "name": "cli-developer",
+      "description": "Build command-line interfaces with argument parsing, subcommands, interactive prompts, terminal UX, output formatting, and cross-platform compatibility.",
+      "canonical": true,
+      "canonical_id": "cli-developer",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "cli-developer",
         "workflow-specialists"
       ],
       "triggers": []
@@ -405,7 +451,7 @@
       "kind": "skill",
       "path": "workflows/skills/design-system-builder/SKILL.md",
       "name": "design-system-builder",
-      "description": "Use when creating or reviewing reusable UI components, token-driven styling, variant APIs, theming hooks, and component documentation for a design system.",
+      "description": "Build and maintain token-driven design systems with reusable components, semantic APIs, variant patterns, and theming support across frameworks.",
       "canonical": true,
       "canonical_id": "design-system-builder",
       "deprecated": false,
@@ -418,6 +464,29 @@
       "tags": [
         "design-system-builder",
         "frameworks-runtimes"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "devops-engineer",
+      "package_id": "devops-engineer",
+      "catalog_id": "devops-engineer",
+      "kind": "skill",
+      "path": "workflows/skills/devops-engineer/SKILL.md",
+      "name": "devops-engineer",
+      "description": "Design CI/CD pipelines, infrastructure-as-code, monitoring, deployment strategies, and incident response procedures for reliable software delivery.",
+      "canonical": true,
+      "canonical_id": "devops-engineer",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "devops-engineer",
+        "workflow-specialists"
       ],
       "triggers": []
     },
@@ -445,6 +514,29 @@
       "triggers": []
     },
     {
+      "id": "documentation-templates",
+      "package_id": "documentation-templates",
+      "catalog_id": "documentation-templates",
+      "kind": "skill",
+      "path": "workflows/skills/documentation-templates/SKILL.md",
+      "name": "documentation-templates",
+      "description": "Create API documentation, architecture decision records, runbooks, onboarding guides, and technical writing using proven templates and standards.",
+      "canonical": true,
+      "canonical_id": "documentation-templates",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "documentation-templates",
+        "workflow-specialists"
+      ],
+      "triggers": []
+    },
+    {
       "id": "drizzle-expert",
       "package_id": "drizzle-expert",
       "catalog_id": "drizzle-expert",
@@ -464,6 +556,29 @@
       "tags": [
         "databases",
         "drizzle-expert"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "error-ux-observability",
+      "package_id": "error-ux-observability",
+      "catalog_id": "error-ux-observability",
+      "kind": "skill",
+      "path": "workflows/skills/error-ux-observability/SKILL.md",
+      "name": "error-ux-observability",
+      "description": "Design error experiences, structured logging, distributed tracing, alerting strategies, and user-facing error handling for production systems.",
+      "canonical": true,
+      "canonical_id": "error-ux-observability",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "error-ux-observability",
+        "workflow-specialists"
       ],
       "triggers": []
     },
@@ -727,7 +842,7 @@
       "kind": "skill",
       "path": "workflows/skills/frontend-code-review/SKILL.md",
       "name": "frontend-code-review",
-      "description": "Use when reviewing web UI code for regressions in accessibility, state flow, responsiveness, loading and error behavior, rendering cost, and design-system consistency.",
+      "description": "Review frontend code for accessibility, performance, state management, rendering efficiency, and design system compliance.",
       "canonical": true,
       "canonical_id": "frontend-code-review",
       "deprecated": false,
@@ -750,7 +865,7 @@
       "kind": "skill",
       "path": "workflows/skills/frontend-design/SKILL.md",
       "name": "frontend-design",
-      "description": "Use for web UI design decisions: layout, hierarchy, typography, color, motion, and interaction clarity. This skill teaches decision-making, not a fixed visual style.",
+      "description": "Create distinctive, production-grade frontend interfaces with high design quality. Use when building pages, dashboards, or applications. Generates polished code that avoids generic AI aesthetics.",
       "canonical": true,
       "canonical_id": "frontend-design",
       "deprecated": false,
@@ -878,6 +993,29 @@
       "tags": [
         "frameworks-runtimes",
         "graphql-architect"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "i18n-localization",
+      "package_id": "i18n-localization",
+      "catalog_id": "i18n-localization",
+      "kind": "skill",
+      "path": "workflows/skills/i18n-localization/SKILL.md",
+      "name": "i18n-localization",
+      "description": "Implement internationalization and localization including RTL support, pluralization, date/number formatting, translation workflows, and locale-aware UI.",
+      "canonical": true,
+      "canonical_id": "i18n-localization",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "i18n-localization",
+        "workflow-specialists"
       ],
       "triggers": []
     },
@@ -1016,6 +1154,29 @@
       "tags": [
         "microservices-architect",
         "workflow-specialists"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "mobile-design",
+      "package_id": "mobile-design",
+      "catalog_id": "mobile-design",
+      "kind": "skill",
+      "path": "workflows/skills/mobile-design/SKILL.md",
+      "name": "mobile-design",
+      "description": "Design mobile interfaces with touch psychology, platform-native patterns, iOS and Android guidelines, gesture handling, and responsive mobile layouts.",
+      "canonical": true,
+      "canonical_id": "mobile-design",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "vertical-composed",
+      "layer": "vertical-composed",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "mobile-design",
+        "vertical-composed"
       ],
       "triggers": []
     },
@@ -1457,6 +1618,29 @@
       "triggers": []
     },
     {
+      "id": "security-engineer",
+      "package_id": "security-engineer",
+      "catalog_id": "security-engineer",
+      "kind": "skill",
+      "path": "workflows/skills/security-engineer/SKILL.md",
+      "name": "security-engineer",
+      "description": "Apply secure coding practices, OWASP Top 10 mitigations, threat modeling, input validation, and vulnerability prevention across web, API, and backend systems.",
+      "canonical": true,
+      "canonical_id": "security-engineer",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "security-engineer",
+        "workflow-specialists"
+      ],
+      "triggers": []
+    },
+    {
       "id": "seo-fundamentals",
       "package_id": "seo-fundamentals",
       "catalog_id": "seo-fundamentals",
@@ -1476,6 +1660,29 @@
       "tags": [
         "seo-fundamentals",
         "vertical-composed"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "serverless-patterns",
+      "package_id": "serverless-patterns",
+      "catalog_id": "serverless-patterns",
+      "kind": "skill",
+      "path": "workflows/skills/serverless-patterns/SKILL.md",
+      "name": "serverless-patterns",
+      "description": "Design serverless architectures with Lambda, Edge Functions, event-driven patterns, cold start optimization, and cost management strategies.",
+      "canonical": true,
+      "canonical_id": "serverless-patterns",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "serverless-patterns",
+        "workflow-specialists"
       ],
       "triggers": []
     },
@@ -1549,6 +1756,75 @@
       "triggers": []
     },
     {
+      "id": "sre-engineer",
+      "package_id": "sre-engineer",
+      "catalog_id": "sre-engineer",
+      "kind": "skill",
+      "path": "workflows/skills/sre-engineer/SKILL.md",
+      "name": "sre-engineer",
+      "description": "Apply site reliability engineering practices including SLOs, error budgets, capacity planning, chaos engineering, and incident management for production systems.",
+      "canonical": true,
+      "canonical_id": "sre-engineer",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "sre-engineer",
+        "workflow-specialists"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "static-analysis",
+      "package_id": "static-analysis",
+      "catalog_id": "static-analysis",
+      "kind": "skill",
+      "path": "workflows/skills/static-analysis/SKILL.md",
+      "name": "static-analysis",
+      "description": "Configure and use static analysis tools including linters, formatters, type checkers, and custom rules to enforce code quality and consistency.",
+      "canonical": true,
+      "canonical_id": "static-analysis",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "static-analysis",
+        "workflow-specialists"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "stripe-best-practices",
+      "package_id": "stripe-best-practices",
+      "catalog_id": "stripe-best-practices",
+      "kind": "skill",
+      "path": "workflows/skills/stripe-best-practices/SKILL.md",
+      "name": "stripe-best-practices",
+      "description": "Implement Stripe payments, subscriptions, webhooks, checkout flows, and billing management with security and compliance best practices.",
+      "canonical": true,
+      "canonical_id": "stripe-best-practices",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "stripe-best-practices",
+        "workflow-specialists"
+      ],
+      "triggers": []
+    },
+    {
       "id": "supabase",
       "package_id": "supabase",
       "catalog_id": "supabase",
@@ -1618,6 +1894,29 @@
       "triggers": []
     },
     {
+      "id": "testing-patterns",
+      "package_id": "testing-patterns",
+      "catalog_id": "testing-patterns",
+      "kind": "skill",
+      "path": "workflows/skills/testing-patterns/SKILL.md",
+      "name": "testing-patterns",
+      "description": "Design test strategies with unit, integration, and e2e testing. Apply TDD, mocking, fixtures, coverage analysis, and test architecture best practices.",
+      "canonical": true,
+      "canonical_id": "testing-patterns",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "testing-patterns",
+        "workflow-specialists"
+      ],
+      "triggers": []
+    },
+    {
       "id": "typescript-pro",
       "package_id": "typescript-pro",
       "catalog_id": "typescript-pro",
@@ -1660,6 +1959,29 @@
       "tags": [
         "databases",
         "vitess"
+      ],
+      "triggers": []
+    },
+    {
+      "id": "vulnerability-scanner",
+      "package_id": "vulnerability-scanner",
+      "catalog_id": "vulnerability-scanner",
+      "kind": "skill",
+      "path": "workflows/skills/vulnerability-scanner/SKILL.md",
+      "name": "vulnerability-scanner",
+      "description": "Scan dependencies for CVEs, perform SAST/DAST analysis, manage security advisories, and implement automated vulnerability management workflows.",
+      "canonical": true,
+      "canonical_id": "vulnerability-scanner",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "vulnerability-scanner",
+        "workflow-specialists"
       ],
       "triggers": []
     },
@@ -1710,5 +2032,5 @@
       "triggers": []
     }
   ],
-  "contentHash": "ead11b65c65ea673"
+  "contentHash": "698023b535717602"
 }

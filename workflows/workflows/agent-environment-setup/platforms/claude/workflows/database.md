@@ -3,59 +3,60 @@ command: "/database"
 description: "Design or review schema, queries, and migrations with performance and integrity controls."
 triggers: ["database", "sql", "schema", "migration", "index"]
 ---
+
 # Database Workflow
 
-# CHANGED: output contract — converted free-form bullets into structured YAML — keeps schema and migration handoffs machine-readable across platforms.
-
 ## When to use
-Use this when data modeling, query quality, migration safety, or database performance is core to the task.
+
+Use this for schema design, query optimization, migration planning, or database architecture decisions.
 
 ## Routing
+
 - Primary specialist: `@database-architect`
-- Backend integration: `@backend-specialist`
+- Implementation support: `@backend-specialist`
 - Verification support: `@test-engineer`
-- Core skill hub: `database-skills`
-- Companion skills: `database-design` (schema/migrations), `database-optimizer` (tuning/triage)
-- Engine and platform specialists are loaded on-demand only when platform behavior matters: `postgres`, `mysql`, `sqlite`, `mongodb`, `redis`, `supabase`, `firebase`, `vitess`, `neki`.
-- Access-layer specialists are loaded only when the ORM or schema-as-code layer is the real decision surface: `drizzle-expert`.
 
 ## Context notes
-- This workflow file, active platform rules, and selected agents/skills guide execution.
-- Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
+
+- This workflow file, active platform rules, and selected agents or skills guide execution.
+- Attach existing schema, migration history, query patterns, and performance requirements.
 
 ## Skill Routing
-- Primary skills: `database-skills`, `database-design`
-- Supporting skills (optional): `database-optimizer`, `drizzle-expert`, `postgres`, `mysql`, `sqlite`, `mongodb`, `redis`, `supabase`, `firebase`, `vitess`, `neki`, `architecture-designer`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`, `php-pro`, `ruby-pro`, `skill-creator`
-- Use `database-skills` as the triage hub, `database-design` when schema and migration shape are primary, and `database-optimizer` only when evidence shows a query, index, or contention problem. Add the exact engine or platform specialist only when engine behavior or managed-product constraints are relevant. Load `drizzle-expert` only when the access layer, schema-as-code, or drizzle-kit path is the real decision surface, then one matching language skill for query-code changes.
+
+- Primary skills: `database-design`, `database-optimizer`, `database-skills`
+- Supporting skills (optional): `drizzle-expert`, `postgres`, `mysql`, `sqlite`, `mongodb`, `redis`, `supabase`, `firebase`, `vitess`, `typescript-pro`, `javascript-pro`, `python-pro`
+- Start with `database-design` for schema work, `database-optimizer` for performance, or `database-skills` for general database operations. Add engine-specific skill when applicable.
 
 ## Workflow steps
-1. Confirm data shape, access patterns, and workload size.
-2. Choose track: `database-design` (schema/migrations), `database-optimizer` (tuning), or `database-skills` (engine wrappers).
-3. Choose engine, platform, and access-layer wrappers and define index strategy.
-4. Define pagination strategy (keyset first, offset only if justified).
-5. Plan migration and rollback.
-6. Validate with query-plan evidence and production-risk notes.
+
+1. Understand current schema and data model.
+2. Design or review proposed changes with normalization analysis.
+3. Plan migration with rollback strategy.
+4. Optimize queries and indexes for known access patterns.
+5. Validate data integrity constraints.
 
 ## Verification
-- Run focused checks/tests for the changed scope.
-- Confirm no regressions in adjacent behavior.
-- Note any gaps that were not validated.
+
+- Schema changes maintain referential integrity.
+- Migrations are reversible or have documented rollback plan.
+- EXPLAIN output reviewed for performance-sensitive queries.
+- No breaking changes to existing consumers without migration plan.
 
 ## Output Contract
+
 ```yaml
 DATABASE_WORKFLOW_RESULT:
-  primary_agent_id: "database-architect"
-  supporting_agent_ids: ["backend-specialist", "test-engineer"]
-  primary_skill_ids: ["database-skills", "database-design"]
-  supporting_skill_ids: ["database-optimizer"]
-  schema_changes: ["Describe schema changes"]
-  indexing_plan: ["Describe indexes and rationale"]
-  pagination_plan: null
-  migration:
-    required: false
-    plan: ["Describe migration steps"]
-    rollback: ["Describe rollback steps"]
-  evidence:
-    query_plans: ["Summarize explain or engine-native plan evidence"]
-    validation_checks: ["<command-or-test>"]
+  primary_agent: database-architect
+  supporting_agents: [backend-specialist?, test-engineer?]
+  primary_skills: [database-design, database-optimizer, database-skills]
+  supporting_skills: [<engine-specific-skill>?, drizzle-expert?]
+  schema_changes:
+    tables_affected: [<string>]
+    migration_plan: <string>
+    rollback_plan: <string>
+  query_optimization:
+    queries_reviewed: <number>
+    indexes_recommended: [<string>] | []
+  integrity_checks: [<string>]
+  follow_up_items: [<string>] | []
 ```

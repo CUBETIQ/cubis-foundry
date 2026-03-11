@@ -1,4 +1,4 @@
-description = "Run a strict review for bugs, regressions, accessibility issues, and security risk with prioritized findings."
+description = "Run a strict review for bugs, regressions, accessibility issues, security risk, and code quality with prioritized findings."
 prompt = '''
 Follow the /review workflow from .agent/workflows/review.md.
 

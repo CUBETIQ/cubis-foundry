@@ -1,0 +1,75 @@
+{
+  "skill": "frontend-design",
+  "version": "3.0",
+  "evals": [
+    {
+      "id": "landing-page-editorial",
+      "prompt": "Build a landing page for a developer tool called 'Forge' — make it feel premium and editorial, not like every other SaaS template.",
+      "assertions": [
+        "Uses a distinctive font pairing (not Inter, Roboto, or Arial as primary)",
+        "Has a clear visual hierarchy with varied spacing",
+        "Does not use a bento grid or hero split 50/50 layout",
+        "Color palette avoids purple-to-blue gradients and neon-on-dark",
+        "Includes responsive design considerations",
+        "HTML is semantic with proper heading hierarchy"
+      ]
+    },
+    {
+      "id": "dashboard-redesign",
+      "prompt": "Redesign this admin dashboard. It currently uses gray cards on white background with Inter font. Make it distinctive.",
+      "assertions": [
+        "Changes the font from Inter to something more distinctive",
+        "Breaks away from uniform card grid layout",
+        "Uses tinted neutrals instead of pure gray",
+        "Creates visual rhythm through varied spacing",
+        "Maintains data readability while improving aesthetics",
+        "Passes the AI Slop Test — does not look generically AI-generated"
+      ]
+    },
+    {
+      "id": "color-system-health",
+      "prompt": "I need a color system for a health tech app. No fintech blue, no AI purple.",
+      "assertions": [
+        "Uses warm earth tones, sage, or soft coral (appropriate for health)",
+        "Avoids deep navy/fintech blue and purple-cyan palette",
+        "Defines semantic colors (success, warning, error) alongside brand",
+        "Includes dark mode considerations",
+        "Specifies contrast ratios for accessibility",
+        "Uses OKLCH or modern color space, not just hex"
+      ]
+    },
+    {
+      "id": "audit-command",
+      "prompt": "/audit this checkout page for accessibility and responsive issues",
+      "assertions": [
+        "Checks color contrast ratios against WCAG 2.1 AA",
+        "Verifies keyboard navigation and focus management",
+        "Tests touch target sizes for mobile",
+        "Reviews form labels and error messages",
+        "Produces actionable findings, not generic advice"
+      ]
+    },
+    {
+      "id": "critique-command",
+      "prompt": "/critique the onboarding flow — is it clear? Does it build trust?",
+      "assertions": [
+        "Evaluates visual hierarchy and user flow",
+        "Assesses trust-building elements",
+        "Reviews empty states and progressive disclosure",
+        "Provides specific, actionable improvement suggestions",
+        "References UX psychology principles where relevant"
+      ]
+    },
+    {
+      "id": "non-technical-user",
+      "prompt": "I'm not a developer. Can you help me design a portfolio website? I want it to feel artsy and warm.",
+      "assertions": [
+        "Explains design choices in plain language without jargon",
+        "Delivers working code, not just design advice",
+        "Chooses an appropriate warm/artsy aesthetic direction",
+        "Provides clear instructions for what to change and customize",
+        "Does not assume the user knows CSS or HTML terminology"
+      ]
+    }
+  ]
+}

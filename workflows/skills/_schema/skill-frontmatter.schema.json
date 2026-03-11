@@ -1,35 +1,43 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Cubis Foundry Skill Frontmatter",
-  "description": "Validates YAML frontmatter in SKILL.md files against the universal-skill-creator portable format.",
+  "description": "Validates YAML frontmatter in SKILL.md files against the Agent Skills open standard (agentskills.io) with Cubis Foundry extensions.",
   "type": "object",
   "required": ["name", "description"],
   "properties": {
     "name": {
       "type": "string",
       "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
-      "description": "Kebab-case skill identifier. Must match the directory name."
+      "maxLength": 64,
+      "description": "Lowercase kebab-case skill identifier (max 64 chars). Must match the directory name. No consecutive hyphens, must not start or end with a hyphen."
     },
     "description": {
       "type": "string",
       "minLength": 20,
-      "description": "What the skill does and when to use it. Include 3-5 trigger phrases."
+      "maxLength": 1024,
+      "description": "What the skill does and when to use it (max 1024 chars). Include 3-5 trigger phrases for routing accuracy."
     },
     "license": {
       "type": "string",
-      "description": "SPDX license identifier (e.g. MIT, Apache-2.0)."
+      "description": "License name or reference to a bundled license file (e.g. MIT, Apache-2.0, 'Proprietary. LICENSE.txt has complete terms')."
+    },
+    "compatibility": {
+      "type": "string",
+      "maxLength": 500,
+      "description": "Environment requirements: intended platforms, system packages, network access (e.g. 'Claude Code, Codex, GitHub Copilot, Gemini CLI')."
     },
     "metadata": {
       "type": "object",
+      "description": "Arbitrary key-value mapping for additional metadata not defined by the Agent Skills spec.",
       "properties": {
         "author": { "type": "string" },
         "version": { "type": "string" }
       },
-      "additionalProperties": false
+      "additionalProperties": true
     },
-    "compatibility": {
+    "allowed-tools": {
       "type": "string",
-      "description": "Target platforms (e.g. Claude Code, Codex, GitHub Copilot)."
+      "description": "Space-delimited list of pre-approved tools the skill may use (experimental). E.g. 'Bash(git:*) Bash(jq:*) Read'."
     }
   },
   "additionalProperties": false
