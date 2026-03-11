@@ -5,25 +5,25 @@
 
 ## Platforms
 
-| Platform | Rule File | Output Directory | Execution Model |
-|----------|-----------|-----------------|-----------------|
-| **Antigravity** (Gemini CLI / Kiro) | `GEMINI.md` (`trigger: always_on`) | `.agent/` | Agents as Gemini subprocesses (parallel) |
-| **Claude** (Claude Code) | `CLAUDE.md` | `.claude/` | Subagents via `Task` tool (parallel, isolated) |
-| **Codex** (Codex CLI) | `AGENTS.md` | `.agents/` | Postures within session (sequential, no subprocess) |
-| **Copilot** (GitHub Copilot) | `copilot-instructions.md` | `.github/` | Agents + `.prompt.md` files (parallel via VS Code) |
+| Platform                            | Rule File                          | Output Directory | Execution Model                                     |
+| ----------------------------------- | ---------------------------------- | ---------------- | --------------------------------------------------- |
+| **Antigravity** (Gemini CLI / Kiro) | `GEMINI.md` (`trigger: always_on`) | `.agent/`        | Agents as Gemini subprocesses (parallel)            |
+| **Claude** (Claude Code)            | `CLAUDE.md`                        | `.claude/`       | Subagents via `Task` tool (parallel, isolated)      |
+| **Codex** (Codex CLI)               | `AGENTS.md`                        | `.agents/`       | Postures within session (sequential, no subprocess) |
+| **Copilot** (GitHub Copilot)        | `copilot-instructions.md`          | `.github/`       | Agents + `.prompt.md` files (parallel via VS Code)  |
 
 ---
 
 ## File Artifacts per Platform
 
-| Artifact | Antigravity | Claude | Codex | Copilot |
-|----------|-------------|--------|-------|---------|
-| Agent files | 22 `.md` (raw) | 22 `.md` (raw) | 22 `.md` (raw) | 22 `.md` (sanitized frontmatter) |
-| Workflow files | 18 `.md` (raw) | 18 `.md` (raw) | 18 `.md` (raw) | 18 `.md` (raw) |
-| Command/prompt files | 18 `.toml` (generated) | — | — | 18 `.prompt.md` (generated) |
-| Skill mirrors | — | 87+ skill dirs | — | 87+ skill dirs |
-| Rules file | `GEMINI.md` | `CLAUDE.md` | `AGENTS.md` | `copilot-instructions.md` |
-| Compatibility aliases | — | — | `$agent-{id}`, `$workflow-{id}` | — |
+| Artifact              | Antigravity            | Claude         | Codex                           | Copilot                          |
+| --------------------- | ---------------------- | -------------- | ------------------------------- | -------------------------------- |
+| Agent files           | 22 `.md` (raw)         | 22 `.md` (raw) | 22 `.md` (raw)                  | 22 `.md` (sanitized frontmatter) |
+| Workflow files        | 18 `.md` (raw)         | 18 `.md` (raw) | 18 `.md` (raw)                  | 18 `.md` (raw)                   |
+| Command/prompt files  | 18 `.toml` (generated) | —              | —                               | 18 `.prompt.md` (generated)      |
+| Skill mirrors         | —                      | 87+ skill dirs | —                               | 87+ skill dirs                   |
+| Rules file            | `GEMINI.md`            | `CLAUDE.md`    | `AGENTS.md`                     | `copilot-instructions.md`        |
+| Compatibility aliases | —                      | —              | `$agent-{id}`, `$workflow-{id}` | —                                |
 
 ---
 
@@ -53,6 +53,7 @@ Skills are instead appended as a markdown section:
 
 ```markdown
 ## Skill routing
+
 Prefer these skills when task intent matches: `skill-1`, `skill-2`, `skill-3`.
 ```
 
@@ -107,14 +108,14 @@ Antigravity, Claude, and Codex receive the full shared frontmatter unchanged.
 
 All 4 platforms share the same 6-level routing logic:
 
-| Level | Condition | Action |
-|-------|-----------|--------|
-| TRIVIAL | Simple question, no implementation | Answer directly |
-| EXPLICIT | User names a workflow or agent | Route to it |
-| SINGLE-DOMAIN | Task fits one specialist | Route to specialist agent |
-| CROSS-DOMAIN | Task spans multiple domains | Use orchestrator with multiple specialists |
-| UNRESOLVED | No clear route | Use `route_resolve` MCP tool |
-| FAILED | Route resolve fails | Fall back to orchestrator or ask user |
+| Level         | Condition                          | Action                                     |
+| ------------- | ---------------------------------- | ------------------------------------------ |
+| TRIVIAL       | Simple question, no implementation | Answer directly                            |
+| EXPLICIT      | User names a workflow or agent     | Route to it                                |
+| SINGLE-DOMAIN | Task fits one specialist           | Route to specialist agent                  |
+| CROSS-DOMAIN  | Task spans multiple domains        | Use orchestrator with multiple specialists |
+| UNRESOLVED    | No clear route                     | Use `route_resolve` MCP tool               |
+| FAILED        | Route resolve fails                | Fall back to orchestrator or ask user      |
 
 ---
 
@@ -137,13 +138,13 @@ All platforms use the same skill discovery stack:
 
 **Transforms**:
 
-| Step | All Platforms | Antigravity Only | Copilot Only |
-|------|---------------|------------------|-------------|
-| Copy agents | ✓ | — | Sanitize frontmatter + append skill routing |
-| Copy workflows | ✓ | — | — |
-| Generate commands | — | `.toml` files | `.prompt.md` files |
-| Copy skills | — | — | Mirror canonical skills dir |
-| Generate manifest | Route manifest (JSON) | — | — |
+| Step              | All Platforms         | Antigravity Only | Copilot Only                                |
+| ----------------- | --------------------- | ---------------- | ------------------------------------------- |
+| Copy agents       | ✓                     | —                | Sanitize frontmatter + append skill routing |
+| Copy workflows    | ✓                     | —                | —                                           |
+| Generate commands | —                     | `.toml` files    | `.prompt.md` files                          |
+| Copy skills       | —                     | —                | Mirror canonical skills dir                 |
+| Generate manifest | Route manifest (JSON) | —                | —                                           |
 
 **Output**: `generated/route-manifest.json` with all 40 routes (22 agents + 18 workflows) and per-platform artifact paths.
 
@@ -151,9 +152,9 @@ All platforms use the same skill discovery stack:
 
 ## Validation Scripts
 
-| Script | What It Validates |
-|--------|-------------------|
+| Script                         | What It Validates                                       |
+| ------------------------------ | ------------------------------------------------------- |
 | `validate-skill-packaging.mjs` | SKILL.md frontmatter, required headings, markdown links |
-| `validate-mcp-skills.mjs` | Manifest sync, description length, rule references |
-| `validate-shared-routing.mjs` | Shared agent/workflow routing consistency |
-| `validate-runtime-wiring.mjs` | Platform artifact existence and cross-references |
+| `validate-mcp-skills.mjs`      | Manifest sync, description length, rule references      |
+| `validate-shared-routing.mjs`  | Shared agent/workflow routing consistency               |
+| `validate-runtime-wiring.mjs`  | Platform artifact existence and cross-references        |

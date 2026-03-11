@@ -27,19 +27,21 @@ Guide serverless architecture design and implementation. Covers function design,
 
 ### Step 1 — Choose the Right Compute Model
 
-| Model | Best For | Latency | Cost Model |
-|-------|----------|---------|------------|
-| AWS Lambda / Cloud Functions | Event-driven, variable load | Cold start: 100ms-2s | Per-invocation + duration |
-| Edge Functions (Cloudflare Workers, Vercel Edge) | Low latency, geographically distributed | < 50ms (no cold start) | Per-request |
-| Long-running containers (ECS, Cloud Run) | Steady load, WebSockets, > 15 min tasks | No cold start | Per-second |
+| Model                                            | Best For                                | Latency                | Cost Model                |
+| ------------------------------------------------ | --------------------------------------- | ---------------------- | ------------------------- |
+| AWS Lambda / Cloud Functions                     | Event-driven, variable load             | Cold start: 100ms-2s   | Per-invocation + duration |
+| Edge Functions (Cloudflare Workers, Vercel Edge) | Low latency, geographically distributed | < 50ms (no cold start) | Per-request               |
+| Long-running containers (ECS, Cloud Run)         | Steady load, WebSockets, > 15 min tasks | No cold start          | Per-second                |
 
 **Serverless fits when**:
+
 - Traffic is bursty or unpredictable
 - Functions complete in < 30 seconds
 - Stateless request/response pattern
 - Event-driven processing (queue consumers, webhooks)
 
 **Serverless doesn't fit when**:
+
 - Persistent connections (WebSockets, long polling)
 - Heavy computation (> 15 min)
 - Steady high-throughput workloads (always-on is cheaper)
@@ -64,6 +66,7 @@ api/
 ```
 
 **Rules**:
+
 - Keep functions small (< 200 lines)
 - Initialize expensive resources outside the handler (connection pools, SDK clients)
 - Handle one event type per function
@@ -72,6 +75,7 @@ api/
 ### Step 3 — Optimize Cold Starts
 
 **Cold start happens when**:
+
 - First invocation after deployment
 - Scaling up to handle more concurrent requests
 - Function hasn't been invoked for ~15 minutes
@@ -87,6 +91,7 @@ api/
 | Choose lighter runtimes | Node.js > Python > Java for cold start |
 
 **Connection pooling**:
+
 ```typescript
 // Initialize OUTSIDE the handler (reused across invocations)
 const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 1 });
@@ -103,16 +108,17 @@ export async function handler(event) {
 
 ### Step 4 — Event-Driven Patterns
 
-| Pattern | Use Case | Services |
-|---------|----------|----------|
-| Queue consumer | Decoupled async processing | SQS, Cloud Tasks |
-| Fan-out | Parallel processing of events | SNS + Lambda, EventBridge |
-| Saga / Step Function | Multi-step workflows with compensation | Step Functions, Temporal |
-| CRON | Scheduled tasks | EventBridge rules, Cloud Scheduler |
-| Stream processing | Real-time event processing | Kinesis, Kafka |
-| Webhook receiver | Third-party event handling | API Gateway + Lambda |
+| Pattern              | Use Case                               | Services                           |
+| -------------------- | -------------------------------------- | ---------------------------------- |
+| Queue consumer       | Decoupled async processing             | SQS, Cloud Tasks                   |
+| Fan-out              | Parallel processing of events          | SNS + Lambda, EventBridge          |
+| Saga / Step Function | Multi-step workflows with compensation | Step Functions, Temporal           |
+| CRON                 | Scheduled tasks                        | EventBridge rules, Cloud Scheduler |
+| Stream processing    | Real-time event processing             | Kinesis, Kafka                     |
+| Webhook receiver     | Third-party event handling             | API Gateway + Lambda               |
 
 **Error handling in async functions**:
+
 - Use dead-letter queues (DLQ) for failed messages
 - Implement idempotency (same message processed twice = same result)
 - Retry with exponential backoff
@@ -121,12 +127,14 @@ export async function handler(event) {
 ### Step 5 — Manage Costs
 
 **Cost drivers**:
+
 - Number of invocations
 - Execution duration × memory allocated
 - Data transfer (egress)
 - Provisioned concurrency (if used)
 
 **Optimization**:
+
 - Right-size memory (sometimes more memory = faster = cheaper)
 - Minimize execution time (return early, batch operations)
 - Use reserved concurrency to cap costs

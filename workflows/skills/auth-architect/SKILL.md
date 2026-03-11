@@ -52,8 +52,8 @@ Provide implementation guidance, code examples, and configuration as appropriate
 
 Load on demand. Do not preload all reference files.
 
-| File | Load when |
-| --- | --- |
+| File                                           | Load when                                                                                                                                            |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `references/session-token-policy-checklist.md` | You need a deeper checklist for session vs token choice, OAuth or OIDC, passkeys, tenant isolation, service auth, and policy enforcement boundaries. |
 
 ## Scripts

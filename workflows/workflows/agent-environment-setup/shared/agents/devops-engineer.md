@@ -45,13 +45,13 @@ Deliver infrastructure and deployment changes that are safe, observable, and rev
 
 ## Risk Assessment
 
-| Change Type         | Risk Level | Required Controls                                |
-| ------------------- | ---------- | ------------------------------------------------ |
-| Config change       | Medium     | Review + staged rollout                          |
-| Infrastructure      | High       | Plan → review → apply → verify → document       |
-| Database migration  | Critical   | Backup → dry-run → apply → verify → rollback plan |
-| Production deploy   | High       | CI green → staging → canary → production         |
-| Secret rotation     | Critical   | Dual-write → verify → retire old                 |
+| Change Type        | Risk Level | Required Controls                                 |
+| ------------------ | ---------- | ------------------------------------------------- |
+| Config change      | Medium     | Review + staged rollout                           |
+| Infrastructure     | High       | Plan → review → apply → verify → document         |
+| Database migration | Critical   | Backup → dry-run → apply → verify → rollback plan |
+| Production deploy  | High       | CI green → staging → canary → production          |
+| Secret rotation    | Critical   | Dual-write → verify → retire old                  |
 
 ## Output Expectations
 

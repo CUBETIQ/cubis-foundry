@@ -27,12 +27,12 @@ Guide implementation of Stripe payment integrations including one-time payments,
 
 ### Step 1 — Choose the Right Integration
 
-| Pattern | Use When |
-|---------|----------|
-| Stripe Checkout (hosted) | Fastest to ship, Stripe handles the UI and PCI compliance |
-| Payment Element (embedded) | Custom UI needed, Stripe handles payment method logic |
-| Payment Intents (API-only) | Full control, server-side payment flow |
-| Stripe Billing | Recurring subscriptions with invoicing |
+| Pattern                    | Use When                                                  |
+| -------------------------- | --------------------------------------------------------- |
+| Stripe Checkout (hosted)   | Fastest to ship, Stripe handles the UI and PCI compliance |
+| Payment Element (embedded) | Custom UI needed, Stripe handles payment method logic     |
+| Payment Intents (API-only) | Full control, server-side payment flow                    |
+| Stripe Billing             | Recurring subscriptions with invoicing                    |
 
 **Default to Stripe Checkout** unless you have a specific reason for embedded or API-only.
 
@@ -54,6 +54,7 @@ Client                    Server                   Stripe
 ```
 
 **Rules**:
+
 - Never trust the client for amounts or currency — set on the server
 - Use idempotency keys for all server-side Stripe API calls
 - Always handle the `payment_intent.succeeded` webhook for fulfillment
@@ -62,11 +63,12 @@ Client                    Server                   Stripe
 ### Step 3 — Webhook Handling
 
 **Verify every webhook signature**:
+
 ```typescript
 const event = stripe.webhooks.constructEvent(
-  body,        // raw request body
-  signature,   // Stripe-Signature header
-  endpointSecret  // from Stripe dashboard
+  body, // raw request body
+  signature, // Stripe-Signature header
+  endpointSecret, // from Stripe dashboard
 );
 ```
 
@@ -82,6 +84,7 @@ const event = stripe.webhooks.constructEvent(
 | `invoice.paid` | Extend subscription period |
 
 **Webhook best practices**:
+
 - Return 200 immediately, process asynchronously
 - Handle events idempotently (same event may be delivered multiple times)
 - Log every event with its ID for debugging
@@ -90,6 +93,7 @@ const event = stripe.webhooks.constructEvent(
 ### Step 4 — Subscription Management
 
 **Subscription lifecycle**:
+
 ```
 trial → active → past_due → canceled
                      ↓
@@ -97,6 +101,7 @@ trial → active → past_due → canceled
 ```
 
 **Implementation**:
+
 - Store `stripe_customer_id` and `stripe_subscription_id` in your database
 - Sync subscription status from webhooks (not API polling)
 - Implement dunning (failed payment retries): Stripe auto-retries, you handle UX
@@ -106,17 +111,20 @@ trial → active → past_due → canceled
 ### Step 5 — Security & Compliance
 
 **PCI Compliance**:
+
 - Use Stripe Elements or Checkout — never handle raw card numbers
 - No card data in your logs, database, or error messages
 - Use HTTPS everywhere
 
 **Fraud Prevention**:
+
 - Enable Stripe Radar for automated fraud detection
 - Verify billing address (AVS) and CVC
 - Implement velocity checks (too many attempts in short time)
 - Review high-risk payments manually
 
 **Testing**:
+
 - Use test mode API keys (never production keys in development)
 - Use Stripe test card numbers (4242... for success, 4000... for declines)
 - Test webhook handling with Stripe CLI: `stripe listen --forward-to localhost:3000/webhooks`

@@ -1,7 +1,21 @@
 ---
 name: product-manager
 description: Expert in product requirements, user stories, and acceptance criteria. Use for defining features, clarifying ambiguity, writing PRDs, and turning requests into testable outcomes. Triggers on requirements, user story, acceptance criteria, PRD, feature definition, scope clarification.
-triggers: ["requirements", "user story", "acceptance criteria", "prd", "feature definition", "scope clarification", "backlog", "roadmap", "prioritization", "mvp scope", "stakeholder alignment", "release planning"]
+triggers:
+  [
+    "requirements",
+    "user story",
+    "acceptance criteria",
+    "prd",
+    "feature definition",
+    "scope clarification",
+    "backlog",
+    "roadmap",
+    "prioritization",
+    "mvp scope",
+    "stakeholder alignment",
+    "release planning",
+  ]
 tools: Read, Grep, Glob, Bash
 model: inherit
 skills: architecture-designer, api-designer, skill-creator, typescript-pro, javascript-pro
@@ -21,11 +35,11 @@ Turn ambiguous requests into clear, testable feature definitions with prioritize
 
 ## Skill References
 
-| File                    | Load when                                                              |
-| ----------------------- | ---------------------------------------------------------------------- |
-| `architecture-designer` | Product decision has system design or architecture implications.       |
-| `api-designer`          | Feature needs API contract definition or integration specification.    |
-| `skill-creator`         | Defining requirements for skill packages.                              |
+| File                    | Load when                                                           |
+| ----------------------- | ------------------------------------------------------------------- |
+| `architecture-designer` | Product decision has system design or architecture implications.    |
+| `api-designer`          | Feature needs API contract definition or integration specification. |
+| `skill-creator`         | Defining requirements for skill packages.                           |
 
 ## Operating Stance
 

@@ -38,11 +38,13 @@ Guide internationalization (i18n) and localization (l10n) implementation. Ensure
 ```
 
 **String keys**:
+
 - Use namespaced dot notation: `page.section.element`
 - Keys should be descriptive, not the English text
 - Group by feature/page, not by component
 
 **Message format** (ICU MessageFormat):
+
 ```json
 {
   "items.count": "{count, plural, =0 {No items} one {# item} other {# items}}",
@@ -58,7 +60,9 @@ Different languages have different plural rules (Arabic has 6 plural forms):
 ```json
 {
   "en": { "items": "{count, plural, one {# item} other {# items}}" },
-  "ar": { "items": "{count, plural, zero {لا عناصر} one {عنصر واحد} two {عنصران} few {# عناصر} many {# عنصراً} other {# عنصر}}" }
+  "ar": {
+    "items": "{count, plural, zero {لا عناصر} one {عنصر واحد} two {عنصران} few {# عناصر} many {# عنصراً} other {# عنصر}}"
+  }
 }
 ```
 
@@ -70,19 +74,21 @@ Use `Intl` APIs — never format manually:
 
 ```typescript
 // Date
-new Intl.DateTimeFormat('de-DE', { dateStyle: 'long' }).format(date)
+new Intl.DateTimeFormat("de-DE", { dateStyle: "long" }).format(date);
 // → "15. Januar 2025"
 
 // Number
-new Intl.NumberFormat('ja-JP').format(1234567)
+new Intl.NumberFormat("ja-JP").format(1234567);
 // → "1,234,567"
 
 // Currency
-new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(42.5)
+new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(
+  42.5,
+);
 // → "$42.50"
 
 // Relative time
-new Intl.RelativeTimeFormat('fr', { numeric: 'auto' }).format(-1, 'day')
+new Intl.RelativeTimeFormat("fr", { numeric: "auto" }).format(-1, "day");
 // → "hier"
 ```
 
@@ -90,15 +96,16 @@ new Intl.RelativeTimeFormat('fr', { numeric: 'auto' }).format(-1, 'day')
 
 **CSS logical properties** (replace physical with logical):
 
-| Physical (DON'T) | Logical (DO) |
-|-------------------|--------------|
-| `margin-left` | `margin-inline-start` |
-| `padding-right` | `padding-inline-end` |
-| `text-align: left` | `text-align: start` |
-| `float: left` | `float: inline-start` |
-| `border-left` | `border-inline-start` |
+| Physical (DON'T)   | Logical (DO)          |
+| ------------------ | --------------------- |
+| `margin-left`      | `margin-inline-start` |
+| `padding-right`    | `padding-inline-end`  |
+| `text-align: left` | `text-align: start`   |
+| `float: left`      | `float: inline-start` |
+| `border-left`      | `border-inline-start` |
 
 **Layout**:
+
 - Use `dir="auto"` on user-generated content
 - Set `<html dir="rtl" lang="ar">` at the document level
 - Flexbox and Grid respect `direction` automatically
@@ -108,6 +115,7 @@ new Intl.RelativeTimeFormat('fr', { numeric: 'auto' }).format(-1, 'day')
 ### Step 5 — Translation Workflow
 
 **File structure**:
+
 ```
 locales/
 ├── en/
@@ -120,6 +128,7 @@ locales/
 ```
 
 **Process**:
+
 1. Developer adds key + English string
 2. CI extracts new/changed keys automatically
 3. Strings sent to translators (Crowdin, Lokalise, or equivalent)
@@ -127,6 +136,7 @@ locales/
 5. CI validates: no missing keys, no untranslated strings, valid ICU syntax
 
 **Rules**:
+
 - Never concatenate translated strings (`t('hello') + ' ' + name` breaks in many languages)
 - Provide context for translators (comments in message files)
 - Max string length varies by language (German ~30% longer than English)

@@ -30,13 +30,13 @@ Apply Site Reliability Engineering practices to build and maintain reliable prod
 
 SLIs are the metrics that matter to users:
 
-| SLI Category | Measures | Example |
-|--------------|----------|---------|
-| Availability | System is accepting requests | Successful requests / total requests |
-| Latency | Response time for good requests | p99 < 300ms |
-| Throughput | System handles expected load | Requests/sec at peak without degradation |
-| Correctness | Responses are accurate | Successful data validations / total |
-| Freshness | Data is up to date | Time since last successful sync < 1 min |
+| SLI Category | Measures                        | Example                                  |
+| ------------ | ------------------------------- | ---------------------------------------- |
+| Availability | System is accepting requests    | Successful requests / total requests     |
+| Latency      | Response time for good requests | p99 < 300ms                              |
+| Throughput   | System handles expected load    | Requests/sec at peak without degradation |
+| Correctness  | Responses are accurate          | Successful data validations / total      |
+| Freshness    | Data is up to date              | Time since last successful sync < 1 min  |
 
 **Choose 3–5 SLIs per service** — too many dilutes focus.
 
@@ -58,6 +58,7 @@ Latency SLO: 99% of requests complete in < 200ms
 | 99.99% | 4.3 minutes | 0.01% of requests can fail |
 
 **Rules**:
+
 - SLO must be achievable with current architecture
 - SLO must be measurable with existing instrumentation
 - SLO should be tighter than the SLA (contract with users)
@@ -68,16 +69,19 @@ Latency SLO: 99% of requests complete in < 200ms
 Error budget = 100% − SLO target
 
 **When budget is healthy** (> 50% remaining):
+
 - Ship features aggressively
 - Run chaos experiments
 - Take on technical debt reduction
 
 **When budget is burning** (< 25% remaining):
+
 - Slow down feature releases
 - Prioritize reliability work
 - Increase review rigor
 
 **When budget is exhausted** (0%):
+
 - Freeze non-critical changes
 - All engineering effort on reliability
 - Root cause analysis on budget-burning incidents
@@ -86,16 +90,17 @@ Error budget = 100% − SLO target
 
 **Failure modes and mitigations**:
 
-| Failure | Mitigation |
-|---------|------------|
-| Single instance crash | Multiple replicas, health checks, auto-restart |
-| Dependency timeout | Circuit breakers, timeouts, fallback responses |
-| Traffic spike | Auto-scaling, rate limiting, load shedding |
-| Data center outage | Multi-region deployment, DNS failover |
-| Data corruption | Immutable audit logs, point-in-time recovery, checksums |
-| Cascading failure | Bulkheads, retry budgets, backpressure |
+| Failure               | Mitigation                                              |
+| --------------------- | ------------------------------------------------------- |
+| Single instance crash | Multiple replicas, health checks, auto-restart          |
+| Dependency timeout    | Circuit breakers, timeouts, fallback responses          |
+| Traffic spike         | Auto-scaling, rate limiting, load shedding              |
+| Data center outage    | Multi-region deployment, DNS failover                   |
+| Data corruption       | Immutable audit logs, point-in-time recovery, checksums |
+| Cascading failure     | Bulkheads, retry budgets, backpressure                  |
 
 **Graceful degradation**:
+
 - Serve cached/stale data when the database is slow
 - Disable non-critical features under load
 - Return partial results instead of failing completely
@@ -104,6 +109,7 @@ Error budget = 100% − SLO target
 ### Step 5 — Operational Readiness
 
 **Production readiness checklist**:
+
 - [ ] SLOs defined and dashboarded
 - [ ] Alerting on SLO burn rate (not just raw metrics)
 - [ ] Runbooks for every alert

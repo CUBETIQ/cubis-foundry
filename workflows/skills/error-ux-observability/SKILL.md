@@ -28,11 +28,13 @@ Bridge user-facing error handling and backend observability. Design error experi
 ### Step 1 — Design User-Facing Errors
 
 Every error the user sees must answer three questions:
+
 1. **What happened?** (plain language, no stack traces)
 2. **Is it their fault or ours?** (affects tone)
 3. **What can they do next?** (always give an action)
 
 **Error message structure**:
+
 ```
 [Title]: Brief description of what went wrong
 [Body]: What happened and why
@@ -48,6 +50,7 @@ Every error the user sees must answer three questions:
 | "Null reference exception" | "We couldn't load your profile. Try refreshing the page." |
 
 **Error states in UI**:
+
 - **Inline**: validation errors next to the field that caused them
 - **Toast/snackbar**: transient non-critical errors (auto-dismiss in 5-8s)
 - **Banner**: persistent issues affecting the whole page
@@ -57,13 +60,16 @@ Every error the user sees must answer three questions:
 ### Step 2 — Implement Error Boundaries
 
 **Frontend**:
+
 - Catch errors at route/feature boundaries, not globally
 - Show fallback UI that lets the user continue elsewhere
 - Log the error with context (component tree, user action, state)
 - Auto-report to error tracking service
 
 **Backend**:
+
 - Return structured error responses:
+
 ```json
 {
   "error": {
@@ -74,6 +80,7 @@ Every error the user sees must answer three questions:
   }
 }
 ```
+
 - Map internal errors to user-safe messages (never expose stack traces, SQL, or internal paths)
 - Include request ID for correlation
 - Use appropriate HTTP status codes (don't 200 everything)
@@ -81,6 +88,7 @@ Every error the user sees must answer three questions:
 ### Step 3 — Structured Logging
 
 **Every log entry should include**:
+
 - Timestamp (ISO 8601, UTC)
 - Level (debug, info, warn, error)
 - Message (human-readable)
@@ -98,6 +106,7 @@ Every error the user sees must answer three questions:
 | debug | Development troubleshooting | Query parameters, cache hit/miss |
 
 **Rules**:
+
 - Never log secrets, passwords, tokens, or PII
 - Use structured format (JSON) for machine parsing
 - Include enough context to diagnose without reproducing
@@ -106,12 +115,14 @@ Every error the user sees must answer three questions:
 ### Step 4 — Distributed Tracing
 
 **Trace propagation**:
+
 - Every request gets a trace ID at the edge
 - Pass trace ID through all service calls (HTTP headers, message metadata)
 - Each service creates spans for its operations
 - Spans include: operation name, duration, status, attributes
 
 **What to trace**:
+
 - HTTP requests (method, path, status, latency)
 - Database queries (operation, table, duration)
 - External API calls (service, endpoint, latency)
@@ -121,10 +132,12 @@ Every error the user sees must answer three questions:
 ### Step 5 — Alerting Strategy
 
 **Alert on symptoms, not causes**:
+
 - DO alert: "Error rate > 1% for 5 minutes"
 - DON'T alert: "CPU > 80%" (that's a dashboard metric, not an alert)
 
 **Reduce noise**:
+
 - Alert on SLO burn rate, not individual errors
 - Group related alerts (one page, not 50)
 - Required for every alert: runbook link, severity, escalation path

@@ -60,16 +60,14 @@ Override accent colors only; keep structural tokens (spacing, radius, typography
 
 ```tsx
 // React context pattern
-const ThemeContext = createContext<'light' | 'dark'>('light');
+const ThemeContext = createContext<"light" | "dark">("light");
 
 function ThemeProvider({ children, theme }) {
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
   return (
-    <ThemeContext.Provider value={theme}>
-      {children}
-    </ThemeContext.Provider>
+    <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>
   );
 }
 ```

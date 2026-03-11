@@ -27,14 +27,15 @@ Guide the setup and use of static analysis tools — linters, formatters, type c
 
 ### Step 1 — Choose the Right Tools
 
-| Language | Linter | Formatter | Type Checker |
-|----------|--------|-----------|-------------|
+| Language      | Linter        | Formatter       | Type Checker       |
+| ------------- | ------------- | --------------- | ------------------ |
 | TypeScript/JS | ESLint, Biome | Prettier, Biome | TypeScript (`tsc`) |
-| Python | Ruff, Flake8 | Black, Ruff | mypy, pyright |
-| Go | golangci-lint | gofmt | Go compiler |
-| Rust | Clippy | rustfmt | Rust compiler |
+| Python        | Ruff, Flake8  | Black, Ruff     | mypy, pyright      |
+| Go            | golangci-lint | gofmt           | Go compiler        |
+| Rust          | Clippy        | rustfmt         | Rust compiler      |
 
 **Recommended approach**:
+
 - Biome for TypeScript/JS projects (replaces ESLint + Prettier, faster)
 - Ruff for Python (replaces Flake8 + Black + isort, faster)
 - Use the language's official formatter when available
@@ -50,6 +51,7 @@ Guide the setup and use of static analysis tools — linters, formatters, type c
 5. Add custom rules specific to your team after the baseline is stable
 
 **Don't**:
+
 - Enable everything at once on an existing codebase
 - Disable rules because they're "annoying" without understanding them
 - Use `// eslint-disable` without a comment explaining why
@@ -57,6 +59,7 @@ Guide the setup and use of static analysis tools — linters, formatters, type c
 ### Step 3 — Key Rules by Category
 
 **Correctness** (catch bugs):
+
 - No unused variables/imports
 - No unreachable code
 - No implicit type coercion in comparisons
@@ -64,18 +67,21 @@ Guide the setup and use of static analysis tools — linters, formatters, type c
 - No shadowed variables in nested scopes
 
 **Consistency** (enforce style):
+
 - Consistent naming conventions (camelCase, PascalCase, SCREAMING_SNAKE)
 - Consistent import ordering
 - Consistent quote style and semicolons
 - Consistent use of `const` vs `let`
 
 **Security** (prevent vulnerabilities):
+
 - No `eval()` or `Function()` constructor
 - No `innerHTML` assignments (XSS risk)
 - No hardcoded secrets or credentials
 - No `any` type in TypeScript (use `unknown` for unknown types)
 
 **Performance** (avoid waste):
+
 - No unnecessary re-renders (React-specific)
 - No synchronous file operations in async contexts
 - No `console.log` in production code
@@ -83,16 +89,19 @@ Guide the setup and use of static analysis tools — linters, formatters, type c
 ### Step 4 — Integrate into Workflow
 
 **Local development**:
+
 - Editor integration (real-time feedback as you type)
 - Format on save
 - Pre-commit hook (lint-staged + husky or lefthook)
 
 **CI/CD**:
+
 - Run lint check on every PR
 - Fail the build on lint errors (not warnings — fix or disable)
 - Cache lint results between runs
 
 **Migration strategy** (existing codebase):
+
 - Fix auto-fixable issues in one PR (formatting, import order)
 - Enable new rules as warnings first, then promote to errors
 - Fix rules incrementally by directory, not all at once
@@ -102,14 +111,18 @@ Guide the setup and use of static analysis tools — linters, formatters, type c
 When team conventions aren't covered by existing rules:
 
 **ESLint custom rule example** (no importing from internal paths):
+
 ```javascript
 module.exports = {
-  meta: { type: 'problem', messages: { noInternal: 'Do not import from internal modules' } },
+  meta: {
+    type: "problem",
+    messages: { noInternal: "Do not import from internal modules" },
+  },
   create(context) {
     return {
       ImportDeclaration(node) {
-        if (node.source.value.includes('/internal/')) {
-          context.report({ node, messageId: 'noInternal' });
+        if (node.source.value.includes("/internal/")) {
+          context.report({ node, messageId: "noInternal" });
         }
       },
     };

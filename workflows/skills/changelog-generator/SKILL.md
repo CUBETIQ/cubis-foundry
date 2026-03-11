@@ -28,20 +28,21 @@ Guide changelog generation, release notes writing, and version management using 
 
 **Format**: `<type>(<scope>): <description>`
 
-| Type | SemVer Bump | When |
-|------|-------------|------|
-| `feat` | Minor | New feature for users |
-| `fix` | Patch | Bug fix for users |
-| `docs` | None | Documentation only |
-| `style` | None | Formatting, no logic change |
-| `refactor` | None | Code restructuring, no behavior change |
-| `perf` | Patch | Performance improvement |
-| `test` | None | Adding or fixing tests |
-| `build` | None | Build system or dependencies |
-| `ci` | None | CI/CD configuration |
-| `chore` | None | Maintenance tasks |
+| Type       | SemVer Bump | When                                   |
+| ---------- | ----------- | -------------------------------------- |
+| `feat`     | Minor       | New feature for users                  |
+| `fix`      | Patch       | Bug fix for users                      |
+| `docs`     | None        | Documentation only                     |
+| `style`    | None        | Formatting, no logic change            |
+| `refactor` | None        | Code restructuring, no behavior change |
+| `perf`     | Patch       | Performance improvement                |
+| `test`     | None        | Adding or fixing tests                 |
+| `build`    | None        | Build system or dependencies           |
+| `ci`       | None        | CI/CD configuration                    |
+| `chore`    | None        | Maintenance tasks                      |
 
 **Breaking changes**: Add `!` after type or `BREAKING CHANGE:` in footer:
+
 ```
 feat!: remove deprecated API endpoints
 
@@ -58,26 +59,32 @@ BREAKING CHANGE: /v1/users endpoint has been removed. Use /v2/users instead.
 ## [2.1.0] - 2025-01-15
 
 ### Added
+
 - User profile image upload (#234)
 - Dark mode support for dashboard (#256)
 
 ### Fixed
+
 - Login timeout on slow connections (#245)
 - Currency formatting for Japanese Yen (#249)
 
 ### Changed
+
 - Increased password minimum length to 12 characters (#251)
 
 ## [2.0.0] - 2024-12-01
 
 ### Breaking Changes
+
 - Removed deprecated /v1/users endpoint — use /v2/users (#230)
 
 ### Added
+
 - New user roles system with RBAC (#220)
 ```
 
 **Mapping rules**:
+
 - `feat` → **Added**
 - `fix` → **Fixed**
 - `feat!` / `BREAKING CHANGE` → **Breaking Changes**
@@ -89,6 +96,7 @@ BREAKING CHANGE: /v1/users endpoint has been removed. Use /v2/users instead.
 ### Step 3 — Semantic Versioning
 
 **MAJOR.MINOR.PATCH** (e.g., 2.1.3):
+
 - **MAJOR**: Breaking changes (API removal, incompatible changes)
 - **MINOR**: New features (backward-compatible additions)
 - **PATCH**: Bug fixes (backward-compatible fixes)
@@ -96,6 +104,7 @@ BREAKING CHANGE: /v1/users endpoint has been removed. Use /v2/users instead.
 **Pre-release versions**: `2.1.0-beta.1`, `2.1.0-rc.1`
 
 **Rules**:
+
 - Version 0.x.y is for initial development (anything may change)
 - First stable release is 1.0.0
 - Never change a released version — create a new one
@@ -111,6 +120,7 @@ BREAKING CHANGE: /v1/users endpoint has been removed. Use /v2/users instead.
 5. **Contributors** — acknowledge contributors
 
 **Good highlights**:
+
 ```markdown
 ### Highlights
 
@@ -124,6 +134,7 @@ indexing strategy. No changes needed on your end.
 ### Step 5 — Automate the Workflow
 
 **CI pipeline**:
+
 1. Lint commit messages on PR (reject non-conventional)
 2. On merge to main: determine version bump from commits
 3. Generate changelog entry

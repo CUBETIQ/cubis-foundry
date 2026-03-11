@@ -35,12 +35,14 @@ Guide mobile interface design with platform-native patterns, touch ergonomics, a
 | Web (WCAG) | 44×44 CSS px | 48×48 CSS px |
 
 **Thumb zones** (for one-handed use on phones):
+
 - Easy reach: bottom center of screen
 - Hard reach: top corners
 - Primary actions go in the easy zone (bottom navigation, FABs)
 - Destructive actions go in the hard zone (require deliberate reach)
 
 **Touch feedback**:
+
 - Every tap should produce immediate visual feedback (< 100ms)
 - Use ripple (Android), highlight (iOS), or scale transform (web)
 - Long-press actions need a visual indication of the hold
@@ -48,6 +50,7 @@ Guide mobile interface design with platform-native patterns, touch ergonomics, a
 ### Step 2 — Follow Platform Conventions
 
 **iOS (Human Interface Guidelines)**:
+
 - Navigation: tab bar at bottom, navigation bar at top with back button
 - Modals: sheet presentations, slide up from bottom
 - Actions: swipe-to-delete, pull-to-refresh
@@ -55,6 +58,7 @@ Guide mobile interface design with platform-native patterns, touch ergonomics, a
 - Safe areas: respect notch, home indicator, status bar
 
 **Android (Material Design)**:
+
 - Navigation: bottom navigation or navigation drawer
 - Modals: bottom sheets, dialogs
 - Actions: FAB for primary action, swipe gestures
@@ -62,6 +66,7 @@ Guide mobile interface design with platform-native patterns, touch ergonomics, a
 - Edge-to-edge: draw behind system bars
 
 **Cross-platform (React Native, Flutter)**:
+
 - Use platform-adaptive components when possible
 - Match navigation patterns to the platform (not one pattern for both)
 - Test on both platforms — don't assume iOS behavior works on Android
@@ -69,6 +74,7 @@ Guide mobile interface design with platform-native patterns, touch ergonomics, a
 ### Step 3 — Optimize Mobile Layouts
 
 **Mobile-first hierarchy**:
+
 1. One primary action per screen
 2. Vertical scrolling only (avoid horizontal scroll for content)
 3. Full-width elements (no tiny desktop-sized cards)
@@ -86,6 +92,7 @@ Guide mobile interface design with platform-native patterns, touch ergonomics, a
 | Skeleton screens | Content loading states |
 
 **Text on mobile**:
+
 - Body text ≥ 16px (prevents iOS zoom on input focus)
 - Line length: 35-50 characters per line
 - Generous line-height (1.5+) for readability
@@ -94,18 +101,21 @@ Guide mobile interface design with platform-native patterns, touch ergonomics, a
 ### Step 4 — Handle Mobile-Specific Challenges
 
 **Keyboards**:
+
 - Use correct `inputmode` for each field (`numeric`, `email`, `tel`, `url`)
 - Scroll input into view when keyboard appears
 - Dismiss keyboard on background tap
 - Show "Next" button to move between fields, "Done" on the last field
 
 **Offline & connectivity**:
+
 - Show clear offline indicator
 - Queue actions for retry when connection returns
 - Cache critical content for offline access
 - Never silently fail — tell the user what's happening
 
 **Performance**:
+
 - Target < 3s first meaningful paint on 3G
 - Lazy-load images below the fold
 - Minimize JS bundle — mobile CPUs are 3-5x slower than desktop

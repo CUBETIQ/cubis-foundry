@@ -39,6 +39,7 @@ Guide DevOps practices including CI/CD pipeline design, infrastructure-as-code, 
 8. **Deploy to Production** — automated or gated release
 
 **Principles**:
+
 - Fail fast — put the quickest checks first
 - Parallelize independent stages
 - Cache dependencies between runs (node_modules, Docker layers)
@@ -47,19 +48,20 @@ Guide DevOps practices including CI/CD pipeline design, infrastructure-as-code, 
 
 ### Step 2 — Deployment Strategies
 
-| Strategy | Risk | Rollback Speed | When to Use |
-|----------|------|----------------|-------------|
-| Rolling | Low | Medium | Default for most services |
-| Blue-Green | Low | Instant (switch) | Stateless services, zero-downtime required |
-| Canary | Very Low | Fast (route change) | High-traffic services, gradual confidence |
-| Feature Flags | Very Low | Instant (toggle) | Decoupling deploy from release |
-| Recreate | High | Slow (redeploy) | Only when breaking changes require full restart |
+| Strategy      | Risk     | Rollback Speed      | When to Use                                     |
+| ------------- | -------- | ------------------- | ----------------------------------------------- |
+| Rolling       | Low      | Medium              | Default for most services                       |
+| Blue-Green    | Low      | Instant (switch)    | Stateless services, zero-downtime required      |
+| Canary        | Very Low | Fast (route change) | High-traffic services, gradual confidence       |
+| Feature Flags | Very Low | Instant (toggle)    | Decoupling deploy from release                  |
+| Recreate      | High     | Slow (redeploy)     | Only when breaking changes require full restart |
 
 **Rollback plan**: Every deployment must have a documented rollback path that takes < 5 minutes.
 
 ### Step 3 — Infrastructure as Code
 
 **Principles**:
+
 - All infrastructure defined in version-controlled code
 - Environments are reproducible from code alone
 - No manual changes to production (drift = risk)
@@ -67,6 +69,7 @@ Guide DevOps practices including CI/CD pipeline design, infrastructure-as-code, 
 - Plan before apply — review changes before executing
 
 **Structure**:
+
 ```
 infrastructure/
 ├── modules/          (reusable components)
@@ -83,14 +86,15 @@ infrastructure/
 
 **Four Golden Signals** (monitor these for every service):
 
-| Signal | Measures | Example Metric |
-|--------|----------|----------------|
-| Latency | Time to serve requests | p50, p95, p99 response time |
-| Traffic | Demand on the system | Requests per second |
-| Errors | Failed requests | Error rate (5xx / total) |
-| Saturation | Resource utilization | CPU, memory, disk, connections |
+| Signal     | Measures               | Example Metric                 |
+| ---------- | ---------------------- | ------------------------------ |
+| Latency    | Time to serve requests | p50, p95, p99 response time    |
+| Traffic    | Demand on the system   | Requests per second            |
+| Errors     | Failed requests        | Error rate (5xx / total)       |
+| Saturation | Resource utilization   | CPU, memory, disk, connections |
 
 **Alerting rules**:
+
 - Alert on symptoms (high error rate), not causes (high CPU)
 - Every alert must be actionable — if no one needs to act, it's noise
 - Use severity levels: critical (page), warning (ticket), info (dashboard)
@@ -107,6 +111,7 @@ infrastructure/
 5. **Review** — blameless postmortem within 48 hours
 
 **Postmortem template**:
+
 - What happened? (timeline)
 - What was the impact? (users affected, duration)
 - What was the root cause?

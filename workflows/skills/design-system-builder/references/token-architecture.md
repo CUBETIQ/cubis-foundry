@@ -63,28 +63,28 @@ Component tokens allow local overrides without breaking the system.
 
 Use a consistent base unit (4px or 8px):
 
-| Token | 4px base | 8px base |
-|-------|----------|----------|
-| `spacing-1` | 4px | 8px |
-| `spacing-2` | 8px | 16px |
-| `spacing-3` | 12px | 24px |
-| `spacing-4` | 16px | 32px |
-| `spacing-6` | 24px | 48px |
-| `spacing-8` | 32px | 64px |
-| `spacing-12` | 48px | 96px |
+| Token        | 4px base | 8px base |
+| ------------ | -------- | -------- |
+| `spacing-1`  | 4px      | 8px      |
+| `spacing-2`  | 8px      | 16px     |
+| `spacing-3`  | 12px     | 24px     |
+| `spacing-4`  | 16px     | 32px     |
+| `spacing-6`  | 24px     | 48px     |
+| `spacing-8`  | 32px     | 64px     |
+| `spacing-12` | 48px     | 96px     |
 
 ## Typography Scale
 
 ```css
 :root {
-  --font-size-xs: 0.75rem;    /* 12px */
-  --font-size-sm: 0.875rem;   /* 14px */
-  --font-size-base: 1rem;     /* 16px */
-  --font-size-lg: 1.125rem;   /* 18px */
-  --font-size-xl: 1.25rem;    /* 20px */
-  --font-size-2xl: 1.5rem;    /* 24px */
-  --font-size-3xl: 1.875rem;  /* 30px */
-  --font-size-4xl: 2.25rem;   /* 36px */
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem; /* 20px */
+  --font-size-2xl: 1.5rem; /* 24px */
+  --font-size-3xl: 1.875rem; /* 30px */
+  --font-size-4xl: 2.25rem; /* 36px */
 
   --line-height-tight: 1.25;
   --line-height-normal: 1.5;

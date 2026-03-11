@@ -27,14 +27,14 @@ Provide templates and guidance for technical documentation: API docs, architectu
 
 ### Step 1 — Choose the Right Template
 
-| Document Type | Audience | When |
-|---------------|----------|------|
-| README | New contributors, users | Every project |
-| API docs | API consumers (internal/external) | Every API |
-| ADR | Future developers | Every significant decision |
-| Runbook | On-call engineers | Every production system |
-| Onboarding guide | New team members | Every team |
-| RFC / Design doc | Reviewers before implementation | Complex features |
+| Document Type    | Audience                          | When                       |
+| ---------------- | --------------------------------- | -------------------------- |
+| README           | New contributors, users           | Every project              |
+| API docs         | API consumers (internal/external) | Every API                  |
+| ADR              | Future developers                 | Every significant decision |
+| Runbook          | On-call engineers                 | Every production system    |
+| Onboarding guide | New team members                  | Every team                 |
+| RFC / Design doc | Reviewers before implementation   | Complex features           |
 
 ### Step 2 — README Template
 
@@ -62,16 +62,20 @@ Brief overview or link to architecture docs.
 ## Development
 
 ### Prerequisites
+
 - Node.js >= 20
 - PostgreSQL >= 15
 
 ### Setup
+
 Step-by-step local development setup.
 
 ### Testing
+
 How to run tests.
 
 ### Deployment
+
 How to deploy (or link to deployment docs).
 
 ## Contributing
@@ -89,22 +93,28 @@ MIT (or appropriate license)
 # ADR-001: Use PostgreSQL for primary datastore
 
 ## Status
+
 Accepted | Proposed | Deprecated | Superseded by ADR-xxx
 
 ## Context
+
 What is the problem? What constraints exist?
 
 ## Decision
+
 What did we decide and why?
 
 ## Consequences
+
 What are the trade-offs? What becomes easier/harder?
 
 ## Alternatives Considered
+
 What else did we evaluate and why did we reject it?
 ```
 
 **Rules**:
+
 - ADRs are immutable — supersede, don't edit
 - Number sequentially (ADR-001, ADR-002)
 - Title should be a decision, not a question
@@ -116,31 +126,38 @@ What else did we evaluate and why did we reject it?
 # Runbook: [System/Alert Name]
 
 ## Overview
+
 What this system does and why it matters.
 
 ## Alerts
-| Alert | Severity | Meaning |
-|-------|----------|---------|
+
+| Alert           | Severity | Meaning                   |
+| --------------- | -------- | ------------------------- |
 | high_error_rate | Critical | Error rate > 5% for 5 min |
-| high_latency | Warning | p95 > 2s for 10 min |
+| high_latency    | Warning  | p95 > 2s for 10 min       |
 
 ## Diagnosis Steps
+
 1. Check dashboards: [link]
 2. Check logs: `kubectl logs -l app=service-name --tail=100`
 3. Check dependencies: [list of upstream services]
 
 ## Common Fixes
+
 ### High error rate
+
 1. Check recent deployments: `git log --since="2 hours ago"`
 2. If recent deploy caused it: rollback with `./deploy rollback`
 3. If not deployment-related: check database connections
 
 ### High latency
+
 1. Check database slow query log
 2. Check connection pool saturation
 3. Scale up if under heavy load: `kubectl scale --replicas=5`
 
 ## Escalation
+
 - L1: On-call engineer (PagerDuty)
 - L2: Service owner (@team-backend)
 - L3: Infrastructure team (@team-infra)

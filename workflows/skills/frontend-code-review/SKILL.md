@@ -37,58 +37,58 @@ Identify what's being reviewed:
 
 Check each item. Mark as pass (✓), fail (✗), or not-applicable (—):
 
-| Check | Details |
-|-------|---------|
-| Semantic HTML | Correct elements (button, nav, main — not div for everything) |
-| Heading hierarchy | h1 → h2 → h3, no skipped levels |
-| Keyboard navigation | All interactive elements reachable via Tab, operable via Enter/Space |
-| Focus management | Visible focus indicator, focus trapped in modals, restored after close |
-| ARIA attributes | Used only when native semantics insufficient, correct roles/states |
-| Color contrast | Text ≥ 4.5:1 (normal), ≥ 3:1 (large), UI components ≥ 3:1 |
-| Alt text | Images have meaningful alt (or empty alt for decorative) |
-| Form labels | Every input has visible label or aria-label, errors linked via aria-describedby |
-| Motion | Animations respect prefers-reduced-motion |
+| Check               | Details                                                                         |
+| ------------------- | ------------------------------------------------------------------------------- |
+| Semantic HTML       | Correct elements (button, nav, main — not div for everything)                   |
+| Heading hierarchy   | h1 → h2 → h3, no skipped levels                                                 |
+| Keyboard navigation | All interactive elements reachable via Tab, operable via Enter/Space            |
+| Focus management    | Visible focus indicator, focus trapped in modals, restored after close          |
+| ARIA attributes     | Used only when native semantics insufficient, correct roles/states              |
+| Color contrast      | Text ≥ 4.5:1 (normal), ≥ 3:1 (large), UI components ≥ 3:1                       |
+| Alt text            | Images have meaningful alt (or empty alt for decorative)                        |
+| Form labels         | Every input has visible label or aria-label, errors linked via aria-describedby |
+| Motion              | Animations respect prefers-reduced-motion                                       |
 
 ### Step 3 — Performance Review
 
-| Check | Details |
-|-------|---------|
-| Bundle impact | New dependencies justified? Tree-shakeable? Could use native API instead? |
-| Render cost | Unnecessary re-renders? Missing memoization on expensive computations? |
-| Layout shifts | Images/embeds have dimensions? Dynamic content reserves space? |
-| Loading strategy | Lazy-loaded below fold? Code-split at route level? |
-| Animation cost | Compositor-only properties (transform, opacity)? No layout-triggering animations? |
-| Asset optimization | Images in modern format (WebP/AVIF)? Fonts preloaded? CSS critical path? |
+| Check              | Details                                                                           |
+| ------------------ | --------------------------------------------------------------------------------- |
+| Bundle impact      | New dependencies justified? Tree-shakeable? Could use native API instead?         |
+| Render cost        | Unnecessary re-renders? Missing memoization on expensive computations?            |
+| Layout shifts      | Images/embeds have dimensions? Dynamic content reserves space?                    |
+| Loading strategy   | Lazy-loaded below fold? Code-split at route level?                                |
+| Animation cost     | Compositor-only properties (transform, opacity)? No layout-triggering animations? |
+| Asset optimization | Images in modern format (WebP/AVIF)? Fonts preloaded? CSS critical path?          |
 
 ### Step 4 — State Management Review
 
-| Check | Details |
-|-------|---------|
-| State location | State lives at the right level? Not lifted too high or duplicated? |
-| Derived state | Computed from source state, not stored separately? |
-| Side effects | Cleanup on unmount? Race conditions handled? Abort controllers used? |
-| Loading/error states | All async operations handle loading, success, and error? |
-| Form state | Controlled vs uncontrolled appropriate? Validation on blur/submit? |
+| Check                | Details                                                              |
+| -------------------- | -------------------------------------------------------------------- |
+| State location       | State lives at the right level? Not lifted too high or duplicated?   |
+| Derived state        | Computed from source state, not stored separately?                   |
+| Side effects         | Cleanup on unmount? Race conditions handled? Abort controllers used? |
+| Loading/error states | All async operations handle loading, success, and error?             |
+| Form state           | Controlled vs uncontrolled appropriate? Validation on blur/submit?   |
 
 ### Step 5 — Design System Compliance
 
-| Check | Details |
-|-------|---------|
-| Token usage | Colors, spacing, typography, radius, shadows use design tokens? |
-| Component usage | Using system components vs. custom implementations? |
-| Naming conventions | Class names, component names follow team patterns? |
-| Responsive behavior | Mobile-first? Breakpoints consistent with system? |
-| Consistency | Visual style matches existing pages/components? |
+| Check               | Details                                                         |
+| ------------------- | --------------------------------------------------------------- |
+| Token usage         | Colors, spacing, typography, radius, shadows use design tokens? |
+| Component usage     | Using system components vs. custom implementations?             |
+| Naming conventions  | Class names, component names follow team patterns?              |
+| Responsive behavior | Mobile-first? Breakpoints consistent with system?               |
+| Consistency         | Visual style matches existing pages/components?                 |
 
 ### Step 6 — Code Quality
 
-| Check | Details |
-|-------|---------|
-| TypeScript | Proper types (no `any`), discriminated unions for variants? |
-| Component structure | Single responsibility? Reasonable size (< 200 lines)? |
-| Error boundaries | Errors caught at appropriate levels? Fallback UI provided? |
-| Testing | Key interactions tested? Visual regression coverage? |
-| Documentation | Complex logic commented? Props documented? |
+| Check               | Details                                                     |
+| ------------------- | ----------------------------------------------------------- |
+| TypeScript          | Proper types (no `any`), discriminated unions for variants? |
+| Component structure | Single responsibility? Reasonable size (< 200 lines)?       |
+| Error boundaries    | Errors caught at appropriate levels? Fallback UI provided?  |
+| Testing             | Key interactions tested? Visual regression coverage?        |
+| Documentation       | Complex logic commented? Props documented?                  |
 
 ## Output Format
 
@@ -112,6 +112,7 @@ Structure every review as:
 ```
 
 Severity definitions:
+
 - **Critical**: Accessibility violations, security issues, data loss risks, broken functionality
 - **Important**: Performance problems, missing error handling, design system violations
 - **Suggestion**: Code style, minor optimizations, documentation gaps
