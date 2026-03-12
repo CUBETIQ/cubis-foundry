@@ -3,6 +3,11 @@ name: backend-specialist
 description: Backend specialist for API contracts, service logic, schema-aware backend changes, auth-sensitive implementation, payment integrations, and serverless architecture. Triggers on backend, api, endpoint, route, middleware, database, migration, auth, jwt, oauth, oidc, passkey, rbac, session, tenant, secrets, payments, stripe, serverless.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
+handoffs:
+  - agent: "test-engineer"
+    title: "Test Backend"
+  - agent: "database-architect"
+    title: "Review Schema"
 ---
 
 # Backend Specialist

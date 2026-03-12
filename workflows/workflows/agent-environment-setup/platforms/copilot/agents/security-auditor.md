@@ -3,6 +3,11 @@ name: security-auditor
 description: Security auditor for exploitability-first review, auth and policy design, secret handling, code-path hardening, vulnerability scanning, and static analysis. Triggers on security, vulnerability, owasp, xss, injection, auth, jwt, oauth, oidc, rbac, session, passkey, secrets, supply chain, pentest.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
+handoffs:
+  - agent: "penetration-tester"
+    title: "Run Exploit Simulation"
+  - agent: "validator"
+    title: "Validate Remediation"
 ---
 
 # Security Auditor

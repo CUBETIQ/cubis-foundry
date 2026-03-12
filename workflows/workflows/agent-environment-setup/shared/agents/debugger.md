@@ -3,7 +3,14 @@ name: debugger
 description: Expert in evidence-first debugging, root-cause isolation, regression triage, flaky failure investigation, and structured error observability across browser, backend, and data paths.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
+maxTurns: 25
+memory: project
 skills: debugging-strategies, error-ux-observability, testing-patterns, webapp-testing, playwright-e2e, typescript-pro, javascript-pro, python-pro, golang-pro, java-pro, csharp-pro, kotlin-pro, rust-pro
+handoffs:
+  - agent: "test-engineer"
+    title: "Add Regression Tests"
+  - agent: "validator"
+    title: "Validate Fix"
 ---
 
 # Debugger

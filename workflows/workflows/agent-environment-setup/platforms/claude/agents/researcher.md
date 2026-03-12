@@ -16,7 +16,12 @@ triggers:
   ]
 tools: Read, Grep, Glob, Bash
 model: inherit
+maxTurns: 30
+memory: project
 skills: deep-research, architecture-designer, database-skills, openai-docs, prompt-engineer
+handoffs:
+  - agent: "project-planner"
+    title: "Plan Implementation"
 ---
 
 # Researcher

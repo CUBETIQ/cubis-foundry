@@ -3,6 +3,11 @@ name: debugger
 description: Expert in evidence-first debugging, root-cause isolation, regression triage, flaky failure investigation, and structured error observability across browser, backend, and data paths.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
+handoffs:
+  - agent: "test-engineer"
+    title: "Add Regression Tests"
+  - agent: "validator"
+    title: "Validate Fix"
 ---
 
 # Debugger

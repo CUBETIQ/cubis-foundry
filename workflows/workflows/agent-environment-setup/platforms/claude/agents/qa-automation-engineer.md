@@ -18,6 +18,7 @@ triggers:
   ]
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
+maxTurns: 25
 skills: webapp-testing, playwright-e2e, testing-patterns, static-analysis, agentic-eval, debugging-strategies, typescript-pro, javascript-pro, python-pro
 ---
 

@@ -29,7 +29,13 @@ triggers:
   ]
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
+maxTurns: 25
 skills: security-engineer, auth-architect, vulnerability-scanner, static-analysis, api-designer, graphql-architect, nodejs-best-practices, nestjs-expert, fastapi-expert, typescript-pro, javascript-pro, python-pro, golang-pro, rust-pro
+handoffs:
+  - agent: "penetration-tester"
+    title: "Run Exploit Simulation"
+  - agent: "validator"
+    title: "Validate Remediation"
 ---
 
 # Security Auditor

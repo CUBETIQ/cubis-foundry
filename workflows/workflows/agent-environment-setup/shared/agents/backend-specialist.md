@@ -3,7 +3,13 @@ name: backend-specialist
 description: Backend specialist for API contracts, service logic, schema-aware backend changes, auth-sensitive implementation, payment integrations, and serverless architecture. Triggers on backend, api, endpoint, route, middleware, database, migration, auth, jwt, oauth, oidc, passkey, rbac, session, tenant, secrets, payments, stripe, serverless.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
+maxTurns: 25
 skills: api-designer, api-patterns, architecture-designer, auth-architect, database-skills, database-design, database-optimizer, drizzle-expert, firebase, microservices-architect, nodejs-best-practices, nestjs-expert, fastapi-expert, graphql-architect, stripe-best-practices, serverless-patterns, i18n-localization, typescript-pro, javascript-pro, python-pro, golang-pro, java-pro, csharp-pro, kotlin-pro, rust-pro, php-pro, ruby-pro
+handoffs:
+  - agent: "test-engineer"
+    title: "Test Backend"
+  - agent: "database-architect"
+    title: "Review Schema"
 ---
 
 # Backend Specialist

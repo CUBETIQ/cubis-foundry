@@ -10,11 +10,12 @@ import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import {
   parsePostmanState,
   parseStitchState,
+  parsePlaywrightState,
   readEffectiveConfig,
 } from "../cbxConfig/index.js";
 import type { CbxConfig, ConfigScope } from "../cbxConfig/types.js";
 
-type ServiceId = "postman" | "stitch";
+type ServiceId = "postman" | "stitch" | "playwright";
 
 export interface UpstreamToolInfo {
   name: string;
@@ -126,7 +127,10 @@ async function loadCachedCatalogTools({
   }
 }
 
-function getServiceAuth(config: CbxConfig, service: ServiceId): {
+function getServiceAuth(
+  config: CbxConfig,
+  service: ServiceId,
+): {
   mcpUrl: string | null;
   activeProfileName: string | null;
   envVar: string | null;
@@ -134,6 +138,17 @@ function getServiceAuth(config: CbxConfig, service: ServiceId): {
   configured: boolean;
   error?: string;
 } {
+  if (service === "playwright") {
+    const state = parsePlaywrightState(config);
+    return {
+      mcpUrl: state.mcpUrl,
+      activeProfileName: null,
+      envVar: null,
+      headers: {},
+      configured: Boolean(state.mcpUrl),
+    };
+  }
+
   if (service === "postman") {
     const state = parsePostmanState(config);
     const activeProfile = state.activeProfile;
@@ -214,9 +229,11 @@ function isCallToolResult(
   result: Awaited<ReturnType<Client["callTool"]>>,
 ): result is CallToolResult {
   return Array.isArray(
-    (result as {
-      content?: unknown;
-    }).content,
+    (
+      result as {
+        content?: unknown;
+      }
+    ).content,
   );
 }
 
@@ -275,6 +292,7 @@ export async function discoverUpstreamCatalogs(
 ): Promise<{
   postman: UpstreamCatalog;
   stitch: UpstreamCatalog;
+  playwright: UpstreamCatalog;
 }> {
   const effective = readEffectiveConfig(scope);
   if (!effective) {
@@ -291,9 +309,14 @@ export async function discoverUpstreamCatalogs(
       discoveryError: "cbx_config.json not found",
     };
     const missingStitch: UpstreamCatalog = { ...missing, service: "stitch" };
+    const missingPlaywright: UpstreamCatalog = {
+      ...missing,
+      service: "playwright",
+    };
     return {
       postman: missing,
       stitch: missingStitch,
+      playwright: missingPlaywright,
     };
   }
 
@@ -366,6 +389,7 @@ export async function discoverUpstreamCatalogs(
   return {
     postman: await discoverOne("postman"),
     stitch: await discoverOne("stitch"),
+    playwright: await discoverOne("playwright"),
   };
 }
 

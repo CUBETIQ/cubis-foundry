@@ -1,12 +1,12 @@
 {
   "$schema": "cubis-foundry-mcp-manifest-v1",
-  "generatedAt": "2026-03-12T01:33:23.970Z",
-  "contentHash": "20640564452f4105",
+  "generatedAt": "2026-03-12T06:59:36.824Z",
+  "contentHash": "000ad7c9a4114dd4",
   "summary": {
     "totalSkills": 87,
     "totalCategories": 20,
-    "totalBytes": 348659,
-    "estimatedTokens": 87165
+    "totalBytes": 350735,
+    "estimatedTokens": 87684
   },
   "categories": [
     {
@@ -1578,9 +1578,9 @@
       "path": "workflows/skills/playwright-e2e/SKILL.md",
       "metadata": {
         "author": "cubis-foundry",
-        "version": "1.0"
+        "version": "2.0"
       },
-      "fileBytes": 2867,
+      "fileBytes": 4943,
       "warnings": [
         "description too long (201 chars)"
       ]

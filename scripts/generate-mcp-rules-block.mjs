@@ -79,7 +79,7 @@ function buildMcpBlock(manifest) {
     "7. Do not auto-prime every specialist with a skill. Load only what the task clearly needs.",
   );
   lines.push(
-    "8. Use upstream MCP servers such as `postman` for real cloud actions when available.",
+    "8. Use upstream MCP servers such as `postman`, `stitch`, or `playwright` for real cloud/browser actions when available.",
   );
   lines.push("");
   lines.push(BLOCK_END);

@@ -32,14 +32,18 @@ const CLI_ARGS = new Set(process.argv.slice(2));
 const STRICT_MODE = CLI_ARGS.has("--strict");
 
 const COPILOT_ALLOWED_SKILL_KEYS = new Set([
+  "argument-hint",
   "compatibility",
   "description",
+  "disable-model-invocation",
   "license",
   "metadata",
   "name",
+  "user-invocable",
 ]);
 
 const COPILOT_ALLOWED_AGENT_KEYS = new Set([
+  "agents",
   "name",
   "description",
   "tools",

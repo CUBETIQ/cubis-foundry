@@ -3,6 +3,9 @@ name: test-engineer
 description: Expert in test strategy, browser verification, coverage triage, regression-proof automation, and structured testing patterns. Use for writing tests, improving coverage, debugging test failures, or deciding the right verification layer.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
+handoffs:
+  - agent: "validator"
+    title: "Validate Test Quality"
 ---
 
 # Test Engineer

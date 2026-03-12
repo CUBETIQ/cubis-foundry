@@ -320,6 +320,6 @@ Keep MCP context lazy and exact. Skills are supporting context, not the route la
 5. Call `skill_get` with `includeReferences:false` by default.
 6. Load at most one sidecar markdown file at a time with `skill_get_reference`.
 7. Do not auto-prime every specialist with a skill. Load only what the task clearly needs.
-8. Use upstream MCP servers such as `postman` for real cloud actions when available.
+8. Use upstream MCP servers such as `postman`, `stitch`, or `playwright` for real cloud/browser actions when available.
 
 <!-- cbx:mcp:auto:end -->

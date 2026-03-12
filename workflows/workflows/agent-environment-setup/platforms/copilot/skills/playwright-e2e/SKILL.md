@@ -4,14 +4,14 @@ description: "Use when writing or reviewing browser end-to-end tests with Playwr
 license: MIT
 metadata:
   author: cubis-foundry
-  version: "1.0"
+  version: "2.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
 # Playwright E2E
 
 ## Purpose
 
-Use when writing or reviewing browser end-to-end tests with Playwright, debugging flaky UI automation, validating auth or checkout flows, or tightening CI evidence with traces and web-first assertions.
+Use when writing or reviewing browser end-to-end tests with Playwright, debugging flaky UI automation, validating auth or checkout flows, or tightening CI evidence with traces and web-first assertions. When Playwright MCP upstream is configured in Cubis Foundry, leverage browser automation tools for live page inspection, snapshot-based debugging, and interactive test development.
 
 ## When to Use
 
@@ -19,6 +19,7 @@ Use when writing or reviewing browser end-to-end tests with Playwright, debuggin
 - Debugging flaky E2E failures, locator instability, or auth state leakage in CI.
 - Choosing between fixtures, reusable helpers, and page-level abstractions.
 - Reviewing traces, screenshots, videos, and network activity to isolate browser failures.
+- Using Playwright MCP tools for live browser navigation, snapshot capture, and interactive element inspection during test development.
 
 ## Instructions
 
@@ -27,6 +28,19 @@ Use when writing or reviewing browser end-to-end tests with Playwright, debuggin
 3. Keep tests isolated with deterministic data, reusable auth setup, and minimal hidden shared state.
 4. Use web-first assertions, traces, and network evidence before calling a test flaky.
 5. Leave CI with artifacts that explain the failure path instead of screenshots alone.
+
+### Playwright MCP tools
+
+When the Playwright upstream is configured in the Cubis Foundry MCP gateway, these tool categories are available for interactive browser automation:
+
+- **Navigation**: `browser_navigate`, `browser_go_back`, `browser_go_forward`, `browser_wait` — open pages, navigate history, wait for network idle.
+- **Snapshots**: `browser_snapshot` — capture an accessibility-tree snapshot of the current page for element inspection and locator discovery.
+- **Interaction**: `browser_click`, `browser_type`, `browser_select_option`, `browser_hover`, `browser_drag` — interact with page elements using accessibility refs from snapshots.
+- **Keyboard & files**: `browser_press_key`, `browser_file_upload` — press keys or upload files.
+- **Tabs**: `browser_tab_list`, `browser_tab_new`, `browser_tab_select`, `browser_tab_close` — manage browser tabs.
+- **Utilities**: `browser_console_messages`, `browser_generate_playwright_test`, `browser_network_requests`, `browser_install` — read console logs, generate test code, inspect network, install browsers.
+
+Use MCP tools during development to inspect live pages and generate locator-accurate test code. Use the Playwright test runner and CI pipeline for execution.
 
 ### Baseline standards
 
@@ -51,9 +65,9 @@ Provide implementation guidance, code examples, and configuration as appropriate
 
 Load on demand. Do not preload all reference files.
 
-| File | Load when |
-| --- | --- |
-| `references/locator-trace-flake-checklist.md` | You need a deeper checklist for locator choice, auth setup, trace-driven debugging, retries, CI artifacts, or flake triage. |
+| File                                          | Load when                                                                                                                                          |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `references/locator-trace-flake-checklist.md` | You need a deeper checklist for locator choice, auth setup, trace-driven debugging, retries, CI artifacts, flake triage, or MCP workflow patterns. |
 
 ## Scripts
 
@@ -63,3 +77,5 @@ No helper scripts are required for this skill right now. Keep execution in `SKIL
 
 - "Help me with playwright e2e best practices in this project"
 - "Review my playwright e2e implementation for issues"
+- "Use Playwright MCP to inspect the login page and generate test code"
+- "Check playwright upstream status and available browser tools"

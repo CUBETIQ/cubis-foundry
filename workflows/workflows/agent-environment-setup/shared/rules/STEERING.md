@@ -85,10 +85,33 @@ Use the best specialist first:
 - `@orchestrator` uses the **RUG (Repeat-Until-Good)** pattern: it NEVER implements directly — only delegates to specialists with acceptance criteria and validates output independently.
 - After each specialist delivers, route through `@validator` for independent quality gate before accepting.
 - If validation fails, re-delegate with specific feedback (max 3 iterations).
+- Max 3 re-delegation iterations per specialist per milestone. If limit hit, surface to user.
+
+### Subagent Delegation
+
+- Delegate to subagents only when work genuinely requires domain specialization or parallel execution.
+- Each delegation must include: **goal**, **acceptance criteria**, **output contract**, **scope boundary**.
+- Use background/parallel agents only for independent workstreams with no shared mutable state.
+- Sequential work stays sequential — do not parallelize work that writes to the same files or resources.
+- Set iteration limits (`maxTurns`) to prevent runaway loops.
+
+### Handoff Patterns
+
+- Agents may suggest the next logical agent via handoff chains (e.g., `@debugger` → `@test-engineer`).
+- Handoffs are suggestions, not mandates — the user decides when to follow them.
+- Every handoff preserves the output contract: `milestones`, `gate_status`, `next_handoff`.
 
 ---
 
-## 5) Long-Running and Handoff Work
+## 5) Memory & Cross-Session Learning
+
+- Key agents (orchestrator, debugger, test-engineer, researcher, project-planner, code-archaeologist) support project memory.
+- Project memory persists debugging patterns, architecture decisions, test strategies, and codebase insights across sessions.
+- Skills loaded into agent context accumulate domain knowledge — do not reload what is already in context.
+
+---
+
+## 6) Long-Running and Handoff Work
 
 1. Use `/implement-track` for milestone-based work, resumable execution, or progress checkpoints.
 2. Use `/orchestrate` when multiple specialties need explicit ownership or handoff.
@@ -96,7 +119,7 @@ Use the best specialist first:
 
 ---
 
-## 6) Workflow Quick Reference
+## 7) Workflow Quick Reference
 
 | Intent Pattern                          | Workflow           | Primary Agent          |
 | --------------------------------------- | ------------------ | ---------------------- |
@@ -121,7 +144,7 @@ Use the best specialist first:
 
 ---
 
-## 7) Safety and Verification
+## 8) Safety and Verification
 
 1. Do not run destructive actions without explicit user confirmation.
 2. Keep diffs small and reversible when possible.
@@ -131,7 +154,7 @@ Use the best specialist first:
 
 ---
 
-## 8) Maintenance
+## 9) Maintenance
 
 - Refresh installed rules: `cbx workflows sync-rules --platform {{PLATFORM}} --scope project`
 - Diagnose setup issues: `cbx workflows doctor {{PLATFORM}} --scope project`

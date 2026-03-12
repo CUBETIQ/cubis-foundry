@@ -24,6 +24,8 @@ export interface CredentialServiceState {
 
 const DEFAULT_POSTMAN_URL = "https://mcp.postman.com/minimal";
 const DEFAULT_STITCH_URL = "https://stitch.googleapis.com/mcp";
+const DEFAULT_PLAYWRIGHT_PORT = 8931;
+const DEFAULT_PLAYWRIGHT_URL = `http://localhost:${DEFAULT_PLAYWRIGHT_PORT}/mcp`;
 const DEFAULT_PROFILE_NAME = "default";
 const DEFAULT_POSTMAN_ENV_VAR = "POSTMAN_API_KEY";
 const DEFAULT_STITCH_ENV_VAR = "STITCH_API_KEY";
@@ -33,7 +35,10 @@ function asRecord(value: unknown): Record<string, unknown> | null {
   return value as Record<string, unknown>;
 }
 
-function normalizeName(value: unknown, fallback = DEFAULT_PROFILE_NAME): string {
+function normalizeName(
+  value: unknown,
+  fallback = DEFAULT_PROFILE_NAME,
+): string {
   const normalized = typeof value === "string" ? value.trim() : "";
   return normalized || fallback;
 }
@@ -114,7 +119,8 @@ export function parseStitchState(config: CbxConfig): CredentialServiceState {
         apiKeyEnvVar: normalizeEnvVar(profile.apiKeyEnvVar, fallbackEnvVar),
         url: normalizeOptionalString(profile.url),
         hasInlineApiKey:
-          typeof profile.apiKey === "string" && profile.apiKey.trim().length > 0,
+          typeof profile.apiKey === "string" &&
+          profile.apiKey.trim().length > 0,
       });
     }
   } else if (asRecord(rawProfiles)) {
@@ -128,7 +134,8 @@ export function parseStitchState(config: CbxConfig): CredentialServiceState {
         apiKeyEnvVar: normalizeEnvVar(profile.apiKeyEnvVar, fallbackEnvVar),
         url: normalizeOptionalString(profile.url),
         hasInlineApiKey:
-          typeof profile.apiKey === "string" && profile.apiKey.trim().length > 0,
+          typeof profile.apiKey === "string" &&
+          profile.apiKey.trim().length > 0,
       });
     }
   }
@@ -154,4 +161,32 @@ export function parseStitchState(config: CbxConfig): CredentialServiceState {
     profiles,
     useSystemGcloud: Boolean(section.useSystemGcloud),
   };
+}
+
+export interface PlaywrightServiceState {
+  mcpUrl: string;
+  port: number;
+}
+
+export function parsePlaywrightState(
+  config: CbxConfig,
+): PlaywrightServiceState {
+  const section = asRecord(config.playwright) ?? {};
+  const portRaw =
+    typeof section.port === "number" ? section.port : DEFAULT_PLAYWRIGHT_PORT;
+  const port =
+    Number.isFinite(portRaw) && portRaw > 0 && portRaw < 65536
+      ? portRaw
+      : DEFAULT_PLAYWRIGHT_PORT;
+  const envPort = process.env.PLAYWRIGHT_MCP_PORT
+    ? Number(process.env.PLAYWRIGHT_MCP_PORT)
+    : undefined;
+  const effectivePort =
+    envPort && Number.isFinite(envPort) && envPort > 0 && envPort < 65536
+      ? envPort
+      : port;
+  const mcpUrl =
+    normalizeOptionalString(section.mcpUrl) ??
+    `http://localhost:${effectivePort}/mcp`;
+  return { mcpUrl, port: effectivePort };
 }

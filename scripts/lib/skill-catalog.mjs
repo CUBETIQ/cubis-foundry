@@ -247,15 +247,30 @@ export function normalizeNullableString(value) {
 
 export function normalizeStringArray(value) {
   if (Array.isArray(value)) {
-    return [...new Set(value.map((item) => normalizeNullableString(item)).filter(Boolean))];
+    return [
+      ...new Set(
+        value.map((item) => normalizeNullableString(item)).filter(Boolean),
+      ),
+    ];
   }
   if (typeof value === "string" && value.trim()) {
-    return [...new Set(parseInlineList(value).map((item) => normalizeNullableString(item)).filter(Boolean))];
+    return [
+      ...new Set(
+        parseInlineList(value)
+          .map((item) => normalizeNullableString(item))
+          .filter(Boolean),
+      ),
+    ];
   }
   return [];
 }
 
-export function inferTier(id, coreProfileIds, webBackendProfileIds, deprecated) {
+export function inferTier(
+  id,
+  coreProfileIds,
+  webBackendProfileIds,
+  deprecated,
+) {
   if (deprecated) return "compatibility";
   if (coreProfileIds.has(id)) return "system";
   if (webBackendProfileIds.has(id)) return "curated";
@@ -267,7 +282,8 @@ export function inferCategory({ id, packageId, metadata, deprecated }) {
     return metadata.category.trim();
   }
   if (deprecated) return "compatibility";
-  if (packageId === "database-skills" || DATABASE_IDS.has(id)) return "databases";
+  if (packageId === "database-skills" || DATABASE_IDS.has(id))
+    return "databases";
   if (LANGUAGE_IDS.has(id)) return "languages";
   if (FRAMEWORK_IDS.has(id)) return "frameworks-runtimes";
   if (VERTICAL_IDS.has(id)) return "vertical-composed";
@@ -319,6 +335,33 @@ export function deriveTags({ id, category, layer, metadata, triggers }) {
     .sort((a, b) => a.localeCompare(b));
 }
 
+const TRIGGER_STOP_WORDS = new Set([
+  "a",
+  "an",
+  "and",
+  "best",
+  "for",
+  "in",
+  "of",
+  "on",
+  "or",
+  "pro",
+  "the",
+  "to",
+  "with",
+]);
+
+function autoDeriveTriggers(id, category) {
+  const signals = new Set();
+  signals.add(id);
+  if (id.includes("-")) signals.add(id.replace(/-/g, " "));
+  for (const part of id.split("-")) {
+    if (part.length >= 2 && !TRIGGER_STOP_WORDS.has(part)) signals.add(part);
+  }
+  if (category) signals.add(category);
+  return [...signals].slice(0, 12);
+}
+
 export function deriveDescriptor({
   skillFile,
   skillsRoot,
@@ -337,8 +380,17 @@ export function deriveDescriptor({
   const replacedBy = normalizeNullableString(metadata.replaced_by);
   const category = inferCategory({ id, packageId, metadata, deprecated });
   const layer = inferLayer({ category, metadata, deprecated });
-  const tier = inferTier(packageId, coreProfileIds, webBackendProfileIds, deprecated);
-  const triggers = getAllTriggerValues(fm.raw);
+  const tier = inferTier(
+    packageId,
+    coreProfileIds,
+    webBackendProfileIds,
+    deprecated,
+  );
+  const explicitTriggers = getAllTriggerValues(fm.raw);
+  const triggers =
+    explicitTriggers.length > 0
+      ? explicitTriggers
+      : autoDeriveTriggers(id, category);
   const aliases = normalizeStringArray(metadata.aliases);
   const canonical = deprecated ? false : metadata.canonical !== false;
   const canonicalId = deprecated && replacedBy ? replacedBy : packageId;

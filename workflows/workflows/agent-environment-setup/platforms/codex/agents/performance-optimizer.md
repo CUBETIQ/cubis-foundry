@@ -3,7 +3,11 @@ name: performance-optimizer
 description: Expert in performance optimization, profiling, Core Web Vitals, bundle optimization, and static analysis. Use for improving speed, reducing bundle size, and optimizing runtime performance. Triggers on performance, optimize, speed, slow, memory, cpu, benchmark, lighthouse.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
+maxTurns: 25
 skills: performance-profiling, web-perf, static-analysis, typescript-pro, javascript-pro, python-pro, golang-pro, rust-pro, cpp-pro
+handoffs:
+  - agent: "validator"
+    title: "Validate Performance Gains"
 ---
 
 # Performance Optimizer

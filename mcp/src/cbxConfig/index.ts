@@ -5,6 +5,7 @@ export type {
   ConfigScope,
   PostmanConfig,
   StitchConfig,
+  PlaywrightConfig,
   CbxConfig,
   EffectiveConfig,
 } from "./types.js";
@@ -20,4 +21,8 @@ export {
   redactConfig,
 } from "./reader.js";
 export { writeConfigField, ensureConfigExists } from "./writer.js";
-export { parsePostmanState, parseStitchState } from "./serviceConfig.js";
+export {
+  parsePostmanState,
+  parseStitchState,
+  parsePlaywrightState,
+} from "./serviceConfig.js";

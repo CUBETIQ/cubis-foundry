@@ -19,7 +19,12 @@ import type { ConfigScope } from "../cbxConfig/types.js";
 
 // ─── Core types ─────────────────────────────────────────────
 
-export type ToolCategory = "skill" | "route" | "postman" | "stitch";
+export type ToolCategory =
+  | "skill"
+  | "route"
+  | "postman"
+  | "stitch"
+  | "playwright";
 
 export interface ToolRegistryEntry {
   /** Tool name exposed to MCP clients. */
@@ -146,6 +151,13 @@ import {
   stitchGetStatusSchema,
   handleStitchGetStatus,
 } from "./stitchGetStatus.js";
+
+import {
+  playwrightGetStatusName,
+  playwrightGetStatusDescription,
+  playwrightGetStatusSchema,
+  handlePlaywrightGetStatus,
+} from "./playwrightGetStatus.js";
 
 // ─── Scope helper ───────────────────────────────────────────
 
@@ -333,6 +345,20 @@ export const TOOL_REGISTRY: readonly ToolRegistryEntry[] = [
       handleStitchGetStatus(
         withDefaultScope(args, ctx.defaultConfigScope) as z.infer<
           typeof stitchGetStatusSchema
+        >,
+      ),
+  },
+
+  // ── Playwright tools ──────────────────────────────────────
+  {
+    name: playwrightGetStatusName,
+    description: playwrightGetStatusDescription,
+    schema: playwrightGetStatusSchema,
+    category: "playwright",
+    createHandler: (ctx) => async (args) =>
+      handlePlaywrightGetStatus(
+        withDefaultScope(args, ctx.defaultConfigScope) as z.infer<
+          typeof playwrightGetStatusSchema
         >,
       ),
   },

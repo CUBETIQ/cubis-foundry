@@ -6,16 +6,24 @@
 - Agents: `.claude/agents`
 - Skills: `.claude/skills`
 - Rules file: `CLAUDE.md`
+- Scoped rules: `.claude/rules/*.md` (with `paths:` frontmatter)
 
 ## Platform-Specific Routing
 
 1. **Explicit workflow, slash command, or subagent** — highest priority route.
 2. Standard workflow/agent routing from shared steering.
 
+## Subagent Delegation
+
+- Claude delegates via the `Task` tool — each task spawns an independent agent context.
+- Set `maxTurns` in agent frontmatter to cap iteration depth (default: 25).
+- Use `background: true` for parallel workstreams with no shared mutable state.
+- Key agents have `memory: project` for cross-session learning (orchestrator, debugger, test-engineer, researcher, project-planner, code-archaeologist).
+
 ## Platform Notes
 
-- Claude supports **subagent delegation** via `Task` tool for parallel specialist work.
-- Scoped rules can be placed in `.claude/rules/*.md` with frontmatter-based path matching.
-- Global rules live in `~/.claude/CLAUDE.md` and apply to all projects.
 - Claude natively supports `bash`, `read`, `write`, `edit`, `multiedit`, `grep`, `glob` tools.
-- Use subagents for genuinely parallel workstreams; do not delegate when sequential execution suffices.
+- Scoped rules in `.claude/rules/*.md` use `paths:` frontmatter for targeted file-pattern matching.
+- Global rules live in `~/.claude/CLAUDE.md` and apply to all projects.
+- Skills with `context: fork` spawn as isolated subagents for research-heavy or exploratory tasks.
+- Use `$ARGUMENTS` in skill content for dynamic parameterization from user queries.

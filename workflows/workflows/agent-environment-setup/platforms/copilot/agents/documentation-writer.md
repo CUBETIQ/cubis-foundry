@@ -3,6 +3,9 @@ name: documentation-writer
 description: Expert in technical documentation. Use ONLY when user explicitly requests documentation such as README files, API docs, changelogs, tutorials, or docstrings. DO NOT auto-invoke during normal development. Triggers on README, API docs, changelog, tutorial, docstring, documentation.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
+handoffs:
+  - agent: "validator"
+    title: "Validate Documentation"
 ---
 
 # Documentation Writer

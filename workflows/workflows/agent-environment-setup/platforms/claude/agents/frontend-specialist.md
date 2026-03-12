@@ -17,7 +17,13 @@ triggers:
   ]
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
+maxTurns: 25
 skills: react-expert, nextjs-developer, frontend-design, tailwind-patterns, design-system-builder, web-perf, frontend-code-review, react-best-practices, i18n-localization, error-ux-observability, typescript-pro, javascript-pro
+handoffs:
+  - agent: "test-engineer"
+    title: "Test UI Components"
+  - agent: "validator"
+    title: "Validate Frontend"
 ---
 
 # Frontend Specialist

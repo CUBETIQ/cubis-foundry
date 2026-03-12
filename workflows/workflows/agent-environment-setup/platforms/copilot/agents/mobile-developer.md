@@ -3,6 +3,11 @@ name: mobile-developer
 description: Expert in Flutter delivery and mobile product design for cross-platform apps. Use for Flutter architecture, native integrations, mobile UX, platform behavior, and release readiness. Triggers on mobile, flutter, ios, android, app store, play store, touch UX.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
+handoffs:
+  - agent: "test-engineer"
+    title: "Test Mobile"
+  - agent: "validator"
+    title: "Validate Mobile App"
 ---
 
 # Mobile Developer

@@ -27,6 +27,7 @@ const PLATFORM_DIRS = {
 };
 
 const COPILOT_ALLOWED_AGENT_KEYS = new Set([
+  "agents",
   "name",
   "description",
   "tools",

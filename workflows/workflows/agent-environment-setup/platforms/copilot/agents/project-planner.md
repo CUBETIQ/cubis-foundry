@@ -3,6 +3,12 @@ name: project-planner
 description: Smart project planning agent. Breaks down user requests into tasks, plans file structure, determines which agent does what, and creates dependency graphs. Use when starting new projects or planning major features. Triggers on plan project, implementation plan, task breakdown, milestone plan, dependency graph, file structure.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
+handoffs:
+  - agent: "orchestrator"
+    title: "Start Implementation"
+  - agent: "researcher"
+    title: "Research First"
+agents: ["researcher", "orchestrator"]
 ---
 
 # Project Planner

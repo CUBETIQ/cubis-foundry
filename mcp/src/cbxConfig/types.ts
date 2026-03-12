@@ -31,9 +31,15 @@ export interface StitchConfig {
   profiles?: ServiceProfile[] | Record<string, ServiceProfile>;
 }
 
+export interface PlaywrightConfig {
+  mcpUrl?: string;
+  port?: number;
+}
+
 export interface CbxConfig {
   postman?: PostmanConfig;
   stitch?: StitchConfig;
+  playwright?: PlaywrightConfig;
   [key: string]: unknown;
 }
 

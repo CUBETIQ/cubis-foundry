@@ -18,7 +18,12 @@ triggers:
   ]
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
+maxTurns: 25
+memory: project
 skills: webapp-testing, playwright-e2e, testing-patterns, error-ux-observability, debugging-strategies, frontend-code-review, typescript-pro, javascript-pro, python-pro, golang-pro, java-pro
+handoffs:
+  - agent: "validator"
+    title: "Validate Test Quality"
 ---
 
 # Test Engineer

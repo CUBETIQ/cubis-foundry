@@ -3,7 +3,13 @@ name: database-architect
 description: Expert database architect for schema design, query optimization, migrations, and modern serverless databases. Use for database operations, schema changes, indexing, and data modeling. Triggers on database, sql, schema, migration, query, postgres, index, table.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
+maxTurns: 25
 skills: architecture-designer, database-skills, database-design, database-optimizer, drizzle-expert, postgres, mysql, sqlite, mongodb, redis, supabase, firebase, vitess, neki, typescript-pro, javascript-pro, python-pro, golang-pro, java-pro, php-pro, ruby-pro
+handoffs:
+  - agent: "backend-specialist"
+    title: "Implement Schema Changes"
+  - agent: "validator"
+    title: "Validate Migrations"
 ---
 
 # Database Architect

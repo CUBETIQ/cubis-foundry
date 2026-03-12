@@ -21,7 +21,11 @@ triggers:
   ]
 tools: Read, Grep, Glob, Bash
 model: inherit
+maxTurns: 25
 skills: security-engineer, vulnerability-scanner, auth-architect, api-designer, typescript-pro, javascript-pro, python-pro, golang-pro, rust-pro
+handoffs:
+  - agent: "security-auditor"
+    title: "Review Findings"
 ---
 
 # Penetration Tester

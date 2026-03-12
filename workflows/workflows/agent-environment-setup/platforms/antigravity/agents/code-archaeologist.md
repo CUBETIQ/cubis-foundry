@@ -17,7 +17,14 @@ triggers:
   ]
 tools: Read, Grep, Glob, Edit, Write
 model: inherit
+maxTurns: 25
+memory: project
 skills: skill-creator, spec-miner, legacy-modernizer, static-analysis, typescript-pro, javascript-pro, python-pro
+handoffs:
+  - agent: "researcher"
+    title: "Deep Research"
+  - agent: "project-planner"
+    title: "Plan Modernization"
 ---
 
 # Code Archaeologist

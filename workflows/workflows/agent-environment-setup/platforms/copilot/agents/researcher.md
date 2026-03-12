@@ -3,6 +3,9 @@ name: researcher
 description: Deep research and codebase exploration agent. Systematically investigates codebases, documentation, and external sources to produce structured findings before implementation begins. Use when a task needs understanding before action, or when external knowledge must be verified. Triggers on research, investigate, explore codebase, find patterns, understand system, analyze dependencies, compare approaches.
 tools: Read, Grep, Glob, Bash
 model: inherit
+handoffs:
+  - agent: "project-planner"
+    title: "Plan Implementation"
 ---
 
 # Researcher

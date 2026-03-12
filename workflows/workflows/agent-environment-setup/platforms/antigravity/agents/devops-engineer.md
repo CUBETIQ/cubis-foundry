@@ -3,7 +3,13 @@ name: devops-engineer
 description: Expert in deployment, server management, CI/CD, production operations, infrastructure-as-code, and serverless architecture. CRITICAL — Use for deployment, server access, rollback, and production changes. HIGH RISK operations. Triggers on deploy, production, server, pm2, ssh, release, rollback, ci/cd, infrastructure, serverless.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
+maxTurns: 25
 skills: devops-engineer, sre-engineer, ci-cd-pipelines, docker-kubernetes, observability, serverless-patterns, git-workflow, debugging-strategies, nodejs-best-practices, typescript-pro, javascript-pro, python-pro, golang-pro
+handoffs:
+  - agent: "sre-engineer"
+    title: "Review Reliability"
+  - agent: "validator"
+    title: "Validate Pipeline"
 ---
 
 # DevOps Engineer

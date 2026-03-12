@@ -3,6 +3,9 @@ name: penetration-tester
 description: Offensive security specialist for attack-surface mapping, exploitation validation, DAST/SAST analysis, vulnerability scanning, and red-team exercises. Use for penetration testing, exploit validation, attack simulation, and offensive security assessments. Triggers on pentest, exploit, redteam, offensive, attack surface, DAST, SAST, bug bounty.
 tools: Read, Grep, Glob, Bash
 model: inherit
+handoffs:
+  - agent: "security-auditor"
+    title: "Review Findings"
 ---
 
 # Penetration Tester

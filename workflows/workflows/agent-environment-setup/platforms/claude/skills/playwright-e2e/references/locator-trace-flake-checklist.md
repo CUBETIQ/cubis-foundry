@@ -50,3 +50,31 @@ Check these in order:
 - Upload traces for failed or retried tests.
 - Shard only after local determinism is solid.
 - Separate smoke-critical browser flows from broad exploratory suites.
+
+## MCP workflow patterns
+
+When Playwright MCP upstream is configured in the Cubis Foundry gateway:
+
+### Interactive test development
+
+1. Use `browser_navigate` to open the target page.
+2. Use `browser_snapshot` to capture the accessibility tree and discover locator targets.
+3. Interact with elements via `browser_click`, `browser_type`, `browser_select_option` using accessibility refs from the snapshot.
+4. Use `browser_generate_playwright_test` to produce test code from the recorded interactions.
+5. Refine generated tests with proper assertions, fixtures, and isolation.
+
+### Snapshot-based debugging
+
+- Take `browser_snapshot` at the failing step to compare the DOM state against expected locators.
+- Use `browser_console_messages` to capture console errors tied to the flow.
+- Use `browser_network_requests` to verify API calls and mocked routes.
+
+### Tab and navigation workflow
+
+- Use `browser_tab_new` and `browser_tab_select` to manage multi-tab flows (OAuth popups, payment redirects).
+- Use `browser_go_back` and `browser_go_forward` to test browser history behavior.
+
+### When to use MCP vs test runner
+
+- **MCP tools**: Interactive exploration, locator discovery, test code generation, debugging live pages during development.
+- **Test runner (`npx playwright test`)**: Execution, CI, parallel sharding, retries, reporting, and deterministic assertions.

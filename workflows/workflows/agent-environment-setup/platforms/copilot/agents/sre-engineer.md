@@ -3,6 +3,11 @@ name: sre-engineer
 description: Site reliability engineer for SLO-driven operations, incident management, toil reduction, production reliability, and structured error observability. Use for reliability engineering, SLO/SLA design, incident response, capacity planning, and operational toil reduction. Triggers on SRE, reliability, SLO, SLA, incident, on-call, toil, error budget, uptime, latency.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
+handoffs:
+  - agent: "devops-engineer"
+    title: "Implement Changes"
+  - agent: "validator"
+    title: "Validate Reliability"
 ---
 
 # SRE Engineer

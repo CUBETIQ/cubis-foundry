@@ -217,6 +217,10 @@ const STITCH_SKILL_ID = "stitch";
 const STITCH_MCP_SERVER_ID = "StitchMCP";
 const STITCH_API_KEY_ENV_VAR = "STITCH_API_KEY_DEFAULT";
 const STITCH_MCP_URL = "https://stitch.googleapis.com/mcp";
+const PLAYWRIGHT_SKILL_ID = "playwright";
+const PLAYWRIGHT_MCP_SERVER_ID = "PlaywrightMCP";
+const PLAYWRIGHT_DEFAULT_PORT = 8931;
+const PLAYWRIGHT_MCP_URL = `http://localhost:${PLAYWRIGHT_DEFAULT_PORT}/mcp`;
 const POSTMAN_WORKSPACE_MANUAL_CHOICE = "__postman_workspace_manual__";
 const CBX_CONFIG_FILENAME = "cbx_config.json";
 const CBX_CREDENTIALS_ENV_FILENAME = "credentials.env";
@@ -4719,6 +4723,30 @@ function buildGeminiStitchServer({
   };
 }
 
+function buildVsCodePlaywrightServer({ mcpUrl = PLAYWRIGHT_MCP_URL } = {}) {
+  return {
+    type: "http",
+    url: mcpUrl,
+    headers: {},
+  };
+}
+
+function buildCopilotCliPlaywrightServer({ mcpUrl = PLAYWRIGHT_MCP_URL } = {}) {
+  return {
+    type: "http",
+    url: mcpUrl,
+    headers: {},
+    tools: ["*"],
+  };
+}
+
+function buildGeminiPlaywrightServer({ mcpUrl = PLAYWRIGHT_MCP_URL } = {}) {
+  return {
+    httpUrl: mcpUrl,
+    headers: {},
+  };
+}
+
 function getPostmanApiKeySource({ apiKey, envApiKey }) {
   if (apiKey) return "inline";
   if (envApiKey) return "env";
@@ -5210,6 +5238,7 @@ async function applyPostmanMcpForPlatform({
   stitchMcpUrl,
   includeStitchMcp = false,
   includeFoundryMcp = true,
+  includePlaywrightMcp = false,
   foundryRuntime = "local",
   dryRun = false,
   cwd = process.cwd(),
@@ -5278,6 +5307,9 @@ async function applyPostmanMcpForPlatform({
             mcpUrl: stitchMcpUrl,
           });
         }
+        if (includePlaywrightMcp) {
+          mcpServers[PLAYWRIGHT_MCP_SERVER_ID] = buildGeminiPlaywrightServer();
+        }
         next.mcpServers = mcpServers;
         return next;
       },
@@ -5324,6 +5356,10 @@ async function applyPostmanMcpForPlatform({
           } else {
             delete mcpServers[FOUNDRY_MCP_SERVER_ID];
           }
+          if (includePlaywrightMcp) {
+            mcpServers[PLAYWRIGHT_MCP_SERVER_ID] =
+              buildCopilotCliPlaywrightServer();
+          }
           next.mcpServers = mcpServers;
           return next;
         }
@@ -5349,6 +5385,9 @@ async function applyPostmanMcpForPlatform({
           });
         } else {
           delete servers[FOUNDRY_MCP_SERVER_ID];
+        }
+        if (includePlaywrightMcp) {
+          servers[PLAYWRIGHT_MCP_SERVER_ID] = buildVsCodePlaywrightServer();
         }
         next.servers = servers;
         return next;
@@ -5400,6 +5439,9 @@ async function applyPostmanMcpForPlatform({
             });
           } else {
             delete servers[FOUNDRY_MCP_SERVER_ID];
+          }
+          if (includePlaywrightMcp) {
+            servers[PLAYWRIGHT_MCP_SERVER_ID] = buildVsCodePlaywrightServer();
           }
           next.servers = servers;
           return next;
@@ -5529,6 +5571,57 @@ async function applyPostmanMcpForPlatform({
     };
   }
 
+  if (platform === "claude") {
+    const claudeConfigPath =
+      mcpScope === "global"
+        ? path.join(os.homedir(), ".claude", "mcp.json")
+        : path.join(workspaceRoot, ".mcp.json");
+    const result = await upsertJsonObjectFile({
+      targetPath: claudeConfigPath,
+      updater: (existing) => {
+        const next = { ...existing };
+        const mcpServers =
+          next.mcpServers &&
+          typeof next.mcpServers === "object" &&
+          !Array.isArray(next.mcpServers)
+            ? { ...next.mcpServers }
+            : {};
+        if (includeFoundryMcp) {
+          if (normalizedFoundryRuntime === "docker") {
+            mcpServers[FOUNDRY_MCP_SERVER_ID] = {
+              type: "url",
+              url: buildFoundryDockerUrl({ port: foundryDockerPort }),
+            };
+          } else {
+            mcpServers[FOUNDRY_MCP_SERVER_ID] = {
+              type: "stdio",
+              command: FOUNDRY_MCP_COMMAND,
+              args: buildFoundryServeArgs({ scope: foundryScope }),
+            };
+          }
+        } else {
+          delete mcpServers[FOUNDRY_MCP_SERVER_ID];
+        }
+        if (includePlaywrightMcp) {
+          mcpServers[PLAYWRIGHT_MCP_SERVER_ID] = {
+            type: "url",
+            url: PLAYWRIGHT_MCP_URL,
+          };
+        }
+        next.mcpServers = mcpServers;
+        return next;
+      },
+      dryRun,
+    });
+    return {
+      kind: "claude-mcp",
+      scope: mcpScope,
+      path: claudeConfigPath,
+      action: result.action,
+      warnings: [...warnings, ...result.warnings],
+    };
+  }
+
   return {
     kind: "unknown",
     scope: mcpScope,
@@ -5606,10 +5699,7 @@ async function resolvePostmanInstallSelection({
     : null;
   let workspaceSelectionSource = hasWorkspaceOption ? "option" : "none";
   const requestedMcpScope = options.mcpScope
-    ? coerceWorkspaceOnlyMcpScope(
-        options.mcpScope,
-        "--mcp-scope",
-      )
+    ? coerceWorkspaceOnlyMcpScope(options.mcpScope, "--mcp-scope")
     : null;
   let mcpScope = requestedMcpScope?.scope || "project";
   const warnings = [];
@@ -6057,6 +6147,7 @@ async function configurePostmanInstallArtifacts({
         stitchMcpUrl: effectiveStitchMcpUrl,
         includeStitchMcp: shouldInstallStitch,
         includeFoundryMcp: postmanSelection.foundryMcpEnabled,
+        includePlaywrightMcp: postmanSelection.playwrightEnabled ?? false,
         foundryRuntime: postmanSelection.effectiveMcpRuntime || "local",
         dryRun,
         cwd,
@@ -6167,6 +6258,7 @@ async function applyPostmanConfigArtifacts({
     POSTMAN_API_KEY_ENV_VAR;
   const postmanMcpUrl = postmanState.mcpUrl || POSTMAN_MCP_URL;
   const stitchEnabled = Boolean(stitchState);
+  const playwrightEnabled = Boolean(configValue?.playwright);
   const stitchApiKeyEnvVar =
     normalizePostmanApiKey(stitchState?.apiKeyEnvVar) || STITCH_API_KEY_ENV_VAR;
   const stitchMcpUrl = stitchState?.mcpUrl || STITCH_MCP_URL;
@@ -6239,6 +6331,7 @@ async function applyPostmanConfigArtifacts({
       stitchMcpUrl,
       includeStitchMcp: stitchEnabled,
       includeFoundryMcp: true,
+      includePlaywrightMcp: playwrightEnabled ?? false,
       foundryRuntime,
       dryRun,
       cwd,
@@ -8239,7 +8332,9 @@ async function performWorkflowInstall(
     cancelled: false,
     cwd,
     scope,
-    warnings: requestedInstallScope.warning ? [requestedInstallScope.warning] : [],
+    warnings: requestedInstallScope.warning
+      ? [requestedInstallScope.warning]
+      : [],
     ruleScope,
     dryRun,
     platform,

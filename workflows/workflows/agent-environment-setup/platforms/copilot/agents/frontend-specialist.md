@@ -3,6 +3,11 @@ name: frontend-specialist
 description: Senior frontend specialist for React, Next.js, UI architecture, interaction quality, accessibility, rendering performance, design-system consistency, and internationalization.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
+handoffs:
+  - agent: "test-engineer"
+    title: "Test UI Components"
+  - agent: "validator"
+    title: "Validate Frontend"
 ---
 
 # Frontend Specialist

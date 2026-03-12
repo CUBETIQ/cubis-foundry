@@ -32,11 +32,14 @@ const MIRRORS = {
 };
 
 const COPILOT_ALLOWED_SKILL_FRONTMATTER_KEYS = new Set([
+  "argument-hint",
   "compatibility",
   "description",
+  "disable-model-invocation",
   "license",
   "metadata",
   "name",
+  "user-invocable",
 ]);
 
 function parseArgs(argv) {

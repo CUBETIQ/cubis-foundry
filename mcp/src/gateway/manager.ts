@@ -11,7 +11,12 @@ import type {
   UpstreamClientFactory,
   UpstreamCallResult,
 } from "./upstreamClient.js";
-import type { GatewayStatus, UpstreamProvider, UpstreamState, UpstreamTool } from "./types.js";
+import type {
+  GatewayStatus,
+  UpstreamProvider,
+  UpstreamState,
+  UpstreamTool,
+} from "./types.js";
 
 export interface GatewayManagerOptions {
   clientFactory?: UpstreamClientFactory;
@@ -72,13 +77,16 @@ function normalizeArgs(args: unknown): Record<string, unknown> {
 
 export class GatewayManager {
   private readonly clientFactory: UpstreamClientFactory;
-  private readonly providerRuntime: Record<UpstreamProvider, ProviderRuntime> = {
-    postman: { mcpUrl: null, headers: null, authEnvVar: null },
-    stitch: { mcpUrl: null, headers: null, authEnvVar: null },
-  };
+  private readonly providerRuntime: Record<UpstreamProvider, ProviderRuntime> =
+    {
+      postman: { mcpUrl: null, headers: null, authEnvVar: null },
+      stitch: { mcpUrl: null, headers: null, authEnvVar: null },
+      playwright: { mcpUrl: null, headers: null, authEnvVar: null },
+    };
   private readonly providerState: Record<UpstreamProvider, UpstreamState> = {
     postman: emptyProviderState("postman"),
     stitch: emptyProviderState("stitch"),
+    playwright: emptyProviderState("playwright"),
   };
 
   private scope: GatewayStatus["scope"] = null;
@@ -86,7 +94,8 @@ export class GatewayManager {
   private catalogDir = resolveCatalogDir(null, null);
 
   constructor(options?: GatewayManagerOptions) {
-    this.clientFactory = options?.clientFactory ?? new SdkUpstreamClientFactory();
+    this.clientFactory =
+      options?.clientFactory ?? new SdkUpstreamClientFactory();
   }
 
   async initialize(): Promise<void> {
@@ -98,6 +107,7 @@ export class GatewayManager {
     await Promise.all([
       this.syncProvider("postman", resolved.providers.postman),
       this.syncProvider("stitch", resolved.providers.stitch),
+      this.syncProvider("playwright", resolved.providers.playwright),
     ]);
   }
 
@@ -114,6 +124,7 @@ export class GatewayManager {
       providers: {
         postman: this.providerState.postman,
         stitch: this.providerState.stitch,
+        playwright: this.providerState.playwright,
       },
     };
   }

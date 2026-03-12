@@ -51,7 +51,10 @@
         "accessibility",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "accessibility",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "agentic-eval",
@@ -71,10 +74,19 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
+        "agentic",
+        "agentic eval",
         "agentic-eval",
-        "core-operating"
+        "core-operating",
+        "eval"
       ],
-      "triggers": []
+      "triggers": [
+        "agentic-eval",
+        "agentic eval",
+        "agentic",
+        "eval",
+        "core-operating"
+      ]
     },
     {
       "id": "api-designer",
@@ -94,10 +106,19 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
+        "api",
+        "api designer",
         "api-designer",
-        "core-operating"
+        "core-operating",
+        "designer"
       ],
-      "triggers": []
+      "triggers": [
+        "api-designer",
+        "api designer",
+        "api",
+        "designer",
+        "core-operating"
+      ]
     },
     {
       "id": "api-patterns",
@@ -117,10 +138,19 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
+        "api",
+        "api patterns",
         "api-patterns",
-        "core-operating"
+        "core-operating",
+        "patterns"
       ],
-      "triggers": []
+      "triggers": [
+        "api-patterns",
+        "api patterns",
+        "api",
+        "patterns",
+        "core-operating"
+      ]
     },
     {
       "id": "architecture-designer",
@@ -140,10 +170,19 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
+        "architecture",
+        "architecture designer",
         "architecture-designer",
-        "core-operating"
+        "core-operating",
+        "designer"
       ],
-      "triggers": []
+      "triggers": [
+        "architecture-designer",
+        "architecture designer",
+        "architecture",
+        "designer",
+        "core-operating"
+      ]
     },
     {
       "id": "auth-architect",
@@ -163,10 +202,19 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
+        "architect",
+        "auth",
+        "auth architect",
         "auth-architect",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "auth-architect",
+        "auth architect",
+        "auth",
+        "architect",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "c-pro",
@@ -186,10 +234,15 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
+        "c pro",
         "c-pro",
         "languages"
       ],
-      "triggers": []
+      "triggers": [
+        "c-pro",
+        "c pro",
+        "languages"
+      ]
     },
     {
       "id": "changelog-generator",
@@ -209,10 +262,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "changelog",
+        "changelog generator",
         "changelog-generator",
+        "generator",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "changelog-generator",
+        "changelog generator",
+        "changelog",
+        "generator",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "ci-cd-pipelines",
@@ -232,10 +294,21 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "cd",
+        "ci",
+        "ci cd pipelines",
         "ci-cd-pipelines",
+        "pipelines",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "ci-cd-pipelines",
+        "ci cd pipelines",
+        "ci",
+        "cd",
+        "pipelines",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "cli-developer",
@@ -255,10 +328,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "cli",
+        "cli developer",
         "cli-developer",
+        "developer",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "cli-developer",
+        "cli developer",
+        "cli",
+        "developer",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "cpp-pro",
@@ -278,10 +360,17 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
+        "cpp",
+        "cpp pro",
         "cpp-pro",
         "languages"
       ],
-      "triggers": []
+      "triggers": [
+        "cpp-pro",
+        "cpp pro",
+        "cpp",
+        "languages"
+      ]
     },
     {
       "id": "csharp-pro",
@@ -301,10 +390,17 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
+        "csharp",
+        "csharp pro",
         "csharp-pro",
         "languages"
       ],
-      "triggers": []
+      "triggers": [
+        "csharp-pro",
+        "csharp pro",
+        "csharp",
+        "languages"
+      ]
     },
     {
       "id": "dart-pro",
@@ -324,10 +420,17 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
+        "dart",
+        "dart pro",
         "dart-pro",
         "languages"
       ],
-      "triggers": []
+      "triggers": [
+        "dart-pro",
+        "dart pro",
+        "dart",
+        "languages"
+      ]
     },
     {
       "id": "database-design",
@@ -347,10 +450,19 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
+        "database",
+        "database design",
         "database-design",
-        "databases"
+        "databases",
+        "design"
       ],
-      "triggers": []
+      "triggers": [
+        "database-design",
+        "database design",
+        "database",
+        "design",
+        "databases"
+      ]
     },
     {
       "id": "database-optimizer",
@@ -370,10 +482,19 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
+        "database",
+        "database optimizer",
         "database-optimizer",
-        "databases"
+        "databases",
+        "optimizer"
       ],
-      "triggers": []
+      "triggers": [
+        "database-optimizer",
+        "database optimizer",
+        "database",
+        "optimizer",
+        "databases"
+      ]
     },
     {
       "id": "database-skills",
@@ -393,10 +514,19 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
+        "database",
+        "database skills",
         "database-skills",
-        "databases"
+        "databases",
+        "skills"
       ],
-      "triggers": []
+      "triggers": [
+        "database-skills",
+        "database skills",
+        "database",
+        "skills",
+        "databases"
+      ]
     },
     {
       "id": "debugging-strategies",
@@ -416,10 +546,19 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
+        "debugging",
+        "debugging strategies",
         "debugging-strategies",
+        "strategies",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "debugging-strategies",
+        "debugging strategies",
+        "debugging",
+        "strategies",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "deep-research",
@@ -440,9 +579,18 @@
       "tier": "system",
       "tags": [
         "core-operating",
-        "deep-research"
+        "deep",
+        "deep research",
+        "deep-research",
+        "research"
       ],
-      "triggers": []
+      "triggers": [
+        "deep-research",
+        "deep research",
+        "deep",
+        "research",
+        "core-operating"
+      ]
     },
     {
       "id": "design-system-builder",
@@ -462,10 +610,21 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
+        "builder",
+        "design",
+        "design system builder",
         "design-system-builder",
-        "frameworks-runtimes"
+        "frameworks-runtimes",
+        "system"
       ],
-      "triggers": []
+      "triggers": [
+        "design-system-builder",
+        "design system builder",
+        "design",
+        "system",
+        "builder",
+        "frameworks-runtimes"
+      ]
     },
     {
       "id": "devops-engineer",
@@ -485,10 +644,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "devops",
+        "devops engineer",
         "devops-engineer",
+        "engineer",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "devops-engineer",
+        "devops engineer",
+        "devops",
+        "engineer",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "docker-kubernetes",
@@ -508,10 +676,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "docker",
+        "docker kubernetes",
         "docker-kubernetes",
+        "kubernetes",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "docker-kubernetes",
+        "docker kubernetes",
+        "docker",
+        "kubernetes",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "documentation-templates",
@@ -531,10 +708,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "documentation",
+        "documentation templates",
         "documentation-templates",
+        "templates",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "documentation-templates",
+        "documentation templates",
+        "documentation",
+        "templates",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "drizzle-expert",
@@ -555,9 +741,18 @@
       "tier": "curated",
       "tags": [
         "databases",
-        "drizzle-expert"
+        "drizzle",
+        "drizzle expert",
+        "drizzle-expert",
+        "expert"
       ],
-      "triggers": []
+      "triggers": [
+        "drizzle-expert",
+        "drizzle expert",
+        "drizzle",
+        "expert",
+        "databases"
+      ]
     },
     {
       "id": "error-ux-observability",
@@ -577,10 +772,21 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "error",
+        "error ux observability",
         "error-ux-observability",
+        "observability",
+        "ux",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "error-ux-observability",
+        "error ux observability",
+        "error",
+        "ux",
+        "observability",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "fastapi-expert",
@@ -600,10 +806,19 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
+        "expert",
+        "fastapi",
+        "fastapi expert",
         "fastapi-expert",
         "frameworks-runtimes"
       ],
-      "triggers": []
+      "triggers": [
+        "fastapi-expert",
+        "fastapi expert",
+        "fastapi",
+        "expert",
+        "frameworks-runtimes"
+      ]
     },
     {
       "id": "firebase",
@@ -626,7 +841,10 @@
         "databases",
         "firebase"
       ],
-      "triggers": []
+      "triggers": [
+        "firebase",
+        "databases"
+      ]
     },
     {
       "id": "flutter-design-system",
@@ -646,10 +864,21 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "design",
+        "flutter",
+        "flutter design system",
         "flutter-design-system",
+        "system",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "flutter-design-system",
+        "flutter design system",
+        "flutter",
+        "design",
+        "system",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "flutter-drift",
@@ -669,10 +898,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "drift",
+        "flutter",
+        "flutter drift",
         "flutter-drift",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "flutter-drift",
+        "flutter drift",
+        "flutter",
+        "drift",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "flutter-feature",
@@ -692,10 +930,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "feature",
+        "flutter",
+        "flutter feature",
         "flutter-feature",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "flutter-feature",
+        "flutter feature",
+        "flutter",
+        "feature",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "flutter-go-router",
@@ -715,10 +962,21 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "flutter",
+        "flutter go router",
         "flutter-go-router",
+        "go",
+        "router",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "flutter-go-router",
+        "flutter go router",
+        "flutter",
+        "go",
+        "router",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "flutter-offline-sync",
@@ -738,10 +996,21 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "flutter",
+        "flutter offline sync",
         "flutter-offline-sync",
+        "offline",
+        "sync",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "flutter-offline-sync",
+        "flutter offline sync",
+        "flutter",
+        "offline",
+        "sync",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "flutter-repository",
@@ -761,10 +1030,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "flutter",
+        "flutter repository",
         "flutter-repository",
+        "repository",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "flutter-repository",
+        "flutter repository",
+        "flutter",
+        "repository",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "flutter-riverpod",
@@ -784,10 +1062,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "flutter",
+        "flutter riverpod",
         "flutter-riverpod",
-        "frameworks-runtimes"
+        "frameworks-runtimes",
+        "riverpod"
       ],
-      "triggers": []
+      "triggers": [
+        "flutter-riverpod",
+        "flutter riverpod",
+        "flutter",
+        "riverpod",
+        "frameworks-runtimes"
+      ]
     },
     {
       "id": "flutter-state-machine",
@@ -807,10 +1094,21 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "flutter",
+        "flutter state machine",
         "flutter-state-machine",
+        "machine",
+        "state",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "flutter-state-machine",
+        "flutter state machine",
+        "flutter",
+        "state",
+        "machine",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "flutter-testing",
@@ -830,10 +1128,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "flutter",
+        "flutter testing",
         "flutter-testing",
+        "testing",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "flutter-testing",
+        "flutter testing",
+        "flutter",
+        "testing",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "frontend-code-review",
@@ -853,10 +1160,21 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
+        "code",
+        "frontend",
+        "frontend code review",
         "frontend-code-review",
+        "review",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "frontend-code-review",
+        "frontend code review",
+        "frontend",
+        "code",
+        "review",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "frontend-design",
@@ -876,10 +1194,19 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
+        "design",
         "frameworks-runtimes",
+        "frontend",
+        "frontend design",
         "frontend-design"
       ],
-      "triggers": []
+      "triggers": [
+        "frontend-design",
+        "frontend design",
+        "frontend",
+        "design",
+        "frameworks-runtimes"
+      ]
     },
     {
       "id": "game-development",
@@ -899,10 +1226,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "development",
+        "game",
+        "game development",
         "game-development",
         "vertical-composed"
       ],
-      "triggers": []
+      "triggers": [
+        "game-development",
+        "game development",
+        "game",
+        "development",
+        "vertical-composed"
+      ]
     },
     {
       "id": "geo-fundamentals",
@@ -922,10 +1258,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "fundamentals",
+        "geo",
+        "geo fundamentals",
         "geo-fundamentals",
         "vertical-composed"
       ],
-      "triggers": []
+      "triggers": [
+        "geo-fundamentals",
+        "geo fundamentals",
+        "geo",
+        "fundamentals",
+        "vertical-composed"
+      ]
     },
     {
       "id": "git-workflow",
@@ -945,10 +1290,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "git",
+        "git workflow",
         "git-workflow",
+        "workflow",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "git-workflow",
+        "git workflow",
+        "git",
+        "workflow",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "golang-pro",
@@ -968,10 +1322,17 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
+        "golang",
+        "golang pro",
         "golang-pro",
         "languages"
       ],
-      "triggers": []
+      "triggers": [
+        "golang-pro",
+        "golang pro",
+        "golang",
+        "languages"
+      ]
     },
     {
       "id": "graphql-architect",
@@ -991,10 +1352,19 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
+        "architect",
         "frameworks-runtimes",
+        "graphql",
+        "graphql architect",
         "graphql-architect"
       ],
-      "triggers": []
+      "triggers": [
+        "graphql-architect",
+        "graphql architect",
+        "graphql",
+        "architect",
+        "frameworks-runtimes"
+      ]
     },
     {
       "id": "i18n-localization",
@@ -1014,10 +1384,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "i18n",
+        "i18n localization",
         "i18n-localization",
+        "localization",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "i18n-localization",
+        "i18n localization",
+        "i18n",
+        "localization",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "java-pro",
@@ -1037,10 +1416,17 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
+        "java",
+        "java pro",
         "java-pro",
         "languages"
       ],
-      "triggers": []
+      "triggers": [
+        "java-pro",
+        "java pro",
+        "java",
+        "languages"
+      ]
     },
     {
       "id": "javascript-pro",
@@ -1060,10 +1446,17 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
+        "javascript",
+        "javascript pro",
         "javascript-pro",
         "languages"
       ],
-      "triggers": []
+      "triggers": [
+        "javascript-pro",
+        "javascript pro",
+        "javascript",
+        "languages"
+      ]
     },
     {
       "id": "kotlin-pro",
@@ -1083,10 +1476,17 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
+        "kotlin",
+        "kotlin pro",
         "kotlin-pro",
         "languages"
       ],
-      "triggers": []
+      "triggers": [
+        "kotlin-pro",
+        "kotlin pro",
+        "kotlin",
+        "languages"
+      ]
     },
     {
       "id": "legacy-modernizer",
@@ -1106,10 +1506,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "legacy",
+        "legacy modernizer",
         "legacy-modernizer",
+        "modernizer",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "legacy-modernizer",
+        "legacy modernizer",
+        "legacy",
+        "modernizer",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "mcp-builder",
@@ -1129,10 +1538,19 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
+        "builder",
         "core-operating",
+        "mcp",
+        "mcp builder",
         "mcp-builder"
       ],
-      "triggers": []
+      "triggers": [
+        "mcp-builder",
+        "mcp builder",
+        "mcp",
+        "builder",
+        "core-operating"
+      ]
     },
     {
       "id": "microservices-architect",
@@ -1152,10 +1570,19 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
+        "architect",
+        "microservices",
+        "microservices architect",
         "microservices-architect",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "microservices-architect",
+        "microservices architect",
+        "microservices",
+        "architect",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "mobile-design",
@@ -1175,10 +1602,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "design",
+        "mobile",
+        "mobile design",
         "mobile-design",
         "vertical-composed"
       ],
-      "triggers": []
+      "triggers": [
+        "mobile-design",
+        "mobile design",
+        "mobile",
+        "design",
+        "vertical-composed"
+      ]
     },
     {
       "id": "mongodb",
@@ -1201,7 +1637,10 @@
         "databases",
         "mongodb"
       ],
-      "triggers": []
+      "triggers": [
+        "mongodb",
+        "databases"
+      ]
     },
     {
       "id": "mysql",
@@ -1224,7 +1663,10 @@
         "databases",
         "mysql"
       ],
-      "triggers": []
+      "triggers": [
+        "mysql",
+        "databases"
+      ]
     },
     {
       "id": "neki",
@@ -1247,7 +1689,10 @@
         "databases",
         "neki"
       ],
-      "triggers": []
+      "triggers": [
+        "neki",
+        "databases"
+      ]
     },
     {
       "id": "nestjs-expert",
@@ -1267,10 +1712,19 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
+        "expert",
         "frameworks-runtimes",
+        "nestjs",
+        "nestjs expert",
         "nestjs-expert"
       ],
-      "triggers": []
+      "triggers": [
+        "nestjs-expert",
+        "nestjs expert",
+        "nestjs",
+        "expert",
+        "frameworks-runtimes"
+      ]
     },
     {
       "id": "nextjs-developer",
@@ -1290,10 +1744,19 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
+        "developer",
         "frameworks-runtimes",
+        "nextjs",
+        "nextjs developer",
         "nextjs-developer"
       ],
-      "triggers": []
+      "triggers": [
+        "nextjs-developer",
+        "nextjs developer",
+        "nextjs",
+        "developer",
+        "frameworks-runtimes"
+      ]
     },
     {
       "id": "nodejs-best-practices",
@@ -1314,9 +1777,18 @@
       "tier": "system",
       "tags": [
         "frameworks-runtimes",
-        "nodejs-best-practices"
+        "nodejs",
+        "nodejs best practices",
+        "nodejs-best-practices",
+        "practices"
       ],
-      "triggers": []
+      "triggers": [
+        "nodejs-best-practices",
+        "nodejs best practices",
+        "nodejs",
+        "practices",
+        "frameworks-runtimes"
+      ]
     },
     {
       "id": "observability",
@@ -1339,7 +1811,10 @@
         "observability",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "observability",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "openai-docs",
@@ -1360,9 +1835,18 @@
       "tier": "system",
       "tags": [
         "core-operating",
+        "docs",
+        "openai",
+        "openai docs",
         "openai-docs"
       ],
-      "triggers": []
+      "triggers": [
+        "openai-docs",
+        "openai docs",
+        "openai",
+        "docs",
+        "core-operating"
+      ]
     },
     {
       "id": "performance-profiling",
@@ -1382,10 +1866,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "performance",
+        "performance profiling",
         "performance-profiling",
+        "profiling",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "performance-profiling",
+        "performance profiling",
+        "performance",
+        "profiling",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "php-pro",
@@ -1406,9 +1899,16 @@
       "tier": "system",
       "tags": [
         "languages",
+        "php",
+        "php pro",
         "php-pro"
       ],
-      "triggers": []
+      "triggers": [
+        "php-pro",
+        "php pro",
+        "php",
+        "languages"
+      ]
     },
     {
       "id": "playwright-e2e",
@@ -1428,10 +1928,19 @@
       "maturity": "stable",
       "tier": "curated",
       "tags": [
+        "e2e",
+        "playwright",
+        "playwright e2e",
         "playwright-e2e",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "playwright-e2e",
+        "playwright e2e",
+        "playwright",
+        "e2e",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "postgres",
@@ -1454,7 +1963,10 @@
         "databases",
         "postgres"
       ],
-      "triggers": []
+      "triggers": [
+        "postgres",
+        "databases"
+      ]
     },
     {
       "id": "prompt-engineer",
@@ -1475,9 +1987,18 @@
       "tier": "system",
       "tags": [
         "core-operating",
+        "engineer",
+        "prompt",
+        "prompt engineer",
         "prompt-engineer"
       ],
-      "triggers": []
+      "triggers": [
+        "prompt-engineer",
+        "prompt engineer",
+        "prompt",
+        "engineer",
+        "core-operating"
+      ]
     },
     {
       "id": "python-pro",
@@ -1498,9 +2019,16 @@
       "tier": "system",
       "tags": [
         "languages",
+        "python",
+        "python pro",
         "python-pro"
       ],
-      "triggers": []
+      "triggers": [
+        "python-pro",
+        "python pro",
+        "python",
+        "languages"
+      ]
     },
     {
       "id": "react-best-practices",
@@ -1521,9 +2049,18 @@
       "tier": "experimental",
       "tags": [
         "frameworks-runtimes",
+        "practices",
+        "react",
+        "react best practices",
         "react-best-practices"
       ],
-      "triggers": []
+      "triggers": [
+        "react-best-practices",
+        "react best practices",
+        "react",
+        "practices",
+        "frameworks-runtimes"
+      ]
     },
     {
       "id": "react-expert",
@@ -1543,10 +2080,19 @@
       "maturity": "stable",
       "tier": "system",
       "tags": [
+        "expert",
         "frameworks-runtimes",
+        "react",
+        "react expert",
         "react-expert"
       ],
-      "triggers": []
+      "triggers": [
+        "react-expert",
+        "react expert",
+        "react",
+        "expert",
+        "frameworks-runtimes"
+      ]
     },
     {
       "id": "redis",
@@ -1569,7 +2115,10 @@
         "databases",
         "redis"
       ],
-      "triggers": []
+      "triggers": [
+        "redis",
+        "databases"
+      ]
     },
     {
       "id": "ruby-pro",
@@ -1590,9 +2139,16 @@
       "tier": "system",
       "tags": [
         "languages",
+        "ruby",
+        "ruby pro",
         "ruby-pro"
       ],
-      "triggers": []
+      "triggers": [
+        "ruby-pro",
+        "ruby pro",
+        "ruby",
+        "languages"
+      ]
     },
     {
       "id": "rust-pro",
@@ -1613,9 +2169,16 @@
       "tier": "system",
       "tags": [
         "languages",
+        "rust",
+        "rust pro",
         "rust-pro"
       ],
-      "triggers": []
+      "triggers": [
+        "rust-pro",
+        "rust pro",
+        "rust",
+        "languages"
+      ]
     },
     {
       "id": "security-engineer",
@@ -1635,10 +2198,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "engineer",
+        "security",
+        "security engineer",
         "security-engineer",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "security-engineer",
+        "security engineer",
+        "security",
+        "engineer",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "seo-fundamentals",
@@ -1658,10 +2230,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "fundamentals",
+        "seo",
+        "seo fundamentals",
         "seo-fundamentals",
         "vertical-composed"
       ],
-      "triggers": []
+      "triggers": [
+        "seo-fundamentals",
+        "seo fundamentals",
+        "seo",
+        "fundamentals",
+        "vertical-composed"
+      ]
     },
     {
       "id": "serverless-patterns",
@@ -1681,10 +2262,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "patterns",
+        "serverless",
+        "serverless patterns",
         "serverless-patterns",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "serverless-patterns",
+        "serverless patterns",
+        "serverless",
+        "patterns",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "skill-creator",
@@ -1705,9 +2295,18 @@
       "tier": "system",
       "tags": [
         "core-operating",
+        "creator",
+        "skill",
+        "skill creator",
         "skill-creator"
       ],
-      "triggers": []
+      "triggers": [
+        "skill-creator",
+        "skill creator",
+        "skill",
+        "creator",
+        "core-operating"
+      ]
     },
     {
       "id": "spec-miner",
@@ -1727,10 +2326,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "miner",
+        "spec",
+        "spec miner",
         "spec-miner",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "spec-miner",
+        "spec miner",
+        "spec",
+        "miner",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "sqlite",
@@ -1753,7 +2361,10 @@
         "databases",
         "sqlite"
       ],
-      "triggers": []
+      "triggers": [
+        "sqlite",
+        "databases"
+      ]
     },
     {
       "id": "sre-engineer",
@@ -1773,10 +2384,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "engineer",
+        "sre",
+        "sre engineer",
         "sre-engineer",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "sre-engineer",
+        "sre engineer",
+        "sre",
+        "engineer",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "static-analysis",
@@ -1796,10 +2416,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "analysis",
+        "static",
+        "static analysis",
         "static-analysis",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "static-analysis",
+        "static analysis",
+        "static",
+        "analysis",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "stripe-best-practices",
@@ -1819,10 +2448,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "practices",
+        "stripe",
+        "stripe best practices",
         "stripe-best-practices",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "stripe-best-practices",
+        "stripe best practices",
+        "stripe",
+        "practices",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "supabase",
@@ -1845,7 +2483,10 @@
         "databases",
         "supabase"
       ],
-      "triggers": []
+      "triggers": [
+        "supabase",
+        "databases"
+      ]
     },
     {
       "id": "swift-pro",
@@ -1866,9 +2507,16 @@
       "tier": "system",
       "tags": [
         "languages",
+        "swift",
+        "swift pro",
         "swift-pro"
       ],
-      "triggers": []
+      "triggers": [
+        "swift-pro",
+        "swift pro",
+        "swift",
+        "languages"
+      ]
     },
     {
       "id": "tailwind-patterns",
@@ -1889,9 +2537,18 @@
       "tier": "curated",
       "tags": [
         "frameworks-runtimes",
+        "patterns",
+        "tailwind",
+        "tailwind patterns",
         "tailwind-patterns"
       ],
-      "triggers": []
+      "triggers": [
+        "tailwind-patterns",
+        "tailwind patterns",
+        "tailwind",
+        "patterns",
+        "frameworks-runtimes"
+      ]
     },
     {
       "id": "testing-patterns",
@@ -1911,10 +2568,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "patterns",
+        "testing",
+        "testing patterns",
         "testing-patterns",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "testing-patterns",
+        "testing patterns",
+        "testing",
+        "patterns",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "typescript-pro",
@@ -1935,9 +2601,16 @@
       "tier": "system",
       "tags": [
         "languages",
+        "typescript",
+        "typescript pro",
         "typescript-pro"
       ],
-      "triggers": []
+      "triggers": [
+        "typescript-pro",
+        "typescript pro",
+        "typescript",
+        "languages"
+      ]
     },
     {
       "id": "vitess",
@@ -1960,7 +2633,10 @@
         "databases",
         "vitess"
       ],
-      "triggers": []
+      "triggers": [
+        "vitess",
+        "databases"
+      ]
     },
     {
       "id": "vulnerability-scanner",
@@ -1980,10 +2656,19 @@
       "maturity": "incubating",
       "tier": "experimental",
       "tags": [
+        "scanner",
+        "vulnerability",
+        "vulnerability scanner",
         "vulnerability-scanner",
         "workflow-specialists"
       ],
-      "triggers": []
+      "triggers": [
+        "vulnerability-scanner",
+        "vulnerability scanner",
+        "vulnerability",
+        "scanner",
+        "workflow-specialists"
+      ]
     },
     {
       "id": "web-perf",
@@ -2004,9 +2689,18 @@
       "tier": "curated",
       "tags": [
         "frameworks-runtimes",
+        "perf",
+        "web",
+        "web perf",
         "web-perf"
       ],
-      "triggers": []
+      "triggers": [
+        "web-perf",
+        "web perf",
+        "web",
+        "perf",
+        "frameworks-runtimes"
+      ]
     },
     {
       "id": "webapp-testing",
@@ -2027,10 +2721,19 @@
       "tier": "curated",
       "tags": [
         "frameworks-runtimes",
+        "testing",
+        "webapp",
+        "webapp testing",
         "webapp-testing"
       ],
-      "triggers": []
+      "triggers": [
+        "webapp-testing",
+        "webapp testing",
+        "webapp",
+        "testing",
+        "frameworks-runtimes"
+      ]
     }
   ],
-  "contentHash": "698023b535717602"
+  "contentHash": "b905038bd1d0765e"
 }

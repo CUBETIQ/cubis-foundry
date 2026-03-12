@@ -3,6 +3,7 @@ name: vercel-expert
 description: Expert in Vercel platform delivery, runtime behavior, security controls, observability, and automation. Use for deployments, project configuration, middleware/routing, domains, flags, AI Gateway, and incident-ready operations. Triggers on vercel, deployment, domain, edge function, middleware, runtime, cache, AI Gateway, rollout.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
+maxTurns: 25
 skills: nextjs-developer, react-expert, tailwind-patterns, web-perf, serverless-patterns, nodejs-best-practices, typescript-pro, javascript-pro
 ---
 

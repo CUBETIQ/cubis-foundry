@@ -42,9 +42,18 @@ function createTestContext(): ToolRuntimeContext {
         primarySkills: ["flutter-expert"],
         supportingSkills: [],
         artifacts: {
-          codex: { workflowFile: "mobile.md", compatibilityAlias: "$workflow-mobile" },
-          copilot: { workflowFile: "mobile.md", promptFile: "workflow-mobile.prompt.md" },
-          antigravity: { workflowFile: "mobile.md", commandFile: "mobile.toml" },
+          codex: {
+            workflowFile: "mobile.md",
+            compatibilityAlias: "$workflow-mobile",
+          },
+          copilot: {
+            workflowFile: "mobile.md",
+            promptFile: "workflow-mobile.prompt.md",
+          },
+          antigravity: {
+            workflowFile: "mobile.md",
+            commandFile: "mobile.toml",
+          },
           claude: { workflowFile: "mobile.md" },
         },
       },
@@ -77,10 +86,11 @@ describe("tool registry", () => {
     expect(names).toContain("stitch_get_mode");
     expect(names).toContain("stitch_set_profile");
     expect(names).toContain("stitch_get_status");
+    expect(names).toContain("playwright_get_status");
   });
 
-  it("has exactly 14 built-in tools", () => {
-    expect(TOOL_REGISTRY).toHaveLength(14);
+  it("has exactly 15 built-in tools", () => {
+    expect(TOOL_REGISTRY).toHaveLength(15);
   });
 
   it("has no duplicate tool names", () => {
@@ -94,7 +104,9 @@ describe("tool registry", () => {
       expect(entry.name).toBeTruthy();
       expect(entry.description).toBeTruthy();
       expect(entry.schema).toBeTruthy();
-      expect(entry.category).toMatch(/^(skill|route|postman|stitch)$/);
+      expect(entry.category).toMatch(
+        /^(skill|route|postman|stitch|playwright)$/,
+      );
       expect(typeof entry.createHandler).toBe("function");
     }
   });
@@ -128,7 +140,11 @@ describe("tool registry", () => {
       (t) => t.name === "skill_list_categories",
     )!;
     const handler = entry.createHandler(ctx);
-    const result = (await handler({})) as {
+    const result = (await (
+      handler as unknown as (
+        args: Record<string, never>,
+      ) => Promise<{ content: Array<{ text: string }> }>
+    )({})) as {
       content: Array<{ text: string }>;
     };
     const data = JSON.parse(result.content[0].text);
@@ -137,15 +153,17 @@ describe("tool registry", () => {
 
   it("buildRegistrySummary produces correct structure", () => {
     const summary = buildRegistrySummary();
-    expect(summary.totalTools).toBe(14);
+    expect(summary.totalTools).toBe(15);
     expect(summary.categories).toHaveProperty("route");
     expect(summary.categories).toHaveProperty("skill");
     expect(summary.categories).toHaveProperty("postman");
     expect(summary.categories).toHaveProperty("stitch");
+    expect(summary.categories).toHaveProperty("playwright");
     expect(summary.categories.route.tools).toHaveLength(1);
     expect(summary.categories.skill.tools).toHaveLength(7);
     expect(summary.categories.postman.tools).toHaveLength(3);
     expect(summary.categories.stitch.tools).toHaveLength(3);
+    expect(summary.categories.playwright.tools).toHaveLength(1);
   });
 
   it("each schema has a valid .shape property", () => {

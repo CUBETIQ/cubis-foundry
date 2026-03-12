@@ -23,12 +23,20 @@ export function buildInitExecutionPlan({
   const planItems: InitExecutionPlanItem[] = [];
   const wantsPostman = hasMcpSelection(selections.selectedMcps, "postman");
   const wantsStitch = hasMcpSelection(selections.selectedMcps, "stitch");
-  const wantsFoundry = hasMcpSelection(selections.selectedMcps, "cubis-foundry");
+  const wantsFoundry = hasMcpSelection(
+    selections.selectedMcps,
+    "cubis-foundry",
+  );
+  const wantsPlaywright = hasMcpSelection(
+    selections.selectedMcps,
+    "playwright",
+  );
 
   for (const platform of selections.platforms) {
     const stitchSupported = platform === "antigravity";
     const stitchEnabled = wantsStitch && stitchSupported;
-    const hasAnyMcp = wantsPostman || stitchEnabled || wantsFoundry;
+    const hasAnyMcp =
+      wantsPostman || stitchEnabled || wantsFoundry || wantsPlaywright;
     const warnings: string[] = [];
     if (wantsStitch && !stitchSupported) {
       warnings.push(
@@ -48,10 +56,11 @@ export function buildInitExecutionPlan({
       target,
       postman: wantsPostman,
       stitch: stitchEnabled,
+      playwright: wantsPlaywright,
       stitchDefaultForAntigravity: false,
       mcpScope: selections.mcpScope,
       foundryMcp: wantsFoundry,
-      mcpToolSync: wantsPostman || stitchEnabled,
+      mcpToolSync: wantsPostman || stitchEnabled || wantsPlaywright,
       mcpRuntime: hasAnyMcp ? selections.mcpRuntime : "local",
       mcpFallback: "local",
       mcpBuildLocal: hasAnyMcp ? selections.mcpBuildLocal : false,
@@ -83,9 +92,9 @@ export function formatInitSummary(selections: InitWizardSelections) {
     `- Skill profile: ${selections.skillProfile}`,
     `- Skills scope: ${selections.skillsScope}`,
     `- MCP scope: ${selections.mcpScope}`,
-    `- MCP runtime: ${selections.mcpRuntime}${selections.mcpRuntime === "docker" ? selections.mcpBuildLocal ? " (build local image)" : " (pull image)" : ""}`,
+    `- MCP runtime: ${selections.mcpRuntime}${selections.mcpRuntime === "docker" ? (selections.mcpBuildLocal ? " (build local image)" : " (pull image)") : ""}`,
     `- MCP selections: ${selections.selectedMcps.length > 0 ? selections.selectedMcps.join(", ") : "(none)"}`,
     `- Postman mode: ${postmanSelected ? selections.postmanMode : "(not selected)"}`,
-    `- Postman workspace: ${postmanSelected ? selections.postmanWorkspaceId === null ? "null" : selections.postmanWorkspaceId : "(not selected)"}`,
+    `- Postman workspace: ${postmanSelected ? (selections.postmanWorkspaceId === null ? "null" : selections.postmanWorkspaceId) : "(not selected)"}`,
   ].join("\n");
 }

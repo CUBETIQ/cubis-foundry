@@ -18,6 +18,7 @@ triggers:
   ]
 tools: Read, Grep, Glob, Bash
 model: inherit
+maxTurns: 25
 skills: architecture-designer, api-designer, skill-creator, typescript-pro, javascript-pro
 ---
 

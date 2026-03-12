@@ -22,7 +22,13 @@ triggers:
   ]
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
+maxTurns: 25
 skills: sre-engineer, devops-engineer, error-ux-observability, observability, serverless-patterns, docker-kubernetes, ci-cd-pipelines, debugging-strategies, python-pro, golang-pro, typescript-pro
+handoffs:
+  - agent: "devops-engineer"
+    title: "Implement Changes"
+  - agent: "validator"
+    title: "Validate Reliability"
 ---
 
 # SRE Engineer

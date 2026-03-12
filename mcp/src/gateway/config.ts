@@ -8,10 +8,12 @@ import type {
   ServiceProfile,
   PostmanConfig,
   StitchConfig,
+  PlaywrightConfig,
 } from "../cbxConfig/types.js";
 import type { UpstreamConfig, UpstreamProvider } from "./types.js";
 
 const STITCH_DEFAULT_MCP_URL = "https://stitch.googleapis.com/mcp";
+const PLAYWRIGHT_DEFAULT_PORT = 8931;
 
 interface ResolvedGatewayConfig {
   scope: ConfigScope | null;
@@ -87,7 +89,11 @@ function buildPostmanConfig(
   const profiles = normalizeProfiles(postman?.profiles);
   const active = selectActiveProfile(profiles, postman?.activeProfileName);
 
-  const mcpUrl = firstString(postman?.mcpUrl, active?.profile.mcpUrl, active?.profile.url);
+  const mcpUrl = firstString(
+    postman?.mcpUrl,
+    active?.profile.mcpUrl,
+    active?.profile.url,
+  );
   if (!mcpUrl) {
     warnings.push("Postman MCP URL is not configured (postman.mcpUrl).");
   }
@@ -101,11 +107,15 @@ function buildPostmanConfig(
 
   const rawApiKeySet = !!firstString(active?.profile.apiKey);
   if (rawApiKeySet) {
-    warnings.push("Postman profile apiKey is ignored; configure apiKeyEnvVar/tokenEnvVar alias instead.");
+    warnings.push(
+      "Postman profile apiKey is ignored; configure apiKeyEnvVar/tokenEnvVar alias instead.",
+    );
   }
 
   if (!authEnvVar) {
-    warnings.push("Postman auth env var alias is missing (active profile apiKeyEnvVar/tokenEnvVar).");
+    warnings.push(
+      "Postman auth env var alias is missing (active profile apiKeyEnvVar/tokenEnvVar).",
+    );
     return {
       provider: "postman",
       mcpUrl,
@@ -155,15 +165,22 @@ function buildStitchConfig(
     firstString(stitch?.mcpUrl, active?.profile.mcpUrl, active?.profile.url) ??
     STITCH_DEFAULT_MCP_URL;
 
-  const authEnvVar = firstString(active?.profile.apiKeyEnvVar, stitch?.apiKeyEnvVar);
+  const authEnvVar = firstString(
+    active?.profile.apiKeyEnvVar,
+    stitch?.apiKeyEnvVar,
+  );
 
   const rawApiKeySet = !!firstString(active?.profile.apiKey);
   if (rawApiKeySet) {
-    warnings.push("Stitch profile apiKey is ignored; configure apiKeyEnvVar alias instead.");
+    warnings.push(
+      "Stitch profile apiKey is ignored; configure apiKeyEnvVar alias instead.",
+    );
   }
 
   if (!authEnvVar) {
-    warnings.push("Stitch auth env var alias is missing (active profile apiKeyEnvVar).");
+    warnings.push(
+      "Stitch auth env var alias is missing (active profile apiKeyEnvVar).",
+    );
     return {
       provider: "stitch",
       mcpUrl,
@@ -200,6 +217,36 @@ function buildStitchConfig(
   };
 }
 
+function buildPlaywrightConfig(
+  playwright: PlaywrightConfig | undefined,
+  scope: ConfigScope | null,
+  configPath: string | null,
+): UpstreamConfig {
+  const warnings: string[] = [];
+  const portRaw = playwright?.port ?? PLAYWRIGHT_DEFAULT_PORT;
+  const envPort = process.env.PLAYWRIGHT_MCP_PORT
+    ? Number(process.env.PLAYWRIGHT_MCP_PORT)
+    : undefined;
+  const effectivePort =
+    envPort && Number.isFinite(envPort) && envPort > 0 && envPort < 65536
+      ? envPort
+      : Number.isFinite(portRaw) && portRaw > 0 && portRaw < 65536
+        ? portRaw
+        : PLAYWRIGHT_DEFAULT_PORT;
+  const mcpUrl =
+    firstString(playwright?.mcpUrl) ?? `http://localhost:${effectivePort}/mcp`;
+
+  return {
+    provider: "playwright",
+    mcpUrl,
+    authHeader: {},
+    authEnvVar: null,
+    scope,
+    configPath,
+    warnings,
+  };
+}
+
 export function resolveGatewayConfig(
   scope: ConfigScope | "auto" = "auto",
 ): ResolvedGatewayConfig {
@@ -230,6 +277,7 @@ export function resolveGatewayConfig(
           configPath: null,
           warnings: [warning],
         },
+        playwright: buildPlaywrightConfig(undefined, null, null),
       },
     };
   }
@@ -238,8 +286,21 @@ export function resolveGatewayConfig(
     scope: effective.scope,
     configPath: effective.path,
     providers: {
-      postman: buildPostmanConfig(effective.config.postman, effective.scope, effective.path),
-      stitch: buildStitchConfig(effective.config.stitch, effective.scope, effective.path),
+      postman: buildPostmanConfig(
+        effective.config.postman,
+        effective.scope,
+        effective.path,
+      ),
+      stitch: buildStitchConfig(
+        effective.config.stitch,
+        effective.scope,
+        effective.path,
+      ),
+      playwright: buildPlaywrightConfig(
+        effective.config.playwright,
+        effective.scope,
+        effective.path,
+      ),
     },
   };
 }

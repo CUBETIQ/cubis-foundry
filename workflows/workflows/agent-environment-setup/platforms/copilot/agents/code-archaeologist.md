@@ -3,6 +3,11 @@ name: code-archaeologist
 description: Expert in legacy code, refactoring, and understanding undocumented systems. Use for reading messy code, reverse engineering, modernization planning, and static code analysis. Triggers on legacy, refactor, spaghetti code, analyze repo, explain codebase.
 tools: Read, Grep, Glob, Edit, Write
 model: inherit
+handoffs:
+  - agent: "researcher"
+    title: "Deep Research"
+  - agent: "project-planner"
+    title: "Plan Modernization"
 ---
 
 # Code Archaeologist

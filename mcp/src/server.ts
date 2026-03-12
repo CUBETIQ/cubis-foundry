@@ -2,7 +2,7 @@
  * Cubis Foundry MCP Server – server factory.
  *
  * Creates and configures the McpServer instance with built-in tools
- * (via declarative registry) plus dynamic Postman/Stitch passthrough namespaces.
+ * (via declarative registry) plus dynamic Postman/Stitch/Playwright passthrough namespaces.
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -31,7 +31,7 @@ function toolCallErrorResult({
   namespacedName,
   error,
 }: {
-  service: "postman" | "stitch";
+  service: "postman" | "stitch" | "playwright";
   namespacedName: string;
   error: unknown;
 }) {
@@ -101,7 +101,11 @@ export async function createServer({
   const dynamicSchema = z.object({}).passthrough();
   const registeredDynamicToolNames = new Set<string>();
 
-  for (const catalog of [upstreamCatalogs.postman, upstreamCatalogs.stitch]) {
+  for (const catalog of [
+    upstreamCatalogs.postman,
+    upstreamCatalogs.stitch,
+    upstreamCatalogs.playwright,
+  ]) {
     for (const tool of catalog.tools) {
       const registrationNames = [
         tool.namespacedName,

@@ -90,6 +90,11 @@ export async function promptInitMcpSelection(defaultMcps: InitMcpId[]) {
         value: "stitch",
         checked: defaultMcps.includes("stitch"),
       },
+      {
+        name: "Playwright",
+        value: "playwright",
+        checked: defaultMcps.includes("playwright"),
+      },
     ],
   });
 }

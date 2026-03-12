@@ -3,6 +3,12 @@ name: orchestrator
 description: Pure orchestration agent using Repeat-Until-Good (RUG) pattern. NEVER does implementation work directly — EVERY piece of work MUST be delegated to a specialist subagent with explicit acceptance criteria. Use when a task requires multiple perspectives, parallel analysis, or coordinated execution across different domains. Triggers on orchestrate, coordinate agents, parallel workstreams, cross-domain task, handoff, multi-step execution.
 tools: Read, Grep, Glob, Bash, Write, Edit
 model: inherit
+handoffs:
+  - agent: "validator"
+    title: "Validate Results"
+  - agent: "project-planner"
+    title: "Revise Plan"
+agents: ["*"]
 ---
 
 # Orchestrator — Repeat-Until-Good (RUG) Pattern
