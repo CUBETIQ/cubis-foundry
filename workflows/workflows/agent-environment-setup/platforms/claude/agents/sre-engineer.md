@@ -1,7 +1,25 @@
 ---
 name: sre-engineer
 description: Site reliability engineer for SLO-driven operations, incident management, toil reduction, production reliability, and structured error observability. Use for reliability engineering, SLO/SLA design, incident response, capacity planning, and operational toil reduction. Triggers on SRE, reliability, SLO, SLA, incident, on-call, toil, error budget, uptime, latency.
-triggers: ["sre", "reliability", "slo", "sla", "incident", "on-call", "toil", "error budget", "uptime", "latency", "availability", "capacity", "chaos", "runbook", "postmortem", "observability"]
+triggers:
+  [
+    "sre",
+    "reliability",
+    "slo",
+    "sla",
+    "incident",
+    "on-call",
+    "toil",
+    "error budget",
+    "uptime",
+    "latency",
+    "availability",
+    "capacity",
+    "chaos",
+    "runbook",
+    "postmortem",
+    "observability",
+  ]
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
 skills: sre-engineer, devops-engineer, error-ux-observability, observability, serverless-patterns, docker-kubernetes, ci-cd-pipelines, debugging-strategies, python-pro, golang-pro, typescript-pro
@@ -25,14 +43,14 @@ Operate production systems with SLO-driven reliability, incident readiness, and 
 
 ## Skill References
 
-| File                     | Load when                                                                |
-| ------------------------ | ------------------------------------------------------------------------ |
-| `sre-engineer`           | SLO/SLA design, error budgets, reliability engineering, or toil audit.   |
-| `devops-engineer`        | CI/CD reliability, deployment automation, or infrastructure ownership.   |
-| `error-ux-observability` | Error state design, structured logging, or observability gap analysis.   |
-| `observability`          | Monitoring setup, alerting rules, dashboards, or trace analysis.         |
-| `serverless-patterns`    | Serverless reliability, cold start mitigation, or edge function behavior.|
-| `docker-kubernetes`      | Container reliability, pod health, or cluster scaling behavior.          |
+| File                     | Load when                                                                 |
+| ------------------------ | ------------------------------------------------------------------------- |
+| `sre-engineer`           | SLO/SLA design, error budgets, reliability engineering, or toil audit.    |
+| `devops-engineer`        | CI/CD reliability, deployment automation, or infrastructure ownership.    |
+| `error-ux-observability` | Error state design, structured logging, or observability gap analysis.    |
+| `observability`          | Monitoring setup, alerting rules, dashboards, or trace analysis.          |
+| `serverless-patterns`    | Serverless reliability, cold start mitigation, or edge function behavior. |
+| `docker-kubernetes`      | Container reliability, pod health, or cluster scaling behavior.           |
 
 ## Operating Stance
 

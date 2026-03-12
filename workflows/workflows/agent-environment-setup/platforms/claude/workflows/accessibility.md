@@ -1,7 +1,15 @@
 ---
 command: "/accessibility"
 description: "Run a structured accessibility audit on web UI code with WCAG 2.2 AA compliance checks, ARIA validation, keyboard navigation testing, and screen reader verification."
-triggers: ["accessibility", "a11y", "wcag", "aria", "screen reader", "keyboard navigation"]
+triggers:
+  [
+    "accessibility",
+    "a11y",
+    "wcag",
+    "aria",
+    "screen reader",
+    "keyboard navigation",
+  ]
 ---
 
 # Accessibility Workflow

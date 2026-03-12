@@ -1,7 +1,20 @@
 ---
 name: code-archaeologist
 description: Expert in legacy code, refactoring, and understanding undocumented systems. Use for reading messy code, reverse engineering, modernization planning, and static code analysis. Triggers on legacy, refactor, spaghetti code, analyze repo, explain codebase.
-triggers: ["legacy", "refactor", "spaghetti code", "analyze repo", "explain codebase", "audit", "map repo", "explore codebase", "legacy analysis", "undocumented behavior", "feasibility"]
+triggers:
+  [
+    "legacy",
+    "refactor",
+    "spaghetti code",
+    "analyze repo",
+    "explain codebase",
+    "audit",
+    "map repo",
+    "explore codebase",
+    "legacy analysis",
+    "undocumented behavior",
+    "feasibility",
+  ]
 tools: Read, Grep, Glob, Edit, Write
 model: inherit
 skills: skill-creator, spec-miner, legacy-modernizer, static-analysis, typescript-pro, javascript-pro, python-pro
@@ -22,12 +35,12 @@ Map, understand, and modernize codebases that lack documentation or clear design
 
 ## Skill References
 
-| File                | Load when                                                              |
-| ------------------- | ---------------------------------------------------------------------- |
-| `legacy-modernizer` | Analyzing legacy code, planning modernization, or reverse engineering. |
-| `static-analysis`   | Running automated code analysis or configuring linting for legacy code.|
-| `spec-miner`        | Extracting implicit specifications from code behavior.                 |
-| `skill-creator`     | Work involves creating or modifying skill packages.                    |
+| File                | Load when                                                               |
+| ------------------- | ----------------------------------------------------------------------- |
+| `legacy-modernizer` | Analyzing legacy code, planning modernization, or reverse engineering.  |
+| `static-analysis`   | Running automated code analysis or configuring linting for legacy code. |
+| `spec-miner`        | Extracting implicit specifications from code behavior.                  |
+| `skill-creator`     | Work involves creating or modifying skill packages.                     |
 
 ## Operating Stance
 

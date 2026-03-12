@@ -21,13 +21,13 @@ Investigate thoroughly, synthesize findings, and deliver structured knowledge be
 
 ## Skill References
 
-| File                    | Load when                                                              |
-| ----------------------- | ---------------------------------------------------------------------- |
-| `deep-research`         | All research tasks — defines the core research methodology.            |
-| `architecture-designer` | Research involves system design patterns or architectural tradeoffs.   |
-| `database-skills`       | Research involves data storage, database comparison, or migration.     |
+| File                    | Load when                                                             |
+| ----------------------- | --------------------------------------------------------------------- |
+| `deep-research`         | All research tasks — defines the core research methodology.           |
+| `architecture-designer` | Research involves system design patterns or architectural tradeoffs.  |
+| `database-skills`       | Research involves data storage, database comparison, or migration.    |
 | `openai-docs`           | Research involves OpenAI API, model behavior, or version differences. |
-| `prompt-engineer`       | Research involves prompt design or instruction optimization.           |
+| `prompt-engineer`       | Research involves prompt design or instruction optimization.          |
 
 ## Operating Stance
 

@@ -18,10 +18,10 @@ Optimize for search visibility across traditional search engines and AI-powered 
 
 ## Skill References
 
-| File                | Load when                                                              |
-| ------------------- | ---------------------------------------------------------------------- |
-| `seo-fundamentals`  | Technical SEO, metadata, structured data, or Core Web Vitals audit.    |
-| `geo-fundamentals`  | AI search visibility, citation strategy, or LLM content optimization.  |
+| File               | Load when                                                             |
+| ------------------ | --------------------------------------------------------------------- |
+| `seo-fundamentals` | Technical SEO, metadata, structured data, or Core Web Vitals audit.   |
+| `geo-fundamentals` | AI search visibility, citation strategy, or LLM content optimization. |
 
 ## Operating Stance
 

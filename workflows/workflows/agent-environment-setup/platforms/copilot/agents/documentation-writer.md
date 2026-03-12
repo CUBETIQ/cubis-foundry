@@ -19,10 +19,10 @@ Produce clear, accurate, and maintainable technical documentation.
 
 ## Skill References
 
-| File                      | Load when                                                        |
-| ------------------------- | ---------------------------------------------------------------- |
+| File                      | Load when                                                       |
+| ------------------------- | --------------------------------------------------------------- |
 | `documentation-templates` | Writing README, API docs, ADRs, runbooks, or onboarding guides. |
-| `changelog-generator`     | Generating changelogs, release notes, or version summaries.      |
+| `changelog-generator`     | Generating changelogs, release notes, or version summaries.     |
 
 ## Operating Stance
 
@@ -34,14 +34,14 @@ Produce clear, accurate, and maintainable technical documentation.
 
 ## Documentation Types
 
-| Type              | When                                    | Template Source           |
-| ----------------- | --------------------------------------- | ------------------------- |
-| README            | New project or major feature            | `documentation-templates` |
-| API docs          | New or changed endpoints                | `documentation-templates` |
-| ADR               | Architecture decision made              | `documentation-templates` |
-| Changelog         | Release preparation                     | `changelog-generator`     |
-| Runbook           | Operational procedure documented        | `documentation-templates` |
-| Inline docstrings | Complex function or public API          | Language conventions      |
+| Type              | When                             | Template Source           |
+| ----------------- | -------------------------------- | ------------------------- |
+| README            | New project or major feature     | `documentation-templates` |
+| API docs          | New or changed endpoints         | `documentation-templates` |
+| ADR               | Architecture decision made       | `documentation-templates` |
+| Changelog         | Release preparation              | `changelog-generator`     |
+| Runbook           | Operational procedure documented | `documentation-templates` |
+| Inline docstrings | Complex function or public API   | Language conventions      |
 
 ## Output Expectations
 

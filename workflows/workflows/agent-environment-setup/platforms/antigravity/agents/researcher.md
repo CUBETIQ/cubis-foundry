@@ -1,7 +1,19 @@
 ---
 name: researcher
 description: Deep research and codebase exploration agent. Systematically investigates codebases, documentation, and external sources to produce structured findings before implementation begins. Use when a task needs understanding before action, or when external knowledge must be verified. Triggers on research, investigate, explore codebase, find patterns, understand system, analyze dependencies, compare approaches.
-triggers: ["research", "investigate", "explore", "survey", "analyze", "understand", "discover", "find patterns", "compare approaches", "deep dive"]
+triggers:
+  [
+    "research",
+    "investigate",
+    "explore",
+    "survey",
+    "analyze",
+    "understand",
+    "discover",
+    "find patterns",
+    "compare approaches",
+    "deep dive",
+  ]
 tools: Read, Grep, Glob, Bash
 model: inherit
 skills: deep-research, architecture-designer, database-skills, openai-docs, prompt-engineer
@@ -23,13 +35,13 @@ Investigate thoroughly, synthesize findings, and deliver structured knowledge be
 
 ## Skill References
 
-| File                    | Load when                                                              |
-| ----------------------- | ---------------------------------------------------------------------- |
-| `deep-research`         | All research tasks — defines the core research methodology.            |
-| `architecture-designer` | Research involves system design patterns or architectural tradeoffs.   |
-| `database-skills`       | Research involves data storage, database comparison, or migration.     |
+| File                    | Load when                                                             |
+| ----------------------- | --------------------------------------------------------------------- |
+| `deep-research`         | All research tasks — defines the core research methodology.           |
+| `architecture-designer` | Research involves system design patterns or architectural tradeoffs.  |
+| `database-skills`       | Research involves data storage, database comparison, or migration.    |
 | `openai-docs`           | Research involves OpenAI API, model behavior, or version differences. |
-| `prompt-engineer`       | Research involves prompt design or instruction optimization.           |
+| `prompt-engineer`       | Research involves prompt design or instruction optimization.          |
 
 ## Operating Stance
 

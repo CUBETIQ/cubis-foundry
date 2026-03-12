@@ -22,8 +22,12 @@ trap 'rm -rf "$TMP_DIR"' EXIT
 
 rg() {
   if type -P rg >/dev/null 2>&1; then
+    local status=0
+    set +e
     command rg "$@"
-    return
+    status=$?
+    set -e
+    return "$status"
   fi
 
   while [ "$#" -gt 0 ]; do
@@ -53,7 +57,12 @@ rg() {
   local pattern="$1"
   shift
 
+  local status=0
+  set +e
   perl -ne 'BEGIN { $re = shift @ARGV; $found = 0; } if (/$re/) { $found = 1; } END { exit($found ? 0 : 1); }' -- "$pattern" "$@"
+  status=$?
+  set -e
+  return "$status"
 }
 
 log_ok() {

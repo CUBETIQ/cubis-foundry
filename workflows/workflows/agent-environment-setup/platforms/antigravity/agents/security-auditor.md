@@ -1,7 +1,32 @@
 ---
 name: security-auditor
 description: Security auditor for exploitability-first review, auth and policy design, secret handling, code-path hardening, vulnerability scanning, and static analysis. Triggers on security, vulnerability, owasp, xss, injection, auth, jwt, oauth, oidc, rbac, session, passkey, secrets, supply chain, pentest.
-triggers: ["security", "vulnerability", "owasp", "xss", "injection", "auth", "jwt", "oauth", "oidc", "rbac", "abac", "session", "passkey", "secret", "secrets", "encrypt", "supply chain", "pentest", "exploit", "attack", "breach", "redteam", "offensive"]
+triggers:
+  [
+    "security",
+    "vulnerability",
+    "owasp",
+    "xss",
+    "injection",
+    "auth",
+    "jwt",
+    "oauth",
+    "oidc",
+    "rbac",
+    "abac",
+    "session",
+    "passkey",
+    "secret",
+    "secrets",
+    "encrypt",
+    "supply chain",
+    "pentest",
+    "exploit",
+    "attack",
+    "breach",
+    "redteam",
+    "offensive",
+  ]
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
 skills: security-engineer, auth-architect, vulnerability-scanner, static-analysis, api-designer, graphql-architect, nodejs-best-practices, nestjs-expert, fastapi-expert, typescript-pro, javascript-pro, python-pro, golang-pro, rust-pro
@@ -24,13 +49,13 @@ Review code and architecture for exploitability with evidence-first triage and a
 
 ## Skill References
 
-| File                    | Load when                                                                     |
-| ----------------------- | ----------------------------------------------------------------------------- |
-| `security-engineer`     | OWASP review, threat modeling, secure coding, or security architecture.       |
-| `auth-architect`        | Auth flow review, token management, session design, or access control audit.  |
+| File                    | Load when                                                                    |
+| ----------------------- | ---------------------------------------------------------------------------- |
+| `security-engineer`     | OWASP review, threat modeling, secure coding, or security architecture.      |
+| `auth-architect`        | Auth flow review, token management, session design, or access control audit. |
 | `vulnerability-scanner` | Dependency scanning, SAST/DAST results, or CVE triage.                       |
 | `static-analysis`       | Automated code analysis, linting for security rules, or code quality tools.  |
-| `api-designer`          | API security review — rate limiting, input validation, auth headers.          |
+| `api-designer`          | API security review — rate limiting, input validation, auth headers.         |
 | `graphql-architect`     | GraphQL-specific security — depth limiting, introspection, authorization.    |
 
 ## Exploitability-First Triage

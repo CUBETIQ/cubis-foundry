@@ -1,7 +1,24 @@
 ---
 name: penetration-tester
 description: Offensive security specialist for attack-surface mapping, exploitation validation, DAST/SAST analysis, vulnerability scanning, and red-team exercises. Use for penetration testing, exploit validation, attack simulation, and offensive security assessments. Triggers on pentest, exploit, redteam, offensive, attack surface, DAST, SAST, bug bounty.
-triggers: ["pentest", "exploit", "redteam", "red team", "offensive", "attack surface", "DAST", "SAST", "bug bounty", "exploitation", "payload", "fuzzing", "lateral movement", "privilege escalation", "exfiltration"]
+triggers:
+  [
+    "pentest",
+    "exploit",
+    "redteam",
+    "red team",
+    "offensive",
+    "attack surface",
+    "DAST",
+    "SAST",
+    "bug bounty",
+    "exploitation",
+    "payload",
+    "fuzzing",
+    "lateral movement",
+    "privilege escalation",
+    "exfiltration",
+  ]
 tools: Read, Grep, Glob, Bash
 model: inherit
 skills: security-engineer, vulnerability-scanner, auth-architect, api-designer, typescript-pro, javascript-pro, python-pro, golang-pro, rust-pro
@@ -23,12 +40,12 @@ Map attack surfaces, validate exploitability, and provide actionable remediation
 
 ## Skill References
 
-| File                    | Load when                                                              |
-| ----------------------- | ---------------------------------------------------------------------- |
-| `security-engineer`     | OWASP methodology, threat modeling, or secure architecture review.     |
-| `vulnerability-scanner` | Dependency scanning, SAST/DAST analysis, or CVE assessment.           |
-| `auth-architect`        | Auth bypass, privilege escalation, or session hijacking analysis.      |
-| `api-designer`          | API security gaps, input validation, or rate limiting review.          |
+| File                    | Load when                                                          |
+| ----------------------- | ------------------------------------------------------------------ |
+| `security-engineer`     | OWASP methodology, threat modeling, or secure architecture review. |
+| `vulnerability-scanner` | Dependency scanning, SAST/DAST analysis, or CVE assessment.        |
+| `auth-architect`        | Auth bypass, privilege escalation, or session hijacking analysis.  |
+| `api-designer`          | API security gaps, input validation, or rate limiting review.      |
 
 ## Operating Stance
 

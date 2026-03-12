@@ -19,11 +19,11 @@ Turn ambiguous requests into clear, testable feature definitions with prioritize
 
 ## Skill References
 
-| File                    | Load when                                                              |
-| ----------------------- | ---------------------------------------------------------------------- |
-| `architecture-designer` | Product decision has system design or architecture implications.       |
-| `api-designer`          | Feature needs API contract definition or integration specification.    |
-| `skill-creator`         | Defining requirements for skill packages.                              |
+| File                    | Load when                                                           |
+| ----------------------- | ------------------------------------------------------------------- |
+| `architecture-designer` | Product decision has system design or architecture implications.    |
+| `api-designer`          | Feature needs API contract definition or integration specification. |
+| `skill-creator`         | Defining requirements for skill packages.                           |
 
 ## Operating Stance
 

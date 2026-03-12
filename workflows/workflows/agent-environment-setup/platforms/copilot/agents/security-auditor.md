@@ -22,13 +22,13 @@ Review code and architecture for exploitability with evidence-first triage and a
 
 ## Skill References
 
-| File                    | Load when                                                                     |
-| ----------------------- | ----------------------------------------------------------------------------- |
-| `security-engineer`     | OWASP review, threat modeling, secure coding, or security architecture.       |
-| `auth-architect`        | Auth flow review, token management, session design, or access control audit.  |
+| File                    | Load when                                                                    |
+| ----------------------- | ---------------------------------------------------------------------------- |
+| `security-engineer`     | OWASP review, threat modeling, secure coding, or security architecture.      |
+| `auth-architect`        | Auth flow review, token management, session design, or access control audit. |
 | `vulnerability-scanner` | Dependency scanning, SAST/DAST results, or CVE triage.                       |
 | `static-analysis`       | Automated code analysis, linting for security rules, or code quality tools.  |
-| `api-designer`          | API security review — rate limiting, input validation, auth headers.          |
+| `api-designer`          | API security review — rate limiting, input validation, auth headers.         |
 | `graphql-architect`     | GraphQL-specific security — depth limiting, introspection, authorization.    |
 
 ## Exploitability-First Triage

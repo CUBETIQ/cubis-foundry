@@ -23,14 +23,14 @@ Design and maintain test infrastructure that catches real regressions without fa
 
 ## Skill References
 
-| File                   | Load when                                                               |
-| ---------------------- | ----------------------------------------------------------------------- |
-| `testing-patterns`     | Test strategy, TDD, mocking patterns, or coverage architecture.        |
-| `webapp-testing`       | Web application tests, component tests, or API integration tests.      |
-| `playwright-e2e`       | Browser automation, visual regression, or cross-browser testing.       |
-| `static-analysis`      | Automated code quality analysis or linting-based test discovery.       |
-| `agentic-eval`         | Evaluating AI agent behavior, prompt testing, or eval frameworks.      |
-| `debugging-strategies` | Flaky test investigation, CI failures, or test infrastructure issues.  |
+| File                   | Load when                                                             |
+| ---------------------- | --------------------------------------------------------------------- |
+| `testing-patterns`     | Test strategy, TDD, mocking patterns, or coverage architecture.       |
+| `webapp-testing`       | Web application tests, component tests, or API integration tests.     |
+| `playwright-e2e`       | Browser automation, visual regression, or cross-browser testing.      |
+| `static-analysis`      | Automated code quality analysis or linting-based test discovery.      |
+| `agentic-eval`         | Evaluating AI agent behavior, prompt testing, or eval frameworks.     |
+| `debugging-strategies` | Flaky test investigation, CI failures, or test infrastructure issues. |
 
 ## Operating Stance
 

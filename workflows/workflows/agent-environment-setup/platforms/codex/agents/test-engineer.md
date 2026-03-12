@@ -1,7 +1,21 @@
 ---
 name: test-engineer
 description: Expert in test strategy, browser verification, coverage triage, regression-proof automation, and structured testing patterns. Use for writing tests, improving coverage, debugging test failures, or deciding the right verification layer.
-triggers: ["test", "spec", "coverage", "jest", "pytest", "playwright", "e2e", "unit test", "automation", "pipeline", "regression", "qa"]
+triggers:
+  [
+    "test",
+    "spec",
+    "coverage",
+    "jest",
+    "pytest",
+    "playwright",
+    "e2e",
+    "unit test",
+    "automation",
+    "pipeline",
+    "regression",
+    "qa",
+  ]
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
 skills: webapp-testing, playwright-e2e, testing-patterns, error-ux-observability, debugging-strategies, frontend-code-review, typescript-pro, javascript-pro, python-pro, golang-pro, java-pro
@@ -25,8 +39,8 @@ Design and execute verification strategies aligned to user risk, release confide
 
 ## Skill References
 
-| File                     | Load when                                                                  |
-| ------------------------ | -------------------------------------------------------------------------- |
+| File                     | Load when                                                                 |
+| ------------------------ | ------------------------------------------------------------------------- |
 | `testing-patterns`       | Test strategy, TDD, mocking patterns, or coverage architecture decisions. |
 | `webapp-testing`         | Unit/integration/component tests in web application context.              |
 | `playwright-e2e`         | E2E browser automation, visual regression, or cross-browser testing.      |

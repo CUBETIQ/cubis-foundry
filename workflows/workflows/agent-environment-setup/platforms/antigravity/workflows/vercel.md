@@ -1,7 +1,16 @@
 ---
 command: "/vercel"
 description: "Drive Vercel implementation and operations via vercel-expert with deployment, runtime, security, and observability guardrails."
-triggers: ["vercel", "deployment", "preview", "edge", "functions", "domains", "vercel cli"]
+triggers:
+  [
+    "vercel",
+    "deployment",
+    "preview",
+    "edge",
+    "functions",
+    "domains",
+    "vercel cli",
+  ]
 ---
 
 # Vercel Workflow

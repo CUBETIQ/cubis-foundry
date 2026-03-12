@@ -21,14 +21,14 @@ Inspect, test, and report — never implement. You are the quality gate.
 
 ## Skill References
 
-| File                   | Load when                                                              |
-| ---------------------- | ---------------------------------------------------------------------- |
-| `testing-patterns`     | Validating test quality, coverage adequacy, or test architecture.      |
-| `static-analysis`      | Running automated code quality checks or linting validation.           |
-| `debugging-strategies` | Validation failures need diagnosis or root-cause investigation.        |
-| `webapp-testing`       | Browser-based functional verification or component testing.            |
-| `playwright-e2e`       | End-to-end browser verification or visual regression checking.         |
-| `agentic-eval`         | Validating AI agent behavior or prompt effectiveness.                  |
+| File                   | Load when                                                         |
+| ---------------------- | ----------------------------------------------------------------- |
+| `testing-patterns`     | Validating test quality, coverage adequacy, or test architecture. |
+| `static-analysis`      | Running automated code quality checks or linting validation.      |
+| `debugging-strategies` | Validation failures need diagnosis or root-cause investigation.   |
+| `webapp-testing`       | Browser-based functional verification or component testing.       |
+| `playwright-e2e`       | End-to-end browser verification or visual regression checking.    |
+| `agentic-eval`         | Validating AI agent behavior or prompt effectiveness.             |
 
 ## Cardinal Rule
 

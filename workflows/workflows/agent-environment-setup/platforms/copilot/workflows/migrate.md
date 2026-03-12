@@ -1,7 +1,15 @@
 ---
 command: "/migrate"
 description: "Plan and execute technology migrations, framework upgrades, and dependency updates with rollback safety, incremental verification, and zero-downtime transition."
-triggers: ["migrate", "upgrade", "update dependency", "framework upgrade", "version bump", "major update"]
+triggers:
+  [
+    "migrate",
+    "upgrade",
+    "update dependency",
+    "framework upgrade",
+    "version bump",
+    "major update",
+  ]
 ---
 
 # Migrate Workflow

@@ -26,19 +26,19 @@ Design and operate data systems that stay correct, performant, and evolvable und
 
 Load on demand. Do not preload all references.
 
-| File                 | Load when                                                                          |
-| -------------------- | ---------------------------------------------------------------------------------- |
-| `database-design`    | Schema normalization, entity relationships, or data modeling decisions.             |
-| `database-optimizer` | Query performance, index strategy, or EXPLAIN analysis.                            |
-| `database-skills`    | Cross-cutting operations, migration patterns, or general database guidance.        |
-| `drizzle-expert`     | Drizzle ORM schema definitions, queries, or migrations.                            |
-| `postgres`           | PostgreSQL-specific features, extensions, or tuning.                               |
-| `mysql`              | MySQL-specific features, replication, or optimization.                             |
-| `sqlite`             | SQLite constraints, WAL mode, or embedded database patterns.                       |
-| `mongodb`            | MongoDB document design, aggregation pipelines, or sharding.                       |
-| `redis`              | Redis data structures, caching patterns, or pub/sub.                               |
-| `supabase`           | Supabase RLS policies, Edge Functions, or real-time subscriptions.                 |
-| `firebase`           | Firestore rules, Cloud Functions, or Firebase Auth integration.                    |
+| File                 | Load when                                                                   |
+| -------------------- | --------------------------------------------------------------------------- |
+| `database-design`    | Schema normalization, entity relationships, or data modeling decisions.     |
+| `database-optimizer` | Query performance, index strategy, or EXPLAIN analysis.                     |
+| `database-skills`    | Cross-cutting operations, migration patterns, or general database guidance. |
+| `drizzle-expert`     | Drizzle ORM schema definitions, queries, or migrations.                     |
+| `postgres`           | PostgreSQL-specific features, extensions, or tuning.                        |
+| `mysql`              | MySQL-specific features, replication, or optimization.                      |
+| `sqlite`             | SQLite constraints, WAL mode, or embedded database patterns.                |
+| `mongodb`            | MongoDB document design, aggregation pipelines, or sharding.                |
+| `redis`              | Redis data structures, caching patterns, or pub/sub.                        |
+| `supabase`           | Supabase RLS policies, Edge Functions, or real-time subscriptions.          |
+| `firebase`           | Firestore rules, Cloud Functions, or Firebase Auth integration.             |
 
 ## Operating Stance
 
@@ -50,12 +50,12 @@ Load on demand. Do not preload all references.
 
 ## Decision Frameworks
 
-| When choosing...         | Prefer                              | Because                                          |
-| ------------------------ | ----------------------------------- | ------------------------------------------------ |
-| Schema design            | 3NF with strategic denormalization  | Correctness first, performance where measured     |
-| Migration approach       | Forward-only with rollback plan     | Production safety with escape hatch               |
-| Index strategy           | Covering indexes for hot queries    | Eliminate random I/O on critical paths            |
-| Data access layer        | Repository pattern with typed ORM   | Type safety, testable, swappable engine           |
+| When choosing...   | Prefer                             | Because                                       |
+| ------------------ | ---------------------------------- | --------------------------------------------- |
+| Schema design      | 3NF with strategic denormalization | Correctness first, performance where measured |
+| Migration approach | Forward-only with rollback plan    | Production safety with escape hatch           |
+| Index strategy     | Covering indexes for hot queries   | Eliminate random I/O on critical paths        |
+| Data access layer  | Repository pattern with typed ORM  | Type safety, testable, swappable engine       |
 
 ## Output Expectations
 

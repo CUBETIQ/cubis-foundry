@@ -1,12 +1,12 @@
 {
   "$schema": "cubis-foundry-mcp-manifest-v1",
-  "generatedAt": "2026-03-11T17:33:27.199Z",
-  "contentHash": "acf37084243b9f7f",
+  "generatedAt": "2026-03-12T01:33:23.970Z",
+  "contentHash": "20640564452f4105",
   "summary": {
     "totalSkills": 87,
     "totalCategories": 20,
-    "totalBytes": 343577,
-    "estimatedTokens": 85895
+    "totalBytes": 348659,
+    "estimatedTokens": 87165
   },
   "categories": [
     {
@@ -226,7 +226,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 3016,
+      "fileBytes": 3385,
       "warnings": [
         "description too long (212 chars)"
       ]
@@ -277,7 +277,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 4632
+      "fileBytes": 4976
     },
     {
       "id": "ci-cd-pipelines",
@@ -330,7 +330,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 4931
+      "fileBytes": 4942
     },
     {
       "id": "cpp-pro",
@@ -568,7 +568,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 5063
+      "fileBytes": 5385
     },
     {
       "id": "docker-kubernetes",
@@ -618,7 +618,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 5272
+      "fileBytes": 5615
     },
     {
       "id": "drizzle-expert",
@@ -671,7 +671,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 5641
+      "fileBytes": 5654
     },
     {
       "id": "fastapi-expert",
@@ -986,7 +986,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 5743
+      "fileBytes": 7051
     },
     {
       "id": "frontend-design",
@@ -1156,7 +1156,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 4858
+      "fileBytes": 4921
     },
     {
       "id": "java-pro",
@@ -1322,7 +1322,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 5420
+      "fileBytes": 5430
     },
     {
       "id": "mongodb",
@@ -1791,7 +1791,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 4878
+      "fileBytes": 5449
     },
     {
       "id": "seo-fundamentals",
@@ -1839,7 +1839,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 5600
+      "fileBytes": 6215
     },
     {
       "id": "skill-creator",
@@ -1932,7 +1932,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 5003
+      "fileBytes": 5407
     },
     {
       "id": "static-analysis",
@@ -1957,7 +1957,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 4784
+      "fileBytes": 4928
     },
     {
       "id": "stripe-best-practices",
@@ -1980,7 +1980,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 5677
+      "fileBytes": 5868
     },
     {
       "id": "supabase",
@@ -2068,7 +2068,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 5072
+      "fileBytes": 5346
     },
     {
       "id": "typescript-pro",
@@ -2141,7 +2141,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 4962
+      "fileBytes": 5062
     },
     {
       "id": "web-perf",

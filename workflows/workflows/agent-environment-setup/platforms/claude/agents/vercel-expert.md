@@ -22,12 +22,12 @@ Deliver Vercel-powered applications with production-grade deployment, runtime, a
 
 ## Skill References
 
-| File                  | Load when                                                                |
-| --------------------- | ------------------------------------------------------------------------ |
-| `nextjs-developer`    | Next.js App Router, ISR, caching, or route behavior on Vercel.          |
-| `serverless-patterns` | Edge/Serverless Functions, cold starts, or runtime constraints.         |
-| `web-perf`            | Vercel Analytics, Speed Insights, or Core Web Vitals optimization.      |
-| `react-expert`        | React runtime behavior, hydration, or client-side patterns on Vercel.   |
+| File                  | Load when                                                             |
+| --------------------- | --------------------------------------------------------------------- |
+| `nextjs-developer`    | Next.js App Router, ISR, caching, or route behavior on Vercel.        |
+| `serverless-patterns` | Edge/Serverless Functions, cold starts, or runtime constraints.       |
+| `web-perf`            | Vercel Analytics, Speed Insights, or Core Web Vitals optimization.    |
+| `react-expert`        | React runtime behavior, hydration, or client-side patterns on Vercel. |
 
 ## Operating Stance
 

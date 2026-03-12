@@ -31,19 +31,19 @@ Build backend systems that stay correct under production pressure.
 
 Load on demand. Do not preload all references.
 
-| File                      | Load when                                                                               |
-| ------------------------- | --------------------------------------------------------------------------------------- |
-| `api-designer`            | Designing new API contracts, versioning, or endpoint shape.                             |
-| `api-patterns`            | REST/RPC conventions, HTTP status codes, or pagination patterns.                        |
-| `auth-architect`          | Auth flows, token management, session design, or access control.                        |
-| `database-skills`         | Schema design, query optimization, or migration strategy.                               |
-| `nestjs-expert`           | NestJS modules, providers, guards, interceptors, or decorators.                         |
-| `fastapi-expert`          | FastAPI routes, middleware, Pydantic models, or async patterns.                         |
-| `graphql-architect`       | GraphQL schema design, resolvers, or subscription patterns.                             |
-| `microservices-architect` | Service boundaries, event-driven architecture, or distributed transactions.             |
-| `stripe-best-practices`   | Payment processing, subscriptions, webhooks, or Stripe SDK usage.                       |
-| `serverless-patterns`     | Lambda architecture, cold starts, Edge Functions, or serverless constraints.            |
-| `i18n-localization`       | Locale-aware responses, pluralization, or internationalization patterns.                |
+| File                      | Load when                                                                    |
+| ------------------------- | ---------------------------------------------------------------------------- |
+| `api-designer`            | Designing new API contracts, versioning, or endpoint shape.                  |
+| `api-patterns`            | REST/RPC conventions, HTTP status codes, or pagination patterns.             |
+| `auth-architect`          | Auth flows, token management, session design, or access control.             |
+| `database-skills`         | Schema design, query optimization, or migration strategy.                    |
+| `nestjs-expert`           | NestJS modules, providers, guards, interceptors, or decorators.              |
+| `fastapi-expert`          | FastAPI routes, middleware, Pydantic models, or async patterns.              |
+| `graphql-architect`       | GraphQL schema design, resolvers, or subscription patterns.                  |
+| `microservices-architect` | Service boundaries, event-driven architecture, or distributed transactions.  |
+| `stripe-best-practices`   | Payment processing, subscriptions, webhooks, or Stripe SDK usage.            |
+| `serverless-patterns`     | Lambda architecture, cold starts, Edge Functions, or serverless constraints. |
+| `i18n-localization`       | Locale-aware responses, pluralization, or internationalization patterns.     |
 
 ## Operating Stance
 
@@ -56,13 +56,13 @@ Load on demand. Do not preload all references.
 
 ## Decision Frameworks
 
-| When choosing...         | Prefer                          | Because                                          |
-| ------------------------ | ------------------------------- | ------------------------------------------------ |
-| API style                | REST for CRUD, GraphQL for UI   | Match consumption pattern to client needs         |
-| Auth approach            | JWT + refresh for SPAs          | Stateless scaling with secure rotation            |
-| Database access          | ORM with raw escape hatch       | Safety by default, performance when needed        |
-| Error responses          | Structured error envelope       | Machine-parseable, debuggable, consistent         |
-| Background work          | Queue-based with dead-letter    | Fault tolerance and retry isolation               |
+| When choosing... | Prefer                        | Because                                    |
+| ---------------- | ----------------------------- | ------------------------------------------ |
+| API style        | REST for CRUD, GraphQL for UI | Match consumption pattern to client needs  |
+| Auth approach    | JWT + refresh for SPAs        | Stateless scaling with secure rotation     |
+| Database access  | ORM with raw escape hatch     | Safety by default, performance when needed |
+| Error responses  | Structured error envelope     | Machine-parseable, debuggable, consistent  |
+| Background work  | Queue-based with dead-letter  | Fault tolerance and retry isolation        |
 
 ## Output Expectations
 

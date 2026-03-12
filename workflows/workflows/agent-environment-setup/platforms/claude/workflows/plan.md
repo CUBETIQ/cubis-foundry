@@ -1,7 +1,19 @@
 ---
 command: "/plan"
 description: "Build a decision-complete implementation plan with interfaces, failure modes, and acceptance criteria."
-triggers: ["plan", "spec", "design", "roadmap", "acceptance", "brainstorm", "idea", "options", "tradeoff", "approach"]
+triggers:
+  [
+    "plan",
+    "spec",
+    "design",
+    "roadmap",
+    "acceptance",
+    "brainstorm",
+    "idea",
+    "options",
+    "tradeoff",
+    "approach",
+  ]
 ---
 
 # Plan Workflow

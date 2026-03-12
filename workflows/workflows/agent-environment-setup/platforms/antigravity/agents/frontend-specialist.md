@@ -56,7 +56,7 @@ Load on demand. Do not preload all references.
 | `web-perf`               | Core Web Vitals, bundle cost, render cost, or browser performance triage is primary.          |
 | `frontend-code-review`   | The task is reviewing UI code for correctness, accessibility, or regression risk.             |
 | `i18n-localization`      | RTL layout, locale switching, pluralization, or date/number formatting is needed.             |
-| `error-ux-observability` | Error boundary design, toast/notification UX, or frontend logging/tracing is the focus.      |
+| `error-ux-observability` | Error boundary design, toast/notification UX, or frontend logging/tracing is the focus.       |
 
 ## Operating Stance
 

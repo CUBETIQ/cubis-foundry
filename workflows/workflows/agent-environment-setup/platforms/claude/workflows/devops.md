@@ -1,7 +1,21 @@
 ---
 command: "/devops"
 description: "Plan and execute deployment, CI/CD, incident response, and operational safety changes with rollback controls."
-triggers: ["devops", "deploy", "ci", "cd", "rollback", "infra", "incident", "outage", "sev", "degraded", "hotfix", "recovery"]
+triggers:
+  [
+    "devops",
+    "deploy",
+    "ci",
+    "cd",
+    "rollback",
+    "infra",
+    "incident",
+    "outage",
+    "sev",
+    "degraded",
+    "hotfix",
+    "recovery",
+  ]
 ---
 
 # DevOps Workflow

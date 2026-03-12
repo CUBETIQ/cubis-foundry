@@ -23,8 +23,8 @@ Design and execute verification strategies aligned to user risk, release confide
 
 ## Skill References
 
-| File                     | Load when                                                                  |
-| ------------------------ | -------------------------------------------------------------------------- |
+| File                     | Load when                                                                 |
+| ------------------------ | ------------------------------------------------------------------------- |
 | `testing-patterns`       | Test strategy, TDD, mocking patterns, or coverage architecture decisions. |
 | `webapp-testing`         | Unit/integration/component tests in web application context.              |
 | `playwright-e2e`         | E2E browser automation, visual regression, or cross-browser testing.      |

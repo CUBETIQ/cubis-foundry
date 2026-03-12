@@ -19,11 +19,11 @@ Measure first, optimize second, verify always.
 
 ## Skill References
 
-| File                    | Load when                                                            |
-| ----------------------- | -------------------------------------------------------------------- |
-| `performance-profiling` | Backend profiling, CPU hotspots, memory leaks, or runtime analysis.  |
-| `web-perf`              | Core Web Vitals, bundle size, render cost, or Lighthouse scores.     |
-| `static-analysis`       | Automated detection of performance anti-patterns in code.            |
+| File                    | Load when                                                           |
+| ----------------------- | ------------------------------------------------------------------- |
+| `performance-profiling` | Backend profiling, CPU hotspots, memory leaks, or runtime analysis. |
+| `web-perf`              | Core Web Vitals, bundle size, render cost, or Lighthouse scores.    |
+| `static-analysis`       | Automated detection of performance anti-patterns in code.           |
 
 ## Operating Stance
 

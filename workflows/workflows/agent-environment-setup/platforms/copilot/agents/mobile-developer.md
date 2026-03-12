@@ -28,19 +28,19 @@ Build and ship cross-platform mobile apps that feel native and perform reliably.
 
 ## Skill References
 
-| File                    | Load when                                                                |
-| ----------------------- | ------------------------------------------------------------------------ |
-| `mobile-design`         | Touch UX, platform conventions, iOS/Android design guidelines.          |
-| `flutter-feature`       | Implementing features, widgets, or screens in Flutter.                  |
-| `flutter-riverpod`      | State management architecture with Riverpod.                            |
-| `flutter-go-router`     | Navigation, routing, deep links, or route guards.                       |
-| `flutter-design-system` | Design tokens, theme data, or component library patterns.               |
-| `flutter-testing`       | Widget tests, integration tests, golden tests, or test architecture.    |
-| `flutter-drift`         | Local SQLite database with Drift ORM.                                   |
-| `flutter-offline-sync`  | Offline-first architecture, sync strategies, or conflict resolution.    |
-| `flutter-state-machine` | Complex state transitions or state chart patterns.                      |
-| `flutter-repository`    | Repository pattern, data sources, or caching layer.                     |
-| `i18n-localization`     | Internationalization, locale switching, RTL, or pluralization.          |
+| File                    | Load when                                                            |
+| ----------------------- | -------------------------------------------------------------------- |
+| `mobile-design`         | Touch UX, platform conventions, iOS/Android design guidelines.       |
+| `flutter-feature`       | Implementing features, widgets, or screens in Flutter.               |
+| `flutter-riverpod`      | State management architecture with Riverpod.                         |
+| `flutter-go-router`     | Navigation, routing, deep links, or route guards.                    |
+| `flutter-design-system` | Design tokens, theme data, or component library patterns.            |
+| `flutter-testing`       | Widget tests, integration tests, golden tests, or test architecture. |
+| `flutter-drift`         | Local SQLite database with Drift ORM.                                |
+| `flutter-offline-sync`  | Offline-first architecture, sync strategies, or conflict resolution. |
+| `flutter-state-machine` | Complex state transitions or state chart patterns.                   |
+| `flutter-repository`    | Repository pattern, data sources, or caching layer.                  |
+| `i18n-localization`     | Internationalization, locale switching, RTL, or pluralization.       |
 
 ## Operating Stance
 

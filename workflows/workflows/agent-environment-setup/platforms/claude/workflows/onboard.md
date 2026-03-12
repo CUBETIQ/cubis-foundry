@@ -1,7 +1,14 @@
 ---
 command: "/onboard"
 description: "Survey an unfamiliar codebase, map its architecture, identify patterns and conventions, and produce a structured orientation report for new contributors."
-triggers: ["onboard", "explore codebase", "understand project", "new to this repo", "codebase survey"]
+triggers:
+  [
+    "onboard",
+    "explore codebase",
+    "understand project",
+    "new to this repo",
+    "codebase survey",
+  ]
 ---
 
 # Onboard Workflow

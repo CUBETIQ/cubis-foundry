@@ -21,12 +21,12 @@ Map attack surfaces, validate exploitability, and provide actionable remediation
 
 ## Skill References
 
-| File                    | Load when                                                              |
-| ----------------------- | ---------------------------------------------------------------------- |
-| `security-engineer`     | OWASP methodology, threat modeling, or secure architecture review.     |
-| `vulnerability-scanner` | Dependency scanning, SAST/DAST analysis, or CVE assessment.           |
-| `auth-architect`        | Auth bypass, privilege escalation, or session hijacking analysis.      |
-| `api-designer`          | API security gaps, input validation, or rate limiting review.          |
+| File                    | Load when                                                          |
+| ----------------------- | ------------------------------------------------------------------ |
+| `security-engineer`     | OWASP methodology, threat modeling, or secure architecture review. |
+| `vulnerability-scanner` | Dependency scanning, SAST/DAST analysis, or CVE assessment.        |
+| `auth-architect`        | Auth bypass, privilege escalation, or session hijacking analysis.  |
+| `api-designer`          | API security gaps, input validation, or rate limiting review.      |
 
 ## Operating Stance
 

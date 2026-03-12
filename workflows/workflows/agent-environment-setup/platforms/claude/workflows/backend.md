@@ -1,7 +1,22 @@
 ---
 command: "/backend"
 description: "Drive backend architecture, API operations, and Postman-oriented execution with API, data, and reliability focus."
-triggers: ["backend", "api", "service", "database", "performance", "postman", "collection", "workspace", "environment", "runcollection", "monitor", "mock", "api test"]
+triggers:
+  [
+    "backend",
+    "api",
+    "service",
+    "database",
+    "performance",
+    "postman",
+    "collection",
+    "workspace",
+    "environment",
+    "runcollection",
+    "monitor",
+    "mock",
+    "api test",
+  ]
 ---
 
 # Backend Workflow

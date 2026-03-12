@@ -20,14 +20,14 @@ Decompose complex requests into implementable plans with clear ownership, depend
 
 ## Skill References
 
-| File                    | Load when                                                              |
-| ----------------------- | ---------------------------------------------------------------------- |
-| `architecture-designer` | Plan involves system design tradeoffs or component boundaries.         |
-| `api-designer`          | Plan involves API contract decisions or integration points.            |
-| `database-skills`       | Plan involves data modeling, schema design, or migration strategy.     |
-| `deep-research`         | Planning requires external research or approach comparison.            |
-| `mcp-builder`           | Plan involves MCP server or tool implementation.                       |
-| `skill-creator`         | Plan involves skill package creation or modification.                  |
+| File                    | Load when                                                          |
+| ----------------------- | ------------------------------------------------------------------ |
+| `architecture-designer` | Plan involves system design tradeoffs or component boundaries.     |
+| `api-designer`          | Plan involves API contract decisions or integration points.        |
+| `database-skills`       | Plan involves data modeling, schema design, or migration strategy. |
+| `deep-research`         | Planning requires external research or approach comparison.        |
+| `mcp-builder`           | Plan involves MCP server or tool implementation.                   |
+| `skill-creator`         | Plan involves skill package creation or modification.              |
 
 ## Operating Stance
 

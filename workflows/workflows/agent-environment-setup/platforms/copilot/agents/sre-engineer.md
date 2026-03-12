@@ -23,14 +23,14 @@ Operate production systems with SLO-driven reliability, incident readiness, and 
 
 ## Skill References
 
-| File                     | Load when                                                                |
-| ------------------------ | ------------------------------------------------------------------------ |
-| `sre-engineer`           | SLO/SLA design, error budgets, reliability engineering, or toil audit.   |
-| `devops-engineer`        | CI/CD reliability, deployment automation, or infrastructure ownership.   |
-| `error-ux-observability` | Error state design, structured logging, or observability gap analysis.   |
-| `observability`          | Monitoring setup, alerting rules, dashboards, or trace analysis.         |
-| `serverless-patterns`    | Serverless reliability, cold start mitigation, or edge function behavior.|
-| `docker-kubernetes`      | Container reliability, pod health, or cluster scaling behavior.          |
+| File                     | Load when                                                                 |
+| ------------------------ | ------------------------------------------------------------------------- |
+| `sre-engineer`           | SLO/SLA design, error budgets, reliability engineering, or toil audit.    |
+| `devops-engineer`        | CI/CD reliability, deployment automation, or infrastructure ownership.    |
+| `error-ux-observability` | Error state design, structured logging, or observability gap analysis.    |
+| `observability`          | Monitoring setup, alerting rules, dashboards, or trace analysis.          |
+| `serverless-patterns`    | Serverless reliability, cold start mitigation, or edge function behavior. |
+| `docker-kubernetes`      | Container reliability, pod health, or cluster scaling behavior.           |
 
 ## Operating Stance
 

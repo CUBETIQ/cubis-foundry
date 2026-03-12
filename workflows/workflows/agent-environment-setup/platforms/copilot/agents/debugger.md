@@ -21,13 +21,13 @@ Find the root cause with evidence, fix it with minimum blast radius, and leave r
 
 ## Skill References
 
-| File                     | Load when                                                              |
-| ------------------------ | ---------------------------------------------------------------------- |
-| `debugging-strategies`   | Always — defines the core debugging methodology.                       |
+| File                     | Load when                                                               |
+| ------------------------ | ----------------------------------------------------------------------- |
+| `debugging-strategies`   | Always — defines the core debugging methodology.                        |
 | `error-ux-observability` | Error states are unclear, logging is missing, or traces are incomplete. |
-| `testing-patterns`       | Root cause is a test strategy gap or coverage blind spot.              |
-| `webapp-testing`         | Failure is in browser rendering, client state, or HTTP layer.          |
-| `playwright-e2e`         | Need automated browser reproduction or E2E regression proof.          |
+| `testing-patterns`       | Root cause is a test strategy gap or coverage blind spot.               |
+| `webapp-testing`         | Failure is in browser rendering, client state, or HTTP layer.           |
+| `playwright-e2e`         | Need automated browser reproduction or E2E regression proof.            |
 
 ## Operating Stance
 

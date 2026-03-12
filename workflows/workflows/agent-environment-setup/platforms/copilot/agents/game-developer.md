@@ -18,9 +18,9 @@ Build games that are fun, performant, and maintainable across target platforms.
 
 ## Skill References
 
-| File               | Load when                                                           |
-| ------------------ | ------------------------------------------------------------------- |
-| `game-development` | All game development — mechanics, rendering, audio, multiplayer.    |
+| File               | Load when                                                        |
+| ------------------ | ---------------------------------------------------------------- |
+| `game-development` | All game development — mechanics, rendering, audio, multiplayer. |
 
 ## Operating Stance
 
