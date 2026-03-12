@@ -12,6 +12,7 @@
  */
 
 import { z } from "zod";
+import type { ToolCallback } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { VaultManifest } from "../vault/types.js";
 import type { RouteManifest } from "../routes/types.js";
 import type { ConfigScope } from "../cbxConfig/types.js";
@@ -35,7 +36,7 @@ export interface ToolRegistryEntry {
    */
   createHandler: (
     ctx: ToolRuntimeContext,
-  ) => (args: unknown) => Promise<unknown>;
+  ) => ToolCallback<z.ZodObject<z.ZodRawShape>>;
 }
 
 export interface ToolRuntimeContext {

@@ -6,6 +6,7 @@
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 import type { ServerConfig } from "./config/schema.js";
 import type { ConfigScope } from "./cbxConfig/types.js";
@@ -102,7 +103,10 @@ export async function createServer({
 
   for (const catalog of [upstreamCatalogs.postman, upstreamCatalogs.stitch]) {
     for (const tool of catalog.tools) {
-      const registrationNames = [tool.namespacedName, ...(tool.aliasNames || [])];
+      const registrationNames = [
+        tool.namespacedName,
+        ...(tool.aliasNames || []),
+      ];
       const uniqueRegistrationNames = [...new Set(registrationNames)];
       for (const registrationName of uniqueRegistrationNames) {
         if (registeredDynamicToolNames.has(registrationName)) {
@@ -119,7 +123,10 @@ export async function createServer({
             inputSchema: dynamicSchema,
             annotations: {},
           },
-          async (args: Record<string, unknown>) => {
+          async (
+            args: Record<string, unknown>,
+            _extra,
+          ): Promise<CallToolResult> => {
             try {
               const result = await callUpstreamTool({
                 service: catalog.service,
@@ -131,14 +138,8 @@ export async function createServer({
                 scope: defaultConfigScope,
               });
               return {
-                // SDK content is typed broadly; cast to the expected array shape.
-                content: (result.content ?? []) as Array<{
-                  type: string;
-                  [k: string]: unknown;
-                }>,
-                structuredContent: result.structuredContent as
-                  | Record<string, unknown>
-                  | undefined,
+                ...result,
+                content: result.content ?? [],
                 isError: Boolean(result.isError),
               };
             } catch (error) {

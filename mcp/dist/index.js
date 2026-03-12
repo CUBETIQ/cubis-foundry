@@ -2434,6 +2434,31 @@ async function withUpstreamClient({
     await client.close();
   }
 }
+function isCallToolResult(result) {
+  return Array.isArray(
+    result.content
+  );
+}
+function normalizeUpstreamToolResult(result) {
+  if (isCallToolResult(result)) {
+    return result;
+  }
+  return {
+    content: [
+      {
+        type: "text",
+        text: JSON.stringify(
+          {
+            toolResult: result.toolResult
+          },
+          null,
+          2
+        )
+      }
+    ],
+    _meta: result._meta
+  };
+}
 async function persistCatalog(catalog) {
   if (!catalog.configPath) return;
   const catalogDir = resolveCatalogDir(catalog.configPath);
@@ -2563,10 +2588,12 @@ async function callUpstreamTool({
   return withUpstreamClient({
     url: auth.mcpUrl,
     headers: auth.headers,
-    fn: async (client) => client.callTool({
-      name,
-      arguments: argumentsValue
-    })
+    fn: async (client) => normalizeUpstreamToolResult(
+      await client.callTool({
+        name,
+        arguments: argumentsValue
+      })
+    )
   });
 }
 
@@ -2631,7 +2658,10 @@ async function createServer({
   const registeredDynamicToolNames = /* @__PURE__ */ new Set();
   for (const catalog of [upstreamCatalogs.postman, upstreamCatalogs.stitch]) {
     for (const tool of catalog.tools) {
-      const registrationNames = [tool.namespacedName, ...tool.aliasNames || []];
+      const registrationNames = [
+        tool.namespacedName,
+        ...tool.aliasNames || []
+      ];
       const uniqueRegistrationNames = [...new Set(registrationNames)];
       for (const registrationName of uniqueRegistrationNames) {
         if (registeredDynamicToolNames.has(registrationName)) {
@@ -2648,7 +2678,7 @@ async function createServer({
             inputSchema: dynamicSchema,
             annotations: {}
           },
-          async (args) => {
+          async (args, _extra) => {
             try {
               const result = await callUpstreamTool({
                 service: catalog.service,
@@ -2657,9 +2687,8 @@ async function createServer({
                 scope: defaultConfigScope
               });
               return {
-                // SDK content is typed broadly; cast to the expected array shape.
+                ...result,
                 content: result.content ?? [],
-                structuredContent: result.structuredContent,
                 isError: Boolean(result.isError)
               };
             } catch (error) {

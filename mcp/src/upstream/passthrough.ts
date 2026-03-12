@@ -6,6 +6,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import {
   parsePostmanState,
   parseStitchState,
@@ -209,6 +210,40 @@ async function withUpstreamClient<T>({
   }
 }
 
+function isCallToolResult(
+  result: Awaited<ReturnType<Client["callTool"]>>,
+): result is CallToolResult {
+  return Array.isArray(
+    (result as {
+      content?: unknown;
+    }).content,
+  );
+}
+
+function normalizeUpstreamToolResult(
+  result: Awaited<ReturnType<Client["callTool"]>>,
+): CallToolResult {
+  if (isCallToolResult(result)) {
+    return result;
+  }
+
+  return {
+    content: [
+      {
+        type: "text",
+        text: JSON.stringify(
+          {
+            toolResult: result.toolResult,
+          },
+          null,
+          2,
+        ),
+      },
+    ],
+    _meta: result._meta,
+  };
+}
+
 async function persistCatalog(catalog: UpstreamCatalog): Promise<void> {
   if (!catalog.configPath) return;
   const catalogDir = resolveCatalogDir(catalog.configPath);
@@ -344,7 +379,7 @@ export async function callUpstreamTool({
   name: string;
   argumentsValue: Record<string, unknown>;
   scope?: ConfigScope | "auto";
-}) {
+}): Promise<CallToolResult> {
   const effective = readEffectiveConfig(scope);
   if (!effective) {
     throw new Error("cbx_config.json not found");
@@ -360,10 +395,12 @@ export async function callUpstreamTool({
   return withUpstreamClient({
     url: auth.mcpUrl,
     headers: auth.headers,
-    fn: async (client) =>
-      client.callTool({
-        name,
-        arguments: argumentsValue,
-      }),
+    fn: async (client): Promise<CallToolResult> =>
+      normalizeUpstreamToolResult(
+        await client.callTool({
+          name,
+          arguments: argumentsValue,
+        }),
+      ),
   });
 }

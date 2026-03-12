@@ -359,7 +359,7 @@ async function fileExists(target: string) {
 
 async function detectLanguageSkillHint() {
   const cwd = process.cwd();
-  const candidates = await fs.readdir(cwd).catch(() => []);
+  const candidates: string[] = await fs.readdir(cwd).catch(() => []);
   const has = (fileName: string) => candidates.includes(fileName);
 
   for (const entry of LANGUAGE_SIGNAL_FILES) {
