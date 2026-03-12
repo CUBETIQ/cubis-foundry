@@ -2,7 +2,7 @@
   "$schema": "cubis-foundry-skill-audit-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
   "summary": {
-    "keep": 83,
+    "keep": 84,
     "review": 4,
     "alias-only": 0
   },
@@ -10,6 +10,15 @@
     {
       "id": "accessibility",
       "canonical_id": "accessibility",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "agent-design",
+      "canonical_id": "agent-design",
       "status": "keep",
       "layer": "workflow-specialists",
       "category": "workflow-specialists",
@@ -791,5 +800,5 @@
       "reason": "Canonical skill remains active in the layered catalog."
     }
   ],
-  "contentHash": "06725220390d194e"
+  "contentHash": "43f23105321976ee"
 }

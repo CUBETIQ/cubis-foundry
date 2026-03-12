@@ -552,7 +552,7 @@
       "research"
     ],
     "path": ".github/skills/deep-research/SKILL.md",
-    "description": "Use when a task needs multi-round research rather than a quick lookup: iterative search, gap finding, corroboration across sources, contradiction handling, or evidence-led synthesis before planning or implementation.",
+    "description": "Use when a task needs multi-round research rather than a quick lookup: iterative search, gap finding, corroboration across sources, contradiction handling, evidence-led synthesis before planning or implementation. Also use when the user asks for 'deep research', 'latest info', or 'how does X compare to Y publicly'.",
     "triggers": [
       "deep-research",
       "deep research",

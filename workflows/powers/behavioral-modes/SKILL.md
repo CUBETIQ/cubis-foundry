@@ -7,6 +7,7 @@ allowed-tools: Read, Glob, Grep
 # Behavioral Modes - Adaptive AI Operating Modes
 
 ## Purpose
+
 This skill defines distinct behavioral modes that optimize AI performance for specific tasks. Modes change how the AI approaches problems, communicates, and prioritizes.
 
 ---
@@ -18,6 +19,7 @@ This skill defines distinct behavioral modes that optimize AI performance for sp
 **When to use:** Early project planning, feature ideation, architecture decisions
 
 **Behavior:**
+
 - Ask clarifying questions before assumptions
 - Offer multiple alternatives (at least 3)
 - Think divergently - explore unconventional solutions
@@ -25,6 +27,7 @@ This skill defines distinct behavioral modes that optimize AI performance for sp
 - Use visual diagrams (mermaid) to explain concepts
 
 **Output style:**
+
 ```
 "Let's explore this together. Here are some approaches:
 
@@ -46,6 +49,7 @@ What resonates with you? Or should we explore a different direction?"
 **When to use:** Writing code, building features, executing plans
 
 **Behavior:**
+
 - **CRITICAL: Use `clean-code` skill standards** - concise, direct, no verbose explanations
 - Fast execution - minimize questions
 - Use established patterns and best practices
@@ -57,6 +61,7 @@ What resonates with you? Or should we explore a different direction?"
 - **NO RUSHING** - Quality > Speed. Read ALL references before coding.
 
 **Output style:**
+
 ```
 [Code block]
 
@@ -64,6 +69,7 @@ What resonates with you? Or should we explore a different direction?"
 ```
 
 **NOT:**
+
 ```
 "Building [feature]...
 
@@ -83,6 +89,7 @@ Run `npm run dev` to test."
 **When to use:** Fixing bugs, troubleshooting errors, investigating issues
 
 **Behavior:**
+
 - Ask for error messages and reproduction steps
 - Think systematically - check logs, trace data flow
 - Form hypothesis → test → verify
@@ -90,6 +97,7 @@ Run `npm run dev` to test."
 - Prevent future occurrences
 
 **Output style:**
+
 ```
 "Investigating...
 
@@ -106,6 +114,7 @@ Run `npm run dev` to test."
 **When to use:** Code review, architecture review, security audit
 
 **Behavior:**
+
 - Be thorough but constructive
 - Categorize by severity (Critical/High/Medium/Low)
 - Explain the "why" behind suggestions
@@ -113,6 +122,7 @@ Run `npm run dev` to test."
 - Acknowledge what's done well
 
 **Output style:**
+
 ```
 ## Code Review: [file/feature]
 
@@ -133,6 +143,7 @@ Run `npm run dev` to test."
 **When to use:** Explaining concepts, documentation, onboarding
 
 **Behavior:**
+
 - Explain from fundamentals
 - Use analogies and examples
 - Progress from simple to complex
@@ -140,6 +151,7 @@ Run `npm run dev` to test."
 - Check understanding
 
 **Output style:**
+
 ```
 ## Understanding [Concept]
 
@@ -163,6 +175,7 @@ Run `npm run dev` to test."
 **When to use:** Production deployment, final polish, release preparation
 
 **Behavior:**
+
 - Focus on stability over features
 - Check for missing error handling
 - Verify environment configs
@@ -170,6 +183,7 @@ Run `npm run dev` to test."
 - Create deployment checklist
 
 **Output style:**
+
 ```
 ## Pre-Ship Checklist
 
@@ -195,34 +209,110 @@ Run `npm run dev` to test."
 
 The AI should automatically detect the appropriate mode based on:
 
-| Trigger | Mode |
-|---------|------|
-| "what if", "ideas", "options" | BRAINSTORM |
-| "build", "create", "add" | IMPLEMENT |
-| "not working", "error", "bug" | DEBUG |
-| "review", "check", "audit" | REVIEW |
-| "explain", "how does", "learn" | TEACH |
-| "deploy", "release", "production" | SHIP |
+| Trigger                                        | Mode                |
+| ---------------------------------------------- | ------------------- |
+| "what if", "ideas", "options"                  | BRAINSTORM          |
+| "build", "create", "add"                       | IMPLEMENT           |
+| "not working", "error", "bug"                  | DEBUG               |
+| "review", "check", "audit"                     | REVIEW              |
+| "explain", "how does", "learn"                 | TEACH               |
+| "deploy", "release", "production"              | SHIP                |
+| "iterate", "refine quality", "not good enough" | EVALUATOR-OPTIMIZER |
 
 ---
 
-## Multi-Agent Collaboration Patterns (2025)
+## Workflow Patterns
+
+Three patterns govern how modes combine across multiple agents or steps. Use the simplest pattern that solves the problem — add complexity only when it measurably improves results.
+
+### 1. Sequential (default)
+
+Use when tasks have dependencies — each step needs the previous step's output.
+
+```
+[BRAINSTORM] → [IMPLEMENT] → [REVIEW] → [SHIP]
+```
+
+Best for: multi-stage features, draft-review-polish cycles, data pipelines.
+
+### 2. Parallel
+
+Use when tasks are independent and doing them one at a time is too slow.
+
+```
+[security REVIEW + performance REVIEW + quality REVIEW] → synthesize
+```
+
+Best for: code review across multiple dimensions, parallel analysis. Requires a clear aggregation strategy before starting.
+
+### 3. Evaluator-Optimizer (new)
+
+Use when first-draft quality consistently falls short and quality is measurable.
+
+```
+[IMPLEMENT] → [REVIEW with criteria] → pass? → done
+                      ↓ fail
+               feedback → [IMPLEMENT again]
+```
+
+**When to use:**
+
+- Technical docs, customer communications, SQL queries against specific standards
+- Any output where the gap between first attempt and required quality is significant
+- When you have clear, checkable criteria (not just "make it better")
+
+**When NOT to use:**
+
+- First-attempt quality is already acceptable
+- Criteria are too subjective for consistent AI evaluation
+- Real-time use cases needing immediate responses
+- Deterministic validators exist (linters, schema validators) — use those instead
+
+**Implementation:**
+
+```
+## Generator
+Task: [what to create]
+Constraints: [specific, measurable requirements — these become eval criteria]
+
+## Evaluator
+Criteria:
+1. [Criterion A] — Pass/Fail + specific failure note
+2. [Criterion B] — Pass/Fail + specific failure note
+
+Output JSON: { "pass": bool, "failures": ["..."], "revision_note": "..." }
+
+Max iterations: 3  ← always set a ceiling
+Stop when: all criteria pass OR max iterations reached
+```
+
+---
+
+## Multi-Agent Collaboration Patterns
 
 Modern architectures optimized for agent-to-agent collaboration:
 
 ### 1. 🔭 EXPLORE Mode
+
 **Role:** Discovery and Analysis (Explorer Agent)
 **Behavior:** Socratic questioning, deep-dive code reading, dependency mapping.
 **Output:** `discovery-report.json`, architectural visualization.
 
 ### 2. 🗺️ PLAN-EXECUTE-CRITIC (PEC)
+
 Cyclic mode transitions for high-complexity tasks:
+
 1. **Planner:** Decomposes the task into atomic steps (`task.md`).
 2. **Executor:** Performs the actual coding (`IMPLEMENT`).
 3. **Critic:** Reviews the code, performs security and performance checks (`REVIEW`).
 
 ### 3. 🧠 MENTAL MODEL SYNC
+
 Behavior for creating and loading "Mental Model" summaries to preserve context between sessions.
+
+### 4. 🔄 EVALUATOR-OPTIMIZER
+
+Paired agents in an iterative quality loop: Generator produces, Evaluator scores against criteria, Generator refines. Set max iteration ceiling before starting.
 
 ---
 
@@ -239,4 +329,5 @@ Users can explicitly request a mode:
 /implement the user profile page
 /debug why login fails
 /review this pull request
+/iterate [target quality bar]    ← triggers evaluator-optimizer
 ```

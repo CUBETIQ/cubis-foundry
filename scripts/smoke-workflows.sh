@@ -534,7 +534,7 @@ if rg -n '^priority:' "$COPILOT_INSTALLED_SKILLS/auth-architect/SKILL.md" >/dev/
   echo "[FAIL] Copilot global skill SKILL.md still contains unsupported priority attribute" >&2
   exit 1
 fi
-rg -n 'Platform MCP target \(.+/.vscode/mcp\.json\): (installed|replaced|patched)' /tmp/cbx-p2.log >/dev/null
+rg -n 'Platform MCP target \(.+[\\/]\.vscode[\\/]mcp\.json\): (installed|replaced|patched)' /tmp/cbx-p2.log >/dev/null
 if rg -n '^skills:' .github/agents/backend-specialist.md >/dev/null; then
   echo "[FAIL] Copilot agent file still contains unsupported skills attribute" >&2
   exit 1

@@ -2,10 +2,10 @@
   "$schema": "cubis-foundry-skill-catalog-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
   "summary": {
-    "totalEntries": 87,
-    "totalSkills": 87,
+    "totalEntries": 88,
+    "totalSkills": 88,
     "totalSubskills": 0,
-    "canonicalSkills": 87,
+    "canonicalSkills": 88,
     "compatibilityAliases": 0,
     "layers": [
       "core-operating",
@@ -53,6 +53,38 @@
       ],
       "triggers": [
         "accessibility",
+        "workflow-specialists"
+      ]
+    },
+    {
+      "id": "agent-design",
+      "package_id": "agent-design",
+      "catalog_id": "agent-design",
+      "kind": "skill",
+      "path": "workflows/skills/agent-design/SKILL.md",
+      "name": "agent-design",
+      "description": "Use when designing, building, or improving a CBX agent, skill, or workflow: clarification strategy, progressive disclosure structure, workflow pattern selection (sequential, parallel, evaluator-optimizer), skill type taxonomy, description tuning, and eval-first testing.",
+      "canonical": true,
+      "canonical_id": "agent-design",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "agent",
+        "agent design",
+        "agent-design",
+        "design",
+        "workflow-specialists"
+      ],
+      "triggers": [
+        "agent-design",
+        "agent design",
+        "agent",
+        "design",
         "workflow-specialists"
       ]
     },
@@ -567,7 +599,7 @@
       "kind": "skill",
       "path": "workflows/skills/deep-research/SKILL.md",
       "name": "deep-research",
-      "description": "Use when a task needs multi-round research rather than a quick lookup: iterative search, gap finding, corroboration across sources, contradiction handling, or evidence-led synthesis before planning or implementation.",
+      "description": "Use when a task needs multi-round research rather than a quick lookup: iterative search, gap finding, corroboration across sources, contradiction handling, evidence-led synthesis before planning or implementation. Also use when the user asks for 'deep research', 'latest info', or 'how does X compare to Y publicly'.",
       "canonical": true,
       "canonical_id": "deep-research",
       "deprecated": false,
@@ -2735,5 +2767,5 @@
       ]
     }
   ],
-  "contentHash": "b905038bd1d0765e"
+  "contentHash": "986ed2f78188d530"
 }

@@ -31,9 +31,10 @@ Guide creation of distinctive, production-grade frontend interfaces that avoid g
 Before writing code, ask or infer:
 
 1. **Purpose** — What problem does this interface solve? Who uses it?
-2. **Tone** — Pick a bold aesthetic direction: brutally minimal, maximalist chaos, retro-futuristic, organic/natural, luxury/refined, playful/toy-like, editorial/magazine, brutalist/raw, art deco/geometric, soft/pastel, industrial/utilitarian. There are many flavors. Pick one and commit.
-3. **Constraints** — Technical requirements (framework, performance, a11y level, browser support).
-4. **Differentiation** — What makes this UNFORGETTABLE? What's the one thing someone will remember?
+2. **Brand** — Is there an existing brand system, style guide, or named brand (e.g. "Anthropic", client guidelines, hex palette) to follow? If yes, load `references/brand-presets.md` and use `/brand` to apply it before choosing aesthetic direction.
+3. **Tone** — If no brand system exists, pick a bold aesthetic direction: brutally minimal, maximalist chaos, retro-futuristic, organic/natural, luxury/refined, playful/toy-like, editorial/magazine, brutalist/raw, art deco/geometric, soft/pastel, industrial/utilitarian. There are many flavors. Pick one and commit.
+4. **Constraints** — Technical requirements (framework, performance, a11y level, browser support).
+5. **Differentiation** — What makes this UNFORGETTABLE? What's the one thing someone will remember?
 
 Choose a clear conceptual direction and execute it with precision. Bold maximalism and refined minimalism both work — the key is intentionality, not intensity.
 
@@ -166,40 +167,42 @@ Deliver:
 
 Load only what the current step needs.
 
-| File                               | Load when                                                                                            |
-| ---------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `references/typography.md`         | Task involves font selection, type scale, font loading, or text hierarchy decisions.                 |
-| `references/color-and-contrast.md` | Task involves palette selection, dark mode, OKLCH color, contrast ratios, or tinted neutrals.        |
-| `references/spatial-design.md`     | Task involves grid systems, spacing rhythm, container queries, or layout composition.                |
-| `references/motion-design.md`      | Task involves animation timing, easing curves, staggered reveals, or reduced motion support.         |
-| `references/interaction-design.md` | Task involves form design, focus management, loading states, or progressive disclosure patterns.     |
-| `references/responsive-design.md`  | Task involves mobile-first design, fluid layouts, container queries, or adaptive interfaces.         |
-| `references/ux-writing.md`         | Task involves button labels, error messages, empty states, or microcopy decisions.                   |
-| `references/ux-psychology.md`      | Task involves cognitive load, decision architecture, trust building, or emotional design principles. |
+| File                               | Load when                                                                                                                             |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `references/typography.md`         | Task involves font selection, type scale, font loading, or text hierarchy decisions.                                                  |
+| `references/color-and-contrast.md` | Task involves palette selection, dark mode, OKLCH color, contrast ratios, or tinted neutrals.                                         |
+| `references/spatial-design.md`     | Task involves grid systems, spacing rhythm, container queries, or layout composition.                                                 |
+| `references/motion-design.md`      | Task involves animation timing, easing curves, staggered reveals, or reduced motion support.                                          |
+| `references/interaction-design.md` | Task involves form design, focus management, loading states, or progressive disclosure patterns.                                      |
+| `references/responsive-design.md`  | Task involves mobile-first design, fluid layouts, container queries, or adaptive interfaces.                                          |
+| `references/ux-writing.md`         | Task involves button labels, error messages, empty states, or microcopy decisions.                                                    |
+| `references/ux-psychology.md`      | Task involves cognitive load, decision architecture, trust building, or emotional design principles.                                  |
+| `references/brand-presets.md`      | Task involves applying existing brand guidelines, a named brand system (e.g. Anthropic), or converting a hex palette into CSS tokens. |
 
 ## Commands
 
 17 specialized commands for targeted design operations. Each command focuses on a specific design concern and can be applied to a whole page or a specific element.
 
-| Command             | Purpose                                                                                   |
-| ------------------- | ----------------------------------------------------------------------------------------- |
-| `/audit`            | Run technical quality checks: accessibility, performance, responsive behavior             |
-| `/critique`         | UX design review: hierarchy, clarity, emotional resonance, user flow                      |
-| `/normalize`        | Align with design system standards: tokens, spacing, typography consistency               |
-| `/polish`           | Final pass before shipping: micro-details, alignment, visual refinement                   |
-| `/distill`          | Strip to essence: remove unnecessary complexity, simplify without losing character        |
-| `/clarify`          | Improve unclear UX copy: labels, instructions, error messages, empty states               |
-| `/optimize`         | Performance improvements: image sizes, render-blocking, bundle impact                     |
-| `/harden`           | Error handling, i18n readiness, edge cases, defensive UI patterns                         |
-| `/animate`          | Add purposeful motion: transitions, micro-interactions, state changes                     |
-| `/colorize`         | Introduce strategic color: palette refinement, accent placement, contrast fixes           |
-| `/bolder`           | Amplify timid designs: stronger hierarchy, more contrast, bigger gestures                 |
-| `/quieter`          | Tone down overwhelming designs: reduce noise, increase whitespace, simplify               |
-| `/delight`          | Add moments of joy: easter eggs, satisfying interactions, personality                     |
-| `/extract`          | Pull into reusable components: identify patterns, create component API                    |
-| `/adapt`            | Adapt for different devices: responsive breakpoints, touch targets, viewport optimization |
-| `/onboard`          | Design onboarding flows: first-run experience, empty states, progressive disclosure       |
-| `/teach-impeccable` | One-time setup: gather project design context, save preferences for future sessions       |
+| Command             | Purpose                                                                                                             |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `/audit`            | Run technical quality checks: accessibility, performance, responsive behavior                                       |
+| `/critique`         | UX design review: hierarchy, clarity, emotional resonance, user flow                                                |
+| `/normalize`        | Align with design system standards: tokens, spacing, typography consistency                                         |
+| `/polish`           | Final pass before shipping: micro-details, alignment, visual refinement                                             |
+| `/distill`          | Strip to essence: remove unnecessary complexity, simplify without losing character                                  |
+| `/clarify`          | Improve unclear UX copy: labels, instructions, error messages, empty states                                         |
+| `/optimize`         | Performance improvements: image sizes, render-blocking, bundle impact                                               |
+| `/harden`           | Error handling, i18n readiness, edge cases, defensive UI patterns                                                   |
+| `/animate`          | Add purposeful motion: transitions, micro-interactions, state changes                                               |
+| `/colorize`         | Introduce strategic color: palette refinement, accent placement, contrast fixes                                     |
+| `/bolder`           | Amplify timid designs: stronger hierarchy, more contrast, bigger gestures                                           |
+| `/quieter`          | Tone down overwhelming designs: reduce noise, increase whitespace, simplify                                         |
+| `/delight`          | Add moments of joy: easter eggs, satisfying interactions, personality                                               |
+| `/extract`          | Pull into reusable components: identify patterns, create component API                                              |
+| `/adapt`            | Adapt for different devices: responsive breakpoints, touch targets, viewport optimization                           |
+| `/onboard`          | Design onboarding flows: first-run experience, empty states, progressive disclosure                                 |
+| `/teach-impeccable` | One-time setup: gather project design context, save preferences for future sessions                                 |
+| `/brand`            | Apply or enforce a specific brand identity: convert guideline colors to CSS tokens, set typography, verify contrast |
 
 Usage: Most commands accept an optional argument to focus on a specific area (e.g., `/audit header`, `/polish checkout-form`).
 
@@ -211,3 +214,5 @@ Usage: Most commands accept an optional argument to focus on a specific area (e.
 - "/critique the checkout flow — is the hierarchy clear? Does it build trust?"
 - "/polish the hero section before we ship."
 - "I need a color system for a health tech app. No fintech blue, no AI purple."
+- "/brand anthropic — apply Anthropic's brand colors and typography to this interface."
+- "Here's our brand guide with hex values. Apply it to this dashboard — /brand"

@@ -1,12 +1,12 @@
 {
   "$schema": "cubis-foundry-mcp-manifest-v1",
-  "generatedAt": "2026-03-12T06:59:36.824Z",
-  "contentHash": "000ad7c9a4114dd4",
+  "generatedAt": "2026-03-12T16:49:09.632Z",
+  "contentHash": "4fad37b694c76fdb",
   "summary": {
     "totalSkills": 87,
     "totalCategories": 20,
-    "totalBytes": 350735,
-    "estimatedTokens": 87684
+    "totalBytes": 353269,
+    "estimatedTokens": 88318
   },
   "categories": [
     {
@@ -502,7 +502,7 @@
       "id": "deep-research",
       "name": "deep-research",
       "displayName": null,
-      "description": "Use when a task needs multi-round research rather than a quick lookup: iterative search, gap finding, corroboration across sources, contradiction handling, or evidence-led synthesis before planning or implementation.",
+      "description": "Use when a task needs multi-round research rather than a quick lookup: iterative search, gap finding, corroboration across sources, contradiction handling, evidence-led synthesis before planning or implementation. Also use when the user asks for 'deep research', 'latest info', or 'how does X compare to Y publicly'.",
       "category": "general",
       "keywords": [
         "deep-research",
@@ -519,11 +519,11 @@
       "path": "workflows/skills/deep-research/SKILL.md",
       "metadata": {
         "author": "cubis-foundry",
-        "version": "1.0"
+        "version": "1.1"
       },
-      "fileBytes": 2340,
+      "fileBytes": 3283,
       "warnings": [
-        "description too long (216 chars)"
+        "description too long (316 chars)"
       ]
     },
     {
@@ -1009,7 +1009,7 @@
         "author": "cubis-foundry",
         "version": "3.0"
       },
-      "fileBytes": 13349
+      "fileBytes": 14940
     },
     {
       "id": "game-development",
