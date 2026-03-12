@@ -27,10 +27,6 @@ expect -re "Select skills install profile:" {} timeout { fail "Missing prompt: S
 press_enter
 expect -re "Select which MCP integrations to configure:" {} timeout { fail "Missing prompt: Select which MCP integrations to configure:" }
 press_enter
-expect -re "Select scope for Skills installation:" {} timeout { fail "Missing prompt: Select scope for Skills installation:" }
-press_enter
-expect -re "Select scope for MCP configuration:" {} timeout { fail "Missing prompt: Select scope for MCP configuration:" }
-press_enter
 expect -re "Select MCP runtime mode:" {} timeout { fail "Missing prompt: Select MCP runtime mode:" }
 press_enter
 expect -re "Select Postman installation mode:" {} timeout { fail "Missing prompt: Select Postman installation mode:" }

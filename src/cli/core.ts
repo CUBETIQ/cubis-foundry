@@ -31,7 +31,6 @@ import {
   promptInitMcpSelection,
   promptInitPlatforms,
   promptInitPostmanMode,
-  promptInitScope,
   promptInitSkillProfile,
   promptOptionalSecret,
   renderInitWelcome,
@@ -423,6 +422,34 @@ function normalizeMcpScope(value, fallback = "project") {
   throw new Error(
     `Unknown MCP scope '${value}'. Use project/workspace or global/user.`,
   );
+}
+
+function coerceWorkspaceOnlyInstallScope(value, optionName) {
+  const normalized = normalizeScope(value);
+  if (normalized === "global") {
+    return {
+      scope: "project",
+      warning: `${optionName}=${value} is ignored for install/init. Using workspace scope instead.`,
+    };
+  }
+  return {
+    scope: normalized,
+    warning: null,
+  };
+}
+
+function coerceWorkspaceOnlyMcpScope(value, optionName) {
+  const normalized = normalizeMcpScope(value, "project");
+  if (normalized === "global") {
+    return {
+      scope: "project",
+      warning: `${optionName}=${value} is ignored for install/init. Using workspace MCP config instead.`,
+    };
+  }
+  return {
+    scope: normalized,
+    warning: null,
+  };
 }
 
 function normalizeMcpRuntime(value, fallback = DEFAULT_MCP_RUNTIME) {
@@ -5579,10 +5606,16 @@ async function resolvePostmanInstallSelection({
     : null;
   let workspaceSelectionSource = hasWorkspaceOption ? "option" : "none";
   const requestedMcpScope = options.mcpScope
-    ? normalizeMcpScope(options.mcpScope, normalizeMcpScope(scope, "project"))
+    ? coerceWorkspaceOnlyMcpScope(
+        options.mcpScope,
+        "--mcp-scope",
+      )
     : null;
-  let mcpScope = requestedMcpScope || normalizeMcpScope(scope, "project");
+  let mcpScope = requestedMcpScope?.scope || "project";
   const warnings = [];
+  if (requestedMcpScope?.warning) {
+    warnings.push(requestedMcpScope.warning);
+  }
   const stitchEnabled =
     stitchRequested ||
     (platform === "antigravity" &&
@@ -5618,23 +5651,6 @@ async function resolvePostmanInstallSelection({
     defaultWorkspaceId = workspaceSelection.workspaceId;
     warnings.push(...workspaceSelection.warnings);
     workspaceSelectionSource = "interactive";
-  }
-
-  if (canPrompt && !requestedMcpScope) {
-    mcpScope = await select({
-      message: "Install MCP config in workspace or global scope?",
-      choices: [
-        {
-          name: scope === "global" ? "Global (recommended)" : "Global",
-          value: "global",
-        },
-        {
-          name: scope === "project" ? "Workspace (recommended)" : "Workspace",
-          value: "project",
-        },
-      ],
-      default: mcpScope,
-    });
   }
 
   let effectiveRuntime = requestedRuntime;
@@ -7047,7 +7063,7 @@ function printPlatforms() {
       `  global rules:      ${profile.global.ruleFilesByPriority.join(" | ")}`,
     );
     console.log(
-      "  default install:   workflows/agents/commands/prompts -> project, skills -> global",
+      "  default install:   workflows/agents/commands/prompts/skills/MCP -> project",
     );
   }
 }
@@ -7091,6 +7107,7 @@ function printInstallSummary({
   sanitizedAgents = [],
   terminalIntegration = null,
   terminalIntegrationRules = null,
+  warnings = [],
   dryRun = false,
 }) {
   console.log(`\nPlatform: ${platform}`);
@@ -7195,6 +7212,13 @@ function printInstallSummary({
     }
     if (sanitizedAgents.length > 8) {
       console.log(`- ...and ${sanitizedAgents.length - 8} more agent file(s).`);
+    }
+  }
+
+  if (warnings.length > 0) {
+    console.log("\nWarnings:");
+    for (const warning of warnings) {
+      console.log(`- ${warning}`);
     }
   }
 }
@@ -7696,7 +7720,11 @@ function withWorkflowBaseOptions(command) {
 function withInstallOptions(command) {
   return command
     .option("-p, --platform <platform>", "target platform id")
-    .option("--scope <scope>", "target scope: project|global", "global")
+    .option(
+      "--scope <scope>",
+      "install scope: project (global is accepted but coerced to project)",
+      "project",
+    )
     .option(
       "-b, --bundle <bundle>",
       "bundle id (default: agent-environment-setup)",
@@ -7728,7 +7756,7 @@ function withInstallOptions(command) {
     )
     .option(
       "--mcp-scope <scope>",
-      "optional: MCP config scope for --postman (project|workspace|global|user)",
+      "optional: MCP config scope for --postman (workspace/project only; global is coerced to project)",
     )
     .option(
       "--mcp-runtime <runtime>",
@@ -8062,7 +8090,11 @@ async function performWorkflowInstall(
     }
   }
   const useSymlinks = Boolean(options.link);
-  const scope = normalizeScope(options.scope);
+  const requestedInstallScope = coerceWorkspaceOnlyInstallScope(
+    options.scope,
+    "--scope",
+  );
+  const scope = requestedInstallScope.scope;
   const ruleScope = scope === "global" ? "project" : scope;
   const dryRun = Boolean(options.dryRun);
   const platform = await resolvePlatform(options.platform, scope, cwd);
@@ -8207,6 +8239,7 @@ async function performWorkflowInstall(
     cancelled: false,
     cwd,
     scope,
+    warnings: requestedInstallScope.warning ? [requestedInstallScope.warning] : [],
     ruleScope,
     dryRun,
     platform,
@@ -8239,6 +8272,7 @@ async function runWorkflowInstall(options) {
       sanitizedAgents: result.installResult.sanitizedAgents,
       terminalIntegration: result.installResult.terminalIntegration,
       terminalIntegrationRules: result.terminalVerificationRuleResult,
+      warnings: result.warnings,
       dryRun: result.dryRun,
     });
     printRuleSyncResult(result.syncResult);
@@ -8751,6 +8785,54 @@ async function removeMcpRuntimeEntriesJson({
   };
 }
 
+async function removeMcpRuntimeEntriesCodexToml({
+  filePath,
+  serverIds,
+  dryRun = false,
+  cwd = process.cwd(),
+}) {
+  if (!(await pathExists(filePath))) {
+    return { path: filePath, action: "missing", warnings: [] };
+  }
+
+  const warnings = [];
+  let raw = "";
+  try {
+    raw = await readFile(filePath, "utf8");
+  } catch (error) {
+    warnings.push(
+      `Skipped MCP runtime cleanup for ${filePath}: ${error.message}`,
+    );
+    return { path: filePath, action: "skipped", warnings };
+  }
+
+  const presentServerIds = serverIds.filter((serverId) =>
+    new RegExp(
+      `^\\s*\\[mcp_servers\\.${escapeRegExp(serverId)}\\]\\s*$`,
+      "m",
+    ).test(raw),
+  );
+  if (presentServerIds.length === 0) {
+    return { path: filePath, action: "unchanged", warnings };
+  }
+
+  if (dryRun) {
+    return { path: filePath, action: "would-patch", warnings };
+  }
+
+  for (const serverId of presentServerIds) {
+    try {
+      await execFile("codex", ["mcp", "remove", serverId], { cwd });
+    } catch (error) {
+      warnings.push(
+        `Could not remove '${serverId}' via codex CLI: ${error.message}`,
+      );
+    }
+  }
+
+  return { path: filePath, action: "patched", warnings };
+}
+
 async function removePlatformMcpRuntimeTargets({
   platform,
   scope,
@@ -8808,32 +8890,13 @@ async function removePlatformMcpRuntimeTargets({
     }
 
     const codexConfigPath = path.join(os.homedir(), ".codex", "config.toml");
-    if (dryRun) {
-      return [
-        {
-          path: codexConfigPath,
-          action: "would-patch",
-          warnings: [],
-        },
-      ];
-    }
-
-    const warnings = [];
-    for (const serverId of serverIds) {
-      try {
-        await execFile("codex", ["mcp", "remove", serverId], { cwd });
-      } catch (error) {
-        warnings.push(
-          `Could not remove '${serverId}' via codex CLI: ${error.message}`,
-        );
-      }
-    }
     return [
-      {
-        path: codexConfigPath,
-        action: "patched",
-        warnings,
-      },
+      await removeMcpRuntimeEntriesCodexToml({
+        filePath: codexConfigPath,
+        serverIds,
+        dryRun,
+        cwd,
+      }),
     ];
   }
 
@@ -11747,13 +11810,16 @@ async function runInitWizard(options) {
       options.skillProfile,
       DEFAULT_SKILL_PROFILE,
     );
-    const defaultSkillsScope = normalizeScope(
+    const requestedSkillsScope = coerceWorkspaceOnlyInstallScope(
       options.skillsScope || options.scope,
+      options.skillsScope ? "--skills-scope" : "--scope",
     );
-    const defaultMcpScope =
-      normalizeMcpScope(options.mcpScope, defaultSkillsScope) === "global"
-        ? "global"
-        : "project";
+    const requestedMcpScope = coerceWorkspaceOnlyMcpScope(
+      options.mcpScope,
+      "--mcp-scope",
+    );
+    const defaultSkillsScope = requestedSkillsScope.scope;
+    const defaultMcpScope = requestedMcpScope.scope;
     const defaultPostmanWorkspaceId =
       options.postmanWorkspaceId !== undefined
         ? normalizePostmanWorkspaceId(options.postmanWorkspaceId)
@@ -11790,18 +11856,8 @@ async function runInitWizard(options) {
         : defaultMcpSelections.length > 0
           ? defaultMcpSelections
           : ["cubis-foundry"],
-      skillsScope: isInteractive
-        ? await promptInitScope({
-            message: "Select scope for Skills installation:",
-            defaultScope: defaultSkillsScope,
-          })
-        : defaultSkillsScope,
-      mcpScope: isInteractive
-        ? await promptInitScope({
-            message: "Select scope for MCP configuration:",
-            defaultScope: defaultMcpScope,
-          })
-        : defaultMcpScope,
+      skillsScope: defaultSkillsScope,
+      mcpScope: defaultMcpScope,
       mcpRuntime: defaultMcpRuntime,
       mcpBuildLocal: defaultMcpBuildLocal,
       postmanMode:
@@ -11812,7 +11868,10 @@ async function runInitWizard(options) {
       postmanApiKey: null,
       stitchApiKey: null,
     };
-    const initWarnings = [];
+    const initWarnings = [
+      requestedSkillsScope.warning,
+      requestedMcpScope.warning,
+    ].filter(Boolean);
 
     if (selections.platforms.length === 0) {
       throw new Error("No platforms selected.");
@@ -11921,6 +11980,7 @@ async function runInitWizard(options) {
           terminalIntegration: installOutcome.installResult.terminalIntegration,
           terminalIntegrationRules:
             installOutcome.terminalVerificationRuleResult,
+          warnings: installOutcome.warnings,
           dryRun: installOutcome.dryRun,
         });
         printRuleSyncResult(installOutcome.syncResult);

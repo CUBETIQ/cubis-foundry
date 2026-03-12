@@ -6,11 +6,7 @@ export ROOT_DIR
 CLI="$ROOT_DIR/bin/cubis.js"
 EXPECTED_WORKFLOW_COUNT="$(find "$ROOT_DIR/workflows/workflows/agent-environment-setup/shared/workflows" -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')"
 EXPECTED_AGENT_COUNT="$(find "$ROOT_DIR/workflows/workflows/agent-environment-setup/shared/agents" -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')"
-ANTIGRAVITY_GLOBAL_SKILLS="$HOME/.gemini/antigravity/skills"
-CODEX_GLOBAL_SKILLS="$HOME/.agents/skills"
-COPILOT_GLOBAL_SKILLS="$HOME/.copilot/skills"
 export EXPECTED_WORKFLOW_COUNT EXPECTED_AGENT_COUNT
-export ANTIGRAVITY_GLOBAL_SKILLS CODEX_GLOBAL_SKILLS COPILOT_GLOBAL_SKILLS
 
 if [ ! -f "$CLI" ]; then
   echo "ERROR: CLI entry not found at $CLI" >&2
@@ -19,6 +15,10 @@ fi
 
 TMP_DIR="$(mktemp -d /tmp/cbx-fulltest.XXXXXX)"
 trap 'rm -rf "$TMP_DIR"' EXIT
+ANTIGRAVITY_INSTALLED_SKILLS="$TMP_DIR/.agent/skills"
+CODEX_INSTALLED_SKILLS="$TMP_DIR/.agents/skills"
+COPILOT_INSTALLED_SKILLS="$TMP_DIR/.github/skills"
+export ANTIGRAVITY_INSTALLED_SKILLS CODEX_INSTALLED_SKILLS COPILOT_INSTALLED_SKILLS
 
 rg() {
   if type -P rg >/dev/null 2>&1; then
@@ -206,7 +206,7 @@ if [ "$(find .agent/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')
   echo "[FAIL] Antigravity expected exactly $EXPECTED_AGENT_COUNT agent files" >&2
   exit 1
 fi
-[ -d "$ANTIGRAVITY_GLOBAL_SKILLS/api-designer" ]
+[ -d "$ANTIGRAVITY_INSTALLED_SKILLS/api-designer" ]
 [ -d .agent/terminal-integration ]
 [ -f .agent/terminal-integration/config.json ]
 [ -f .agent/terminal-integration/verify-task.ps1 ]
@@ -296,27 +296,27 @@ if [ "$(find .agents/workflows -maxdepth 1 -type f -name '*.md' | wc -l | tr -d 
   exit 1
 fi
 [ ! -d .agents/agents ]
-[ -f "$CODEX_GLOBAL_SKILLS/workflow-backend/SKILL.md" ]
-[ -f "$CODEX_GLOBAL_SKILLS/workflow-plan/SKILL.md" ]
-[ -f "$CODEX_GLOBAL_SKILLS/agent-backend-specialist/SKILL.md" ]
-[ -f "$CODEX_GLOBAL_SKILLS/agent-security-auditor/SKILL.md" ]
-[ -f "$CODEX_GLOBAL_SKILLS/auth-architect/SKILL.md" ]
-[ -f "$CODEX_GLOBAL_SKILLS/nextjs-developer/SKILL.md" ]
-[ -f "$CODEX_GLOBAL_SKILLS/web-perf/SKILL.md" ]
-[ -f "$CODEX_GLOBAL_SKILLS/graphql-architect/SKILL.md" ]
-[ ! -d "$CODEX_GLOBAL_SKILLS/vercel-functions" ]
-[ ! -d "$CODEX_GLOBAL_SKILLS/vercel-deployments" ]
-rg -n '^name:\s*workflow-backend$' "$CODEX_GLOBAL_SKILLS/workflow-backend/SKILL.md" >/dev/null
-rg -n '^name:\s*agent-backend-specialist$' "$CODEX_GLOBAL_SKILLS/agent-backend-specialist/SKILL.md" >/dev/null
-assert_file_contains_literal "$CODEX_GLOBAL_SKILLS/auth-architect/SKILL.md" 'OAuth or OIDC' "Codex auth specialist content"
-assert_file_contains_literal "$CODEX_GLOBAL_SKILLS/nextjs-developer/SKILL.md" 'App Router' "Codex Next.js specialist content"
+[ -f "$CODEX_INSTALLED_SKILLS/workflow-backend/SKILL.md" ]
+[ -f "$CODEX_INSTALLED_SKILLS/workflow-plan/SKILL.md" ]
+[ -f "$CODEX_INSTALLED_SKILLS/agent-backend-specialist/SKILL.md" ]
+[ -f "$CODEX_INSTALLED_SKILLS/agent-security-auditor/SKILL.md" ]
+[ -f "$CODEX_INSTALLED_SKILLS/auth-architect/SKILL.md" ]
+[ -f "$CODEX_INSTALLED_SKILLS/nextjs-developer/SKILL.md" ]
+[ -f "$CODEX_INSTALLED_SKILLS/web-perf/SKILL.md" ]
+[ -f "$CODEX_INSTALLED_SKILLS/graphql-architect/SKILL.md" ]
+[ ! -d "$CODEX_INSTALLED_SKILLS/vercel-functions" ]
+[ ! -d "$CODEX_INSTALLED_SKILLS/vercel-deployments" ]
+rg -n '^name:\s*workflow-backend$' "$CODEX_INSTALLED_SKILLS/workflow-backend/SKILL.md" >/dev/null
+rg -n '^name:\s*agent-backend-specialist$' "$CODEX_INSTALLED_SKILLS/agent-backend-specialist/SKILL.md" >/dev/null
+assert_file_contains_literal "$CODEX_INSTALLED_SKILLS/auth-architect/SKILL.md" 'OAuth or OIDC' "Codex auth specialist content"
+assert_file_contains_literal "$CODEX_INSTALLED_SKILLS/nextjs-developer/SKILL.md" 'App Router' "Codex Next.js specialist content"
 node - <<'NODE'
 const fs = require('fs');
 const path = require('path');
 const root = process.env.ROOT_DIR;
-const installedRoot = process.env.CODEX_GLOBAL_SKILLS;
+const installedRoot = process.env.CODEX_INSTALLED_SKILLS;
 if (!root || !installedRoot) {
-  console.error('[FAIL] ROOT_DIR and CODEX_GLOBAL_SKILLS env vars are required');
+  console.error('[FAIL] ROOT_DIR and CODEX_INSTALLED_SKILLS env vars are required');
   process.exit(1);
 }
 const canonicalRoots = [
@@ -335,7 +335,7 @@ const canonical = [...canonicalSet];
 for (const id of canonical) {
   const skillFile = path.join(installedRoot, id, 'SKILL.md');
   if (!fs.existsSync(skillFile)) {
-    console.error(`[FAIL] Codex global skills missing canonical skill ${id}`);
+    console.error(`[FAIL] Codex installed skills missing canonical skill ${id}`);
     process.exit(1);
   }
 }
@@ -348,10 +348,10 @@ log_ok "Codex install complete and legacy warning detected"
 log_step "C2.1 /backend wiring check (Codex files)"
 rg -n '^command:\s*"/backend"' .agents/workflows/backend.md >/dev/null
 rg -n '@backend-specialist' .agents/workflows/backend.md >/dev/null
-rg -n '^# Agent Compatibility Alias: @backend-specialist$' "$CODEX_GLOBAL_SKILLS/agent-backend-specialist/SKILL.md" >/dev/null
-rg -n '^# Workflow Compatibility Alias: /backend$' "$CODEX_GLOBAL_SKILLS/workflow-backend/SKILL.md" >/dev/null
-rg -n '\$agent-backend-specialist' "$CODEX_GLOBAL_SKILLS/workflow-backend/SKILL.md" >/dev/null
-if rg -n '@backend-specialist' "$CODEX_GLOBAL_SKILLS/workflow-backend/SKILL.md" >/dev/null; then
+rg -n '^# Agent Compatibility Alias: @backend-specialist$' "$CODEX_INSTALLED_SKILLS/agent-backend-specialist/SKILL.md" >/dev/null
+rg -n '^# Workflow Compatibility Alias: /backend$' "$CODEX_INSTALLED_SKILLS/workflow-backend/SKILL.md" >/dev/null
+rg -n '\$agent-backend-specialist' "$CODEX_INSTALLED_SKILLS/workflow-backend/SKILL.md" >/dev/null
+if rg -n '@backend-specialist' "$CODEX_INSTALLED_SKILLS/workflow-backend/SKILL.md" >/dev/null; then
   echo "[FAIL] Codex workflow wrapper still references @backend-specialist instead of \$agent-backend-specialist" >&2
   exit 1
 fi
@@ -451,7 +451,8 @@ node "$CLI" init --yes --dry-run --no-banner \
 rg -n 'Init plan summary:' /tmp/cbx-c32.log >/dev/null
 rg -n 'Platforms: codex, antigravity' /tmp/cbx-c32.log >/dev/null
 rg -n 'Skill profile: web-backend' /tmp/cbx-c32.log >/dev/null
-rg -n 'MCP scope: global' /tmp/cbx-c32.log >/dev/null
+rg -n 'MCP scope: project' /tmp/cbx-c32.log >/dev/null
+rg -n -- '--mcp-scope=global is ignored for install/init' /tmp/cbx-c32.log >/dev/null
 rg -n 'MCP runtime: local' /tmp/cbx-c32.log >/dev/null
 rg -n 'MCP selections: cubis-foundry, postman, stitch' /tmp/cbx-c32.log >/dev/null
 rg -n 'Postman mode: minimal' /tmp/cbx-c32.log >/dev/null
@@ -494,7 +495,6 @@ log_ok "Dry-run did not write Copilot files"
 
 log_step "P2 Copilot apply + doctor"
 node "$CLI" workflows install --platform copilot --bundle agent-environment-setup --overwrite --yes >/tmp/cbx-p2.log
-[ -f AGENTS.md ]
 [ -f .github/copilot-instructions.md ]
 [ -f .github/copilot/workflows/backend.md ]
 [ -f .github/copilot/workflows/orchestrate.md ]
@@ -523,18 +523,18 @@ if [ "$(find .github/prompts -maxdepth 1 -type f -name '*.prompt.md' | wc -l | t
   echo "[FAIL] Copilot expected exactly $EXPECTED_WORKFLOW_COUNT prompt files" >&2
   exit 1
 fi
-[ ! -d .github/skills ]
-[ -d "$COPILOT_GLOBAL_SKILLS/api-designer" ]
-rg -n '^name:' "$COPILOT_GLOBAL_SKILLS/auth-architect/SKILL.md" >/dev/null
-if rg -n '^allowed-tools:' "$COPILOT_GLOBAL_SKILLS/auth-architect/SKILL.md" >/dev/null; then
+[ -d .github/skills ]
+[ -d "$COPILOT_INSTALLED_SKILLS/api-designer" ]
+rg -n '^name:' "$COPILOT_INSTALLED_SKILLS/auth-architect/SKILL.md" >/dev/null
+if rg -n '^allowed-tools:' "$COPILOT_INSTALLED_SKILLS/auth-architect/SKILL.md" >/dev/null; then
   echo "[FAIL] Copilot global skill SKILL.md still contains unsupported allowed-tools attribute" >&2
   exit 1
 fi
-if rg -n '^priority:' "$COPILOT_GLOBAL_SKILLS/auth-architect/SKILL.md" >/dev/null; then
+if rg -n '^priority:' "$COPILOT_INSTALLED_SKILLS/auth-architect/SKILL.md" >/dev/null; then
   echo "[FAIL] Copilot global skill SKILL.md still contains unsupported priority attribute" >&2
   exit 1
 fi
-rg -n 'Prefer workspace \.vscode/mcp\.json as the primary supported path' /tmp/cbx-p2.log >/dev/null
+rg -n 'Platform MCP target \(.+/.vscode/mcp\.json\): (installed|replaced|patched)' /tmp/cbx-p2.log >/dev/null
 if rg -n '^skills:' .github/agents/backend-specialist.md >/dev/null; then
   echo "[FAIL] Copilot agent file still contains unsupported skills attribute" >&2
   exit 1
@@ -633,11 +633,11 @@ rg -n 'Action: unchanged' /tmp/cbx-p3b.log >/dev/null
 log_ok "Copilot second sync is idempotent"
 
 log_step "P4 Remove apply"
-node "$CLI" workflows remove agent-environment-setup --platform copilot --scope global --yes >/tmp/cbx-p4.log
+node "$CLI" workflows remove agent-environment-setup --platform copilot --scope project --yes >/tmp/cbx-p4.log
 [ ! -f .github/copilot/workflows/backend.md ]
 [ ! -f .github/agents/backend-specialist.md ]
 [ ! -f .github/prompts/workflow-backend.prompt.md ]
-[ ! -d "$COPILOT_GLOBAL_SKILLS/api-designer" ]
+[ ! -d "$COPILOT_INSTALLED_SKILLS/api-designer" ]
 [ -f .github/copilot-instructions.md ]
 rg -n 'No installed workflows found yet\.' .github/copilot-instructions.md >/dev/null
 log_ok "Copilot bundle removed and managed block kept"

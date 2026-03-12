@@ -4,7 +4,6 @@ import type {
   InitMcpRuntime,
   InitPlatformId,
   InitPostmanMode,
-  InitScope,
   InitSkillProfile,
 } from "./types.js";
 
@@ -90,29 +89,6 @@ export async function promptInitMcpSelection(defaultMcps: InitMcpId[]) {
         name: "Stitch",
         value: "stitch",
         checked: defaultMcps.includes("stitch"),
-      },
-    ],
-  });
-}
-
-export async function promptInitScope({
-  message,
-  defaultScope,
-}: {
-  message: string;
-  defaultScope: InitScope;
-}) {
-  return select<InitScope>({
-    message,
-    default: defaultScope,
-    choices: [
-      {
-        name: defaultScope === "global" ? "Global (recommended)" : "Global",
-        value: "global",
-      },
-      {
-        name: defaultScope === "project" ? "Project (recommended)" : "Project",
-        value: "project",
       },
     ],
   });

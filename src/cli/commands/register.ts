@@ -60,9 +60,12 @@ export function registerCommands(deps: CliRegistrationDeps) {
     )
     .option(
       "--skills-scope <scope>",
-      "scope for skills install: global|project",
+      "deprecated for init: installs are workspace-only",
     )
-    .option("--mcp-scope <scope>", "scope for MCP config: global|project")
+    .option(
+      "--mcp-scope <scope>",
+      "deprecated for init: MCP config installs in workspace scope",
+    )
     .option(
       "--mcps <items>",
       "comma-separated MCP selections: cubis-foundry,postman,stitch",
