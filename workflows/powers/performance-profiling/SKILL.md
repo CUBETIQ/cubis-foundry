@@ -1,143 +1,90 @@
 ---
 name: performance-profiling
-description: Performance profiling principles. Measurement, analysis, and optimization techniques.
-allowed-tools: Read, Glob, Grep, Bash
+description: "Use when measuring, analyzing, and optimizing application performance with Core Web Vitals, bundle analysis, runtime profiling, and lighthouse audits."
+license: MIT
+metadata:
+  author: cubis-foundry
+  version: "1.0"
+compatibility: Claude Code, Codex, GitHub Copilot
 ---
 
 # Performance Profiling
 
-> Measure, analyze, optimize - in that order.
+## Purpose
 
-## 🔧 Runtime Scripts
+Use when measuring, analyzing, and optimizing application performance with Core Web Vitals, bundle analysis, runtime profiling, and lighthouse audits.
 
-**Execute these for automated profiling:**
+## When to Use
 
-| Script | Purpose | Usage |
-|--------|---------|-------|
-| `scripts/lighthouse_audit.py` | Lighthouse performance audit | `python scripts/lighthouse_audit.py https://example.com` |
+- Measuring and improving Core Web Vitals (LCP, INP, CLS).
+- Analyzing bundle size, finding large dependencies, and code splitting.
+- Profiling runtime performance in browser Performance or Memory tabs.
+- Diagnosing performance bottlenecks (slow API, large payload, memory leak, layout thrash).
+- Planning performance optimization with measurement-first discipline.
 
----
+## Instructions
 
-## 1. Core Web Vitals
+1. Baseline — measure current performance with Lighthouse, WebPageTest, or browser DevTools.
+2. Identify — find the biggest bottleneck using profiling data, not assumptions.
+3. Fix — apply targeted optimization for the measured bottleneck.
+4. Validate — re-measure to confirm improvement and check for regressions.
 
-### Targets
+### Core Web Vitals targets
 
-| Metric | Good | Poor | Measures |
-|--------|------|------|----------|
-| **LCP** | < 2.5s | > 4.0s | Loading |
-| **INP** | < 200ms | > 500ms | Interactivity |
-| **CLS** | < 0.1 | > 0.25 | Stability |
+| Metric | Good    | Needs Improvement | Poor    |
+| ------ | ------- | ----------------- | ------- |
+| LCP    | < 2.5s  | 2.5s – 4.0s       | > 4.0s  |
+| INP    | < 200ms | 200ms – 500ms     | > 500ms |
+| CLS    | < 0.1   | 0.1 – 0.25        | > 0.25  |
 
-### When to Measure
+### Baseline standards
 
-| Stage | Tool |
-|-------|------|
-| Development | Local Lighthouse |
-| CI/CD | Lighthouse CI |
-| Production | RUM (Real User Monitoring) |
+- Always measure before optimizing — intuition is unreliable for performance.
+- Use real user metrics (RUM) alongside synthetic benchmarks.
+- Profile on representative hardware, not just developer machines.
+- Address the largest bottleneck first for maximum impact.
+- Verify optimizations don't introduce regressions elsewhere.
 
----
+### Quick wins priority
 
-## 2. Profiling Workflow
+| Priority | Action                           | Typical Impact            |
+| -------- | -------------------------------- | ------------------------- |
+| 1        | Enable compression (gzip/brotli) | 60-80% transfer reduction |
+| 2        | Lazy load below-fold images      | LCP improvement           |
+| 3        | Code split routes                | Initial load reduction    |
+| 4        | Set proper cache headers         | Repeat visit speed        |
+| 5        | Optimize images (WebP/AVIF)      | Transfer size reduction   |
 
-### The 4-Step Process
+### Common bottlenecks by symptom
 
-```
-1. BASELINE → Measure current state
-2. IDENTIFY → Find the bottleneck
-3. FIX → Make targeted change
-4. VALIDATE → Confirm improvement
-```
+| Symptom           | Likely Cause                            | Investigation                      |
+| ----------------- | --------------------------------------- | ---------------------------------- |
+| Slow initial load | Large bundle, render-blocking resources | Bundle analysis, waterfall         |
+| Janky scrolling   | Layout thrash, paint storms             | Performance tab, layers panel      |
+| Memory growth     | Detached DOM, event listener leaks      | Memory tab, heap snapshots         |
+| Slow interaction  | Long tasks, main thread blocking        | Performance tab, long task markers |
 
-### Profiling Tool Selection
+### Constraints
 
-| Problem | Tool |
-|---------|------|
-| Page load | Lighthouse |
-| Bundle size | Bundle analyzer |
-| Runtime | DevTools Performance |
-| Memory | DevTools Memory |
-| Network | DevTools Network |
+- Never optimize without measuring first.
+- Never assume a change improved performance — always validate with data.
+- Never sacrifice correctness for performance.
+- Avoid premature optimization of code paths that aren't bottlenecks.
 
----
+## Output Format
 
-## 3. Bundle Analysis
+Provide measurement data, identified bottlenecks with evidence, optimization recommendations, and before/after comparisons.
 
-### What to Look For
+## References
 
-| Issue | Indicator |
-|-------|-----------|
-| Large dependencies | Top of bundle |
-| Duplicate code | Multiple chunks |
-| Unused code | Low coverage |
-| Missing splits | Single large chunk |
+No reference files for this skill right now.
 
-### Optimization Actions
+## Scripts
 
-| Finding | Action |
-|---------|--------|
-| Big library | Import specific modules |
-| Duplicate deps | Dedupe, update versions |
-| Route in main | Code split |
-| Unused exports | Tree shake |
+No helper scripts are required for this skill right now.
 
----
+## Examples
 
-## 4. Runtime Profiling
-
-### Performance Tab Analysis
-
-| Pattern | Meaning |
-|---------|---------|
-| Long tasks (>50ms) | UI blocking |
-| Many small tasks | Possible batching opportunity |
-| Layout/paint | Rendering bottleneck |
-| Script | JavaScript execution |
-
-### Memory Tab Analysis
-
-| Pattern | Meaning |
-|---------|---------|
-| Growing heap | Possible leak |
-| Large retained | Check references |
-| Detached DOM | Not cleaned up |
-
----
-
-## 5. Common Bottlenecks
-
-### By Symptom
-
-| Symptom | Likely Cause |
-|---------|--------------|
-| Slow initial load | Large JS, render blocking |
-| Slow interactions | Heavy event handlers |
-| Jank during scroll | Layout thrashing |
-| Growing memory | Leaks, retained refs |
-
----
-
-## 6. Quick Win Priorities
-
-| Priority | Action | Impact |
-|----------|--------|--------|
-| 1 | Enable compression | High |
-| 2 | Lazy load images | High |
-| 3 | Code split routes | High |
-| 4 | Cache static assets | Medium |
-| 5 | Optimize images | Medium |
-
----
-
-## 7. Anti-Patterns
-
-| ❌ Don't | ✅ Do |
-|----------|-------|
-| Guess at problems | Profile first |
-| Micro-optimize | Fix biggest issue |
-| Optimize early | Optimize when needed |
-| Ignore real users | Use RUM data |
-
----
-
-> **Remember:** The fastest code is code that doesn't run. Remove before optimizing.
+- "Profile and optimize the Core Web Vitals for our landing page"
+- "Analyze our bundle and recommend code splitting strategy"
+- "Find and fix the memory leak in our real-time dashboard"

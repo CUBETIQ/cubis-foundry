@@ -1,105 +1,94 @@
 ````markdown
 ---
 inclusion: manual
-name: "accessibility"
-displayName: "Accessibility Expert"
-description: "Ensure Flutter apps meet WCAG 2.1 AA standards with proper semantics, focus management, and screen reader support"
-keywords:
-  [
-    "accessibility",
-    "a11y",
-    "wcag",
-    "semantics",
-    "screen reader",
-    "focus",
-    "contrast",
-    "flutter accessibility",
-  ]
+name: accessibility
+description: "Use when auditing, implementing, or reviewing web accessibility (WCAG, ARIA, keyboard navigation, screen reader support, and inclusive interaction patterns)."
+license: MIT
+metadata:
+  author: cubis-foundry
+  version: "1.0"
+compatibility: Claude Code, Codex, GitHub Copilot
 ---
 
-# Accessibility Expert
+# Accessibility
 
-## Overview
+## Purpose
 
-This power helps you build accessible Flutter widgets that work well with screen readers (TalkBack/VoiceOver), keyboard navigation, and meet WCAG 2.1 AA standards.
+Use when auditing, implementing, or reviewing web accessibility (WCAG, ARIA, keyboard navigation, screen reader support, and inclusive interaction patterns).
 
 ## When to Use
 
-- Building new UI screens or widgets
-- Reviewing code for accessibility compliance
-- Fixing accessibility issues reported by users
-- Adding semantic labels to icons and buttons
-- Implementing proper focus management in forms
+- Auditing existing UI for WCAG 2.2 AA compliance.
+- Building new components that must be keyboard-navigable and screen-reader friendly.
+- Reviewing PR diffs for accessibility regressions.
+- Fixing focus management, ARIA labeling, or color contrast issues.
+- Choosing between native HTML semantics and ARIA attributes.
 
-## Quick Reference
+## Instructions
 
-### Semantic Labels for Icon Buttons
+1. Identify the interaction pattern and which WCAG success criteria apply.
+2. Use semantic HTML first — only add ARIA when native semantics are insufficient.
+3. Verify keyboard flow: focus order, focus visibility, escape/close behavior.
+4. Check screen reader announcements for dynamic content and state changes.
+5. Validate contrast ratios and motion preferences before shipping.
 
-```dart
-// ❌ Bad - no semantic label
-IconButton(
-  icon: Icon(Icons.delete),
-  onPressed: () => deleteItem(),
-)
+### Baseline standards
 
-// ✅ Good - has semantic label
-Semantics(
-  label: 'Delete item',
-  button: true,
-  child: IconButton(
-    icon: Icon(Icons.delete),
-    onPressed: () => deleteItem(),
-  ),
-)
-```
+- Use native HTML elements (`<button>`, `<nav>`, `<dialog>`, `<details>`) before custom ARIA widgets.
+- Every interactive element must be keyboard-reachable and operable.
+- Every image has `alt` text (or `alt=""` for decorative images).
+- Color alone is never the only way to convey information.
+- Focus indicators are visible in all themes (light, dark, high contrast).
+- Dynamic content changes are announced via live regions or focus management.
+- Forms have visible labels, error messages linked to inputs, and clear required-field indicators.
 
-### Form Focus Management
+### ARIA rules
 
-```dart
-// Create focus nodes
-final _emailFocus = FocusNode();
-final _passwordFocus = FocusNode();
+- First rule of ARIA: don't use ARIA if a native HTML element does the job.
+- Never change native semantics unless absolutely necessary (`<button>` is always better than `<div role="button">`).
+- All interactive ARIA elements must be keyboard-operable.
+- All ARIA references (`aria-labelledby`, `aria-describedby`, `aria-controls`) must point to existing element IDs.
+- Use `aria-live="polite"` for status updates, `aria-live="assertive"` only for critical errors.
 
-// Link them in text fields
-TextField(
-  focusNode: _emailFocus,
-  textInputAction: TextInputAction.next,
-  onSubmitted: (_) => _passwordFocus.requestFocus(),
-)
+### Testing checklist
 
-TextField(
-  focusNode: _passwordFocus,
-  textInputAction: TextInputAction.done,
-  onSubmitted: (_) => _submitForm(),
-)
-```
+- Tab through every interactive element — focus order must be logical.
+- Operate every control with keyboard only (Enter, Space, Escape, Arrow keys).
+- Run axe-core or Lighthouse accessibility audit — zero critical/serious violations.
+- Test with a screen reader (VoiceOver, NVDA, or JAWS) on at least one real flow.
+- Check `prefers-reduced-motion` — animations must respect this media query.
+- Verify contrast with a tool (minimum 4.5:1 for normal text, 3:1 for large text and UI).
+- Test with zoom at 200% — layout must not break or hide content.
 
-### Minimum Touch Target Size
+### Constraints
 
-```dart
-// Ensure 48x48 minimum for interactive elements
-SizedBox(
-  width: 48,
-  height: 48,
-  child: IconButton(...),
-)
-```
+- Avoid using `div` or `span` with click handlers instead of `<button>`.
+- Avoid suppressing focus outlines globally (`outline: none` without replacement).
+- Avoid using `aria-hidden="true"` on elements that contain interactive content.
+- Avoid auto-playing audio or video without user consent or a stop mechanism.
+- Avoid using only color to indicate errors, status, or selected state.
+- Avoid positive `tabindex` values — they create unpredictable focus order.
+- Avoid tooltip-only labels with no accessible name on the trigger element.
 
-## Key Principles
+## Output Format
 
-1. **Semantic Labels**: All icon buttons, images, and non-text elements need labels
-2. **Focus Order**: Tab order should follow visual/logical flow
-3. **Touch Targets**: Minimum 48x48 dp for all interactive elements
-4. **Color Contrast**: Text must have 4.5:1 contrast ratio (3:1 for large text)
-5. **Screen Reader**: Test with TalkBack (Android) and VoiceOver (iOS)
+Provide implementation guidance, code examples, and configuration as appropriate to the task.
 
-## Steering Files
+## References
 
-Load detailed guidance:
-- `a11y_checklist.md` - Complete accessibility checklist for reviews
+Load on demand. Do not preload all reference files.
 
-## Templates
+| File                                 | Load when                                                                                                  |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| `references/wcag-audit-checklist.md` | You need a structured WCAG 2.2 AA audit checklist for a full-page or full-app review.                      |
+| `references/aria-patterns-guide.md`  | The task involves custom widgets (modals, menus, tabs, trees, comboboxes) that need correct ARIA patterns. |
 
-- `focus_form` - Form with proper focus management
-- `semantics_icon_button` - Icon button with semantic labels
+## Scripts
+
+No helper scripts are required for this skill right now. Keep execution in `SKILL.md` and `references/` unless repeated automation becomes necessary.
+
+## Examples
+
+- "Help me with accessibility best practices in this project"
+- "Review my accessibility implementation for issues"
 ````

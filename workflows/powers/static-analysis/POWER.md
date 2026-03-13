@@ -2,115 +2,159 @@
 ---
 inclusion: manual
 name: static-analysis
-description: Runs CodeQL-based static security analysis (database build, query pack selection, and SARIF results) for vulnerability discovery and audits. Not for custom QL authoring or CI/CD setup.
-allowed-tools:
-  - Bash
-  - Read
-  - Write
-  - Glob
-  - Grep
-  - AskUserQuestion
-  - Task
-  - TaskCreate
-  - TaskList
-  - TaskUpdate
+description: Configure and use static analysis tools including linters, formatters, type checkers, and custom rules to enforce code quality and consistency.
+license: Apache-2.0
+metadata:
+  author: cubis-foundry
+  version: "3.0"
+compatibility: Claude Code, Codex, GitHub Copilot, Gemini CLI
 ---
 
-# CodeQL Analysis
+# Static Analysis
 
-Supported languages: Python, JavaScript/TypeScript, Go, Java/Kotlin, C/C++, C#, Ruby, Swift.
+## Purpose
 
-**Skill resources:** Reference files and templates are located at `{baseDir}/references/` and `{baseDir}/workflows/`. Use `{baseDir}` to resolve paths to these files at runtime.
-
-## Quick Start
-
-For the common case ("scan this codebase for vulnerabilities"):
-
-```bash
-# 1. Verify CodeQL is installed
-command -v codeql >/dev/null 2>&1 && codeql --version || echo "NOT INSTALLED"
-
-# 2. Check for existing database
-ls -dt codeql_*.db 2>/dev/null | head -1
-```
-
-Then execute the full pipeline: **build database → create data extensions → run analysis** using the workflows below.
+Guide the setup and use of static analysis tools — linters, formatters, type checkers, and custom rules — to catch bugs early, enforce conventions, and maintain code quality automatically.
 
 ## When to Use
 
-- Scanning a codebase for security vulnerabilities with deep data flow analysis
-- Building a CodeQL database from source code (with build capability for compiled languages)
-- Finding complex vulnerabilities that require interprocedural taint tracking or AST/CFG analysis
-- Performing comprehensive security audits with multiple query packs
+- Setting up linting and formatting for a new project
+- Configuring ESLint, Prettier, Biome, or equivalent tools
+- Writing custom lint rules for team conventions
+- Fixing lint errors or understanding why a rule exists
+- Integrating static analysis into CI/CD
+- Choosing between competing tools
 
-## When NOT to Use
+## Instructions
 
-- **Writing custom queries** - Use a dedicated query development skill
-- **CI/CD integration** - Use GitHub Actions documentation directly
-- **Quick pattern searches** - Use Semgrep or grep for speed
-- **No build capability** for compiled languages - Consider Semgrep instead
-- **Single-file or lightweight analysis** - Semgrep is faster for simple pattern matching
+### Step 1 — Choose the Right Tools
 
-## Rationalizations to Reject
+| Language      | Linter        | Formatter       | Type Checker       |
+| ------------- | ------------- | --------------- | ------------------ |
+| TypeScript/JS | ESLint, Biome | Prettier, Biome | TypeScript (`tsc`) |
+| Python        | Ruff, Flake8  | Black, Ruff     | mypy, pyright      |
+| Go            | golangci-lint | gofmt           | Go compiler        |
+| Rust          | Clippy        | rustfmt         | Rust compiler      |
 
-These shortcuts lead to missed findings. Do not accept them:
+**Recommended approach**:
 
-- **"security-extended is enough"** - It is the baseline. Always check if Trail of Bits packs and Community Packs are available for the language. They catch categories `security-extended` misses entirely.
-- **"The database built, so it's good"** - A database that builds does not mean it extracted well. Always run Step 4 (quality assessment) and check file counts against expected source files. A cached build produces zero useful extraction.
-- **"Data extensions aren't needed for standard frameworks"** - Even Django/Spring apps have custom wrappers around ORM calls, request parsing, or shell execution that CodeQL does not model. Skipping the extensions workflow means missing vulnerabilities in project-specific code.
-- **"build-mode=none is fine for compiled languages"** - It produces severely incomplete analysis. No interprocedural data flow through compiled code is traced. Only use as an absolute last resort and clearly flag the limitation.
-- **"No findings means the code is secure"** - Zero findings can indicate poor database quality, missing models, or wrong query packs. Investigate before reporting clean results.
-- **"I'll just run the default suite"** - The default suite varies by how CodeQL is invoked. Always explicitly specify the suite (e.g., `security-extended`) so results are reproducible.
+- Biome for TypeScript/JS projects (replaces ESLint + Prettier, faster)
+- Ruff for Python (replaces Flake8 + Black + isort, faster)
+- Use the language's official formatter when available
 
----
+### Step 2 — Configure Incrementally
 
-## Workflow Selection
+**Start strict, relax as needed**:
 
-This skill has three workflows:
+1. Start with recommended preset (`"extends": ["recommended"]`)
+2. Enable formatting rules (consistent style, no debates)
+3. Enable correctness rules (actual bugs: unused vars, unreachable code)
+4. Enable performance rules (avoidable perf issues)
+5. Add custom rules specific to your team after the baseline is stable
 
-| Workflow | Purpose |
-|----------|---------|
-| [build-database](workflows/build-database.md) | Create CodeQL database using 3 build methods in sequence |
-| [create-data-extensions](workflows/create-data-extensions.md) | Detect or generate data extension models for project APIs |
-| [run-analysis](workflows/run-analysis.md) | Select rulesets, execute queries, process results |
+**Don't**:
 
+- Enable everything at once on an existing codebase
+- Disable rules because they're "annoying" without understanding them
+- Use `// eslint-disable` without a comment explaining why
 
-### Auto-Detection Logic
+### Step 3 — Key Rules by Category
 
-**If user explicitly specifies** what to do (e.g., "build a database", "run analysis"), execute that workflow.
+**Correctness** (catch bugs):
 
-**Default pipeline for "test", "scan", "analyze", or similar:** Execute all three workflows sequentially: build → extensions → analysis. The create-data-extensions step is critical for finding vulnerabilities in projects with custom frameworks or annotations that CodeQL doesn't model by default.
+- No unused variables/imports
+- No unreachable code
+- No implicit type coercion in comparisons
+- No floating promises (unhandled async)
+- No shadowed variables in nested scopes
 
-```bash
-# Check if database exists
-DB=$(ls -dt codeql_*.db 2>/dev/null | head -1)
-if [ -n "$DB" ] && codeql resolve database -- "$DB" >/dev/null 2>&1; then
-  echo "DATABASE EXISTS ($DB) - can run analysis"
-else
-  echo "NO DATABASE - need to build first"
-fi
+**Consistency** (enforce style):
+
+- Consistent naming conventions (camelCase, PascalCase, SCREAMING_SNAKE)
+- Consistent import ordering
+- Consistent quote style and semicolons
+- Consistent use of `const` vs `let`
+
+**Security** (prevent vulnerabilities):
+
+- No `eval()` or `Function()` constructor
+- No `innerHTML` assignments (XSS risk)
+- No hardcoded secrets or credentials
+- No `any` type in TypeScript (use `unknown` for unknown types)
+
+**Performance** (avoid waste):
+
+- No unnecessary re-renders (React-specific)
+- No synchronous file operations in async contexts
+- No `console.log` in production code
+
+### Step 4 — Integrate into Workflow
+
+**Local development**:
+
+- Editor integration (real-time feedback as you type)
+- Format on save
+- Pre-commit hook (lint-staged + husky or lefthook)
+
+**CI/CD**:
+
+- Run lint check on every PR
+- Fail the build on lint errors (not warnings — fix or disable)
+- Cache lint results between runs
+
+**Migration strategy** (existing codebase):
+
+- Fix auto-fixable issues in one PR (formatting, import order)
+- Enable new rules as warnings first, then promote to errors
+- Fix rules incrementally by directory, not all at once
+
+### Step 5 — Write Custom Rules
+
+When team conventions aren't covered by existing rules:
+
+**ESLint custom rule example** (no importing from internal paths):
+
+```javascript
+module.exports = {
+  meta: {
+    type: "problem",
+    messages: { noInternal: "Do not import from internal modules" },
+  },
+  create(context) {
+    return {
+      ImportDeclaration(node) {
+        if (node.source.value.includes("/internal/")) {
+          context.report({ node, messageId: "noInternal" });
+        }
+      },
+    };
+  },
+};
 ```
 
-| Condition | Action |
-|-----------|--------|
-| No database exists | Execute build → extensions → analysis (full pipeline) |
-| Database exists, no extensions | Execute extensions → analysis |
-| Database exists, extensions exist | Ask user: run analysis on existing DB, or rebuild? |
-| User says "just run analysis" or "skip extensions" | Run analysis only |
-
-
-### Decision Prompt
-
-If unclear, ask user:
+## Output Format
 
 ```
-I can help with CodeQL analysis. What would you like to do?
+## Tool Configuration
+[config files and settings]
 
-1. **Full scan (Recommended)** - Build database, create extensions, then run analysis
-2. **Build database** - Create a new CodeQL database from this codebase
-3. **Create data extensions** - Generate custom source/sink models for project APIs
-4. **Run analysis** - Run security queries on existing database
+## Rules Enabled
+[categorized list of rules with rationale]
 
-[If database exists: "I found an existing database at <DB_NAME>"]
+## CI Integration
+[pipeline step definition]
+
+## Migration Plan
+[how to adopt incrementally on existing code]
 ```
+
+## Examples
+
+**User**: "Set up ESLint and Prettier for our TypeScript React project"
+
+**Response approach**: Recommend Biome as modern alternative. If staying with ESLint: configure with typescript-eslint, eslint-plugin-react, prettier integration. Show config file, ignore patterns, and pre-commit hook setup.
+
+**User**: "We have 5000 lint errors — how do we fix this?"
+
+**Response approach**: Auto-fix formatting issues first (one big PR). Establish baseline with current errors suppressed. Enable rules as warnings. Fix incrementally by directory. Add CI check that blocks new violations.
 ````

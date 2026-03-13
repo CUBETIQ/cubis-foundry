@@ -1,93 +1,66 @@
 ---
-name: "microservices-architect"
-description: "Use when designing distributed systems, decomposing monoliths, or implementing microservices patterns. Invoke for service boundaries, DDD, saga patterns, event sourcing, service mesh, distributed tracing."
+name: microservices-architect
+description: "Use when decomposing systems into services, designing service boundaries, choosing sync and async integration patterns, and managing distributed-system reliability tradeoffs."
+license: MIT
+metadata:
+  author: cubis-foundry
+  version: "3.0"
+compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 
 # Microservices Architect
 
-## Overview
+## Purpose
 
-Senior distributed systems architect specializing in cloud-native microservices architectures, resilience patterns, and operational excellence.
+Use when decomposing systems into services, designing service boundaries, choosing sync and async integration patterns, and managing distributed-system reliability tradeoffs.
 
-## Role Definition
+## When to Use
 
-You are a senior microservices architect with 15+ years of experience designing distributed systems. You specialize in service decomposition, domain-driven design, resilience patterns, service mesh technologies, and cloud-native architectures. You design systems that scale, self-heal, and enable autonomous teams.
+- Decomposing a monolith or clarifying service boundaries.
+- Choosing sync vs async integration between services.
+- Designing distributed consistency, retries, timeouts, and failure isolation.
+- Reviewing whether a system is becoming a distributed monolith.
 
-## When to Use This Skill
+## Instructions
 
-- Decomposing monoliths into microservices
-- Defining service boundaries and bounded contexts
-- Designing inter-service communication patterns
-- Implementing resilience patterns (circuit breakers, retries, bulkheads)
-- Setting up service mesh (Istio, Linkerd)
-- Designing event-driven architectures
-- Implementing distributed transactions (Saga, CQRS)
-- Establishing observability (tracing, metrics, logging)
+1. Prove the organizational or product reason for multiple services.
+2. Define service boundaries from ownership and domain seams, not deployment preference.
+3. Choose communication and consistency strategy per interaction.
+4. Design reliability and observability as first-class distributed concerns.
+5. Check whether the proposed split actually reduces coordination risk.
 
-## Core Workflow
+### Baseline standards
 
-1. **Domain Analysis** - Apply DDD to identify bounded contexts and service boundaries
-2. **Communication Design** - Choose sync/async patterns, protocols (REST, gRPC, events)
-3. **Data Strategy** - Database per service, event sourcing, eventual consistency
-4. **Resilience** - Circuit breakers, retries, timeouts, bulkheads, fallbacks
-5. **Observability** - Distributed tracing, correlation IDs, centralized logging
-6. **Deployment** - Container orchestration, service mesh, progressive delivery
+- Prefer clear bounded contexts over premature service count growth.
+- Keep contracts explicit and versionable.
+- Design for retries, timeouts, idempotency, and degraded modes.
+- Treat tracing, logs, and metrics as required, not optional.
+- Use async boundaries deliberately where coupling or latency demand it.
 
-## Available Steering Files
+### Constraints
 
-Load detailed guidance on-demand:
+- Avoid splitting services without ownership clarity.
+- Avoid shared databases masquerading as autonomy.
+- Avoid chatty synchronous call chains with no resilience model.
+- Avoid event-driven complexity when direct boundaries would be simpler.
 
-| Topic               | Reference                   | Load When                                          |
-| ------------------- | --------------------------- | -------------------------------------------------- |
-| Service Boundaries  | `references/decomposition.md` | Monolith decomposition, bounded contexts, DDD      |
-| Communication       | `references/communication.md` | REST vs gRPC, async messaging, event-driven        |
-| Resilience Patterns | `references/patterns.md`      | Circuit breakers, saga, bulkhead, retry strategies |
-| Data Management     | `references/data.md`          | Database per service, event sourcing, CQRS         |
-| Observability       | `references/observability.md` | Distributed tracing, correlation IDs, metrics      |
+## Output Format
 
-## Constraints
+Provide implementation guidance, code examples, and configuration as appropriate to the task.
 
-### MUST DO
+## References
 
-- Apply domain-driven design for service boundaries
-- Use database per service pattern
-- Implement circuit breakers for external calls
-- Add correlation IDs to all requests
-- Use async communication for cross-aggregate operations
-- Design for failure and graceful degradation
-- Implement health checks and readiness probes
-- Use API versioning strategies
+Load on demand. Do not preload all reference files.
 
-### MUST NOT DO
+| File | Load when |
+| --- | --- |
+| `references/service-boundary-checklist.md` | You need a more detailed playbook for service seams, contracts, async boundaries, idempotency, and distributed failure modes. |
 
-- Create distributed monoliths
-- Share databases between services
-- Use synchronous calls for long-running operations
-- Skip distributed tracing implementation
-- Ignore network latency and partial failures
-- Create chatty service interfaces
-- Store shared state without proper patterns
-- Deploy without observability
+## Scripts
 
-## Output Templates
+No helper scripts are required for this skill right now. Keep execution in `SKILL.md` and `references/` unless repeated automation becomes necessary.
 
-When designing microservices architecture, provide:
+## Examples
 
-1. Service boundary diagram with bounded contexts
-2. Communication patterns (sync/async, protocols)
-3. Data ownership and consistency model
-4. Resilience patterns for each integration point
-5. Deployment and infrastructure requirements
-
-## Knowledge Reference
-
-Domain-driven design, bounded contexts, event storming, REST/gRPC, message queues (Kafka, RabbitMQ), service mesh (Istio, Linkerd), Kubernetes, circuit breakers, saga patterns, event sourcing, CQRS, distributed tracing (Jaeger, Zipkin), API gateways, eventual consistency, CAP theorem
-
-## Related Powers
-
-- **DevOps Engineer** - Container orchestration and CI/CD pipelines
-- **Kubernetes Specialist** - Advanced K8s patterns and operators
-- **GraphQL Architect** - Federation for distributed schemas
-- **Architecture Designer** - High-level system design
-- **Monitoring Expert** - Observability implementation
+- "Help me with microservices architect best practices in this project"
+- "Review my microservices architect implementation for issues"

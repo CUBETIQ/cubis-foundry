@@ -1,52 +1,66 @@
 ---
 name: database-design
-description: Database design principles and decision-making. Schema design, indexing strategy, ORM selection, serverless databases.
-allowed-tools: Read, Write, Edit, Glob, Grep
+description: "Use when designing schemas, relationships, indexes, ORM boundaries, and safe migration plans for relational or document-oriented workloads."
+license: MIT
+metadata:
+  author: cubis-foundry
+  version: "3.0"
+compatibility: Claude Code, Codex, GitHub Copilot
 ---
 
 # Database Design
 
-> **Learn to THINK, not copy SQL patterns.**
+## Purpose
 
-## 🎯 Selective Reading Rule
+Use when designing schemas, relationships, indexes, ORM boundaries, and safe migration plans for relational or document-oriented workloads.
 
-**Read ONLY files relevant to the request!** Check the content map, find what you need.
+## When to Use
 
-| File | Description | When to Read |
-|------|-------------|--------------|
-| `database-selection.md` | PostgreSQL vs Neon vs Turso vs SQLite | Choosing database |
-| `orm-selection.md` | Drizzle vs Prisma vs Kysely | Choosing ORM |
-| `schema-design.md` | Normalization, PKs, relationships | Designing schema |
-| `indexing.md` | Index types, composite indexes | Performance tuning |
-| `optimization.md` | N+1, EXPLAIN ANALYZE | Query optimization |
-| `migrations.md` | Safe migrations, serverless DBs | Schema changes |
+- Designing or refactoring schemas, keys, and relationships.
+- Choosing relational vs document vs local-first structure.
+- Planning ORM and persistence boundaries.
+- Designing migrations and indexing strategy before rollout.
 
----
+## Instructions
 
-## ⚠️ Core Principle
+1. Model the workload and lifecycle constraints before choosing tables or collections.
+2. Define entities, ownership, keys, and read/write paths explicitly.
+3. Design indexes and pagination from real access patterns.
+4. Plan migrations, backfills, and rollback before implementation.
+5. Validate that the design lowers long-term change risk rather than hiding it.
 
-- ASK user for database preferences when unclear
-- Choose database/ORM based on CONTEXT
-- Don't default to PostgreSQL for everything
+### Baseline standards
 
----
+- Prefer schema decisions backed by access patterns.
+- Treat indexes as part of the model, not an afterthought.
+- Keep persistence models and transport models distinct when that lowers coupling.
+- Make migration safety explicit.
+- Choose normalization or denormalization deliberately.
 
-## Decision Checklist
+### Constraints
 
-Before designing schema:
+- Avoid modeling by ORM convenience alone.
+- Avoid deferring migration planning until after shipping.
+- Avoid adding indexes with no predicate or sort evidence.
+- Avoid using unstructured blobs to avoid real data modeling.
 
-- [ ] Asked user about database preference?
-- [ ] Chosen database for THIS context?
-- [ ] Considered deployment environment?
-- [ ] Planned index strategy?
-- [ ] Defined relationship types?
+## Output Format
 
----
+Provide implementation guidance, code examples, and configuration as appropriate to the task.
 
-## Anti-Patterns
+## References
 
-❌ Default to PostgreSQL for simple apps (SQLite may suffice)
-❌ Skip indexing
-❌ Use SELECT * in production
-❌ Store JSON when structured data is better
-❌ Ignore N+1 queries
+Load on demand. Do not preload all reference files.
+
+| File | Load when |
+| --- | --- |
+| `references/schema-migration-checklist.md` | You need more explicit guidance for keys, indexes, pagination, ORM boundaries, backfills, and rollback-safe migration plans. |
+
+## Scripts
+
+No helper scripts are required for this skill right now. Keep execution in `SKILL.md` and `references/` unless repeated automation becomes necessary.
+
+## Examples
+
+- "Help me with database design best practices in this project"
+- "Review my database design implementation for issues"

@@ -2,189 +2,68 @@
 ---
 inclusion: manual
 name: webapp-testing
-description: Web application testing principles. E2E, Playwright, deep audit strategies.
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash
+description: "Use when choosing test depth for a web product, balancing unit, integration, browser, accessibility, and contract checks, or reviewing whether a change has the right verification shape before release."
+license: MIT
+metadata:
+  author: cubis-foundry
+  version: "1.0"
+compatibility: Claude Code, Codex, GitHub Copilot
 ---
 
-# Web App Testing
+# Webapp Testing
 
-> Discover and test everything. Leave no route untested.
+## Purpose
 
-## 🔧 Runtime Scripts
+Use when choosing test depth for a web product, balancing unit, integration, browser, accessibility, and contract checks, or reviewing whether a change has the right verification shape before release.
 
-**Execute these for automated browser testing:**
+## When to Use
 
-| Script | Purpose | Usage |
-|--------|---------|-------|
-| `scripts/playwright_runner.py` | Basic browser test | `python scripts/playwright_runner.py https://example.com` |
-| | With screenshot | `python scripts/playwright_runner.py <url> --screenshot` |
-| | Accessibility check | `python scripts/playwright_runner.py <url> --a11y` |
+- Planning verification depth for a web feature, refactor, bug fix, or release candidate.
+- Choosing what belongs in unit, component, integration, contract, or browser coverage.
+- Reviewing gaps in coverage, flaky suites, or low-signal tests.
+- Auditing whether a frontend or API change has enough evidence to merge safely.
 
-**Requires:** `pip install playwright && playwright install chromium`
+## Instructions
 
----
+1. Map the change surface to business risk, user-visible impact, and regression blast radius.
+2. Put the cheapest reliable check at the lowest layer that can prove the behavior.
+3. Add browser coverage only for flows that need cross-layer confidence.
+4. Pair coverage with deterministic fixtures, contract clarity, and failure evidence.
+5. Call out what remains manual, unverified, or risky instead of hiding gaps behind suite size.
 
-## 1. Deep Audit Approach
+### Baseline standards
 
-### Discovery First
+- Test behavior users or dependent systems care about, not implementation trivia.
+- Keep component and integration checks faster and more numerous than browser tests.
+- Include accessibility and error-state coverage in critical paths, not only happy paths.
+- Prefer contract or integration checks for API correctness before adding UI duplication.
+- Treat flaky tests as defects in the product, test, or environment, not a permanent condition.
 
-| Target | How to Find |
-|--------|-------------|
-| Routes | Scan app/, pages/, router files |
-| API endpoints | Grep for HTTP methods |
-| Components | Find component directories |
-| Features | Read documentation |
+### Constraints
 
-### Systematic Testing
+- Avoid one-size-fits-all coverage targets with no risk model.
+- Avoid using browser tests to compensate for missing contract or unit design.
+- Avoid counting snapshots or shallow assertions as evidence of behavior correctness.
+- Avoid treating manual QA as a substitute for repeatable regression protection on critical paths.
 
-1. **Map** - List all routes/APIs
-2. **Scan** - Verify they respond
-3. **Test** - Cover critical paths
+## Output Format
 
----
+Provide implementation guidance, code examples, and configuration as appropriate to the task.
 
-## 2. Testing Pyramid for Web
+## References
 
-```
-        /\          E2E (Few)
-       /  \         Critical user flows
-      /----\
-     /      \       Integration (Some)
-    /--------\      API, data flow
-   /          \
-  /------------\    Component (Many)
-                    Individual UI pieces
-```
+Load on demand. Do not preload all reference files.
 
----
+| File | Load when |
+| --- | --- |
+| `references/browser-api-state-checklist.md` | You need a deeper playbook for test-layer selection, accessibility coverage, API-vs-UI duplication, flaky-suite triage, or release gating for web apps. |
 
-## 3. E2E Test Principles
+## Scripts
 
-### What to Test
+No helper scripts are required for this skill right now. Keep execution in `SKILL.md` and `references/` unless repeated automation becomes necessary.
 
-| Priority | Tests |
-|----------|-------|
-| 1 | Happy path user flows |
-| 2 | Authentication flows |
-| 3 | Critical business actions |
-| 4 | Error handling |
+## Examples
 
-### E2E Best Practices
-
-| Practice | Why |
-|----------|-----|
-| Use data-testid | Stable selectors |
-| Wait for elements | Avoid flaky tests |
-| Clean state | Independent tests |
-| Avoid implementation details | Test user behavior |
-
----
-
-## 4. Playwright Principles
-
-### Core Concepts
-
-| Concept | Use |
-|---------|-----|
-| Page Object Model | Encapsulate page logic |
-| Fixtures | Reusable test setup |
-| Assertions | Built-in auto-wait |
-| Trace Viewer | Debug failures |
-
-### Configuration
-
-| Setting | Recommendation |
-|---------|----------------|
-| Retries | 2 on CI |
-| Trace | on-first-retry |
-| Screenshots | on-failure |
-| Video | retain-on-failure |
-
----
-
-## 5. Visual Testing
-
-### When to Use
-
-| Scenario | Value |
-|----------|-------|
-| Design system | High |
-| Marketing pages | High |
-| Component library | Medium |
-| Dynamic content | Lower |
-
-### Strategy
-
-- Baseline screenshots
-- Compare on changes
-- Review visual diffs
-- Update intentional changes
-
----
-
-## 6. API Testing Principles
-
-### Coverage Areas
-
-| Area | Tests |
-|------|-------|
-| Status codes | 200, 400, 404, 500 |
-| Response shape | Matches schema |
-| Error messages | User-friendly |
-| Edge cases | Empty, large, special chars |
-
----
-
-## 7. Test Organization
-
-### File Structure
-
-```
-tests/
-├── e2e/           # Full user flows
-├── integration/   # API, data
-├── component/     # UI units
-└── fixtures/      # Shared data
-```
-
-### Naming Convention
-
-| Pattern | Example |
-|---------|---------|
-| Feature-based | `login.spec.ts` |
-| Descriptive | `user-can-checkout.spec.ts` |
-
----
-
-## 8. CI Integration
-
-### Pipeline Steps
-
-1. Install dependencies
-2. Install browsers
-3. Run tests
-4. Upload artifacts (traces, screenshots)
-
-### Parallelization
-
-| Strategy | Use |
-|----------|-----|
-| Per file | Playwright default |
-| Sharding | Large suites |
-| Workers | Multiple browsers |
-
----
-
-## 9. Anti-Patterns
-
-| ❌ Don't | ✅ Do |
-|----------|-------|
-| Test implementation | Test behavior |
-| Hardcode waits | Use auto-wait |
-| Skip cleanup | Isolate tests |
-| Ignore flaky tests | Fix root cause |
-
----
-
-> **Remember:** E2E tests are expensive. Use them for critical paths only.
+- "Help me with webapp testing best practices in this project"
+- "Review my webapp testing implementation for issues"
 ````

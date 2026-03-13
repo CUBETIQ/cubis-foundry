@@ -2,105 +2,169 @@
 ---
 inclusion: manual
 name: changelog-generator
-description: Automatically creates user-facing changelogs from git commits by analyzing commit history, categorizing changes, and transforming technical commits into clear, customer-friendly release notes. Turns hours of manual changelog writing into minutes of automated generation.
+description: Generate changelogs from conventional commits, semantic versioning, release notes, and automated version management workflows.
+license: Apache-2.0
+metadata:
+  author: cubis-foundry
+  version: "3.0"
+compatibility: Claude Code, Codex, GitHub Copilot, Gemini CLI
 ---
 
 # Changelog Generator
 
-This skill transforms technical git commits into polished, user-friendly changelogs that your customers and users will actually understand and appreciate.
+## Purpose
 
-## When to Use This Skill
+Guide changelog generation, release notes writing, and version management using conventional commits and semantic versioning.
 
-- Preparing release notes for a new version
-- Creating weekly or monthly product update summaries
-- Documenting changes for customers
-- Writing changelog entries for app store submissions
-- Generating update notifications
-- Creating internal release documentation
-- Maintaining a public changelog/product updates page
+## When to Use
 
-## What This Skill Does
+- Generating a CHANGELOG.md from commit history
+- Writing release notes for a new version
+- Setting up automated versioning workflows
+- Reviewing commit message format and conventions
+- Planning a release with breaking changes
 
-1. **Scans Git History**: Analyzes commits from a specific time period or between versions
-2. **Categorizes Changes**: Groups commits into logical categories (features, improvements, bug fixes, breaking changes, security)
-3. **Translates Technical → User-Friendly**: Converts developer commits into customer language
-4. **Formats Professionally**: Creates clean, structured changelog entries
-5. **Filters Noise**: Excludes internal commits (refactoring, tests, etc.)
-6. **Follows Best Practices**: Applies changelog guidelines and your brand voice
+## Instructions
 
-## How to Use
+### Step 1 — Follow Conventional Commits
 
-### Basic Usage
+**Format**: `<type>(<scope>): <description>`
 
-From your project repository:
+| Type       | SemVer Bump | When                                   |
+| ---------- | ----------- | -------------------------------------- |
+| `feat`     | Minor       | New feature for users                  |
+| `fix`      | Patch       | Bug fix for users                      |
+| `docs`     | None        | Documentation only                     |
+| `style`    | None        | Formatting, no logic change            |
+| `refactor` | None        | Code restructuring, no behavior change |
+| `perf`     | Patch       | Performance improvement                |
+| `test`     | None        | Adding or fixing tests                 |
+| `build`    | None        | Build system or dependencies           |
+| `ci`       | None        | CI/CD configuration                    |
+| `chore`    | None        | Maintenance tasks                      |
 
-```
-Create a changelog from commits since last release
-```
-
-```
-Generate changelog for all commits from the past week
-```
+**Breaking changes**: Add `!` after type or `BREAKING CHANGE:` in footer:
 
 ```
-Create release notes for version 2.5.0
+feat!: remove deprecated API endpoints
+
+BREAKING CHANGE: /v1/users endpoint has been removed. Use /v2/users instead.
 ```
 
-### With Specific Date Range
+### Step 2 — Generate Changelog
 
-```
-Create a changelog for all commits between March 1 and March 15
-```
+**Changelog format** (Keep a Changelog style):
 
-### With Custom Guidelines
-
-```
-Create a changelog for commits since v2.4.0, using my changelog 
-guidelines from CHANGELOG_STYLE.md
-```
-
-## Example
-
-**User**: "Create a changelog for commits from the past 7 days"
-
-**Output**:
 ```markdown
-# Updates - Week of March 10, 2024
+# Changelog
 
-## ✨ New Features
+## [2.1.0] - 2025-01-15
 
-- **Team Workspaces**: Create separate workspaces for different 
-  projects. Invite team members and keep everything organized.
+### Added
 
-- **Keyboard Shortcuts**: Press ? to see all available shortcuts. 
-  Navigate faster without touching your mouse.
+- User profile image upload (#234)
+- Dark mode support for dashboard (#256)
 
-## 🔧 Improvements
+### Fixed
 
-- **Faster Sync**: Files now sync 2x faster across devices
-- **Better Search**: Search now includes file contents, not just titles
+- Login timeout on slow connections (#245)
+- Currency formatting for Japanese Yen (#249)
 
-## 🐛 Fixes
+### Changed
 
-- Fixed issue where large images wouldn't upload
-- Resolved timezone confusion in scheduled posts
-- Corrected notification badge count
+- Increased password minimum length to 12 characters (#251)
+
+## [2.0.0] - 2024-12-01
+
+### Breaking Changes
+
+- Removed deprecated /v1/users endpoint — use /v2/users (#230)
+
+### Added
+
+- New user roles system with RBAC (#220)
 ```
 
-**Inspired by:** Manik Aggarwal's use case from Lenny's Newsletter
+**Mapping rules**:
 
-## Tips
+- `feat` → **Added**
+- `fix` → **Fixed**
+- `feat!` / `BREAKING CHANGE` → **Breaking Changes**
+- `perf` → **Performance**
+- `refactor` with user-visible changes → **Changed**
+- `deprecate` → **Deprecated**
+- `remove` → **Removed**
 
-- Run from your git repository root
-- Specify date ranges for focused changelogs
-- Use your CHANGELOG_STYLE.md for consistent formatting
-- Review and adjust the generated changelog before publishing
-- Save output directly to CHANGELOG.md
+### Step 3 — Semantic Versioning
 
-## Related Use Cases
+**MAJOR.MINOR.PATCH** (e.g., 2.1.3):
 
-- Creating GitHub release notes
-- Writing app store update descriptions
-- Generating email updates for users
-- Creating social media announcement posts
+- **MAJOR**: Breaking changes (API removal, incompatible changes)
+- **MINOR**: New features (backward-compatible additions)
+- **PATCH**: Bug fixes (backward-compatible fixes)
+
+**Pre-release versions**: `2.1.0-beta.1`, `2.1.0-rc.1`
+
+**Rules**:
+
+- Version 0.x.y is for initial development (anything may change)
+- First stable release is 1.0.0
+- Never change a released version — create a new one
+
+### Step 4 — Write Release Notes
+
+**Release notes structure**:
+
+1. **Headline** — one sentence summarizing the release theme
+2. **Highlights** — 2-3 most important changes with context
+3. **Full changelog** — categorized list of all changes
+4. **Migration guide** — for breaking changes, step-by-step upgrade instructions
+5. **Contributors** — acknowledge contributors
+
+**Good highlights**:
+
+```markdown
+### Highlights
+
+**Dark Mode** — The dashboard now supports dark mode, automatically
+matching your system preference. Toggle manually in Settings → Appearance.
+
+**Faster Search** — Search results now load 3x faster thanks to a new
+indexing strategy. No changes needed on your end.
+```
+
+### Step 5 — Automate the Workflow
+
+**CI pipeline**:
+
+1. Lint commit messages on PR (reject non-conventional)
+2. On merge to main: determine version bump from commits
+3. Generate changelog entry
+4. Bump version in package.json / pyproject.toml
+5. Create git tag
+6. Create GitHub Release with release notes
+7. Publish to package registry
+
+## Output Format
+
+```
+## Version
+[version number and bump reasoning]
+
+## Changelog Entry
+[formatted changelog in Keep a Changelog style]
+
+## Release Notes
+[user-facing summary with highlights and migration guide]
+```
+
+## Examples
+
+**User**: "Generate a changelog for our latest release"
+
+**Response approach**: Scan commits since last tag. Categorize by type. Generate changelog in Keep a Changelog format. Determine version bump (major/minor/patch). Write release highlights.
+
+**User**: "We have breaking API changes — how do we release this?"
+
+**Response approach**: Bump major version. Write migration guide with before/after examples. Add deprecation notices in the previous minor release if possible. Generate changelog with Breaking Changes section first.
 ````

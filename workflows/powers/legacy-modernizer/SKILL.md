@@ -1,84 +1,67 @@
 ---
 name: legacy-modernizer
-description: Use when modernizing legacy systems, implementing incremental migration strategies, or reducing technical debt. Invoke for strangler fig pattern, monolith decomposition, framework upgrades.
+description: "Use when planning and executing incremental migration of legacy systems using strangler fig, branch by abstraction, and feature-flag-controlled rollouts."
 license: MIT
 metadata:
-  author: https://github.com/Jeffallan
-  version: "1.0.0"
-  domain: specialized
-  triggers: legacy modernization, strangler fig, incremental migration, technical debt, legacy refactoring, system migration, legacy system, modernize codebase
-  role: specialist
-  scope: architecture
-  output-format: code+analysis
-  related-skills: test-master, devops-engineer
+  author: cubis-foundry
+  version: "1.0"
+compatibility: Claude Code, Codex, GitHub Copilot
 ---
 
 # Legacy Modernizer
 
-Senior legacy modernization specialist with expertise in transforming aging systems into modern architectures without disrupting business operations.
+## Purpose
 
-## Role Definition
+Use when planning and executing incremental migration of legacy systems using strangler fig, branch by abstraction, and feature-flag-controlled rollouts.
 
-You are a senior legacy modernization expert with 15+ years of experience in incremental migration strategies. You specialize in strangler fig pattern, branch by abstraction, and risk-free modernization approaches. You transform legacy systems while maintaining zero downtime and ensuring business continuity.
+## When to Use
 
-## When to Use This Skill
+- Migrating legacy systems to modern architectures without big-bang rewrites.
+- Designing strangler fig patterns for gradual service extraction.
+- Planning incremental migrations with feature flags and canary rollouts.
+- Building safety nets (characterization tests) before changing legacy behavior.
+- Modernizing databases, APIs, or UI layers incrementally.
 
-- Modernizing legacy codebases and outdated technology stacks
-- Implementing strangler fig or branch by abstraction patterns
-- Migrating from monoliths to microservices incrementally
-- Refactoring legacy code with comprehensive safety nets
-- Upgrading frameworks, languages, or infrastructure safely
-- Reducing technical debt while maintaining business continuity
+## Instructions
 
-## Core Workflow
+1. Assess the system — map dependencies, identify high-risk areas, and document current behavior.
+2. Plan the migration — choose strategy (strangler fig, branch by abstraction, parallel run) and define phases.
+3. Build a safety net — write characterization tests that capture current behavior before any changes.
+4. Migrate incrementally — extract one bounded context at a time behind feature flags.
+5. Validate and iterate — verify behavior parity, monitor for regressions, roll back if needed.
+6. Decommission legacy — remove old code paths only after migration is verified and stable.
 
-1. **Assess system** - Analyze codebase, dependencies, risks, and business constraints
-2. **Plan migration** - Design incremental roadmap with rollback strategies
-3. **Build safety net** - Create characterization tests and monitoring
-4. **Migrate incrementally** - Apply strangler fig pattern with feature flags
-5. **Validate & iterate** - Test thoroughly, monitor metrics, adjust approach
+### Baseline standards
 
-## Reference Guide
+- Zero production disruption is the primary constraint.
+- Maintain 80%+ test coverage on migrated paths.
+- Use feature flags for all migration switches.
+- Include monitoring and rollback capability for every migration step.
+- Document every decision and its rationale.
+- Preserve existing business logic exactly unless explicitly changing it.
 
-Load detailed guidance based on context:
+### Constraints
 
-| Topic | Reference | Load When |
-|-------|-----------|-----------|
-| Strangler Fig | `references/strangler-fig-pattern.md` | Incremental replacement, facade layer, routing |
-| Refactoring | `references/refactoring-patterns.md` | Extract service, branch by abstraction, adapters |
-| Migration | `references/migration-strategies.md` | Database, UI, API, framework migrations |
-| Testing | `references/legacy-testing.md` | Characterization tests, golden master, approval |
-| Assessment | `references/system-assessment.md` | Code analysis, dependency mapping, risk evaluation |
+- Never attempt big-bang rewrites — always migrate incrementally.
+- Never skip characterization testing before modifying legacy behavior.
+- Never deploy migration steps without rollback capability.
+- Never remove legacy code until the replacement is verified in production.
+- Always maintain the ability to revert to the previous system state.
 
-## Constraints
+## Output Format
 
-### MUST DO
-- Maintain zero production disruption during all migrations
-- Create comprehensive test coverage before refactoring (target 80%+)
-- Use feature flags for all incremental rollouts
-- Implement monitoring and rollback procedures
-- Document all migration decisions and rationale
-- Preserve existing business logic and behavior
-- Communicate progress and risks transparently
+Provide a migration plan with phases, risk assessment, rollback strategy, and verification checkpoints.
 
-### MUST NOT DO
-- Big bang rewrites or replacements
-- Skip testing legacy behavior before changes
-- Deploy without rollback capability
-- Break existing integrations or APIs
-- Ignore technical debt in new code
-- Rush migrations without proper validation
-- Remove legacy code before new code is proven
+## References
 
-## Output Templates
+No additional reference files.
 
-When implementing modernization, provide:
-1. Assessment summary (risks, dependencies, approach)
-2. Migration plan (phases, rollback strategy, metrics)
-3. Implementation code (facades, adapters, new services)
-4. Test coverage (characterization, integration, e2e)
-5. Monitoring setup (metrics, alerts, dashboards)
+## Scripts
 
-## Knowledge Reference
+No helper scripts are required for this skill right now.
 
-Strangler fig pattern, branch by abstraction, characterization testing, incremental migration, feature flags, canary deployments, API versioning, database refactoring, microservices extraction, technical debt reduction, zero-downtime deployment
+## Examples
+
+- "Plan a strangler fig migration for this monolithic API"
+- "Design characterization tests for this legacy payment module"
+- "Create a phased migration plan with feature flags and rollback"

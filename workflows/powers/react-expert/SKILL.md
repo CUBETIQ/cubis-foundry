@@ -1,56 +1,66 @@
 ---
-name: "react-expert"
-description: "Use for framework-agnostic React architecture with React 19 patterns, state design, and performance tuning."
+name: react-expert
+description: "Use for framework-agnostic React architecture with React 19 patterns, state design, component boundaries, and rendering-performance decisions."
 license: MIT
 metadata:
-  version: "2.0.0"
-  domain: "frontend"
-  role: "specialist"
-  stack: "react"
-  baseline: "React 19"
+  author: cubis-foundry
+  version: "3.0"
+compatibility: Claude Code, Codex, GitHub Copilot
 ---
 
 # React Expert
 
-## Scope
+## Purpose
 
-- Use this for React component and state architecture.
-- Use `nextjs-developer` for Next.js routing/App Router specifics.
+Use for framework-agnostic React architecture with React 19 patterns, state design, component boundaries, and rendering-performance decisions.
 
-## When to use
+## When to Use
 
-- Building reusable component systems.
-- Designing local/shared/remote state boundaries.
-- Refactoring for rendering performance.
-- Implementing robust form and async UI flows.
+- Designing reusable component and state boundaries.
+- Refactoring React code for predictable rendering and side-effect control.
+- Choosing local, shared, server, or async UI state placement.
+- Reviewing hooks, forms, transitions, and accessibility-sensitive UI flows.
 
-## Core workflow
+## Instructions
 
-1. Model component responsibilities and ownership boundaries.
-2. Decide state location and mutation strategy.
-3. Implement with accessible markup and predictable effects.
-4. Measure rerender behavior before applying memoization.
-5. Validate with component and interaction tests.
+1. Define component ownership and server/client boundaries first.
+2. Place state at the lowest level that preserves correctness.
+3. Keep effects explicit, idempotent, and cleanup-safe.
+4. Profile rerender behavior before reaching for memoization.
+5. Validate accessible interaction states and error/loading behavior.
 
-## Baseline standards
+### Baseline standards
 
-- Prefer pure render logic and explicit side-effect boundaries.
-- Use transitions/suspense intentionally for UX.
-- Keep effects idempotent and cleanup-safe.
+- Prefer pure render logic and explicit mutation boundaries.
 - Derive state instead of duplicating it.
-- Keep mutation logic centralized when state grows.
+- Use transitions and suspense intentionally for UX, not fashion.
+- Keep form and async flows predictable.
+- Pair implementation with focused component or interaction tests.
 
-## Avoid
+### Constraints
 
-- Blanket memoization without profiling evidence.
-- Effect-driven derived state loops.
-- Hidden shared mutable module state.
+- Avoid blanket memoization with no evidence.
+- Avoid effect-driven derived-state loops.
+- Avoid hidden shared mutable module state.
+- Avoid client-only patterns when server rendering would simplify the surface.
 
-## Reference files
+## Output Format
 
-- `references/react-19-features.md`
-- `references/hooks-patterns.md`
-- `references/state-management.md`
-- `references/performance.md`
-- `references/testing-react.md`
-- `references/server-components.md`
+Provide implementation guidance, code examples, and configuration as appropriate to the task.
+
+## References
+
+Load on demand. Do not preload all reference files.
+
+| File | Load when |
+| --- | --- |
+| `references/rendering-state-checklist.md` | The task needs a deeper playbook for state placement, effect discipline, rendering cost, and interaction-level verification. |
+
+## Scripts
+
+No helper scripts are required for this skill right now. Keep execution in `SKILL.md` and `references/` unless repeated automation becomes necessary.
+
+## Examples
+
+- "Help me with react expert best practices in this project"
+- "Review my react expert implementation for issues"

@@ -1,82 +1,74 @@
 ---
 name: spec-miner
-description: Use when understanding legacy or undocumented systems, creating documentation for existing code, or extracting specifications from implementations. Invoke for legacy analysis, code archaeology, undocumented features.
+description: "Use when reverse-engineering legacy or undocumented systems into structured specifications with code-grounded evidence and EARS-format requirements."
 license: MIT
-allowed-tools: Read, Grep, Glob, Bash
 metadata:
-  author: https://github.com/Jeffallan
-  version: "1.0.0"
-  domain: workflow
-  triggers: reverse engineer, legacy code, code analysis, undocumented, understand codebase, existing system
-  role: specialist
-  scope: review
-  output-format: document
-  related-skills: feature-forge, fullstack-guardian, architecture-designer
+  author: cubis-foundry
+  version: "1.0"
+compatibility: Claude Code, Codex, GitHub Copilot
 ---
 
 # Spec Miner
 
-Reverse-engineering specialist who extracts specifications from existing codebases.
+## Purpose
 
-## Role Definition
+Use when reverse-engineering legacy or undocumented systems into structured specifications with code-grounded evidence and EARS-format requirements.
 
-You are a senior software archaeologist with 10+ years of experience. You operate with two perspectives: **Arch Hat** for system architecture and data flows, and **QA Hat** for observable behaviors and edge cases.
+## When to Use
 
-## When to Use This Skill
+- Understanding legacy or undocumented systems by extracting behavior from code.
+- Creating documentation for existing codebases that lack specifications.
+- Onboarding onto unfamiliar projects by mapping structure, data flows, and business logic.
+- Planning enhancements or migrations that require understanding current behavior first.
+- Extracting implicit requirements from implementations for formal specification.
 
-- Understanding legacy or undocumented systems
-- Creating documentation for existing code
-- Onboarding to a new codebase
-- Planning enhancements to existing features
-- Extracting requirements from implementation
+## Instructions
 
-## Core Workflow
+1. Scope the analysis — identify target modules, boundaries, and what the spec should cover.
+2. Explore structure — map directory layout, entry points, and dependency graph using file discovery.
+3. Trace data flows — follow request paths, state transformations, and external integrations.
+4. Extract behaviors — document observed requirements in EARS format (Ubiquitous, Event-Driven, State-Driven, Conditional, Optional).
+5. Flag uncertainties — mark areas where behavior is ambiguous or requires human clarification.
+6. Produce specification — structured document with technology stack, architecture, modules, requirements, acceptance criteria, and open questions.
 
-1. **Scope** - Identify analysis boundaries (full system or specific feature)
-2. **Explore** - Map structure using Glob, Grep, Read tools
-3. **Trace** - Follow data flows and request paths
-4. **Document** - Write observed requirements in EARS format
-5. **Flag** - Mark areas needing clarification
+### Baseline standards
 
-## Reference Guide
+- Ground every finding in code evidence with file paths and line references.
+- Distinguish facts (observed in code) from inferences (reasonable assumptions).
+- Operate with dual mindset: Architecture Hat (structure, data flows) and QA Hat (behaviors, edge cases).
+- Document security, authentication, and error handling patterns explicitly.
+- Include external integrations, configuration, and environment dependencies.
 
-Load detailed guidance based on context:
+### Constraints
 
-| Topic | Reference | Load When |
-|-------|-----------|-----------|
-| Analysis Process | `references/analysis-process.md` | Starting exploration, Glob/Grep patterns |
-| EARS Format | `references/ears-format.md` | Writing observed requirements |
-| Specification Template | `references/specification-template.md` | Creating final specification document |
-| Analysis Checklist | `references/analysis-checklist.md` | Ensuring thorough analysis |
+- Never assume behavior without code evidence.
+- Never skip security or error handling paths during analysis.
+- Never generate a specification without thorough codebase exploration.
+- Always include code locations for every documented behavior.
+- Always mark uncertainties and questions separately from confirmed findings.
 
-## Constraints
+## Output Format
 
-### MUST DO
-- Ground all observations in actual code evidence
-- Use Read, Grep, Glob extensively to explore
-- Distinguish between observed facts and inferences
-- Document uncertainties in dedicated section
-- Include code locations for each observation
+Save as `specs/{project_name}_reverse_spec.md`:
 
-### MUST NOT DO
-- Make assumptions without code evidence
-- Skip security pattern analysis
-- Ignore error handling patterns
-- Generate spec without thorough exploration
-
-## Output Templates
-
-Save specification as: `specs/{project_name}_reverse_spec.md`
-
-Include:
-1. Technology stack and architecture
-2. Module/directory structure
-3. Observed requirements (EARS format)
-4. Non-functional observations
+1. Technology stack and architecture overview
+2. Module and directory structure
+3. Observed requirements in EARS format
+4. Non-functional observations (performance, security, scalability)
 5. Inferred acceptance criteria
 6. Uncertainties and questions
-7. Recommendations
+7. Recommendations for improvement
 
-## Knowledge Reference
+## References
 
-Code archaeology, static analysis, design patterns, architectural patterns, EARS syntax, API documentation inference
+No additional reference files.
+
+## Scripts
+
+No helper scripts are required for this skill right now.
+
+## Examples
+
+- "Reverse-engineer the authentication flow in this legacy codebase"
+- "Create a specification document for this undocumented API service"
+- "Map the data flows and business logic in this module for onboarding"

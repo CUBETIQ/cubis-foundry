@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "validate-all",
+      "type": "shell",
+      "command": "node scripts/validate-runtime-wiring.mjs 2>&1 | tee /tmp/cbx-validate-runtime.txt && node scripts/validate-shared-routing.mjs 2>&1 | tee /tmp/cbx-validate-routing.txt && node scripts/validate-skill-packaging.mjs 2>&1 | tee /tmp/cbx-validate-packaging.txt && node scripts/sync-skill-mirrors.mjs --check 2>&1 | tee /tmp/cbx-sync-check.txt && node scripts/generate-skills-index.mjs --check 2>&1 | tee /tmp/cbx-index-check.txt && echo 'ALL_DONE' | tee /tmp/cbx-validate-done.txt",
+      "isBackground": false
+    },
+    {
+      "label": "check-handoffs",
+      "type": "shell",
+      "command": "node scripts/validate-runtime-wiring.mjs 2>&1 | grep -E 'handoff|skill|agent|FAIL|error' | head -30; echo '---'; ls workflows/workflows/agent-environment-setup/shared/agents/ | sed 's/.md//' | sort > /tmp/agent-names.txt && grep -r 'handoffs:' workflows/workflows/agent-environment-setup/shared/agents/ -A 20 | grep -E '^workflows.*:|-  ' | head -80",
+      "isBackground": false
+    },
+    {
+      "label": "final-strict-validate",
+      "type": "shell",
+      "command": "npm run test:attributes:strict 2>&1",
+      "isBackground": false
+    }
+  ]
+}

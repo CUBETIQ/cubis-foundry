@@ -2,18 +2,28 @@
 ---
 inclusion: manual
 name: ask-questions-if-underspecified
-description: Clarify requirements before implementing. Use when serious doubts arise.
+description: Clarify requirements before implementing. Use when serious doubts arise about objective, scope, constraints, environment, or safety — or when the task is substantial enough that being wrong wastes significant effort.
 ---
 
 # Ask Questions If Underspecified
 
 ## When to Use
 
-Use this skill when a request has multiple plausible interpretations or key details (objective, scope, constraints, environment, or safety) are unclear.
+Use this skill when a request has multiple plausible interpretations or key details (objective, scope, constraints, environment, or safety) are unclear — **and** when the cost of implementing the wrong interpretation is significant.
+
+Three situations require clarification:
+
+1. **High branching** — Multiple plausible interpretations produce significantly different implementations
+2. **Substantial deliverable** — The task is large enough that wrong assumptions waste real time
+3. **Safety-critical** — The action is hard to reverse (data migrations, deployments, file deletions)
 
 ## When NOT to Use
 
-Do not use this skill when the request is already clear, or when a quick, low-risk discovery read can answer the missing details.
+Do not use this skill when:
+
+- The request is already clear and one interpretation is obviously correct
+- A quick discovery read (config files, existing patterns, repo structure) can answer the missing details faster than asking
+- The task is small enough that being slightly wrong is cheap and correctable
 
 ## Goal
 
@@ -24,6 +34,7 @@ Ask the minimum set of clarifying questions needed to avoid wrong work; do not s
 ### 1) Decide whether the request is underspecified
 
 Treat a request as underspecified if after exploring how to perform the work, some or all of the following are not clear:
+
 - Define the objective (what should change vs stay the same)
 - Define "done" (acceptance criteria, examples, edge cases)
 - Define scope (which files/components/users are in/out)
@@ -38,6 +49,7 @@ If multiple plausible interpretations exist, assume it is underspecified.
 Ask 1-5 questions in the first pass. Prefer questions that eliminate whole branches of work.
 
 Make questions easy to answer:
+
 - Optimize for scannability (short, numbered questions; avoid paragraphs)
 - Offer multiple-choice options when possible
 - Suggest reasonable defaults when appropriate (mark them clearly as the default/recommended choice; bold the recommended choice in the list, or if you present options in a code block, put a bold "Recommended" line immediately above the block and also tag defaults inside the block)
@@ -49,10 +61,12 @@ Make questions easy to answer:
 ### 3) Pause before acting
 
 Until must-have answers arrive:
+
 - Do not run commands, edit files, or produce a detailed plan that depends on unknowns
 - Do perform a clearly labeled, low-risk discovery step only if it does not commit you to a direction (e.g., inspect repo structure, read relevant config files)
 
 If the user explicitly asks you to proceed without answers:
+
 - State your assumptions as a short numbered list
 - Ask for confirmation; proceed only after they confirm or correct them
 
@@ -85,4 +99,38 @@ Reply with: defaults (or 1a 2a)
 
 - Don't ask questions you can answer with a quick, low-risk discovery read (e.g., configs, existing patterns, docs).
 - Don't ask open-ended questions if a tight multiple-choice or yes/no would eliminate ambiguity faster.
+- Don't ask more than 5 questions at once — rank by impact and ask the top ones.
+- Don't skip the fast-path — every clarification block needs `defaults` shortcut.
+- Don't forget to restate interpretation before proceeding — confirms you heard correctly.
+- Don't ask about reversible decisions — pick one, proceed, let them correct if wrong.
+
+## Three-Stage Pattern (for complex or substantial tasks)
+
+For tasks where wrong assumptions would waste significant effort — documents, architecture decisions, multi-file features — use a three-stage approach:
+
+### Stage 1: Meta-context questions (3-5 questions)
+
+Ask about the big picture before touching content:
+
+- What _type_ of deliverable is this? (spec, code, doc, design, plan)
+- Who's the audience/consumer?
+- What does "done" look like?
+- Existing template, format, or precedent to follow?
+- Hard constraints (framework, performance, compatibility)?
+
+### Stage 2: Info dump + targeted follow-up
+
+After Stage 1 answers: invite the user to brain-dump everything relevant.
+
+> "Dump everything you know — background, prior decisions, constraints, opinions, blockers. Don't organize it. Just get it all out."
+
+Then ask 5-10 targeted follow-up questions based on gaps. Users can answer in shorthand (`1: yes, 2: see above, 3: no`).
+
+**Exit Stage 2 when:** You understand objective, constraints, and at least one clear definition of success.
+
+### Stage 3: Confirm interpretation, then proceed
+
+Restate in 1-3 sentences before starting:
+
+> "Here's what I understand: [objective]. [Key constraint]. [What done looks like]. Starting now — correct me if anything's off."
 ````

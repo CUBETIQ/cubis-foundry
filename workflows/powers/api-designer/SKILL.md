@@ -1,94 +1,66 @@
 ---
-name: "api-designer"
-description: "Use when designing REST or GraphQL APIs, creating OpenAPI specifications, or planning API architecture. Invoke for resource modeling, versioning strategies, pagination patterns, error handling standards."
+name: api-designer
+description: "Use when defining or reviewing external API contracts, OpenAPI specifications, resource models, pagination, versioning, and error response standards. Do not use for pure database design or framework-only handler wiring."
+license: MIT
+metadata:
+  author: cubis-foundry
+  version: "3.0"
+compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 
 # API Designer
 
-## Overview
+## Purpose
 
-Senior API architect with expertise in designing scalable, developer-friendly REST and GraphQL APIs with comprehensive OpenAPI specifications.
+Use when defining or reviewing external API contracts, OpenAPI specifications, resource models, pagination, versioning, and error response standards. Do not use for pure database design or framework-only handler wiring.
 
-## Role Definition
+## When to Use
 
-You are a senior API designer with 10+ years of experience creating intuitive, scalable API architectures. You specialize in REST design patterns, OpenAPI 3.1 specifications, GraphQL schemas, and creating APIs that developers love to use while ensuring performance, security, and maintainability.
+- Defining external REST or GraphQL contracts.
+- Writing or reviewing OpenAPI schemas and endpoint shapes.
+- Choosing pagination, filtering, idempotency, and versioning rules.
+- Standardizing error envelopes and auth-facing API behavior.
 
-## When to Use This Skill
+## Instructions
 
-- Designing new REST or GraphQL APIs
-- Creating OpenAPI 3.1 specifications
-- Modeling resources and relationships
-- Implementing API versioning strategies
-- Designing pagination and filtering
-- Standardizing error responses
-- Planning authentication flows
-- Documenting API contracts
+1. Clarify consumers, auth model, and backward-compatibility constraints.
+2. Model resources, operations, and failure cases before implementation.
+3. Choose transport shape, versioning policy, and pagination pattern deliberately.
+4. Define request, response, and error envelopes with explicit examples.
+5. Hand off a contract that implementation skills can build against without guessing.
 
-## Core Workflow
+### Baseline standards
 
-1. **Analyze domain** - Understand business requirements, data models, client needs
-2. **Model resources** - Identify resources, relationships, operations
-3. **Design endpoints** - Define URI patterns, HTTP methods, request/response schemas
-4. **Specify contract** - Create OpenAPI 3.1 spec with complete documentation
-5. **Plan evolution** - Design versioning, deprecation, backward compatibility
+- Prefer stable resource-oriented contracts over framework-driven shapes.
+- Keep request validation explicit at the boundary.
+- Document error semantics and retry expectations.
+- Use pagination on collections by default.
+- Make deprecation and compatibility policy explicit.
 
-## Available Steering Files
+### Constraints
 
-Load detailed guidance on-demand:
+- Avoid verb-based URI design.
+- Avoid inconsistent response envelopes across endpoints.
+- Avoid silent breaking changes.
+- Avoid mixing database structure directly into the external contract.
 
-| Topic          | Reference                    | Load When                                   |
-| -------------- | ---------------------------- | ------------------------------------------- |
-| REST Patterns  | `references/rest-patterns.md`  | Resource design, HTTP methods, HATEOAS      |
-| Versioning     | `references/versioning.md`     | API versions, deprecation, breaking changes |
-| Pagination     | `references/pagination.md`     | Cursor, offset, keyset pagination           |
-| Error Handling | `references/error-handling.md` | Error responses, RFC 7807, status codes     |
-| OpenAPI        | `references/openapi.md`        | OpenAPI 3.1, documentation, code generation |
+## Output Format
 
-## Constraints
+Provide implementation guidance, code examples, and configuration as appropriate to the task.
 
-### MUST DO
+## References
 
-- Follow REST principles (resource-oriented, proper HTTP methods)
-- Use consistent naming conventions (snake_case or camelCase)
-- Include comprehensive OpenAPI 3.1 specification
-- Design proper error responses with actionable messages
-- Implement pagination for collection endpoints
-- Version APIs with clear deprecation policies
-- Document authentication and authorization
-- Provide request/response examples
+Load on demand. Do not preload all reference files.
 
-### MUST NOT DO
+| File | Load when |
+| --- | --- |
+| `references/contract-checklist.md` | You need a sharper checklist for resource modeling, versioning, pagination, idempotency, and error semantics. |
 
-- Use verbs in resource URIs (use `/users/{id}`, not `/getUser/{id}`)
-- Return inconsistent response structures
-- Skip error code documentation
-- Ignore HTTP status code semantics
-- Design APIs without versioning strategy
-- Expose implementation details in API
-- Create breaking changes without migration path
-- Omit rate limiting considerations
+## Scripts
 
-## Output Templates
+No helper scripts are required for this skill right now. Keep execution in `SKILL.md` and `references/` unless repeated automation becomes necessary.
 
-When designing APIs, provide:
+## Examples
 
-1. Resource model and relationships
-2. Endpoint specifications with URIs and methods
-3. OpenAPI 3.1 specification (YAML or JSON)
-4. Authentication and authorization flows
-5. Error response catalog
-6. Pagination and filtering patterns
-7. Versioning and deprecation strategy
-
-## Knowledge Reference
-
-REST architecture, OpenAPI 3.1, GraphQL, HTTP semantics, JSON:API, HATEOAS, OAuth 2.0, JWT, RFC 7807 Problem Details, API versioning patterns, pagination strategies, rate limiting, webhook design, SDK generation
-
-## Related Powers
-
-- **GraphQL Architect** - GraphQL-specific API design
-- **FastAPI Expert** - Python API implementation
-- **NestJS Expert** - TypeScript API implementation
-- **Spring Boot Engineer** - Java API implementation
-- **Security Reviewer** - API security assessment
+- "Help me with api designer best practices in this project"
+- "Review my api designer implementation for issues"

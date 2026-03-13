@@ -2,86 +2,72 @@
 ---
 inclusion: manual
 name: fastapi-expert
-description: Use when building high-performance async Python APIs with FastAPI and Pydantic V2. Invoke for async SQLAlchemy, JWT authentication, WebSockets, OpenAPI documentation.
+description: "Use when building FastAPI services with async Python, Pydantic v2, lifespan-managed resources, dependency-based auth, background task boundaries, and OpenAPI-safe request handling."
 license: MIT
 metadata:
-  author: https://github.com/Jeffallan
-  version: "1.0.0"
-  domain: backend
-  triggers: FastAPI, Pydantic, async Python, Python API, REST API Python, SQLAlchemy async, JWT authentication, OpenAPI, Swagger Python
-  role: specialist
-  scope: implementation
-  output-format: code
-  related-skills: fullstack-guardian, django-expert, test-master
+  author: cubis-foundry
+  version: "3.0"
+compatibility: Claude Code, Codex, GitHub Copilot
 ---
 
 # FastAPI Expert
 
-Senior FastAPI specialist with deep expertise in async Python, Pydantic V2, and production-grade API development.
+## Purpose
 
-## Role Definition
+Use when building FastAPI services with async Python, Pydantic v2, lifespan-managed resources, dependency-based auth, background task boundaries, and OpenAPI-safe request handling.
 
-You are a senior Python engineer with 10+ years of API development experience. You specialize in FastAPI with Pydantic V2, async SQLAlchemy, and modern Python 3.11+ patterns. You build scalable, type-safe APIs with automatic documentation.
+## When to Use
 
-## When to Use This Skill
+- Building or refactoring FastAPI REST or internal service APIs.
+- Defining Pydantic v2 models and request/response validation boundaries.
+- Designing dependency-based auth, async database access, lifespan-managed resources, and OpenAPI-safe endpoints.
+- Reviewing FastAPI code for async correctness, background task safety, and operational behavior.
 
-- Building REST APIs with FastAPI
-- Implementing Pydantic V2 validation schemas
-- Setting up async database operations
-- Implementing JWT authentication/authorization
-- Creating WebSocket endpoints
-- Optimizing API performance
+## Instructions
 
-## Core Workflow
+1. Model request, response, and error boundaries first with Pydantic v2.
+2. Decide lifespan-managed resources, dependency graph shape, and auth boundaries before adding routes.
+3. Keep async I/O explicit and do not mix sync database access into request paths.
+4. Keep routers thin, keep background work bounded, and move business rules into services or domain code.
+5. Verify OpenAPI output, auth behavior, startup or shutdown behavior, and failure paths before finishing.
 
-1. **Analyze requirements** - Identify endpoints, data models, auth needs
-2. **Design schemas** - Create Pydantic V2 models for validation
-3. **Implement** - Write async endpoints with proper dependency injection
-4. **Secure** - Add authentication, authorization, rate limiting
-5. **Test** - Write async tests with pytest and httpx
+### Baseline standards
 
-## Reference Guide
+- Use explicit type hints and Pydantic v2 patterns.
+- Keep request validation and response shaping at the boundary.
+- Use lifespan hooks for startup and teardown resources instead of ad hoc globals.
+- Prefer async database and network paths consistently.
+- Use dependency injection for shared auth/config logic.
+- Keep background tasks lightweight unless a durable queue owns the work.
+- Treat generated OpenAPI as a contract to keep clean.
 
-Load detailed guidance based on context:
+### Constraints
 
-| Topic | Reference | Load When |
-|-------|-----------|-----------|
-| Pydantic V2 | `references/pydantic-v2.md` | Creating schemas, validation, model_config |
-| SQLAlchemy | `references/async-sqlalchemy.md` | Async database, models, CRUD operations |
-| Endpoints | `references/endpoints-routing.md` | APIRouter, dependencies, routing |
-| Authentication | `references/authentication.md` | JWT, OAuth2, get_current_user |
-| Testing | `references/testing-async.md` | pytest-asyncio, httpx, fixtures |
-| Django Migration | `references/migration-from-django.md` | Migrating from Django/DRF to FastAPI |
+- Avoid mixing sync and async code casually in request handlers.
+- Avoid leaking ORM models directly as public response contracts.
+- Avoid hiding resource lifecycle in module import side effects.
+- Avoid using in-process background tasks for work that needs durable retries.
+- Avoid hiding auth or validation behavior in ad hoc helpers.
+- Avoid treating FastAPI convenience as a substitute for service boundaries.
 
-## Constraints
+## Output Format
 
-### MUST DO
-- Use type hints everywhere (FastAPI requires them)
-- Use Pydantic V2 syntax (`field_validator`, `model_validator`, `model_config`)
-- Use `Annotated` pattern for dependency injection
-- Use async/await for all I/O operations
-- Use `X | None` instead of `Optional[X]`
-- Return proper HTTP status codes
-- Document endpoints (auto-generated OpenAPI)
+Provide implementation guidance, code examples, and configuration as appropriate to the task.
 
-### MUST NOT DO
-- Use synchronous database operations
-- Skip Pydantic validation
-- Store passwords in plain text
-- Expose sensitive data in responses
-- Use Pydantic V1 syntax (`@validator`, `class Config`)
-- Mix sync and async code improperly
-- Hardcode configuration values
+## References
 
-## Output Templates
+Load on demand. Do not preload all reference files.
 
-When implementing FastAPI features, provide:
-1. Schema file (Pydantic models)
-2. Endpoint file (router with endpoints)
-3. CRUD operations if database involved
-4. Brief explanation of key decisions
+| File | Load when |
+| --- | --- |
+| `references/pydantic-async-playbook.md` | You need deeper guidance for Pydantic v2 boundaries, async correctness, lifespan resources, dependency-based auth, and OpenAPI-safe FastAPI structure. |
 
-## Knowledge Reference
+## Scripts
 
-FastAPI, Pydantic V2, async SQLAlchemy, Alembic migrations, JWT/OAuth2, pytest-asyncio, httpx, BackgroundTasks, WebSockets, dependency injection, OpenAPI/Swagger
+No helper scripts are required for this skill right now. Keep execution in `SKILL.md` and `references/` unless repeated automation becomes necessary.
+
+## Examples
+
+- "Help me with fastapi expert best practices in this project"
+- "Review my fastapi expert implementation for issues"
 ````

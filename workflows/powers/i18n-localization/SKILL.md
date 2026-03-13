@@ -1,154 +1,169 @@
 ---
 name: i18n-localization
-description: Internationalization and localization patterns. Detecting hardcoded strings, managing translations, locale files, RTL support.
-allowed-tools: Read, Glob, Grep
+description: Implement internationalization and localization including RTL support, pluralization, date/number formatting, translation workflows, and locale-aware UI.
+license: Apache-2.0
+metadata:
+  author: cubis-foundry
+  version: "3.0"
+compatibility: Claude Code, Codex, GitHub Copilot, Gemini CLI
 ---
 
-# i18n & Localization
+# I18N & Localization
 
-> Internationalization (i18n) and Localization (L10n) best practices.
+## Purpose
 
----
+Guide internationalization (i18n) and localization (l10n) implementation. Ensure applications can be adapted for different languages, regions, and cultural conventions without code changes.
 
-## 1. Core Concepts
+## When to Use
 
-| Term | Meaning |
-|------|---------|
-| **i18n** | Internationalization - making app translatable |
-| **L10n** | Localization - actual translations |
-| **Locale** | Language + Region (en-US, tr-TR) |
-| **RTL** | Right-to-left languages (Arabic, Hebrew) |
+- Adding multi-language support to an application
+- Implementing RTL (right-to-left) layout support
+- Handling dates, numbers, and currencies across locales
+- Setting up translation workflows and string management
+- Reviewing code for i18n readiness
+- Building locale-aware UI components
 
----
+## Instructions
 
-## 2. When to Use i18n
+### Step 1 — Externalize All User-Facing Strings
 
-| Project Type | i18n Needed? |
-|--------------|--------------|
-| Public web app | ✅ Yes |
-| SaaS product | ✅ Yes |
-| Internal tool | ⚠️ Maybe |
-| Single-region app | ⚠️ Consider future |
-| Personal project | ❌ Optional |
+**Never hardcode user-visible text**:
 
----
+```typescript
+// DON'T
+<button>Save Changes</button>
 
-## 3. Implementation Patterns
+// DO
+<button>{t('actions.save_changes')}</button>
+```
 
-### React (react-i18next)
+**String keys**:
 
-```tsx
-import { useTranslation } from 'react-i18next';
+- Use namespaced dot notation: `page.section.element`
+- Keys should be descriptive, not the English text
+- Group by feature/page, not by component
 
-function Welcome() {
-  const { t } = useTranslation();
-  return <h1>{t('welcome.title')}</h1>;
+**Message format** (ICU MessageFormat):
+
+```json
+{
+  "items.count": "{count, plural, =0 {No items} one {# item} other {# items}}",
+  "greeting": "Hello, {name}!",
+  "order.total": "Total: {total, number, currency}"
 }
 ```
 
-### Next.js (next-intl)
+### Step 2 — Handle Pluralization
 
-```tsx
-import { useTranslations } from 'next-intl';
+Different languages have different plural rules (Arabic has 6 plural forms):
 
-export default function Page() {
-  const t = useTranslations('Home');
-  return <h1>{t('title')}</h1>;
+```json
+{
+  "en": { "items": "{count, plural, one {# item} other {# items}}" },
+  "ar": {
+    "items": "{count, plural, zero {لا عناصر} one {عنصر واحد} two {عنصران} few {# عناصر} many {# عنصراً} other {# عنصر}}"
+  }
 }
 ```
 
-### Python (gettext)
+Never build pluralization with ternaries — always use the ICU plural syntax or equivalent library (Intl.PluralRules).
 
-```python
-from gettext import gettext as _
+### Step 3 — Format Dates, Numbers, and Currencies
 
-print(_("Welcome to our app"))
+Use `Intl` APIs — never format manually:
+
+```typescript
+// Date
+new Intl.DateTimeFormat("de-DE", { dateStyle: "long" }).format(date);
+// → "15. Januar 2025"
+
+// Number
+new Intl.NumberFormat("ja-JP").format(1234567);
+// → "1,234,567"
+
+// Currency
+new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(
+  42.5,
+);
+// → "$42.50"
+
+// Relative time
+new Intl.RelativeTimeFormat("fr", { numeric: "auto" }).format(-1, "day");
+// → "hier"
 ```
 
----
+### Step 4 — Support RTL Languages
 
-## 4. File Structure
+**CSS logical properties** (replace physical with logical):
+
+| Physical (DON'T)   | Logical (DO)          |
+| ------------------ | --------------------- |
+| `margin-left`      | `margin-inline-start` |
+| `padding-right`    | `padding-inline-end`  |
+| `text-align: left` | `text-align: start`   |
+| `float: left`      | `float: inline-start` |
+| `border-left`      | `border-inline-start` |
+
+**Layout**:
+
+- Use `dir="auto"` on user-generated content
+- Set `<html dir="rtl" lang="ar">` at the document level
+- Flexbox and Grid respect `direction` automatically
+- Mirror icons that indicate direction (arrows, back buttons)
+- Don't mirror: logos, numbers, media controls, checkmarks
+
+### Step 5 — Translation Workflow
+
+**File structure**:
 
 ```
 locales/
 ├── en/
-│   ├── common.json
-│   ├── auth.json
-│   └── errors.json
-├── tr/
-│   ├── common.json
-│   ├── auth.json
-│   └── errors.json
-└── ar/          # RTL
-    └── ...
+│   ├── common.json      (shared strings)
+│   ├── auth.json         (login/signup)
+│   └── dashboard.json    (dashboard page)
+├── fr/
+├── ja/
+└── ar/
 ```
 
----
+**Process**:
 
-## 5. Best Practices
+1. Developer adds key + English string
+2. CI extracts new/changed keys automatically
+3. Strings sent to translators (Crowdin, Lokalise, or equivalent)
+4. Translations imported back as JSON/YAML
+5. CI validates: no missing keys, no untranslated strings, valid ICU syntax
 
-### DO ✅
+**Rules**:
 
-- Use translation keys, not raw text
-- Namespace translations by feature
-- Support pluralization
-- Handle date/number formats per locale
-- Plan for RTL from the start
-- Use ICU message format for complex strings
+- Never concatenate translated strings (`t('hello') + ' ' + name` breaks in many languages)
+- Provide context for translators (comments in message files)
+- Max string length varies by language (German ~30% longer than English)
+- Test with pseudo-localization (e.g., "Ŝàvé Çhàñgéŝ") to catch hardcoded strings
 
-### DON'T ❌
+## Output Format
 
-- Hardcode strings in components
-- Concatenate translated strings
-- Assume text length (German is 30% longer)
-- Forget about RTL layout
-- Mix languages in same file
+```
+## I18N Assessment
+[current state and gaps]
 
----
+## Implementation
+[code changes for i18n support]
 
-## 6. Common Issues
+## Translation Setup
+[file structure, workflow, tooling]
 
-| Issue | Solution |
-|-------|----------|
-| Missing translation | Fallback to default language |
-| Hardcoded strings | Use linter/checker script |
-| Date format | Use Intl.DateTimeFormat |
-| Number format | Use Intl.NumberFormat |
-| Pluralization | Use ICU message format |
-
----
-
-## 7. RTL Support
-
-```css
-/* CSS Logical Properties */
-.container {
-  margin-inline-start: 1rem;  /* Not margin-left */
-  padding-inline-end: 1rem;   /* Not padding-right */
-}
-
-[dir="rtl"] .icon {
-  transform: scaleX(-1);
-}
+## RTL Support
+[layout changes for bidirectional support]
 ```
 
----
+## Examples
 
-## 8. Checklist
+**User**: "Add multi-language support to our React app"
 
-Before shipping:
+**Response approach**: Set up react-intl or next-intl. Externalize all strings with namespaced keys. Configure locale detection (URL, browser, user preference). Set up ICU MessageFormat for plurals and interpolation. Show translation file structure.
 
-- [ ] All user-facing strings use translation keys
-- [ ] Locale files exist for all supported languages
-- [ ] Date/number formatting uses Intl API
-- [ ] RTL layout tested (if applicable)
-- [ ] Fallback language configured
-- [ ] No hardcoded strings in components
+**User**: "Our app needs to support Arabic"
 
----
-
-## Script
-
-| Script | Purpose | Command |
-|--------|---------|---------|
-| `scripts/i18n_checker.py` | Detect hardcoded strings & missing translations | `python scripts/i18n_checker.py <project_path>` |
+**Response approach**: Add RTL support with CSS logical properties. Set `dir="rtl"` on html element. Audit all physical CSS properties. Mirror directional icons. Test with Arabic translations for text expansion.

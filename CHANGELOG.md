@@ -4,6 +4,21 @@ All notable changes to this project are documented in this file.
 
 ## [Unreleased]
 
+## [0.3.72] - 2026-03-13
+
+### Fixed
+
+- Synced stale power SKILL.md for frontend-design (was v1 with broken refs, now v3.0 matching canonical skill).
+- Regenerated all 47 power SKILL.md mirrors from canonical skills and 121 POWER.md wrappers.
+- Re-synced 88 skills across copilot and claude platform mirrors.
+
+### Changed
+
+- Simplified Decision Log response contract:
+  - Removed `Files Used` section (no more full absolute path listings).
+  - `Skills Used` now lists skill, workflow, or agent names instead of full file paths.
+  - Reduced engineering guardrail items from 9 to 8.
+
 ### Changed
 
 - Clarified Postman MCP guidance across skills, workflows, README, and platform rule templates:

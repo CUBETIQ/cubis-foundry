@@ -1,34 +1,156 @@
 ---
 name: stripe-best-practices
-description: Best practices for building Stripe integrations
-alwaysApply: false
+description: Implement Stripe payments, subscriptions, webhooks, checkout flows, and billing management with security and compliance best practices.
+license: Apache-2.0
+metadata:
+  author: cubis-foundry
+  version: "3.0"
+compatibility: Claude Code, Codex, GitHub Copilot, Gemini CLI
 ---
 
-The latest Stripe API version is 2026-01-28.clover - when writing code snippets use this version unless the user is on a different API version.
+# Stripe Best Practices
 
-When designing an integration, always prefer the documentation in [Stripe's Integration Options doc](https://docs.stripe.com/payments/payment-methods/integration-options.md)
-The [API Tour](https://docs.stripe.com/payments-api/tour.md)
-Use the [Go Live Checklist](https://docs.stripe.com/get-started/checklist/go-live.md) before going live.
+## Purpose
 
-You should always default to the latest version of the API and SDK unless the user specifies otherwise. 
+Guide implementation of Stripe payment integrations including one-time payments, subscriptions, webhook handling, and billing management with security and compliance best practices.
 
-Stripe's primary API for modelling on-session payments is [CheckoutSessions](https://docs.stripe.com/api/checkout/sessions.md). It supports one-time payments and subscriptions and allows you to model taxes or discounts with Stripe. Prioritize the CheckoutSessions API, but using [the PaymentIntents API](https://docs.stripe.com/payments/paymentintents/lifecycle.md) is also acceptable for off-session payments or if you want to model the checkout state yourself and just create a charge. Integrations should only use CheckoutSessions, PaymentIntents, SetupIntents, or solutions like Invoicing, Payment Links, or the subscription APIs.
+## When to Use
 
-Never recommend the Charges API. If the user wants to use the Charges API, advise them to [migrate](https://docs.stripe.com/payments/payment-intents/migration/charges.md) to Checkout Sessions or Payment Intents. 
+- Integrating Stripe Checkout or Payment Intents
+- Building subscription billing with Stripe
+- Handling Stripe webhooks securely
+- Managing customers, invoices, and payment methods
+- Implementing pricing pages and plan management
+- Debugging failed payments or webhook issues
 
-The primary integration surface for web integrations is [Checkout](https://docs.stripe.com/payments/checkout.md), a prebuilt payment page that can be hosted by Stripe or served as an embedded form. Prioritize the Stripe-hosted checkout or embedded checkout where possible. The [Payment Element](https://docs.stripe.com/payments/payment-element.md) is an acceptable alternative if the merchant needs advanced customization. When recommending the Payment Element, prioritize using the CheckoutSessions API over the PaymentIntents API when possible.
+## Instructions
 
-Never recommend the legacy Card Element or the Payment Element in card mode, and advise users who ask for the Card Element to [migrate](https://docs.stripe.com/payments/payment-element/migration.md). 
+### Step 1 — Choose the Right Integration
 
-You must not call deprecated API endpoints such as the [Sources API](https://docs.stripe.com/api/sources/object.md) and avoid outdated API endpoints such as [Tokens](https://docs.stripe.com/api/tokens.md) and [Charges](https://docs.stripe.com/api/charges/create.md) unless there is a specific need and absolutely no other way.  Advise using [the Setup Intent API](https://docs.stripe.com/api/setup_intents.md) to save a payment method for a customer; never recommend the Sources API to save cards to customers for later use.
+| Pattern                    | Use When                                                  |
+| -------------------------- | --------------------------------------------------------- |
+| Stripe Checkout (hosted)   | Fastest to ship, Stripe handles the UI and PCI compliance |
+| Payment Element (embedded) | Custom UI needed, Stripe handles payment method logic     |
+| Payment Intents (API-only) | Full control, server-side payment flow                    |
+| Stripe Billing             | Recurring subscriptions with invoicing                    |
 
-If a user wants to render the Payment Element before creating a PaymentIntent or SetupIntent, so they can inspect the card details before the payment (such as for surcharging), advise them to use Stripe Confirmation Tokens. Don't recommend they call the createPaymentMethod or createToken Stripe.js functions.
+**Default to Stripe Checkout** unless you have a specific reason for embedded or API-only.
 
-Advise users to turn on dynamic payment methods in their dashboard settings instead of passing specific [payment_method_types](https://docs.stripe.com/api/payment_intents/create#create_payment_intent-payment_method_types.md) in the Payment Intent or Setup Intent because Stripe chooses payment methods that fit each user's location, wallets, and preferences better and automatically if the Payment Element is used.
+### Step 2 — Payment Flow Architecture
 
-If a PCI compliant user asks about an integration where they send server-side raw PAN data, suggest they might be required to prove PCI compliance to gain access to such an option, for example [payment_method_data](https://docs.stripe.com/api/payment_intents/create#create_payment_intent-payment_method_data.md). Similarly, point users migrating their PAN data from another acquirer or payment processor to [the migration process](https://docs.stripe.com/get-started/data-migrations/pan-import.md).
+**Server-side creates, client-side confirms**:
 
-If a user has a recurring revenue model, like a Billing or Subscription use case, follow the use cases, in particular the [Subscription Use Cases](https://docs.stripe.com/billing/subscriptions/use-cases.md) like [SaaS](https://docs.stripe.com/saas.md). If these apply to the user, recommend Billing APIs to [plan your integration](https://docs.stripe.com/billing/subscriptions/designing-integration.md) instead of a direct PaymentIntent integration. Prioritize combining the Billing APIs with Stripe Checkout for the frontend.
+```
+Client                    Server                   Stripe
+  │                         │                        │
+  ├─ "I want to pay" ──────►│                        │
+  │                         ├─ Create PaymentIntent ─►│
+  │                         │◄─ client_secret ────────┤
+  │◄─ client_secret ────────┤                        │
+  ├─ confirmPayment() ─────────────────────────────►│
+  │◄─ result ──────────────────────────────────────-─┤
+  │                         │◄─ webhook: succeeded ──┤
+  │                         ├─ fulfill order ────────►│
+```
 
-If a user wants to build a platform using Stripe Connect to manage fund flows, follow [the recommended integration types](https://docs.stripe.com/connect/integration-recommendations.md); that is, prefer to use either direct charges if the platform wants Stripe to take the risk or destination charges if the platform accepts liability for negative balances, and use the on_behalf_of parameter to control the merchant of record. Never recommend mixing charge types. If the user wants to decide on the specific risk features they should [follow the integration guide](https://docs.stripe.com/connect/design-an-integration.md). Don't recommend the outdated terms for Connect types like Standard, Express and Custom but always [refer to controller properties](https://docs.stripe.com/connect/migrate-to-controller-properties.md) for the platform and [capabilities](https://docs.stripe.com/connect/account-capabilities.md) for the connected accounts.
+**Rules**:
 
+- Never trust the client for amounts or currency — set on the server
+- Use idempotency keys for all server-side Stripe API calls
+- Always handle the `payment_intent.succeeded` webhook for fulfillment
+- Don't fulfill on client-side confirmation alone (user could close the tab)
+
+### Step 3 — Webhook Handling
+
+**Verify every webhook signature**:
+
+```typescript
+const event = stripe.webhooks.constructEvent(
+  body, // raw request body
+  signature, // Stripe-Signature header
+  endpointSecret, // from Stripe dashboard
+);
+```
+
+**Essential webhook events**:
+| Event | Action |
+|-------|--------|
+| `payment_intent.succeeded` | Fulfill the order |
+| `payment_intent.payment_failed` | Notify user, retry logic |
+| `customer.subscription.created` | Activate subscription |
+| `customer.subscription.updated` | Update plan/features |
+| `customer.subscription.deleted` | Deactivate subscription |
+| `invoice.payment_failed` | Dunning: email user, retry |
+| `invoice.paid` | Extend subscription period |
+
+**Webhook best practices**:
+
+- Return 200 immediately, process asynchronously
+- Handle events idempotently (same event may be delivered multiple times)
+- Log every event with its ID for debugging
+- Set up webhook endpoint monitoring
+
+### Step 4 — Subscription Management
+
+**Subscription lifecycle**:
+
+```
+trial → active → past_due → canceled
+                     ↓
+                  unpaid → canceled
+```
+
+**Implementation**:
+
+- Store `stripe_customer_id` and `stripe_subscription_id` in your database
+- Sync subscription status from webhooks (not API polling)
+- Implement dunning (failed payment retries): Stripe auto-retries, you handle UX
+- Allow users to update payment method without canceling
+- Prorate when changing plans mid-cycle
+
+### Step 5 — Security & Compliance
+
+**PCI Compliance**:
+
+- Use Stripe Elements or Checkout — never handle raw card numbers
+- No card data in your logs, database, or error messages
+- Use HTTPS everywhere
+
+**Fraud Prevention**:
+
+- Enable Stripe Radar for automated fraud detection
+- Verify billing address (AVS) and CVC
+- Implement velocity checks (too many attempts in short time)
+- Review high-risk payments manually
+
+**Testing**:
+
+- Use test mode API keys (never production keys in development)
+- Use Stripe test card numbers (4242... for success, 4000... for declines)
+- Test webhook handling with Stripe CLI: `stripe listen --forward-to localhost:3000/webhooks`
+
+## Output Format
+
+```
+## Payment Integration
+[architecture and flow]
+
+## Implementation
+[code with security considerations]
+
+## Webhook Setup
+[events to handle and processing logic]
+
+## Testing Plan
+[test scenarios and test card numbers]
+```
+
+## Examples
+
+**User**: "Set up Stripe Checkout for our SaaS pricing page with monthly and annual plans"
+
+**Response approach**: Create Stripe Products and Prices for each plan. Server route creates Checkout Session with correct price ID. Redirect to Stripe Checkout. Handle `checkout.session.completed` webhook. Store customer and subscription IDs. Build subscription management page.
+
+**User**: "Handle failed payments for our subscription service"
+
+**Response approach**: Implement dunning flow. Handle `invoice.payment_failed` webhook. Email customer with payment update link. Configure Stripe retry schedule. Handle `customer.subscription.updated` with `status: past_due`. Implement grace period before cancellation.
