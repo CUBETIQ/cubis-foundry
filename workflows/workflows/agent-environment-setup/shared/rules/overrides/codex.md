@@ -19,7 +19,7 @@
 - All specialist references are **postures within the current session** — Codex does not spawn isolated subagents.
 - `@specialist` means: adopt that specialist's domain, reasoning style, and scope constraints internally.
 - Prefer local file inspection over external fetches. Default to repo-grounded reasoning.
-- MCP tools may be available depending on sandbox configuration — verify with `route_resolve` first.
+- Foundry MCP tools (`skill_get`, `skill_search`, `skill_validate`, `route_resolve`) are available when the MCP server is connected. After `route_resolve`, load the returned `primarySkillHint` or `primarySkills[0]` via `skill_validate` → `skill_get` before executing non-trivial tasks.
 
 ## Platform Notes
 

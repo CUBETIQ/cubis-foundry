@@ -3787,15 +3787,20 @@ function buildManagedWorkflowBlock(platformId, workflows) {
   lines.push("<!-- cbx:managed:skill-routing start -->");
   lines.push("Classify intent before any MCP call.");
   lines.push(
-    "- TIER 1 DIRECT: `skill_get <exact-skill-id>` when domain and skill are obvious.",
+    "- TIER 1 DIRECT: `skill_get <exact-skill-id>` when skill ID is known from route or context.",
   );
   lines.push(
-    "- TIER 2 TARGETED SEARCH: one `skill_search <1-3 word noun>` max, then `skill_validate` -> `skill_get`.",
+    "- TIER 1b ROUTE-RECOMMENDED: after `route_resolve`, load `primarySkillHint` or first `primarySkills` entry via `skill_validate` -> `skill_get` before executing non-trivial tasks.",
   );
   lines.push(
-    "- TIER 3 SKIP: no MCP call for conversational, same-session, or native-tool-sufficient work.",
+    "- TIER 2 TARGETED SEARCH: one `skill_search <1-3 word noun>` max when domain is unclear, then `skill_validate` -> `skill_get`.",
   );
-  lines.push("- Never pre-load skills or agents speculatively.");
+  lines.push(
+    "- TIER 3 SKIP: no MCP call for conversational replies, trivial one-liners, or identical skill already loaded this session.",
+  );
+  lines.push(
+    "- Never pre-load skills or agents speculatively before route resolution.",
+  );
   lines.push("- Keep one primary agent and one primary skill by default.");
   lines.push(
     "- Add supporting skills only when the active task explicitly crosses domains.",

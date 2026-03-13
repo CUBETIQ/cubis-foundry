@@ -4,6 +4,14 @@ All notable changes to this project are documented in this file.
 
 ## [Unreleased]
 
+## [0.3.73] - 2026-03-13
+
+### Fixed
+
+- Fixed skill loading protocol across all platforms (Codex, Copilot, Claude, Antigravity): agents now load skills recommended by `route_resolve` (`primarySkillHint`, `primarySkills[0]`, `detectedLanguageSkill`) before executing non-trivial tasks instead of ignoring them.
+- Added TIER 1b to the managed skill-routing block so `cbx workflows sync-rules` propagates the post-route skill loading rule to installed projects.
+- Corrected the Codex sandbox override note to explicitly name the Foundry MCP tools and the expected post-route loading behavior.
+
 ## [0.3.72] - 2026-03-13
 
 ### Fixed
@@ -287,5 +295,3 @@ All notable changes to this project are documented in this file.
 - Added centralized Postman config via `cbx_config.json`.
 - Added MCP scope controls (`project/workspace/global/user`) with platform-aware runtime placement.
 - Kept rules/engineering artifacts in workspace scope while defaulting skills/powers install to global scope.
-
-

@@ -47,16 +47,17 @@ Follow this decision tree for EVERY user request:
 
 ## 3) Skill Loading Protocol
 
-Skills are **supporting context**, not the route layer. Always route first, then load skills if needed.
+Skills are **supporting context** — always route first, then load what the route recommends.
 
 1. **Never begin with `skill_search`.** Inspect the repo/task locally first.
-2. Resolve the route (workflow, agent, or direct execution) before considering skills.
-3. If the exact skill ID is known → run `skill_validate` → then `skill_get`.
-4. If the domain is still unclear AFTER route resolution → use ONE narrow `skill_search`.
-5. Call `skill_get` with `includeReferences: false` by default.
-6. Load reference files one at a time with `skill_get_reference` — only when a specific reference is needed.
-7. Do not auto-prime every specialist with a skill. Load only what the task clearly needs.
-8. Never pass workflow IDs or agent IDs to skill tools.
+2. Resolve the route (workflow, agent, or direct execution) before loading any skills.
+3. **After routing: if `route_resolve` returned `primarySkillHint` or `primarySkills`, load the first via `skill_validate` → `skill_get` before executing. Not optional for non-trivial tasks.**
+4. If `detectedLanguageSkill` is returned and matches the project, load it too (if not already loaded this session).
+5. Domain still unclear after routing? → ONE narrow `skill_search`. Not two.
+6. Call `skill_get` with `includeReferences: false` by default.
+7. Load reference files one at a time with `skill_get_reference` — only when a specific reference is needed.
+8. Do not auto-prime every specialist. Only load what `primarySkills` recommends or the task clearly needs.
+9. Never pass workflow IDs or agent IDs to skill tools.
 
 ---
 

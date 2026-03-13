@@ -91,12 +91,13 @@ Execute this tree top-to-bottom. Stop at the **first match**. Never skip levels.
 
 1. **Inspect repo/task locally first.** Always. No exceptions.
 2. Route resolution comes before any skill consideration.
-3. Known skill ID? → `skill_validate` → `skill_get`. That order, always.
-4. Domain still unclear after routing? → ONE `skill_search`. Not two.
-5. `skill_get` default: `includeReferences: false`.
-6. Reference files: load one at a time via `skill_get_reference`.
-7. Do not pre-prime every agent with a skill. Load only what the task clearly requires.
-8. Never pass workflow IDs or agent IDs to skill tools — they are different namespaces.
+3. **After routing: if `route_resolve` returned `primarySkillHint` or `primarySkills`, load the first via `skill_validate` → `skill_get` before executing. Not optional for non-trivial tasks.**
+4. If `detectedLanguageSkill` is returned and matches the project, load it too (if not already loaded this session).
+5. Domain still unclear after routing? → ONE `skill_search`. Not two.
+6. `skill_get` default: `includeReferences: false`.
+7. Reference files: load one at a time via `skill_get_reference`.
+8. Do not pre-prime every agent. Only load what `primarySkills` recommends or the task clearly needs.
+9. Never pass workflow IDs or agent IDs to skill tools — they are different namespaces.
 
 ---
 
@@ -331,6 +332,7 @@ Selection policy:
 <!-- cbx:workflows:auto:end -->
 
 <!-- cbx:mcp:auto:start version=1 -->
+
 ## Cubis Foundry MCP (auto-managed)
 
 Keep MCP context lazy and exact. Skills are supporting context, not the route layer.
