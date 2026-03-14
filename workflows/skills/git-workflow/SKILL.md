@@ -1,6 +1,6 @@
 ---
 name: git-workflow
-description: "Use when establishing git branching strategies, writing commit messages, choosing merge policies, managing releases, or configuring monorepo workflows. Covers trunk-based development, GitFlow, conventional commits, rebase vs merge, code review flow, and release management."
+description: "Use when defining git branching, commit conventions, merge or rebase policy, release flow, or monorepo collaboration patterns."
 license: MIT
 metadata:
   author: cubis-foundry

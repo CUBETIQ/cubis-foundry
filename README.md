@@ -8,10 +8,11 @@ Last updated: 2026-03-04.
 
 - Codex
 - Antigravity (Gemini)
+- Gemini CLI
 - GitHub Copilot
 - Claude Code
 
-Official install targets: `codex`, `antigravity`, `copilot`, `claude`.
+Official install targets: `codex`, `antigravity`, `copilot`, `claude`, `gemini`.
 
 Skill install default is profile-based:
 
@@ -56,7 +57,7 @@ Source of truth inside this repo:
 - `workflows/skills/<id>` is the canonical source for skill packages.
 - `workflows/workflows/agent-environment-setup/shared/{agents,workflows}` is the canonical source for custom agents and workflows.
 - `workflows/workflows/agent-environment-setup/platforms/*` contains generated platform adapters and mirrors, not the authoring source.
-- Active generated skill mirrors are maintained for `copilot` and `claude`.
+- Active generated skill mirrors are maintained for `codex`, `antigravity`, `copilot`, `claude`, and `gemini`.
 - Any leftover `cursor` or `windsurf` folders under `platforms/*` should be treated as legacy artifacts, not active CLI targets.
 
 Recommended edit and verification loop:
@@ -91,7 +92,7 @@ Wizard flow:
 
 - Welcome screen (Cubis Foundry banner + version)
 - Bundle selection
-- Multi-platform selection (`codex`, `antigravity`, `copilot`, `claude`)
+- Multi-platform selection (`codex`, `antigravity`, `copilot`, `claude`, `gemini`)
 - Skills profile selection (`core`, `web-backend`, `full`)
 - MCP selection (`Cubis Foundry`, `Postman`, `Stitch`)
 - Separate scope selection for Skills and MCP (`project` or `global`)
@@ -114,7 +115,7 @@ cbx init \
   --overwrite \
   --no-banner \
   --bundle agent-environment-setup \
-  --platforms codex,antigravity \
+  --platforms codex,antigravity,gemini \
   --skill-profile web-backend \
   --skills-scope project \
   --mcps cubis-foundry,postman,stitch \
@@ -164,6 +165,12 @@ cbx workflows install --platform copilot --scope global --bundle agent-environme
 cbx workflows install --platform claude --scope global --bundle agent-environment-setup --postman --postman-mode full
 ```
 
+### Gemini CLI
+
+```bash
+cbx workflows install --platform gemini --scope global --bundle agent-environment-setup --postman --postman-mode full
+```
+
 ## Scope Model (Global vs Project)
 
 Default install scope is `global`.
@@ -197,6 +204,14 @@ Copilot:
 - Project workflows: `<workspace>/.github/copilot/workflows`
 - Project rules: `<workspace>/AGENTS.md` and `<workspace>/.github/copilot-instructions.md`
 - Global rules: `~/.copilot/copilot-instructions.md`
+
+Gemini CLI:
+
+- Global skills: `~/.gemini/skills`
+- Project workflows: `<workspace>/.gemini/workflows`
+- Project commands: `<workspace>/.gemini/commands`
+- Project rules: `<workspace>/.gemini/GEMINI.md`
+- Global rules: `~/.gemini/GEMINI.md`
 
 ## Credential Model (`cbx_config.json` only)
 
@@ -395,7 +410,7 @@ Copilot:
 ### Install / Remove / Doctor / Rule Sync
 
 ```bash
-cbx workflows install --platform <codex|antigravity|copilot|claude> --bundle agent-environment-setup
+cbx workflows install --platform <codex|antigravity|copilot|claude|gemini> --bundle agent-environment-setup
 cbx workflows remove <bundle-or-workflow> --platform <platform>
 cbx workflows remove-all --scope <project|global|all> --platform <platform|all>
 cbx workflows prune-skills --platform <platform> --scope <project|global> --skill-profile <core|web-backend|full> [--include-mcp] [--dry-run]

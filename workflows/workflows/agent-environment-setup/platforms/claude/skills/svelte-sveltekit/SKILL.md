@@ -1,17 +1,9 @@
 ---
 name: svelte-sveltekit
 description: "Use when building web applications with Svelte 5 and SvelteKit. Invoke for rune-based reactivity ($state, $derived, $effect), file-based routing, form actions, server-side rendering, load functions, and deployment."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-  domain: frontend
-  triggers: Svelte, SvelteKit, runes, $state, $derived, $effect, form actions, SSR, server load, page load
-  role: specialist
-  scope: implementation
-  output-format: code
-  related-skills: typescript-pro, tailwind-patterns, test-master
-compatibility: "Claude Code, Codex, GitHub Copilot"
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "Svelte component, SvelteKit route, or store to work on"
 ---
 
 # Svelte 5 + SvelteKit
@@ -88,3 +80,11 @@ Load detailed guidance based on context:
 | Form Actions | `references/form-actions.md` | Server actions, use:enhance, validation |
 | Testing | `references/testing.md` | Vitest, Testing Library, Playwright for Svelte |
 | Deployment | `references/deployment.md` | Adapters, SSR/SSG, environment variables |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

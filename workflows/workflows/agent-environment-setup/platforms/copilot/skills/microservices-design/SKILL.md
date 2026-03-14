@@ -7,7 +7,6 @@ metadata:
   version: "3.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 # Microservices Design
 
 ## Purpose
@@ -80,3 +79,11 @@ Load only what the current task requires.
 | `references/saga-pattern.md` | Task involves distributed transactions, compensation logic, or orchestration vs. choreography. |
 | `references/observability.md` | Task involves distributed tracing, metrics collection, log aggregation, or alerting. |
 | `references/deployment.md` | Task involves CI/CD pipelines, canary releases, blue-green deployments, or rollback strategies. |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

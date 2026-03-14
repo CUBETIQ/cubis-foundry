@@ -7,7 +7,6 @@ metadata:
   version: "3.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 # NestJS
 
 ## Purpose
@@ -70,3 +69,11 @@ Provide implementation code, module definitions, decorator usage, configuration 
 | `references/microservices.md` | You need transport layer configuration, message patterns, hybrid applications, or inter-service communication. |
 | `references/testing.md` | You need unit test setup with `TestingModule`, e2e test patterns, mocking strategies, or test database configuration. |
 | `references/graphql.md` | You need code-first resolvers, schema federation, DataLoader integration, or subscription setup. |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

@@ -1,11 +1,11 @@
 ---
 name: mcp-server-builder
-description: "Use when building MCP servers: Model Context Protocol specification compliance, tool registration with input validation and structured output, resource providers for dynamic context, transport layer configuration (stdio, HTTP, SSE), and comprehensive server testing."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: "Use when building MCP servers with spec-compliant tools, structured outputs, resource providers, transport configuration, and server testing."
+allowed-tools: Read Grep Glob Bash Edit Write
+context: fork
+agent: backend-specialist
+user-invocable: true
+argument-hint: "MCP server, tool, or transport to build"
 ---
 
 # MCP Server Builder
@@ -77,14 +77,20 @@ Guide the design and implementation of production-grade Model Context Protocol (
 
 | File                                | Load when                                                                                 |
 | ----------------------------------- | ----------------------------------------------------------------------------------------- |
-| `references/protocol-spec.md`       | Understanding MCP message formats, lifecycle, or capability negotiation.                 |
-| `references/tool-registration.md`   | Registering tools, defining JSON Schema inputs, or structuring tool output.              |
-| `references/resource-providers.md`  | Implementing resource providers, URI templates, or dynamic context injection.            |
-| `references/transport.md`           | Choosing or configuring stdio, HTTP, or SSE transport layers.                            |
-| `references/testing.md`             | Writing mock client tests, protocol compliance checks, or integration tests.             |
+| `references/tool-design-patterns.md` | Understanding MCP tool contracts, schema design, output shape, or resource-oriented server structure. |
+| `references/transport-configuration.md` | Choosing or configuring stdio, HTTP, or SSE transport layers.                       |
+| `references/testing-mcp-servers.md` | Writing mock client tests, protocol compliance checks, or integration tests.             |
 
 ## Examples
 
 - "Build an MCP server that exposes file system tools with read, write, and search capabilities."
 - "Add a resource provider that serves database schema documentation to connected agents."
 - "Test an MCP server's tool registration and error handling with a mock client."
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

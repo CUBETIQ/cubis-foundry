@@ -39,9 +39,9 @@ Use this for backend architecture, API design, service implementation, or Postma
 
 ## Skill Routing
 
-- Primary skills: `api-designer`, `api-patterns`, `nodejs-best-practices`
-- Supporting skills (optional): `auth-architect`, `database-skills`, `database-design`, `nestjs-expert`, `fastapi-expert`, `graphql-architect`, `microservices-architect`, `drizzle-expert`, `firebase`, `stripe-best-practices`, `serverless-patterns`, `i18n-localization`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`
-- Start with `api-designer` for API contract work and `nodejs-best-practices` for Node.js services. Add framework-specific skill when applicable.
+- Primary skills: `api-design`, `api-design`, `javascript-best-practices`
+- Supporting skills (optional): `owasp-security-review`, `database-design`, `database-design`, `nestjs`, `fastapi`, `api-design`, `microservices-design`, `drizzle-orm`, `database-design`, `stripe-integration`, `ci-cd-pipeline`, `frontend-design`, `typescript-best-practices`, `javascript-best-practices`, `python-best-practices`, `golang-best-practices`
+- Start with `api-design` for API contract work and `javascript-best-practices` for Node.js services. Add framework-specific skill when applicable.
 
 ## Workflow steps
 
@@ -65,8 +65,8 @@ Use this for backend architecture, API design, service implementation, or Postma
 BACKEND_WORKFLOW_RESULT:
   primary_agent: backend-specialist
   supporting_agents: [database-architect?, security-auditor?, test-engineer?]
-  primary_skills: [api-designer, api-patterns, nodejs-best-practices]
-  supporting_skills: [auth-architect?, database-skills?, <framework-skill>?]
+  primary_skills: [api-design, api-design, javascript-best-practices]
+  supporting_skills: [owasp-security-review?, database-design?, <framework-skill>?]
   api_changes:
     endpoints_created: [<string>] | []
     endpoints_modified: [<string>] | []

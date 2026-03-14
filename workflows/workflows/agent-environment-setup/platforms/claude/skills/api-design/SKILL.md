@@ -1,11 +1,9 @@
 ---
 name: api-design
 description: API design best practices covering REST, GraphQL, gRPC patterns, versioning strategies, pagination, error contracts, and OpenAPI specifications for robust service interfaces.
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+allowed-tools: Read Grep Glob
+user-invocable: true
+argument-hint: "API endpoint, resource, or design concern to review"
 ---
 
 # API Design
@@ -80,3 +78,11 @@ Load only what the current task requires.
 | `references/grpc-protobuf.md` | Task involves gRPC service definitions, Protobuf schema evolution, or streaming patterns. |
 | `references/versioning.md` | Task involves API versioning strategies, deprecation policies, or backward compatibility. |
 | `references/error-contracts.md` | Task involves error response design, problem details, or validation error formatting. |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

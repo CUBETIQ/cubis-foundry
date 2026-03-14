@@ -80,11 +80,9 @@ Guide the design and implementation of production-grade Expo applications using 
 
 | File                               | Load when                                                                                  |
 | ---------------------------------- | ------------------------------------------------------------------------------------------ |
-| `references/eas-build.md`          | Configuring EAS Build profiles, signing credentials, or environment variables.             |
-| `references/ota-updates.md`        | Setting up expo-updates channels, runtime versioning, or monitoring update adoption.       |
+| `references/eas-build-config.md`   | Configuring EAS Build profiles, signing credentials, or environment variables.             |
+| `references/over-the-air-updates.md` | Setting up expo-updates channels, runtime versioning, or monitoring update adoption.     |
 | `references/native-modules.md`     | Adding config plugins, using Expo Modules API, or integrating third-party native code.     |
-| `references/push-notifications.md` | Implementing expo-notifications, token management, or notification handling.               |
-| `references/testing.md`            | Writing unit tests, integration tests, or platform-specific test configurations.           |
 
 ## Examples
 

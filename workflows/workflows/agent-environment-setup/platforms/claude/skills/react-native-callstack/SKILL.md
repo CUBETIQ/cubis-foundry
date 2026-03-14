@@ -1,11 +1,9 @@
 ---
 name: react-native-callstack
 description: "Use when building React Native apps with Callstack patterns: performance profiling and optimization, Turbo Module and Fabric native module development, brownfield integration into existing iOS and Android apps, and mobile CI/CD pipelines."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "React Native crash, callstack, or debugging session"
 ---
 
 # React Native with Callstack Patterns
@@ -77,14 +75,20 @@ Guide the design and implementation of high-performance React Native application
 
 | File                           | Load when                                                                                    |
 | ------------------------------ | -------------------------------------------------------------------------------------------- |
-| `references/performance.md`    | Profiling render performance, optimizing lists, or reducing bridge overhead.                 |
-| `references/native-modules.md` | Building Turbo Modules, Fabric components, or migrating from the old architecture.          |
-| `references/brownfield.md`     | Embedding React Native in existing iOS or Android apps or managing runtime lifecycle.       |
-| `references/ci-cd.md`          | Configuring Fastlane, Gradle CI tasks, code signing, or E2E testing pipelines.              |
-| `references/testing.md`        | Writing unit tests, integration tests, or E2E tests with Detox or Maestro.                  |
+| `references/performance-optimization.md` | Profiling render performance, optimizing lists, or reducing bridge overhead.        |
+| `references/native-bridge.md` | Building Turbo Modules, Fabric components, or wiring native interfaces into JavaScript.      |
+| `references/navigation-patterns.md` | Coordinating application flow, integration boundaries, and production delivery patterns. |
 
 ## Examples
 
 - "Profile and optimize a React Native list screen that drops frames during fast scroll."
 - "Build a Turbo Module for a custom camera feature with TypeScript codegen spec."
 - "Embed a React Native checkout flow into an existing native iOS banking app."
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

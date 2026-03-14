@@ -246,3 +246,19 @@ cbx workflows sync-rules --platform gemini --scope project
 # Diagnose setup issues
 cbx workflows doctor gemini --scope project
 ```
+
+<!-- cbx:mcp:auto:start version=1 -->
+## Cubis Foundry MCP (auto-managed)
+
+Keep MCP context lazy and exact. Skills are supporting context, not the route layer.
+
+1. Never begin with `skill_search`. Inspect the repo/task locally first.
+2. Resolve workflows, agents, or free-text route intent with `route_resolve` before loading any skills.
+3. If the route is still unresolved and local grounding leaves the domain unclear, use one narrow `skill_search`.
+4. Always run `skill_validate` on the exact selected ID before `skill_get`.
+5. Call `skill_get` with `includeReferences:false` by default.
+6. Load at most one sidecar markdown file at a time with `skill_get_reference`.
+7. Do not auto-prime every specialist with a skill. Load only what the task clearly needs.
+8. Use upstream MCP servers such as `postman`, `stitch`, or `playwright` for real cloud/browser actions when available.
+
+<!-- cbx:mcp:auto:end -->

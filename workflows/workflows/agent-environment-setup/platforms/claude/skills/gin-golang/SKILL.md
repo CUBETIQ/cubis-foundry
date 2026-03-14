@@ -1,11 +1,9 @@
 ---
 name: gin-golang
-description: "Use when building HTTP APIs with the Gin web framework for Go. Covers production routing patterns, middleware chains, request validation with binding tags, structured error handling, context propagation, and deployment hardening. Activate when the user mentions Gin, gin-gonic, or asks for a Go web framework with validation and middleware."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: "Use when building Gin-based Go services, including routing, middleware chains, request validation, structured errors, context propagation, and deployment hardening."
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "Gin handler, middleware, or route to work on"
 ---
 
 # Gin Web Framework
@@ -72,3 +70,11 @@ Load only what the current step needs.
 | `references/validation.md` | Request binding, validation tags, custom validators, or error formatting is needed. |
 | `references/testing.md` | Handler testing, integration tests, or test context setup is needed. |
 | `references/deployment.md` | Graceful shutdown, reverse proxy config, Docker builds, or health checks are in scope. |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

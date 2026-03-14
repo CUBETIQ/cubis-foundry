@@ -1,11 +1,9 @@
 ---
 name: secret-management
 description: "Design and implement secret and credential management strategies including vault integration, environment variable handling, rotation policies, secret scanning, and zero-trust credential distribution."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: "Claude Code, Codex, GitHub Copilot"
+allowed-tools: Read Grep Glob Bash
+user-invocable: true
+argument-hint: "Secret storage, rotation policy, or credential concern"
 ---
 
 # Secret Management
@@ -95,3 +93,11 @@ Guide the design and implementation of robust secret and credential management s
 | Secret Scanning | `references/secret-scanning.md` | Setting up pre-commit or CI scanning |
 | Environment Management | `references/env-management.md` | Configuring runtime secret injection |
 | Zero-Trust Patterns | `references/zero-trust.md` | Implementing identity-based service auth |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

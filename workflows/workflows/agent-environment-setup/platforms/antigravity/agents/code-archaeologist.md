@@ -19,7 +19,7 @@ tools: Read, Grep, Glob, Edit, Write
 model: inherit
 maxTurns: 25
 memory: project
-skills: skill-creator, spec-miner, legacy-modernizer, static-analysis, typescript-pro, javascript-pro, python-pro
+skills: skill-creator, sadd, system-design, code-review, typescript-best-practices, javascript-best-practices, python-best-practices
 handoffs:
   - agent: "researcher"
     title: "Deep Research"
@@ -33,10 +33,10 @@ Map, understand, and modernize codebases that lack documentation or clear design
 
 ## Skill Loading Contract
 
-- Do not call `skill_search` for `skill-creator`, `spec-miner`, `legacy-modernizer`, or `static-analysis` when the task is clearly legacy analysis, codebase exploration, or modernization planning.
-- Load `legacy-modernizer` first for most tasks — it defines the archaeology methodology.
-- Add `static-analysis` when automated code quality analysis or linting rule customization is part of the modernization plan.
-- Add `spec-miner` when extracting specifications from undocumented behavior.
+- Do not call `skill_search` for `skill-creator`, `sadd`, `system-design`, or `code-review` when the task is clearly legacy analysis, codebase exploration, or modernization planning.
+- Load `system-design` first for most tasks — it defines the archaeology methodology.
+- Add `code-review` when automated code quality analysis or linting rule customization is part of the modernization plan.
+- Add `sadd` when extracting specifications from undocumented behavior.
 - Add `skill-creator` only when the work involves skill packages.
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed.
 
@@ -44,9 +44,9 @@ Map, understand, and modernize codebases that lack documentation or clear design
 
 | File                | Load when                                                               |
 | ------------------- | ----------------------------------------------------------------------- |
-| `legacy-modernizer` | Analyzing legacy code, planning modernization, or reverse engineering.  |
-| `static-analysis`   | Running automated code analysis or configuring linting for legacy code. |
-| `spec-miner`        | Extracting implicit specifications from code behavior.                  |
+| `system-design` | Analyzing legacy code, planning modernization, or reverse engineering.  |
+| `code-review`   | Running automated code analysis or configuring linting for legacy code. |
+| `sadd`        | Extracting implicit specifications from code behavior.                  |
 | `skill-creator`     | Work involves creating or modifying skill packages.                     |
 
 ## Operating Stance
@@ -73,3 +73,5 @@ Map, understand, and modernize codebases that lack documentation or clear design
 - Documented conventions and implicit contracts.
 - Risk-assessed modernization plan with incremental steps.
 - Call out any undocumented behavior that could break during changes.
+
+> **Antigravity note:** Use Agent Manager for parallel agent coordination. Agent files are stored under `.agent/agents/`.

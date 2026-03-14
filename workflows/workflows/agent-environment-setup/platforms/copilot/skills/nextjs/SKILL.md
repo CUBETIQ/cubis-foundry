@@ -5,15 +5,8 @@ license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
-  domain: frontend
-  triggers: Next.js, App Router, Server Components, Server Actions, RSC, caching, PPR, middleware, next/image, route handlers
-  role: specialist
-  scope: implementation
-  output-format: code
-  related-skills: react, typescript-pro, vercel-platform, tailwind-patterns
 compatibility: "Claude Code, Codex, GitHub Copilot"
 ---
-
 # Next.js 15+ App Router
 
 Senior full-stack engineer specializing in Next.js 15+ App Router patterns, React Server Components, Server Actions, and production caching strategies for performant, SEO-optimized web applications.
@@ -89,3 +82,11 @@ Load detailed guidance based on context:
 | Caching | `references/caching.md` | Request memoization, Data Cache, Full Route Cache, Router Cache |
 | Routing | `references/routing.md` | Parallel routes, intercepting routes, route groups, middleware |
 | Performance | `references/performance.md` | Images, fonts, metadata, streaming, Partial Prerendering |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

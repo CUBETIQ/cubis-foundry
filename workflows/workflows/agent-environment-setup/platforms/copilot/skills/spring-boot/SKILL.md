@@ -7,7 +7,6 @@ metadata:
   version: "3.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 # Spring Boot
 
 ## Purpose
@@ -70,3 +69,11 @@ Provide implementation code, configuration properties, bean definitions, and arc
 | `references/data-access.md` | You need Spring Data JPA repositories, query derivation, projections, specifications, or Hibernate tuning. |
 | `references/testing.md` | You need `@SpringBootTest`, `@WebMvcTest`, `@DataJpaTest`, Testcontainers, or `MockMvc`/`WebTestClient` patterns. |
 | `references/reactive.md` | You need WebFlux endpoints, `Mono`/`Flux` patterns, `WebClient`, R2DBC, or reactive security configuration. |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

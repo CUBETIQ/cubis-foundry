@@ -1,0 +1,12 @@
+description = "Drive mobile implementation decisions for Flutter/cross-platform behavior and reliability."
+prompt = '''
+Follow the /mobile workflow from .agent/workflows/mobile.md.
+
+Execution contract:
+1. Treat route selection as already resolved by this command; do not begin with skill discovery.
+2. Confirm the request fits the workflow's "When to use" section.
+3. Execute according to "Workflow steps" and apply "Context notes".
+4. Complete "Verification" checks and report concrete evidence.
+
+If command arguments are provided, treat them as additional user context.
+'''

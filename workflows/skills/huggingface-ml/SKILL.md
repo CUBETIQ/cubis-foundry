@@ -1,6 +1,6 @@
 ---
 name: huggingface-ml
-description: "Use when building ML workflows with Hugging Face: Transformers library for model loading and inference, Inference API for serverless deployment, model hub for discovery and versioning, fine-tuning with Trainer and PEFT, and Spaces for interactive demos."
+description: "Use when building ML workflows with Hugging Face, including model loading, inference APIs, fine-tuning with Trainer or PEFT, Hub versioning, and Spaces demos."
 license: MIT
 metadata:
   author: cubis-foundry
@@ -77,11 +77,9 @@ Guide the design and implementation of machine learning workflows using the Hugg
 
 | File                             | Load when                                                                                  |
 | -------------------------------- | ------------------------------------------------------------------------------------------ |
-| `references/transformers.md`     | Loading models, running inference, or configuring pipelines with the Transformers library. |
-| `references/inference-api.md`    | Calling the Inference API, configuring timeouts, or handling rate limits.                  |
-| `references/fine-tuning.md`      | Training with Trainer, PEFT/LoRA, dataset preparation, or evaluation.                     |
-| `references/deployment.md`       | Deploying to Inference Endpoints, quantization, or serving configuration.                  |
-| `references/spaces.md`           | Building Gradio demos, configuring Spaces hardware, or embedding Spaces.                  |
+| `references/model-selection.md` | Loading models, comparing checkpoints, and choosing the right task framing or pipeline.    |
+| `references/inference-optimization.md` | Running inference, calling hosted APIs, and tuning latency, batching, and cost.      |
+| `references/fine-tuning-guide.md` | Training with Trainer, PEFT/LoRA, dataset preparation, or evaluation.                    |
 
 ## Examples
 

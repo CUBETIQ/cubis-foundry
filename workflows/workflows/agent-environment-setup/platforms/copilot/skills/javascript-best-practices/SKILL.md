@@ -1,13 +1,12 @@
 ---
 name: javascript-best-practices
-description: "Use when writing, refactoring, or reviewing modern JavaScript (ES2024+) across Node.js, Bun, Deno, and browser runtimes. Covers module patterns, async orchestration, cross-runtime compatibility, bundling strategies, and production testing. Replaces javascript-pro."
+description: "Use when writing, refactoring, or reviewing modern JavaScript across Node.js, Bun, Deno, and browsers, including modules, async orchestration, compatibility, bundling, and testing."
 license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 # JavaScript Best Practices
 
 ## Purpose
@@ -70,3 +69,11 @@ Produces JavaScript code using ESM modules, native runtime APIs, explicit async 
 | `references/async-patterns.md` | Cancellation, retry, concurrency limiting, streaming, or generator patterns need detail. |
 | `references/testing.md` | Setting up test runners, mocking strategies, or cross-runtime test execution. |
 | `references/performance.md` | Profiling, memory optimization, startup time, or bundle size reduction. |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

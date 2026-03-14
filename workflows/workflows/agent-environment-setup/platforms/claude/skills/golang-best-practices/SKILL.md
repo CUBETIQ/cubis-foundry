@@ -1,11 +1,9 @@
 ---
 name: golang-best-practices
 description: "Use when writing production Go 1.24+ code: generics with constraints, structured concurrency via errgroup and context, comprehensive error handling with wrapped sentinels, and performance-profiled service design."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "Go module, package, or pattern to analyze"
 ---
 
 # Golang Best Practices
@@ -75,3 +73,11 @@ No helper scripts are required for this skill right now. Keep execution in `SKIL
 - "Design the error handling strategy for this Go API with custom error types and middleware-based error mapping."
 - "Refactor this unbounded goroutine fan-out into an errgroup worker pool with context cancellation and concurrency limits."
 - "Set up a benchmark suite with pprof integration to identify allocation hot spots in this parser."
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

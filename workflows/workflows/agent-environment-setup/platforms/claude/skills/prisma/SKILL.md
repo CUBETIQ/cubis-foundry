@@ -1,11 +1,9 @@
 ---
 name: prisma
 description: "Use when working with Prisma 6+ for schema design, database migrations, client queries, relation modeling, edge deployment, and type-safe database access in TypeScript and Node.js applications."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "Prisma schema, migration, or query to work on"
 ---
 
 # Prisma
@@ -73,3 +71,11 @@ Load only what the current task requires.
 | `references/client-queries.md` | Task involves Prisma Client queries, transactions, raw SQL, aggregations, or batch operations. |
 | `references/edge-deployment.md` | Task involves Prisma Accelerate, driver adapters, edge runtimes, or serverless connection pooling. |
 | `references/performance.md` | Task involves query optimization, N+1 prevention, index tuning, connection pooling, or monitoring. |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

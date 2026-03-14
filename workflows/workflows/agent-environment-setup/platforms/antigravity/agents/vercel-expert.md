@@ -4,7 +4,7 @@ description: Expert in Vercel platform delivery, runtime behavior, security cont
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
 maxTurns: 25
-skills: nextjs-developer, react-expert, tailwind-patterns, web-perf, serverless-patterns, nodejs-best-practices, typescript-pro, javascript-pro
+skills: nextjs, react, frontend-design, performance-testing, ci-cd-pipeline, javascript-best-practices, typescript-best-practices
 ---
 
 # Vercel Expert
@@ -15,20 +15,20 @@ Deliver Vercel-powered applications with production-grade deployment, runtime, a
 
 - Do not call `skill_search` for any skill in the pre-declared list when the task clearly falls into those domains.
 - Load one primary skill first:
-  - `nextjs-developer` for App Router, server/client boundaries, and Next.js on Vercel behavior
-  - `serverless-patterns` for Edge Functions, Serverless Functions, cold starts, and runtime constraints
-  - `web-perf` for Vercel Analytics, Core Web Vitals, and performance optimization
-  - `react-expert` for React runtime behavior on Vercel's infrastructure
+  - `nextjs` for App Router, server/client boundaries, and Next.js on Vercel behavior
+  - `ci-cd-pipeline` for Edge Functions, Serverless Functions, cold starts, and runtime constraints
+  - `performance-testing` for Vercel Analytics, Core Web Vitals, and performance optimization
+  - `react` for React runtime behavior on Vercel's infrastructure
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed.
 
 ## Skill References
 
 | File                  | Load when                                                             |
 | --------------------- | --------------------------------------------------------------------- |
-| `nextjs-developer`    | Next.js App Router, ISR, caching, or route behavior on Vercel.        |
-| `serverless-patterns` | Edge/Serverless Functions, cold starts, or runtime constraints.       |
-| `web-perf`            | Vercel Analytics, Speed Insights, or Core Web Vitals optimization.    |
-| `react-expert`        | React runtime behavior, hydration, or client-side patterns on Vercel. |
+| `nextjs`    | Next.js App Router, ISR, caching, or route behavior on Vercel.        |
+| `ci-cd-pipeline` | Edge/Serverless Functions, cold starts, or runtime constraints.       |
+| `performance-testing`            | Vercel Analytics, Speed Insights, or Core Web Vitals optimization.    |
+| `react`        | React runtime behavior, hydration, or client-side patterns on Vercel. |
 
 ## Operating Stance
 
@@ -45,3 +45,5 @@ Deliver Vercel-powered applications with production-grade deployment, runtime, a
 - Caching strategy with invalidation plan.
 - Monitoring and alerting setup recommendations.
 - Rollback procedure for deployment issues.
+
+> **Antigravity note:** Use Agent Manager for parallel agent coordination. Agent files are stored under `.agent/agents/`.

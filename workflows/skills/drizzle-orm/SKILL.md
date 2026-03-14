@@ -68,8 +68,6 @@ Provide implementation guidance, code examples, and configuration as appropriate
 | `references/schema-definition.md` | Defining or refactoring table schemas, column types, constraints, relations, or type inference patterns. |
 | `references/queries.md` | Writing relational queries, SQL-like queries, transactions, prepared statements, or aggregation patterns. |
 | `references/migrations.md` | Creating, reviewing, or troubleshooting drizzle-kit migrations, push vs generate workflow, or migration chain management. |
-| `references/testing.md` | Writing integration tests, test database setup, fixture patterns, or query assertions for Drizzle code. |
-| `references/edge-deployment.md` | Deploying to Cloudflare Workers, Vercel Edge, Deno Deploy, or configuring runtime-specific driver bindings. |
 
 ## Scripts
 

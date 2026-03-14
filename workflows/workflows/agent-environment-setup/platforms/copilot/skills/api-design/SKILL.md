@@ -7,7 +7,6 @@ metadata:
   version: "3.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 # API Design
 
 ## Purpose
@@ -80,3 +79,11 @@ Load only what the current task requires.
 | `references/grpc-protobuf.md` | Task involves gRPC service definitions, Protobuf schema evolution, or streaming patterns. |
 | `references/versioning.md` | Task involves API versioning strategies, deprecation policies, or backward compatibility. |
 | `references/error-contracts.md` | Task involves error response design, problem details, or validation error formatting. |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

@@ -1,0 +1,54 @@
+[
+  {
+    "id": "golang-concurrent-service",
+    "prompt": "Design a Go service that fetches data from 5 upstream APIs concurrently with a 3-second timeout per request and a 10-second overall deadline. If any single API fails, the service should cancel remaining requests and return an error. Requirements: use errgroup for coordination, context for cancellation, and structured logging with slog. The service should be safe to call from multiple goroutines simultaneously.",
+    "assertions": [
+      {
+        "type": "content",
+        "value": "uses errgroup.Group with a derived context from errgroup.WithContext for coordinated cancellation across goroutines"
+      },
+      {
+        "type": "content",
+        "value": "applies per-request timeout using context.WithTimeout and an overall deadline on the parent context"
+      },
+      {
+        "type": "content",
+        "value": "wraps errors with fmt.Errorf and %w to create error chains that preserve the original error for errors.Is/errors.As"
+      },
+      {
+        "type": "content",
+        "value": "uses slog or structured logging with contextual attributes like API name, duration, or request ID"
+      },
+      {
+        "type": "content",
+        "value": "the service struct and its methods are safe for concurrent use without external synchronization (no shared mutable state or properly synchronized)"
+      }
+    ]
+  },
+  {
+    "id": "golang-error-handling",
+    "prompt": "I have a Go REST API and I need a comprehensive error handling strategy. Design the error types, middleware, and handler patterns. Requirements:\n1. Custom error type with HTTP status, user-safe message, and internal detail\n2. Sentinel errors for common cases (NotFound, Unauthorized, Conflict)\n3. Middleware that converts errors to JSON responses with appropriate status codes\n4. Handler functions that return errors instead of writing responses directly\n\nTarget Go 1.24+.",
+    "assertions": [
+      {
+        "type": "content",
+        "value": "defines a custom error type (struct implementing the error interface) with fields for HTTP status code, user-facing message, and internal error"
+      },
+      {
+        "type": "content",
+        "value": "defines sentinel errors using errors.New or var declarations for NotFound, Unauthorized, and Conflict"
+      },
+      {
+        "type": "content",
+        "value": "implements error middleware that uses errors.As to extract the custom error type and map it to the correct HTTP status code"
+      },
+      {
+        "type": "content",
+        "value": "handler functions return error values rather than calling http.Error or w.Write directly, delegating response writing to the middleware"
+      },
+      {
+        "type": "content",
+        "value": "uses errors.Is for sentinel matching and fmt.Errorf with %w for error wrapping in handler logic"
+      }
+    ]
+  }
+]

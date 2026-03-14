@@ -7,7 +7,6 @@ metadata:
   version: "3.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 # Stripe Integration
 
 ## Purpose
@@ -77,14 +76,20 @@ Guide the design and implementation of production-grade Stripe payment integrati
 
 | File                          | Load when                                                                                     |
 | ----------------------------- | --------------------------------------------------------------------------------------------- |
-| `references/checkout.md`      | Building checkout sessions, redirect flows, or embedded payment forms.                       |
-| `references/subscriptions.md` | Implementing recurring billing, plan changes, trials, or dunning.                            |
-| `references/webhooks.md`      | Setting up webhook endpoints, handling events, or debugging delivery.                        |
-| `references/testing.md`       | Writing integration tests, using Stripe CLI, or configuring test fixtures.                   |
-| `references/security.md`      | Securing API keys, verifying signatures, preventing fraud, or meeting PCI requirements.      |
+| `references/payment-flows.md` | Building checkout sessions, redirect flows, or embedded payment forms.                       |
+| `references/subscription-lifecycle.md` | Implementing recurring billing, plan changes, trials, dunning, and customer portal flows. |
+| `references/webhook-handling.md` | Setting up webhook endpoints, handling events, and debugging delivery behavior.           |
 
 ## Examples
 
 - "Set up Stripe Checkout for a SaaS app with monthly and annual subscription plans."
 - "Implement a webhook handler for subscription lifecycle events with idempotent processing."
 - "Add Stripe Customer Portal for self-service billing with plan upgrade and downgrade support."
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

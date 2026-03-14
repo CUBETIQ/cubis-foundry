@@ -1,0 +1,66 @@
+[
+  {
+    "name": "secure-rest-api-with-spring-security",
+    "description": "Validate that the skill produces a secure Spring Boot REST API with Spring Security 6 lambda DSL, JWT authentication, record DTOs, and proper test coverage.",
+    "prompt": "Create a Spring Boot 3.4 REST API for a product catalog. Use Java records for ProductRequest and ProductResponse DTOs. Implement Spring Security 6 with a SecurityFilterChain bean using the lambda DSL to configure JWT authentication with a bearer token filter. Add @PreAuthorize for admin-only create and delete. Include a ProductController with GET (list, by-id), POST (create), and DELETE endpoints. Write a @WebMvcTest with MockMvc that tests both authorized and unauthorized access.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "SecurityFilterChain",
+        "description": "Must define a SecurityFilterChain bean using Spring Security 6's component-based configuration instead of the removed WebSecurityConfigurerAdapter."
+      },
+      {
+        "type": "contains",
+        "value": "record ",
+        "description": "Must use Java records for DTO definitions to enforce immutability and reduce boilerplate."
+      },
+      {
+        "type": "contains",
+        "value": "@PreAuthorize",
+        "description": "Must use @PreAuthorize with SpEL expressions for method-level authorization on restricted endpoints."
+      },
+      {
+        "type": "contains",
+        "value": "MockMvc",
+        "description": "Must use MockMvc for controller-layer integration testing that exercises the security filter chain."
+      },
+      {
+        "type": "contains",
+        "value": "@WebMvcTest",
+        "description": "Must use @WebMvcTest slice annotation to load only the web layer without the full application context."
+      }
+    ]
+  },
+  {
+    "name": "reactive-webflux-endpoint",
+    "description": "Validate that the skill produces correct reactive WebFlux endpoints with Mono/Flux return types, WebClient for external calls, reactive security, and WebTestClient for testing.",
+    "prompt": "Build a Spring Boot 3.4 reactive endpoint for a real-time stock price service. Create a @RestController that returns a Flux<StockPrice> stream using Server-Sent Events. Use WebClient to fetch prices from an external API. Add reactive Spring Security with a SecurityWebFilterChain bean that requires authentication for the stream endpoint. Include a record for StockPrice, a service that aggregates prices with Flux operators (map, filter, onErrorResume), and a @SpringBootTest with WebTestClient that verifies the SSE stream and security.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "Flux<",
+        "description": "Must use Flux return type for streaming reactive responses such as Server-Sent Events."
+      },
+      {
+        "type": "contains",
+        "value": "WebClient",
+        "description": "Must use WebClient for non-blocking HTTP calls to external services in the reactive pipeline."
+      },
+      {
+        "type": "contains",
+        "value": "SecurityWebFilterChain",
+        "description": "Must define SecurityWebFilterChain for reactive security configuration instead of the servlet-based SecurityFilterChain."
+      },
+      {
+        "type": "contains",
+        "value": "WebTestClient",
+        "description": "Must use WebTestClient for testing reactive endpoints including SSE streams and security."
+      },
+      {
+        "type": "contains",
+        "value": "TEXT_EVENT_STREAM",
+        "description": "Must produce TEXT_EVENT_STREAM media type for Server-Sent Events endpoints."
+      }
+    ]
+  }
+]

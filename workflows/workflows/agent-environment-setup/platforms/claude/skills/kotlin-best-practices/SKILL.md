@@ -1,11 +1,9 @@
 ---
 name: kotlin-best-practices
 description: "Use when writing, refactoring, or reviewing modern Kotlin (2.1+) code across JVM, Android, iOS, and multiplatform targets. Covers coroutines, Flow, Compose patterns, KMP architecture, DSL design, and production testing. Replaces kotlin-pro."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "Kotlin class, module, or pattern to analyze"
 ---
 
 # Kotlin Best Practices
@@ -70,3 +68,11 @@ Produces Kotlin code using data classes, sealed hierarchies, structured coroutin
 | `references/testing.md` | Coroutine testing with runTest, Flow testing with Turbine, Compose testing, or test architecture. |
 | `references/dsl-patterns.md` | DSL builder design, @DslMarker, receiver types, or type-safe configuration APIs. |
 | `references/interop.md` | Java-Kotlin interop, annotation processing, JVM target compatibility, or migration patterns. |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

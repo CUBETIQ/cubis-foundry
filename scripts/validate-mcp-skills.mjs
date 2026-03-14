@@ -119,7 +119,9 @@ async function validateSkillFiles(verbose) {
     const skillId = entry.name;
     const skillFile = path.join(SKILLS_ROOT, skillId, "SKILL.md");
 
-    if (skillId === "catalogs") continue;
+    if (skillId === "catalogs" || skillId === "_schema" || skillId === "generated") {
+      continue;
+    }
 
     if (!(await pathExists(skillFile))) {
       warnings.push(`${skillId}: directory exists but no SKILL.md found`);
@@ -235,7 +237,13 @@ async function validateManifest() {
     const actualSkillDirs = new Set();
     for (const entry of entries) {
       if (!entry.isDirectory() || entry.name.startsWith(".")) continue;
-      if (entry.name === "catalogs") continue;
+      if (
+        entry.name === "catalogs" ||
+        entry.name === "_schema" ||
+        entry.name === "generated"
+      ) {
+        continue;
+      }
       const skillFile = path.join(SKILLS_ROOT, entry.name, "SKILL.md");
       if (await pathExists(skillFile)) {
         // Check if it's a wrapper

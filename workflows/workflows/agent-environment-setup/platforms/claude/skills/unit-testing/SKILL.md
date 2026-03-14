@@ -1,11 +1,11 @@
 ---
 name: unit-testing
 description: "Unit testing best practices covering test design, mocking strategies, coverage analysis, TDD workflow, and assertion patterns. Use when writing, reviewing, or improving unit tests."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: "Claude Code, Codex, GitHub Copilot"
+allowed-tools: Read Grep Glob Bash Edit Write
+context: fork
+agent: test-engineer
+user-invocable: true
+argument-hint: "Module, function, or component to unit test"
 ---
 
 # Unit Testing Best Practices
@@ -96,3 +96,11 @@ Provide a rigorous, repeatable methodology for designing, writing, and maintaini
 | Coverage Analysis  | `references/coverage.md`            | Interpreting and improving coverage metrics     |
 | TDD Workflow       | `references/tdd-workflow.md`        | Practicing red-green-refactor cycle             |
 | Assertion Patterns | `references/assertion-patterns.md`  | Writing precise, readable assertions            |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

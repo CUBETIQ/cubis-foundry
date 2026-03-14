@@ -1,0 +1,66 @@
+[
+  {
+    "name": "viewset-with-nested-serializers",
+    "description": "Validate that the skill produces a correct DRF ViewSet with nested serializers, eager loading, and proper router registration.",
+    "prompt": "Create a Django REST Framework API for a BlogPost model that belongs to an Author and has many Comments. Each Comment belongs to a User. Use nested serializers to return the author name, post content, and comments with commenter username and text. Include the ViewSet, serializers, router registration, and queryset optimization.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "ModelSerializer",
+        "description": "Must use ModelSerializer for automatic field generation and validation."
+      },
+      {
+        "type": "contains",
+        "value": "select_related",
+        "description": "Must use select_related for ForeignKey relationships to prevent N+1 queries."
+      },
+      {
+        "type": "contains",
+        "value": "prefetch_related",
+        "description": "Must use prefetch_related for reverse/many relationships to prevent N+1 queries."
+      },
+      {
+        "type": "contains",
+        "value": "ModelViewSet",
+        "description": "Must use ModelViewSet or appropriate ViewSet mixin for CRUD operations."
+      },
+      {
+        "type": "contains",
+        "value": "router.register",
+        "description": "Must register the ViewSet with a DefaultRouter for consistent URL generation."
+      }
+    ]
+  },
+  {
+    "name": "custom-permission-class",
+    "description": "Validate that the skill produces a custom DRF permission class with object-level checks, proper integration in a ViewSet, and test coverage.",
+    "prompt": "Create a custom DRF permission class called IsOwnerOrReadOnly that allows read access to any authenticated user but restricts write operations to the object owner. Integrate it into a ProjectViewSet where get_queryset scopes by the authenticated user's organization. Include an APITestCase that verifies both allowed and denied access.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "BasePermission",
+        "description": "Must extend BasePermission for custom permission class definition."
+      },
+      {
+        "type": "contains",
+        "value": "has_object_permission",
+        "description": "Must implement has_object_permission for object-level authorization checks."
+      },
+      {
+        "type": "contains",
+        "value": "get_queryset",
+        "description": "Must override get_queryset to scope data by authenticated user or tenant."
+      },
+      {
+        "type": "contains",
+        "value": "APITestCase",
+        "description": "Must include APITestCase for integration testing of permissions."
+      },
+      {
+        "type": "contains",
+        "value": "permission_classes",
+        "description": "Must assign permission_classes on the ViewSet to wire in the custom permission."
+      }
+    ]
+  }
+]

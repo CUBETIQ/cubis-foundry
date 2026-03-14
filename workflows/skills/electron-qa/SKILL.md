@@ -1,16 +1,10 @@
 ---
 name: electron-qa
-description: "Use when testing Electron desktop applications: end-to-end testing with Playwright, IPC communication testing between main and renderer processes, native module validation, packaging verification across platforms, or setting up CI pipelines for Electron builds."
+description: "Use when testing Electron apps with Playwright, validating IPC between main and renderer, checking native modules, verifying packaging, or setting up Electron CI."
 license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
-  domain: quality
-  triggers: Electron test, Electron QA, IPC testing, Spectron, Electron Playwright, native module, electron-builder, electron-forge, packaging validation, desktop app testing
-  role: specialist
-  scope: testing
-  output-format: code
-  related-skills: playwright-expert, playwright-interactive, test-master, ci-cd-pipelines
 compatibility: "Claude Code, Codex, GitHub Copilot"
 ---
 

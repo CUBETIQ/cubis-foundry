@@ -53,6 +53,11 @@ export async function promptInitPlatforms({
         value: "claude",
         checked: defaultPlatforms.includes("claude"),
       },
+      {
+        name: "Gemini CLI",
+        value: "gemini",
+        checked: defaultPlatforms.includes("gemini"),
+      },
     ],
   });
 }

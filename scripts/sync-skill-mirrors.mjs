@@ -5,12 +5,45 @@ import os from "node:os";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 import { promises as fs } from "node:fs";
+import { rewriteLegacySkillIds } from "./lib/legacy-skill-map.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 
 const CANONICAL_ROOTS = [path.join(ROOT, "workflows", "skills")];
+const PLATFORM_ATTRS_PATH = path.join(
+  ROOT,
+  "workflows",
+  "skills",
+  "_schema",
+  "skill-platform-attributes.json",
+);
+const PLATFORM_NOTES_DIR = path.join(
+  ROOT,
+  "workflows",
+  "skills",
+  "_schema",
+  "platform-notes",
+);
 const MIRRORS = {
+  antigravity: path.join(
+    ROOT,
+    "workflows",
+    "workflows",
+    "agent-environment-setup",
+    "platforms",
+    "antigravity",
+    "skills",
+  ),
+  codex: path.join(
+    ROOT,
+    "workflows",
+    "workflows",
+    "agent-environment-setup",
+    "platforms",
+    "codex",
+    "skills",
+  ),
   copilot: path.join(
     ROOT,
     "workflows",
@@ -27,6 +60,15 @@ const MIRRORS = {
     "agent-environment-setup",
     "platforms",
     "claude",
+    "skills",
+  ),
+  gemini: path.join(
+    ROOT,
+    "workflows",
+    "workflows",
+    "agent-environment-setup",
+    "platforms",
+    "gemini",
     "skills",
   ),
 };
@@ -101,11 +143,183 @@ function extractFrontmatter(markdown) {
   };
 }
 
-function sanitizeSkillMarkdownForCopilot(markdown) {
+let _platformAttrs = null;
+let _platformNotes = {};
+
+async function loadPlatformAttributes() {
+  if (_platformAttrs) return _platformAttrs;
+  try {
+    const raw = await fs.readFile(PLATFORM_ATTRS_PATH, "utf8");
+    _platformAttrs = JSON.parse(raw);
+  } catch {
+    _platformAttrs = {};
+  }
+  return _platformAttrs;
+}
+
+async function loadPlatformNote(platform) {
+  if (_platformNotes[platform] !== undefined) return _platformNotes[platform];
+  const notePath = path.join(PLATFORM_NOTES_DIR, `${platform}.md`);
+  try {
+    _platformNotes[platform] = (await fs.readFile(notePath, "utf8")).trim();
+  } catch {
+    _platformNotes[platform] = "";
+  }
+  return _platformNotes[platform];
+}
+
+function stripFrontmatterKeys(frontmatter, keysToRemove) {
+  const lines = frontmatter.split(/\r?\n/);
+  const kept = [];
+  let skipKey = null;
+
+  for (const line of lines) {
+    if (skipKey) {
+      const isTopLevelKey =
+        /^([A-Za-z0-9_-]+)\s*:/.test(line) && !/^\s/.test(line);
+      if (!isTopLevelKey) continue;
+      skipKey = null;
+    }
+
+    const keyMatch = line.match(/^([A-Za-z0-9_-]+)\s*:/);
+    if (keyMatch && !/^\s/.test(line) && keysToRemove.has(keyMatch[1])) {
+      const inlineArray = /\[[\s\S]*\]\s*$/.test(line);
+      if (!inlineArray) skipKey = keyMatch[1];
+      continue;
+    }
+
+    kept.push(line);
+  }
+
+  return kept
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trimEnd();
+}
+
+function injectFrontmatterKeys(frontmatter, entries) {
+  const lines = frontmatter.split(/\r?\n/);
+  const additions = [];
+  for (const [key, value] of entries) {
+    if (value === undefined || value === null) continue;
+    if (Array.isArray(value)) {
+      additions.push(`${key}: [${value.join(", ")}]`);
+    } else if (typeof value === "boolean") {
+      additions.push(`${key}: ${value}`);
+    } else {
+      additions.push(`${key}: ${value}`);
+    }
+  }
+  return [...lines, ...additions].join("\n").trimEnd();
+}
+
+async function enrichClaudeSkillMarkdown(markdown, skillId) {
+  const attrs = (await loadPlatformAttributes())[skillId] || {};
   const extracted = extractFrontmatter(markdown);
   if (!extracted.matched) return markdown;
 
-  const lines = extracted.frontmatter.split(/\r?\n/);
+  // Remove canonical-only keys
+  const CANONICAL_ONLY_KEYS = new Set(["license", "compatibility", "metadata"]);
+  let fm = stripFrontmatterKeys(extracted.frontmatter, CANONICAL_ONLY_KEYS);
+
+  // Inject Claude-specific keys
+  const injections = [];
+  if (attrs.allowedTools && attrs.allowedTools.length > 0) {
+    injections.push(["allowed-tools", attrs.allowedTools.join(" ")]);
+  }
+  if (attrs.contextFork) {
+    injections.push(["context", "fork"]);
+    if (attrs.forkAgent) {
+      injections.push(["agent", attrs.forkAgent]);
+    }
+  }
+  if (attrs.userInvocable !== undefined) {
+    injections.push(["user-invocable", attrs.userInvocable]);
+  }
+  if (attrs.argumentHint) {
+    injections.push(["argument-hint", `"${attrs.argumentHint}"`]);
+  }
+
+  fm = injectFrontmatterKeys(fm, injections);
+
+  // Build body with platform notes
+  let body = rewriteLegacySkillIds(extracted.body);
+  const note = await loadPlatformNote("claude");
+  if (note) {
+    body = body.trimEnd() + "\n\n" + note + "\n";
+  }
+
+  return `---\n${fm}\n---\n${body}`;
+}
+
+function retainMinimalSkillFrontmatter(frontmatter) {
+  const lines = frontmatter.split(/\r?\n/);
+  const kept = [];
+  let skipUnsupportedKey = null;
+
+  for (const line of lines) {
+    if (skipUnsupportedKey) {
+      const isTopLevelKey =
+        /^([A-Za-z0-9_-]+)\s*:/.test(line) && !/^\s/.test(line);
+      if (!isTopLevelKey) continue;
+      skipUnsupportedKey = null;
+    }
+
+    const keyMatch = line.match(/^([A-Za-z0-9_-]+)\s*:/);
+    if (!keyMatch || /^\s/.test(line)) {
+      if (kept.length > 0) kept.push(line);
+      continue;
+    }
+
+    const key = keyMatch[1];
+    if (key === "name" || key === "description") {
+      kept.push(line);
+      continue;
+    }
+
+    const inlineArray = /\[[\s\S]*\]\s*$/.test(line);
+    if (!inlineArray) {
+      skipUnsupportedKey = key;
+    }
+  }
+
+  return kept
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trimEnd();
+}
+
+async function transformMinimalSkillMarkdown(markdown, platform) {
+  const extracted = extractFrontmatter(markdown);
+  if (!extracted.matched) return markdown;
+
+  const minimalFrontmatter = retainMinimalSkillFrontmatter(extracted.frontmatter);
+  let body = rewriteLegacySkillIds(extracted.body);
+  body = body.replace(/\$ARGUMENTS/g, "user input");
+  body = body.replace(/\$\{CLAUDE_SKILL_DIR\}/g, "the skill directory");
+
+  if (platform === "codex") {
+    body = body.replace(/\bsub-?agents?\b/gi, "postures");
+    body = body.replace(/`?context:\s*fork`?/gi, "inline posture guidance");
+  } else if (platform === "antigravity") {
+    body = body.replace(/\bsub-?agents?\b/gi, "agent-manager handoffs");
+    body = body.replace(/`?context:\s*fork`?/gi, "workflow or Agent Manager routing");
+  } else if (platform === "gemini") {
+    body = body.replace(/\bsub-?agents?\b/gi, "inline specialist postures");
+    body = body.replace(/`?context:\s*fork`?/gi, "inline skill execution");
+  }
+
+  const note = await loadPlatformNote(platform);
+  if (note) {
+    body = body.trimEnd() + "\n\n" + note + "\n";
+  }
+
+  const bodyWithoutLeadingNewlines = body.replace(/^(?:\r?\n)+/, "");
+  return `---\n${minimalFrontmatter}\n---\n${bodyWithoutLeadingNewlines}`;
+}
+
+function filterFrontmatterByAllowedKeys(frontmatter, allowedKeys) {
+  const lines = frontmatter.split(/\r?\n/);
   const kept = [];
   let skipUnsupportedKey = null;
 
@@ -126,7 +340,7 @@ function sanitizeSkillMarkdownForCopilot(markdown) {
     }
 
     const key = keyMatch[1];
-    if (COPILOT_ALLOWED_SKILL_FRONTMATTER_KEYS.has(key)) {
+    if (allowedKeys.has(key)) {
       kept.push(line);
       continue;
     }
@@ -137,11 +351,34 @@ function sanitizeSkillMarkdownForCopilot(markdown) {
     }
   }
 
-  const cleanedFrontmatter = kept
+  return kept
     .join("\n")
     .replace(/\n{3,}/g, "\n\n")
     .trimEnd();
-  const bodyWithoutLeadingNewlines = extracted.body.replace(/^(?:\r?\n)+/, "");
+}
+
+async function transformCopilotSkillMarkdown(markdown) {
+  const extracted = extractFrontmatter(markdown);
+  if (!extracted.matched) return markdown;
+
+  const cleanedFrontmatter = filterFrontmatterByAllowedKeys(
+    extracted.frontmatter,
+    COPILOT_ALLOWED_SKILL_FRONTMATTER_KEYS,
+  );
+
+  // Sanitize body: replace Claude-specific references
+  let body = rewriteLegacySkillIds(extracted.body);
+  body = body.replace(/\$ARGUMENTS/g, "user input");
+  body = body.replace(/\$\{CLAUDE_SKILL_DIR\}/g, "the skill directory");
+  body = body.replace(/`?context:\s*fork`?/gi, "");
+
+  // Append Copilot platform notes
+  const note = await loadPlatformNote("copilot");
+  if (note) {
+    body = body.trimEnd() + "\n\n" + note + "\n";
+  }
+
+  const bodyWithoutLeadingNewlines = body.replace(/^(?:\r?\n)+/, "");
   return `---\n${cleanedFrontmatter}\n---\n${bodyWithoutLeadingNewlines}`;
 }
 
@@ -168,13 +405,22 @@ async function copyFilteredSkillDir(source, destination, label, depth = 0) {
       continue;
     }
 
-    if (label === "copilot" && entry.name === "SKILL.md") {
+    if (entry.name === "SKILL.md") {
       const raw = await fs.readFile(sourcePath, "utf8");
-      await fs.writeFile(
-        destinationPath,
-        sanitizeSkillMarkdownForCopilot(raw),
-        "utf8",
-      );
+      let transformed = raw;
+      if (label === "copilot") {
+        transformed = await transformCopilotSkillMarkdown(raw);
+      } else if (label === "claude") {
+        const skillId = path.basename(source);
+        transformed = await enrichClaudeSkillMarkdown(raw, skillId);
+      } else if (
+        label === "codex" ||
+        label === "antigravity" ||
+        label === "gemini"
+      ) {
+        transformed = await transformMinimalSkillMarkdown(raw, label);
+      }
+      await fs.writeFile(destinationPath, transformed, "utf8");
       continue;
     }
 

@@ -12,9 +12,9 @@ Use this when improving code structure, reducing tech debt, or modularizing with
 
 ## Routing
 
-- Primary specialist: `@code-archaeologist`
-- Domain support: `@backend-specialist`, `@frontend-specialist`
-- Verification support: `@test-engineer`, `@validator`
+- Primary specialist: `the code-archaeologist posture`
+- Domain support: `the backend-specialist posture`, `the frontend-specialist posture`
+- Verification support: `the test-engineer posture`, `the validator posture`
 
 ## Context notes
 
@@ -23,9 +23,9 @@ Use this when improving code structure, reducing tech debt, or modularizing with
 
 ## Skill Routing
 
-- Primary skills: `static-analysis`, `legacy-modernizer`
-- Supporting skills (optional): `testing-patterns`, `architecture-designer`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`
-- Start with `static-analysis` for automated code quality assessment. Add `legacy-modernizer` for modernization patterns. Add `testing-patterns` when refactoring needs test coverage to proceed safely.
+- Primary skills: `code-review`, `system-design`
+- Supporting skills (optional): `unit-testing`, `system-design`, `typescript-best-practices`, `javascript-best-practices`, `python-best-practices`, `golang-best-practices`
+- Start with `code-review` for automated code quality assessment. Add `system-design` for modernization patterns. Add `unit-testing` when refactoring needs test coverage to proceed safely.
 
 ## Workflow steps
 
@@ -48,8 +48,8 @@ Use this when improving code structure, reducing tech debt, or modularizing with
 REFACTOR_WORKFLOW_RESULT:
   primary_agent: code-archaeologist
   supporting_agents: [backend-specialist?, frontend-specialist?, test-engineer?, validator?]
-  primary_skills: [static-analysis, legacy-modernizer]
-  supporting_skills: [testing-patterns?, architecture-designer?]
+  primary_skills: [code-review, system-design]
+  supporting_skills: [unit-testing?, system-design?]
   refactoring_summary:
     targets: [<string>]
     changes_applied: [<string>]
@@ -60,3 +60,5 @@ REFACTOR_WORKFLOW_RESULT:
   tests_added: [<test-file-path>] | []
   follow_up_items: [<string>] | []
 ```
+
+> **Codex note:** This workflow runs inside a network-restricted sandbox. Specialists are reasoning postures defined in AGENTS.md, not spawned processes.

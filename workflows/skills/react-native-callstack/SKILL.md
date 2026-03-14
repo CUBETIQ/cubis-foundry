@@ -77,11 +77,9 @@ Guide the design and implementation of high-performance React Native application
 
 | File                           | Load when                                                                                    |
 | ------------------------------ | -------------------------------------------------------------------------------------------- |
-| `references/performance.md`    | Profiling render performance, optimizing lists, or reducing bridge overhead.                 |
-| `references/native-modules.md` | Building Turbo Modules, Fabric components, or migrating from the old architecture.          |
-| `references/brownfield.md`     | Embedding React Native in existing iOS or Android apps or managing runtime lifecycle.       |
-| `references/ci-cd.md`          | Configuring Fastlane, Gradle CI tasks, code signing, or E2E testing pipelines.              |
-| `references/testing.md`        | Writing unit tests, integration tests, or E2E tests with Detox or Maestro.                  |
+| `references/performance-optimization.md` | Profiling render performance, optimizing lists, or reducing bridge overhead.        |
+| `references/native-bridge.md` | Building Turbo Modules, Fabric components, or wiring native interfaces into JavaScript.      |
+| `references/navigation-patterns.md` | Coordinating application flow, integration boundaries, and production delivery patterns. |
 
 ## Examples
 

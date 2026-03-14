@@ -5,12 +5,6 @@ license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
-  domain: quality
-  triggers: persistent browser, long-running session, cookie persistence, storageState, browser context reuse, session management, authentication state, multi-tab
-  role: specialist
-  scope: testing
-  output-format: code
-  related-skills: playwright-expert, playwright-interactive, playwright-e2e, auth-architect
 compatibility: "Claude Code, Codex, GitHub Copilot"
 ---
 

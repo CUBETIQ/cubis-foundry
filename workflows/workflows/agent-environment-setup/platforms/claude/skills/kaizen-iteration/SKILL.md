@@ -1,11 +1,9 @@
 ---
 name: kaizen-iteration
-description: "Continuous improvement workflow covering retrospective facilitation, metrics-driven improvement cycles, root cause analysis, and incremental process optimization. Use when running retrospectives, analyzing team metrics, or driving systematic improvement."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: "Claude Code, Codex, GitHub Copilot"
+description: "Use when running retrospectives, analyzing team metrics, performing root-cause analysis, and driving incremental process improvement."
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "Process, metric, or improvement area to iterate on"
 ---
 
 # Kaizen Iteration
@@ -28,19 +26,33 @@ Provide a structured, metrics-driven framework for continuous improvement in sof
 ## Instructions
 
 1. **Establish a metrics baseline before proposing any change** -- Measure current state with quantitative data (cycle time, defect escape rate, deployment frequency, change failure rate). Without a baseline, you cannot determine whether an improvement actually improved anything.
+
 2. **Classify observations into categories before analyzing** -- Sort retrospective observations into: process, tooling, communication, technical debt, and external dependencies. Categories reveal systemic patterns that individual observations miss.
+
 3. **Use the 5 Whys technique for root cause analysis** -- For each significant problem, ask "why?" iteratively until you reach a root cause that is actionable. Surface symptoms are tempting to fix but will recur if the root cause remains unaddressed.
+
 4. **Formulate improvements as testable hypotheses** -- State each improvement as "If we [change], then [metric] will improve by [amount] within [timeframe]." Hypothesis framing forces specificity and prevents vague commitments like "communicate better."
+
 5. **Limit work-in-progress to one or two improvements per cycle** -- Attempting too many changes simultaneously makes it impossible to attribute metric changes to specific improvements. One change at a time creates clear cause-and-effect evidence.
+
 6. **Assign a single owner to each improvement experiment** -- Shared ownership means no ownership. One person drives the experiment, tracks the metric, and reports results at the next retrospective.
+
 7. **Set a timebox for every experiment** -- Every improvement gets a fixed evaluation period (typically one sprint or two weeks). At the end, decide: adopt permanently, extend the experiment, or discard. Open-ended experiments create process debt.
+
 8. **Measure the outcome, not the activity** -- Track whether the improvement changed the target metric, not whether the team performed the improvement activities. A team can religiously follow a new process that produces zero metric improvement.
+
 9. **Run a retrospective at the end of every iteration** -- Retrospectives are the feedback loop that makes kaizen work. Skipping them means improvements are never evaluated and failures are never learned from.
+
 10. **Use a structured retrospective format** -- Apply Start-Stop-Continue, 4Ls (Liked, Learned, Lacked, Longed for), or Sailboat (wind, anchors, rocks, island) formats. Structured formats prevent retrospectives from becoming complaint sessions or status updates.
+
 11. **Track the improvement backlog across iterations** -- Maintain a living list of identified improvements, their status (proposed, experimenting, adopted, discarded), and their measured impact. The backlog provides continuity between retrospectives.
+
 12. **Celebrate measurable wins to sustain momentum** -- When an improvement demonstrably moves a metric, acknowledge it explicitly. Teams that see their improvements working continue to invest in the process.
+
 13. **Revisit adopted improvements periodically** -- An improvement that worked six months ago may no longer be relevant. Schedule quarterly reviews of all adopted improvements to prune those that have outlived their usefulness.
+
 14. **Distinguish between local and systemic improvements** -- Some improvements help one team but harm the organization (local optimization). Always check whether an improvement creates downstream problems before adopting it.
+
 15. **Document the improvement journey, not just outcomes** -- Record what was tried, what was measured, what worked, and what did not. This institutional knowledge prevents future teams from re-running failed experiments.
 
 ## Output Format
@@ -82,3 +94,11 @@ Provide a structured, metrics-driven framework for continuous improvement in sof
 | Retrospective Formats    | `references/retrospective-formats.md`    | Facilitating a retrospective or choosing a format   |
 | Metrics Framework        | `references/metrics-framework.md`        | Establishing baselines or selecting metrics         |
 | Root Cause Analysis      | `references/root-cause-analysis.md`      | Investigating recurring problems or systemic issues |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

@@ -1,17 +1,9 @@
 ---
 name: playwright-persistent-browser
 description: "Use when implementing persistent browser sessions in Playwright: long-running browser contexts, cookie and session persistence, authentication state serialization, multi-tab coordination, or debugging browser lifecycle issues."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-  domain: quality
-  triggers: persistent browser, long-running session, cookie persistence, storageState, browser context reuse, session management, authentication state, multi-tab
-  role: specialist
-  scope: testing
-  output-format: code
-  related-skills: playwright-expert, playwright-interactive, playwright-e2e, auth-architect
-compatibility: "Claude Code, Codex, GitHub Copilot"
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "Persistent browser session or Playwright configuration"
 ---
 
 # Playwright Persistent Browser
@@ -83,3 +75,11 @@ Deliver:
 | `references/authentication.md` | Implementing login flows, token management, or auth state reuse |
 | `references/debugging.md` | Debugging long-running sessions, memory leaks, or session corruption |
 | `references/performance.md` | Optimizing memory usage, managing resource cleanup, or monitoring browser health |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

@@ -16,20 +16,20 @@ Map attack surfaces, validate exploitability, and provide actionable remediation
 
 - Do not call `skill_search` for any skill in the pre-declared list when the task clearly falls into those domains.
 - Load one primary skill first:
-  - `security-engineer` for OWASP methodology, threat modeling, and secure architecture review
-  - `vulnerability-scanner` for dependency scanning, SAST/DAST tooling, and CVE assessment
-  - `auth-architect` for authentication bypass, privilege escalation, or session hijacking analysis
-  - `api-designer` for API security review, input validation gaps, or rate limiting assessment
+  - `owasp-security-review` for OWASP methodology, threat modeling, and secure architecture review
+  - `owasp-security-review` for dependency scanning, SAST/DAST tooling, and CVE assessment
+  - `owasp-security-review` for authentication bypass, privilege escalation, or session hijacking analysis
+  - `api-design` for API security review, input validation gaps, or rate limiting assessment
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed.
 
 ## Skill References
 
 | File                    | Load when                                                          |
 | ----------------------- | ------------------------------------------------------------------ |
-| `security-engineer`     | OWASP methodology, threat modeling, or secure architecture review. |
-| `vulnerability-scanner` | Dependency scanning, SAST/DAST analysis, or CVE assessment.        |
-| `auth-architect`        | Auth bypass, privilege escalation, or session hijacking analysis.  |
-| `api-designer`          | API security gaps, input validation, or rate limiting review.      |
+| `owasp-security-review`     | OWASP methodology, threat modeling, or secure architecture review. |
+| `owasp-security-review` | Dependency scanning, SAST/DAST analysis, or CVE assessment.        |
+| `owasp-security-review`        | Auth bypass, privilege escalation, or session hijacking analysis.  |
+| `api-design`          | API security gaps, input validation, or rate limiting review.      |
 
 ## Operating Stance
 
@@ -59,6 +59,6 @@ Map attack surfaces, validate exploitability, and provide actionable remediation
 - Remaining risk assessment after proposed fixes.
 
 ## Skill routing
-Prefer these skills when task intent matches: `security-engineer`, `vulnerability-scanner`, `auth-architect`, `api-designer`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `rust-pro`.
+Prefer these skills when task intent matches: `owasp-security-review`, `api-design`, `typescript-best-practices`, `javascript-best-practices`, `python-best-practices`, `golang-best-practices`, `rust-best-practices`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

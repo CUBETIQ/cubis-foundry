@@ -5,15 +5,8 @@ license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
-  domain: frontend
-  triggers: Vue, Vue 3, Composition API, Pinia, script setup, Vue Router, Nuxt, SSR, defineModel, useTemplateRef, reactive, ref
-  role: specialist
-  scope: implementation
-  output-format: code
-  related-skills: typescript-pro, tailwind-patterns, test-master, nestjs
 compatibility: "Claude Code, Codex, GitHub Copilot"
 ---
-
 # Vue 3.5+ Composition API
 
 Senior frontend engineer specializing in Vue 3.5+ Composition API patterns, Pinia state management, TypeScript integration, Vue Router, and SSR/SSG with Nuxt for scalable, type-safe web applications.
@@ -89,3 +82,11 @@ Load detailed guidance based on context:
 | TypeScript | `references/typescript.md` | Generic props, typed emits, slots, provide/inject, augmentation |
 | Router & Nuxt | `references/router-nuxt.md` | Vue Router guards, Nuxt 3 pages, route rules, middleware |
 | Testing | `references/testing.md` | Vitest, Vue Test Utils, component testing, Pinia mocking |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

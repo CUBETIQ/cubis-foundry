@@ -20,9 +20,9 @@ Use this for technology migrations, framework upgrades, dependency updates, or m
 
 ## Routing
 
-- Primary specialist: `@code-archaeologist`
-- Implementation support: `@backend-specialist`, `@frontend-specialist`
-- Verification support: `@test-engineer`, `@validator`
+- Primary specialist: `the code-archaeologist posture`
+- Implementation support: `the backend-specialist posture`, `the frontend-specialist posture`
+- Verification support: `the test-engineer posture`, `the validator posture`
 
 ## Context notes
 
@@ -31,9 +31,9 @@ Use this for technology migrations, framework upgrades, dependency updates, or m
 
 ## Skill Routing
 
-- Primary skills: `legacy-modernizer`, `architecture-designer`
-- Supporting skills (optional): `static-analysis`, `testing-patterns`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`
-- Start with `legacy-modernizer` for migration methodology and `architecture-designer` for system impact. Add `static-analysis` for automated codemod or compatibility analysis.
+- Primary skills: `system-design`, `system-design`
+- Supporting skills (optional): `code-review`, `unit-testing`, `typescript-best-practices`, `javascript-best-practices`, `python-best-practices`, `golang-best-practices`
+- Start with `system-design` for migration methodology and `system-design` for system impact. Add `code-review` for automated codemod or compatibility analysis.
 
 ## Workflow steps
 
@@ -58,8 +58,8 @@ Use this for technology migrations, framework upgrades, dependency updates, or m
 MIGRATE_WORKFLOW_RESULT:
   primary_agent: code-archaeologist
   supporting_agents: [backend-specialist?, frontend-specialist?, test-engineer?, validator?]
-  primary_skills: [legacy-modernizer, architecture-designer]
-  supporting_skills: [static-analysis?, testing-patterns?]
+  primary_skills: [system-design, system-design]
+  supporting_skills: [code-review?, unit-testing?]
   migration:
     from: <string>
     to: <string>
@@ -71,3 +71,5 @@ MIGRATE_WORKFLOW_RESULT:
     performance_impact: <string>
   follow_up_items: [<string>] | []
 ```
+
+> **Codex note:** This workflow runs inside a network-restricted sandbox. Specialists are reasoning postures defined in AGENTS.md, not spawned processes.

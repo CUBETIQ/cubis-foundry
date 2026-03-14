@@ -206,7 +206,7 @@ if [ "$(find .agent/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')
   echo "[FAIL] Antigravity expected exactly $EXPECTED_AGENT_COUNT agent files" >&2
   exit 1
 fi
-[ -d "$ANTIGRAVITY_INSTALLED_SKILLS/api-designer" ]
+[ -d "$ANTIGRAVITY_INSTALLED_SKILLS/api-design" ]
 [ -d .agent/terminal-integration ]
 [ -f .agent/terminal-integration/config.json ]
 [ -f .agent/terminal-integration/verify-task.ps1 ]
@@ -218,8 +218,8 @@ log_ok "Antigravity files installed"
 
 log_step "A2.1 /backend wiring check"
 rg -n '^command:\s*"/backend"' .agent/workflows/backend.md >/dev/null
-rg -n '@backend-specialist' .agent/workflows/backend.md >/dev/null
-log_ok "Workflow declares /backend and routes to @backend-specialist"
+rg -n '\.agent/agents/backend-specialist' .agent/workflows/backend.md >/dev/null
+log_ok "Workflow declares /backend and routes to the Antigravity backend specialist file"
 
 log_step "A2.2 Antigravity global precedence sync"
 node - <<'NODE'
@@ -300,16 +300,18 @@ fi
 [ -f "$CODEX_INSTALLED_SKILLS/workflow-plan/SKILL.md" ]
 [ -f "$CODEX_INSTALLED_SKILLS/agent-backend-specialist/SKILL.md" ]
 [ -f "$CODEX_INSTALLED_SKILLS/agent-security-auditor/SKILL.md" ]
-[ -f "$CODEX_INSTALLED_SKILLS/auth-architect/SKILL.md" ]
-[ -f "$CODEX_INSTALLED_SKILLS/nextjs-developer/SKILL.md" ]
-[ -f "$CODEX_INSTALLED_SKILLS/web-perf/SKILL.md" ]
-[ -f "$CODEX_INSTALLED_SKILLS/graphql-architect/SKILL.md" ]
+[ -f "$CODEX_INSTALLED_SKILLS/owasp-security-review/SKILL.md" ]
+[ -f "$CODEX_INSTALLED_SKILLS/nextjs/SKILL.md" ]
+[ -f "$CODEX_INSTALLED_SKILLS/performance-testing/SKILL.md" ]
+[ -f "$CODEX_INSTALLED_SKILLS/api-design/SKILL.md" ]
 [ ! -d "$CODEX_INSTALLED_SKILLS/vercel-functions" ]
 [ ! -d "$CODEX_INSTALLED_SKILLS/vercel-deployments" ]
 rg -n '^name:\s*workflow-backend$' "$CODEX_INSTALLED_SKILLS/workflow-backend/SKILL.md" >/dev/null
 rg -n '^name:\s*agent-backend-specialist$' "$CODEX_INSTALLED_SKILLS/agent-backend-specialist/SKILL.md" >/dev/null
-assert_file_contains_literal "$CODEX_INSTALLED_SKILLS/auth-architect/SKILL.md" 'OAuth or OIDC' "Codex auth specialist content"
-assert_file_contains_literal "$CODEX_INSTALLED_SKILLS/nextjs-developer/SKILL.md" 'App Router' "Codex Next.js specialist content"
+assert_file_contains_literal "$CODEX_INSTALLED_SKILLS/owasp-security-review/SKILL.md" 'OWASP Top 10' "Codex security review content"
+assert_file_contains_literal "$CODEX_INSTALLED_SKILLS/nextjs/SKILL.md" 'App Router' "Codex Next.js content"
+assert_file_contains_literal "$CODEX_INSTALLED_SKILLS/performance-testing/SKILL.md" 'load testing' "Codex performance testing content"
+assert_file_contains_literal "$CODEX_INSTALLED_SKILLS/api-design/SKILL.md" 'GraphQL' "Codex API design content"
 node - <<'NODE'
 const fs = require('fs');
 const path = require('path');
@@ -347,15 +349,12 @@ log_ok "Codex install complete and legacy warning detected"
 
 log_step "C2.1 /backend wiring check (Codex files)"
 rg -n '^command:\s*"/backend"' .agents/workflows/backend.md >/dev/null
-rg -n '@backend-specialist' .agents/workflows/backend.md >/dev/null
+rg -n 'the backend-specialist posture' .agents/workflows/backend.md >/dev/null
 rg -n '^# Agent Compatibility Alias: @backend-specialist$' "$CODEX_INSTALLED_SKILLS/agent-backend-specialist/SKILL.md" >/dev/null
 rg -n '^# Workflow Compatibility Alias: /backend$' "$CODEX_INSTALLED_SKILLS/workflow-backend/SKILL.md" >/dev/null
-rg -n '\$agent-backend-specialist' "$CODEX_INSTALLED_SKILLS/workflow-backend/SKILL.md" >/dev/null
-if rg -n '@backend-specialist' "$CODEX_INSTALLED_SKILLS/workflow-backend/SKILL.md" >/dev/null; then
-  echo "[FAIL] Codex workflow wrapper still references @backend-specialist instead of \$agent-backend-specialist" >&2
-  exit 1
-fi
-log_ok "Codex workflow wrapper rewrites @backend-specialist to \$agent-backend-specialist"
+rg -n 'Prefer the direct workflow route first' "$CODEX_INSTALLED_SKILLS/workflow-backend/SKILL.md" >/dev/null
+rg -n 'the backend-specialist posture' "$CODEX_INSTALLED_SKILLS/workflow-backend/SKILL.md" >/dev/null
+log_ok "Codex workflow uses posture routing and wrapper preserves the workflow alias contract"
 
 log_step "C2.2 Codex global precedence warning"
 node - <<'NODE'
@@ -524,13 +523,13 @@ if [ "$(find .github/prompts -maxdepth 1 -type f -name '*.prompt.md' | wc -l | t
   exit 1
 fi
 [ -d .github/skills ]
-[ -d "$COPILOT_INSTALLED_SKILLS/api-designer" ]
-rg -n '^name:' "$COPILOT_INSTALLED_SKILLS/auth-architect/SKILL.md" >/dev/null
-if rg -n '^allowed-tools:' "$COPILOT_INSTALLED_SKILLS/auth-architect/SKILL.md" >/dev/null; then
+[ -d "$COPILOT_INSTALLED_SKILLS/api-design" ]
+rg -n '^name:' "$COPILOT_INSTALLED_SKILLS/owasp-security-review/SKILL.md" >/dev/null
+if rg -n '^allowed-tools:' "$COPILOT_INSTALLED_SKILLS/owasp-security-review/SKILL.md" >/dev/null; then
   echo "[FAIL] Copilot global skill SKILL.md still contains unsupported allowed-tools attribute" >&2
   exit 1
 fi
-if rg -n '^priority:' "$COPILOT_INSTALLED_SKILLS/auth-architect/SKILL.md" >/dev/null; then
+if rg -n '^priority:' "$COPILOT_INSTALLED_SKILLS/owasp-security-review/SKILL.md" >/dev/null; then
   echo "[FAIL] Copilot global skill SKILL.md still contains unsupported priority attribute" >&2
   exit 1
 fi
@@ -637,7 +636,7 @@ node "$CLI" workflows remove agent-environment-setup --platform copilot --scope 
 [ ! -f .github/copilot/workflows/backend.md ]
 [ ! -f .github/agents/backend-specialist.md ]
 [ ! -f .github/prompts/workflow-backend.prompt.md ]
-[ ! -d "$COPILOT_INSTALLED_SKILLS/api-designer" ]
+[ ! -d "$COPILOT_INSTALLED_SKILLS/api-design" ]
 [ -f .github/copilot-instructions.md ]
 rg -n 'No installed workflows found yet\.' .github/copilot-instructions.md >/dev/null
 log_ok "Copilot bundle removed and managed block kept"

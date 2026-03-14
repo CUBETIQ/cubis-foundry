@@ -24,9 +24,9 @@ Use this for code review, PR review, or quality audit of existing code changes.
 
 ## Skill Routing
 
-- Primary skills: `frontend-code-review`, `static-analysis`, `testing-patterns`
-- Supporting skills (optional): `security-engineer`, `vulnerability-scanner`, `web-perf`, `react-expert`, `nextjs-developer`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`
-- Start with `frontend-code-review` for UI code or `static-analysis` for backend code. Add `testing-patterns` when evaluating test quality. Add `security-engineer` for security-sensitive changes.
+- Primary skills: `code-review`, `code-review`, `unit-testing`
+- Supporting skills (optional): `owasp-security-review`, `owasp-security-review`, `performance-testing`, `react`, `nextjs`, `typescript-best-practices`, `javascript-best-practices`, `python-best-practices`, `golang-best-practices`
+- Start with `code-review` for UI code or `code-review` for backend code. Add `unit-testing` when evaluating test quality. Add `owasp-security-review` for security-sensitive changes.
 
 ## Workflow steps
 
@@ -50,8 +50,8 @@ Use this for code review, PR review, or quality audit of existing code changes.
 REVIEW_WORKFLOW_RESULT:
   primary_agent: <frontend-specialist | backend-specialist>
   supporting_agents: [security-auditor?, validator?, test-engineer?]
-  primary_skills: [frontend-code-review?, static-analysis?, testing-patterns?]
-  supporting_skills: [security-engineer?, vulnerability-scanner?, web-perf?]
+  primary_skills: [code-review?, code-review?, unit-testing?]
+  supporting_skills: [owasp-security-review?, owasp-security-review?, performance-testing?]
   findings:
     - severity: critical | high | medium | low
       category: correctness | security | accessibility | performance | style

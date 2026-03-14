@@ -12,9 +12,9 @@ Use this when preparing a release, deploying to production, or managing a rollou
 
 ## Routing
 
-- Primary coordinator: `@devops-engineer`
-- Release verification: `@test-engineer`, `@validator`
-- Documentation: `@documentation-writer`
+- Primary coordinator: `the ci-cd-pipeline posture`
+- Release verification: `the test-engineer posture`, `the validator posture`
+- Documentation: `the documentation-writer posture`
 
 ## Context notes
 
@@ -23,9 +23,9 @@ Use this when preparing a release, deploying to production, or managing a rollou
 
 ## Skill Routing
 
-- Primary skills: `ci-cd-pipelines`, `git-workflow`
-- Supporting skills (optional): `changelog-generator`, `devops-engineer`, `sre-engineer`, `docker-kubernetes`, `observability`, `serverless-patterns`, `typescript-pro`, `javascript-pro`
-- Start with `ci-cd-pipelines` for deployment automation and `git-workflow` for release branching. Add `changelog-generator` for release notes.
+- Primary skills: `ci-cd-pipeline`, `git-workflow`
+- Supporting skills (optional): `tech-doc`, `ci-cd-pipeline`, `observability`, `kubernetes-deploy`, `observability`, `ci-cd-pipeline`, `typescript-best-practices`, `javascript-best-practices`
+- Start with `ci-cd-pipeline` for deployment automation and `git-workflow` for release branching. Add `tech-doc` for release notes.
 
 ## Workflow steps
 
@@ -48,10 +48,10 @@ Use this when preparing a release, deploying to production, or managing a rollou
 
 ```yaml
 RELEASE_WORKFLOW_RESULT:
-  primary_agent: devops-engineer
+  primary_agent: ci-cd-pipeline
   supporting_agents: [test-engineer?, validator?, documentation-writer?]
-  primary_skills: [ci-cd-pipelines, git-workflow]
-  supporting_skills: [changelog-generator?, devops-engineer?, sre-engineer?]
+  primary_skills: [ci-cd-pipeline, git-workflow]
+  supporting_skills: [tech-doc?, ci-cd-pipeline?, observability?]
   release:
     version: <string>
     changelog: <string>
@@ -63,3 +63,5 @@ RELEASE_WORKFLOW_RESULT:
   rollback_plan: <string>
   follow_up_items: [<string>] | []
 ```
+
+> **Codex note:** This workflow runs inside a network-restricted sandbox. Specialists are reasoning postures defined in AGENTS.md, not spawned processes.

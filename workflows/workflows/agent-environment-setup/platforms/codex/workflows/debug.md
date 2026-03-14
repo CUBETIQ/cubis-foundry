@@ -12,9 +12,9 @@ Use this when behavior is failing, inconsistent, flaky, or only reproducible und
 
 ## Routing
 
-- Primary specialist: `@debugger`
-- Domain implementation support: `@backend-specialist`, `@frontend-specialist`
-- Verification support: `@test-engineer`
+- Primary specialist: `the debugger posture`
+- Domain implementation support: `the backend-specialist posture`, `the frontend-specialist posture`
+- Verification support: `the test-engineer posture`
 
 ## Context notes
 
@@ -23,9 +23,9 @@ Use this when behavior is failing, inconsistent, flaky, or only reproducible und
 
 ## Skill Routing
 
-- Primary skills: `debugging-strategies`, `error-ux-observability`
-- Supporting skills (optional): `testing-patterns`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`, `csharp-pro`, `kotlin-pro`, `rust-pro`, `webapp-testing`, `playwright-e2e`, `skill-creator`
-- Start with `debugging-strategies` for reproduce, isolate, instrument, and verify flow. Add `error-ux-observability` when the failure involves error states, logging, or tracing gaps. Add the dominant language skill for exact code-path analysis, `webapp-testing` or `playwright-e2e` when the failure lives in browser or release verification.
+- Primary skills: `systematic-debugging`, `observability`
+- Supporting skills (optional): `unit-testing`, `typescript-best-practices`, `javascript-best-practices`, `python-best-practices`, `golang-best-practices`, `java-best-practices`, `csharp-best-practices`, `kotlin-best-practices`, `rust-best-practices`, `integration-testing`, `playwright-interactive`, `skill-creator`
+- Start with `systematic-debugging` for reproduce, isolate, instrument, and verify flow. Add `observability` when the failure involves error states, logging, or tracing gaps. Add the dominant language skill for exact code-path analysis, `integration-testing` or `playwright-interactive` when the failure lives in browser or release verification.
 
 ## Workflow steps
 
@@ -47,8 +47,8 @@ Use this when behavior is failing, inconsistent, flaky, or only reproducible und
 DEBUG_WORKFLOW_RESULT:
   primary_agent: debugger
   supporting_agents: [backend-specialist?, frontend-specialist?, test-engineer?]
-  primary_skills: [debugging-strategies, error-ux-observability]
-  supporting_skills: [testing-patterns?, <language-skill>?, webapp-testing?, playwright-e2e?]
+  primary_skills: [systematic-debugging, observability]
+  supporting_skills: [unit-testing?, <language-skill>?, integration-testing?, playwright-interactive?]
   reproduction:
     steps: [<string>]
     expected_vs_actual: <string>
@@ -59,3 +59,5 @@ DEBUG_WORKFLOW_RESULT:
   regression_checks: [<command or test>]
   follow_up_items: [<string>] | []
 ```
+
+> **Codex note:** This workflow runs inside a network-restricted sandbox. Specialists are reasoning postures defined in AGENTS.md, not spawned processes.

@@ -7,7 +7,6 @@ metadata:
   version: "3.0"
 compatibility: "Claude Code, Codex, GitHub Copilot"
 ---
-
 # Performance Testing and Benchmarking
 
 ## Purpose
@@ -114,3 +113,11 @@ Provide a systematic methodology for designing, executing, and interpreting perf
 | Benchmarking         | `references/benchmarking.md`          | Writing and interpreting microbenchmarks          |
 | Bottleneck Analysis  | `references/bottleneck-analysis.md`   | Identifying and resolving performance hotspots   |
 | CI Integration       | `references/ci-integration.md`        | Automating performance tests in pipelines        |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

@@ -5,15 +5,8 @@ license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
-  domain: quality
-  triggers: persistent browser, long-running session, cookie persistence, storageState, browser context reuse, session management, authentication state, multi-tab
-  role: specialist
-  scope: testing
-  output-format: code
-  related-skills: playwright-expert, playwright-interactive, playwright-e2e, auth-architect
 compatibility: "Claude Code, Codex, GitHub Copilot"
 ---
-
 # Playwright Persistent Browser
 
 ## Purpose
@@ -83,3 +76,11 @@ Deliver:
 | `references/authentication.md` | Implementing login flows, token management, or auth state reuse |
 | `references/debugging.md` | Debugging long-running sessions, memory leaks, or session corruption |
 | `references/performance.md` | Optimizing memory usage, managing resource cleanup, or monitoring browser health |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

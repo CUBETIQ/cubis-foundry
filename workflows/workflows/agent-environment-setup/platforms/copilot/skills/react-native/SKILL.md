@@ -5,15 +5,8 @@ license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
-  domain: mobile
-  triggers: React Native, Expo, New Architecture, Fabric, TurboModules, native modules, mobile app, iOS, Android, deep linking, Expo Router
-  role: specialist
-  scope: implementation
-  output-format: code
-  related-skills: typescript-pro, react-best-practices, test-master
 compatibility: "Claude Code, Codex, GitHub Copilot"
 ---
-
 # React Native with Expo
 
 Senior mobile engineer specializing in React Native 0.76+ New Architecture and Expo SDK 52+ for production cross-platform applications on iOS and Android.
@@ -88,3 +81,11 @@ Load detailed guidance based on context:
 | Native Modules | `references/native-modules.md` | Expo Modules API, Swift/Kotlin bridging, codegen |
 | Testing | `references/testing.md` | Jest, RNTL, Detox, Maestro, mocking native APIs |
 | Performance | `references/performance.md` | Hermes, FlashList, profiling, bundle optimization |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

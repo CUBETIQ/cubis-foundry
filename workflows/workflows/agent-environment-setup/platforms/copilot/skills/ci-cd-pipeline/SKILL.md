@@ -7,7 +7,6 @@ metadata:
   version: "3.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 # CI/CD Pipeline
 
 ## Purpose
@@ -70,3 +69,11 @@ Provide complete pipeline configuration files with inline comments explaining no
 | `references/caching.md`                 | Implementing dependency caching, build artifact caching, or Docker layer caching strategies.           |
 | `references/deployment-strategies.md`   | Configuring canary, blue-green, or rolling deployments with health check gating.                       |
 | `references/security.md`               | Hardening pipelines against supply chain attacks, secret management, or compliance scanning.            |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

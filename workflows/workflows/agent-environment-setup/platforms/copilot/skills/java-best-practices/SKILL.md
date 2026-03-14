@@ -7,7 +7,6 @@ metadata:
   version: "3.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 # Java Best Practices
 
 ## Purpose
@@ -70,3 +69,11 @@ Produces Java code using records, sealed types, pattern matching switch expressi
 | `references/testing.md` | JUnit 5 patterns, parameterized tests, Testcontainers, or test architecture decisions. |
 | `references/build-systems.md` | Gradle or Maven configuration, dependency management, or CI build optimization. |
 | `references/api-design.md` | REST API contracts, DTO mapping, versioning, or serialization strategy. |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

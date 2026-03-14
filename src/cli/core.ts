@@ -191,6 +191,32 @@ const WORKFLOW_PROFILES = {
     legacyDetectorPaths: [],
     ruleHintName: "CLAUDE.md",
   },
+  gemini: {
+    id: "gemini",
+    label: "Gemini CLI",
+    installsCustomAgents: false,
+    project: {
+      workflowDirs: [".gemini/workflows"],
+      skillDirs: [".gemini/skills"],
+      commandDirs: [".gemini/commands"],
+      ruleFilesByPriority: [".gemini/GEMINI.md", "GEMINI.md"],
+    },
+    global: {
+      workflowDirs: ["~/.gemini/workflows"],
+      skillDirs: ["~/.gemini/skills"],
+      commandDirs: ["~/.gemini/commands"],
+      ruleFilesByPriority: ["~/.gemini/GEMINI.md"],
+    },
+    detectorPaths: [
+      ".gemini",
+      ".gemini/workflows",
+      ".gemini/commands",
+      ".gemini/GEMINI.md",
+      "GEMINI.md",
+    ],
+    legacyDetectorPaths: [],
+    ruleHintName: "GEMINI.md",
+  },
 };
 
 const PLATFORM_IDS = Object.keys(WORKFLOW_PROFILES);
@@ -349,6 +375,9 @@ const PLATFORM_ALIASES = {
   "google-antigravity-ide": "antigravity",
   codex: "codex",
   openai: "codex",
+  gemini: "gemini",
+  "gemini-cli": "gemini",
+  "google-gemini": "gemini",
   copilot: "copilot",
   "github-copilot": "copilot",
   "copilot-chat": "copilot",
@@ -3829,7 +3858,7 @@ function buildManagedWorkflowBlock(platformId, workflows) {
     "- Stop only for blocking artifact failure, unplanned destructive action, missing required skill after one search, or explicit user halt.",
   );
   lines.push(
-    "- Codex: compact before context exhaustion. Antigravity: native long context. Copilot: write `.copilot-tracking/handoff.md`.",
+    "- Codex: compact before context exhaustion. Antigravity/Gemini: native long context. Copilot: write `.copilot-tracking/handoff.md`.",
   );
   lines.push("# Full reference: foundry-detail.md#plan-handoff-and-execution");
   lines.push("<!-- cbx:managed:long-plan-execution end -->");
@@ -3900,6 +3929,18 @@ function buildManagedWorkflowBlock(platformId, workflows) {
       "- Do not use `$workflow-*` / `$agent-*` as the primary route surface here; those are Codex compatibility aliases.",
     );
     lines.push("");
+  } else if (platformId === "gemini") {
+    lines.push("Prefer native Gemini route surfaces first:");
+    lines.push("- Commands: `.gemini/commands/*.toml`");
+    lines.push("- Workflow files: `.gemini/workflows/*.md`");
+    lines.push("- Rules: `.gemini/GEMINI.md`");
+    lines.push(
+      "- Specialists are inline postures here, not standalone agent files.",
+    );
+    lines.push(
+      "- Do not use `$workflow-*` / `$agent-*` as the primary route surface here; those are Codex compatibility aliases.",
+    );
+    lines.push("");
   }
 
   lines.push(
@@ -3949,6 +3990,14 @@ function buildManagedWorkflowBlock(platformId, workflows) {
     lines.push("2. Else match user intent to one primary workflow.");
     lines.push(
       "3. Treat `$workflow-*` / `$agent-*` as Codex compatibility aliases, not as the primary route surface here.",
+    );
+  } else if (platformId === "gemini") {
+    lines.push("1. Match explicit Gemini command or workflow first.");
+    lines.push(
+      "2. Else match user intent to one primary workflow and use the matching command file when available.",
+    );
+    lines.push(
+      "3. Treat specialists as inline postures defined by GEMINI.md, not separate agent files.",
     );
   } else {
     lines.push("1. Match explicit slash command first.");
@@ -5260,7 +5309,7 @@ async function applyPostmanMcpForPlatform({
     }
   }
 
-  if (platform === "antigravity") {
+  if (platform === "antigravity" || platform === "gemini") {
     const settingsPath =
       mcpScope === "global"
         ? path.join(os.homedir(), ".gemini", "settings.json")
@@ -6310,7 +6359,7 @@ async function applyPostmanConfigArtifacts({
   let mcpRuntimeResult = null;
   if (!platform) {
     warnings.push(
-      "Skipped platform runtime MCP target patch because platform could not be resolved. Re-run with --platform <codex|antigravity|copilot|claude>.",
+      "Skipped platform runtime MCP target patch because platform could not be resolved. Re-run with --platform <codex|antigravity|copilot|claude|gemini>.",
     );
   } else {
     mcpRuntimeResult = await applyPostmanMcpForPlatform({
@@ -7644,16 +7693,16 @@ async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
   }
 
   if (
-    platform === "antigravity" &&
+    (platform === "antigravity" || platform === "gemini") &&
     pathStatus.workflows.exists &&
     pathStatus.commands.enabled &&
     !pathStatus.commands.exists
   ) {
     warnings.push(
-      "Antigravity workflows are present but .gemini/commands is missing.",
+      `${profile.label} workflows are present but the commands directory is missing.`,
     );
     recommendations.push(
-      `Reinstall to generate command files: cbx workflows install --platform antigravity --bundle agent-environment-setup --scope ${scope} --overwrite`,
+      `Reinstall to generate command files: cbx workflows install --platform ${platform} --bundle agent-environment-setup --scope ${scope} --overwrite`,
     );
   }
 
@@ -8704,7 +8753,7 @@ function resolveRemoveAllPlatforms(platformOption) {
   for (const candidate of candidates) {
     if (!WORKFLOW_PROFILES[candidate]) {
       throw new Error(
-        `Unknown platform '${candidate}'. Use codex|antigravity|copilot|claude|all.`,
+        `Unknown platform '${candidate}'. Use codex|antigravity|copilot|claude|gemini|all.`,
       );
     }
     if (!normalized.includes(candidate)) {
@@ -8932,7 +8981,7 @@ async function removePlatformMcpRuntimeTargets({
     STITCH_MCP_SERVER_ID,
   ];
 
-  if (platform === "antigravity") {
+  if (platform === "antigravity" || platform === "gemini") {
     const settingsPath =
       scope === "global"
         ? path.join(os.homedir(), ".gemini", "settings.json")

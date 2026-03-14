@@ -1,13 +1,12 @@
 ---
 name: express-nodejs
-description: "Use when building HTTP APIs or web applications with Express.js on modern Node.js. Covers Express 5.x patterns, async/await middleware, TypeScript integration, security headers, structured error handling, and production hardening. Activate when the user mentions Express, expressjs, or asks for a Node.js web framework with middleware composition."
+description: "Use when building Express.js services on modern Node.js, including Express 5 routing, async middleware, TypeScript integration, security headers, error handling, and production hardening."
 license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 # Express.js with Modern Node.js
 
 ## Purpose
@@ -76,3 +75,11 @@ Load only what the current step needs.
 | `references/typescript-integration.md` | TypeScript setup, typed handlers, declaration merging, or strict mode config is needed. |
 | `references/security.md` | Helmet, CORS, rate limiting, input sanitization, or HSTS configuration is in scope. |
 | `references/testing.md` | Supertest setup, integration tests, mock strategies, or test organization is needed. |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

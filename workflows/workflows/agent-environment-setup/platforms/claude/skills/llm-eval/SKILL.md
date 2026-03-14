@@ -1,11 +1,9 @@
 ---
 name: llm-eval
 description: "Use when designing LLM evaluation suites, writing assertions, building benchmarks, running human evals, implementing automated scoring, or detecting regressions across model or prompt versions."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+allowed-tools: Read Grep Glob Bash
+user-invocable: true
+argument-hint: "Eval suite, benchmark, or LLM output to evaluate"
 ---
 
 # LLM Eval
@@ -70,3 +68,11 @@ Provide eval suite designs as structured JSON or YAML with assertion definitions
 | `references/scoring-methods.md` | Implementing LLM-as-judge, rubric-based scoring, or composite metrics. |
 | `references/regression-detection.md` | Setting up automated regression detection, baselines, and alerting. |
 | `references/human-eval.md` | Designing human evaluation campaigns, calibration, and agreement metrics. |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

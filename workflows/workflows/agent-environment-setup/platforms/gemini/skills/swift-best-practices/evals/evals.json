@@ -1,0 +1,64 @@
+[
+  {
+    "id": "swift-actor-based-service",
+    "prompt": "Design an actor-based network service in Swift 6 that fetches user profiles from a REST API. The service should support concurrent requests, cancellation, and expose a clean protocol-based interface. Include proper error handling with typed throws and Sendable enforcement.",
+    "assertions": [
+      {
+        "id": "uses-actor-for-shared-state",
+        "description": "The service implementation uses an actor (not a class with locks) for managing mutable shared state such as caches or in-flight request tracking.",
+        "weight": 1.0
+      },
+      {
+        "id": "protocol-based-interface",
+        "description": "A protocol defines the service contract with async throwing methods, and the actor conforms to this protocol, enabling dependency injection and test doubles.",
+        "weight": 1.0
+      },
+      {
+        "id": "cancellation-propagation",
+        "description": "CancellationToken or Task.isCancelled is checked in long operations, and the service supports structured concurrency with TaskGroup or withThrowingTaskGroup for parallel requests.",
+        "weight": 1.0
+      },
+      {
+        "id": "typed-throws-and-sendable",
+        "description": "Error handling uses typed throws (throws(NetworkError) or similar) with a specific error enum. All types crossing actor boundaries conform to Sendable.",
+        "weight": 1.0
+      },
+      {
+        "id": "async-stream-or-sequence",
+        "description": "The design uses AsyncSequence, AsyncStream, or async/await patterns correctly — no completion handlers or DispatchQueue usage in new code.",
+        "weight": 1.0
+      }
+    ]
+  },
+  {
+    "id": "swift-swiftui-state-management",
+    "prompt": "Refactor a SwiftUI shopping cart view that currently uses ObservableObject with @Published properties. Migrate it to use the @Observable macro. The cart should support adding/removing items, computing totals, and persisting state. Show the view, model, and how state flows between parent and child views.",
+    "assertions": [
+      {
+        "id": "observable-macro-adoption",
+        "description": "The cart model uses the @Observable macro instead of ObservableObject/@Published, and properties are plain stored properties tracked automatically by the observation framework.",
+        "weight": 1.0
+      },
+      {
+        "id": "state-and-environment-usage",
+        "description": "View-local state uses @State for the observable object or primitives, and shared state is passed via @Environment or explicit parameters — not via @StateObject or @ObservedObject.",
+        "weight": 1.0
+      },
+      {
+        "id": "pure-view-bodies",
+        "description": "View body properties are side-effect-free. Async work like persistence is triggered via .task modifiers or explicit method calls from button actions, not from computed body properties.",
+        "weight": 1.0
+      },
+      {
+        "id": "parent-child-data-flow",
+        "description": "Parent views own state and pass data down to child views through initializer parameters or environment. Child views that need to mutate parent state use @Bindable or callback closures.",
+        "weight": 1.0
+      },
+      {
+        "id": "value-types-and-immutability",
+        "description": "Cart items are modeled as structs (value types) with let properties where possible. The cart model class uses @Observable but item data structures prefer value semantics for Sendable safety.",
+        "weight": 1.0
+      }
+    ]
+  }
+]

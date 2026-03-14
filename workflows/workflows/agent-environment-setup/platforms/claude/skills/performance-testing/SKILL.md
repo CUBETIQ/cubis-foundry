@@ -1,11 +1,11 @@
 ---
 name: performance-testing
 description: "Performance testing and benchmarking covering load testing, stress testing, profiling, and bottleneck identification. Use when evaluating system performance or detecting regressions."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: "Claude Code, Codex, GitHub Copilot"
+allowed-tools: Read Grep Glob Bash Edit Write
+context: fork
+agent: performance-optimizer
+user-invocable: true
+argument-hint: "System, endpoint, or benchmark to test"
 ---
 
 # Performance Testing and Benchmarking
@@ -114,3 +114,11 @@ Provide a systematic methodology for designing, executing, and interpreting perf
 | Benchmarking         | `references/benchmarking.md`          | Writing and interpreting microbenchmarks          |
 | Bottleneck Analysis  | `references/bottleneck-analysis.md`   | Identifying and resolving performance hotspots   |
 | CI Integration       | `references/ci-integration.md`        | Automating performance tests in pipelines        |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

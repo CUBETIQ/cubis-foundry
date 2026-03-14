@@ -1,11 +1,9 @@
 ---
 name: tech-doc
 description: "Use when writing technical documentation including API references, operational runbooks, onboarding guides, decision logs, and changelog standards."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "Documentation topic, API reference, or guide to write"
 ---
 
 # Technical Documentation
@@ -74,8 +72,14 @@ Load on demand. Do not preload all reference files.
 
 | File | Load when |
 | --- | --- |
-| `references/api-documentation.md` | Writing or reviewing API documentation, choosing documentation format (OpenAPI, AsyncAPI), or setting up API doc tooling. |
-| `references/runbooks.md` | Creating operational runbooks, incident response procedures, or routine maintenance documentation. |
-| `references/onboarding.md` | Building onboarding guides, defining progressive disclosure structure, or auditing existing onboarding materials. |
-| `references/writing-style.md` | Establishing writing conventions, tone guidelines, or reviewing documentation for consistency and clarity. |
-| `references/tooling.md` | Choosing documentation platforms, setting up CI/CD validation, or configuring linting and link checking. |
+| `references/api-documentation-patterns.md` | Writing or reviewing API documentation, choosing OpenAPI/AsyncAPI structure, or setting up API doc tooling. |
+| `references/writing-style-guide.md` | Establishing writing conventions, tone guidelines, or reviewing documentation for consistency and clarity. |
+| `references/documentation-tooling.md` | Choosing documentation platforms, setting up CI/CD validation, or configuring linting and link checking. |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

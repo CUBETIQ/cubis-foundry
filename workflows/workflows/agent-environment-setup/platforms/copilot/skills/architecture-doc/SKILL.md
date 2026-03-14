@@ -7,7 +7,6 @@ metadata:
   version: "3.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 # Architecture Documentation
 
 ## Purpose
@@ -72,8 +71,14 @@ Load on demand. Do not preload all reference files.
 
 | File | Load when |
 | --- | --- |
-| `references/c4-model.md` | Creating C4 diagrams at any level (Context, Container, Component, Code) or choosing diagram notation. |
-| `references/adr-format.md` | Writing or reviewing Architecture Decision Records, or setting up ADR conventions for a new project. |
-| `references/diagram-standards.md` | Choosing diagram tools, notation standards, or embedding diagrams-as-code in repositories. |
-| `references/quality-attributes.md` | Specifying quality attributes, building utility trees, or defining measurable acceptance criteria. |
-| `references/templates.md` | Bootstrapping architecture documentation from scratch or adding a new document type to an existing set. |
+| `references/c4-modeling.md` | Creating C4 diagrams at any level (Context, Container, Component, Code) or choosing diagram notation. |
+| `references/adr-templates.md` | Writing or reviewing Architecture Decision Records, or setting up ADR conventions for a new project. |
+| `references/documentation-automation.md` | Choosing lightweight architecture documentation workflows, diagrams-as-code practices, or review automation. |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

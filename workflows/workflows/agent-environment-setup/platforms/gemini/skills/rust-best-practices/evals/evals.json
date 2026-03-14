@@ -1,0 +1,54 @@
+[
+  {
+    "id": "rust-ownership-design",
+    "prompt": "I'm building a data pipeline in Rust with three stages: parse raw bytes into structured records, transform records by enriching with metadata from a lookup table, and serialize to JSON output. Design the ownership hierarchy so that data flows through the pipeline without unnecessary cloning. The lookup table is read-only and shared across transform workers. Show the type signatures and explain the ownership decisions.",
+    "assertions": [
+      {
+        "type": "content",
+        "value": "passes owned data (Vec<Record> or similar) between pipeline stages using move semantics rather than cloning"
+      },
+      {
+        "type": "content",
+        "value": "uses &self or shared references for the read-only lookup table rather than cloning it per worker"
+      },
+      {
+        "type": "content",
+        "value": "uses Arc for sharing the lookup table across threads/tasks if concurrency is involved"
+      },
+      {
+        "type": "content",
+        "value": "uses borrowing (&str, &[u8]) for intermediate read-only access within each stage"
+      },
+      {
+        "type": "content",
+        "value": "explains the ownership rationale with comments or prose describing why each type is owned vs borrowed"
+      }
+    ]
+  },
+  {
+    "id": "rust-async-service",
+    "prompt": "Implement an async HTTP service in Rust using axum that has these requirements:\n1. Health check endpoint\n2. A POST endpoint that accepts JSON, validates it, processes it asynchronously, and returns a result\n3. Graceful shutdown on SIGTERM using tokio CancellationToken\n4. Structured error handling with thiserror for the library layer and anyhow for the binary\n5. Connection to a PostgreSQL database using sqlx with connection pooling\n\nTarget Rust 2024 edition.",
+    "assertions": [
+      {
+        "type": "content",
+        "value": "uses axum Router with handler functions and extractors (Json, State) for request handling"
+      },
+      {
+        "type": "content",
+        "value": "implements graceful shutdown using tokio CancellationToken or signal handling with tokio::signal"
+      },
+      {
+        "type": "content",
+        "value": "defines error types with #[derive(thiserror::Error)] for structured variants and uses anyhow::Result in main"
+      },
+      {
+        "type": "content",
+        "value": "uses sqlx::PgPool or equivalent connection pool passed via axum State or Extension"
+      },
+      {
+        "type": "content",
+        "value": "implements the IntoResponse trait or uses axum error handling to convert domain errors into appropriate HTTP responses"
+      }
+    ]
+  }
+]

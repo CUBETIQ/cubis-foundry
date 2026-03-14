@@ -1,11 +1,9 @@
 ---
 name: vibesec
 description: "Perform a lightweight security vibe check on codebases, configurations, and dependencies. Quick assessment of common security pitfalls, dependency health, and configuration hygiene without a full audit."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: "Claude Code, Codex, GitHub Copilot"
+allowed-tools: Read Grep Glob Bash
+user-invocable: true
+argument-hint: "Codebase, repo, or configuration to vibe-check"
 ---
 
 # VibeSec — Lightweight Security Vibe Check
@@ -92,3 +90,11 @@ Deliver a fast, opinionated security assessment that catches the most common and
 | Dependency Audit Guide | `references/dependency-audit.md` | Assessing dependency health |
 | Configuration Review | `references/config-review.md` | Inspecting config files |
 | Common Security Pitfalls | `references/common-pitfalls.md` | Identifying frequent mistakes |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

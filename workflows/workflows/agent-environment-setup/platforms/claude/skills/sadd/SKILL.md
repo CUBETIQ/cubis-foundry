@@ -1,11 +1,9 @@
 ---
 name: sadd
-description: "Use when extracting testable specifications from requirements, generating tests from specs, verifying implementations against specs, and mapping coverage to requirements. Covers specification mining, test-from-spec generation, implementation verification, and traceability."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: "Claude Code, Codex, GitHub Copilot"
+description: "Use when extracting testable specs from requirements, generating tests from specs, verifying implementations against specs, and tracing requirements to coverage."
+allowed-tools: Read Grep Glob
+user-invocable: true
+argument-hint: "System or architecture to document with SADD"
 ---
 
 # Spec-Aware Driven Development (SADD)
@@ -62,3 +60,11 @@ When performing SADD, provide:
 | `references/coverage-mapping.md` | Building and maintaining traceability matrices and spec coverage reports |
 | `agents/spec-miner.md` | Agent that extracts structured specifications from requirements documents |
 | `agents/verifier.md` | Agent that validates implementation against extracted specifications |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

@@ -1,0 +1,68 @@
+{
+  "evals": [
+    {
+      "name": "service-decomposition-strategy",
+      "description": "Validate that the skill produces a service decomposition plan using domain-driven design with proper bounded context identification, data ownership, communication patterns, and team alignment for a monolith-to-microservices migration.",
+      "input": "A monolithic e-commerce platform handles user management, product catalog, order processing, payment, inventory, shipping, and notifications. The team wants to decompose it into microservices. The monolith currently serves 5,000 concurrent users with a shared PostgreSQL database. Identify bounded contexts, define service boundaries, specify which data each service owns, determine communication patterns between services, and propose a phased migration strategy that avoids a big-bang rewrite.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "bounded context",
+          "description": "The decomposition must use bounded contexts from domain-driven design to identify service boundaries aligned with business capabilities rather than technical layers."
+        },
+        {
+          "type": "contains",
+          "value": "data ownership",
+          "description": "The design must specify which service owns which data entities and how cross-service data access is handled (API calls, events, or data replication) to eliminate shared database coupling."
+        },
+        {
+          "type": "contains",
+          "value": "strangler",
+          "description": "The migration strategy must use the strangler fig pattern or an equivalent incremental approach to extract services from the monolith one at a time without requiring a complete rewrite."
+        },
+        {
+          "type": "contains",
+          "value": "event",
+          "description": "The design must include event-driven communication for at least some service interactions (e.g., order placed, payment completed) to reduce synchronous coupling between services."
+        },
+        {
+          "type": "contains",
+          "value": "API gateway",
+          "description": "The design must include an API gateway to route external traffic, handle authentication, and provide a stable public API while internal service boundaries evolve."
+        }
+      ]
+    },
+    {
+      "name": "saga-orchestration-pattern",
+      "description": "Validate that the skill produces a saga orchestration design with proper step sequencing, compensating actions, failure handling, timeout management, and observability for a multi-service transaction.",
+      "input": "Design a saga for an order fulfillment workflow that spans five services: OrderService creates the order, PaymentService charges the customer, InventoryService reserves stock, ShippingService schedules delivery, and NotificationService sends confirmation. Each step can fail independently. Design the saga orchestrator with step sequencing, compensating actions for each step, timeout handling, partial failure recovery, and observability. Show the happy path and at least two failure scenarios with their compensation flows.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "compensat",
+          "description": "The saga must define a compensating action for each step (refund payment, release inventory, cancel shipment) that reverses the effect of a completed step when a subsequent step fails."
+        },
+        {
+          "type": "contains",
+          "value": "orchestrat",
+          "description": "The design must use a central saga orchestrator that coordinates the sequence of steps and manages the saga state machine rather than relying solely on event choreography for this complex workflow."
+        },
+        {
+          "type": "contains",
+          "value": "timeout",
+          "description": "The design must include timeout handling for each saga step so that a hung downstream service does not block the entire saga indefinitely."
+        },
+        {
+          "type": "contains",
+          "value": "idempoten",
+          "description": "Both forward actions and compensating actions must be idempotent so that retries during failure recovery do not create duplicate side effects."
+        },
+        {
+          "type": "contains",
+          "value": "state",
+          "description": "The saga must maintain persistent state (e.g., in a database) tracking which steps have completed, which have failed, and which compensations have run so that recovery is possible after an orchestrator crash."
+        }
+      ]
+    }
+  ]
+}

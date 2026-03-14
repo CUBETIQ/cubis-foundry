@@ -1,6 +1,6 @@
 ---
 name: mcp-server-builder
-description: "Use when building MCP servers: Model Context Protocol specification compliance, tool registration with input validation and structured output, resource providers for dynamic context, transport layer configuration (stdio, HTTP, SSE), and comprehensive server testing."
+description: "Use when building MCP servers with spec-compliant tools, structured outputs, resource providers, transport configuration, and server testing."
 license: MIT
 metadata:
   author: cubis-foundry
@@ -77,11 +77,9 @@ Guide the design and implementation of production-grade Model Context Protocol (
 
 | File                                | Load when                                                                                 |
 | ----------------------------------- | ----------------------------------------------------------------------------------------- |
-| `references/protocol-spec.md`       | Understanding MCP message formats, lifecycle, or capability negotiation.                 |
-| `references/tool-registration.md`   | Registering tools, defining JSON Schema inputs, or structuring tool output.              |
-| `references/resource-providers.md`  | Implementing resource providers, URI templates, or dynamic context injection.            |
-| `references/transport.md`           | Choosing or configuring stdio, HTTP, or SSE transport layers.                            |
-| `references/testing.md`             | Writing mock client tests, protocol compliance checks, or integration tests.             |
+| `references/tool-design-patterns.md` | Understanding MCP tool contracts, schema design, output shape, or resource-oriented server structure. |
+| `references/transport-configuration.md` | Choosing or configuring stdio, HTTP, or SSE transport layers.                       |
+| `references/testing-mcp-servers.md` | Writing mock client tests, protocol compliance checks, or integration tests.             |
 
 ## Examples
 

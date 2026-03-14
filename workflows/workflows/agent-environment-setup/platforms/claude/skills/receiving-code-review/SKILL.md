@@ -1,11 +1,9 @@
 ---
 name: receiving-code-review
 description: "Use when responding to code review feedback, incorporating reviewer suggestions, handling disagreements constructively, iterating through review cycles, or learning from repeated feedback patterns."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: "Claude Code, Codex, GitHub Copilot"
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "Review feedback or PR comments to address"
 ---
 
 # Receiving Code Review
@@ -70,3 +68,11 @@ When responding to review feedback, provide:
 | `references/feedback-response-patterns.md` | Templates for responding to different types of review feedback constructively |
 | `references/disagreement-resolution.md` | Strategies for handling pushback and resolving conflicts during code review |
 | `references/review-iteration.md` | Techniques for efficiently iterating through multiple review cycles |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

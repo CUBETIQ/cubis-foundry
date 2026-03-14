@@ -19,9 +19,9 @@ Use this when joining a new project, exploring an unfamiliar codebase, or prepar
 
 ## Routing
 
-- Primary specialist: `@researcher`
-- Architecture mapping: `@code-archaeologist`
-- Domain specialists as needed: `@backend-specialist`, `@frontend-specialist`
+- Primary specialist: `.agent/agents/researcher`
+- Architecture mapping: `.agent/agents/code-archaeologist`
+- Domain specialists as needed: `.agent/agents/backend-specialist`, `.agent/agents/frontend-specialist`
 
 ## Context notes
 
@@ -30,9 +30,9 @@ Use this when joining a new project, exploring an unfamiliar codebase, or prepar
 
 ## Skill Routing
 
-- Primary skills: `deep-research`, `architecture-designer`
-- Supporting skills (optional): `legacy-modernizer`, `database-skills`, `typescript-pro`, `javascript-pro`, `python-pro`
-- Start with `deep-research` for systematic exploration and `architecture-designer` for architecture mapping. Add `legacy-modernizer` for undocumented systems.
+- Primary skills: `architecture-doc`, `system-design`
+- Supporting skills (optional): `system-design`, `database-design`, `typescript-best-practices`, `javascript-best-practices`, `python-best-practices`
+- Start with `architecture-doc` for systematic exploration and `system-design` for architecture mapping. Add `system-design` for undocumented systems.
 
 ## Workflow steps
 
@@ -55,8 +55,8 @@ Use this when joining a new project, exploring an unfamiliar codebase, or prepar
 ONBOARD_WORKFLOW_RESULT:
   primary_agent: researcher
   supporting_agents: [code-archaeologist?, backend-specialist?, frontend-specialist?]
-  primary_skills: [deep-research, architecture-designer]
-  supporting_skills: [legacy-modernizer?, database-skills?]
+  primary_skills: [architecture-doc, system-design]
+  supporting_skills: [system-design?, database-design?]
   project_overview:
     purpose: <string>
     tech_stack: [<string>]
@@ -67,3 +67,5 @@ ONBOARD_WORKFLOW_RESULT:
   dependencies: [<string>]
   knowledge_gaps: [<string>] | []
 ```
+
+> **Antigravity note:** Use Agent Manager for parallel agent coordination. Workflow files are stored under `.agent/workflows/`.

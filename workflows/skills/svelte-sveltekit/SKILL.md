@@ -5,12 +5,6 @@ license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
-  domain: frontend
-  triggers: Svelte, SvelteKit, runes, $state, $derived, $effect, form actions, SSR, server load, page load
-  role: specialist
-  scope: implementation
-  output-format: code
-  related-skills: typescript-pro, tailwind-patterns, test-master
 compatibility: "Claude Code, Codex, GitHub Copilot"
 ---
 

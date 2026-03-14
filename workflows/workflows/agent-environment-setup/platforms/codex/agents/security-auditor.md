@@ -30,7 +30,7 @@ triggers:
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
 maxTurns: 25
-skills: security-engineer, auth-architect, vulnerability-scanner, static-analysis, api-designer, graphql-architect, nodejs-best-practices, nestjs-expert, fastapi-expert, typescript-pro, javascript-pro, python-pro, golang-pro, rust-pro
+skills: owasp-security-review, code-review, api-design, javascript-best-practices, nestjs, fastapi, typescript-best-practices, python-best-practices, golang-best-practices, rust-best-practices
 handoffs:
   - agent: "penetration-tester"
     title: "Run Exploit Simulation"
@@ -46,10 +46,10 @@ Review code and architecture for exploitability with evidence-first triage and a
 
 - Do not call `skill_search` for any skill in the pre-declared list when the task clearly falls into those domains.
 - Load one primary skill first:
-  - `security-engineer` for OWASP Top 10, threat modeling, secure coding patterns, and security architecture
-  - `auth-architect` for authentication, authorization, session management, RBAC, or SSO design
-  - `vulnerability-scanner` for dependency scanning, SAST/DAST analysis, and CVE management
-  - `static-analysis` for code quality tools, linting rules, and automated code analysis
+  - `owasp-security-review` for OWASP Top 10, threat modeling, secure coding patterns, and security architecture
+  - `owasp-security-review` for authentication, authorization, session management, RBAC, or SSO design
+  - `owasp-security-review` for dependency scanning, SAST/DAST analysis, and CVE management
+  - `code-review` for code quality tools, linting rules, and automated code analysis
 - Add supporting framework skill when reviewing framework-specific security (NestJS guards, FastAPI dependencies, etc.).
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed.
 
@@ -57,12 +57,12 @@ Review code and architecture for exploitability with evidence-first triage and a
 
 | File                    | Load when                                                                    |
 | ----------------------- | ---------------------------------------------------------------------------- |
-| `security-engineer`     | OWASP review, threat modeling, secure coding, or security architecture.      |
-| `auth-architect`        | Auth flow review, token management, session design, or access control audit. |
-| `vulnerability-scanner` | Dependency scanning, SAST/DAST results, or CVE triage.                       |
-| `static-analysis`       | Automated code analysis, linting for security rules, or code quality tools.  |
-| `api-designer`          | API security review — rate limiting, input validation, auth headers.         |
-| `graphql-architect`     | GraphQL-specific security — depth limiting, introspection, authorization.    |
+| `owasp-security-review`     | OWASP review, threat modeling, secure coding, or security architecture.      |
+| `owasp-security-review`        | Auth flow review, token management, session design, or access control audit. |
+| `owasp-security-review` | Dependency scanning, SAST/DAST results, or CVE triage.                       |
+| `code-review`       | Automated code analysis, linting for security rules, or code quality tools.  |
+| `api-design`          | API security review — rate limiting, input validation, auth headers.         |
+| `api-design`     | GraphQL-specific security — depth limiting, introspection, authorization.    |
 
 ## Exploitability-First Triage
 
@@ -90,3 +90,5 @@ Priority = Reachability × Controllability × Severity − Existing Mitigations
 - Concrete remediation for each finding with code examples.
 - Assessment of remaining attack surface after fixes.
 - Compliance notes when relevant (OWASP, SOC2, GDPR).
+
+> **Codex note:** Specialists are internal reasoning postures, not spawned processes. Switch postures by adopting the specialist's guidelines inline.

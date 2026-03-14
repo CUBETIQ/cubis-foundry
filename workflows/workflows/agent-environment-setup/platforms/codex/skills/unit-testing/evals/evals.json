@@ -1,0 +1,68 @@
+[
+  {
+    "id": "unit-testing-eval-001",
+    "name": "Mock strategy for external payment service",
+    "description": "Evaluate the skill's ability to design a mocking strategy for an external payment gateway in a checkout flow, ensuring isolation from the real service while testing all response scenarios.",
+    "prompt": "I have an OrderService that calls a PaymentGateway.charge(amount, currency, token) method. The gateway is an external HTTP service. Design a unit test strategy with mocking for: successful charge, declined card, network timeout, and idempotency key conflict. Show me the test structure and mock setup.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "stub",
+        "description": "Should recommend stubs or test doubles for the payment gateway rather than calling the real service"
+      },
+      {
+        "type": "contains",
+        "value": "timeout",
+        "description": "Should include a test case for network timeout handling as an error path"
+      },
+      {
+        "type": "contains",
+        "value": "assert",
+        "description": "Should include specific assertions for each test scenario outcome"
+      },
+      {
+        "type": "contains",
+        "value": "arrange",
+        "description": "Should structure tests using the Arrange-Act-Assert pattern or equivalent"
+      },
+      {
+        "type": "contains",
+        "value": "idempoten",
+        "description": "Should address the idempotency conflict scenario as an edge case"
+      }
+    ]
+  },
+  {
+    "id": "unit-testing-eval-002",
+    "name": "TDD red-green-refactor cycle for a validator",
+    "description": "Evaluate the skill's ability to walk through a complete TDD red-green-refactor cycle for implementing an email validator, demonstrating each phase with concrete code.",
+    "prompt": "Walk me through a TDD red-green-refactor cycle to implement an EmailValidator.validate(email) function. It should accept standard emails, reject emails without @, reject emails with spaces, and handle edge cases like consecutive dots. Show each phase clearly.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "red",
+        "description": "Should explicitly identify the Red phase where a failing test is written first"
+      },
+      {
+        "type": "contains",
+        "value": "green",
+        "description": "Should explicitly identify the Green phase where minimal code is written to pass"
+      },
+      {
+        "type": "contains",
+        "value": "refactor",
+        "description": "Should explicitly identify the Refactor phase where code is cleaned up under green tests"
+      },
+      {
+        "type": "contains",
+        "value": "fail",
+        "description": "Should show the test failing before implementation as proof of test validity"
+      },
+      {
+        "type": "contains",
+        "value": "edge",
+        "description": "Should address edge cases like consecutive dots or unusual valid formats"
+      }
+    ]
+  }
+]

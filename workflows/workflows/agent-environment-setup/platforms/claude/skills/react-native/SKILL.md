@@ -1,17 +1,9 @@
 ---
 name: react-native
 description: "Use when building cross-platform mobile applications with React Native and Expo. Invoke for New Architecture (Fabric, TurboModules), Expo SDK 52+, native module bridging, navigation, and mobile performance optimization."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-  domain: mobile
-  triggers: React Native, Expo, New Architecture, Fabric, TurboModules, native modules, mobile app, iOS, Android, deep linking, Expo Router
-  role: specialist
-  scope: implementation
-  output-format: code
-  related-skills: typescript-pro, react-best-practices, test-master
-compatibility: "Claude Code, Codex, GitHub Copilot"
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "React Native component, screen, or native module"
 ---
 
 # React Native with Expo
@@ -88,3 +80,11 @@ Load detailed guidance based on context:
 | Native Modules | `references/native-modules.md` | Expo Modules API, Swift/Kotlin bridging, codegen |
 | Testing | `references/testing.md` | Jest, RNTL, Detox, Maestro, mocking native APIs |
 | Performance | `references/performance.md` | Hermes, FlashList, profiling, bundle optimization |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

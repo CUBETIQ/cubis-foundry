@@ -1,0 +1,12 @@
+description = "Build a decision-complete implementation plan with interfaces, failure modes, and acceptance criteria."
+prompt = '''
+Follow the /plan workflow from .agent/workflows/plan.md.
+
+Execution contract:
+1. Treat route selection as already resolved by this command; do not begin with skill discovery.
+2. Confirm the request fits the workflow's "When to use" section.
+3. Execute according to "Workflow steps" and apply "Context notes".
+4. Complete "Verification" checks and report concrete evidence.
+
+If command arguments are provided, treat them as additional user context.
+'''

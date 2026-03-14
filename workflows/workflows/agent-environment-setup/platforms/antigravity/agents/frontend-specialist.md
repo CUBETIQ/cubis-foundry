@@ -18,7 +18,7 @@ triggers:
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
 maxTurns: 25
-skills: react-expert, nextjs-developer, frontend-design, tailwind-patterns, design-system-builder, web-perf, frontend-code-review, react-best-practices, i18n-localization, error-ux-observability, typescript-pro, javascript-pro
+skills: react, nextjs, frontend-design, performance-testing, code-review, observability, typescript-best-practices, javascript-best-practices
 handoffs:
   - agent: "test-engineer"
     title: "Test UI Components"
@@ -34,16 +34,16 @@ Build and review frontend systems that stay maintainable under real product pres
 
 - Do not call `skill_search` for any skill in the pre-declared list when the task clearly falls into that domain.
 - Load one primary skill first:
-  - `react-expert` for component boundaries, state, and runtime behavior
-  - `react-best-practices` for React performance optimization, patterns, and anti-patterns
-  - `nextjs-developer` for App Router, server/client boundaries, caching, and route behavior
+  - `react` for component boundaries, state, and runtime behavior
+  - `react` for React performance optimization, patterns, and anti-patterns
+  - `nextjs` for App Router, server/client boundaries, caching, and route behavior
   - `frontend-design` for visual hierarchy, motion, layout, and interaction design
-  - `tailwind-patterns` for utility composition and token hygiene
-  - `design-system-builder` for shared component APIs and primitives
-  - `web-perf` for measurement-first browser performance work
-  - `frontend-code-review` for regression-focused review, accessibility, and UI quality findings
-  - `i18n-localization` for RTL support, locale switching, pluralization, and date/number formatting
-  - `error-ux-observability` for error boundary design, user-facing error states, and frontend observability
+  - `frontend-design` for utility composition and token hygiene
+  - `frontend-design` for shared component APIs and primitives
+  - `performance-testing` for measurement-first browser performance work
+  - `code-review` for regression-focused review, accessibility, and UI quality findings
+  - `frontend-design` for RTL support, locale switching, pluralization, and date/number formatting
+  - `observability` for error boundary design, user-facing error states, and frontend observability
 - Add one supporting skill only when the task genuinely crosses concerns.
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed by the current step.
 
@@ -53,16 +53,16 @@ Load on demand. Do not preload all references.
 
 | File                     | Load when                                                                                     |
 | ------------------------ | --------------------------------------------------------------------------------------------- |
-| `react-expert`           | React runtime behavior, component boundaries, hooks, or client-state design are primary.      |
-| `react-best-practices`   | React performance optimization, memoization patterns, or React anti-patterns are the focus.   |
-| `nextjs-developer`       | Next.js route behavior, server/client boundaries, caching, or deployment posture are primary. |
+| `react`           | React runtime behavior, component boundaries, hooks, or client-state design are primary.      |
+| `react`   | React performance optimization, memoization patterns, or React anti-patterns are the focus.   |
+| `nextjs`       | Next.js route behavior, server/client boundaries, caching, or deployment posture are primary. |
 | `frontend-design`        | Layout, hierarchy, typography, color, motion, or UI direction is the active design task.      |
-| `tailwind-patterns`      | Utility composition, tokens, variants, or style-system hygiene are primary.                   |
-| `design-system-builder`  | Shared components, primitives, or design-system API shape is primary.                         |
-| `web-perf`               | Core Web Vitals, bundle cost, render cost, or browser performance triage is primary.          |
-| `frontend-code-review`   | The task is reviewing UI code for correctness, accessibility, or regression risk.             |
-| `i18n-localization`      | RTL layout, locale switching, pluralization, or date/number formatting is needed.             |
-| `error-ux-observability` | Error boundary design, toast/notification UX, or frontend logging/tracing is the focus.       |
+| `frontend-design`      | Utility composition, tokens, variants, or style-system hygiene are primary.                   |
+| `frontend-design`  | Shared components, primitives, or design-system API shape is primary.                         |
+| `performance-testing`               | Core Web Vitals, bundle cost, render cost, or browser performance triage is primary.          |
+| `code-review`   | The task is reviewing UI code for correctness, accessibility, or regression risk.             |
+| `frontend-design`      | RTL layout, locale switching, pluralization, or date/number formatting is needed.             |
+| `observability` | Error boundary design, toast/notification UX, or frontend logging/tracing is the focus.       |
 
 ## Operating Stance
 
@@ -77,3 +77,5 @@ Load on demand. Do not preload all references.
 - Explain the main architecture or UX decision in concrete terms.
 - Call out any accessibility, responsiveness, or render-cost risk left behind.
 - Run focused checks when code changes land.
+
+> **Antigravity note:** Use Agent Manager for parallel agent coordination. Agent files are stored under `.agent/agents/`.

@@ -1,11 +1,9 @@
 ---
 name: go-fiber
-description: "Use when building HTTP APIs or real-time services with Go Fiber v3. Covers zero-allocation routing, Express-inspired middleware, WebSocket endpoints, grouped routes, request validation, structured error handling, and performance tuning. Activate when the user mentions Fiber, gofiber, or asks for a high-performance Go web framework."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: "Use when building Go Fiber services, including routing, middleware, WebSockets, request validation, structured errors, and performance tuning."
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "Fiber handler, middleware, or route to work on"
 ---
 
 # Go Fiber v3
@@ -72,3 +70,11 @@ Load only what the current step needs.
 | `references/error-handling.md` | Custom error handler, structured errors, or panic recovery patterns are needed. |
 | `references/testing.md` | Handler testing, integration tests, or benchmark setup is needed. |
 | `references/performance.md` | Allocation profiling, fasthttp tuning, or throughput optimization is in scope. |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

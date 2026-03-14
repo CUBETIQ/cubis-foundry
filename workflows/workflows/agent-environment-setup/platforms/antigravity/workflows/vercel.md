@@ -21,9 +21,9 @@ Use this for Vercel-specific deployment, configuration, runtime optimization, or
 
 ## Routing
 
-- Primary specialist: `@vercel-expert`
-- Infrastructure support: `@devops-engineer`
-- Verification support: `@test-engineer`
+- Primary specialist: `.agent/agents/vercel-expert`
+- Infrastructure support: `.agent/agents/ci-cd-pipeline`
+- Verification support: `.agent/agents/test-engineer`
 
 ## Context notes
 
@@ -32,9 +32,9 @@ Use this for Vercel-specific deployment, configuration, runtime optimization, or
 
 ## Skill Routing
 
-- Primary skills: `nextjs-developer`, `serverless-patterns`
-- Supporting skills (optional): `web-perf`, `react-expert`, `tailwind-patterns`, `nodejs-best-practices`, `typescript-pro`, `javascript-pro`
-- Start with `nextjs-developer` for Next.js on Vercel and `serverless-patterns` for runtime behavior. Add `web-perf` for performance optimization.
+- Primary skills: `nextjs`, `ci-cd-pipeline`
+- Supporting skills (optional): `performance-testing`, `react`, `frontend-design`, `javascript-best-practices`, `typescript-best-practices`, `javascript-best-practices`
+- Start with `nextjs` for Next.js on Vercel and `ci-cd-pipeline` for runtime behavior. Add `performance-testing` for performance optimization.
 
 ## Workflow steps
 
@@ -57,9 +57,9 @@ Use this for Vercel-specific deployment, configuration, runtime optimization, or
 ```yaml
 VERCEL_WORKFLOW_RESULT:
   primary_agent: vercel-expert
-  supporting_agents: [devops-engineer?, test-engineer?]
-  primary_skills: [nextjs-developer, serverless-patterns]
-  supporting_skills: [web-perf?, react-expert?]
+  supporting_agents: [ci-cd-pipeline?, test-engineer?]
+  primary_skills: [nextjs, ci-cd-pipeline]
+  supporting_skills: [performance-testing?, react?]
   deployment:
     project: <string>
     runtime: <edge | serverless | static>
@@ -72,3 +72,5 @@ VERCEL_WORKFLOW_RESULT:
   monitoring: <string>
   follow_up_items: [<string>] | []
 ```
+
+> **Antigravity note:** Use Agent Manager for parallel agent coordination. Workflow files are stored under `.agent/workflows/`.

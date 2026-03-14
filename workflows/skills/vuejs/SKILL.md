@@ -5,12 +5,6 @@ license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
-  domain: frontend
-  triggers: Vue, Vue 3, Composition API, Pinia, script setup, Vue Router, Nuxt, SSR, defineModel, useTemplateRef, reactive, ref
-  role: specialist
-  scope: implementation
-  output-format: code
-  related-skills: typescript-pro, tailwind-patterns, test-master, nestjs
 compatibility: "Claude Code, Codex, GitHub Copilot"
 ---
 

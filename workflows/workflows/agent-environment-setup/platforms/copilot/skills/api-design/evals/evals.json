@@ -1,0 +1,68 @@
+{
+  "evals": [
+    {
+      "name": "rest-api-contract-design",
+      "description": "Validate that the skill produces a REST API contract with proper resource modeling, HTTP method semantics, pagination, error responses, and OpenAPI documentation for a task management system.",
+      "input": "Design a REST API for a task management system with workspaces, projects, tasks, and comments. Tasks can be assigned to users, have due dates, priorities (low, medium, high, urgent), and statuses (todo, in_progress, review, done). Include endpoints for CRUD operations, task filtering and search, pagination, bulk operations, and proper error responses. Provide an OpenAPI 3.1 specification for the core endpoints.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "GET",
+          "description": "The API must use proper HTTP methods with GET for retrieval operations, demonstrating understanding of safe and idempotent HTTP semantics."
+        },
+        {
+          "type": "contains",
+          "value": "cursor",
+          "description": "The API must implement cursor-based pagination for collection endpoints to maintain page stability when data changes between requests."
+        },
+        {
+          "type": "contains",
+          "value": "application/problem+json",
+          "description": "Error responses must follow RFC 9457 Problem Details format with structured fields (type, title, status, detail) rather than ad-hoc error structures."
+        },
+        {
+          "type": "contains",
+          "value": "openapi",
+          "description": "The specification must be a valid OpenAPI 3.x document with paths, components, and schema references demonstrating a spec-first API design approach."
+        },
+        {
+          "type": "contains",
+          "value": "filter",
+          "description": "The API must support filtering on collection endpoints (by status, priority, assignee, due date) using query parameters to enable efficient client-side data retrieval."
+        }
+      ]
+    },
+    {
+      "name": "graphql-schema-design",
+      "description": "Validate that the skill produces a GraphQL schema with proper type definitions, connection-based pagination, input types, error handling, and resolver architecture for a social content platform.",
+      "input": "Design a GraphQL schema for a social content platform with users, posts, comments, and reactions. Users can follow other users. Posts have media attachments, tags, and visibility settings (public, followers, private). Include the schema with type definitions, queries, mutations, connection-based pagination (Relay-style), input validation types, and union types for error handling. Show the resolver architecture for the feed query with DataLoader for N+1 prevention.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "Connection",
+          "description": "The schema must implement Relay-style connection types with edges and pageInfo for cursor-based pagination of collections (PostConnection, CommentConnection)."
+        },
+        {
+          "type": "contains",
+          "value": "input",
+          "description": "Mutations must use dedicated input types (CreatePostInput, UpdatePostInput) to encapsulate mutation arguments rather than passing individual scalar arguments."
+        },
+        {
+          "type": "contains",
+          "value": "DataLoader",
+          "description": "The resolver architecture must use DataLoader or an equivalent batching mechanism to prevent N+1 query problems when resolving nested relationships."
+        },
+        {
+          "type": "contains",
+          "value": "union",
+          "description": "The schema must use union types or result types (e.g., CreatePostResult = Post | ValidationError) to model operation outcomes that include both success and typed error cases."
+        },
+        {
+          "type": "contains",
+          "value": "visibility",
+          "description": "The schema must model the visibility enum (PUBLIC, FOLLOWERS, PRIVATE) and the resolver must enforce authorization based on the viewer's relationship to the post author."
+        }
+      ]
+    }
+  ]
+}

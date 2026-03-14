@@ -1,11 +1,11 @@
 ---
 name: code-review
 description: "Use when conducting code reviews, building review checklists, calibrating review depth, providing structured feedback, or establishing team review practices. Covers review methodology, feedback patterns, automated checks, and batch review strategies."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: "Claude Code, Codex, GitHub Copilot"
+allowed-tools: Read Grep Glob Bash Edit Write
+context: fork
+agent: reviewer
+user-invocable: true
+argument-hint: "File, PR, or code section to review"
 ---
 
 # Code Review
@@ -64,3 +64,11 @@ When conducting a code review, provide:
 | `references/depth-calibration.md` | How to calibrate review depth based on change risk, size, and author experience |
 | `references/automation.md` | Automated review tools, CI checks, and bot configuration to reduce manual review burden |
 | `references/team-practices.md` | Team-level review practices, CODEOWNERS, SLAs, and review culture guidelines |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

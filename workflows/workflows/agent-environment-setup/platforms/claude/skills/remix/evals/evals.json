@@ -1,0 +1,68 @@
+{
+  "evals": [
+    {
+      "name": "nested-route-with-loaders-and-error-boundaries",
+      "description": "Validate that the skill produces a Remix v2 nested route structure with loaders, actions, progressive enhancement, and error boundaries for a blog platform with authenticated authors.",
+      "input": "Build a Remix v2 blog platform with nested routes. The layout route at /blog shows a sidebar with post categories. Child route /blog/$slug renders the post content loaded from a database. Authors can edit their posts at /blog/$slug/edit using a form with server-side validation. The edit form must work without JavaScript. Add error boundaries for missing posts (404) and server errors. Use flat file routing conventions.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "loader",
+          "description": "Route modules must export loader functions for server-side data fetching, ensuring the HTML response contains meaningful content on first render without client-side fetch waterfalls."
+        },
+        {
+          "type": "contains",
+          "value": "action",
+          "description": "The edit route must export an action function for handling form mutations server-side, following the POST/Redirect/GET pattern to prevent duplicate submissions on browser refresh."
+        },
+        {
+          "type": "contains",
+          "value": "ErrorBoundary",
+          "description": "Route modules must export ErrorBoundary components to isolate failures to the affected route segment, keeping the rest of the page interactive when a loader or action throws."
+        },
+        {
+          "type": "contains",
+          "value": "Form",
+          "description": "The edit form must use Remix's <Form> component for progressive enhancement, providing instant optimistic UI with JavaScript while falling back to standard HTML form submission without it."
+        },
+        {
+          "type": "contains",
+          "value": "blog.",
+          "description": "Route files must use Remix v2 flat file conventions with dot-delimited nesting (e.g., blog._index.tsx, blog.$slug.tsx) instead of folder-based nesting from v1."
+        }
+      ]
+    },
+    {
+      "name": "streaming-dashboard-with-defer",
+      "description": "Validate that the skill produces a streaming Remix page using defer and Await for a dashboard with mixed fast and slow data sources, including proper loading states and error handling.",
+      "input": "Create a Remix dashboard route at /dashboard that loads user profile data (fast, from cache) and analytics data (slow, from an external API that takes 2-3 seconds). The user profile must appear immediately in the HTML response. The analytics section should stream in after the external API responds. Show loading skeletons while analytics loads. Handle the case where the analytics API fails without breaking the profile section. Include proper TypeScript types inferred from the loader.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "defer",
+          "description": "The loader must use defer() to return a mix of resolved data (user profile) and unresolved promises (analytics), enabling the server to stream the HTML shell immediately without waiting for slow data sources."
+        },
+        {
+          "type": "contains",
+          "value": "Await",
+          "description": "The component must use the Remix <Await> component to render streamed data when it resolves, integrating with React Suspense for loading states and error handling on deferred promises."
+        },
+        {
+          "type": "contains",
+          "value": "Suspense",
+          "description": "The component must wrap <Await> in a React <Suspense> boundary with a fallback UI (loading skeleton) that renders in the initial HTML while the deferred analytics promise is pending."
+        },
+        {
+          "type": "contains",
+          "value": "errorElement",
+          "description": "The <Await> component must include an errorElement prop to handle analytics API failures gracefully, preventing the error from propagating to the ErrorBoundary and breaking the entire dashboard."
+        },
+        {
+          "type": "contains",
+          "value": "typeof loader",
+          "description": "Loader data must be typed using TypeScript inference with typeof loader rather than manual interfaces, ensuring the component types stay synchronized with the actual loader return shape."
+        }
+      ]
+    }
+  ]
+}

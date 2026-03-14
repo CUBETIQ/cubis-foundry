@@ -7,7 +7,6 @@ metadata:
   version: "3.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 # Technical Documentation
 
 ## Purpose
@@ -74,8 +73,14 @@ Load on demand. Do not preload all reference files.
 
 | File | Load when |
 | --- | --- |
-| `references/api-documentation.md` | Writing or reviewing API documentation, choosing documentation format (OpenAPI, AsyncAPI), or setting up API doc tooling. |
-| `references/runbooks.md` | Creating operational runbooks, incident response procedures, or routine maintenance documentation. |
-| `references/onboarding.md` | Building onboarding guides, defining progressive disclosure structure, or auditing existing onboarding materials. |
-| `references/writing-style.md` | Establishing writing conventions, tone guidelines, or reviewing documentation for consistency and clarity. |
-| `references/tooling.md` | Choosing documentation platforms, setting up CI/CD validation, or configuring linting and link checking. |
+| `references/api-documentation-patterns.md` | Writing or reviewing API documentation, choosing OpenAPI/AsyncAPI structure, or setting up API doc tooling. |
+| `references/writing-style-guide.md` | Establishing writing conventions, tone guidelines, or reviewing documentation for consistency and clarity. |
+| `references/documentation-tooling.md` | Choosing documentation platforms, setting up CI/CD validation, or configuring linting and link checking. |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

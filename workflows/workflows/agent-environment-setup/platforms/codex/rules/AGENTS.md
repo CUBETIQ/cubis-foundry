@@ -408,7 +408,6 @@ Selection policy:
 <!-- cbx:workflows:auto:end -->
 
 <!-- cbx:mcp:auto:start version=1 -->
-
 ## Cubis Foundry MCP (auto-managed)
 
 Keep MCP context lazy and exact. Skills are supporting context, not the route layer.

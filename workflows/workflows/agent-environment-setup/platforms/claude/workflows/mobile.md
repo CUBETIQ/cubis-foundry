@@ -23,9 +23,9 @@ Use this for mobile app development, Flutter architecture, native integrations, 
 
 ## Skill Routing
 
-- Primary skills: `flutter-feature`, `mobile-design`
-- Supporting skills (optional): `i18n-localization`, `flutter-riverpod`, `flutter-go-router`, `flutter-design-system`, `flutter-testing`, `flutter-drift`, `flutter-offline-sync`, `flutter-state-machine`, `flutter-repository`, `dart-pro`, `swift-pro`, `kotlin-pro`
-- Start with `flutter-feature` for feature implementation and `mobile-design` for UX patterns. Add framework-specific Flutter skill when applicable. Add `i18n-localization` for multi-language support.
+- Primary skills: `expo-app`, `react-native`
+- Supporting skills (optional): `frontend-design`, `expo-app`, `expo-app`, `expo-app`, `expo-app`, `expo-app`, `expo-app`, `expo-app`, `expo-app`, `expo-app`, `swift-best-practices`, `kotlin-best-practices`
+- Start with `expo-app` for feature implementation and `react-native` for UX patterns. Add framework-specific Flutter skill when applicable. Add `frontend-design` for multi-language support.
 
 ## Workflow steps
 
@@ -49,8 +49,8 @@ Use this for mobile app development, Flutter architecture, native integrations, 
 MOBILE_WORKFLOW_RESULT:
   primary_agent: mobile-developer
   supporting_agents: [frontend-specialist?, test-engineer?]
-  primary_skills: [flutter-feature, mobile-design]
-  supporting_skills: [i18n-localization?, flutter-riverpod?, flutter-testing?, <flutter-specific>?]
+  primary_skills: [expo-app, react-native]
+  supporting_skills: [frontend-design?, expo-app?, expo-app?, <flutter-specific>?]
   implementation:
     platforms: [ios, android]
     architecture_decisions: [<string>]

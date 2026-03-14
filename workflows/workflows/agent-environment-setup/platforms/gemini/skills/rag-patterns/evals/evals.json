@@ -1,0 +1,66 @@
+[
+  {
+    "name": "chunking-strategy-for-technical-docs",
+    "description": "Validate that the skill produces a well-reasoned chunking strategy for technical documentation, covering semantic boundaries, overlap, metadata, and size constraints appropriate for the document type.",
+    "input": "Design a chunking strategy for a technical documentation corpus that includes API references (OpenAPI specs), tutorial guides (markdown with code blocks), and changelog entries. The corpus has 5,000 documents totaling 50 million tokens. The target vector store is Pinecone with a 512-dimension embedding model. Chunks will be used for a developer-facing Q&A chatbot. Provide the chunking logic, metadata schema, and recommended chunk sizes.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "semantic boundary",
+        "description": "The strategy must chunk at semantic boundaries (headings, sections, function definitions) rather than fixed token counts, because technical docs have natural structure that should be preserved."
+      },
+      {
+        "type": "contains",
+        "value": "overlap",
+        "description": "The strategy must include chunk overlap (10-15%) to handle queries that match concepts spanning adjacent chunks in tutorials and guides."
+      },
+      {
+        "type": "contains",
+        "value": "metadata",
+        "description": "The strategy must define a metadata schema attached to each chunk (document type, section title, API endpoint, version) to enable filtered retrieval."
+      },
+      {
+        "type": "contains",
+        "value": "code block",
+        "description": "The strategy must address code blocks specifically, because splitting a code example across chunks destroys its utility for developer Q&A."
+      },
+      {
+        "type": "contains",
+        "value": "token",
+        "description": "The strategy must specify chunk size constraints in tokens (not just characters) to align with the embedding model's context window and the LLM's generation budget."
+      }
+    ]
+  },
+  {
+    "name": "hybrid-search-implementation",
+    "description": "Validate that the skill produces a hybrid search implementation combining dense vector search with sparse keyword matching, including fusion scoring, re-ranking, and configuration for a production deployment.",
+    "input": "Implement a hybrid search pipeline for a customer support knowledge base. The system must handle queries like 'error code ERR-4502 payment failed' where both semantic meaning and exact keyword matching matter. The current dense-only retrieval misses exact error codes and product SKUs. Use Qdrant as the vector store. Provide the indexing pipeline, query pipeline, and fusion scoring logic.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "BM25",
+        "description": "The implementation must include BM25 or equivalent sparse retrieval to capture exact keyword matches that dense embeddings miss (error codes, SKUs, proper nouns)."
+      },
+      {
+        "type": "contains",
+        "value": "fusion",
+        "description": "The pipeline must include a fusion step (RRF, weighted combination, or similar) that merges dense and sparse results into a single ranked list."
+      },
+      {
+        "type": "contains",
+        "value": "re-rank",
+        "description": "The pipeline must include a re-ranking step after fusion to refine the top-K results using a cross-encoder or similar model before sending context to the LLM."
+      },
+      {
+        "type": "contains",
+        "value": "Qdrant",
+        "description": "The implementation must use Qdrant as specified and demonstrate its sparse vector or payload indexing capabilities for the keyword matching component."
+      },
+      {
+        "type": "contains",
+        "value": "weight",
+        "description": "The fusion scoring must include configurable weights for dense vs. sparse components, because the optimal balance depends on query distribution and must be tunable."
+      }
+    ]
+  }
+]

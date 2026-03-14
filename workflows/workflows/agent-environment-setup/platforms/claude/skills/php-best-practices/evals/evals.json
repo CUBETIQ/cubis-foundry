@@ -1,0 +1,64 @@
+[
+  {
+    "id": "php-typed-service-implementation",
+    "prompt": "Design a typed PHP 8.4 service for managing product inventory in an e-commerce system. Use readonly classes for value objects (Money, Quantity, ProductId), enums for product status, property hooks for computed properties, and strict interface contracts. Include proper error handling with specific exception hierarchies and a repository interface for persistence.",
+    "assertions": [
+      {
+        "id": "strict-types-and-readonly-classes",
+        "description": "Every file includes declare(strict_types=1). Value objects (Money, Quantity, ProductId) are readonly classes with typed constructor-promoted properties. No public mutable properties on value objects.",
+        "weight": 1.0
+      },
+      {
+        "id": "enum-driven-domain-modeling",
+        "description": "Product status uses a backed enum (e.g., enum ProductStatus: string) with cases like Active, Discontinued, OutOfStock. The enum is used in type hints, match expressions, and domain logic — not string constants or integer flags.",
+        "weight": 1.0
+      },
+      {
+        "id": "property-hooks-usage",
+        "description": "At least one class uses PHP 8.4 property hooks for computed or validated properties (e.g., a get hook for formatted price or a set hook for quantity validation). This replaces traditional getter/setter boilerplate.",
+        "weight": 1.0
+      },
+      {
+        "id": "interface-based-contracts",
+        "description": "The repository layer is defined as an interface (e.g., ProductRepositoryInterface) with typed method signatures. The service depends on the interface, not the concrete implementation, enabling dependency injection and test doubles.",
+        "weight": 1.0
+      },
+      {
+        "id": "specific-exception-hierarchy",
+        "description": "Error handling uses domain-specific exceptions (e.g., ProductNotFoundException, InsufficientStockException) extending a base domain exception. Exceptions include contextual data (the product ID that wasn't found). No bare Exception catches in business logic.",
+        "weight": 1.0
+      }
+    ]
+  },
+  {
+    "id": "php-composer-package-design",
+    "prompt": "Create a Composer package for a PHP 8.4 validation library. The package should use PSR-4 autoloading, include typed validation rules with enum-based error codes, support custom rule creation through interfaces, and have a complete CI-ready test setup with PHPUnit and PHPStan at level 9. Show composer.json, directory structure, example rules, and test configuration.",
+    "assertions": [
+      {
+        "id": "psr4-autoloading-config",
+        "description": "The composer.json uses PSR-4 autoloading with a proper namespace mapping (e.g., Vendor\\Validation\\ -> src/). Dev dependencies include phpunit/phpunit and phpstan/phpstan. No require/include statements for class loading.",
+        "weight": 1.0
+      },
+      {
+        "id": "typed-rule-interface",
+        "description": "A ValidationRule interface defines the contract with typed parameters and return types (e.g., validate(mixed $value): ValidationResult). Custom rules implement this interface. The interface enables polymorphic composition of rule chains.",
+        "weight": 1.0
+      },
+      {
+        "id": "enum-error-codes",
+        "description": "Validation error codes use a backed enum (e.g., enum ErrorCode: string) rather than string constants. Error results include the enum value, a human-readable message, and the field path. This enables programmatic error handling by consumers.",
+        "weight": 1.0
+      },
+      {
+        "id": "phpstan-level-9-config",
+        "description": "A phpstan.neon or phpstan.neon.dist file configures PHPStan at level 9 (or max) with paths pointing to the src/ directory. The configuration demonstrates that the code is designed to pass strict static analysis.",
+        "weight": 1.0
+      },
+      {
+        "id": "phpunit-test-with-data-providers",
+        "description": "Tests use PHPUnit with data providers for parameterized validation scenarios (valid input, invalid input, edge cases). Tests cover the rule interface contract, built-in rules, and error code correctness. A phpunit.xml.dist file configures the test suite.",
+        "weight": 1.0
+      }
+    ]
+  }
+]

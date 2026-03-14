@@ -1,11 +1,9 @@
 ---
 name: csharp-best-practices
-description: "Use when writing, reviewing, or refactoring C# 13/.NET 9 code. Activates for minimal API design with records, async stream processing, source generator patterns, pattern matching with discriminated unions, dependency injection lifetimes, or performance optimization with Span<T> and memory-efficient collections."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: "Use when writing, reviewing, or refactoring modern C#/.NET code, including minimal APIs, records, async streams, pattern matching, DI lifetimes, and memory-efficient performance tuning."
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "C# file, class, or pattern to analyze"
 ---
 
 # C# Best Practices
@@ -79,3 +77,11 @@ No helper scripts are required for this skill right now. Keep execution in `SKIL
 
 - "Design a minimal API endpoint with records, TypedResults, and proper DI for an order management service."
 - "Build an async stream processing pipeline that reads from a database cursor and transforms records with backpressure."
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

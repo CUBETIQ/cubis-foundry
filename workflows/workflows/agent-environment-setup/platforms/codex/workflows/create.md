@@ -12,11 +12,11 @@ Use this for net-new implementation after design is stable.
 
 ## Routing
 
-- Primary coordinator: `@orchestrator`
-- Backend implementation: `@backend-specialist`
-- Frontend implementation: `@frontend-specialist`
-- Mobile implementation: `@mobile-developer`
-- Verification support: `@test-engineer`
+- Primary coordinator: `the orchestrator posture`
+- Backend implementation: `the backend-specialist posture`
+- Frontend implementation: `the frontend-specialist posture`
+- Mobile implementation: `the mobile-developer posture`
+- Verification support: `the test-engineer posture`
 
 ## Context notes
 
@@ -25,8 +25,8 @@ Use this for net-new implementation after design is stable.
 
 ## Skill Routing
 
-- Primary skills: `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`, `csharp-pro`, `kotlin-pro`, `rust-pro`, `php-pro`, `ruby-pro`, `c-pro`, `cpp-pro`, `dart-pro`, `swift-pro`
-- Supporting skills (optional): `api-designer`, `api-patterns`, `nodejs-best-practices`, `nestjs-expert`, `fastapi-expert`, `graphql-architect`, `drizzle-expert`, `firebase`, `mcp-builder`, `react-expert`, `react-best-practices`, `nextjs-developer`, `tailwind-patterns`, `frontend-design`, `design-system-builder`, `web-perf`, `skill-creator`, `stripe-best-practices`, `serverless-patterns`, `i18n-localization`
+- Primary skills: `typescript-best-practices`, `javascript-best-practices`, `python-best-practices`, `golang-best-practices`, `java-best-practices`, `csharp-best-practices`, `kotlin-best-practices`, `rust-best-practices`, `php-best-practices`, `php-best-practices`, `rust-best-practices`, `rust-best-practices`, `expo-app`, `swift-best-practices`
+- Supporting skills (optional): `api-design`, `api-design`, `javascript-best-practices`, `nestjs`, `fastapi`, `api-design`, `drizzle-orm`, `database-design`, `mcp-server-builder`, `react`, `react`, `nextjs`, `frontend-design`, `frontend-design`, `frontend-design`, `performance-testing`, `skill-creator`, `stripe-integration`, `ci-cd-pipeline`, `frontend-design`
 - Pick one primary language skill from repo signals or touched files. Add the narrowest specialist only when the feature is clearly backend or frontend framework-specific.
 
 ## Workflow steps
@@ -60,3 +60,5 @@ CREATE_WORKFLOW_RESULT:
     gaps: [<string>] | []
   follow_up_items: [<string>] | []
 ```
+
+> **Codex note:** This workflow runs inside a network-restricted sandbox. Specialists are reasoning postures defined in AGENTS.md, not spawned processes.

@@ -24,9 +24,9 @@ Use this when starting a new feature, project, or significant change that needs 
 
 ## Routing
 
-- Primary coordinator: `@project-planner`
-- Architecture support: `@orchestrator`
-- Domain validation: `@backend-specialist`, `@frontend-specialist`, `@database-architect`
+- Primary coordinator: `.agent/agents/project-planner`
+- Architecture support: `.agent/agents/orchestrator`
+- Domain validation: `.agent/agents/backend-specialist`, `.agent/agents/frontend-specialist`, `.agent/agents/database-architect`
 
 ## Context notes
 
@@ -35,9 +35,9 @@ Use this when starting a new feature, project, or significant change that needs 
 
 ## Skill Routing
 
-- Primary skills: `architecture-designer`, `api-designer`
-- Supporting skills (optional): `database-skills`, `deep-research`, `mcp-builder`, `openai-docs`, `prompt-engineer`, `skill-creator`
-- Start with `architecture-designer` for system design and `api-designer` for API contracts. Add `database-skills` when data modeling is central, `deep-research` when external knowledge is needed.
+- Primary skills: `system-design`, `api-design`
+- Supporting skills (optional): `database-design`, `architecture-doc`, `mcp-server-builder`, `tech-doc`, `prompt-engineering`, `skill-creator`
+- Start with `system-design` for system design and `api-design` for API contracts. Add `database-design` when data modeling is central, `architecture-doc` when external knowledge is needed.
 
 ## Workflow steps
 
@@ -61,8 +61,8 @@ Use this when starting a new feature, project, or significant change that needs 
 PLAN_WORKFLOW_RESULT:
   primary_agent: project-planner
   supporting_agents: [orchestrator?, backend-specialist?, frontend-specialist?, database-architect?]
-  primary_skills: [architecture-designer, api-designer]
-  supporting_skills: [database-skills?, deep-research?, mcp-builder?]
+  primary_skills: [system-design, api-design]
+  supporting_skills: [database-design?, architecture-doc?, mcp-server-builder?]
   plan:
     scope_summary: <string>
     tasks:
@@ -76,3 +76,5 @@ PLAN_WORKFLOW_RESULT:
     milestones: [<string>]
   follow_up_items: [<string>] | []
 ```
+
+> **Antigravity note:** Use Agent Manager for parallel agent coordination. Workflow files are stored under `.agent/workflows/`.

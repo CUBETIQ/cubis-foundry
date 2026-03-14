@@ -7,7 +7,6 @@ metadata:
   version: "3.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 # Python Best Practices
 
 ## Purpose
@@ -79,3 +78,11 @@ No helper scripts are required for this skill right now. Keep execution in `SKIL
 - "Migrate this service's typing from TypeVar/Optional to PEP 695 type parameter syntax and union types."
 - "Design an async worker that processes messages from a queue with graceful shutdown and structured concurrency."
 - "Set up a pytest suite with fixtures, parametrize, and async test support for this FastAPI application."
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

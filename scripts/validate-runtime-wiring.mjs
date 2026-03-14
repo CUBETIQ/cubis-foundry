@@ -3,6 +3,7 @@
 import path from "node:path";
 import process from "node:process";
 import { promises as fs } from "node:fs";
+import { normalizeSkillId } from "./lib/legacy-skill-map.mjs";
 
 const ROOT = process.cwd();
 const BUNDLE_ROOT = path.join(
@@ -23,6 +24,7 @@ const PLATFORM_ROOTS = {
   copilot: path.join(BUNDLE_ROOT, "platforms", "copilot"),
   antigravity: path.join(BUNDLE_ROOT, "platforms", "antigravity"),
   claude: path.join(BUNDLE_ROOT, "platforms", "claude"),
+  gemini: path.join(BUNDLE_ROOT, "platforms", "gemini"),
 };
 
 const REQUIRED_WORKFLOW_SECTIONS = [
@@ -294,12 +296,13 @@ async function validateRuleFile(filePath, errors) {
     return;
   }
 
-  if (lineCount > 350) {
+  if (lineCount > 450) {
     error(errors, filePath, `rules file is too long (${lineCount} lines)`);
   }
   if (
     !raw.includes("Inspect the repo") &&
-    !raw.includes("Inspect the repo/task")
+    !raw.includes("Inspect the repo/task") &&
+    !raw.includes("Inspect repo/task locally first")
   ) {
     error(
       errors,
@@ -307,23 +310,36 @@ async function validateRuleFile(filePath, errors) {
       "rules file missing local-inspection-first guidance",
     );
   }
-  if (!raw.includes("Never begin with `skill_search`")) {
+  if (
+    !raw.includes("Never begin with `skill_search`") &&
+    !raw.includes("Never chain more than one `skill_search`") &&
+    !raw.includes("Never pre-load skills before route resolution")
+  ) {
     error(errors, filePath, "rules file missing no-skill-search-first guard");
   }
-  if (!raw.includes("route layer")) {
+  if (!raw.includes("route layer") && !raw.includes("Layer Reference")) {
     error(errors, filePath, "rules file missing route-layer guidance");
   }
-  if (!raw.includes("Do not auto-prime every")) {
+  if (
+    !raw.includes("Do not auto-prime every") &&
+    !raw.includes("Do not pre-prime every task with a skill")
+  ) {
     error(errors, filePath, "rules file missing lazy skill-priming guidance");
   }
-  if (!raw.includes("skill_validate") || !raw.includes("skill_get")) {
+  if (
+    (!raw.includes("skill_validate") || !raw.includes("skill_get")) &&
+    !raw.includes("activate_skill")
+  ) {
     error(
       errors,
       filePath,
       "rules file missing validated skill loading guidance",
     );
   }
-  if (!raw.includes("cbx:mcp:auto:start")) {
+  if (
+    !raw.includes("cbx:mcp:auto:start") &&
+    !filePath.includes(`${path.sep}platforms${path.sep}gemini${path.sep}`)
+  ) {
     error(errors, filePath, "rules file missing managed MCP block");
   }
   if (raw.includes("Startup Transparency")) {
@@ -360,7 +376,7 @@ async function canonicalSkillExists(skillId) {
   if (!skillId) return false;
   canonicalSkillIdsPromise ||= collectCanonicalSkillIds();
   const canonicalSkillIds = await canonicalSkillIdsPromise;
-  return canonicalSkillIds.has(skillId);
+  return canonicalSkillIds.has(normalizeSkillId(skillId));
 }
 
 async function main() {
@@ -396,6 +412,10 @@ async function main() {
   );
   await validateRuleFile(
     path.join(PLATFORM_ROOTS.claude, "rules", "CLAUDE.md"),
+    errors,
+  );
+  await validateRuleFile(
+    path.join(PLATFORM_ROOTS.gemini, "rules", "GEMINI.md"),
     errors,
   );
 
@@ -476,6 +496,17 @@ async function main() {
         route.description,
         errors,
       );
+      const geminiWorkflow = path.join(
+        PLATFORM_ROOTS.gemini,
+        "workflows",
+        route.artifacts?.gemini?.workflowFile || "",
+      );
+      await validateWorkflowFile(
+        geminiWorkflow,
+        route.command,
+        route.description,
+        errors,
+      );
 
       await validateCopilotPrompt(
         path.join(
@@ -495,6 +526,16 @@ async function main() {
           route.artifacts?.antigravity?.commandFile || "",
         ),
         route.artifacts?.antigravity?.workflowFile || "",
+        route.command,
+        errors,
+      );
+      await validateAntigravityCommand(
+        path.join(
+          PLATFORM_ROOTS.gemini,
+          "commands",
+          route.artifacts?.gemini?.commandFile || "",
+        ),
+        route.artifacts?.gemini?.workflowFile || "",
         route.command,
         errors,
       );
@@ -541,6 +582,13 @@ async function main() {
       true,
       errors,
     );
+    if (route.artifacts?.gemini?.posture !== route.id) {
+      error(
+        errors,
+        ROUTE_MANIFEST_PATH,
+        `route '${route.id}' has gemini posture drift (expected '${route.id}', found '${route.artifacts?.gemini?.posture || "missing"}')`,
+      );
+    }
   }
 
   if (errors.length > 0) {

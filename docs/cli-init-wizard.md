@@ -19,7 +19,7 @@ Options:
 - `--overwrite`: replace existing generated files instead of skipping.
 - `--target <path>`: run install logic against another project directory.
 - `--bundle <bundleId>`: preselect bundle id (used as interactive default and non-interactive value).
-- `--platforms <csv>`: comma-separated platforms (`codex,antigravity,copilot,claude`).
+- `--platforms <csv>`: comma-separated platforms (`codex,antigravity,copilot,claude,gemini`).
 - `--mcps <csv>`: comma-separated MCP integrations (`cubis-foundry,postman,stitch`).
 - `--skill-profile <profile>`: `core`, `web-backend`, `full`.
 - `--skills-scope <scope>`: `project` or `global`.

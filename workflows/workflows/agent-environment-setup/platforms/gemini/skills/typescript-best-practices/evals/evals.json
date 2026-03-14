@@ -1,0 +1,54 @@
+[
+  {
+    "id": "typescript-strict-migration",
+    "prompt": "I need to migrate a legacy TypeScript project to strict mode. The tsconfig currently has `strict: false` and uses `any` extensively. Here is a sample module:\n\n```typescript\n// user-service.ts\ninterface User {\n  id: number;\n  name: string;\n  email: string;\n  role: 'admin' | 'user' | 'moderator';\n  metadata?: Record<string, any>;\n}\n\nfunction getUser(users: User[], id) {\n  return users.find(u => u.id === id);\n}\n\nfunction getUserProperty(user: User, key: string) {\n  return user[key];\n}\n\nfunction processUsers(data: any) {\n  const users = data.users;\n  return users.map(u => ({ ...u, displayName: u.name.toUpperCase() }));\n}\n\nconst config = {\n  apiUrl: 'https://api.example.com',\n  timeout: 5000,\n  retries: 3,\n} as const;\n```\n\nMigrate this to strict TypeScript 5.9+ with proper typing, null safety, and noUncheckedIndexedAccess. Explain the tsconfig changes needed.",
+    "assertions": [
+      {
+        "type": "content",
+        "value": "enables strict: true in tsconfig and explains the flags it activates (strictNullChecks, noImplicitAny, strictFunctionTypes)"
+      },
+      {
+        "type": "content",
+        "value": "adds noUncheckedIndexedAccess: true and handles the resulting T | undefined return types from indexed access"
+      },
+      {
+        "type": "content",
+        "value": "adds explicit type annotation for the `id` parameter in getUser and handles the possible undefined return"
+      },
+      {
+        "type": "content",
+        "value": "replaces the untyped `any` in processUsers with a proper type or runtime validation using Zod or similar"
+      },
+      {
+        "type": "content",
+        "value": "uses satisfies operator or proper type annotation for the config object to validate shape while preserving literal types"
+      }
+    ]
+  },
+  {
+    "id": "typescript-discriminated-union",
+    "prompt": "Design a type-safe state machine for a payment processing flow with these states: Pending, Authorized, Captured, Refunded, Failed. Each state has different allowed transitions and carries different data. Implement discriminated unions with exhaustiveness checking. Include a transition function that only allows valid state changes.",
+    "assertions": [
+      {
+        "type": "content",
+        "value": "defines a discriminated union with a literal type discriminant field (e.g., status or kind) for each payment state"
+      },
+      {
+        "type": "content",
+        "value": "each state variant carries state-specific data fields (e.g., Authorized has authorizationCode, Captured has captureId)"
+      },
+      {
+        "type": "content",
+        "value": "implements exhaustiveness checking using never in the default case of a switch statement or equivalent pattern"
+      },
+      {
+        "type": "content",
+        "value": "the transition function uses type narrowing to restrict which transitions are valid from each state"
+      },
+      {
+        "type": "content",
+        "value": "demonstrates that invalid transitions produce compile-time errors rather than runtime checks"
+      }
+    ]
+  }
+]

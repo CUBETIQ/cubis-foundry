@@ -1,6 +1,6 @@
 ---
 name: gin-golang
-description: "Use when building HTTP APIs with the Gin web framework for Go. Covers production routing patterns, middleware chains, request validation with binding tags, structured error handling, context propagation, and deployment hardening. Activate when the user mentions Gin, gin-gonic, or asks for a Go web framework with validation and middleware."
+description: "Use when building Gin-based Go services, including routing, middleware chains, request validation, structured errors, context propagation, and deployment hardening."
 license: MIT
 metadata:
   author: cubis-foundry

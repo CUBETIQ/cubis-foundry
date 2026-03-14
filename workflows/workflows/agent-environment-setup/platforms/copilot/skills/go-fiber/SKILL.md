@@ -1,13 +1,12 @@
 ---
 name: go-fiber
-description: "Use when building HTTP APIs or real-time services with Go Fiber v3. Covers zero-allocation routing, Express-inspired middleware, WebSocket endpoints, grouped routes, request validation, structured error handling, and performance tuning. Activate when the user mentions Fiber, gofiber, or asks for a high-performance Go web framework."
+description: "Use when building Go Fiber services, including routing, middleware, WebSockets, request validation, structured errors, and performance tuning."
 license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 # Go Fiber v3
 
 ## Purpose
@@ -72,3 +71,11 @@ Load only what the current step needs.
 | `references/error-handling.md` | Custom error handler, structured errors, or panic recovery patterns are needed. |
 | `references/testing.md` | Handler testing, integration tests, or benchmark setup is needed. |
 | `references/performance.md` | Allocation profiling, fasthttp tuning, or throughput optimization is in scope. |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

@@ -1,6 +1,6 @@
 ---
 name: skill-creator
-description: "Use when creating new skills from scratch, modifying existing skills, measuring skill performance with evals, benchmarking skill quality with variance analysis, or optimizing skill instructions for better adherence and output quality. Supports 4 modes: create, edit, eval, and benchmark."
+description: "Use when creating or updating skills, evaluating skill performance, or benchmarking instruction quality. Covers skill authoring, edits, eval design, and iterative improvement of skill behavior."
 license: MIT
 metadata:
   author: cubis-foundry

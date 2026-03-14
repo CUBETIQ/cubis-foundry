@@ -1,6 +1,6 @@
 ---
 name: javascript-best-practices
-description: "Use when writing, refactoring, or reviewing modern JavaScript (ES2024+) across Node.js, Bun, Deno, and browser runtimes. Covers module patterns, async orchestration, cross-runtime compatibility, bundling strategies, and production testing. Replaces javascript-pro."
+description: "Use when writing, refactoring, or reviewing modern JavaScript across Node.js, Bun, Deno, and browsers, including modules, async orchestration, compatibility, bundling, and testing."
 license: MIT
 metadata:
   author: cubis-foundry

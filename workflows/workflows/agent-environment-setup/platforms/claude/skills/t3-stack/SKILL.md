@@ -1,11 +1,9 @@
 ---
 name: t3-stack
-description: "Use when building or maintaining a full-stack TypeScript application with the T3 Stack: Next.js App Router, tRPC routers and procedures, Prisma schema and queries, NextAuth.js session handling, Tailwind CSS styling, and end-to-end type safety from database to UI."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: "Use when building or maintaining T3 Stack apps with Next.js App Router, tRPC, Prisma, NextAuth.js, Tailwind CSS, and end-to-end type safety."
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "T3 Stack component, tRPC router, or configuration"
 ---
 
 # T3 Stack
@@ -66,13 +64,19 @@ Provide implementation code, schema definitions, configuration snippets, and arc
 | File                              | Load when                                                                                     |
 | --------------------------------- | --------------------------------------------------------------------------------------------- |
 | `references/trpc-patterns.md`    | Designing tRPC routers, procedures, middleware, error handling, or server-side callers.       |
-| `references/prisma-integration.md`| Writing Prisma schemas, queries, relations, or configuring the singleton client in T3.       |
-| `references/auth-patterns.md`    | Configuring NextAuth.js providers, callbacks, session strategies, or wiring auth into tRPC.   |
-| `references/testing.md`          | Writing integration tests, mocking tRPC context, or testing protected procedures.            |
-| `references/deployment.md`       | Deploying to Vercel, managing environment variables, or configuring connection pooling.       |
+| `references/prisma-t3-patterns.md` | Writing Prisma schemas, queries, relations, or configuring the singleton client in T3.     |
+| `references/auth-strategies.md`  | Configuring NextAuth.js providers, callbacks, session strategies, or wiring auth into tRPC.  |
 
 ## Examples
 
 - "Set up a new T3 Stack project with Google OAuth and a Prisma PostgreSQL schema."
 - "Add a tRPC router for CRUD operations on a blog post model with auth middleware."
 - "Review my T3 Stack app for type safety gaps between tRPC and Prisma."
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

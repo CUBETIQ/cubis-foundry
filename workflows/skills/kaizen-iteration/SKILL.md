@@ -1,6 +1,6 @@
 ---
 name: kaizen-iteration
-description: "Continuous improvement workflow covering retrospective facilitation, metrics-driven improvement cycles, root cause analysis, and incremental process optimization. Use when running retrospectives, analyzing team metrics, or driving systematic improvement."
+description: "Use when running retrospectives, analyzing team metrics, performing root-cause analysis, and driving incremental process improvement."
 license: MIT
 metadata:
   author: cubis-foundry

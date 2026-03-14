@@ -7,7 +7,6 @@ metadata:
   version: "3.0"
 compatibility: "Claude Code, Codex, GitHub Copilot"
 ---
-
 # Requesting Code Review
 
 ## Purpose
@@ -71,3 +70,11 @@ When preparing a review request, provide:
 | `references/pr-description-patterns.md` | Templates and examples for writing effective PR descriptions across different change types |
 | `references/reviewer-selection.md` | How to select the right reviewers based on expertise, workload, and change characteristics |
 | `references/self-review-checklist.md` | Step-by-step checklist for self-reviewing your changes before requesting external review |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

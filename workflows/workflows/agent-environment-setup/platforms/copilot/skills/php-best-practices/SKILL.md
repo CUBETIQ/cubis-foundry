@@ -1,13 +1,12 @@
 ---
 name: php-best-practices
-description: "Use when writing, reviewing, or refactoring PHP 8.4+ code. Activates for typed service implementation with readonly classes, Fiber-based async patterns, enum-driven domain modeling, property hooks, Composer package design, or security hardening with strict types and static analysis."
+description: "Use when writing, reviewing, or refactoring modern PHP, including readonly classes, enums, property hooks, Composer package design, strict types, and security hardening."
 license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 # PHP Best Practices
 
 ## Purpose
@@ -83,3 +82,11 @@ No helper scripts are required for this skill right now. Keep execution in `SKIL
 
 - "Design a typed service with readonly value objects, enums, and property hooks for an e-commerce domain."
 - "Create a Composer package with PSR-4 autoloading, PHPStan level 9, and CI-ready test configuration."
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

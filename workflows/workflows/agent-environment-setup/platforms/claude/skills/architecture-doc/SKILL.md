@@ -1,11 +1,9 @@
 ---
 name: architecture-doc
 description: "Use when creating architecture documentation including C4 model diagrams, Architecture Decision Records, system context views, deployment diagrams, and quality attribute specifications."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+allowed-tools: Read Grep Glob
+user-invocable: true
+argument-hint: "System or component to document"
 ---
 
 # Architecture Documentation
@@ -72,8 +70,14 @@ Load on demand. Do not preload all reference files.
 
 | File | Load when |
 | --- | --- |
-| `references/c4-model.md` | Creating C4 diagrams at any level (Context, Container, Component, Code) or choosing diagram notation. |
-| `references/adr-format.md` | Writing or reviewing Architecture Decision Records, or setting up ADR conventions for a new project. |
-| `references/diagram-standards.md` | Choosing diagram tools, notation standards, or embedding diagrams-as-code in repositories. |
-| `references/quality-attributes.md` | Specifying quality attributes, building utility trees, or defining measurable acceptance criteria. |
-| `references/templates.md` | Bootstrapping architecture documentation from scratch or adding a new document type to an existing set. |
+| `references/c4-modeling.md` | Creating C4 diagrams at any level (Context, Container, Component, Code) or choosing diagram notation. |
+| `references/adr-templates.md` | Writing or reviewing Architecture Decision Records, or setting up ADR conventions for a new project. |
+| `references/documentation-automation.md` | Choosing lightweight architecture documentation workflows, diagrams-as-code practices, or review automation. |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

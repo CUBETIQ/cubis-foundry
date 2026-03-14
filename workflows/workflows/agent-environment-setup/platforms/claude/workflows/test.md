@@ -24,9 +24,9 @@ Use this when writing new tests, improving coverage, debugging test failures, or
 
 ## Skill Routing
 
-- Primary skills: `testing-patterns`, `webapp-testing`
-- Supporting skills (optional): `playwright-e2e`, `error-ux-observability`, `debugging-strategies`, `frontend-code-review`, `static-analysis`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`
-- Start with `testing-patterns` for test strategy and architecture. Add `webapp-testing` for implementation. Add `playwright-e2e` for E2E automation. Add `error-ux-observability` for testing error states.
+- Primary skills: `unit-testing`, `integration-testing`
+- Supporting skills (optional): `playwright-interactive`, `observability`, `systematic-debugging`, `code-review`, `code-review`, `typescript-best-practices`, `javascript-best-practices`, `python-best-practices`, `golang-best-practices`, `java-best-practices`
+- Start with `unit-testing` for test strategy and architecture. Add `integration-testing` for implementation. Add `playwright-interactive` for E2E automation. Add `observability` for testing error states.
 
 ## Workflow steps
 
@@ -49,8 +49,8 @@ Use this when writing new tests, improving coverage, debugging test failures, or
 TEST_WORKFLOW_RESULT:
   primary_agent: test-engineer
   supporting_agents: [qa-automation-engineer?, backend-specialist?, frontend-specialist?, validator?]
-  primary_skills: [testing-patterns, webapp-testing]
-  supporting_skills: [playwright-e2e?, error-ux-observability?, debugging-strategies?]
+  primary_skills: [unit-testing, integration-testing]
+  supporting_skills: [playwright-interactive?, observability?, systematic-debugging?]
   test_strategy:
     unit: <number of tests>
     integration: <number of tests>

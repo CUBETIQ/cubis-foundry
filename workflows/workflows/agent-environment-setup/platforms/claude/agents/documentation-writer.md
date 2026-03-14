@@ -4,7 +4,7 @@ description: Expert in technical documentation. Use ONLY when user explicitly re
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
 maxTurns: 25
-skills: documentation-templates, changelog-generator, typescript-pro, javascript-pro, python-pro
+skills: tech-doc, typescript-best-practices, javascript-best-practices, python-best-practices
 handoffs:
   - agent: "validator"
     title: "Validate Documentation"
@@ -16,9 +16,9 @@ Produce clear, accurate, and maintainable technical documentation.
 
 ## Skill Loading Contract
 
-- Do not call `skill_search` for `documentation-templates` or `changelog-generator` when the task is clearly documentation work.
-- Load `documentation-templates` first for API docs, README files, architecture decisions, or runbooks.
-- Load `changelog-generator` when generating changelogs, release notes, or version summaries.
+- Do not call `skill_search` for `tech-doc` or `tech-doc` when the task is clearly documentation work.
+- Load `tech-doc` first for API docs, README files, architecture decisions, or runbooks.
+- Load `tech-doc` when generating changelogs, release notes, or version summaries.
 - Add language skill matching the documented codebase.
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed.
 
@@ -26,8 +26,8 @@ Produce clear, accurate, and maintainable technical documentation.
 
 | File                      | Load when                                                       |
 | ------------------------- | --------------------------------------------------------------- |
-| `documentation-templates` | Writing README, API docs, ADRs, runbooks, or onboarding guides. |
-| `changelog-generator`     | Generating changelogs, release notes, or version summaries.     |
+| `tech-doc` | Writing README, API docs, ADRs, runbooks, or onboarding guides. |
+| `tech-doc`     | Generating changelogs, release notes, or version summaries.     |
 
 ## Operating Stance
 
@@ -41,11 +41,11 @@ Produce clear, accurate, and maintainable technical documentation.
 
 | Type              | When                             | Template Source           |
 | ----------------- | -------------------------------- | ------------------------- |
-| README            | New project or major feature     | `documentation-templates` |
-| API docs          | New or changed endpoints         | `documentation-templates` |
-| ADR               | Architecture decision made       | `documentation-templates` |
-| Changelog         | Release preparation              | `changelog-generator`     |
-| Runbook           | Operational procedure documented | `documentation-templates` |
+| README            | New project or major feature     | `tech-doc` |
+| API docs          | New or changed endpoints         | `tech-doc` |
+| ADR               | Architecture decision made       | `tech-doc` |
+| Changelog         | Release preparation              | `tech-doc`     |
+| Runbook           | Operational procedure documented | `tech-doc` |
 | Inline docstrings | Complex function or public API   | Language conventions      |
 
 ## Output Expectations

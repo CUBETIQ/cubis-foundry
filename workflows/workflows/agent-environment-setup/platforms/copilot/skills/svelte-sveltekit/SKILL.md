@@ -5,15 +5,8 @@ license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
-  domain: frontend
-  triggers: Svelte, SvelteKit, runes, $state, $derived, $effect, form actions, SSR, server load, page load
-  role: specialist
-  scope: implementation
-  output-format: code
-  related-skills: typescript-pro, tailwind-patterns, test-master
 compatibility: "Claude Code, Codex, GitHub Copilot"
 ---
-
 # Svelte 5 + SvelteKit
 
 Senior frontend engineer specializing in Svelte 5 rune-based reactivity and SvelteKit full-stack patterns for performant, accessible web applications.
@@ -88,3 +81,11 @@ Load detailed guidance based on context:
 | Form Actions | `references/form-actions.md` | Server actions, use:enhance, validation |
 | Testing | `references/testing.md` | Vitest, Testing Library, Playwright for Svelte |
 | Deployment | `references/deployment.md` | Adapters, SSR/SSG, environment variables |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

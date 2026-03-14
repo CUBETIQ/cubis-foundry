@@ -1,13 +1,12 @@
 ---
 name: swift-best-practices
-description: "Use when writing, reviewing, or refactoring Swift 6.0+ code. Activates for actor-based service design, strict concurrency migration, SwiftUI state management with @Observable, structured concurrency with TaskGroup/AsyncStream, protocol-oriented architecture, or Swift Package Manager module organization."
+description: "Use when writing, reviewing, or refactoring modern Swift, including strict concurrency, actors, SwiftUI with @Observable, structured concurrency, protocol-oriented design, and SPM modules."
 license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 # Swift Best Practices
 
 ## Purpose
@@ -83,3 +82,11 @@ No helper scripts are required for this skill right now. Keep execution in `SKIL
 
 - "Design an actor-based networking service with proper isolation and cancellation support."
 - "Migrate this SwiftUI view from ObservableObject to @Observable with proper state management."
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

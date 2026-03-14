@@ -7,7 +7,6 @@ metadata:
   version: "3.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 # Golang Best Practices
 
 ## Purpose
@@ -75,3 +74,11 @@ No helper scripts are required for this skill right now. Keep execution in `SKIL
 - "Design the error handling strategy for this Go API with custom error types and middleware-based error mapping."
 - "Refactor this unbounded goroutine fan-out into an errgroup worker pool with context cancellation and concurrency limits."
 - "Set up a benchmark suite with pprof integration to identify allocation hot spots in this parser."
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

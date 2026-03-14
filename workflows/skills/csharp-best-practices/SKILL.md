@@ -1,6 +1,6 @@
 ---
 name: csharp-best-practices
-description: "Use when writing, reviewing, or refactoring C# 13/.NET 9 code. Activates for minimal API design with records, async stream processing, source generator patterns, pattern matching with discriminated unions, dependency injection lifetimes, or performance optimization with Span<T> and memory-efficient collections."
+description: "Use when writing, reviewing, or refactoring modern C#/.NET code, including minimal APIs, records, async streams, pattern matching, DI lifetimes, and memory-efficient performance tuning."
 license: MIT
 metadata:
   author: cubis-foundry

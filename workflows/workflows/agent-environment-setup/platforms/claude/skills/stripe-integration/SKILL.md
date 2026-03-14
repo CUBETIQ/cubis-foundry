@@ -1,11 +1,9 @@
 ---
 name: stripe-integration
 description: "Use when building Stripe payment integrations: checkout sessions, subscriptions, webhook handling, idempotent API calls, fraud prevention, and end-to-end payment testing with Stripe CLI."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "Stripe checkout, subscription, or webhook to implement"
 ---
 
 # Stripe Integration
@@ -77,14 +75,20 @@ Guide the design and implementation of production-grade Stripe payment integrati
 
 | File                          | Load when                                                                                     |
 | ----------------------------- | --------------------------------------------------------------------------------------------- |
-| `references/checkout.md`      | Building checkout sessions, redirect flows, or embedded payment forms.                       |
-| `references/subscriptions.md` | Implementing recurring billing, plan changes, trials, or dunning.                            |
-| `references/webhooks.md`      | Setting up webhook endpoints, handling events, or debugging delivery.                        |
-| `references/testing.md`       | Writing integration tests, using Stripe CLI, or configuring test fixtures.                   |
-| `references/security.md`      | Securing API keys, verifying signatures, preventing fraud, or meeting PCI requirements.      |
+| `references/payment-flows.md` | Building checkout sessions, redirect flows, or embedded payment forms.                       |
+| `references/subscription-lifecycle.md` | Implementing recurring billing, plan changes, trials, dunning, and customer portal flows. |
+| `references/webhook-handling.md` | Setting up webhook endpoints, handling events, and debugging delivery behavior.           |
 
 ## Examples
 
 - "Set up Stripe Checkout for a SaaS app with monthly and annual subscription plans."
 - "Implement a webhook handler for subscription lifecycle events with idempotent processing."
 - "Add Stripe Customer Portal for self-service billing with plan upgrade and downgrade support."
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

@@ -1,0 +1,32 @@
+{
+  "skill_name": "javascript-best-practices",
+  "platform": "claude-code",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have a Node.js Express API that uses CommonJS require() throughout. I need to migrate it to ESM modules. The project also needs to work as a library consumed by both ESM and CJS users. Show me how to restructure the package.json, update the module imports, and set up dual-format exports.",
+      "expected_output": "A migration plan with package.json exports field configuration for dual ESM/CJS, updated import statements, and guidance on handling __dirname/__filename replacements in ESM.",
+      "files": [],
+      "assertions": [
+        "Sets \"type\": \"module\" in package.json or explains the ESM entry point strategy",
+        "Configures the \"exports\" field with both \"import\" and \"require\" conditions for dual-format support",
+        "Replaces require() calls with import statements and explains __dirname replacement using import.meta.url",
+        "Addresses barrel exports and tree-shaking implications for the library surface",
+        "Includes or references testing the dual-format output to verify both CJS and ESM consumers work"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I'm building a data processing service that needs to run on both Node.js and Deno. It fetches paginated data from a REST API, transforms each page, and writes results to a file. I need it to handle cancellation (user presses Ctrl+C), retry transient failures, and limit concurrency to 5 parallel requests. Show me how to write this cross-runtime.",
+      "expected_output": "A cross-runtime implementation using fetch(), AbortSignal for cancellation, async generators for pagination, a concurrency limiter, and conditional runtime-specific file I/O.",
+      "files": [],
+      "assertions": [
+        "Uses AbortController/AbortSignal for cancellation with signal propagation through the fetch chain",
+        "Implements retry logic with exponential backoff that respects the abort signal",
+        "Limits concurrent requests to 5 using a semaphore or queue pattern rather than unbounded Promise.all",
+        "Uses runtime detection or conditional imports for file system operations (node:fs vs Deno.writeFile)",
+        "Uses async generators or ReadableStream for paginated data processing instead of loading all pages into memory"
+      ]
+    }
+  ]
+}

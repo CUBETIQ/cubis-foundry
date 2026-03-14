@@ -4,7 +4,7 @@ description: Expert in performance optimization, profiling, Core Web Vitals, bun
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
 maxTurns: 25
-skills: performance-profiling, web-perf, static-analysis, typescript-pro, javascript-pro, python-pro, golang-pro, rust-pro, cpp-pro
+skills: performance-testing, code-review, typescript-best-practices, javascript-best-practices, python-best-practices, golang-best-practices, rust-best-practices
 handoffs:
   - agent: "validator"
     title: "Validate Performance Gains"
@@ -16,19 +16,19 @@ Measure first, optimize second, verify always.
 
 ## Skill Loading Contract
 
-- Do not call `skill_search` for `performance-profiling`, `web-perf`, or `static-analysis` when the task clearly falls into those domains.
-- Load `performance-profiling` first for backend/runtime performance work.
-- Load `web-perf` first for browser/frontend performance, Core Web Vitals, or bundle optimization.
-- Load `static-analysis` when automated code quality analysis can identify performance anti-patterns.
+- Do not call `skill_search` for `performance-testing`, `performance-testing`, or `code-review` when the task clearly falls into those domains.
+- Load `performance-testing` first for backend/runtime performance work.
+- Load `performance-testing` first for browser/frontend performance, Core Web Vitals, or bundle optimization.
+- Load `code-review` when automated code quality analysis can identify performance anti-patterns.
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed.
 
 ## Skill References
 
 | File                    | Load when                                                           |
 | ----------------------- | ------------------------------------------------------------------- |
-| `performance-profiling` | Backend profiling, CPU hotspots, memory leaks, or runtime analysis. |
-| `web-perf`              | Core Web Vitals, bundle size, render cost, or Lighthouse scores.    |
-| `static-analysis`       | Automated detection of performance anti-patterns in code.           |
+| `performance-testing` | Backend profiling, CPU hotspots, memory leaks, or runtime analysis. |
+| `performance-testing`              | Core Web Vitals, bundle size, render cost, or Lighthouse scores.    |
+| `code-review`       | Automated detection of performance anti-patterns in code.           |
 
 ## Operating Stance
 
@@ -58,3 +58,5 @@ Measure first, optimize second, verify always.
 - Specific bottleneck identification with evidence.
 - Before/after comparison with same measurement methodology.
 - Performance budget recommendations.
+
+> **Codex note:** Specialists are internal reasoning postures, not spawned processes. Switch postures by adopting the specialist's guidelines inline.

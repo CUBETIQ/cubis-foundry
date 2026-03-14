@@ -7,7 +7,6 @@ metadata:
   version: "3.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 # Rust Best Practices
 
 ## Purpose
@@ -79,3 +78,11 @@ No helper scripts are required for this skill right now. Keep execution in `SKIL
 - "Design the ownership hierarchy for this data pipeline so no unnecessary cloning occurs between parsing, transformation, and serialization stages."
 - "Implement an async HTTP service with axum, graceful shutdown via CancellationToken, and structured error handling with thiserror."
 - "Review this unsafe block for soundness and add SAFETY documentation explaining the invariants."
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

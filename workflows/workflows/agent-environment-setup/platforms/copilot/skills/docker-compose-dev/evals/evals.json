@@ -1,0 +1,66 @@
+[
+  {
+    "name": "multi-service-dev-environment",
+    "description": "Validate that the skill produces a Docker Compose configuration for a multi-service development environment with hot reload, proper networking, health checks, and developer-friendly tooling.",
+    "input": "Create a Docker Compose development environment for a full-stack application with: a Next.js frontend (port 3000), a FastAPI backend (port 8000), a PostgreSQL database, and a Redis cache. Configure hot reload for both the frontend and backend using bind mounts. Add health checks for PostgreSQL and Redis. Use a custom network so services communicate by name. Include a pgAdmin service behind a Compose profile for optional database management.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "volumes:",
+        "description": "The configuration must use bind mount volumes to map host source directories into containers, enabling hot reload without container rebuilds."
+      },
+      {
+        "type": "contains",
+        "value": "healthcheck:",
+        "description": "Database and cache services must define health checks so that dependent services wait for actual readiness, not just container startup."
+      },
+      {
+        "type": "contains",
+        "value": "networks:",
+        "description": "The configuration must define a custom Docker network so services communicate by service name via Docker DNS rather than hardcoded IPs."
+      },
+      {
+        "type": "contains",
+        "value": "profiles:",
+        "description": "Optional services like pgAdmin must be placed behind Compose profiles so they only start when explicitly requested by the developer."
+      },
+      {
+        "type": "contains",
+        "value": "depends_on:",
+        "description": "Application services must declare depends_on with health check conditions to enforce correct startup ordering and prevent race conditions."
+      }
+    ]
+  },
+  {
+    "name": "production-parity-configuration",
+    "description": "Validate that the skill produces a Compose configuration that minimizes dev/prod drift with multi-stage Dockerfiles, resource limits, and CI-testable setup.",
+    "input": "Refactor an existing Docker Compose development setup to improve production parity. The application is a Go API with a PostgreSQL database. Create a multi-stage Dockerfile with separate dev and prod targets. Add resource limits matching the production Kubernetes pod limits (512Mi memory, 0.5 CPU). Configure the dev stage with Delve debugger support on port 2345. Use BuildKit cache mounts for Go module downloads. Add a CI test job that runs 'docker compose up --wait' to verify the configuration works.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "AS dev",
+        "description": "The Dockerfile must use a named 'dev' build stage so Docker Compose can target it specifically for development builds with debugging tools."
+      },
+      {
+        "type": "contains",
+        "value": "mem_limit",
+        "description": "The Compose configuration must set memory limits to match production constraints, ensuring resource-related bugs surface during development."
+      },
+      {
+        "type": "contains",
+        "value": "2345",
+        "description": "The development configuration must expose the Delve debugger port (2345) so developers can attach IDE debuggers to the running Go process."
+      },
+      {
+        "type": "contains",
+        "value": "cache",
+        "description": "The Dockerfile must use BuildKit cache mounts for Go module downloads to speed up rebuilds when only application code changes."
+      },
+      {
+        "type": "contains",
+        "value": "target:",
+        "description": "The Compose build section must specify 'target: dev' to select the development stage of the multi-stage Dockerfile."
+      }
+    ]
+  }
+]

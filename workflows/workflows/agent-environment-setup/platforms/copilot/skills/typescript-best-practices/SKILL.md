@@ -7,7 +7,6 @@ metadata:
   version: "3.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 # TypeScript Best Practices
 
 ## Purpose
@@ -79,3 +78,11 @@ No helper scripts are required for this skill right now. Keep execution in `SKIL
 - "Migrate this codebase from loose tsconfig to strict mode with noUncheckedIndexedAccess."
 - "Design a type-safe state machine using discriminated unions with exhaustiveness checking."
 - "Create branded types for UserId, PostId, and Email with runtime validation at API boundaries."
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

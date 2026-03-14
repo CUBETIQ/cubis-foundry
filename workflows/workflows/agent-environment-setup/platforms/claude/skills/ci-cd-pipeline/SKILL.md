@@ -1,11 +1,11 @@
 ---
 name: ci-cd-pipeline
 description: "Use when designing, optimizing, or debugging CI/CD pipelines: GitHub Actions workflows, GitLab CI configurations, pipeline caching strategies, matrix builds, deployment gates, artifact management, and release automation."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+allowed-tools: Read Grep Glob Bash Edit Write
+context: fork
+agent: devops-engineer
+user-invocable: true
+argument-hint: "Pipeline file or CI/CD concern to address"
 ---
 
 # CI/CD Pipeline
@@ -70,3 +70,11 @@ Provide complete pipeline configuration files with inline comments explaining no
 | `references/caching.md`                 | Implementing dependency caching, build artifact caching, or Docker layer caching strategies.           |
 | `references/deployment-strategies.md`   | Configuring canary, blue-green, or rolling deployments with health check gating.                       |
 | `references/security.md`               | Hardening pipelines against supply chain attacks, secret management, or compliance scanning.            |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

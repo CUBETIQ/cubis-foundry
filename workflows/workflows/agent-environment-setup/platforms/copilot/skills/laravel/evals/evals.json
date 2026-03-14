@@ -1,0 +1,66 @@
+[
+  {
+    "name": "api-resource-with-eloquent-relationships",
+    "description": "Validate that the skill produces a correct Laravel API Resource backed by Eloquent relationships with eager loading and proper JSON structure.",
+    "prompt": "Create a Laravel 11 API resource for an Order model that belongs to a Customer and has many OrderItems. Each OrderItem belongs to a Product. Return nested JSON with customer name, order total, and line items with product name and quantity. Include the controller, resource classes, and route registration.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "JsonResource",
+        "description": "Must use Laravel API Resource (JsonResource) for response shaping."
+      },
+      {
+        "type": "contains",
+        "value": "with(",
+        "description": "Must eager-load relationships using with() to prevent N+1 queries."
+      },
+      {
+        "type": "contains",
+        "value": "belongsTo",
+        "description": "Must define belongsTo relationship on the Order model for Customer."
+      },
+      {
+        "type": "contains",
+        "value": "hasMany",
+        "description": "Must define hasMany relationship on the Order model for OrderItems."
+      },
+      {
+        "type": "contains",
+        "value": "Route::",
+        "description": "Must include route registration for the API resource endpoint."
+      }
+    ]
+  },
+  {
+    "name": "queue-based-job-processing",
+    "description": "Validate that the skill produces a robust queued job with retry logic, backoff, failure handling, and event-driven dispatch.",
+    "prompt": "Create a Laravel 11 queued job that processes a payment via a third-party API. The job should have exponential backoff, a maximum of 5 retries, a failed() method that notifies an admin, and be dispatched from a PaymentController after an order is created. Include the event/listener pattern for triggering post-payment side effects.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "implements ShouldQueue",
+        "description": "Must implement ShouldQueue interface for async queue processing."
+      },
+      {
+        "type": "contains",
+        "value": "backoff",
+        "description": "Must define backoff strategy (exponential or array-based) for retry delays."
+      },
+      {
+        "type": "contains",
+        "value": "failed(",
+        "description": "Must implement failed() method for handling permanent job failures."
+      },
+      {
+        "type": "contains",
+        "value": "dispatch(",
+        "description": "Must dispatch the job from the controller or service layer."
+      },
+      {
+        "type": "contains",
+        "value": "event(",
+        "description": "Must use event dispatch for post-payment side effects decoupled from the job."
+      }
+    ]
+  }
+]

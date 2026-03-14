@@ -4,6 +4,7 @@ import path from "node:path";
 import process from "node:process";
 import { promises as fs } from "node:fs";
 import { checkPlatformAssets } from "./generate-platform-assets.mjs";
+import { normalizeSkillId } from "./lib/legacy-skill-map.mjs";
 
 const ROOT = process.cwd();
 const ASSETS_ROOT = path.join(ROOT, "workflows");
@@ -24,8 +25,11 @@ const GENERATE_PLATFORM_ASSETS_SCRIPT = path.join(
 const SKILLS_INDEX_PATH = path.join(ASSETS_ROOT, "skills", "skills_index.json");
 const CANONICAL_SKILLS_ROOT = path.join(ASSETS_ROOT, "skills");
 const MIRROR_SKILL_ROOTS = {
+  antigravity: path.join(BUNDLE_ROOT, "platforms", "antigravity", "skills"),
+  codex: path.join(BUNDLE_ROOT, "platforms", "codex", "skills"),
   copilot: path.join(BUNDLE_ROOT, "platforms", "copilot", "skills"),
   claude: path.join(BUNDLE_ROOT, "platforms", "claude", "skills"),
+  gemini: path.join(BUNDLE_ROOT, "platforms", "gemini", "skills"),
 };
 
 const CLI_ARGS = new Set(process.argv.slice(2));
@@ -85,6 +89,12 @@ const platforms = {
     workflowDir: "workflows",
     agentDir: "agents",
     rulesFile: "rules/CLAUDE.md",
+  },
+  gemini: {
+    workflowDir: "workflows",
+    commandsDir: "commands",
+    rulesFile: "rules/GEMINI.md",
+    expectsGeneratedAgents: false,
   },
 };
 
@@ -413,7 +423,7 @@ function validateWorkflowSkillRoutingIds({
   if (!section.trim()) return;
   const skillIds = collectBacktickSkillIds(section);
   for (const skillId of skillIds) {
-    const key = skillId.toLowerCase();
+    const key = normalizeSkillId(skillId).toLowerCase();
     if (skillSet.has(key) || subSkillSet.has(key)) continue;
     error(
       errors,
@@ -596,7 +606,7 @@ async function validateAgentFile({
 
   const referencedSkills = getList(fm.raw, "skills");
   for (const skillId of referencedSkills) {
-    const normalizedSkillId = String(skillId || "").toLowerCase();
+    const normalizedSkillId = normalizeSkillId(skillId).toLowerCase();
     if (skillSet.has(normalizedSkillId) || subSkillSet.has(normalizedSkillId)) {
       continue;
     }
@@ -761,7 +771,13 @@ async function validateSharedSourceAndGeneratedParity({
     );
   }
 
-  for (const platformId of ["codex", "antigravity", "copilot", "claude"]) {
+  for (const platformId of [
+    "codex",
+    "antigravity",
+    "copilot",
+    "claude",
+    "gemini",
+  ]) {
     const spec = manifest.platforms?.[platformId];
     if (!spec) {
       error(errors, MANIFEST_PATH, `manifest missing platform '${platformId}'`);
@@ -771,6 +787,8 @@ async function validateSharedSourceAndGeneratedParity({
     const platformRoot = path.join(BUNDLE_ROOT, "platforms", platformId);
     const workflowFiles = Array.isArray(spec.workflows) ? spec.workflows : [];
     const agentFiles = Array.isArray(spec.agents) ? spec.agents : [];
+    const expectsGeneratedAgents =
+      platforms[platformId].expectsGeneratedAgents !== false;
 
     assertFileSetParity({
       label: `${platformId} workflow list`,
@@ -782,7 +800,7 @@ async function validateSharedSourceAndGeneratedParity({
 
     assertFileSetParity({
       label: `${platformId} agent list`,
-      expected: sharedAgents,
+      expected: expectsGeneratedAgents ? sharedAgents : [],
       actual: agentFiles,
       errors,
       contextPath: MANIFEST_PATH,
@@ -799,7 +817,7 @@ async function validateSharedSourceAndGeneratedParity({
       }
     }
 
-    for (const fileName of sharedAgents) {
+    for (const fileName of expectsGeneratedAgents ? sharedAgents : []) {
       const platformAgent = path.join(
         platformRoot,
         platforms[platformId].agentDir,
@@ -835,6 +853,34 @@ async function validateSharedSourceAndGeneratedParity({
         errors,
         filePath,
         "antigravity command file listed in manifest is missing",
+      );
+    }
+  }
+
+  const geminiSpec = manifest.platforms?.gemini || {};
+  const geminiCommands = Array.isArray(geminiSpec.commands)
+    ? geminiSpec.commands
+    : [];
+  if (geminiCommands.length !== sharedWorkflows.length) {
+    error(
+      errors,
+      MANIFEST_PATH,
+      `gemini commands count mismatch: expected ${sharedWorkflows.length}, found ${geminiCommands.length}`,
+    );
+  }
+  for (const commandFile of geminiCommands) {
+    const filePath = path.join(
+      BUNDLE_ROOT,
+      "platforms",
+      "gemini",
+      "commands",
+      commandFile,
+    );
+    if (!(await pathExists(filePath))) {
+      error(
+        errors,
+        filePath,
+        "gemini command file listed in manifest is missing",
       );
     }
   }
@@ -971,6 +1017,14 @@ async function main() {
     }
 
     for (const rel of agentFiles) {
+      if (!platformCfg.agentDir) {
+        error(
+          errors,
+          MANIFEST_PATH,
+          `platform '${platformId}' defines agents but has no agentDir mapping`,
+        );
+        break;
+      }
       const filePath = path.join(platformRoot, platformCfg.agentDir, rel);
       if (!(await pathExists(filePath))) {
         error(errors, filePath, "agent file listed in manifest is missing");
@@ -1027,7 +1081,10 @@ async function main() {
     }
 
     for (const skillId of skills) {
-      const canonicalSkill = canonicalMap.get(String(skillId).toLowerCase());
+      const normalizedSkillId = normalizeSkillId(skillId);
+      const canonicalSkill = canonicalMap.get(
+        String(normalizedSkillId).toLowerCase(),
+      );
       if (!canonicalSkill) {
         error(
           errors,
@@ -1038,7 +1095,7 @@ async function main() {
       }
       const mirrorRoot = MIRROR_SKILL_ROOTS[platformId];
       const skillDir =
-        platformId === "copilot" && mirrorRoot
+        mirrorRoot
           ? path.join(mirrorRoot, canonicalSkill.id)
           : path.join(canonicalSkill.root, canonicalSkill.id);
       const skillFile = path.join(skillDir, "SKILL.md");

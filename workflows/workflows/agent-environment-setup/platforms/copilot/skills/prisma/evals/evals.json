@@ -1,0 +1,68 @@
+{
+  "evals": [
+    {
+      "name": "schema-design-with-relations-and-migrations",
+      "description": "Validate that the skill produces a Prisma 6+ schema with proper model definitions, relations, indexes, enums, and a migration workflow for a multi-tenant SaaS application.",
+      "input": "Design a Prisma schema for a multi-tenant project management SaaS. Tenants have organizations with members (users can belong to multiple organizations with roles). Organizations have projects, projects have tasks with assignees, priorities (enum), statuses (enum), and due dates. Include proper indexes for common query patterns (tasks by status, tasks by assignee, tasks due soon). Show the migration workflow for initial setup and for adding a new 'labels' feature (many-to-many between tasks and labels). Use PostgreSQL as the provider.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "@relation",
+          "description": "All relations must use explicit @relation annotations with fields and references to prevent ambiguous relation errors and ensure Prisma can generate correct foreign key constraints."
+        },
+        {
+          "type": "contains",
+          "value": "@@index",
+          "description": "The schema must define indexes with @@index on frequently queried columns (status, assigneeId, dueDate) to ensure the database can serve common query patterns without full table scans."
+        },
+        {
+          "type": "contains",
+          "value": "enum",
+          "description": "Priority and status must be defined as Prisma enums rather than string fields to enforce valid values at the database level and generate type-safe TypeScript union types in the client."
+        },
+        {
+          "type": "contains",
+          "value": "prisma migrate",
+          "description": "The response must include prisma migrate commands (migrate dev for development, migrate deploy for production) demonstrating the proper migration workflow for schema changes."
+        },
+        {
+          "type": "contains",
+          "value": "@@unique",
+          "description": "The schema must use @@unique constraints for natural uniqueness (e.g., user-organization membership, label name per organization) to prevent duplicate data at the database level."
+        }
+      ]
+    },
+    {
+      "name": "edge-deployment-with-advanced-queries",
+      "description": "Validate that the skill produces Prisma Client queries with proper select/include, transactions, and edge deployment configuration for a serverless API with connection pooling.",
+      "input": "Configure a Prisma 6+ project for deployment to Vercel Edge Functions with Prisma Accelerate. Then write Prisma Client queries for: (1) fetching a project with its tasks, assignees, and label counts using select/include, (2) a transaction that creates a task and assigns it to a user atomically, (3) a paginated task list with cursor-based pagination, and (4) an aggregation query for task count by status. Show the datasource configuration, client generation, and connection pooling setup.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "include",
+          "description": "Queries must use include or select to control relation loading, avoiding the default behavior of returning all scalars without relations which causes either over-fetching or missing data."
+        },
+        {
+          "type": "contains",
+          "value": "$transaction",
+          "description": "Multi-step writes must use prisma.$transaction() to ensure atomicity, preventing partial writes where a task is created but the assignment fails."
+        },
+        {
+          "type": "contains",
+          "value": "cursor",
+          "description": "The paginated query must use cursor-based pagination with a cursor parameter and take/skip, providing stable page results regardless of concurrent data modifications."
+        },
+        {
+          "type": "contains",
+          "value": "accelerate",
+          "description": "The edge deployment configuration must reference Prisma Accelerate for connection pooling and query engine proxy, since the Rust query engine cannot run in V8-only edge runtimes."
+        },
+        {
+          "type": "contains",
+          "value": "groupBy",
+          "description": "The aggregation query must use Prisma's groupBy or aggregate API to compute task counts by status at the database level rather than fetching all tasks and counting in application code."
+        }
+      ]
+    }
+  ]
+}

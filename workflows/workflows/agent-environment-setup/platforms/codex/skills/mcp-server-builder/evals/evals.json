@@ -1,0 +1,66 @@
+[
+  {
+    "name": "tool-registration-with-validation",
+    "description": "Validate that the skill produces correct MCP tool registration with JSON Schema input validation, structured output, descriptive naming, and capability negotiation.",
+    "input": "Build an MCP server that exposes tools for managing a project's GitHub issues. Register tools for: list-issues (with filters for state, labels, assignee), get-issue (by number), create-issue (title, body, labels, assignee), and update-issue (number, with optional title, body, state, labels). Each tool must have JSON Schema input validation. Use descriptive tool descriptions that help AI agents understand when to use each tool. Mark create and update tools as destructive. Implement capability negotiation in the initialize response.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "inputSchema",
+        "description": "Every tool registration must include an inputSchema with JSON Schema that validates required and optional parameters before handler execution."
+      },
+      {
+        "type": "contains",
+        "value": "list-issues",
+        "description": "Must use action-oriented tool names (list-issues, get-issue, create-issue) that describe what the tool does for agent discoverability."
+      },
+      {
+        "type": "contains",
+        "value": "capabilities",
+        "description": "Must include a capabilities object in the initialize response declaring supported features (tools, resources, prompts) for client discovery."
+      },
+      {
+        "type": "contains",
+        "value": "destructive",
+        "description": "Must mark create and update tools as destructive or state-modifying in their descriptions so agents can distinguish read-only from write operations."
+      },
+      {
+        "type": "contains",
+        "value": "required",
+        "description": "JSON Schema input definitions must specify required fields to ensure agents provide mandatory parameters and receive clear validation errors for missing inputs."
+      }
+    ]
+  },
+  {
+    "name": "resource-provider-implementation",
+    "description": "Validate that the skill produces a correct MCP resource provider implementation with URI templates, content types, dynamic context generation, and proper protocol compliance.",
+    "input": "Add resource providers to an MCP server for a documentation platform. Implement resources for: project README (static URI), API endpoint documentation (URI template with endpoint path parameter), database schema (URI template with table name parameter), and changelog (static URI with pagination support). Each resource must declare its MIME type. Support resource listing so clients can discover available resources. Include caching headers for frequently accessed resources.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "resources/list",
+        "description": "Must implement the resources/list method so clients can discover available resources and their URI patterns without prior knowledge."
+      },
+      {
+        "type": "contains",
+        "value": "uri",
+        "description": "Every resource must declare a URI (static or template) that clients use to request specific content from the resource provider."
+      },
+      {
+        "type": "contains",
+        "value": "mimeType",
+        "description": "Resources must declare their MIME type (text/markdown, application/json, etc.) so clients can render content appropriately."
+      },
+      {
+        "type": "contains",
+        "value": "resourceTemplates",
+        "description": "Must use resourceTemplates for parameterized resources (API docs by endpoint, schema by table) to enable dynamic content serving."
+      },
+      {
+        "type": "contains",
+        "value": "contents",
+        "description": "Resource read responses must include a contents array with URI, MIME type, and text/blob content following the MCP resource response format."
+      }
+    ]
+  }
+]

@@ -1,17 +1,9 @@
 ---
 name: playwright-interactive
-description: "Use when building interactive Playwright test suites with multi-agent collaboration: browser automation flows, visual regression testing, accessibility audits, network interception, or coordinating test-author, visual-reviewer, and accessibility-auditor agents."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-  domain: quality
-  triggers: Playwright interactive, visual testing, accessibility audit, network interception, multi-agent testing, browser automation, a11y, screenshot comparison
-  role: orchestrator
-  scope: testing
-  output-format: code
-  related-skills: playwright-expert, playwright-e2e, test-master, accessibility
-compatibility: "Claude Code, Codex, GitHub Copilot"
+description: "Use when building interactive Playwright suites for browser automation, visual regression, accessibility audits, network interception, and collaborative test workflows."
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "Playwright test, page object, or browser interaction"
 ---
 
 # Playwright Interactive
@@ -87,3 +79,11 @@ Deliver:
 | `agents/test-author.md` | Delegating interactive flow test authoring |
 | `agents/visual-reviewer.md` | Delegating screenshot comparison and visual regression tasks |
 | `agents/accessibility-auditor.md` | Delegating accessibility scans and report generation |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

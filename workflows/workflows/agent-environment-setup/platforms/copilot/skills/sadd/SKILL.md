@@ -1,13 +1,12 @@
 ---
 name: sadd
-description: "Use when extracting testable specifications from requirements, generating tests from specs, verifying implementations against specs, and mapping coverage to requirements. Covers specification mining, test-from-spec generation, implementation verification, and traceability."
+description: "Use when extracting testable specs from requirements, generating tests from specs, verifying implementations against specs, and tracing requirements to coverage."
 license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
 compatibility: "Claude Code, Codex, GitHub Copilot"
 ---
-
 # Spec-Aware Driven Development (SADD)
 
 ## Purpose
@@ -62,3 +61,11 @@ When performing SADD, provide:
 | `references/coverage-mapping.md` | Building and maintaining traceability matrices and spec coverage reports |
 | `agents/spec-miner.md` | Agent that extracts structured specifications from requirements documents |
 | `agents/verifier.md` | Agent that validates implementation against extracted specifications |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

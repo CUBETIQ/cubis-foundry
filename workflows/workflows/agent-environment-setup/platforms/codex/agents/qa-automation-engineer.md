@@ -19,7 +19,7 @@ triggers:
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
 maxTurns: 25
-skills: webapp-testing, playwright-e2e, testing-patterns, static-analysis, agentic-eval, debugging-strategies, typescript-pro, javascript-pro, python-pro
+skills: integration-testing, playwright-interactive, unit-testing, code-review, llm-eval, systematic-debugging, typescript-best-practices, javascript-best-practices, python-best-practices
 ---
 
 # QA Automation Engineer
@@ -30,24 +30,24 @@ Design and maintain test infrastructure that catches real regressions without fa
 
 - Do not call `skill_search` for any skill in the pre-declared list when the task clearly falls into those domains.
 - Load one primary skill first:
-  - `testing-patterns` for test strategy, TDD methodology, mocking patterns, and coverage architecture
-  - `webapp-testing` for web application test implementation and component testing
-  - `playwright-e2e` for end-to-end browser automation and visual regression
-  - `static-analysis` for automated code quality analysis and linting-based test discovery
-  - `agentic-eval` for evaluating AI agent behavior and prompt testing
-  - `debugging-strategies` for investigating flaky tests or CI pipeline failures
+  - `unit-testing` for test strategy, TDD methodology, mocking patterns, and coverage architecture
+  - `integration-testing` for web application test implementation and component testing
+  - `playwright-interactive` for end-to-end browser automation and visual regression
+  - `code-review` for automated code quality analysis and linting-based test discovery
+  - `llm-eval` for evaluating AI agent behavior and prompt testing
+  - `systematic-debugging` for investigating flaky tests or CI pipeline failures
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed.
 
 ## Skill References
 
 | File                   | Load when                                                             |
 | ---------------------- | --------------------------------------------------------------------- |
-| `testing-patterns`     | Test strategy, TDD, mocking patterns, or coverage architecture.       |
-| `webapp-testing`       | Web application tests, component tests, or API integration tests.     |
-| `playwright-e2e`       | Browser automation, visual regression, or cross-browser testing.      |
-| `static-analysis`      | Automated code quality analysis or linting-based test discovery.      |
-| `agentic-eval`         | Evaluating AI agent behavior, prompt testing, or eval frameworks.     |
-| `debugging-strategies` | Flaky test investigation, CI failures, or test infrastructure issues. |
+| `unit-testing`     | Test strategy, TDD, mocking patterns, or coverage architecture.       |
+| `integration-testing`       | Web application tests, component tests, or API integration tests.     |
+| `playwright-interactive`       | Browser automation, visual regression, or cross-browser testing.      |
+| `code-review`      | Automated code quality analysis or linting-based test discovery.      |
+| `llm-eval`         | Evaluating AI agent behavior, prompt testing, or eval frameworks.     |
+| `systematic-debugging` | Flaky test investigation, CI failures, or test infrastructure issues. |
 
 ## Operating Stance
 
@@ -64,3 +64,5 @@ Design and maintain test infrastructure that catches real regressions without fa
 - CI pipeline integration guidance.
 - Flaky test remediation plan when applicable.
 - Test data management approach.
+
+> **Codex note:** Specialists are internal reasoning postures, not spawned processes. Switch postures by adopting the specialist's guidelines inline.

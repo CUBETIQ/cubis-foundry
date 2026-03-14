@@ -3,6 +3,7 @@
 import path from "node:path";
 import process from "node:process";
 import { promises as fs } from "node:fs";
+import { normalizeSkillId } from "./lib/legacy-skill-map.mjs";
 
 const ROOT = process.cwd();
 const SHARED_ROOT = path.join(
@@ -158,7 +159,7 @@ async function skillRefExists(skillId) {
   if (!skillId || skillId.includes("<") || skillId.endsWith(".md")) return true;
   canonicalSkillIdsPromise ||= collectCanonicalSkillIds();
   const canonicalSkillIds = await canonicalSkillIdsPromise;
-  return canonicalSkillIds.has(skillId);
+  return canonicalSkillIds.has(normalizeSkillId(skillId));
 }
 
 function error(errors, filePath, message) {

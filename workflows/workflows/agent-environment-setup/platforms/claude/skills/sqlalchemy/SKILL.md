@@ -1,11 +1,9 @@
 ---
 name: sqlalchemy
 description: "Use when building or refactoring Python data layers with SQLAlchemy 2.0+ declarative models, async sessions, Alembic migrations, relationship loading strategies, and ORM testing patterns."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "SQLAlchemy model, query, or migration to work on"
 ---
 
 # SQLAlchemy ORM
@@ -79,3 +77,11 @@ No helper scripts are required for this skill right now. Keep execution in `SKIL
 
 - "Help me design async SQLAlchemy models for a multi-tenant SaaS application"
 - "Review my Alembic migration for adding a non-nullable column to a large table"
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

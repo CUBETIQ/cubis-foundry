@@ -5,12 +5,6 @@ license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
-  domain: frontend
-  triggers: React, Server Components, use(), Suspense, Actions, useTransition, useOptimistic, useActionState, concurrent, ref as prop
-  role: specialist
-  scope: implementation
-  output-format: code
-  related-skills: nextjs, typescript-pro, tailwind-patterns, test-master
 compatibility: "Claude Code, Codex, GitHub Copilot"
 ---
 

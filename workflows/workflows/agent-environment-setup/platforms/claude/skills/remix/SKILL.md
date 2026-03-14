@@ -1,11 +1,9 @@
 ---
 name: remix
 description: "Use when building Remix v2+ applications with nested routing, loaders, actions, progressive enhancement, streaming, server-side rendering, and full-stack data flow patterns."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "Remix route, loader, or action to work on"
 ---
 
 # Remix
@@ -74,3 +72,11 @@ Load only what the current task requires.
 | `references/progressive-enhancement.md` | Task involves optimistic UI, useFetcher, useNavigation, or forms that work without JavaScript. |
 | `references/streaming-defer.md` | Task involves defer, Await, Suspense, streaming SSR, or slow data source handling. |
 | `references/resource-routes.md` | Task involves API endpoints, webhooks, file downloads, or headless route modules. |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

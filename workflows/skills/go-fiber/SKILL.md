@@ -1,6 +1,6 @@
 ---
 name: go-fiber
-description: "Use when building HTTP APIs or real-time services with Go Fiber v3. Covers zero-allocation routing, Express-inspired middleware, WebSocket endpoints, grouped routes, request validation, structured error handling, and performance tuning. Activate when the user mentions Fiber, gofiber, or asks for a high-performance Go web framework."
+description: "Use when building Go Fiber services, including routing, middleware, WebSockets, request validation, structured errors, and performance tuning."
 license: MIT
 metadata:
   author: cubis-foundry

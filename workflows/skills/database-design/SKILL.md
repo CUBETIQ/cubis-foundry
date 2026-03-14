@@ -70,8 +70,6 @@ Load on demand. Do not preload all reference files.
 
 | File | Load when |
 | --- | --- |
-| `references/schema-modeling.md` | Designing entity relationships, key selection, normalization decisions, or constraint strategies. |
-| `references/indexing.md` | Planning indexes, analyzing composite index column order, or evaluating index types (B-tree, hash, GIN, GiST). |
-| `references/query-optimization.md` | Analyzing slow queries, reading EXPLAIN output, or restructuring queries for better plans. |
-| `references/migrations.md` | Writing migration scripts, planning zero-downtime schema changes, or designing rollback strategies. |
-| `references/scaling.md` | Evaluating partitioning, sharding, replication, or archival strategies for high-volume tables. |
+| `references/normalization-guide.md` | Designing entity relationships, key selection, normalization decisions, or constraint strategies. |
+| `references/indexing-strategies.md` | Planning indexes, analyzing composite index column order, or evaluating index types (B-tree, hash, GIN, GiST). |
+| `references/schema-evolution.md` | Planning schema changes, migration sequencing, backfills, rollback safety, and long-term data model evolution. |

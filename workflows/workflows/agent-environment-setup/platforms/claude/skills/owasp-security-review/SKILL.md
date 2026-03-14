@@ -1,11 +1,11 @@
 ---
 name: owasp-security-review
-description: "Conduct OWASP-based security reviews including Top 10 vulnerability analysis, code review for security flaws, threat modeling, and SAST/DAST pattern integration. Use when auditing applications against OWASP standards or performing structured security assessments."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: "Claude Code, Codex, GitHub Copilot"
+description: "Use when performing OWASP-aligned security reviews, including vulnerability analysis, secure code review, threat modeling, and SAST/DAST integration."
+allowed-tools: Read Grep Glob Bash
+context: fork
+agent: security-auditor
+user-invocable: true
+argument-hint: "Application, endpoint, or codebase to audit"
 ---
 
 # OWASP Security Review
@@ -99,3 +99,11 @@ Perform structured, OWASP-standards-based security reviews of application code a
 | Threat Modeling | `references/threat-modeling.md` | Building or updating a threat model |
 | SAST/DAST Patterns | `references/sast-dast.md` | Configuring or running security scanners |
 | Remediation Playbook | `references/remediation.md` | Writing fix guidance for findings |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

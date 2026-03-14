@@ -1,11 +1,9 @@
 ---
 name: typescript-best-practices
 description: "Use when writing production TypeScript 5.9+ code: strict configuration, advanced type-level programming, discriminated unions, branded types, and patterns that prepare codebases for TS 6/7 evolution."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "TypeScript module, type, or pattern to analyze"
 ---
 
 # TypeScript Best Practices
@@ -79,3 +77,11 @@ No helper scripts are required for this skill right now. Keep execution in `SKIL
 - "Migrate this codebase from loose tsconfig to strict mode with noUncheckedIndexedAccess."
 - "Design a type-safe state machine using discriminated unions with exhaustiveness checking."
 - "Create branded types for UserId, PostId, and Email with runtime validation at API boundaries."
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

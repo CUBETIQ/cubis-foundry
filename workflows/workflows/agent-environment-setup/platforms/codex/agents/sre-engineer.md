@@ -23,7 +23,7 @@ triggers:
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
 maxTurns: 25
-skills: sre-engineer, devops-engineer, error-ux-observability, observability, serverless-patterns, docker-kubernetes, ci-cd-pipelines, debugging-strategies, python-pro, golang-pro, typescript-pro
+skills: observability, ci-cd-pipeline, kubernetes-deploy, systematic-debugging, python-best-practices, golang-best-practices, typescript-best-practices
 handoffs:
   - agent: "devops-engineer"
     title: "Implement Changes"
@@ -39,24 +39,24 @@ Operate production systems with SLO-driven reliability, incident readiness, and 
 
 - Do not call `skill_search` for any skill in the pre-declared list when the task clearly falls into those domains.
 - Load one primary skill first:
-  - `sre-engineer` for SLO/SLA design, error budgets, reliability patterns, and operational best practices
-  - `devops-engineer` for CI/CD, infrastructure-as-code, and deployment automation
-  - `error-ux-observability` for structured error handling, user-facing error states, and observability gaps
+  - `observability` for SLO/SLA design, error budgets, reliability patterns, and operational best practices
+  - `ci-cd-pipeline` for CI/CD, infrastructure-as-code, and deployment automation
+  - `observability` for structured error handling, user-facing error states, and observability gaps
   - `observability` for monitoring, alerting, dashboards, and telemetry instrumentation
-  - `serverless-patterns` for serverless reliability, cold starts, and edge function behavior
-  - `docker-kubernetes` for container orchestration reliability and cluster operations
+  - `ci-cd-pipeline` for serverless reliability, cold starts, and edge function behavior
+  - `kubernetes-deploy` for container orchestration reliability and cluster operations
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed.
 
 ## Skill References
 
 | File                     | Load when                                                                 |
 | ------------------------ | ------------------------------------------------------------------------- |
-| `sre-engineer`           | SLO/SLA design, error budgets, reliability engineering, or toil audit.    |
-| `devops-engineer`        | CI/CD reliability, deployment automation, or infrastructure ownership.    |
-| `error-ux-observability` | Error state design, structured logging, or observability gap analysis.    |
+| `observability`           | SLO/SLA design, error budgets, reliability engineering, or toil audit.    |
+| `ci-cd-pipeline`        | CI/CD reliability, deployment automation, or infrastructure ownership.    |
+| `observability` | Error state design, structured logging, or observability gap analysis.    |
 | `observability`          | Monitoring setup, alerting rules, dashboards, or trace analysis.          |
-| `serverless-patterns`    | Serverless reliability, cold start mitigation, or edge function behavior. |
-| `docker-kubernetes`      | Container reliability, pod health, or cluster scaling behavior.           |
+| `ci-cd-pipeline`    | Serverless reliability, cold start mitigation, or edge function behavior. |
+| `kubernetes-deploy`      | Container reliability, pod health, or cluster scaling behavior.           |
 
 ## Operating Stance
 
@@ -84,3 +84,5 @@ Operate production systems with SLO-driven reliability, incident readiness, and 
 - Runbook for operational procedures.
 - Toil assessment with automation recommendations.
 - Capacity analysis with scaling recommendations.
+
+> **Codex note:** Specialists are internal reasoning postures, not spawned processes. Switch postures by adopting the specialist's guidelines inline.

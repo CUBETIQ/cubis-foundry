@@ -1,7 +1,7 @@
 {
   "$schema": "cubis-foundry-route-manifest-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
-  "contentHash": "25bb2895132afb32",
+  "contentHash": "abcacb358643fc97",
   "summary": {
     "totalRoutes": 40,
     "workflows": 18,
@@ -38,35 +38,28 @@
       "primaryAgent": "backend-specialist",
       "supportingAgents": [],
       "primarySkills": [
-        "api-designer",
-        "api-patterns"
+        "api-design",
+        "system-design"
       ],
       "supportingSkills": [
-        "architecture-designer",
-        "auth-architect",
-        "database-skills",
+        "owasp-security-review",
         "database-design",
-        "database-optimizer",
-        "drizzle-expert",
-        "firebase",
-        "microservices-architect",
-        "nodejs-best-practices",
-        "nestjs-expert",
-        "fastapi-expert",
-        "graphql-architect",
-        "stripe-best-practices",
-        "serverless-patterns",
-        "i18n-localization",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro",
-        "golang-pro",
-        "java-pro",
-        "csharp-pro",
-        "kotlin-pro",
-        "rust-pro",
-        "php-pro",
-        "ruby-pro"
+        "drizzle-orm",
+        "microservices-design",
+        "javascript-best-practices",
+        "nestjs",
+        "fastapi",
+        "stripe-integration",
+        "ci-cd-pipeline",
+        "frontend-design",
+        "typescript-best-practices",
+        "python-best-practices",
+        "golang-best-practices",
+        "java-best-practices",
+        "csharp-best-practices",
+        "kotlin-best-practices",
+        "rust-best-practices",
+        "php-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -81,6 +74,9 @@
         },
         "claude": {
           "agentFile": "backend-specialist.md"
+        },
+        "gemini": {
+          "posture": "backend-specialist"
         }
       }
     },
@@ -107,14 +103,14 @@
       "supportingAgents": [],
       "primarySkills": [
         "skill-creator",
-        "spec-miner"
+        "sadd"
       ],
       "supportingSkills": [
-        "legacy-modernizer",
-        "static-analysis",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro"
+        "system-design",
+        "code-review",
+        "typescript-best-practices",
+        "javascript-best-practices",
+        "python-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -129,6 +125,9 @@
         },
         "claude": {
           "agentFile": "code-archaeologist.md"
+        },
+        "gemini": {
+          "posture": "code-archaeologist"
         }
       }
     },
@@ -151,29 +150,17 @@
       "primaryAgent": "database-architect",
       "supportingAgents": [],
       "primarySkills": [
-        "architecture-designer",
-        "database-skills"
+        "system-design",
+        "database-design"
       ],
       "supportingSkills": [
-        "database-design",
-        "database-optimizer",
-        "drizzle-expert",
-        "postgres",
-        "mysql",
-        "sqlite",
-        "mongodb",
-        "redis",
-        "supabase",
-        "firebase",
-        "vitess",
-        "neki",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro",
-        "golang-pro",
-        "java-pro",
-        "php-pro",
-        "ruby-pro"
+        "drizzle-orm",
+        "typescript-best-practices",
+        "javascript-best-practices",
+        "python-best-practices",
+        "golang-best-practices",
+        "java-best-practices",
+        "php-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -188,6 +175,9 @@
         },
         "claude": {
           "agentFile": "database-architect.md"
+        },
+        "gemini": {
+          "posture": "database-architect"
         }
       }
     },
@@ -201,21 +191,21 @@
       "primaryAgent": "debugger",
       "supportingAgents": [],
       "primarySkills": [
-        "debugging-strategies",
-        "error-ux-observability"
+        "systematic-debugging",
+        "observability"
       ],
       "supportingSkills": [
-        "testing-patterns",
-        "webapp-testing",
-        "playwright-e2e",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro",
-        "golang-pro",
-        "java-pro",
-        "csharp-pro",
-        "kotlin-pro",
-        "rust-pro"
+        "unit-testing",
+        "integration-testing",
+        "playwright-interactive",
+        "typescript-best-practices",
+        "javascript-best-practices",
+        "python-best-practices",
+        "golang-best-practices",
+        "java-best-practices",
+        "csharp-best-practices",
+        "kotlin-best-practices",
+        "rust-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -230,6 +220,9 @@
         },
         "claude": {
           "agentFile": "debugger.md"
+        },
+        "gemini": {
+          "posture": "debugger"
         }
       }
     },
@@ -254,21 +247,17 @@
       "primaryAgent": "devops-engineer",
       "supportingAgents": [],
       "primarySkills": [
-        "devops-engineer",
-        "sre-engineer"
+        "ci-cd-pipeline",
+        "observability"
       ],
       "supportingSkills": [
-        "ci-cd-pipelines",
-        "docker-kubernetes",
-        "observability",
-        "serverless-patterns",
+        "kubernetes-deploy",
         "git-workflow",
-        "debugging-strategies",
-        "nodejs-best-practices",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro",
-        "golang-pro"
+        "systematic-debugging",
+        "javascript-best-practices",
+        "typescript-best-practices",
+        "python-best-practices",
+        "golang-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -283,6 +272,9 @@
         },
         "claude": {
           "agentFile": "devops-engineer.md"
+        },
+        "gemini": {
+          "posture": "devops-engineer"
         }
       }
     },
@@ -303,13 +295,12 @@
       "primaryAgent": "documentation-writer",
       "supportingAgents": [],
       "primarySkills": [
-        "documentation-templates",
-        "changelog-generator"
+        "tech-doc",
+        "typescript-best-practices"
       ],
       "supportingSkills": [
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro"
+        "javascript-best-practices",
+        "python-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -324,6 +315,9 @@
         },
         "claude": {
           "agentFile": "documentation-writer.md"
+        },
+        "gemini": {
+          "posture": "documentation-writer"
         }
       }
     },
@@ -349,20 +343,16 @@
       "primaryAgent": "frontend-specialist",
       "supportingAgents": [],
       "primarySkills": [
-        "react-expert",
-        "nextjs-developer"
+        "react",
+        "nextjs"
       ],
       "supportingSkills": [
         "frontend-design",
-        "tailwind-patterns",
-        "design-system-builder",
-        "web-perf",
-        "frontend-code-review",
-        "react-best-practices",
-        "i18n-localization",
-        "error-ux-observability",
-        "typescript-pro",
-        "javascript-pro"
+        "performance-testing",
+        "code-review",
+        "observability",
+        "typescript-best-practices",
+        "javascript-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -377,6 +367,9 @@
         },
         "claude": {
           "agentFile": "frontend-specialist.md"
+        },
+        "gemini": {
+          "posture": "frontend-specialist"
         }
       }
     },
@@ -400,14 +393,13 @@
       "primaryAgent": "game-developer",
       "supportingAgents": [],
       "primarySkills": [
-        "game-development",
-        "typescript-pro"
+        "frontend-design",
+        "typescript-best-practices"
       ],
       "supportingSkills": [
-        "javascript-pro",
-        "cpp-pro",
-        "c-pro",
-        "csharp-pro"
+        "javascript-best-practices",
+        "rust-best-practices",
+        "csharp-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -422,6 +414,9 @@
         },
         "claude": {
           "agentFile": "game-developer.md"
+        },
+        "gemini": {
+          "posture": "game-developer"
         }
       }
     },
@@ -443,27 +438,18 @@
       "primaryAgent": "mobile-developer",
       "supportingAgents": [],
       "primarySkills": [
-        "mobile-design",
-        "i18n-localization"
+        "react-native",
+        "frontend-design"
       ],
       "supportingSkills": [
-        "dart-pro",
-        "swift-pro",
-        "kotlin-pro",
-        "react-expert",
-        "debugging-strategies",
-        "webapp-testing",
-        "typescript-pro",
-        "javascript-pro",
-        "flutter-design-system",
-        "flutter-drift",
-        "flutter-feature",
-        "flutter-go-router",
-        "flutter-offline-sync",
-        "flutter-repository",
-        "flutter-riverpod",
-        "flutter-state-machine",
-        "flutter-testing"
+        "expo-app",
+        "swift-best-practices",
+        "kotlin-best-practices",
+        "react",
+        "systematic-debugging",
+        "integration-testing",
+        "typescript-best-practices",
+        "javascript-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -478,6 +464,9 @@
         },
         "claude": {
           "agentFile": "mobile-developer.md"
+        },
+        "gemini": {
+          "posture": "mobile-developer"
         }
       }
     },
@@ -498,19 +487,19 @@
       "primaryAgent": "orchestrator",
       "supportingAgents": [],
       "primarySkills": [
-        "architecture-designer",
-        "api-designer"
+        "system-design",
+        "api-design"
       ],
       "supportingSkills": [
-        "database-skills",
-        "deep-research",
-        "mcp-builder",
-        "openai-docs",
-        "prompt-engineer",
+        "database-design",
+        "architecture-doc",
+        "mcp-server-builder",
+        "tech-doc",
+        "prompt-engineering",
         "skill-creator",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro"
+        "typescript-best-practices",
+        "javascript-best-practices",
+        "python-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -525,6 +514,9 @@
         },
         "claude": {
           "agentFile": "orchestrator.md"
+        },
+        "gemini": {
+          "posture": "orchestrator"
         }
       }
     },
@@ -554,17 +546,15 @@
       "primaryAgent": "penetration-tester",
       "supportingAgents": [],
       "primarySkills": [
-        "security-engineer",
-        "vulnerability-scanner"
+        "owasp-security-review",
+        "api-design"
       ],
       "supportingSkills": [
-        "auth-architect",
-        "api-designer",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro",
-        "golang-pro",
-        "rust-pro"
+        "typescript-best-practices",
+        "javascript-best-practices",
+        "python-best-practices",
+        "golang-best-practices",
+        "rust-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -579,6 +569,9 @@
         },
         "claude": {
           "agentFile": "penetration-tester.md"
+        },
+        "gemini": {
+          "posture": "penetration-tester"
         }
       }
     },
@@ -601,17 +594,15 @@
       "primaryAgent": "performance-optimizer",
       "supportingAgents": [],
       "primarySkills": [
-        "performance-profiling",
-        "web-perf"
+        "performance-testing",
+        "code-review"
       ],
       "supportingSkills": [
-        "static-analysis",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro",
-        "golang-pro",
-        "rust-pro",
-        "cpp-pro"
+        "typescript-best-practices",
+        "javascript-best-practices",
+        "python-best-practices",
+        "golang-best-practices",
+        "rust-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -626,6 +617,9 @@
         },
         "claude": {
           "agentFile": "performance-optimizer.md"
+        },
+        "gemini": {
+          "posture": "performance-optimizer"
         }
       }
     },
@@ -652,13 +646,13 @@
       "primaryAgent": "product-manager",
       "supportingAgents": [],
       "primarySkills": [
-        "architecture-designer",
-        "api-designer"
+        "system-design",
+        "api-design"
       ],
       "supportingSkills": [
         "skill-creator",
-        "typescript-pro",
-        "javascript-pro"
+        "typescript-best-practices",
+        "javascript-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -673,6 +667,9 @@
         },
         "claude": {
           "agentFile": "product-manager.md"
+        },
+        "gemini": {
+          "posture": "product-manager"
         }
       }
     },
@@ -693,19 +690,19 @@
       "primaryAgent": "project-planner",
       "supportingAgents": [],
       "primarySkills": [
-        "architecture-designer",
-        "api-designer"
+        "system-design",
+        "api-design"
       ],
       "supportingSkills": [
-        "database-skills",
-        "deep-research",
-        "mcp-builder",
-        "openai-docs",
-        "prompt-engineer",
+        "database-design",
+        "architecture-doc",
+        "mcp-server-builder",
+        "tech-doc",
+        "prompt-engineering",
         "skill-creator",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro"
+        "typescript-best-practices",
+        "javascript-best-practices",
+        "python-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -720,6 +717,9 @@
         },
         "claude": {
           "agentFile": "project-planner.md"
+        },
+        "gemini": {
+          "posture": "project-planner"
         }
       }
     },
@@ -746,17 +746,17 @@
       "primaryAgent": "qa-automation-engineer",
       "supportingAgents": [],
       "primarySkills": [
-        "webapp-testing",
-        "playwright-e2e"
+        "integration-testing",
+        "playwright-interactive"
       ],
       "supportingSkills": [
-        "testing-patterns",
-        "static-analysis",
-        "agentic-eval",
-        "debugging-strategies",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro"
+        "unit-testing",
+        "code-review",
+        "llm-eval",
+        "systematic-debugging",
+        "typescript-best-practices",
+        "javascript-best-practices",
+        "python-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -771,6 +771,9 @@
         },
         "claude": {
           "agentFile": "qa-automation-engineer.md"
+        },
+        "gemini": {
+          "posture": "qa-automation-engineer"
         }
       }
     },
@@ -795,13 +798,13 @@
       "primaryAgent": "researcher",
       "supportingAgents": [],
       "primarySkills": [
-        "deep-research",
-        "architecture-designer"
+        "architecture-doc",
+        "system-design"
       ],
       "supportingSkills": [
-        "database-skills",
-        "openai-docs",
-        "prompt-engineer"
+        "database-design",
+        "tech-doc",
+        "prompt-engineering"
       ],
       "artifacts": {
         "codex": {
@@ -816,6 +819,9 @@
         },
         "claude": {
           "agentFile": "researcher.md"
+        },
+        "gemini": {
+          "posture": "researcher"
         }
       }
     },
@@ -853,22 +859,18 @@
       "primaryAgent": "security-auditor",
       "supportingAgents": [],
       "primarySkills": [
-        "security-engineer",
-        "auth-architect"
+        "owasp-security-review",
+        "code-review"
       ],
       "supportingSkills": [
-        "vulnerability-scanner",
-        "static-analysis",
-        "api-designer",
-        "graphql-architect",
-        "nodejs-best-practices",
-        "nestjs-expert",
-        "fastapi-expert",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro",
-        "golang-pro",
-        "rust-pro"
+        "api-design",
+        "javascript-best-practices",
+        "nestjs",
+        "fastapi",
+        "typescript-best-practices",
+        "python-best-practices",
+        "golang-best-practices",
+        "rust-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -883,6 +885,9 @@
         },
         "claude": {
           "agentFile": "security-auditor.md"
+        },
+        "gemini": {
+          "posture": "security-auditor"
         }
       }
     },
@@ -904,13 +909,12 @@
       "primaryAgent": "seo-specialist",
       "supportingAgents": [],
       "primarySkills": [
-        "seo-fundamentals",
-        "geo-fundamentals"
+        "tech-doc",
+        "typescript-best-practices"
       ],
       "supportingSkills": [
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro"
+        "javascript-best-practices",
+        "python-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -925,6 +929,9 @@
         },
         "claude": {
           "agentFile": "seo-specialist.md"
+        },
+        "gemini": {
+          "posture": "seo-specialist"
         }
       }
     },
@@ -955,19 +962,15 @@
       "primaryAgent": "sre-engineer",
       "supportingAgents": [],
       "primarySkills": [
-        "sre-engineer",
-        "devops-engineer"
+        "observability",
+        "ci-cd-pipeline"
       ],
       "supportingSkills": [
-        "error-ux-observability",
-        "observability",
-        "serverless-patterns",
-        "docker-kubernetes",
-        "ci-cd-pipelines",
-        "debugging-strategies",
-        "python-pro",
-        "golang-pro",
-        "typescript-pro"
+        "kubernetes-deploy",
+        "systematic-debugging",
+        "python-best-practices",
+        "golang-best-practices",
+        "typescript-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -982,6 +985,9 @@
         },
         "claude": {
           "agentFile": "sre-engineer.md"
+        },
+        "gemini": {
+          "posture": "sre-engineer"
         }
       }
     },
@@ -1008,19 +1014,19 @@
       "primaryAgent": "test-engineer",
       "supportingAgents": [],
       "primarySkills": [
-        "webapp-testing",
-        "playwright-e2e"
+        "integration-testing",
+        "playwright-interactive"
       ],
       "supportingSkills": [
-        "testing-patterns",
-        "error-ux-observability",
-        "debugging-strategies",
-        "frontend-code-review",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro",
-        "golang-pro",
-        "java-pro"
+        "unit-testing",
+        "observability",
+        "systematic-debugging",
+        "code-review",
+        "typescript-best-practices",
+        "javascript-best-practices",
+        "python-best-practices",
+        "golang-best-practices",
+        "java-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -1035,6 +1041,9 @@
         },
         "claude": {
           "agentFile": "test-engineer.md"
+        },
+        "gemini": {
+          "posture": "test-engineer"
         }
       }
     },
@@ -1057,17 +1066,17 @@
       "primaryAgent": "validator",
       "supportingAgents": [],
       "primarySkills": [
-        "debugging-strategies",
-        "testing-patterns"
+        "systematic-debugging",
+        "unit-testing"
       ],
       "supportingSkills": [
-        "static-analysis",
-        "webapp-testing",
-        "playwright-e2e",
-        "agentic-eval",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro"
+        "code-review",
+        "integration-testing",
+        "playwright-interactive",
+        "llm-eval",
+        "typescript-best-practices",
+        "javascript-best-practices",
+        "python-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -1082,6 +1091,9 @@
         },
         "claude": {
           "agentFile": "validator.md"
+        },
+        "gemini": {
+          "posture": "validator"
         }
       }
     },
@@ -1105,16 +1117,15 @@
       "primaryAgent": "vercel-expert",
       "supportingAgents": [],
       "primarySkills": [
-        "nextjs-developer",
-        "react-expert"
+        "nextjs",
+        "react"
       ],
       "supportingSkills": [
-        "tailwind-patterns",
-        "web-perf",
-        "serverless-patterns",
-        "nodejs-best-practices",
-        "typescript-pro",
-        "javascript-pro"
+        "frontend-design",
+        "performance-testing",
+        "ci-cd-pipeline",
+        "javascript-best-practices",
+        "typescript-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -1129,6 +1140,9 @@
         },
         "claude": {
           "agentFile": "vercel-expert.md"
+        },
+        "gemini": {
+          "posture": "vercel-expert"
         }
       }
     },
@@ -1152,18 +1166,17 @@
         "validator"
       ],
       "primarySkills": [
-        "frontend-code-review",
+        "code-review",
         "frontend-design"
       ],
       "supportingSkills": [
-        "i18n-localization",
-        "web-perf",
-        "react-expert",
-        "nextjs-developer",
-        "tailwind-patterns",
-        "playwright-e2e",
-        "typescript-pro",
-        "javascript-pro"
+        "frontend-design",
+        "performance-testing",
+        "react",
+        "nextjs",
+        "playwright-interactive",
+        "typescript-best-practices",
+        "javascript-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -1180,6 +1193,10 @@
         },
         "claude": {
           "workflowFile": "accessibility.md"
+        },
+        "gemini": {
+          "workflowFile": "accessibility.md",
+          "commandFile": "accessibility.toml"
         }
       }
     },
@@ -1211,27 +1228,24 @@
         "test-engineer"
       ],
       "primarySkills": [
-        "api-designer",
-        "api-patterns",
-        "nodejs-best-practices"
+        "api-design",
+        "javascript-best-practices"
       ],
       "supportingSkills": [
-        "auth-architect",
-        "database-skills",
+        "owasp-security-review",
         "database-design",
-        "nestjs-expert",
-        "fastapi-expert",
-        "graphql-architect",
-        "microservices-architect",
-        "drizzle-expert",
-        "firebase",
-        "stripe-best-practices",
-        "serverless-patterns",
-        "i18n-localization",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro",
-        "golang-pro"
+        "nestjs",
+        "fastapi",
+        "api-design",
+        "microservices-design",
+        "drizzle-orm",
+        "stripe-integration",
+        "ci-cd-pipeline",
+        "frontend-design",
+        "typescript-best-practices",
+        "javascript-best-practices",
+        "python-best-practices",
+        "golang-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -1248,6 +1262,10 @@
         },
         "claude": {
           "workflowFile": "backend.md"
+        },
+        "gemini": {
+          "workflowFile": "backend.md",
+          "commandFile": "backend.toml"
         }
       }
     },
@@ -1272,42 +1290,33 @@
         "test-engineer"
       ],
       "primarySkills": [
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro",
-        "golang-pro",
-        "java-pro",
-        "csharp-pro",
-        "kotlin-pro",
-        "rust-pro",
-        "php-pro",
-        "ruby-pro",
-        "c-pro",
-        "cpp-pro",
-        "dart-pro",
-        "swift-pro"
+        "typescript-best-practices",
+        "javascript-best-practices",
+        "python-best-practices",
+        "golang-best-practices",
+        "java-best-practices",
+        "csharp-best-practices",
+        "kotlin-best-practices",
+        "rust-best-practices",
+        "php-best-practices",
+        "expo-app",
+        "swift-best-practices"
       ],
       "supportingSkills": [
-        "api-designer",
-        "api-patterns",
-        "nodejs-best-practices",
-        "nestjs-expert",
-        "fastapi-expert",
-        "graphql-architect",
-        "drizzle-expert",
-        "firebase",
-        "mcp-builder",
-        "react-expert",
-        "react-best-practices",
-        "nextjs-developer",
-        "tailwind-patterns",
+        "api-design",
+        "javascript-best-practices",
+        "nestjs",
+        "fastapi",
+        "drizzle-orm",
+        "database-design",
+        "mcp-server-builder",
+        "react",
+        "nextjs",
         "frontend-design",
-        "design-system-builder",
-        "web-perf",
+        "performance-testing",
         "skill-creator",
-        "stripe-best-practices",
-        "serverless-patterns",
-        "i18n-localization"
+        "stripe-integration",
+        "ci-cd-pipeline"
       ],
       "artifacts": {
         "codex": {
@@ -1324,6 +1333,10 @@
         },
         "claude": {
           "workflowFile": "create.md"
+        },
+        "gemini": {
+          "workflowFile": "create.md",
+          "commandFile": "create.toml"
         }
       }
     },
@@ -1346,23 +1359,14 @@
         "test-engineer"
       ],
       "primarySkills": [
-        "database-design",
-        "database-optimizer",
-        "database-skills"
+        "database-design"
       ],
       "supportingSkills": [
-        "drizzle-expert",
-        "postgres",
-        "mysql",
-        "sqlite",
-        "mongodb",
-        "redis",
-        "supabase",
-        "firebase",
-        "vitess",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro"
+        "drizzle-orm",
+        "database-design",
+        "typescript-best-practices",
+        "javascript-best-practices",
+        "python-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -1379,6 +1383,10 @@
         },
         "claude": {
           "workflowFile": "database.md"
+        },
+        "gemini": {
+          "workflowFile": "database.md",
+          "commandFile": "database.toml"
         }
       }
     },
@@ -1402,21 +1410,21 @@
         "test-engineer"
       ],
       "primarySkills": [
-        "debugging-strategies",
-        "error-ux-observability"
+        "systematic-debugging",
+        "observability"
       ],
       "supportingSkills": [
-        "testing-patterns",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro",
-        "golang-pro",
-        "java-pro",
-        "csharp-pro",
-        "kotlin-pro",
-        "rust-pro",
-        "webapp-testing",
-        "playwright-e2e",
+        "unit-testing",
+        "typescript-best-practices",
+        "javascript-best-practices",
+        "python-best-practices",
+        "golang-best-practices",
+        "java-best-practices",
+        "csharp-best-practices",
+        "kotlin-best-practices",
+        "rust-best-practices",
+        "integration-testing",
+        "playwright-interactive",
         "skill-creator"
       ],
       "artifacts": {
@@ -1434,6 +1442,10 @@
         },
         "claude": {
           "workflowFile": "debug.md"
+        },
+        "gemini": {
+          "workflowFile": "debug.md",
+          "commandFile": "debug.toml"
         }
       }
     },
@@ -1463,20 +1475,18 @@
         "validator"
       ],
       "primarySkills": [
-        "devops-engineer",
-        "ci-cd-pipelines",
-        "docker-kubernetes"
+        "ci-cd-pipeline",
+        "kubernetes-deploy"
       ],
       "supportingSkills": [
-        "sre-engineer",
         "observability",
-        "serverless-patterns",
+        "ci-cd-pipeline",
         "git-workflow",
-        "debugging-strategies",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro",
-        "golang-pro"
+        "systematic-debugging",
+        "typescript-best-practices",
+        "javascript-best-practices",
+        "python-best-practices",
+        "golang-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -1493,6 +1503,10 @@
         },
         "claude": {
           "workflowFile": "devops.md"
+        },
+        "gemini": {
+          "workflowFile": "devops.md",
+          "commandFile": "devops.toml"
         }
       }
     },
@@ -1514,17 +1528,17 @@
         "validator"
       ],
       "primarySkills": [
-        "architecture-designer",
-        "api-designer"
+        "system-design",
+        "api-design"
       ],
       "supportingSkills": [
-        "database-skills",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro",
-        "golang-pro",
-        "react-expert",
-        "nextjs-developer"
+        "database-design",
+        "typescript-best-practices",
+        "javascript-best-practices",
+        "python-best-practices",
+        "golang-best-practices",
+        "react",
+        "nextjs"
       ],
       "artifacts": {
         "codex": {
@@ -1541,6 +1555,10 @@
         },
         "claude": {
           "workflowFile": "implement-track.md"
+        },
+        "gemini": {
+          "workflowFile": "implement-track.md",
+          "commandFile": "implement-track.toml"
         }
       }
     },
@@ -1566,16 +1584,15 @@
         "validator"
       ],
       "primarySkills": [
-        "legacy-modernizer",
-        "architecture-designer"
+        "system-design"
       ],
       "supportingSkills": [
-        "static-analysis",
-        "testing-patterns",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro",
-        "golang-pro"
+        "code-review",
+        "unit-testing",
+        "typescript-best-practices",
+        "javascript-best-practices",
+        "python-best-practices",
+        "golang-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -1592,6 +1609,10 @@
         },
         "claude": {
           "workflowFile": "migrate.md"
+        },
+        "gemini": {
+          "workflowFile": "migrate.md",
+          "commandFile": "migrate.toml"
         }
       }
     },
@@ -1614,22 +1635,14 @@
         "test-engineer"
       ],
       "primarySkills": [
-        "flutter-feature",
-        "mobile-design"
+        "expo-app",
+        "react-native"
       ],
       "supportingSkills": [
-        "i18n-localization",
-        "flutter-riverpod",
-        "flutter-go-router",
-        "flutter-design-system",
-        "flutter-testing",
-        "flutter-drift",
-        "flutter-offline-sync",
-        "flutter-state-machine",
-        "flutter-repository",
-        "dart-pro",
-        "swift-pro",
-        "kotlin-pro"
+        "frontend-design",
+        "expo-app",
+        "swift-best-practices",
+        "kotlin-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -1646,6 +1659,10 @@
         },
         "claude": {
           "workflowFile": "mobile.md"
+        },
+        "gemini": {
+          "workflowFile": "mobile.md",
+          "commandFile": "mobile.toml"
         }
       }
     },
@@ -1669,15 +1686,15 @@
         "frontend-specialist"
       ],
       "primarySkills": [
-        "deep-research",
-        "architecture-designer"
+        "architecture-doc",
+        "system-design"
       ],
       "supportingSkills": [
-        "legacy-modernizer",
-        "database-skills",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro"
+        "system-design",
+        "database-design",
+        "typescript-best-practices",
+        "javascript-best-practices",
+        "python-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -1694,6 +1711,10 @@
         },
         "claude": {
           "workflowFile": "onboard.md"
+        },
+        "gemini": {
+          "workflowFile": "onboard.md",
+          "commandFile": "onboard.toml"
         }
       }
     },
@@ -1722,15 +1743,15 @@
         "validator"
       ],
       "primarySkills": [
-        "architecture-designer",
-        "api-designer"
+        "system-design",
+        "api-design"
       ],
       "supportingSkills": [
-        "database-skills",
-        "deep-research",
-        "mcp-builder",
-        "openai-docs",
-        "prompt-engineer",
+        "database-design",
+        "architecture-doc",
+        "mcp-server-builder",
+        "tech-doc",
+        "prompt-engineering",
         "skill-creator"
       ],
       "artifacts": {
@@ -1748,6 +1769,10 @@
         },
         "claude": {
           "workflowFile": "orchestrate.md"
+        },
+        "gemini": {
+          "workflowFile": "orchestrate.md",
+          "commandFile": "orchestrate.toml"
         }
       }
     },
@@ -1777,15 +1802,15 @@
         "database-architect"
       ],
       "primarySkills": [
-        "architecture-designer",
-        "api-designer"
+        "system-design",
+        "api-design"
       ],
       "supportingSkills": [
-        "database-skills",
-        "deep-research",
-        "mcp-builder",
-        "openai-docs",
-        "prompt-engineer",
+        "database-design",
+        "architecture-doc",
+        "mcp-server-builder",
+        "tech-doc",
+        "prompt-engineering",
         "skill-creator"
       ],
       "artifacts": {
@@ -1803,6 +1828,10 @@
         },
         "claude": {
           "workflowFile": "plan.md"
+        },
+        "gemini": {
+          "workflowFile": "plan.md",
+          "commandFile": "plan.toml"
         }
       }
     },
@@ -1827,16 +1856,16 @@
         "validator"
       ],
       "primarySkills": [
-        "static-analysis",
-        "legacy-modernizer"
+        "code-review",
+        "system-design"
       ],
       "supportingSkills": [
-        "testing-patterns",
-        "architecture-designer",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro",
-        "golang-pro"
+        "unit-testing",
+        "system-design",
+        "typescript-best-practices",
+        "javascript-best-practices",
+        "python-best-practices",
+        "golang-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -1853,6 +1882,10 @@
         },
         "claude": {
           "workflowFile": "refactor.md"
+        },
+        "gemini": {
+          "workflowFile": "refactor.md",
+          "commandFile": "refactor.toml"
         }
       }
     },
@@ -1876,18 +1909,16 @@
         "documentation-writer"
       ],
       "primarySkills": [
-        "ci-cd-pipelines",
+        "ci-cd-pipeline",
         "git-workflow"
       ],
       "supportingSkills": [
-        "changelog-generator",
-        "devops-engineer",
-        "sre-engineer",
-        "docker-kubernetes",
+        "tech-doc",
+        "ci-cd-pipeline",
         "observability",
-        "serverless-patterns",
-        "typescript-pro",
-        "javascript-pro"
+        "kubernetes-deploy",
+        "typescript-best-practices",
+        "javascript-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -1904,6 +1935,10 @@
         },
         "claude": {
           "workflowFile": "release.md"
+        },
+        "gemini": {
+          "workflowFile": "release.md",
+          "commandFile": "release.toml"
         }
       }
     },
@@ -1928,20 +1963,18 @@
         "test-engineer"
       ],
       "primarySkills": [
-        "frontend-code-review",
-        "static-analysis",
-        "testing-patterns"
+        "code-review",
+        "unit-testing"
       ],
       "supportingSkills": [
-        "security-engineer",
-        "vulnerability-scanner",
-        "web-perf",
-        "react-expert",
-        "nextjs-developer",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro",
-        "golang-pro"
+        "owasp-security-review",
+        "performance-testing",
+        "react",
+        "nextjs",
+        "typescript-best-practices",
+        "javascript-best-practices",
+        "python-best-practices",
+        "golang-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -1958,6 +1991,10 @@
         },
         "claude": {
           "workflowFile": "review.md"
+        },
+        "gemini": {
+          "workflowFile": "review.md",
+          "commandFile": "review.toml"
         }
       }
     },
@@ -1982,19 +2019,17 @@
         "validator"
       ],
       "primarySkills": [
-        "security-engineer",
-        "auth-architect"
+        "owasp-security-review"
       ],
       "supportingSkills": [
-        "vulnerability-scanner",
-        "static-analysis",
-        "api-designer",
-        "graphql-architect",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro",
-        "golang-pro",
-        "rust-pro"
+        "owasp-security-review",
+        "code-review",
+        "api-design",
+        "typescript-best-practices",
+        "javascript-best-practices",
+        "python-best-practices",
+        "golang-best-practices",
+        "rust-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -2011,6 +2046,10 @@
         },
         "claude": {
           "workflowFile": "security.md"
+        },
+        "gemini": {
+          "workflowFile": "security.md",
+          "commandFile": "security.toml"
         }
       }
     },
@@ -2035,20 +2074,19 @@
         "validator"
       ],
       "primarySkills": [
-        "testing-patterns",
-        "webapp-testing"
+        "unit-testing",
+        "integration-testing"
       ],
       "supportingSkills": [
-        "playwright-e2e",
-        "error-ux-observability",
-        "debugging-strategies",
-        "frontend-code-review",
-        "static-analysis",
-        "typescript-pro",
-        "javascript-pro",
-        "python-pro",
-        "golang-pro",
-        "java-pro"
+        "playwright-interactive",
+        "observability",
+        "systematic-debugging",
+        "code-review",
+        "typescript-best-practices",
+        "javascript-best-practices",
+        "python-best-practices",
+        "golang-best-practices",
+        "java-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -2065,6 +2103,10 @@
         },
         "claude": {
           "workflowFile": "test.md"
+        },
+        "gemini": {
+          "workflowFile": "test.md",
+          "commandFile": "test.toml"
         }
       }
     },
@@ -2089,16 +2131,15 @@
         "test-engineer"
       ],
       "primarySkills": [
-        "nextjs-developer",
-        "serverless-patterns"
+        "nextjs",
+        "ci-cd-pipeline"
       ],
       "supportingSkills": [
-        "web-perf",
-        "react-expert",
-        "tailwind-patterns",
-        "nodejs-best-practices",
-        "typescript-pro",
-        "javascript-pro"
+        "performance-testing",
+        "react",
+        "frontend-design",
+        "javascript-best-practices",
+        "typescript-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -2115,6 +2156,10 @@
         },
         "claude": {
           "workflowFile": "vercel.md"
+        },
+        "gemini": {
+          "workflowFile": "vercel.md",
+          "commandFile": "vercel.toml"
         }
       }
     }

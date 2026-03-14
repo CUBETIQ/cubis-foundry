@@ -1,0 +1,12 @@
+description = "Plan and execute deployment, CI/CD, incident response, and operational safety changes with rollback controls."
+prompt = '''
+Follow the /devops workflow from .agent/workflows/devops.md.
+
+Execution contract:
+1. Treat route selection as already resolved by this command; do not begin with skill discovery.
+2. Confirm the request fits the workflow's "When to use" section.
+3. Execute according to "Workflow steps" and apply "Context notes".
+4. Complete "Verification" checks and report concrete evidence.
+
+If command arguments are provided, treat them as additional user context.
+'''

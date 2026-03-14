@@ -1,11 +1,9 @@
 ---
 name: php-best-practices
-description: "Use when writing, reviewing, or refactoring PHP 8.4+ code. Activates for typed service implementation with readonly classes, Fiber-based async patterns, enum-driven domain modeling, property hooks, Composer package design, or security hardening with strict types and static analysis."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: "Use when writing, reviewing, or refactoring modern PHP, including readonly classes, enums, property hooks, Composer package design, strict types, and security hardening."
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "PHP file, class, or pattern to analyze"
 ---
 
 # PHP Best Practices
@@ -83,3 +81,11 @@ No helper scripts are required for this skill right now. Keep execution in `SKIL
 
 - "Design a typed service with readonly value objects, enums, and property hooks for an e-commerce domain."
 - "Create a Composer package with PSR-4 autoloading, PHPStan level 9, and CI-ready test configuration."
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

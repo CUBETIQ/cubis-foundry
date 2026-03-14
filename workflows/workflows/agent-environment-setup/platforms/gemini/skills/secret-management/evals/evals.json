@@ -1,0 +1,68 @@
+[
+  {
+    "id": "secret-rotation-strategy",
+    "title": "Design a secret rotation strategy for a microservices architecture",
+    "description": "Given a microservices setup with various secret types, the skill should produce a rotation strategy with schedules, methods, and zero-downtime considerations.",
+    "prompt": "Design a secret rotation strategy for our microservices platform:\n\n- 12 microservices running in Kubernetes\n- PostgreSQL database with shared credentials across 4 services\n- Redis with a single AUTH password\n- 3 third-party API keys (Stripe, SendGrid, Twilio)\n- TLS certificates managed manually, expiring in 2 months\n- JWT signing key shared across auth service and 3 consumer services\n- All secrets currently stored as Kubernetes Secrets (base64 encoded)\n- No vault infrastructure in place",
+    "assertions": [
+      {
+        "type": "content_matches_regex",
+        "value": "Vault|vault|AWS Secrets Manager|GCP Secret Manager|secret.*manager",
+        "description": "Must recommend implementing a vault or managed secret service"
+      },
+      {
+        "type": "content_matches_regex",
+        "value": "rotation|rotate|schedule|frequenc|interval|30.*day|90.*day",
+        "description": "Must define rotation schedules for different secret types"
+      },
+      {
+        "type": "content_matches_regex",
+        "value": "zero.downtime|graceful|dual.credential|rolling|overlap",
+        "description": "Must address zero-downtime rotation strategy (dual credentials or rolling)"
+      },
+      {
+        "type": "content_matches_regex",
+        "value": "dynamic.*secret|short.lived|ephemeral|per.request|lease",
+        "description": "Must recommend dynamic/short-lived secrets for database credentials"
+      },
+      {
+        "type": "content_matches_regex",
+        "value": "TLS|certificate|cert.manager|auto.renew|PKI|Let.*Encrypt",
+        "description": "Must address TLS certificate automation before the 2-month expiry"
+      }
+    ]
+  },
+  {
+    "id": "secret-vault-integration",
+    "title": "Design a HashiCorp Vault integration for Kubernetes workloads",
+    "description": "Given a Kubernetes deployment, the skill should provide a vault integration pattern including agent injection, policy design, and secret engine configuration.",
+    "prompt": "We want to integrate HashiCorp Vault with our Kubernetes cluster for secret management. We have:\n\n- 3 namespaces: production, staging, development\n- Each namespace has 4-6 services that need database credentials\n- Services are written in Go, Python, and Node.js\n- We need to support both sidecar injection and direct API access\n- PostgreSQL and MongoDB databases need dynamic credentials\n- Some services need PKI certificates for mTLS\n\nDesign the Vault integration architecture.",
+    "assertions": [
+      {
+        "type": "content_matches_regex",
+        "value": "Kubernetes auth|kubernetes.*method|auth.*method|service.account",
+        "description": "Must configure Kubernetes authentication method for Vault"
+      },
+      {
+        "type": "content_matches_regex",
+        "value": "vault.agent|sidecar|inject|annotation|vault.hashicorp",
+        "description": "Must describe Vault Agent sidecar injection pattern"
+      },
+      {
+        "type": "content_matches_regex",
+        "value": "polic|role|namespace|path|capabilities",
+        "description": "Must define Vault policies scoped per namespace"
+      },
+      {
+        "type": "content_matches_regex",
+        "value": "database.*engine|dynamic.*credential|database.*role|secret.*engine",
+        "description": "Must configure database secret engines for dynamic credentials"
+      },
+      {
+        "type": "content_matches_regex",
+        "value": "PKI|pki.*engine|certificate|mTLS|mutual.*TLS",
+        "description": "Must address PKI secret engine for mTLS certificate generation"
+      }
+    ]
+  }
+]

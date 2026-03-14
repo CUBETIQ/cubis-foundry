@@ -1,16 +1,10 @@
 ---
 name: playwright-interactive
-description: "Use when building interactive Playwright test suites with multi-agent collaboration: browser automation flows, visual regression testing, accessibility audits, network interception, or coordinating test-author, visual-reviewer, and accessibility-auditor agents."
+description: "Use when building interactive Playwright suites for browser automation, visual regression, accessibility audits, network interception, and collaborative test workflows."
 license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
-  domain: quality
-  triggers: Playwright interactive, visual testing, accessibility audit, network interception, multi-agent testing, browser automation, a11y, screenshot comparison
-  role: orchestrator
-  scope: testing
-  output-format: code
-  related-skills: playwright-expert, playwright-e2e, test-master, accessibility
 compatibility: "Claude Code, Codex, GitHub Copilot"
 ---
 

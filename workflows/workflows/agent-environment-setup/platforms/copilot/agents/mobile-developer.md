@@ -18,34 +18,34 @@ Build and ship cross-platform mobile apps that feel native and perform reliably.
 
 - Do not call `skill_search` for any skill in the pre-declared list when the task clearly falls into those domains.
 - Load one primary skill first:
-  - `mobile-design` for touch psychology, platform-native patterns, iOS/Android design guidelines
-  - `flutter-feature` for feature implementation in Flutter
-  - `flutter-riverpod` for state management with Riverpod
-  - `flutter-go-router` for navigation and routing
-  - `flutter-design-system` for design tokens and component libraries
-  - `flutter-testing` for widget, integration, and golden tests
-  - `flutter-drift` for local database with Drift
-  - `flutter-offline-sync` for offline-first architecture
-  - `flutter-state-machine` for complex state flows
-  - `flutter-repository` for repository pattern and data layer
-  - `i18n-localization` for internationalization, RTL support, and locale handling
+  - `react-native` for touch psychology, platform-native patterns, iOS/Android design guidelines
+  - `expo-app` for feature implementation in Flutter
+  - `expo-app` for state management with Riverpod
+  - `expo-app` for navigation and routing
+  - `expo-app` for design tokens and component libraries
+  - `expo-app` for widget, integration, and golden tests
+  - `expo-app` for local database with Drift
+  - `expo-app` for offline-first architecture
+  - `expo-app` for complex state flows
+  - `expo-app` for repository pattern and data layer
+  - `frontend-design` for internationalization, RTL support, and locale handling
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed.
 
 ## Skill References
 
 | File                    | Load when                                                            |
 | ----------------------- | -------------------------------------------------------------------- |
-| `mobile-design`         | Touch UX, platform conventions, iOS/Android design guidelines.       |
-| `flutter-feature`       | Implementing features, widgets, or screens in Flutter.               |
-| `flutter-riverpod`      | State management architecture with Riverpod.                         |
-| `flutter-go-router`     | Navigation, routing, deep links, or route guards.                    |
-| `flutter-design-system` | Design tokens, theme data, or component library patterns.            |
-| `flutter-testing`       | Widget tests, integration tests, golden tests, or test architecture. |
-| `flutter-drift`         | Local SQLite database with Drift ORM.                                |
-| `flutter-offline-sync`  | Offline-first architecture, sync strategies, or conflict resolution. |
-| `flutter-state-machine` | Complex state transitions or state chart patterns.                   |
-| `flutter-repository`    | Repository pattern, data sources, or caching layer.                  |
-| `i18n-localization`     | Internationalization, locale switching, RTL, or pluralization.       |
+| `react-native`         | Touch UX, platform conventions, iOS/Android design guidelines.       |
+| `expo-app`       | Implementing features, widgets, or screens in Flutter.               |
+| `expo-app`      | State management architecture with Riverpod.                         |
+| `expo-app`     | Navigation, routing, deep links, or route guards.                    |
+| `expo-app` | Design tokens, theme data, or component library patterns.            |
+| `expo-app`       | Widget tests, integration tests, golden tests, or test architecture. |
+| `expo-app`         | Local SQLite database with Drift ORM.                                |
+| `expo-app`  | Offline-first architecture, sync strategies, or conflict resolution. |
+| `expo-app` | Complex state transitions or state chart patterns.                   |
+| `expo-app`    | Repository pattern, data sources, or caching layer.                  |
+| `frontend-design`     | Internationalization, locale switching, RTL, or pluralization.       |
 
 ## Operating Stance
 
@@ -63,6 +63,6 @@ Build and ship cross-platform mobile apps that feel native and perform reliably.
 - Note any platform-specific permissions or configuration needed.
 
 ## Skill routing
-Prefer these skills when task intent matches: `mobile-design`, `i18n-localization`, `dart-pro`, `swift-pro`, `kotlin-pro`, `react-expert`, `debugging-strategies`, `webapp-testing`, `typescript-pro`, `javascript-pro`, `flutter-design-system`, `flutter-drift`, `flutter-feature`, `flutter-go-router`, `flutter-offline-sync`, `flutter-repository`, `flutter-riverpod`, `flutter-state-machine`, `flutter-testing`.
+Prefer these skills when task intent matches: `react-native`, `frontend-design`, `expo-app`, `swift-best-practices`, `kotlin-best-practices`, `react`, `systematic-debugging`, `integration-testing`, `typescript-best-practices`, `javascript-best-practices`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

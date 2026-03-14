@@ -1,11 +1,9 @@
 ---
 name: requesting-code-review
 description: "Use when preparing code for review, writing PR descriptions, selecting reviewers, structuring changes for easy review, or managing review timelines."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: "Claude Code, Codex, GitHub Copilot"
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "PR or code change to prepare for review"
 ---
 
 # Requesting Code Review
@@ -71,3 +69,11 @@ When preparing a review request, provide:
 | `references/pr-description-patterns.md` | Templates and examples for writing effective PR descriptions across different change types |
 | `references/reviewer-selection.md` | How to select the right reviewers based on expertise, workload, and change characteristics |
 | `references/self-review-checklist.md` | Step-by-step checklist for self-reviewing your changes before requesting external review |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

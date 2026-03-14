@@ -1,11 +1,9 @@
 ---
 name: java-best-practices
 description: "Use when writing, refactoring, or reviewing modern Java (21+) code. Covers records, sealed classes, pattern matching, virtual threads, structured concurrency, and production testing with JUnit 5. Replaces java-pro."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "Java class, module, or pattern to analyze"
 ---
 
 # Java Best Practices
@@ -70,3 +68,11 @@ Produces Java code using records, sealed types, pattern matching switch expressi
 | `references/testing.md` | JUnit 5 patterns, parameterized tests, Testcontainers, or test architecture decisions. |
 | `references/build-systems.md` | Gradle or Maven configuration, dependency management, or CI build optimization. |
 | `references/api-design.md` | REST API contracts, DTO mapping, versioning, or serialization strategy. |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

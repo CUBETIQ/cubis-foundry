@@ -12,9 +12,9 @@ Use this for schema design, query optimization, migration planning, or database 
 
 ## Routing
 
-- Primary specialist: `@database-architect`
-- Implementation support: `@backend-specialist`
-- Verification support: `@test-engineer`
+- Primary specialist: `.agent/agents/database-architect`
+- Implementation support: `.agent/agents/backend-specialist`
+- Verification support: `.agent/agents/test-engineer`
 
 ## Context notes
 
@@ -23,9 +23,9 @@ Use this for schema design, query optimization, migration planning, or database 
 
 ## Skill Routing
 
-- Primary skills: `database-design`, `database-optimizer`, `database-skills`
-- Supporting skills (optional): `drizzle-expert`, `postgres`, `mysql`, `sqlite`, `mongodb`, `redis`, `supabase`, `firebase`, `vitess`, `typescript-pro`, `javascript-pro`, `python-pro`
-- Start with `database-design` for schema work, `database-optimizer` for performance, or `database-skills` for general database operations. Add engine-specific skill when applicable.
+- Primary skills: `database-design`, `database-design`, `database-design`
+- Supporting skills (optional): `drizzle-orm`, `database-design`, `database-design`, `database-design`, `database-design`, `database-design`, `database-design`, `database-design`, `database-design`, `typescript-best-practices`, `javascript-best-practices`, `python-best-practices`
+- Start with `database-design` for schema work, `database-design` for performance, or `database-design` for general database operations. Add engine-specific skill when applicable.
 
 ## Workflow steps
 
@@ -48,8 +48,8 @@ Use this for schema design, query optimization, migration planning, or database 
 DATABASE_WORKFLOW_RESULT:
   primary_agent: database-architect
   supporting_agents: [backend-specialist?, test-engineer?]
-  primary_skills: [database-design, database-optimizer, database-skills]
-  supporting_skills: [<engine-specific-skill>?, drizzle-expert?]
+  primary_skills: [database-design, database-design, database-design]
+  supporting_skills: [<engine-specific-skill>?, drizzle-orm?]
   schema_changes:
     tables_affected: [<string>]
     migration_plan: <string>
@@ -60,3 +60,5 @@ DATABASE_WORKFLOW_RESULT:
   integrity_checks: [<string>]
   follow_up_items: [<string>] | []
 ```
+
+> **Antigravity note:** Use Agent Manager for parallel agent coordination. Workflow files are stored under `.agent/workflows/`.

@@ -1,6 +1,6 @@
 ---
 name: php-best-practices
-description: "Use when writing, reviewing, or refactoring PHP 8.4+ code. Activates for typed service implementation with readonly classes, Fiber-based async patterns, enum-driven domain modeling, property hooks, Composer package design, or security hardening with strict types and static analysis."
+description: "Use when writing, reviewing, or refactoring modern PHP, including readonly classes, enums, property hooks, Composer package design, strict types, and security hardening."
 license: MIT
 metadata:
   author: cubis-foundry

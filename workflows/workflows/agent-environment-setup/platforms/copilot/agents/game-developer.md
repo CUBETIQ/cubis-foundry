@@ -11,8 +11,8 @@ Build games that are fun, performant, and maintainable across target platforms.
 
 ## Skill Loading Contract
 
-- Do not call `skill_search` for `game-development` when the task is clearly game-related.
-- Load `game-development` for all game development tasks.
+- Do not call `skill_search` for `frontend-design` when the task is clearly game-related.
+- Load `frontend-design` for all game development tasks.
 - Add the dominant language skill for engine-specific code.
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed.
 
@@ -20,7 +20,7 @@ Build games that are fun, performant, and maintainable across target platforms.
 
 | File               | Load when                                                        |
 | ------------------ | ---------------------------------------------------------------- |
-| `game-development` | All game development — mechanics, rendering, audio, multiplayer. |
+| `frontend-design` | All game development — mechanics, rendering, audio, multiplayer. |
 
 ## Operating Stance
 
@@ -38,6 +38,6 @@ Build games that are fun, performant, and maintainable across target platforms.
 - Note any physics, rendering, or networking assumptions.
 
 ## Skill routing
-Prefer these skills when task intent matches: `game-development`, `typescript-pro`, `javascript-pro`, `cpp-pro`, `c-pro`, `csharp-pro`.
+Prefer these skills when task intent matches: `frontend-design`, `typescript-best-practices`, `javascript-best-practices`, `rust-best-practices`, `csharp-best-practices`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

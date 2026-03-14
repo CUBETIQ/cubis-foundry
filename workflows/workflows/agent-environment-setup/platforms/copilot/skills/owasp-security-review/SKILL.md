@@ -1,13 +1,12 @@
 ---
 name: owasp-security-review
-description: "Conduct OWASP-based security reviews including Top 10 vulnerability analysis, code review for security flaws, threat modeling, and SAST/DAST pattern integration. Use when auditing applications against OWASP standards or performing structured security assessments."
+description: "Use when performing OWASP-aligned security reviews, including vulnerability analysis, secure code review, threat modeling, and SAST/DAST integration."
 license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
 compatibility: "Claude Code, Codex, GitHub Copilot"
 ---
-
 # OWASP Security Review
 
 ## Purpose
@@ -99,3 +98,11 @@ Perform structured, OWASP-standards-based security reviews of application code a
 | Threat Modeling | `references/threat-modeling.md` | Building or updating a threat model |
 | SAST/DAST Patterns | `references/sast-dast.md` | Configuring or running security scanners |
 | Remediation Playbook | `references/remediation.md` | Writing fix guidance for findings |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

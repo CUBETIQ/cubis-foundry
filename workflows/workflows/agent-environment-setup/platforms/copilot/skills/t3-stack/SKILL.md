@@ -1,13 +1,12 @@
 ---
 name: t3-stack
-description: "Use when building or maintaining a full-stack TypeScript application with the T3 Stack: Next.js App Router, tRPC routers and procedures, Prisma schema and queries, NextAuth.js session handling, Tailwind CSS styling, and end-to-end type safety from database to UI."
+description: "Use when building or maintaining T3 Stack apps with Next.js App Router, tRPC, Prisma, NextAuth.js, Tailwind CSS, and end-to-end type safety."
 license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 # T3 Stack
 
 ## Purpose
@@ -66,13 +65,19 @@ Provide implementation code, schema definitions, configuration snippets, and arc
 | File                              | Load when                                                                                     |
 | --------------------------------- | --------------------------------------------------------------------------------------------- |
 | `references/trpc-patterns.md`    | Designing tRPC routers, procedures, middleware, error handling, or server-side callers.       |
-| `references/prisma-integration.md`| Writing Prisma schemas, queries, relations, or configuring the singleton client in T3.       |
-| `references/auth-patterns.md`    | Configuring NextAuth.js providers, callbacks, session strategies, or wiring auth into tRPC.   |
-| `references/testing.md`          | Writing integration tests, mocking tRPC context, or testing protected procedures.            |
-| `references/deployment.md`       | Deploying to Vercel, managing environment variables, or configuring connection pooling.       |
+| `references/prisma-t3-patterns.md` | Writing Prisma schemas, queries, relations, or configuring the singleton client in T3.     |
+| `references/auth-strategies.md`  | Configuring NextAuth.js providers, callbacks, session strategies, or wiring auth into tRPC.  |
 
 ## Examples
 
 - "Set up a new T3 Stack project with Google OAuth and a Prisma PostgreSQL schema."
 - "Add a tRPC router for CRUD operations on a blog post model with auth middleware."
 - "Review my T3 Stack app for type safety gaps between tRPC and Prisma."
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

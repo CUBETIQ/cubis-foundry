@@ -1,11 +1,9 @@
 ---
 name: microservices-design
 description: Microservices architecture patterns covering service decomposition, API gateways, service mesh, saga pattern, event sourcing, and deployment strategies for distributed applications.
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+allowed-tools: Read Grep Glob
+user-invocable: true
+argument-hint: "Service boundary, communication pattern, or architecture concern"
 ---
 
 # Microservices Design
@@ -80,3 +78,11 @@ Load only what the current task requires.
 | `references/saga-pattern.md` | Task involves distributed transactions, compensation logic, or orchestration vs. choreography. |
 | `references/observability.md` | Task involves distributed tracing, metrics collection, log aggregation, or alerting. |
 | `references/deployment.md` | Task involves CI/CD pipelines, canary releases, blue-green deployments, or rollback strategies. |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

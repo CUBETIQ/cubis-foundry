@@ -5,15 +5,8 @@ license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
-  domain: frontend
-  triggers: React, Server Components, use(), Suspense, Actions, useTransition, useOptimistic, useActionState, concurrent, ref as prop
-  role: specialist
-  scope: implementation
-  output-format: code
-  related-skills: nextjs, typescript-pro, tailwind-patterns, test-master
 compatibility: "Claude Code, Codex, GitHub Copilot"
 ---
-
 # React 19+
 
 Senior frontend engineer specializing in React 19+ patterns including Server Components, the `use()` hook, Actions, Suspense for data fetching, concurrent rendering, and scalable component architecture.
@@ -89,3 +82,11 @@ Load detailed guidance based on context:
 | Actions & Forms | `references/actions-forms.md` | useActionState, useOptimistic, form action prop, progressive enhancement |
 | Concurrent Features | `references/concurrent-features.md` | useTransition, useDeferredValue, Suspense streaming, selective hydration |
 | Component Patterns | `references/component-patterns.md` | Composition, ref forwarding, Error Boundaries, performance optimization |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

@@ -7,7 +7,6 @@ metadata:
   version: "3.0"
 compatibility: "Claude Code, Codex, GitHub Copilot"
 ---
-
 # Code Review
 
 ## Purpose
@@ -64,3 +63,11 @@ When conducting a code review, provide:
 | `references/depth-calibration.md` | How to calibrate review depth based on change risk, size, and author experience |
 | `references/automation.md` | Automated review tools, CI checks, and bot configuration to reduce manual review burden |
 | `references/team-practices.md` | Team-level review practices, CODEOWNERS, SLAs, and review culture guidelines |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

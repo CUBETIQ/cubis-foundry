@@ -77,11 +77,9 @@ Guide the design and implementation of production-grade Stripe payment integrati
 
 | File                          | Load when                                                                                     |
 | ----------------------------- | --------------------------------------------------------------------------------------------- |
-| `references/checkout.md`      | Building checkout sessions, redirect flows, or embedded payment forms.                       |
-| `references/subscriptions.md` | Implementing recurring billing, plan changes, trials, or dunning.                            |
-| `references/webhooks.md`      | Setting up webhook endpoints, handling events, or debugging delivery.                        |
-| `references/testing.md`       | Writing integration tests, using Stripe CLI, or configuring test fixtures.                   |
-| `references/security.md`      | Securing API keys, verifying signatures, preventing fraud, or meeting PCI requirements.      |
+| `references/payment-flows.md` | Building checkout sessions, redirect flows, or embedded payment forms.                       |
+| `references/subscription-lifecycle.md` | Implementing recurring billing, plan changes, trials, dunning, and customer portal flows. |
+| `references/webhook-handling.md` | Setting up webhook endpoints, handling events, and debugging delivery behavior.           |
 
 ## Examples
 

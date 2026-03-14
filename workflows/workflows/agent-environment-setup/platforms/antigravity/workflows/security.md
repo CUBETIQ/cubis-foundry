@@ -12,10 +12,10 @@ Use this for security audits, vulnerability assessments, threat modeling, or sec
 
 ## Routing
 
-- Primary specialist: `@security-auditor`
-- Offensive assessment: `@penetration-tester`
-- Domain support: `@backend-specialist`, `@frontend-specialist`
-- Verification support: `@validator`
+- Primary specialist: `.agent/agents/security-auditor`
+- Offensive assessment: `.agent/agents/penetration-tester`
+- Domain support: `.agent/agents/backend-specialist`, `.agent/agents/frontend-specialist`
+- Verification support: `.agent/agents/validator`
 
 ## Context notes
 
@@ -24,9 +24,9 @@ Use this for security audits, vulnerability assessments, threat modeling, or sec
 
 ## Skill Routing
 
-- Primary skills: `security-engineer`, `auth-architect`
-- Supporting skills (optional): `vulnerability-scanner`, `static-analysis`, `api-designer`, `graphql-architect`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `rust-pro`
-- Start with `security-engineer` for OWASP methodology and threat modeling. Add `auth-architect` for authentication/authorization review. Add `vulnerability-scanner` for dependency scanning and CVE triage.
+- Primary skills: `owasp-security-review`, `owasp-security-review`
+- Supporting skills (optional): `owasp-security-review`, `code-review`, `api-design`, `api-design`, `typescript-best-practices`, `javascript-best-practices`, `python-best-practices`, `golang-best-practices`, `rust-best-practices`
+- Start with `owasp-security-review` for OWASP methodology and threat modeling. Add `owasp-security-review` for authentication/authorization review. Add `owasp-security-review` for dependency scanning and CVE triage.
 
 ## Workflow steps
 
@@ -50,8 +50,8 @@ Use this for security audits, vulnerability assessments, threat modeling, or sec
 SECURITY_WORKFLOW_RESULT:
   primary_agent: security-auditor
   supporting_agents: [penetration-tester?, backend-specialist?, frontend-specialist?, validator?]
-  primary_skills: [security-engineer, auth-architect]
-  supporting_skills: [vulnerability-scanner?, static-analysis?, api-designer?]
+  primary_skills: [owasp-security-review, owasp-security-review]
+  supporting_skills: [owasp-security-review?, code-review?, api-design?]
   threat_model:
     assets: [<string>]
     threats: [<string>]
@@ -65,3 +65,5 @@ SECURITY_WORKFLOW_RESULT:
   remaining_risks: [<string>] | []
   follow_up_items: [<string>] | []
 ```
+
+> **Antigravity note:** Use Agent Manager for parallel agent coordination. Workflow files are stored under `.agent/workflows/`.

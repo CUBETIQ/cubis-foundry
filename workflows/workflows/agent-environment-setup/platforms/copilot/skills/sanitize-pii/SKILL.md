@@ -7,7 +7,6 @@ metadata:
   version: "3.0"
 compatibility: "Claude Code, Codex, GitHub Copilot"
 ---
-
 # Sanitize PII — PII Detection and Sanitization
 
 ## Purpose
@@ -98,3 +97,11 @@ Guide the detection, classification, and sanitization of personally identifiable
 | Data Masking Techniques | `references/data-masking.md` | Creating non-production datasets |
 | GDPR/CCPA Compliance | `references/compliance.md` | Reviewing regulatory requirements |
 | Audit Trail Design | `references/audit-trails.md` | Implementing PII access logging |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

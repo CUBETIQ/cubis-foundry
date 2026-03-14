@@ -1,11 +1,9 @@
 ---
 name: rag-patterns
 description: "Use when designing or optimizing Retrieval-Augmented Generation systems: chunking strategies, embedding model selection, vector store configuration, retrieval optimization, hybrid search, re-ranking, and production RAG pipelines."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+allowed-tools: Read Grep Glob Bash
+user-invocable: true
+argument-hint: "RAG pipeline, chunking strategy, or retrieval concern"
 ---
 
 # RAG Patterns
@@ -71,3 +69,11 @@ Provide architecture diagrams as ASCII or Mermaid, configuration snippets for ve
 | `references/vector-stores.md` | Choosing, configuring, or migrating vector stores. |
 | `references/retrieval-optimization.md` | Improving retrieval quality with re-ranking, query expansion, or filtering. |
 | `references/hybrid-search.md` | Implementing hybrid dense + sparse search pipelines. |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

@@ -4,7 +4,7 @@ description: Expert database architect for schema design, query optimization, mi
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
 maxTurns: 25
-skills: architecture-designer, database-skills, database-design, database-optimizer, drizzle-expert, postgres, mysql, sqlite, mongodb, redis, supabase, firebase, vitess, neki, typescript-pro, javascript-pro, python-pro, golang-pro, java-pro, php-pro, ruby-pro
+skills: system-design, database-design, drizzle-orm, typescript-best-practices, javascript-best-practices, python-best-practices, golang-best-practices, java-best-practices, php-best-practices
 handoffs:
   - agent: "backend-specialist"
     title: "Implement Schema Changes"
@@ -21,11 +21,11 @@ Design and operate data systems that stay correct, performant, and evolvable und
 - Do not call `skill_search` for any skill in the pre-declared list when the task clearly falls into those domains.
 - Load one primary skill first based on the dominant concern:
   - `database-design` for schema normalization, entity modeling, or relationship design
-  - `database-optimizer` for query performance, index strategy, or execution plan analysis
-  - `database-skills` for cross-cutting database operations and migration patterns
-  - `drizzle-expert` for Drizzle ORM schema, queries, or TypeScript-first database access
-  - `postgres` / `mysql` / `sqlite` / `mongodb` / `redis` for engine-specific patterns
-  - `supabase` / `firebase` / `vitess` / `neki` for platform-specific database behavior
+  - `database-design` for query performance, index strategy, or execution plan analysis
+  - `database-design` for cross-cutting database operations and migration patterns
+  - `drizzle-orm` for Drizzle ORM schema, queries, or TypeScript-first database access
+  - `database-design` / `database-design` / `database-design` / `database-design` / `database-design` for engine-specific patterns
+  - `database-design` / `database-design` / `database-design` / `database-design` for platform-specific database behavior
 - Add one supporting skill only when the task genuinely crosses concerns.
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed.
 
@@ -36,16 +36,16 @@ Load on demand. Do not preload all references.
 | File                 | Load when                                                                   |
 | -------------------- | --------------------------------------------------------------------------- |
 | `database-design`    | Schema normalization, entity relationships, or data modeling decisions.     |
-| `database-optimizer` | Query performance, index strategy, or EXPLAIN analysis.                     |
-| `database-skills`    | Cross-cutting operations, migration patterns, or general database guidance. |
-| `drizzle-expert`     | Drizzle ORM schema definitions, queries, or migrations.                     |
-| `postgres`           | PostgreSQL-specific features, extensions, or tuning.                        |
-| `mysql`              | MySQL-specific features, replication, or optimization.                      |
-| `sqlite`             | SQLite constraints, WAL mode, or embedded database patterns.                |
-| `mongodb`            | MongoDB document design, aggregation pipelines, or sharding.                |
-| `redis`              | Redis data structures, caching patterns, or pub/sub.                        |
-| `supabase`           | Supabase RLS policies, Edge Functions, or real-time subscriptions.          |
-| `firebase`           | Firestore rules, Cloud Functions, or Firebase Auth integration.             |
+| `database-design` | Query performance, index strategy, or EXPLAIN analysis.                     |
+| `database-design`    | Cross-cutting operations, migration patterns, or general database guidance. |
+| `drizzle-orm`     | Drizzle ORM schema definitions, queries, or migrations.                     |
+| `database-design`           | PostgreSQL-specific features, extensions, or tuning.                        |
+| `database-design`              | MySQL-specific features, replication, or optimization.                      |
+| `database-design`             | SQLite constraints, WAL mode, or embedded database patterns.                |
+| `database-design`            | MongoDB document design, aggregation pipelines, or sharding.                |
+| `database-design`              | Redis data structures, caching patterns, or pub/sub.                        |
+| `database-design`           | Supabase RLS policies, Edge Functions, or real-time subscriptions.          |
+| `database-design`           | Firestore rules, Cloud Functions, or Firebase Auth integration.             |
 
 ## Operating Stance
 
@@ -70,3 +70,5 @@ Load on demand. Do not preload all references.
 - Include migration plan for any schema change.
 - Call out data-integrity risks or missing constraints.
 - Provide EXPLAIN output for performance-sensitive queries.
+
+> **Codex note:** Specialists are internal reasoning postures, not spawned processes. Switch postures by adopting the specialist's guidelines inline.

@@ -1,6 +1,6 @@
 ---
 name: swift-best-practices
-description: "Use when writing, reviewing, or refactoring Swift 6.0+ code. Activates for actor-based service design, strict concurrency migration, SwiftUI state management with @Observable, structured concurrency with TaskGroup/AsyncStream, protocol-oriented architecture, or Swift Package Manager module organization."
+description: "Use when writing, reviewing, or refactoring modern Swift, including strict concurrency, actors, SwiftUI with @Observable, structured concurrency, protocol-oriented design, and SPM modules."
 license: MIT
 metadata:
   author: cubis-foundry

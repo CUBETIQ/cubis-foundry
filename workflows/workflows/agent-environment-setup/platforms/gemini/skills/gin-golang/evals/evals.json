@@ -1,0 +1,74 @@
+[
+  {
+    "id": "gin-crud-validation",
+    "prompt": "Build a Go Gin CRUD API for a product catalog service. Create endpoints for listing, creating, reading, updating, and deleting products under /api/v1/products. Use gin.New() with explicit middleware registration: custom recovery, structured JSON logging, and JWT auth middleware on protected routes. Validate all request bodies with struct binding tags including required fields, min/max constraints, and a custom 'slug' validator. Return structured JSON error responses from a central error handler. Set Gin to release mode in production. Include table-driven tests for the create endpoint covering valid input, missing required fields, and invalid field values.",
+    "assertions": [
+      {
+        "id": "gin-new-explicit-middleware",
+        "type": "contains_concept",
+        "expected": "Engine is created with gin.New() instead of gin.Default(), and middleware is added explicitly with router.Use() in the correct order: recovery first, then logging, with auth middleware applied at the group level for protected routes only",
+        "weight": 1.0
+      },
+      {
+        "id": "binding-validation-tags",
+        "type": "contains_concept",
+        "expected": "Request structs use binding tags like binding:\"required\", binding:\"min=1,max=1000\", and a custom validator registered with binding.Validator.Engine() for the slug field, with c.ShouldBindJSON() used instead of c.BindJSON()",
+        "weight": 1.0
+      },
+      {
+        "id": "structured-error-response",
+        "type": "contains_concept",
+        "expected": "A central error handling function or middleware maps validation errors (validator.ValidationErrors), sentinel errors, and unknown errors to a consistent JSON envelope with status code, error code string, message, and optional field-level details array",
+        "weight": 1.0
+      },
+      {
+        "id": "release-mode-and-proxy",
+        "type": "contains_concept",
+        "expected": "gin.SetMode(gin.ReleaseMode) is called for production, and router.SetTrustedProxies is configured with specific CIDR ranges or set to nil to prevent proxy header spoofing",
+        "weight": 1.0
+      },
+      {
+        "id": "table-driven-handler-tests",
+        "type": "contains_concept",
+        "expected": "Tests use httptest.NewRecorder with router.ServeHTTP or gin.CreateTestContext, organized as table-driven subtests with t.Run covering valid creation (201), missing required fields (400 with field errors), and invalid field values (400 with validation details)",
+        "weight": 1.0
+      }
+    ]
+  },
+  {
+    "id": "gin-middleware-integration",
+    "prompt": "Create a comprehensive middleware integration test suite for a Gin application. The application has: (1) a request ID middleware that generates UUIDs and sets X-Request-Id header, (2) a structured logging middleware using slog that logs method, path, status, and latency with the request ID, (3) an auth middleware that validates Bearer tokens and sets the user in gin context with c.Set(), (4) a rate limiting middleware using a token bucket per IP. Write integration tests that verify: middleware execution order, request ID propagation through the chain, auth rejection with proper error format, rate limiter triggering after threshold, and that the logging middleware captures the correct status code even when downstream handlers error.",
+    "assertions": [
+      {
+        "id": "request-id-middleware",
+        "type": "contains_concept",
+        "expected": "Request ID middleware generates a UUID, sets it in the Gin context with c.Set() and in the response header X-Request-Id, and the test verifies the header is present and is a valid UUID format in the response",
+        "weight": 1.0
+      },
+      {
+        "id": "auth-middleware-test",
+        "type": "contains_concept",
+        "expected": "Auth middleware extracts Bearer token from Authorization header, validates it, stores the user in context with c.Set(), and calls c.Abort() with a structured 401 JSON response on failure. Tests verify both successful auth pass-through and rejection with the correct error envelope",
+        "weight": 1.0
+      },
+      {
+        "id": "middleware-order-test",
+        "type": "contains_concept",
+        "expected": "Integration test verifies middleware execution order by checking that request ID is available to the logging middleware, auth runs after logging so failed auth attempts are still logged, and the test demonstrates this ordering through response headers or logged output inspection",
+        "weight": 1.0
+      },
+      {
+        "id": "rate-limiter-test",
+        "type": "contains_concept",
+        "expected": "Rate limiter uses a token bucket or sliding window per client IP, and the test sends requests in a loop verifying that responses succeed up to the limit and then return 429 Too Many Requests with a Retry-After header or structured error response",
+        "weight": 1.0
+      },
+      {
+        "id": "logging-captures-status",
+        "type": "contains_concept",
+        "expected": "Logging middleware wraps c.Next() to capture the response status code after handler execution, and the test verifies that error responses from downstream handlers (like 404 or 500) are correctly reflected in the structured log output, not just the pre-handler state",
+        "weight": 1.0
+      }
+    ]
+  }
+]

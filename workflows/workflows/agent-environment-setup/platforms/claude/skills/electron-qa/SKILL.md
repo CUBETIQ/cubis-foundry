@@ -1,17 +1,9 @@
 ---
 name: electron-qa
-description: "Use when testing Electron desktop applications: end-to-end testing with Playwright, IPC communication testing between main and renderer processes, native module validation, packaging verification across platforms, or setting up CI pipelines for Electron builds."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-  domain: quality
-  triggers: Electron test, Electron QA, IPC testing, Spectron, Electron Playwright, native module, electron-builder, electron-forge, packaging validation, desktop app testing
-  role: specialist
-  scope: testing
-  output-format: code
-  related-skills: playwright-expert, playwright-interactive, test-master, ci-cd-pipelines
-compatibility: "Claude Code, Codex, GitHub Copilot"
+description: "Use when testing Electron apps with Playwright, validating IPC between main and renderer, checking native modules, verifying packaging, or setting up Electron CI."
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "Electron app module or QA concern to address"
 ---
 
 # Electron QA
@@ -89,3 +81,11 @@ Deliver:
 | `references/native-modules.md` | Validating native Node.js modules, rebuilding for Electron, or debugging ABI mismatches |
 | `references/packaging.md` | Building installers, verifying packaged apps, code signing, or auto-update testing |
 | `references/ci-setup.md` | Configuring CI pipelines for Electron builds, cross-platform testing, or artifact publishing |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

@@ -5,7 +5,7 @@ tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
 maxTurns: 25
 memory: project
-skills: debugging-strategies, error-ux-observability, testing-patterns, webapp-testing, playwright-e2e, typescript-pro, javascript-pro, python-pro, golang-pro, java-pro, csharp-pro, kotlin-pro, rust-pro
+skills: systematic-debugging, observability, unit-testing, integration-testing, playwright-interactive, typescript-best-practices, javascript-best-practices, python-best-practices, golang-best-practices, java-best-practices, csharp-best-practices, kotlin-best-practices, rust-best-practices
 handoffs:
   - agent: "test-engineer"
     title: "Add Regression Tests"
@@ -19,11 +19,11 @@ Find the root cause with evidence, fix it with minimum blast radius, and leave r
 
 ## Skill Loading Contract
 
-- Do not call `skill_search` for `debugging-strategies`, `error-ux-observability`, `testing-patterns`, `webapp-testing`, or `playwright-e2e` when the task clearly falls into those domains.
-- Load `debugging-strategies` first for all debugging tasks — it defines the reproduce → isolate → instrument → verify loop.
-- Add `error-ux-observability` when the bug involves error states, logging gaps, or observability blind spots.
-- Add `testing-patterns` when the root cause relates to test strategy gaps or missing coverage layers.
-- Add `webapp-testing` or `playwright-e2e` when the failure lives in browser or needs end-to-end verification.
+- Do not call `skill_search` for `systematic-debugging`, `observability`, `unit-testing`, `integration-testing`, or `playwright-interactive` when the task clearly falls into those domains.
+- Load `systematic-debugging` first for all debugging tasks — it defines the reproduce → isolate → instrument → verify loop.
+- Add `observability` when the bug involves error states, logging gaps, or observability blind spots.
+- Add `unit-testing` when the root cause relates to test strategy gaps or missing coverage layers.
+- Add `integration-testing` or `playwright-interactive` when the failure lives in browser or needs end-to-end verification.
 - Add the dominant language skill for exact code-path analysis.
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed.
 
@@ -31,11 +31,11 @@ Find the root cause with evidence, fix it with minimum blast radius, and leave r
 
 | File                     | Load when                                                               |
 | ------------------------ | ----------------------------------------------------------------------- |
-| `debugging-strategies`   | Always — defines the core debugging methodology.                        |
-| `error-ux-observability` | Error states are unclear, logging is missing, or traces are incomplete. |
-| `testing-patterns`       | Root cause is a test strategy gap or coverage blind spot.               |
-| `webapp-testing`         | Failure is in browser rendering, client state, or HTTP layer.           |
-| `playwright-e2e`         | Need automated browser reproduction or E2E regression proof.            |
+| `systematic-debugging`   | Always — defines the core debugging methodology.                        |
+| `observability` | Error states are unclear, logging is missing, or traces are incomplete. |
+| `unit-testing`       | Root cause is a test strategy gap or coverage blind spot.               |
+| `integration-testing`         | Failure is in browser rendering, client state, or HTTP layer.           |
+| `playwright-interactive`         | Need automated browser reproduction or E2E regression proof.            |
 
 ## Operating Stance
 

@@ -1,0 +1,78 @@
+[
+  {
+    "id": "playwright-interactive-eval-001",
+    "name": "Interactive flow testing with multi-step form",
+    "description": "Verifies that the skill produces a correct interactive Playwright test suite for a multi-step checkout form with network mocking, proper locators, and isolated contexts.",
+    "input": "Write Playwright tests for a 3-step checkout form: shipping address, payment method, order confirmation. The form has client-side validation, a loading spinner on submit, and calls POST /api/orders. Mock the API. Use Page Object Model.",
+    "assertions": [
+      {
+        "type": "contains",
+        "target": "output",
+        "value": "page.route",
+        "description": "Must include network interception via page.route() for the /api/orders endpoint"
+      },
+      {
+        "type": "contains",
+        "target": "output",
+        "value": "getByRole",
+        "description": "Must use role-based locators as the primary selector strategy"
+      },
+      {
+        "type": "contains",
+        "target": "output",
+        "value": "class",
+        "description": "Must define Page Object Model classes for at least the checkout page"
+      },
+      {
+        "type": "not_contains",
+        "target": "output",
+        "value": "waitForTimeout",
+        "description": "Must not use arbitrary timeout waits — should rely on auto-waiting or explicit condition waits"
+      },
+      {
+        "type": "contains",
+        "target": "output",
+        "value": "expect",
+        "description": "Must include explicit assertions using Playwright expect() for each step transition and final confirmation"
+      }
+    ]
+  },
+  {
+    "id": "playwright-interactive-eval-002",
+    "name": "Visual regression setup with accessibility audit",
+    "description": "Verifies that the skill configures visual regression testing with proper baselines, diff thresholds, dynamic masking, and integrates axe-core accessibility scanning.",
+    "input": "Set up visual regression testing and accessibility audits for a dashboard page. The dashboard has a dynamic timestamp, a user avatar, charts that animate on load, and a sidebar navigation. It must pass WCAG 2.1 AA. Configure for Chromium and Firefox.",
+    "assertions": [
+      {
+        "type": "contains",
+        "target": "output",
+        "value": "toHaveScreenshot",
+        "description": "Must use Playwright's built-in screenshot comparison via toHaveScreenshot()"
+      },
+      {
+        "type": "contains",
+        "target": "output",
+        "value": "mask",
+        "description": "Must mask dynamic content (timestamp, avatar) to prevent false-positive visual diffs"
+      },
+      {
+        "type": "contains",
+        "target": "output",
+        "value": "maxDiffPixelRatio",
+        "description": "Must configure explicit diff thresholds rather than relying on defaults"
+      },
+      {
+        "type": "contains",
+        "target": "output",
+        "value": "AxeBuilder",
+        "description": "Must integrate axe-core via @axe-core/playwright for accessibility scanning"
+      },
+      {
+        "type": "contains",
+        "target": "output",
+        "value": "wcag2aa",
+        "description": "Must configure axe-core tags to target WCAG 2.1 AA compliance level"
+      }
+    ]
+  }
+]

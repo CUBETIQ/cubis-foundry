@@ -2,14 +2,32 @@
   "$schema": "cubis-foundry-skill-audit-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
   "summary": {
-    "keep": 84,
-    "review": 4,
+    "keep": 67,
+    "review": 0,
     "alias-only": 0
   },
   "entries": [
     {
-      "id": "accessibility",
-      "canonical_id": "accessibility",
+      "id": "api-design",
+      "canonical_id": "api-design",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "architecture-doc",
+      "canonical_id": "architecture-doc",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "ci-cd-pipeline",
+      "canonical_id": "ci-cd-pipeline",
       "status": "keep",
       "layer": "workflow-specialists",
       "category": "workflow-specialists",
@@ -17,53 +35,8 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "agent-design",
-      "canonical_id": "agent-design",
-      "status": "keep",
-      "layer": "workflow-specialists",
-      "category": "workflow-specialists",
-      "tier": "experimental",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "agentic-eval",
-      "canonical_id": "agentic-eval",
-      "status": "keep",
-      "layer": "core-operating",
-      "category": "core-operating",
-      "tier": "system",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "api-designer",
-      "canonical_id": "api-designer",
-      "status": "keep",
-      "layer": "core-operating",
-      "category": "core-operating",
-      "tier": "system",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "api-patterns",
-      "canonical_id": "api-patterns",
-      "status": "keep",
-      "layer": "core-operating",
-      "category": "core-operating",
-      "tier": "system",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "architecture-designer",
-      "canonical_id": "architecture-designer",
-      "status": "keep",
-      "layer": "core-operating",
-      "category": "core-operating",
-      "tier": "system",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "auth-architect",
-      "canonical_id": "auth-architect",
+      "id": "code-review",
+      "canonical_id": "code-review",
       "status": "keep",
       "layer": "workflow-specialists",
       "category": "workflow-specialists",
@@ -71,65 +44,11 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "c-pro",
-      "canonical_id": "c-pro",
-      "status": "keep",
-      "layer": "languages",
-      "category": "languages",
-      "tier": "system",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "changelog-generator",
-      "canonical_id": "changelog-generator",
+      "id": "csharp-best-practices",
+      "canonical_id": "csharp-best-practices",
       "status": "keep",
       "layer": "workflow-specialists",
       "category": "workflow-specialists",
-      "tier": "experimental",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "ci-cd-pipelines",
-      "canonical_id": "ci-cd-pipelines",
-      "status": "keep",
-      "layer": "workflow-specialists",
-      "category": "workflow-specialists",
-      "tier": "experimental",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "cli-developer",
-      "canonical_id": "cli-developer",
-      "status": "keep",
-      "layer": "workflow-specialists",
-      "category": "workflow-specialists",
-      "tier": "experimental",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "cpp-pro",
-      "canonical_id": "cpp-pro",
-      "status": "keep",
-      "layer": "languages",
-      "category": "languages",
-      "tier": "system",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "csharp-pro",
-      "canonical_id": "csharp-pro",
-      "status": "keep",
-      "layer": "languages",
-      "category": "languages",
-      "tier": "system",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "dart-pro",
-      "canonical_id": "dart-pro",
-      "status": "keep",
-      "layer": "languages",
-      "category": "languages",
       "tier": "system",
       "reason": "Canonical skill remains active in the layered catalog."
     },
@@ -139,57 +58,57 @@
       "status": "keep",
       "layer": "databases",
       "category": "databases",
-      "tier": "curated",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "database-optimizer",
-      "canonical_id": "database-optimizer",
-      "status": "keep",
-      "layer": "databases",
-      "category": "databases",
-      "tier": "curated",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "database-skills",
-      "canonical_id": "database-skills",
-      "status": "keep",
-      "layer": "databases",
-      "category": "databases",
-      "tier": "system",
-      "reason": "Database hub stays active but routes into engine-specific subskills instead of duplicating engine detail."
-    },
-    {
-      "id": "debugging-strategies",
-      "canonical_id": "debugging-strategies",
-      "status": "keep",
-      "layer": "workflow-specialists",
-      "category": "workflow-specialists",
       "tier": "system",
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "deep-research",
-      "canonical_id": "deep-research",
+      "id": "django-drf",
+      "canonical_id": "django-drf",
       "status": "keep",
-      "layer": "core-operating",
-      "category": "core-operating",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "docker-compose-dev",
+      "canonical_id": "docker-compose-dev",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "drizzle-orm",
+      "canonical_id": "drizzle-orm",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "electron-qa",
+      "canonical_id": "electron-qa",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "expo-app",
+      "canonical_id": "expo-app",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
       "tier": "system",
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "design-system-builder",
-      "canonical_id": "design-system-builder",
-      "status": "keep",
-      "layer": "frameworks-runtimes",
-      "category": "frameworks-runtimes",
-      "tier": "curated",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "devops-engineer",
-      "canonical_id": "devops-engineer",
+      "id": "express-nodejs",
+      "canonical_id": "express-nodejs",
       "status": "keep",
       "layer": "workflow-specialists",
       "category": "workflow-specialists",
@@ -197,143 +116,8 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "docker-kubernetes",
-      "canonical_id": "docker-kubernetes",
-      "status": "keep",
-      "layer": "workflow-specialists",
-      "category": "workflow-specialists",
-      "tier": "experimental",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "documentation-templates",
-      "canonical_id": "documentation-templates",
-      "status": "keep",
-      "layer": "workflow-specialists",
-      "category": "workflow-specialists",
-      "tier": "experimental",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "drizzle-expert",
-      "canonical_id": "drizzle-expert",
-      "status": "keep",
-      "layer": "databases",
-      "category": "databases",
-      "tier": "curated",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "error-ux-observability",
-      "canonical_id": "error-ux-observability",
-      "status": "keep",
-      "layer": "workflow-specialists",
-      "category": "workflow-specialists",
-      "tier": "experimental",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "fastapi-expert",
-      "canonical_id": "fastapi-expert",
-      "status": "keep",
-      "layer": "frameworks-runtimes",
-      "category": "frameworks-runtimes",
-      "tier": "curated",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "firebase",
-      "canonical_id": "firebase",
-      "status": "keep",
-      "layer": "databases",
-      "category": "databases",
-      "tier": "curated",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "flutter-design-system",
-      "canonical_id": "flutter-design-system",
-      "status": "keep",
-      "layer": "workflow-specialists",
-      "category": "workflow-specialists",
-      "tier": "experimental",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "flutter-drift",
-      "canonical_id": "flutter-drift",
-      "status": "keep",
-      "layer": "workflow-specialists",
-      "category": "workflow-specialists",
-      "tier": "experimental",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "flutter-feature",
-      "canonical_id": "flutter-feature",
-      "status": "keep",
-      "layer": "workflow-specialists",
-      "category": "workflow-specialists",
-      "tier": "experimental",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "flutter-go-router",
-      "canonical_id": "flutter-go-router",
-      "status": "keep",
-      "layer": "workflow-specialists",
-      "category": "workflow-specialists",
-      "tier": "experimental",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "flutter-offline-sync",
-      "canonical_id": "flutter-offline-sync",
-      "status": "keep",
-      "layer": "workflow-specialists",
-      "category": "workflow-specialists",
-      "tier": "experimental",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "flutter-repository",
-      "canonical_id": "flutter-repository",
-      "status": "keep",
-      "layer": "workflow-specialists",
-      "category": "workflow-specialists",
-      "tier": "experimental",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "flutter-riverpod",
-      "canonical_id": "flutter-riverpod",
-      "status": "keep",
-      "layer": "frameworks-runtimes",
-      "category": "frameworks-runtimes",
-      "tier": "experimental",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "flutter-state-machine",
-      "canonical_id": "flutter-state-machine",
-      "status": "keep",
-      "layer": "workflow-specialists",
-      "category": "workflow-specialists",
-      "tier": "experimental",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "flutter-testing",
-      "canonical_id": "flutter-testing",
-      "status": "keep",
-      "layer": "workflow-specialists",
-      "category": "workflow-specialists",
-      "tier": "experimental",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "frontend-code-review",
-      "canonical_id": "frontend-code-review",
+      "id": "fastapi",
+      "canonical_id": "fastapi",
       "status": "keep",
       "layer": "workflow-specialists",
       "category": "workflow-specialists",
@@ -350,22 +134,13 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "game-development",
-      "canonical_id": "game-development",
-      "status": "review",
-      "layer": "vertical-composed",
-      "category": "vertical-composed",
+      "id": "gin-golang",
+      "canonical_id": "gin-golang",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
       "tier": "experimental",
-      "reason": "Broad orchestration skill should stay thin and defer detail to lower-layer canonical skills."
-    },
-    {
-      "id": "geo-fundamentals",
-      "canonical_id": "geo-fundamentals",
-      "status": "review",
-      "layer": "vertical-composed",
-      "category": "vertical-composed",
-      "tier": "experimental",
-      "reason": "Broad orchestration skill should stay thin and defer detail to lower-layer canonical skills."
+      "reason": "Canonical skill remains active in the layered catalog."
     },
     {
       "id": "git-workflow",
@@ -377,26 +152,8 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "golang-pro",
-      "canonical_id": "golang-pro",
-      "status": "keep",
-      "layer": "languages",
-      "category": "languages",
-      "tier": "system",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "graphql-architect",
-      "canonical_id": "graphql-architect",
-      "status": "keep",
-      "layer": "frameworks-runtimes",
-      "category": "frameworks-runtimes",
-      "tier": "curated",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "i18n-localization",
-      "canonical_id": "i18n-localization",
+      "id": "go-fiber",
+      "canonical_id": "go-fiber",
       "status": "keep",
       "layer": "workflow-specialists",
       "category": "workflow-specialists",
@@ -404,35 +161,17 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "java-pro",
-      "canonical_id": "java-pro",
+      "id": "golang-best-practices",
+      "canonical_id": "golang-best-practices",
       "status": "keep",
-      "layer": "languages",
-      "category": "languages",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
       "tier": "system",
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "javascript-pro",
-      "canonical_id": "javascript-pro",
-      "status": "keep",
-      "layer": "languages",
-      "category": "languages",
-      "tier": "system",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "kotlin-pro",
-      "canonical_id": "kotlin-pro",
-      "status": "keep",
-      "layer": "languages",
-      "category": "languages",
-      "tier": "system",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "legacy-modernizer",
-      "canonical_id": "legacy-modernizer",
+      "id": "google-workspace",
+      "canonical_id": "google-workspace",
       "status": "keep",
       "layer": "workflow-specialists",
       "category": "workflow-specialists",
@@ -440,17 +179,17 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "mcp-builder",
-      "canonical_id": "mcp-builder",
+      "id": "huggingface-ml",
+      "canonical_id": "huggingface-ml",
       "status": "keep",
-      "layer": "core-operating",
-      "category": "core-operating",
-      "tier": "system",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "microservices-architect",
-      "canonical_id": "microservices-architect",
+      "id": "integration-testing",
+      "canonical_id": "integration-testing",
       "status": "keep",
       "layer": "workflow-specialists",
       "category": "workflow-specialists",
@@ -458,65 +197,101 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "mobile-design",
-      "canonical_id": "mobile-design",
-      "status": "review",
-      "layer": "vertical-composed",
-      "category": "vertical-composed",
-      "tier": "experimental",
-      "reason": "Broad orchestration skill should stay thin and defer detail to lower-layer canonical skills."
-    },
-    {
-      "id": "mongodb",
-      "canonical_id": "mongodb",
+      "id": "java-best-practices",
+      "canonical_id": "java-best-practices",
       "status": "keep",
-      "layer": "databases",
-      "category": "databases",
-      "tier": "curated",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "mysql",
-      "canonical_id": "mysql",
-      "status": "keep",
-      "layer": "databases",
-      "category": "databases",
-      "tier": "curated",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "neki",
-      "canonical_id": "neki",
-      "status": "keep",
-      "layer": "databases",
-      "category": "databases",
-      "tier": "curated",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "nestjs-expert",
-      "canonical_id": "nestjs-expert",
-      "status": "keep",
-      "layer": "frameworks-runtimes",
-      "category": "frameworks-runtimes",
-      "tier": "curated",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "nextjs-developer",
-      "canonical_id": "nextjs-developer",
-      "status": "keep",
-      "layer": "frameworks-runtimes",
-      "category": "frameworks-runtimes",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
       "tier": "system",
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "nodejs-best-practices",
-      "canonical_id": "nodejs-best-practices",
+      "id": "javascript-best-practices",
+      "canonical_id": "javascript-best-practices",
       "status": "keep",
-      "layer": "frameworks-runtimes",
-      "category": "frameworks-runtimes",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "kaizen-iteration",
+      "canonical_id": "kaizen-iteration",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "kotlin-best-practices",
+      "canonical_id": "kotlin-best-practices",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "kubernetes-deploy",
+      "canonical_id": "kubernetes-deploy",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "laravel",
+      "canonical_id": "laravel",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "llm-eval",
+      "canonical_id": "llm-eval",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "mcp-server-builder",
+      "canonical_id": "mcp-server-builder",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "microservices-design",
+      "canonical_id": "microservices-design",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "nestjs",
+      "canonical_id": "nestjs",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "nextjs",
+      "canonical_id": "nextjs",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
       "tier": "system",
       "reason": "Canonical skill remains active in the layered catalog."
     },
@@ -530,35 +305,8 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "openai-docs",
-      "canonical_id": "openai-docs",
-      "status": "keep",
-      "layer": "core-operating",
-      "category": "core-operating",
-      "tier": "system",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "performance-profiling",
-      "canonical_id": "performance-profiling",
-      "status": "keep",
-      "layer": "workflow-specialists",
-      "category": "workflow-specialists",
-      "tier": "experimental",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "php-pro",
-      "canonical_id": "php-pro",
-      "status": "keep",
-      "layer": "languages",
-      "category": "languages",
-      "tier": "system",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "playwright-e2e",
-      "canonical_id": "playwright-e2e",
+      "id": "owasp-security-review",
+      "canonical_id": "owasp-security-review",
       "status": "keep",
       "layer": "workflow-specialists",
       "category": "workflow-specialists",
@@ -566,80 +314,8 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "postgres",
-      "canonical_id": "postgres",
-      "status": "keep",
-      "layer": "databases",
-      "category": "databases",
-      "tier": "curated",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "prompt-engineer",
-      "canonical_id": "prompt-engineer",
-      "status": "keep",
-      "layer": "core-operating",
-      "category": "core-operating",
-      "tier": "system",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "python-pro",
-      "canonical_id": "python-pro",
-      "status": "keep",
-      "layer": "languages",
-      "category": "languages",
-      "tier": "system",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "react-best-practices",
-      "canonical_id": "react-best-practices",
-      "status": "keep",
-      "layer": "frameworks-runtimes",
-      "category": "frameworks-runtimes",
-      "tier": "experimental",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "react-expert",
-      "canonical_id": "react-expert",
-      "status": "keep",
-      "layer": "frameworks-runtimes",
-      "category": "frameworks-runtimes",
-      "tier": "system",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "redis",
-      "canonical_id": "redis",
-      "status": "keep",
-      "layer": "databases",
-      "category": "databases",
-      "tier": "curated",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "ruby-pro",
-      "canonical_id": "ruby-pro",
-      "status": "keep",
-      "layer": "languages",
-      "category": "languages",
-      "tier": "system",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "rust-pro",
-      "canonical_id": "rust-pro",
-      "status": "keep",
-      "layer": "languages",
-      "category": "languages",
-      "tier": "system",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "security-engineer",
-      "canonical_id": "security-engineer",
+      "id": "pentest-skill",
+      "canonical_id": "pentest-skill",
       "status": "keep",
       "layer": "workflow-specialists",
       "category": "workflow-specialists",
@@ -647,17 +323,161 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "seo-fundamentals",
-      "canonical_id": "seo-fundamentals",
-      "status": "review",
-      "layer": "vertical-composed",
-      "category": "vertical-composed",
-      "tier": "experimental",
-      "reason": "Broad orchestration skill should stay thin and defer detail to lower-layer canonical skills."
+      "id": "performance-testing",
+      "canonical_id": "performance-testing",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "serverless-patterns",
-      "canonical_id": "serverless-patterns",
+      "id": "php-best-practices",
+      "canonical_id": "php-best-practices",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "playwright-interactive",
+      "canonical_id": "playwright-interactive",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "curated",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "playwright-persistent-browser",
+      "canonical_id": "playwright-persistent-browser",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "prisma",
+      "canonical_id": "prisma",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "prompt-engineering",
+      "canonical_id": "prompt-engineering",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "python-best-practices",
+      "canonical_id": "python-best-practices",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "rag-patterns",
+      "canonical_id": "rag-patterns",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "react",
+      "canonical_id": "react",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "react-native",
+      "canonical_id": "react-native",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "react-native-callstack",
+      "canonical_id": "react-native-callstack",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "receiving-code-review",
+      "canonical_id": "receiving-code-review",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "remix",
+      "canonical_id": "remix",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "requesting-code-review",
+      "canonical_id": "requesting-code-review",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "rust-best-practices",
+      "canonical_id": "rust-best-practices",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "sadd",
+      "canonical_id": "sadd",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "sanitize-pii",
+      "canonical_id": "sanitize-pii",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "secret-management",
+      "canonical_id": "secret-management",
       "status": "keep",
       "layer": "workflow-specialists",
       "category": "workflow-specialists",
@@ -674,8 +494,8 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "spec-miner",
-      "canonical_id": "spec-miner",
+      "id": "spring-boot",
+      "canonical_id": "spring-boot",
       "status": "keep",
       "layer": "workflow-specialists",
       "category": "workflow-specialists",
@@ -683,17 +503,8 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "sqlite",
-      "canonical_id": "sqlite",
-      "status": "keep",
-      "layer": "databases",
-      "category": "databases",
-      "tier": "curated",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "sre-engineer",
-      "canonical_id": "sre-engineer",
+      "id": "sqlalchemy",
+      "canonical_id": "sqlalchemy",
       "status": "keep",
       "layer": "workflow-specialists",
       "category": "workflow-specialists",
@@ -701,8 +512,8 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "static-analysis",
-      "canonical_id": "static-analysis",
+      "id": "stripe-integration",
+      "canonical_id": "stripe-integration",
       "status": "keep",
       "layer": "workflow-specialists",
       "category": "workflow-specialists",
@@ -710,8 +521,8 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "stripe-best-practices",
-      "canonical_id": "stripe-best-practices",
+      "id": "svelte-sveltekit",
+      "canonical_id": "svelte-sveltekit",
       "status": "keep",
       "layer": "workflow-specialists",
       "category": "workflow-specialists",
@@ -719,62 +530,35 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "supabase",
-      "canonical_id": "supabase",
+      "id": "swift-best-practices",
+      "canonical_id": "swift-best-practices",
       "status": "keep",
-      "layer": "databases",
-      "category": "databases",
-      "tier": "curated",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "swift-pro",
-      "canonical_id": "swift-pro",
-      "status": "keep",
-      "layer": "languages",
-      "category": "languages",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
       "tier": "system",
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "tailwind-patterns",
-      "canonical_id": "tailwind-patterns",
-      "status": "keep",
-      "layer": "frameworks-runtimes",
-      "category": "frameworks-runtimes",
-      "tier": "curated",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "testing-patterns",
-      "canonical_id": "testing-patterns",
+      "id": "system-design",
+      "canonical_id": "system-design",
       "status": "keep",
       "layer": "workflow-specialists",
       "category": "workflow-specialists",
-      "tier": "experimental",
-      "reason": "Canonical skill remains active in the layered catalog."
-    },
-    {
-      "id": "typescript-pro",
-      "canonical_id": "typescript-pro",
-      "status": "keep",
-      "layer": "languages",
-      "category": "languages",
       "tier": "system",
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "vitess",
-      "canonical_id": "vitess",
+      "id": "systematic-debugging",
+      "canonical_id": "systematic-debugging",
       "status": "keep",
-      "layer": "databases",
-      "category": "databases",
-      "tier": "curated",
+      "layer": "core-operating",
+      "category": "core-operating",
+      "tier": "system",
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "vulnerability-scanner",
-      "canonical_id": "vulnerability-scanner",
+      "id": "t3-stack",
+      "canonical_id": "t3-stack",
       "status": "keep",
       "layer": "workflow-specialists",
       "category": "workflow-specialists",
@@ -782,23 +566,50 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "web-perf",
-      "canonical_id": "web-perf",
+      "id": "tech-doc",
+      "canonical_id": "tech-doc",
       "status": "keep",
-      "layer": "frameworks-runtimes",
-      "category": "frameworks-runtimes",
-      "tier": "curated",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
-      "id": "webapp-testing",
-      "canonical_id": "webapp-testing",
+      "id": "typescript-best-practices",
+      "canonical_id": "typescript-best-practices",
       "status": "keep",
-      "layer": "frameworks-runtimes",
-      "category": "frameworks-runtimes",
-      "tier": "curated",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "unit-testing",
+      "canonical_id": "unit-testing",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "vibesec",
+      "canonical_id": "vibesec",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "vuejs",
+      "canonical_id": "vuejs",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
       "reason": "Canonical skill remains active in the layered catalog."
     }
   ],
-  "contentHash": "43f23105321976ee"
+  "contentHash": "985a411c37ae9676"
 }

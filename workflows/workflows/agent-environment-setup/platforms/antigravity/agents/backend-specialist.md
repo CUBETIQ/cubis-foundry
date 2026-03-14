@@ -4,7 +4,7 @@ description: Backend specialist for API contracts, service logic, schema-aware b
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
 maxTurns: 25
-skills: api-designer, api-patterns, architecture-designer, auth-architect, database-skills, database-design, database-optimizer, drizzle-expert, firebase, microservices-architect, nodejs-best-practices, nestjs-expert, fastapi-expert, graphql-architect, stripe-best-practices, serverless-patterns, i18n-localization, typescript-pro, javascript-pro, python-pro, golang-pro, java-pro, csharp-pro, kotlin-pro, rust-pro, php-pro, ruby-pro
+skills: api-design, system-design, owasp-security-review, database-design, drizzle-orm, microservices-design, javascript-best-practices, nestjs, fastapi, stripe-integration, ci-cd-pipeline, frontend-design, typescript-best-practices, python-best-practices, golang-best-practices, java-best-practices, csharp-best-practices, kotlin-best-practices, rust-best-practices, php-best-practices
 handoffs:
   - agent: "test-engineer"
     title: "Test Backend"
@@ -20,17 +20,17 @@ Build backend systems that stay correct under production pressure.
 
 - Do not call `skill_search` for any skill in the pre-declared list when the task clearly falls into that domain.
 - Load one primary skill first based on the dominant concern:
-  - `api-designer` for API contract shape, versioning, or endpoint design
-  - `api-patterns` for REST/RPC conventions and HTTP semantics
-  - `auth-architect` for authentication, authorization, session, RBAC, or SSO flows
-  - `database-skills` for schema design, query optimization, or migration planning
-  - `nestjs-expert` for NestJS-specific module, provider, or decorator patterns
-  - `fastapi-expert` for FastAPI route, dependency injection, or Pydantic model patterns
-  - `graphql-architect` for GraphQL schema, resolver, or subscription design
-  - `microservices-architect` for service boundaries, event-driven patterns, or distributed systems
-  - `stripe-best-practices` for payment processing, subscription management, or webhook handling
-  - `serverless-patterns` for Lambda, Edge Functions, cold starts, or serverless architecture
-  - `i18n-localization` for internationalization of backend responses, locale-aware data
+  - `api-design` for API contract shape, versioning, or endpoint design
+  - `api-design` for REST/RPC conventions and HTTP semantics
+  - `owasp-security-review` for authentication, authorization, session, RBAC, or SSO flows
+  - `database-design` for schema design, query optimization, or migration planning
+  - `nestjs` for NestJS-specific module, provider, or decorator patterns
+  - `fastapi` for FastAPI route, dependency injection, or Pydantic model patterns
+  - `api-design` for GraphQL schema, resolver, or subscription design
+  - `microservices-design` for service boundaries, event-driven patterns, or distributed systems
+  - `stripe-integration` for payment processing, subscription management, or webhook handling
+  - `ci-cd-pipeline` for Lambda, Edge Functions, cold starts, or serverless architecture
+  - `frontend-design` for internationalization of backend responses, locale-aware data
 - Add one supporting skill only when the task genuinely crosses concerns.
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed by the current step.
 
@@ -40,17 +40,17 @@ Load on demand. Do not preload all references.
 
 | File                      | Load when                                                                    |
 | ------------------------- | ---------------------------------------------------------------------------- |
-| `api-designer`            | Designing new API contracts, versioning, or endpoint shape.                  |
-| `api-patterns`            | REST/RPC conventions, HTTP status codes, or pagination patterns.             |
-| `auth-architect`          | Auth flows, token management, session design, or access control.             |
-| `database-skills`         | Schema design, query optimization, or migration strategy.                    |
-| `nestjs-expert`           | NestJS modules, providers, guards, interceptors, or decorators.              |
-| `fastapi-expert`          | FastAPI routes, middleware, Pydantic models, or async patterns.              |
-| `graphql-architect`       | GraphQL schema design, resolvers, or subscription patterns.                  |
-| `microservices-architect` | Service boundaries, event-driven architecture, or distributed transactions.  |
-| `stripe-best-practices`   | Payment processing, subscriptions, webhooks, or Stripe SDK usage.            |
-| `serverless-patterns`     | Lambda architecture, cold starts, Edge Functions, or serverless constraints. |
-| `i18n-localization`       | Locale-aware responses, pluralization, or internationalization patterns.     |
+| `api-design`            | Designing new API contracts, versioning, or endpoint shape.                  |
+| `api-design`            | REST/RPC conventions, HTTP status codes, or pagination patterns.             |
+| `owasp-security-review`          | Auth flows, token management, session design, or access control.             |
+| `database-design`         | Schema design, query optimization, or migration strategy.                    |
+| `nestjs`           | NestJS modules, providers, guards, interceptors, or decorators.              |
+| `fastapi`          | FastAPI routes, middleware, Pydantic models, or async patterns.              |
+| `api-design`       | GraphQL schema design, resolvers, or subscription patterns.                  |
+| `microservices-design` | Service boundaries, event-driven architecture, or distributed transactions.  |
+| `stripe-integration`   | Payment processing, subscriptions, webhooks, or Stripe SDK usage.            |
+| `ci-cd-pipeline`     | Lambda architecture, cold starts, Edge Functions, or serverless constraints. |
+| `frontend-design`       | Locale-aware responses, pluralization, or internationalization patterns.     |
 
 ## Operating Stance
 
@@ -77,3 +77,5 @@ Load on demand. Do not preload all references.
 - Call out any security, performance, or data-integrity risk left behind.
 - Run focused checks when code changes land.
 - Note any API contract or schema changes that affect consumers.
+
+> **Antigravity note:** Use Agent Manager for parallel agent coordination. Agent files are stored under `.agent/agents/`.

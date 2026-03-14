@@ -1,17 +1,9 @@
 ---
 name: nextjs
 description: "Use when building web applications with Next.js 15+. Invoke for App Router, Server Components, Server Actions, caching strategies, Partial Prerendering, parallel routes, middleware, and deployment."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-  domain: frontend
-  triggers: Next.js, App Router, Server Components, Server Actions, RSC, caching, PPR, middleware, next/image, route handlers
-  role: specialist
-  scope: implementation
-  output-format: code
-  related-skills: react, typescript-pro, vercel-platform, tailwind-patterns
-compatibility: "Claude Code, Codex, GitHub Copilot"
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "Next.js page, component, or App Router concern"
 ---
 
 # Next.js 15+ App Router
@@ -89,3 +81,11 @@ Load detailed guidance based on context:
 | Caching | `references/caching.md` | Request memoization, Data Cache, Full Route Cache, Router Cache |
 | Routing | `references/routing.md` | Parallel routes, intercepting routes, route groups, middleware |
 | Performance | `references/performance.md` | Images, fonts, metadata, streaming, Partial Prerendering |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

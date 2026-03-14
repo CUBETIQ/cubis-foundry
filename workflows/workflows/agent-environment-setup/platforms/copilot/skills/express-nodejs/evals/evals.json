@@ -1,0 +1,74 @@
+[
+  {
+    "id": "express-secure-api",
+    "prompt": "Build a secure Express 5.x REST API in TypeScript for a user management service. Include: typed route handlers with Request generics for params, body, and query; helmet with explicit CSP directives; CORS with an origin allow-list and credentials; express-rate-limit with Redis store for distributed rate limiting; request validation using zod schemas in a reusable validation middleware; custom error classes (AppError, NotFoundError, ValidationError) with statusCode properties; a centralized four-parameter error-handling middleware that formats all errors consistently; structured JSON logging with pino including request ID propagation; and graceful shutdown with connection draining. Include integration tests with supertest covering successful creation, validation failure, and rate limit triggering.",
+    "assertions": [
+      {
+        "id": "typed-handlers-typescript",
+        "type": "contains_concept",
+        "expected": "Route handlers are typed with Express Request generics specifying params, body, and query types, strict TypeScript is enabled, and the app is separated into app.ts (exported) and server.ts (listening) for testability",
+        "weight": 1.0
+      },
+      {
+        "id": "security-headers-config",
+        "type": "contains_concept",
+        "expected": "Helmet is configured with explicit contentSecurityPolicy directives rather than just helmet() defaults, CORS uses an array of allowed origins with credentials:true, and rate limiter is configured with a Redis or external store rather than the default in-memory store",
+        "weight": 1.0
+      },
+      {
+        "id": "zod-validation-middleware",
+        "type": "contains_concept",
+        "expected": "A reusable validation middleware accepts a zod schema, validates req.body (and optionally req.params and req.query), and returns 400 with structured field-level errors derived from ZodError issues, preventing invalid data from reaching the handler",
+        "weight": 1.0
+      },
+      {
+        "id": "centralized-error-handler",
+        "type": "contains_concept",
+        "expected": "Custom error classes extend Error with a statusCode property, and a four-parameter (err, req, res, next) error-handling middleware registered last maps these classes to appropriate HTTP responses, logs unexpected errors with stack traces, and never sends stack traces to clients",
+        "weight": 1.0
+      },
+      {
+        "id": "supertest-integration-tests",
+        "type": "contains_concept",
+        "expected": "Tests import the app module and use supertest to test creation (201 with body), validation failure (400 with field errors matching the zod schema), and rate limit triggering (429 after exceeding threshold), all without starting a real server",
+        "weight": 1.0
+      }
+    ]
+  },
+  {
+    "id": "express-middleware-composition",
+    "prompt": "Create an Express 5.x middleware composition layer in TypeScript with the following pieces: (1) an async request-timing middleware that measures handler duration and sets X-Response-Time header, (2) an async authentication middleware that validates JWTs from the Authorization header and attaches the decoded user to req.user using declaration merging, (3) a role-based authorization middleware factory that takes allowed roles and returns a middleware checking req.user.role, (4) a request-scoped logger middleware using AsyncLocalStorage to make the logger available without passing it through every function call, (5) compose these into a reusable middleware stack for protected admin routes. Write tests that verify: timing header is set even when handlers throw, auth rejects expired tokens with structured errors, role middleware returns 403 for unauthorized roles, and AsyncLocalStorage logger carries the request ID across async boundaries.",
+    "assertions": [
+      {
+        "id": "async-timing-middleware",
+        "type": "contains_concept",
+        "expected": "Timing middleware records start time, calls next() with await, then sets X-Response-Time header with the computed duration in milliseconds. It wraps next() in a try/finally or uses the response finish event so the header is set even when downstream handlers throw errors",
+        "weight": 1.0
+      },
+      {
+        "id": "jwt-auth-declaration-merging",
+        "type": "contains_concept",
+        "expected": "Auth middleware validates JWT from Bearer token, decodes it, and attaches the payload to req.user. TypeScript declaration merging extends the Express Request interface to include the user property so downstream handlers have type-safe access without casting",
+        "weight": 1.0
+      },
+      {
+        "id": "role-authorization-factory",
+        "type": "contains_concept",
+        "expected": "A factory function like authorize(...roles: string[]) returns a middleware that checks req.user.role against the allowed roles array and calls next() on match or responds with 403 and a structured error on mismatch, with the test verifying both allowed and denied access",
+        "weight": 1.0
+      },
+      {
+        "id": "async-local-storage-logger",
+        "type": "contains_concept",
+        "expected": "A middleware uses Node.js AsyncLocalStorage to store a request-scoped logger instance with the request ID, and downstream code retrieves it via a getLogger() helper without explicit parameter passing. The test verifies the logger carries the request ID across async operations within the same request",
+        "weight": 1.0
+      },
+      {
+        "id": "composed-stack-tests",
+        "type": "contains_concept",
+        "expected": "The middleware stack is composed into a reusable array or function applied to admin routes, and tests verify end-to-end behavior: timing header present on error responses, expired token rejection with structured JSON, 403 for wrong role, and logger context surviving async boundaries in the handler",
+        "weight": 1.0
+      }
+    ]
+  }
+]

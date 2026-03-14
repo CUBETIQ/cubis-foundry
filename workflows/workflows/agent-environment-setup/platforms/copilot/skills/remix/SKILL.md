@@ -7,7 +7,6 @@ metadata:
   version: "3.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 # Remix
 
 ## Purpose
@@ -74,3 +73,11 @@ Load only what the current task requires.
 | `references/progressive-enhancement.md` | Task involves optimistic UI, useFetcher, useNavigation, or forms that work without JavaScript. |
 | `references/streaming-defer.md` | Task involves defer, Await, Suspense, streaming SSR, or slow data source handling. |
 | `references/resource-routes.md` | Task involves API endpoints, webhooks, file downloads, or headless route modules. |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

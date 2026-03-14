@@ -1,11 +1,9 @@
 ---
 name: express-nodejs
-description: "Use when building HTTP APIs or web applications with Express.js on modern Node.js. Covers Express 5.x patterns, async/await middleware, TypeScript integration, security headers, structured error handling, and production hardening. Activate when the user mentions Express, expressjs, or asks for a Node.js web framework with middleware composition."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: "Use when building Express.js services on modern Node.js, including Express 5 routing, async middleware, TypeScript integration, security headers, error handling, and production hardening."
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "Express route, middleware, or Node.js module to work on"
 ---
 
 # Express.js with Modern Node.js
@@ -76,3 +74,11 @@ Load only what the current step needs.
 | `references/typescript-integration.md` | TypeScript setup, typed handlers, declaration merging, or strict mode config is needed. |
 | `references/security.md` | Helmet, CORS, rate limiting, input sanitization, or HSTS configuration is in scope. |
 | `references/testing.md` | Supertest setup, integration tests, mock strategies, or test organization is needed. |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

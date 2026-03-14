@@ -1,11 +1,11 @@
 ---
 name: systematic-debugging
 description: "Systematic debugging methodology covering root cause analysis, bisection, logging strategies, debugger workflows, and post-mortem documentation. Use when diagnosing complex or elusive bugs."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: "Claude Code, Codex, GitHub Copilot"
+allowed-tools: Read Grep Glob Bash Edit Write
+context: fork
+agent: debugger
+user-invocable: true
+argument-hint: "Bug description or error message"
 ---
 
 # Systematic Debugging Methodology
@@ -113,3 +113,11 @@ Provide a disciplined, evidence-based framework for diagnosing and resolving sof
 | Logging Strategies   | `references/logging-strategies.md`      | Adding diagnostic logging without noise         |
 | Debugger Workflows   | `references/debugger-workflows.md`      | Using breakpoints, watches, and stepping        |
 | Post-Mortem          | `references/post-mortem.md`             | Writing incident post-mortems and prevention    |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

@@ -12,9 +12,9 @@ Use this for large-scale implementation work that spans multiple sessions or mil
 
 ## Routing
 
-- Primary coordinator: `@orchestrator`
+- Primary coordinator: `.agent/agents/orchestrator`
 - Implementation agents: determined by task domain
-- Quality gate: `@validator`
+- Quality gate: `.agent/agents/validator`
 
 ## Context notes
 
@@ -23,9 +23,9 @@ Use this for large-scale implementation work that spans multiple sessions or mil
 
 ## Skill Routing
 
-- Primary skills: `architecture-designer`, `api-designer`
-- Supporting skills (optional): `database-skills`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `react-expert`, `nextjs-developer`
-- Start with `architecture-designer` for milestone planning. Load domain-specific skills per milestone based on implementation needs.
+- Primary skills: `system-design`, `api-design`
+- Supporting skills (optional): `database-design`, `typescript-best-practices`, `javascript-best-practices`, `python-best-practices`, `golang-best-practices`, `react`, `nextjs`
+- Start with `system-design` for milestone planning. Load domain-specific skills per milestone based on implementation needs.
 
 ## Workflow steps
 
@@ -49,8 +49,8 @@ Use this for large-scale implementation work that spans multiple sessions or mil
 IMPLEMENT_TRACK_WORKFLOW_RESULT:
   primary_agent: orchestrator
   supporting_agents: [<milestone-agents>]
-  primary_skills: [architecture-designer, api-designer]
-  supporting_skills: [database-skills?, typescript-pro?, javascript-pro?, python-pro?, golang-pro?, react-expert?, nextjs-developer?]
+  primary_skills: [system-design, api-design]
+  supporting_skills: [database-design?, typescript-best-practices?, javascript-best-practices?, python-best-practices?, golang-best-practices?, react?, nextjs?]
   milestones:
     - id: <milestone-id>
       description: <string>
@@ -61,3 +61,5 @@ IMPLEMENT_TRACK_WORKFLOW_RESULT:
   scope_changes: [<string>] | []
   follow_up_items: [<string>] | []
 ```
+
+> **Antigravity note:** Use Agent Manager for parallel agent coordination. Workflow files are stored under `.agent/workflows/`.

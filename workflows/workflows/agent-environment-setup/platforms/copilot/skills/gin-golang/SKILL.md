@@ -1,13 +1,12 @@
 ---
 name: gin-golang
-description: "Use when building HTTP APIs with the Gin web framework for Go. Covers production routing patterns, middleware chains, request validation with binding tags, structured error handling, context propagation, and deployment hardening. Activate when the user mentions Gin, gin-gonic, or asks for a Go web framework with validation and middleware."
+description: "Use when building Gin-based Go services, including routing, middleware chains, request validation, structured errors, context propagation, and deployment hardening."
 license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 # Gin Web Framework
 
 ## Purpose
@@ -72,3 +71,11 @@ Load only what the current step needs.
 | `references/validation.md` | Request binding, validation tags, custom validators, or error formatting is needed. |
 | `references/testing.md` | Handler testing, integration tests, or test context setup is needed. |
 | `references/deployment.md` | Graceful shutdown, reverse proxy config, Docker builds, or health checks are in scope. |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

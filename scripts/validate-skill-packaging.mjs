@@ -91,6 +91,24 @@ const PLATFORM_SKILL_ROOTS = [
     "workflows",
     "agent-environment-setup",
     "platforms",
+    "antigravity",
+    "skills",
+  ),
+  path.join(
+    ROOT,
+    "workflows",
+    "workflows",
+    "agent-environment-setup",
+    "platforms",
+    "codex",
+    "skills",
+  ),
+  path.join(
+    ROOT,
+    "workflows",
+    "workflows",
+    "agent-environment-setup",
+    "platforms",
     "copilot",
     "skills",
   ),
@@ -101,6 +119,15 @@ const PLATFORM_SKILL_ROOTS = [
     "agent-environment-setup",
     "platforms",
     "claude",
+    "skills",
+  ),
+  path.join(
+    ROOT,
+    "workflows",
+    "workflows",
+    "agent-environment-setup",
+    "platforms",
+    "gemini",
     "skills",
   ),
 ];
@@ -152,7 +179,13 @@ function shouldValidateLink(target) {
   if (target.includes("{") || target.includes("}")) return false;
   if (target.includes("<") || target.includes(">")) return false;
   // Skip well-known generated or platform-external files
-  if (target === "GEMINI.md") return false;
+  if (
+    target === "AGENTS.md" ||
+    target === "CLAUDE.md" ||
+    target === "GEMINI.md"
+  ) {
+    return false;
+  }
   if (target.startsWith(".idx/") || target.startsWith(".codex/")) return false;
   return true;
 }

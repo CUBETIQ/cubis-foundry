@@ -7,7 +7,6 @@ metadata:
   version: "3.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 # System Design
 
 ## Purpose
@@ -78,3 +77,11 @@ Load only what the current task requires.
 | `references/caching-strategies.md` | Task involves cache selection, invalidation policies, or cache consistency patterns. |
 | `references/messaging.md` | Task involves message queues, event buses, pub/sub, or delivery guarantees. |
 | `references/data-partitioning.md` | Task involves sharding, replication, consistent hashing, or multi-tenant data isolation. |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

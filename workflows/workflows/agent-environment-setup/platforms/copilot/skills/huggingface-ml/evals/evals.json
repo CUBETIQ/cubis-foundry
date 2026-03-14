@@ -1,0 +1,66 @@
+[
+  {
+    "name": "model-fine-tuning-workflow",
+    "description": "Validate that the skill produces a complete fine-tuning workflow using Trainer with PEFT/LoRA, proper dataset preparation, evaluation metrics, and model publishing to the Hub.",
+    "input": "Fine-tune a Llama 3 8B model on a custom customer support dataset for text classification (5 categories: billing, technical, account, shipping, general). Use QLoRA for parameter-efficient training. The dataset is in CSV format with 'text' and 'label' columns (50k rows). Configure Trainer with proper training arguments including learning rate scheduling, gradient accumulation, and mixed precision. Evaluate with F1 score and accuracy. Push the fine-tuned adapter to the Hugging Face Hub.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "LoraConfig",
+        "description": "Must configure PEFT with LoraConfig specifying target modules, rank, alpha, and dropout for parameter-efficient fine-tuning of the large model."
+      },
+      {
+        "type": "contains",
+        "value": "TrainingArguments",
+        "description": "Must define TrainingArguments with learning rate, batch size, gradient accumulation steps, warmup, and mixed precision settings for training configuration."
+      },
+      {
+        "type": "contains",
+        "value": "compute_metrics",
+        "description": "Must implement a compute_metrics function that calculates F1 score and accuracy on the evaluation split for monitoring training quality."
+      },
+      {
+        "type": "contains",
+        "value": "BitsAndBytesConfig",
+        "description": "Must use BitsAndBytesConfig for 4-bit quantization (QLoRA) to reduce GPU memory requirements while maintaining training quality."
+      },
+      {
+        "type": "contains",
+        "value": "push_to_hub",
+        "description": "Must push the fine-tuned model or adapter to the Hugging Face Hub for versioning, sharing, and deployment."
+      }
+    ]
+  },
+  {
+    "name": "inference-api-integration",
+    "description": "Validate that the skill produces a production-ready Inference API integration with proper client configuration, error handling, rate limiting, and fallback strategies.",
+    "input": "Build a Python service that uses the Hugging Face Inference API to power a semantic search feature. Use a sentence-transformers model for generating embeddings. The service receives search queries, generates embeddings via the Inference API, and queries a vector database. Handle rate limits with exponential backoff. Implement a fallback to local model inference when the API is unavailable. Include proper timeout configuration and batch embedding support for indexing documents.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "InferenceClient",
+        "description": "Must use the InferenceClient from the huggingface_hub library for typed, ergonomic access to the Inference API with built-in retry support."
+      },
+      {
+        "type": "contains",
+        "value": "feature_extraction",
+        "description": "Must use the feature_extraction or sentence_similarity task endpoint for generating embeddings from the sentence-transformers model."
+      },
+      {
+        "type": "contains",
+        "value": "timeout",
+        "description": "Must configure explicit timeout values for Inference API calls to prevent indefinite hangs during cold starts or API degradation."
+      },
+      {
+        "type": "contains",
+        "value": "429",
+        "description": "Must handle HTTP 429 rate limit responses with exponential backoff and retry logic to gracefully handle API quota exhaustion."
+      },
+      {
+        "type": "contains",
+        "value": "SentenceTransformer",
+        "description": "Must implement a local fallback using SentenceTransformer for generating embeddings when the Inference API is unavailable."
+      }
+    ]
+  }
+]

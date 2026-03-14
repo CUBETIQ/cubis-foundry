@@ -5,12 +5,6 @@ license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
-  domain: mobile
-  triggers: React Native, Expo, New Architecture, Fabric, TurboModules, native modules, mobile app, iOS, Android, deep linking, Expo Router
-  role: specialist
-  scope: implementation
-  output-format: code
-  related-skills: typescript-pro, react-best-practices, test-master
 compatibility: "Claude Code, Codex, GitHub Copilot"
 ---
 

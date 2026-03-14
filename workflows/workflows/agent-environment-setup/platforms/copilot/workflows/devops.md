@@ -26,8 +26,8 @@ Use this for deployment automation, CI/CD pipeline changes, incident response, o
 
 ## Routing
 
-- Primary specialist: `@devops-engineer`
-- Reliability support: `@sre-engineer`
+- Primary specialist: `@ci-cd-pipeline`
+- Reliability support: `@observability`
 - Verification support: `@validator`
 
 ## Context notes
@@ -37,9 +37,9 @@ Use this for deployment automation, CI/CD pipeline changes, incident response, o
 
 ## Skill Routing
 
-- Primary skills: `devops-engineer`, `ci-cd-pipelines`, `docker-kubernetes`
-- Supporting skills (optional): `sre-engineer`, `observability`, `serverless-patterns`, `git-workflow`, `debugging-strategies`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`
-- Start with `devops-engineer` for operational patterns. Add `ci-cd-pipelines` for pipeline work, `docker-kubernetes` for container operations, `sre-engineer` for incident response, `serverless-patterns` for serverless infrastructure.
+- Primary skills: `ci-cd-pipeline`, `ci-cd-pipeline`, `kubernetes-deploy`
+- Supporting skills (optional): `observability`, `observability`, `ci-cd-pipeline`, `git-workflow`, `systematic-debugging`, `typescript-best-practices`, `javascript-best-practices`, `python-best-practices`, `golang-best-practices`
+- Start with `ci-cd-pipeline` for operational patterns. Add `ci-cd-pipeline` for pipeline work, `kubernetes-deploy` for container operations, `observability` for incident response, `ci-cd-pipeline` for serverless infrastructure.
 
 ## Workflow steps
 
@@ -60,10 +60,10 @@ Use this for deployment automation, CI/CD pipeline changes, incident response, o
 
 ```yaml
 DEVOPS_WORKFLOW_RESULT:
-  primary_agent: devops-engineer
-  supporting_agents: [sre-engineer?, validator?]
-  primary_skills: [devops-engineer, ci-cd-pipelines, docker-kubernetes]
-  supporting_skills: [sre-engineer?, observability?, serverless-patterns?]
+  primary_agent: ci-cd-pipeline
+  supporting_agents: [observability?, validator?]
+  primary_skills: [ci-cd-pipeline, ci-cd-pipeline, kubernetes-deploy]
+  supporting_skills: [observability?, observability?, ci-cd-pipeline?]
   change:
     description: <string>
     blast_radius: <string>

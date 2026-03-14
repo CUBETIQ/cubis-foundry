@@ -1,0 +1,64 @@
+---
+command: "/create"
+description: "Implement feature work with minimal blast radius and clear verification checkpoints."
+triggers: ["create", "build", "implement", "feature", "develop"]
+---
+
+# Create Workflow
+
+## When to use
+
+Use this for net-new implementation after design is stable.
+
+## Routing
+
+- Primary coordinator: `the orchestrator posture`
+- Backend implementation: `the backend-specialist posture`
+- Frontend implementation: `the frontend-specialist posture`
+- Mobile implementation: `the mobile-developer posture`
+- Verification support: `the test-engineer posture`
+
+## Context notes
+
+- This workflow file, active platform rules, and selected agents or skills guide execution.
+- Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
+
+## Skill Routing
+
+- Primary skills: `typescript-best-practices`, `javascript-best-practices`, `python-best-practices`, `golang-best-practices`, `java-best-practices`, `csharp-best-practices`, `kotlin-best-practices`, `rust-best-practices`, `php-best-practices`, `php-best-practices`, `rust-best-practices`, `rust-best-practices`, `expo-app`, `swift-best-practices`
+- Supporting skills (optional): `api-design`, `api-design`, `javascript-best-practices`, `nestjs`, `fastapi`, `api-design`, `drizzle-orm`, `database-design`, `mcp-server-builder`, `react`, `react`, `nextjs`, `frontend-design`, `frontend-design`, `frontend-design`, `performance-testing`, `skill-creator`, `stripe-integration`, `ci-cd-pipeline`, `frontend-design`
+- Pick one primary language skill from repo signals or touched files. Add the narrowest specialist only when the feature is clearly backend or frontend framework-specific.
+
+## Workflow steps
+
+1. Confirm target files and contracts.
+2. Implement smallest coherent increment.
+3. Validate behavior with focused tests.
+4. Capture remaining gaps and follow-ups.
+
+## Verification
+
+- Run focused checks/tests for the changed scope.
+- Confirm no regressions in adjacent behavior.
+- Note any gaps that were not validated.
+
+## Output Contract
+
+```yaml
+CREATE_WORKFLOW_RESULT:
+  primary_agent: orchestrator
+  supporting_agents: [backend-specialist?, frontend-specialist?, mobile-developer?, test-engineer?]
+  primary_skills: [<dominant-language-skill>]
+  supporting_skills: [<framework-specific-skills-used>]
+  implemented_scope:
+    summary: <string>
+    changed_artifacts: [<path-or-artifact>]
+  behavioral_impact: [<string>]
+  verification:
+    checks_run: [<command-or-test>]
+    evidence: [<string>]
+    gaps: [<string>] | []
+  follow_up_items: [<string>] | []
+```
+
+> **Gemini note:** Commands route into workflow files under `.gemini/workflows/`. Specialists are inline postures coordinated through GEMINI.md guidance, not separate agent artifacts.

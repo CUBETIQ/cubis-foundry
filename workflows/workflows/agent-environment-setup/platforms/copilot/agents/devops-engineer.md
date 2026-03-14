@@ -18,12 +18,12 @@ Deliver infrastructure and deployment changes that are safe, observable, and rev
 
 - Do not call `skill_search` for any skill in the pre-declared list when the task clearly falls into those domains.
 - Load one primary skill first based on the dominant concern:
-  - `devops-engineer` for CI/CD pipelines, infrastructure-as-code, and operational patterns
-  - `sre-engineer` for SLO-driven operations, incident management, and reliability engineering
-  - `ci-cd-pipelines` for pipeline design, build optimization, and deployment automation
-  - `docker-kubernetes` for container orchestration, Helm charts, and cluster operations
+  - `ci-cd-pipeline` for CI/CD pipelines, infrastructure-as-code, and operational patterns
+  - `observability` for SLO-driven operations, incident management, and reliability engineering
+  - `ci-cd-pipeline` for pipeline design, build optimization, and deployment automation
+  - `kubernetes-deploy` for container orchestration, Helm charts, and cluster operations
   - `observability` for monitoring, alerting, dashboards, and telemetry
-  - `serverless-patterns` for Lambda, Edge Functions, cold starts, and serverless constraints
+  - `ci-cd-pipeline` for Lambda, Edge Functions, cold starts, and serverless constraints
   - `git-workflow` for branching strategy, release management, and merge patterns
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed.
 
@@ -31,12 +31,12 @@ Deliver infrastructure and deployment changes that are safe, observable, and rev
 
 | File                  | Load when                                                                    |
 | --------------------- | ---------------------------------------------------------------------------- |
-| `devops-engineer`     | CI/CD pipeline design, infrastructure-as-code, or operational automation.    |
-| `sre-engineer`        | SLO design, incident response, error budgets, or reliability engineering.    |
-| `ci-cd-pipelines`     | Build optimization, deployment automation, or pipeline architecture.         |
-| `docker-kubernetes`   | Container builds, Kubernetes manifests, Helm charts, or cluster operations.  |
+| `ci-cd-pipeline`     | CI/CD pipeline design, infrastructure-as-code, or operational automation.    |
+| `observability`        | SLO design, incident response, error budgets, or reliability engineering.    |
+| `ci-cd-pipeline`     | Build optimization, deployment automation, or pipeline architecture.         |
+| `kubernetes-deploy`   | Container builds, Kubernetes manifests, Helm charts, or cluster operations.  |
 | `observability`       | Monitoring setup, alerting rules, dashboards, or telemetry instrumentation.  |
-| `serverless-patterns` | Lambda architecture, Edge Functions, cold starts, or serverless constraints. |
+| `ci-cd-pipeline` | Lambda architecture, Edge Functions, cold starts, or serverless constraints. |
 | `git-workflow`        | Branching strategy, release tagging, or merge automation.                    |
 
 ## Operating Stance
@@ -65,6 +65,6 @@ Deliver infrastructure and deployment changes that are safe, observable, and rev
 - Call out any manual steps or environment-specific dependencies.
 
 ## Skill routing
-Prefer these skills when task intent matches: `devops-engineer`, `sre-engineer`, `ci-cd-pipelines`, `docker-kubernetes`, `observability`, `serverless-patterns`, `git-workflow`, `debugging-strategies`, `nodejs-best-practices`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`.
+Prefer these skills when task intent matches: `ci-cd-pipeline`, `observability`, `kubernetes-deploy`, `git-workflow`, `systematic-debugging`, `javascript-best-practices`, `typescript-best-practices`, `python-best-practices`, `golang-best-practices`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

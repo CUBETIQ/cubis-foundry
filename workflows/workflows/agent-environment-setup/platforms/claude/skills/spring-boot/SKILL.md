@@ -1,11 +1,9 @@
 ---
 name: spring-boot
 description: "Use when building Spring Boot 3.4+ applications with Java records, virtual threads, Spring Security 6, Spring Data JPA, reactive WebFlux patterns, and production-grade testing strategies."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "Spring Boot controller, service, or configuration to work on"
 ---
 
 # Spring Boot
@@ -70,3 +68,11 @@ Provide implementation code, configuration properties, bean definitions, and arc
 | `references/data-access.md` | You need Spring Data JPA repositories, query derivation, projections, specifications, or Hibernate tuning. |
 | `references/testing.md` | You need `@SpringBootTest`, `@WebMvcTest`, `@DataJpaTest`, Testcontainers, or `MockMvc`/`WebTestClient` patterns. |
 | `references/reactive.md` | You need WebFlux endpoints, `Mono`/`Flux` patterns, `WebClient`, R2DBC, or reactive security configuration. |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

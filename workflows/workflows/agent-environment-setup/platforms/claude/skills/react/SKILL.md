@@ -1,17 +1,9 @@
 ---
 name: react
 description: "Use when building user interfaces with React 19+. Invoke for Server Components, the use() hook, Suspense, Actions, concurrent features, ref callbacks, and component architecture."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-  domain: frontend
-  triggers: React, Server Components, use(), Suspense, Actions, useTransition, useOptimistic, useActionState, concurrent, ref as prop
-  role: specialist
-  scope: implementation
-  output-format: code
-  related-skills: nextjs, typescript-pro, tailwind-patterns, test-master
-compatibility: "Claude Code, Codex, GitHub Copilot"
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "React component, hook, or pattern to work on"
 ---
 
 # React 19+
@@ -89,3 +81,11 @@ Load detailed guidance based on context:
 | Actions & Forms | `references/actions-forms.md` | useActionState, useOptimistic, form action prop, progressive enhancement |
 | Concurrent Features | `references/concurrent-features.md` | useTransition, useDeferredValue, Suspense streaming, selective hydration |
 | Component Patterns | `references/component-patterns.md` | Composition, ref forwarding, Error Boundaries, performance optimization |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

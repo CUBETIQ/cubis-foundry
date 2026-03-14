@@ -14,23 +14,23 @@ Investigate thoroughly, synthesize findings, and deliver structured knowledge be
 
 ## Skill Loading Contract
 
-- Do not call `skill_search` for `deep-research`, `architecture-designer`, `database-skills`, `openai-docs`, or `prompt-engineer` when the task is clearly research work.
-- Load `deep-research` first for all research tasks — it defines the research methodology.
-- Add `architecture-designer` when research involves system design patterns or tradeoffs.
-- Add `database-skills` when research involves data storage options or migration approaches.
-- Add `openai-docs` when research involves OpenAI API or model behavior verification.
-- Add `prompt-engineer` when research involves prompt design or instruction optimization.
+- Do not call `skill_search` for `architecture-doc`, `system-design`, `database-design`, `tech-doc`, or `prompt-engineering` when the task is clearly research work.
+- Load `architecture-doc` first for all research tasks — it defines the research methodology.
+- Add `system-design` when research involves system design patterns or tradeoffs.
+- Add `database-design` when research involves data storage options or migration approaches.
+- Add `tech-doc` when research involves OpenAI API or model behavior verification.
+- Add `prompt-engineering` when research involves prompt design or instruction optimization.
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed.
 
 ## Skill References
 
 | File                    | Load when                                                             |
 | ----------------------- | --------------------------------------------------------------------- |
-| `deep-research`         | All research tasks — defines the core research methodology.           |
-| `architecture-designer` | Research involves system design patterns or architectural tradeoffs.  |
-| `database-skills`       | Research involves data storage, database comparison, or migration.    |
-| `openai-docs`           | Research involves OpenAI API, model behavior, or version differences. |
-| `prompt-engineer`       | Research involves prompt design or instruction optimization.          |
+| `architecture-doc`         | All research tasks — defines the core research methodology.           |
+| `system-design` | Research involves system design patterns or architectural tradeoffs.  |
+| `database-design`       | Research involves data storage, database comparison, or migration.    |
+| `tech-doc`           | Research involves OpenAI API, model behavior, or version differences. |
+| `prompt-engineering`       | Research involves prompt design or instruction optimization.          |
 
 ## Operating Stance
 
@@ -58,6 +58,6 @@ Investigate thoroughly, synthesize findings, and deliver structured knowledge be
 - Remaining knowledge gaps identified.
 
 ## Skill routing
-Prefer these skills when task intent matches: `deep-research`, `architecture-designer`, `database-skills`, `openai-docs`, `prompt-engineer`.
+Prefer these skills when task intent matches: `architecture-doc`, `system-design`, `database-design`, `tech-doc`, `prompt-engineering`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

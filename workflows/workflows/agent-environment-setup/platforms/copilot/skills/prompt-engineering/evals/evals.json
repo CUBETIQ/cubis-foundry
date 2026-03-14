@@ -1,0 +1,66 @@
+[
+  {
+    "name": "system-prompt-design-for-code-assistant",
+    "description": "Validate that the skill produces a well-structured system prompt for a code assistant with proper role definition, constraints, output format, examples, and guardrails.",
+    "input": "Design a system prompt for a code assistant that helps developers write Python code. The assistant must: (1) generate type-annotated Python 3.12+ code, (2) include docstrings for all functions, (3) follow PEP 8 style, (4) refuse to generate code that accesses the filesystem or network unless explicitly requested, (5) explain its reasoning before providing code. The prompt should be production-ready and include 2-3 few-shot examples.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "role",
+        "description": "The system prompt must define an explicit role (e.g., 'You are a Python code assistant') to set the model's expertise calibration and response style."
+      },
+      {
+        "type": "contains",
+        "value": "NEVER",
+        "description": "Safety constraints must be stated as explicit prohibitions (NEVER, DO NOT, MUST NOT) rather than positive suggestions, because models follow explicit prohibitions more reliably."
+      },
+      {
+        "type": "contains",
+        "value": "def ",
+        "description": "The prompt must include at least one few-shot example showing a complete Python function with type annotations and docstring, demonstrating the exact output format expected."
+      },
+      {
+        "type": "contains",
+        "value": "docstring",
+        "description": "The prompt must explicitly require docstrings since this is a stated requirement. The instruction and at least one example must demonstrate docstring usage."
+      },
+      {
+        "type": "contains",
+        "value": "reasoning",
+        "description": "The prompt must instruct the model to explain its reasoning before providing code, implementing the chain-of-thought requirement from the specification."
+      }
+    ]
+  },
+  {
+    "name": "structured-output-extraction",
+    "description": "Validate that the skill produces a robust structured output extraction strategy with JSON schema, validation, error handling, and fallback patterns for extracting data from unstructured LLM responses.",
+    "input": "Design a structured output extraction pipeline for a system that processes customer feedback emails and extracts: sentiment (positive/negative/neutral), urgency (low/medium/high/critical), product_name (string), issue_category (from a fixed enum: billing, technical, account, feature_request, other), and a summary (1-2 sentences). The extraction must work reliably with Claude and GPT-4. Provide the prompt design, JSON schema, validation logic, and fallback handling for malformed outputs.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "json",
+        "description": "The extraction must produce JSON output with a defined schema, not free-form text that requires post-processing to extract structured data."
+      },
+      {
+        "type": "contains",
+        "value": "enum",
+        "description": "The schema must enforce enum constraints for sentiment, urgency, and issue_category to prevent the model from inventing categories outside the allowed set."
+      },
+      {
+        "type": "contains",
+        "value": "validation",
+        "description": "The pipeline must include output validation logic (JSON schema validation, type checking, enum membership) because LLMs do not guarantee schema compliance."
+      },
+      {
+        "type": "contains",
+        "value": "fallback",
+        "description": "The pipeline must include a fallback strategy for malformed outputs (retry with simplified prompt, return partial extraction, flag for human review) because LLMs occasionally produce unparseable responses."
+      },
+      {
+        "type": "contains",
+        "value": "example",
+        "description": "The prompt must include at least one complete few-shot example showing a customer email and the expected JSON output, because examples are more reliable than instructions for format compliance."
+      }
+    ]
+  }
+]

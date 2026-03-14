@@ -1,0 +1,66 @@
+[
+  {
+    "name": "review-feedback-quality",
+    "description": "Validate that the skill produces specific, actionable code review feedback organized by severity with the WHAT-WHY-HOW pattern.",
+    "input": "Review this Express.js endpoint:\n\n```javascript\napp.post('/api/users', async (req, res) => {\n  const { email, password, role } = req.body;\n  const user = await db.query(`INSERT INTO users (email, password, role) VALUES ('${email}', '${password}', '${role}') RETURNING *`);\n  res.json(user.rows[0]);\n});\n```\n\nThe PR description says: 'Add user registration endpoint. Closes #45.'",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "SQL injection",
+        "description": "Must identify the SQL injection vulnerability from string interpolation in the query, as this is a critical security issue."
+      },
+      {
+        "type": "contains",
+        "value": "password",
+        "description": "Must flag that the password is stored in plaintext without hashing, which is a critical security violation."
+      },
+      {
+        "type": "contains",
+        "value": "validation",
+        "description": "Must note the absence of input validation on email, password, and role fields before database insertion."
+      },
+      {
+        "type": "contains",
+        "value": "role",
+        "description": "Must identify the mass assignment / privilege escalation risk of accepting role directly from user input."
+      },
+      {
+        "type": "contains",
+        "value": "error",
+        "description": "Must flag the missing error handling — no try/catch means database errors will crash the server or leak stack traces."
+      }
+    ]
+  },
+  {
+    "name": "review-prioritization",
+    "description": "Validate that the skill correctly prioritizes review effort based on change risk and provides appropriately calibrated depth.",
+    "input": "I have 5 PRs to review today and limited time. Help me prioritize and decide review depth for each:\n\n1. PR #201: Updates the payment processing webhook handler to support a new payment provider. 150 lines changed in the billing service.\n2. PR #202: Fixes a typo in the README. 1 line changed.\n3. PR #203: Adds a new admin-only API endpoint that deletes user accounts. 80 lines, touches auth middleware.\n4. PR #204: Upgrades React from 18.2 to 18.3. 500 lines changed (mostly lock file). No code changes.\n5. PR #205: Refactors the logging module to use structured JSON output. 200 lines changed, no behavior change per the description.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "payment",
+        "description": "Must identify the payment webhook PR as high priority since it handles financial transactions and has high business impact."
+      },
+      {
+        "type": "contains",
+        "value": "delete",
+        "description": "Must flag the account deletion endpoint as high risk due to destructive operations and auth surface area."
+      },
+      {
+        "type": "contains",
+        "value": "README",
+        "description": "Must identify the README typo fix as lowest priority requiring minimal review depth."
+      },
+      {
+        "type": "contains",
+        "value": "lock file",
+        "description": "Must recognize that most of the React upgrade diff is lock file changes and calibrate depth accordingly."
+      },
+      {
+        "type": "contains",
+        "value": "order",
+        "description": "Must provide a recommended review order that puts high-risk PRs first and low-risk PRs last."
+      }
+    ]
+  }
+]

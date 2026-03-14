@@ -12,9 +12,9 @@ Use this when a task spans multiple domains (backend + frontend, security + infr
 
 ## Routing
 
-- Primary coordinator: `@orchestrator`
-- Specialist routing determined by task decomposition — delegates to `@backend-specialist`, `@frontend-specialist`, `@database-architect`, `@security-auditor`, `@devops-engineer`, `@test-engineer`, `@mobile-developer`, or other specialist agents as needed.
-- Validation support: `@validator`
+- Primary coordinator: `the orchestrator posture`
+- Specialist routing determined by task decomposition — delegates to `the backend-specialist posture`, `the frontend-specialist posture`, `the database-architect posture`, `the security-auditor posture`, `the ci-cd-pipeline posture`, `the test-engineer posture`, `the mobile-developer posture`, or other specialist agents as needed.
+- Validation support: `the validator posture`
 
 ## Context notes
 
@@ -23,9 +23,9 @@ Use this when a task spans multiple domains (backend + frontend, security + infr
 
 ## Skill Routing
 
-- Primary skills: `architecture-designer`, `api-designer`
-- Supporting skills (optional): `database-skills`, `deep-research`, `mcp-builder`, `openai-docs`, `prompt-engineer`, `skill-creator`
-- Start with `architecture-designer` for system design coordination and `api-designer` for integration contracts. Add supporting skills based on the coordination challenge.
+- Primary skills: `system-design`, `api-design`
+- Supporting skills (optional): `database-design`, `architecture-doc`, `mcp-server-builder`, `tech-doc`, `prompt-engineering`, `skill-creator`
+- Start with `system-design` for system design coordination and `api-design` for integration contracts. Add supporting skills based on the coordination challenge.
 
 ## Workflow steps
 
@@ -49,7 +49,7 @@ Use this when a task spans multiple domains (backend + frontend, security + infr
 ORCHESTRATE_WORKFLOW_RESULT:
   primary_agent: orchestrator
   supporting_agents: [<specialist-agents-used>]
-  primary_skills: [architecture-designer, api-designer]
+  primary_skills: [system-design, api-design]
   supporting_skills: [<supporting-skills-used>]
   task_count: <number>
   completed: <number>
@@ -64,3 +64,5 @@ ORCHESTRATE_WORKFLOW_RESULT:
   remaining_risks: [<string>] | []
   follow_up_actions: [<string>] | []
 ```
+
+> **Codex note:** This workflow runs inside a network-restricted sandbox. Specialists are reasoning postures defined in AGENTS.md, not spawned processes.

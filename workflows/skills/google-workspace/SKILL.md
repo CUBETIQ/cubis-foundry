@@ -78,11 +78,9 @@ Guide the design and implementation of production-grade Google Workspace API int
 
 | File                            | Load when                                                                                   |
 | ------------------------------- | ------------------------------------------------------------------------------------------- |
-| `references/oauth2.md`          | Configuring OAuth2 consent, PKCE flows, service accounts, or token management.             |
-| `references/drive-api.md`       | Managing files, folders, permissions, shared drives, or file watching.                     |
-| `references/sheets-api.md`      | Reading, writing, formatting, or batch-updating Google Sheets data.                        |
-| `references/gmail-api.md`       | Sending messages, searching, managing labels, or processing attachments.                   |
-| `references/batch-requests.md`  | Combining API calls, managing quota, or optimizing throughput.                             |
+| `references/auth-and-scopes.md` | Configuring OAuth2 consent, PKCE flows, service accounts, scopes, or token management.     |
+| `references/sheets-api-patterns.md` | Reading, writing, formatting, or batch-updating Google Sheets data.                    |
+| `references/workspace-automation.md` | Coordinating Drive, Gmail, Sheets, and Calendar automations with quota awareness.      |
 
 ## Examples
 

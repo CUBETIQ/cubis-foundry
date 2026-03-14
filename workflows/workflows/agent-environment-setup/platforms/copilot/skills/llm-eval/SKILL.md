@@ -7,7 +7,6 @@ metadata:
   version: "3.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
-
 # LLM Eval
 
 ## Purpose
@@ -70,3 +69,11 @@ Provide eval suite designs as structured JSON or YAML with assertion definitions
 | `references/scoring-methods.md` | Implementing LLM-as-judge, rubric-based scoring, or composite metrics. |
 | `references/regression-detection.md` | Setting up automated regression detection, baselines, and alerting. |
 | `references/human-eval.md` | Designing human evaluation campaigns, calibration, and agreement metrics. |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

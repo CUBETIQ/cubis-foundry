@@ -1,6 +1,6 @@
 ---
 name: sadd
-description: "Use when extracting testable specifications from requirements, generating tests from specs, verifying implementations against specs, and mapping coverage to requirements. Covers specification mining, test-from-spec generation, implementation verification, and traceability."
+description: "Use when extracting testable specs from requirements, generating tests from specs, verifying implementations against specs, and tracing requirements to coverage."
 license: MIT
 metadata:
   author: cubis-foundry

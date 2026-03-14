@@ -1,131 +1,73 @@
 ---
 name: git-workflow
-description: "Use when establishing or reviewing git branching strategies, PR conventions, commit hygiene, merge policies, monorepo workflows, and release tagging. Covers trunk-based development, GitFlow alternatives, conventional commits, and code review standards."
+description: "Use when defining git branching, commit conventions, merge or rebase policy, release flow, or monorepo collaboration patterns."
 license: MIT
 metadata:
   author: cubis-foundry
-  version: "1.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+  version: "3.0"
+compatibility: "Claude Code, Codex, GitHub Copilot"
 ---
 # Git Workflow
 
 ## Purpose
 
-Use when establishing or reviewing git branching strategies, PR conventions, commit hygiene, merge policies, monorepo workflows, and release tagging. Covers trunk-based development, GitFlow alternatives, conventional commits, and code review standards.
+Guide teams toward efficient, low-friction git workflows that keep history clean, reduce merge pain, and support continuous delivery. This skill synthesizes branching strategies, commit conventions, merge policies, code review flow, and release management into a cohesive practice.
 
 ## When to Use
 
-- Working on git workflow related tasks
+- Setting up a new repository's branching and merge strategy
+- Choosing between trunk-based development, GitHub Flow, or GitFlow
+- Writing or reviewing commit messages for conventional commits compliance
+- Deciding between rebase, squash-merge, or merge commits
+- Designing a code review flow (reviewer assignment, approval gates, SLAs)
+- Planning release management, tagging, and changelog generation
+- Configuring monorepo tooling (Turborepo, Nx, Lerna) and change detection
+- Establishing branch protection rules and CI gating
+- Migrating from one branching model to another
+- Troubleshooting merge conflicts, diverged histories, or stale branches
 
 ## Instructions
 
-1. **Choose a branching model** — trunk-based for high-velocity teams, short-lived feature branches for teams needing review gates.
-2. **Keep branches short-lived** — merge within 1-2 days. Long-lived branches create merge pain and integration risk.
-3. **Write meaningful commits** — each commit should be a logical, reviewable unit. Squash fixup commits before merge.
-4. **Review before merge** — every change to protected branches goes through PR review. No direct pushes.
-5. **Automate what you can** — branch protection, CI gating, auto-merge on approval, changelog generation.
-
-### Branching strategies
-
-### Trunk-based development (recommended)
-
-- All developers commit to `main` (directly or via short-lived branches).
-- Feature branches live for hours to 1-2 days, never weeks.
-- Use feature flags for incomplete work that must be merged.
-- Release from `main` via tags or release branches cut at the moment of release.
-- Best for: teams with strong CI, continuous deployment capability.
-
-### GitHub Flow
-
-- `main` is always deployable.
-- Create feature branches from `main`, open PR, review, merge back.
-- Deploy from `main` after merge.
-- Simpler than GitFlow. No develop branch, no release branches unless needed.
-- Best for: SaaS products with single production environment.
-
-### Release branches (when needed)
-
-- Cut `release/X.Y` from `main` when preparing a release.
-- Cherry-pick critical fixes to release branch. Never merge `main` into release.
-- Tag releases from the release branch.
-- Delete release branch after final patch version.
-
-### Commit conventions
-
-### Conventional Commits
-
-```
-<type>(<scope>): <description>
-
-[optional body]
-
-[optional footer]
-```
-
-Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`.
-
-- `feat`: new feature visible to users → triggers minor version bump.
-- `fix`: bug fix → triggers patch version bump.
-- `feat!` or `BREAKING CHANGE:` footer → triggers major version bump.
-
-### Commit message rules
-
-- Subject line: imperative mood, under 72 characters, no period.
-- Body: explain WHY, not WHAT (the diff shows what changed).
-- One logical change per commit. Do not mix refactoring with behavior changes.
-
-### Pull request standards
-
-- Title follows conventional commit format.
-- Description includes: what changed, why it changed, how to test.
-- Link related issues with `Closes #123` or `Fixes #456`.
-- Keep PRs under 400 lines of meaningful change. Split larger work into stacked PRs.
-- Request review from domain owners, not random team members.
-
-### Merge strategy
-
-| Strategy     | When to use                                                         |
-| ------------ | ------------------------------------------------------------------- |
-| Squash merge | Default for feature PRs — clean single-commit history on main.      |
-| Merge commit | When preserving individual commits matters (multi-author, long PR). |
-| Rebase merge | When linear history is required and branch is small/clean.          |
-
-- Configure repository default in GitHub settings.
-- Delete branches after merge — do not accumulate stale branches.
-
-### Protected branch rules
-
-- [ ] Require PR reviews (minimum 1 reviewer)
-- [ ] Require status checks to pass (CI, lint, test)
-- [ ] Require branches to be up to date before merge
-- [ ] Disable force push to `main` and release branches
-- [ ] Require signed commits (optional but recommended for regulated environments)
-- [ ] Enable merge queue for high-traffic repositories
-
-### Constraints
-
-- Avoid long-lived feature branches (>3 days) — merge pain grows exponentially.
-- Avoid merge commits from `main` into feature branches — rebase instead.
-- Avoid commit messages like "fix", "wip", "stuff" — they provide no value in history.
-- Avoid bypassing CI checks with `--no-verify` — fix the issue instead.
-- Avoid cherry-picking without tracking — document which commits were cherry-picked and why.
-- Avoid force-pushing to shared branches — coordinate with collaborators first.
+1. **Identify team context** — ask about team size, deployment cadence, and current pain points, because the right branching strategy depends on how the team ships, not on theory alone.
+2. **Select a branching model** — recommend trunk-based development for teams deploying multiple times per day, GitHub Flow for teams with single-environment SaaS, and release branches only when regulatory or multi-version support demands it, because mismatched models create unnecessary ceremony.
+3. **Enforce short-lived branches** — set a target of 1-2 days maximum branch lifetime, because branches that live longer than 3 days have exponentially higher merge conflict rates and integration risk.
+4. **Adopt conventional commits** — use the `type(scope): description` format with types `feat`, `fix`, `docs`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, because structured commits enable automated changelog generation and semantic versioning.
+5. **Write commit messages that explain WHY** — keep the subject under 72 characters in imperative mood, put the rationale in the body, and limit each commit to one logical change, because the diff already shows what changed.
+6. **Choose merge strategy by context** — default to squash merge for feature PRs to keep main clean, use merge commits when preserving individual commit authorship matters, and use rebase merge only for small, clean branches, because inconsistent merge strategies make history unreadable.
+7. **Prefer rebase over merge for branch updates** — rebase feature branches onto main instead of merging main into feature branches, because merge commits from upstream pollute the feature branch history and obscure the actual changes.
+8. **Set up branch protection rules** — require at least one PR review, require CI status checks to pass, require branches to be up to date before merge, disable force push to main, and enable merge queues for high-traffic repos, because unprotected branches are the single largest source of production incidents from bad merges.
+9. **Design code review flow** — assign reviewers by domain ownership (CODEOWNERS), set a 4-hour review SLA during business hours, and keep PRs under 400 lines of meaningful change, because large PRs get rubber-stamped and slow PRs kill velocity.
+10. **Manage releases with tags and automation** — tag releases from main using semantic versioning, generate changelogs from conventional commits, and use release branches only for hotfixes to previous versions, because manual release processes are error-prone and slow.
+11. **Configure monorepo change detection** — use path-based triggers (Turborepo, Nx affected) to run only relevant CI jobs, scope conventional commit scopes to package names, and use workspace-aware versioning, because full-repo CI runs on every commit make monorepos unworkable at scale.
+12. **Handle merge conflicts systematically** — pull and rebase frequently (at least daily), resolve conflicts in the feature branch (never in main), and use `git rerere` to remember conflict resolutions, because ad-hoc conflict resolution leads to lost changes and subtle bugs.
+13. **Clean up stale branches** — delete branches after merge, run a weekly sweep for branches older than 30 days, and archive long-running branches that cannot be merged yet, because stale branches confuse the team and clutter tooling.
+14. **Document the workflow** — maintain a CONTRIBUTING.md with branching model, commit conventions, PR template, and merge policy, because undocumented workflows lead to inconsistency as the team grows.
+15. **Audit and iterate** — review merge frequency, PR cycle time, and conflict rate monthly, because workflow problems compound silently until they become team-wide bottlenecks.
 
 ## Output Format
 
-Provide implementation guidance, code examples, and configuration as appropriate to the task.
+When advising on git workflows, provide:
+
+1. **Recommended strategy** — the branching model with rationale tied to the team's context
+2. **Configuration** — specific GitHub/GitLab settings, branch protection rules, and CI triggers
+3. **Commit and PR templates** — ready-to-use templates matching the chosen conventions
+4. **Migration plan** — if changing from an existing workflow, step-by-step migration with rollback points
+5. **Checklist** — a verification checklist the team can use during the transition
 
 ## References
 
-| File                                | Purpose                                                                                             |
-| ----------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `references/pr-review-checklist.md` | Code review process, reviewer responsibilities, approval criteria, and common review anti-patterns. |
+| File | Purpose |
+|------|---------|
+| `references/branching-strategies.md` | Detailed comparison of trunk-based, GitHub Flow, GitFlow, and release branch models with decision criteria |
+| `references/commit-conventions.md` | Conventional Commits specification, semantic versioning integration, and commit message templates |
+| `references/rebase-merge.md` | When to rebase vs merge vs squash, interactive rebase workflows, and conflict resolution strategies |
+| `references/release-management.md` | Release tagging, changelog generation, hotfix workflows, and semantic versioning automation |
+| `references/monorepo.md` | Monorepo branching, path-based CI, workspace versioning, and change detection tooling |
 
-## Scripts
+## Copilot Platform Notes
 
-No helper scripts are required for this skill right now. Keep execution in `SKILL.md` and `references/` unless repeated automation becomes necessary.
-
-## Examples
-
-- "Help me with git workflow best practices in this project"
-- "Review my git workflow implementation for issues"
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

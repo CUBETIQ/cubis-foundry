@@ -1,17 +1,9 @@
 ---
 name: vuejs
 description: "Use when building web applications with Vue 3.5+. Invoke for Composition API, script setup, Pinia state management, TypeScript integration, Vue Router, SSR with Nuxt, and reactivity patterns."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-  domain: frontend
-  triggers: Vue, Vue 3, Composition API, Pinia, script setup, Vue Router, Nuxt, SSR, defineModel, useTemplateRef, reactive, ref
-  role: specialist
-  scope: implementation
-  output-format: code
-  related-skills: typescript-pro, tailwind-patterns, test-master, nestjs
-compatibility: "Claude Code, Codex, GitHub Copilot"
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "Vue component, composable, or Pinia store to work on"
 ---
 
 # Vue 3.5+ Composition API
@@ -89,3 +81,11 @@ Load detailed guidance based on context:
 | TypeScript | `references/typescript.md` | Generic props, typed emits, slots, provide/inject, augmentation |
 | Router & Nuxt | `references/router-nuxt.md` | Vue Router guards, Nuxt 3 pages, route rules, middleware |
 | Testing | `references/testing.md` | Vitest, Vue Test Utils, component testing, Pinia mocking |
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.

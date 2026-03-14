@@ -1,0 +1,417 @@
+{
+  "api-design": {
+    "allowedTools": ["Read", "Grep", "Glob"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "API endpoint, resource, or design concern to review"
+  },
+  "architecture-doc": {
+    "allowedTools": ["Read", "Grep", "Glob"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "System or component to document"
+  },
+  "ci-cd-pipeline": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": true,
+    "forkAgent": "devops-engineer",
+    "userInvocable": true,
+    "argumentHint": "Pipeline file or CI/CD concern to address"
+  },
+  "code-review": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": true,
+    "forkAgent": "reviewer",
+    "userInvocable": true,
+    "argumentHint": "File, PR, or code section to review"
+  },
+  "csharp-best-practices": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "C# file, class, or pattern to analyze"
+  },
+  "database-design": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": true,
+    "forkAgent": "database-architect",
+    "userInvocable": true,
+    "argumentHint": "Schema, query, or data model to design"
+  },
+  "django-drf": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Django model, view, or DRF serializer to work on"
+  },
+  "docker-compose-dev": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": true,
+    "forkAgent": "devops-engineer",
+    "userInvocable": true,
+    "argumentHint": "Docker Compose file or service to configure"
+  },
+  "drizzle-orm": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Drizzle schema, query, or migration to work on"
+  },
+  "electron-qa": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Electron app module or QA concern to address"
+  },
+  "expo-app": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Expo component, screen, or configuration to work on"
+  },
+  "express-nodejs": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Express route, middleware, or Node.js module to work on"
+  },
+  "fastapi": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "FastAPI endpoint, model, or dependency to work on"
+  },
+  "frontend-design": {
+    "allowedTools": ["Read", "Grep", "Glob"],
+    "contextFork": true,
+    "forkAgent": "frontend-specialist",
+    "userInvocable": true,
+    "argumentHint": "Component, design system, or UI pattern to design"
+  },
+  "gin-golang": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Gin handler, middleware, or route to work on"
+  },
+  "git-workflow": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Git branching strategy, workflow, or commit concern"
+  },
+  "go-fiber": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Fiber handler, middleware, or route to work on"
+  },
+  "golang-best-practices": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Go module, package, or pattern to analyze"
+  },
+  "google-workspace": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Google API integration or Workspace service to work on"
+  },
+  "huggingface-ml": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Model, dataset, or ML pipeline to work on"
+  },
+  "integration-testing": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": true,
+    "forkAgent": "test-engineer",
+    "userInvocable": true,
+    "argumentHint": "Component boundary or integration to test"
+  },
+  "java-best-practices": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Java class, module, or pattern to analyze"
+  },
+  "javascript-best-practices": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "JavaScript module, function, or pattern to analyze"
+  },
+  "kaizen-iteration": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Process, metric, or improvement area to iterate on"
+  },
+  "kotlin-best-practices": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Kotlin class, module, or pattern to analyze"
+  },
+  "kubernetes-deploy": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": true,
+    "forkAgent": "devops-engineer",
+    "userInvocable": true,
+    "argumentHint": "Kubernetes manifest, Helm chart, or deployment concern"
+  },
+  "laravel": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Laravel controller, model, or feature to work on"
+  },
+  "llm-eval": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Eval suite, benchmark, or LLM output to evaluate"
+  },
+  "mcp-server-builder": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": true,
+    "forkAgent": "backend-specialist",
+    "userInvocable": true,
+    "argumentHint": "MCP server, tool, or transport to build"
+  },
+  "microservices-design": {
+    "allowedTools": ["Read", "Grep", "Glob"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Service boundary, communication pattern, or architecture concern"
+  },
+  "nestjs": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "NestJS module, controller, or service to work on"
+  },
+  "nextjs": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Next.js page, component, or App Router concern"
+  },
+  "observability": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Instrumentation, metric, alert, or dashboard to configure"
+  },
+  "owasp-security-review": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash"],
+    "contextFork": true,
+    "forkAgent": "security-auditor",
+    "userInvocable": true,
+    "argumentHint": "Application, endpoint, or codebase to audit"
+  },
+  "pentest-skill": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash"],
+    "contextFork": true,
+    "forkAgent": "penetration-tester",
+    "userInvocable": true,
+    "argumentHint": "Target application or scope for penetration test"
+  },
+  "performance-testing": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": true,
+    "forkAgent": "performance-optimizer",
+    "userInvocable": true,
+    "argumentHint": "System, endpoint, or benchmark to test"
+  },
+  "php-best-practices": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "PHP file, class, or pattern to analyze"
+  },
+  "playwright-interactive": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Playwright test, page object, or browser interaction"
+  },
+  "playwright-persistent-browser": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Persistent browser session or Playwright configuration"
+  },
+  "prisma": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Prisma schema, migration, or query to work on"
+  },
+  "prompt-engineering": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Prompt, system message, or LLM interaction to design"
+  },
+  "python-best-practices": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Python module, file, or pattern to analyze"
+  },
+  "rag-patterns": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "RAG pipeline, chunking strategy, or retrieval concern"
+  },
+  "react": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "React component, hook, or pattern to work on"
+  },
+  "react-native": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "React Native component, screen, or native module"
+  },
+  "react-native-callstack": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "React Native crash, callstack, or debugging session"
+  },
+  "receiving-code-review": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Review feedback or PR comments to address"
+  },
+  "remix": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Remix route, loader, or action to work on"
+  },
+  "requesting-code-review": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "PR or code change to prepare for review"
+  },
+  "rust-best-practices": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Rust module, crate, or pattern to analyze"
+  },
+  "sadd": {
+    "allowedTools": ["Read", "Grep", "Glob"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "System or architecture to document with SADD"
+  },
+  "sanitize-pii": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Codebase, logs, or data pipeline to scan for PII"
+  },
+  "secret-management": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Secret storage, rotation policy, or credential concern"
+  },
+  "skill-creator": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Skill name, mode (create/edit/eval/benchmark), or skill file"
+  },
+  "spring-boot": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Spring Boot controller, service, or configuration to work on"
+  },
+  "sqlalchemy": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "SQLAlchemy model, query, or migration to work on"
+  },
+  "stripe-integration": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Stripe checkout, subscription, or webhook to implement"
+  },
+  "svelte-sveltekit": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Svelte component, SvelteKit route, or store to work on"
+  },
+  "swift-best-practices": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Swift file, protocol, or SwiftUI view to analyze"
+  },
+  "system-design": {
+    "allowedTools": ["Read", "Grep", "Glob"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "System, architecture, or scalability concern to design"
+  },
+  "systematic-debugging": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": true,
+    "forkAgent": "debugger",
+    "userInvocable": true,
+    "argumentHint": "Bug description or error message"
+  },
+  "t3-stack": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "T3 Stack component, tRPC router, or configuration"
+  },
+  "tech-doc": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Documentation topic, API reference, or guide to write"
+  },
+  "typescript-best-practices": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "TypeScript module, type, or pattern to analyze"
+  },
+  "unit-testing": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": true,
+    "forkAgent": "test-engineer",
+    "userInvocable": true,
+    "argumentHint": "Module, function, or component to unit test"
+  },
+  "vibesec": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Codebase, repo, or configuration to vibe-check"
+  },
+  "vuejs": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": false,
+    "userInvocable": true,
+    "argumentHint": "Vue component, composable, or Pinia store to work on"
+  }
+}

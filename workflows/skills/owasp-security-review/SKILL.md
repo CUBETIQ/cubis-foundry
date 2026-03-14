@@ -1,6 +1,6 @@
 ---
 name: owasp-security-review
-description: "Conduct OWASP-based security reviews including Top 10 vulnerability analysis, code review for security flaws, threat modeling, and SAST/DAST pattern integration. Use when auditing applications against OWASP standards or performing structured security assessments."
+description: "Use when performing OWASP-aligned security reviews, including vulnerability analysis, secure code review, threat modeling, and SAST/DAST integration."
 license: MIT
 metadata:
   author: cubis-foundry

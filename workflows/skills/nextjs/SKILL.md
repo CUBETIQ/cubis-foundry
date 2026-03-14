@@ -5,12 +5,6 @@ license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
-  domain: frontend
-  triggers: Next.js, App Router, Server Components, Server Actions, RSC, caching, PPR, middleware, next/image, route handlers
-  role: specialist
-  scope: implementation
-  output-format: code
-  related-skills: react, typescript-pro, vercel-platform, tailwind-patterns
 compatibility: "Claude Code, Codex, GitHub Copilot"
 ---
 

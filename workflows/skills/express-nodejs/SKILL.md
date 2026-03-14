@@ -1,6 +1,6 @@
 ---
 name: express-nodejs
-description: "Use when building HTTP APIs or web applications with Express.js on modern Node.js. Covers Express 5.x patterns, async/await middleware, TypeScript integration, security headers, structured error handling, and production hardening. Activate when the user mentions Express, expressjs, or asks for a Node.js web framework with middleware composition."
+description: "Use when building Express.js services on modern Node.js, including Express 5 routing, async middleware, TypeScript integration, security headers, error handling, and production hardening."
 license: MIT
 metadata:
   author: cubis-foundry

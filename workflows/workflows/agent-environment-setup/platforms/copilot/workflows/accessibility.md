@@ -31,9 +31,9 @@ Use this for accessibility audits, WCAG compliance review, or improving accessib
 
 ## Skill Routing
 
-- Primary skills: `frontend-code-review`, `frontend-design`
-- Supporting skills (optional): `i18n-localization`, `web-perf`, `react-expert`, `nextjs-developer`, `tailwind-patterns`, `playwright-e2e`, `typescript-pro`, `javascript-pro`
-- Start with `frontend-code-review` for WCAG compliance checks. Add `frontend-design` for accessible design patterns. Add `i18n-localization` for RTL and locale-specific accessibility.
+- Primary skills: `code-review`, `frontend-design`
+- Supporting skills (optional): `frontend-design`, `performance-testing`, `react`, `nextjs`, `frontend-design`, `playwright-interactive`, `typescript-best-practices`, `javascript-best-practices`
+- Start with `code-review` for WCAG compliance checks. Add `frontend-design` for accessible design patterns. Add `frontend-design` for RTL and locale-specific accessibility.
 
 ## Workflow steps
 
@@ -58,8 +58,8 @@ Use this for accessibility audits, WCAG compliance review, or improving accessib
 ACCESSIBILITY_WORKFLOW_RESULT:
   primary_agent: frontend-specialist
   supporting_agents: [test-engineer?, validator?]
-  primary_skills: [frontend-code-review, frontend-design]
-  supporting_skills: [i18n-localization?, web-perf?, playwright-e2e?]
+  primary_skills: [code-review, frontend-design]
+  supporting_skills: [frontend-design?, performance-testing?, playwright-interactive?]
   audit_scope: [<component-or-route>]
   findings:
     - severity: critical | high | medium | low

@@ -1,19 +1,12 @@
 ---
 name: electron-qa
-description: "Use when testing Electron desktop applications: end-to-end testing with Playwright, IPC communication testing between main and renderer processes, native module validation, packaging verification across platforms, or setting up CI pipelines for Electron builds."
+description: "Use when testing Electron apps with Playwright, validating IPC between main and renderer, checking native modules, verifying packaging, or setting up Electron CI."
 license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
-  domain: quality
-  triggers: Electron test, Electron QA, IPC testing, Spectron, Electron Playwright, native module, electron-builder, electron-forge, packaging validation, desktop app testing
-  role: specialist
-  scope: testing
-  output-format: code
-  related-skills: playwright-expert, playwright-interactive, test-master, ci-cd-pipelines
 compatibility: "Claude Code, Codex, GitHub Copilot"
 ---
-
 # Electron QA
 
 ## Purpose
@@ -89,3 +82,11 @@ Deliver:
 | `references/native-modules.md` | Validating native Node.js modules, rebuilding for Electron, or debugging ABI mismatches |
 | `references/packaging.md` | Building installers, verifying packaged apps, code signing, or auto-update testing |
 | `references/ci-setup.md` | Configuring CI pipelines for Electron builds, cross-platform testing, or artifact publishing |
+
+## Copilot Platform Notes
+
+- Skill files are stored under `.github/prompts/` (prompt files) and `.github/instructions/` (instruction files).
+- Copilot does not support subagent spawning — all skill guidance executes within the current conversation context.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context`, `agent`, and `allowed-tools` are not supported; guidance is advisory only.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.

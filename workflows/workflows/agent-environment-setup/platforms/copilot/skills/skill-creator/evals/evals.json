@@ -1,58 +1,23 @@
 {
-  "skill_name": "skill-creator",
-  "platform": "claude-code",
   "evals": [
     {
-      "id": 1,
-      "prompt": "I want to create a skill that forces Copilot to always write TypeScript with strict null checks and explicit return types. I'm working in a React + TypeScript monorepo.",
-      "expected_output": "A SKILL.md file with YAML frontmatter (name, description) and clear rules for TypeScript strictness, deployable to .github/skills/ for Copilot",
-      "files": [],
+      "prompt": "Create a new skill called 'graphql-gateway' for building GraphQL federation gateways with Apollo Router, subgraph composition, and schema stitching.",
       "assertions": [
-        "Output includes a SKILL.md file with YAML frontmatter",
-        "Frontmatter has name and description fields",
-        "Instructions mention strict null checks",
-        "Instructions mention explicit return types",
-        "Mentions deploying to .github/skills/ for Copilot"
+        "generates a SKILL.md with valid YAML frontmatter including name, description, license, metadata, and compatibility fields",
+        "description starts with 'Use when' and includes 3-6 specific trigger conditions for GraphQL gateway scenarios",
+        "includes 12-18 numbered instructions in WHAT + WHY format with 'because' reasoning",
+        "creates a References table with 3-6 reference files and 'Load when' conditions",
+        "produces an evals.json with at least 2 eval prompts and 5 assertions each"
       ]
     },
     {
-      "id": 2,
-      "prompt": "Help me make a skill for Codex that makes it follow our internal API design guidelines. Our guidelines are: REST endpoints use kebab-case, always return JSON with a data and error field, use ISO 8601 for dates.",
-      "expected_output": "A SKILL.md file with the API guidelines encoded as instructions with reasoning, using the portable Agent Skills format",
-      "files": [],
+      "prompt": "Evaluate the python-best-practices skill by running its evals and reporting which assertions pass or fail with evidence.",
       "assertions": [
-        "Output includes a SKILL.md file (not AGENTS.md)",
-        "SKILL.md has valid YAML frontmatter with name and description",
-        "Rules cover kebab-case endpoints",
-        "Rules cover data/error JSON structure",
-        "Rules cover ISO 8601 date format",
-        "Each rule includes a reason or explanation"
-      ]
-    },
-    {
-      "id": 3,
-      "prompt": "I want to build a skill that works on both Claude Code and Gemini IDX. It should help with writing Python docstrings in Google style. Export both formats.",
-      "expected_output": "A portable SKILL.md for Claude Code (and Codex/Copilot) plus a converted GEMINI.md for Gemini IDX",
-      "files": [],
-      "assertions": [
-        "Output includes a SKILL.md file with YAML frontmatter",
-        "Output includes a GEMINI.md file (Gemini needs separate format)",
-        "Both files reference Google-style docstrings",
-        "SKILL.md is the canonical source, GEMINI.md is the conversion"
-      ]
-    },
-    {
-      "id": 4,
-      "prompt": "Create a skill for code review that works across all platforms. I want it to check for security issues, performance problems, and accessibility concerns.",
-      "expected_output": "A single portable SKILL.md that works on Claude Code, Codex, and Copilot, with a note that Gemini needs GEMINI.md conversion",
-      "files": [],
-      "assertions": [
-        "Output is a single SKILL.md file (portable across Claude/Codex/Copilot)",
-        "SKILL.md has valid YAML frontmatter",
-        "Instructions cover security review",
-        "Instructions cover performance review",
-        "Instructions cover accessibility review",
-        "Mentions Gemini needs conversion to GEMINI.md"
+        "reads the existing skill's evals.json before running evaluations",
+        "runs each eval prompt and checks every assertion individually",
+        "reports pass/fail per assertion with specific evidence from the output",
+        "identifies any flaky or borderline assertions that might fail inconsistently",
+        "provides actionable improvement suggestions for failed assertions"
       ]
     }
   ]

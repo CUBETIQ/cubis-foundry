@@ -1,11 +1,9 @@
 ---
 name: rust-best-practices
 description: "Use when writing production Rust (2024 edition): ownership and borrowing patterns, async with tokio, error handling with thiserror/anyhow, comprehensive testing, and disciplined use of unsafe."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+allowed-tools: Read Grep Glob Bash Edit Write
+user-invocable: true
+argument-hint: "Rust module, crate, or pattern to analyze"
 ---
 
 # Rust Best Practices
@@ -79,3 +77,11 @@ No helper scripts are required for this skill right now. Keep execution in `SKIL
 - "Design the ownership hierarchy for this data pipeline so no unnecessary cloning occurs between parsing, transformation, and serialization stages."
 - "Implement an async HTTP service with axum, graceful shutdown via CancellationToken, and structured error handling with thiserror."
 - "Review this unsafe block for soundness and add SAFETY documentation explaining the invariants."
+
+## Claude Platform Notes
+
+- Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
+- Reference skill-local files with `${CLAUDE_SKILL_DIR}/references/<file>` for portable paths.
+- When `context: fork` is set, the skill runs in an isolated subagent context; the `agent` field names the fork target.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.
+- Use `allowed-tools` in frontmatter to restrict tool access for security-sensitive skills.
