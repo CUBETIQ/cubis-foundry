@@ -1,0 +1,68 @@
+[
+  {
+    "id": "react-native-eval-01",
+    "name": "Navigation with deep linking",
+    "description": "Validate that the skill correctly guides implementation of Expo Router navigation with deep linking, typed route parameters, and universal link handling.",
+    "prompt": "Set up Expo Router navigation for a React Native app with the following screens: Home (tabs), Product Detail (stack with id param), and Settings (drawer). Configure deep linking so that `myapp://product/123` opens the Product Detail screen. Include TypeScript types for all route params and handle the case where a deep link arrives while the app is in a killed state.",
+    "assertions": [
+      {
+        "type": "pattern",
+        "value": "app/.*\\.(tsx|ts)",
+        "description": "Must use file-based routing in the app/ directory following Expo Router conventions"
+      },
+      {
+        "type": "contains",
+        "value": "scheme",
+        "description": "Must configure a deep linking scheme (e.g., in app.json or app.config.ts) for universal/deep link handling"
+      },
+      {
+        "type": "pattern",
+        "value": "\\[id\\]|useLocalSearchParams|useGlobalSearchParams",
+        "description": "Must implement typed dynamic route parameters for the product detail screen"
+      },
+      {
+        "type": "pattern",
+        "value": "Tabs|Tab|_layout",
+        "description": "Must implement tab-based navigation using Expo Router layout files"
+      },
+      {
+        "type": "pattern",
+        "value": "Linking|linking|useURL|expo-linking",
+        "description": "Must handle incoming deep links including cold-start scenarios using Expo Linking or equivalent"
+      }
+    ]
+  },
+  {
+    "id": "react-native-eval-02",
+    "name": "Native module bridging with Expo Modules",
+    "description": "Validate that the skill correctly guides creation of a custom native module using the Expo Modules API with Swift/Kotlin implementations and TypeScript bindings.",
+    "prompt": "Create an Expo Module called `ExpoHaptics` that exposes a `triggerImpact(style: 'light' | 'medium' | 'heavy')` method. Implement the Swift code for iOS using UIImpactFeedbackGenerator and the Kotlin code for Android using VibrationEffect. Include the TypeScript type definitions and show how to consume the module from a React Native component. Ensure the module uses TurboModule codegen specs.",
+    "assertions": [
+      {
+        "type": "pattern",
+        "value": "Module|ExpoModule|expo-modules-core",
+        "description": "Must use the Expo Modules API (expo-modules-core) for defining the native module"
+      },
+      {
+        "type": "pattern",
+        "value": "UIImpactFeedbackGenerator|UIKit|haptic",
+        "description": "Must include iOS Swift implementation using UIImpactFeedbackGenerator for haptic feedback"
+      },
+      {
+        "type": "pattern",
+        "value": "VibrationEffect|Vibrator|android\\.os",
+        "description": "Must include Android Kotlin implementation using VibrationEffect or Vibrator for haptic feedback"
+      },
+      {
+        "type": "pattern",
+        "value": "Function|AsyncFunction|function\\(",
+        "description": "Must define module functions using Expo Modules function registration API"
+      },
+      {
+        "type": "pattern",
+        "value": "export.*triggerImpact|import.*ExpoHaptics",
+        "description": "Must provide TypeScript exports and show consumption from a React Native component"
+      }
+    ]
+  }
+]

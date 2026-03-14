@@ -1,0 +1,32 @@
+{
+  "skill_name": "java-best-practices",
+  "platform": "claude-code",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have a Spring Boot service that makes 3 blocking HTTP calls to downstream services for each incoming request, using a ThreadPoolTaskExecutor with 200 platform threads. At peak load we're running out of threads and requests queue up. Migrate this to virtual threads and structured concurrency so it can handle thousands of concurrent requests without thread pool exhaustion.",
+      "expected_output": "A migration showing virtual thread executor configuration, replacement of synchronized blocks with ReentrantLock, structured concurrency with StructuredTaskScope for the 3 parallel downstream calls, and guidance on monitoring the migration.",
+      "files": [],
+      "assertions": [
+        "Uses Executors.newVirtualThreadPerTaskExecutor() or Spring Boot's virtual thread auto-configuration instead of the fixed thread pool",
+        "Replaces synchronized blocks with ReentrantLock to avoid carrier thread pinning",
+        "Uses StructuredTaskScope (ShutdownOnFailure or ShutdownOnSuccess) for the 3 parallel downstream calls with proper join and error handling",
+        "Warns against using virtual threads for CPU-bound work and explains carrier thread starvation",
+        "Includes guidance on monitoring virtual threads (JFR events, thread dumps) or testing the migration"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I'm modeling a payment processing domain. Payments can be in states: Pending, Authorized, Captured, Refunded, Declined, and Cancelled. Each state carries different data (Authorized has an auth code, Captured has a capture timestamp, Refunded has a refund amount and reason). Design this domain model using sealed classes, records, and pattern matching. Show how to write a state transition function and how to serialize/deserialize the hierarchy.",
+      "expected_output": "A sealed interface Payment hierarchy with record subtypes for each state, a state transition method using pattern matching switch, and serialization strategy with Jackson discriminator configuration.",
+      "files": [],
+      "assertions": [
+        "Defines a sealed interface or sealed class for Payment with permits clause listing all state variants",
+        "Uses records for each payment state variant carrying state-specific data (auth code, capture timestamp, refund amount/reason)",
+        "Implements state transition logic using switch expression with pattern matching and exhaustiveness checking",
+        "Uses guarded patterns (case ... when) or validation in transition methods to enforce valid state transitions",
+        "Includes Jackson @JsonTypeInfo/@JsonSubTypes configuration or equivalent for polymorphic serialization of the sealed hierarchy"
+      ]
+    }
+  ]
+}

@@ -309,7 +309,83 @@ cbx workflows doctor copilot --scope project
 
 ---
 
-## 12) Managed Section Contract
+## 12) Skill Routing Matrix
+
+Use this matrix to match incoming tasks to the correct skill and primary agent. Load skills only after route resolution confirms the domain.
+
+| Skill | Category | When to Load | Primary Agent |
+|-------|----------|--------------|---------------|
+| python-best-practices | Language | Python backend, typing, async | @backend-specialist |
+| typescript-best-practices | Language | TypeScript strict mode, generics | @backend-specialist |
+| golang-best-practices | Language | Go modules, concurrency, channels | @backend-specialist |
+| rust-best-practices | Language | Rust ownership, lifetimes, async | @backend-specialist |
+| javascript-best-practices | Language | JavaScript runtime, closures, modules | @frontend-specialist |
+| java-best-practices | Language | Java enterprise, Spring, JVM | @backend-specialist |
+| kotlin-best-practices | Language | Kotlin coroutines, multiplatform | @backend-specialist |
+| swift-best-practices | Language | Swift concurrency, SwiftUI, protocols | @mobile-developer |
+| csharp-best-practices | Language | C# LINQ, async/await, .NET patterns | @backend-specialist |
+| php-best-practices | Language | PHP modern patterns, Laravel, Composer | @backend-specialist |
+| go-fiber | Framework | Go Fiber HTTP framework | @backend-specialist |
+| nestjs | Framework | NestJS modules, DI, decorators | @backend-specialist |
+| fastapi | Framework | FastAPI, Pydantic, async Python API | @backend-specialist |
+| express-nodejs | Framework | Express.js middleware, routing | @backend-specialist |
+| gin-golang | Framework | Gin HTTP framework for Go | @backend-specialist |
+| laravel | Framework | Laravel Eloquent, Blade, Artisan | @backend-specialist |
+| django-drf | Framework | Django REST Framework, ORM | @backend-specialist |
+| spring-boot | Framework | Spring Boot auto-config, beans | @backend-specialist |
+| nextjs | Framework | Next.js App Router, RSC, SSR | @frontend-specialist |
+| react | Framework | React hooks, state, component patterns | @frontend-specialist |
+| vuejs | Framework | Vue 3 Composition API, Pinia | @frontend-specialist |
+| svelte-sveltekit | Framework | Svelte 5 runes, SvelteKit routing | @frontend-specialist |
+| react-native | Framework | React Native mobile, navigation | @mobile-developer |
+| t3-stack | Framework | T3 stack (Next, tRPC, Prisma, Auth) | @frontend-specialist |
+| remix | Framework | Remix loaders, actions, nested routes | @frontend-specialist |
+| prisma | Framework | Prisma schema, migrations, relations | @database-architect |
+| sqlalchemy | Framework | SQLAlchemy ORM, sessions, alembic | @database-architect |
+| drizzle-orm | Framework | Drizzle ORM, schema, migrations | @database-architect |
+| frontend-design | Design | UI/UX, component architecture | @frontend-specialist |
+| system-design | Design | Distributed systems, scalability | @backend-specialist |
+| microservices-design | Design | Service decomposition, communication | @backend-specialist |
+| api-design | Design | REST/GraphQL API design, versioning | @backend-specialist |
+| database-design | Design | Schema modeling, normalization, indexing | @database-architect |
+| architecture-doc | Design | Architecture decision records, C4 | @backend-specialist |
+| tech-doc | Design | Technical documentation, API docs | @backend-specialist |
+| playwright-interactive | Testing | E2E browser testing, Playwright | @test-engineer |
+| playwright-persistent-browser | Testing | Persistent browser session testing | @test-engineer |
+| electron-qa | Testing | Electron app testing, IPC | @test-engineer |
+| unit-testing | Testing | Unit test strategies, mocking | @test-engineer |
+| integration-testing | Testing | Integration test patterns, fixtures | @test-engineer |
+| performance-testing | Testing | Load testing, benchmarking, profiling | @performance-optimizer |
+| systematic-debugging | Testing | Root cause analysis, bisecting | @debugger |
+| owasp-security-review | Security | OWASP Top 10, vulnerability assessment | @security-auditor |
+| pentest-skill | Security | Penetration testing (AUTH REQUIRED) | @security-auditor |
+| vibesec | Security | Quick security vibe check, threat modeling | @security-auditor |
+| secret-management | Security | Secrets rotation, vault integration | @security-auditor |
+| sanitize-pii | Security | PII detection, data anonymization | @security-auditor |
+| ci-cd-pipeline | DevOps | CI/CD pipeline design, GitHub Actions | @devops-engineer |
+| docker-compose-dev | DevOps | Docker Compose local dev environments | @devops-engineer |
+| kubernetes-deploy | DevOps | K8s manifests, Helm charts, deployment | @devops-engineer |
+| observability | DevOps | Logging, metrics, tracing, alerting | @devops-engineer |
+| llm-eval | AI/ML | LLM evaluation, benchmarking, evals | @researcher |
+| rag-patterns | AI/ML | RAG architecture, embeddings, retrieval | @researcher |
+| prompt-engineering | AI/ML | Prompt design, few-shot, chain-of-thought | @researcher |
+| git-workflow | Workflow | Git branching, PR conventions, commits | @orchestrator |
+| code-review | Workflow | Code review methodology, feedback | @orchestrator |
+| sadd | Workflow | Spec-Agree-Design-Deliver methodology | @orchestrator |
+| kaizen-iteration | Workflow | Continuous improvement cycles | @orchestrator |
+| requesting-code-review | Workflow | Preparing PRs for review, reviewers | @orchestrator |
+| receiving-code-review | Workflow | Responding to review feedback | @orchestrator |
+| stripe-integration | Integration | Stripe payments, subscriptions, webhooks | @backend-specialist |
+| expo-app | Integration | Expo managed workflow, EAS Build | @mobile-developer |
+| react-native-callstack | Integration | RN Callstack libraries, navigation | @mobile-developer |
+| huggingface-ml | Integration | HuggingFace transformers, inference | @researcher |
+| google-workspace | Integration | Google APIs, Workspace integration | @backend-specialist |
+| mcp-server-builder | Integration | MCP server development, tool design | @backend-specialist |
+| skill-creator | Meta | Creating, testing, iterating on skills | @orchestrator |
+
+---
+
+## 13) Managed Section Contract
 
 1. Preserve all user content outside managed markers.
 2. Never manually edit content between `cbx:workflows:auto:start` and `cbx:workflows:auto:end`.

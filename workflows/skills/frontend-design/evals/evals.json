@@ -1,74 +1,67 @@
 {
-  "skill": "frontend-design",
-  "version": "3.0",
   "evals": [
     {
-      "id": "landing-page-editorial",
-      "prompt": "Build a landing page for a developer tool called 'Forge' — make it feel premium and editorial, not like every other SaaS template.",
+      "name": "design-system-component-button",
+      "description": "Validate that the skill produces a design system Button component with proper token usage, accessibility, interaction states, and composable API following component architecture best practices.",
+      "input": "Create a production-grade Button component for a design system. It must support variants (primary, secondary, ghost, danger), sizes (sm, md, lg), loading state with spinner, disabled state, icon support (leading and trailing), and full accessibility. Use design tokens for all visual values. Provide the component in React with TypeScript.",
       "assertions": [
-        "Uses a distinctive font pairing (not Inter, Roboto, or Arial as primary)",
-        "Has a clear visual hierarchy with varied spacing",
-        "Does not use a bento grid or hero split 50/50 layout",
-        "Color palette avoids purple-to-blue gradients and neon-on-dark",
-        "Includes responsive design considerations",
-        "HTML is semantic with proper heading hierarchy"
+        {
+          "type": "contains",
+          "value": "aria-",
+          "description": "The Button must include ARIA attributes (aria-disabled, aria-busy, aria-label) to communicate state to assistive technologies beyond visual indicators."
+        },
+        {
+          "type": "contains",
+          "value": "--",
+          "description": "Visual values must reference CSS custom properties (design tokens) rather than hardcoded hex colors, pixel values, or magic numbers."
+        },
+        {
+          "type": "contains",
+          "value": "disabled",
+          "description": "The component must handle the disabled state both visually and functionally, preventing click events and conveying the state to screen readers."
+        },
+        {
+          "type": "contains",
+          "value": "loading",
+          "description": "The component must support a loading state that shows a spinner, disables interaction, and communicates the busy state via aria-busy."
+        },
+        {
+          "type": "contains",
+          "value": "variant",
+          "description": "The component must accept a variant prop to switch between visual styles (primary, secondary, ghost, danger) so that usage context drives appearance."
+        }
       ]
     },
     {
-      "id": "dashboard-redesign",
-      "prompt": "Redesign this admin dashboard. It currently uses gray cards on white background with Inter font. Make it distinctive.",
+      "name": "accessible-form-pattern",
+      "description": "Validate that the skill produces an accessible form with proper label associations, validation feedback, keyboard navigation, error handling, and responsive layout.",
+      "input": "Create a registration form with fields for full name, email, password, and password confirmation. Include inline validation with accessible error messages, a password strength indicator, proper label associations, keyboard navigation support, and a responsive two-column layout that collapses to single column on mobile. Use semantic HTML and ARIA where needed. Implement in React with TypeScript.",
       "assertions": [
-        "Changes the font from Inter to something more distinctive",
-        "Breaks away from uniform card grid layout",
-        "Uses tinted neutrals instead of pure gray",
-        "Creates visual rhythm through varied spacing",
-        "Maintains data readability while improving aesthetics",
-        "Passes the AI Slop Test — does not look generically AI-generated"
-      ]
-    },
-    {
-      "id": "color-system-health",
-      "prompt": "I need a color system for a health tech app. No fintech blue, no AI purple.",
-      "assertions": [
-        "Uses warm earth tones, sage, or soft coral (appropriate for health)",
-        "Avoids deep navy/fintech blue and purple-cyan palette",
-        "Defines semantic colors (success, warning, error) alongside brand",
-        "Includes dark mode considerations",
-        "Specifies contrast ratios for accessibility",
-        "Uses OKLCH or modern color space, not just hex"
-      ]
-    },
-    {
-      "id": "audit-command",
-      "prompt": "/audit this checkout page for accessibility and responsive issues",
-      "assertions": [
-        "Checks color contrast ratios against WCAG 2.1 AA",
-        "Verifies keyboard navigation and focus management",
-        "Tests touch target sizes for mobile",
-        "Reviews form labels and error messages",
-        "Produces actionable findings, not generic advice"
-      ]
-    },
-    {
-      "id": "critique-command",
-      "prompt": "/critique the onboarding flow — is it clear? Does it build trust?",
-      "assertions": [
-        "Evaluates visual hierarchy and user flow",
-        "Assesses trust-building elements",
-        "Reviews empty states and progressive disclosure",
-        "Provides specific, actionable improvement suggestions",
-        "References UX psychology principles where relevant"
-      ]
-    },
-    {
-      "id": "non-technical-user",
-      "prompt": "I'm not a developer. Can you help me design a portfolio website? I want it to feel artsy and warm.",
-      "assertions": [
-        "Explains design choices in plain language without jargon",
-        "Delivers working code, not just design advice",
-        "Chooses an appropriate warm/artsy aesthetic direction",
-        "Provides clear instructions for what to change and customize",
-        "Does not assume the user knows CSS or HTML terminology"
+        {
+          "type": "contains",
+          "value": "htmlFor",
+          "description": "Every form field must have a label element with htmlFor (or for) attribute matching the input id to create a programmatic association for screen readers."
+        },
+        {
+          "type": "contains",
+          "value": "aria-describedby",
+          "description": "Error messages must be linked to their input fields via aria-describedby so that screen readers announce the error when the field receives focus."
+        },
+        {
+          "type": "contains",
+          "value": "role",
+          "description": "The form must use ARIA roles (alert, status, or progressbar) for dynamic content like error summaries or the password strength indicator."
+        },
+        {
+          "type": "contains",
+          "value": "required",
+          "description": "Required fields must be marked with the required attribute or aria-required so that the requirement is communicated to both visual users and assistive technologies."
+        },
+        {
+          "type": "contains",
+          "value": "onSubmit",
+          "description": "The form must handle submission with proper validation, preventing default form behavior and managing focus to the first error field on validation failure."
+        }
       ]
     }
   ]

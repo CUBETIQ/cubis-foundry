@@ -1,0 +1,66 @@
+[
+  {
+    "name": "github-actions-workflow-design",
+    "description": "Validate that the skill produces a GitHub Actions CI workflow with proper stage structure, caching, matrix builds, and security hardening for a Node.js monorepo.",
+    "input": "Design a GitHub Actions CI workflow for a Node.js monorepo (pnpm workspaces) with three packages: api, web, and shared. The workflow should run lint, typecheck, and unit tests in parallel after dependency installation. Use matrix builds to test on Node 18 and Node 20. Implement pnpm store caching. Only run the build and deploy-preview steps for pull requests targeting main. Pin all action versions to SHA digests.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "actions/checkout@",
+        "description": "The workflow must use actions/checkout with a pinned version to clone the repository, forming the foundation of every CI pipeline step."
+      },
+      {
+        "type": "contains",
+        "value": "matrix",
+        "description": "The workflow must use a matrix strategy to test across multiple Node.js versions, ensuring compatibility is verified before merge."
+      },
+      {
+        "type": "contains",
+        "value": "cache",
+        "description": "The workflow must implement dependency caching (pnpm store or actions/cache) to avoid re-downloading packages on every run."
+      },
+      {
+        "type": "contains",
+        "value": "needs:",
+        "description": "Jobs must declare dependencies using the 'needs' keyword so that lint/typecheck/test stages only run after successful dependency installation."
+      },
+      {
+        "type": "contains",
+        "value": "pull_request",
+        "description": "The workflow must trigger on pull_request events and conditionally run deploy-preview steps only for PRs targeting main."
+      }
+    ]
+  },
+  {
+    "name": "deployment-gate-configuration",
+    "description": "Validate that the skill produces a deployment pipeline with environment protection rules, approval gates, progressive rollout, and rollback capabilities.",
+    "input": "Design a GitHub Actions deployment pipeline that promotes a Docker container image through three environments: staging (auto-deploy on main push), production-canary (requires one approval, deploys to 10% of traffic), and production (requires two approvals, full rollout). Include health check verification after each deployment stage. If the canary health check fails, automatically roll back. Use GitHub environments with protection rules.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "environment:",
+        "description": "The workflow must use GitHub environment declarations to leverage built-in protection rules, deployment history, and secret scoping."
+      },
+      {
+        "type": "contains",
+        "value": "health",
+        "description": "The pipeline must include health check verification after each deployment to confirm the new version is serving traffic correctly."
+      },
+      {
+        "type": "contains",
+        "value": "rollback",
+        "description": "The pipeline must include an automatic or triggered rollback mechanism for when canary health checks fail."
+      },
+      {
+        "type": "contains",
+        "value": "canary",
+        "description": "The pipeline must implement a canary deployment stage that routes a small percentage of traffic to the new version before full rollout."
+      },
+      {
+        "type": "contains",
+        "value": "staging",
+        "description": "The pipeline must define a staging environment that auto-deploys on main branch pushes as the first promotion step."
+      }
+    ]
+  }
+]

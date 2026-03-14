@@ -1,0 +1,71 @@
+[
+  {
+    "name": "drizzle-schema-definition-with-relations",
+    "description": "Validate that the skill produces correct Drizzle schema definitions with proper table builders, column types, relations, type inference, and index declarations for a multi-entity domain.",
+    "input": "Design a Drizzle ORM schema for a blog platform using PostgreSQL. The domain includes: users (email, display name, role), posts (title, content, status as draft/published/archived, author), comments (content, post, author), and tags with a many-to-many relationship to posts. Include type inference, relations, and indexes on foreign keys. Use pgTable and the relational query API conventions.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "pgTable",
+        "description": "Tables must be defined using pgTable since the target is PostgreSQL. Using sqliteTable or mysqlTable would generate incompatible SQL."
+      },
+      {
+        "type": "contains",
+        "value": "relations",
+        "description": "Relation declarations must be present for the relational query API (db.query.*) to function. Missing relations cause incomplete query results."
+      },
+      {
+        "type": "contains",
+        "value": "$inferSelect",
+        "description": "Type inference must use $inferSelect and $inferInsert from the schema rather than manually defined interfaces, preventing type drift."
+      },
+      {
+        "type": "contains",
+        "value": "references",
+        "description": "Foreign key columns must use .references() to create database-level constraints for referential integrity."
+      },
+      {
+        "type": "contains",
+        "value": "pgEnum",
+        "description": "The post status (draft/published/archived) should use pgEnum to leverage PostgreSQL native enums for type safety at both database and TypeScript levels."
+      },
+      {
+        "type": "contains",
+        "value": "primaryKey",
+        "description": "The many-to-many junction table (posts-to-tags) must have a composite primary key to prevent duplicate associations."
+      }
+    ]
+  },
+  {
+    "name": "drizzle-migration-workflow",
+    "description": "Validate that the skill produces a correct drizzle-kit migration workflow including configuration, generation, custom data migration, and deployment safety practices.",
+    "input": "I have an existing Drizzle schema with a users table (id, email, name, created_at). I need to: (1) add a 'status' enum column (active, suspended, deleted) with default 'active', (2) add an 'organization_id' foreign key column that's nullable for now, (3) create the organizations table, and (4) write a data migration to set all existing users to 'active' status. Show the full drizzle-kit workflow: config, schema changes, generate, custom migration, and apply steps.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "drizzle-kit",
+        "description": "The workflow must reference drizzle-kit commands (generate, migrate, or push) since drizzle-kit is the migration tool for Drizzle ORM."
+      },
+      {
+        "type": "contains",
+        "value": "generate",
+        "description": "The workflow must use drizzle-kit generate (not push) to create migration files, since push is unsafe for production databases."
+      },
+      {
+        "type": "contains",
+        "value": "pgEnum",
+        "description": "The status column must be defined as a pgEnum to leverage PostgreSQL native enums rather than plain varchar, ensuring database-level validation."
+      },
+      {
+        "type": "contains",
+        "value": "transaction",
+        "description": "The data migration must be wrapped in a transaction to ensure atomicity — partial backfills leave the database in an inconsistent state."
+      },
+      {
+        "type": "contains",
+        "value": "default",
+        "description": "The new status column must have a default value ('active') so that existing rows and future inserts without explicit status are handled correctly."
+      }
+    ]
+  }
+]

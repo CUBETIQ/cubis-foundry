@@ -1,0 +1,66 @@
+[
+  {
+    "name": "trpc-router-with-prisma-queries",
+    "description": "Validate that the skill produces a tRPC router with Prisma queries that follows T3 Stack conventions: Zod input validation, singleton Prisma client, proper error handling, and end-to-end type safety.",
+    "input": "Create a tRPC router for a 'projects' resource in a T3 Stack app. The Prisma model has id, name, description, ownerId, createdAt, and updatedAt fields. Include list (paginated), getById, create, update, and delete procedures. The create, update, and delete procedures should require authentication.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "z.object",
+        "description": "Every procedure input must use Zod schema validation to enforce runtime type safety at the API boundary."
+      },
+      {
+        "type": "contains",
+        "value": "protectedProcedure",
+        "description": "Mutation procedures (create, update, delete) must use protectedProcedure middleware to enforce authentication."
+      },
+      {
+        "type": "contains",
+        "value": "prisma",
+        "description": "Procedures must use the Prisma client for database operations rather than raw SQL or other ORMs."
+      },
+      {
+        "type": "contains",
+        "value": "TRPCError",
+        "description": "Error handling must use structured TRPCError with appropriate error codes (NOT_FOUND, UNAUTHORIZED, etc.)."
+      },
+      {
+        "type": "contains",
+        "value": "ctx.session",
+        "description": "Protected procedures must access the authenticated user through ctx.session, which is wired from NextAuth.js into the tRPC context."
+      }
+    ]
+  },
+  {
+    "name": "nextauth-session-with-trpc-context",
+    "description": "Validate that the skill correctly configures NextAuth.js session handling and wires it into the tRPC context for a T3 Stack application.",
+    "input": "Configure NextAuth.js with GitHub and Google OAuth providers for a T3 Stack app. Wire the session into the tRPC context so that protected procedures can access the user. Include the Prisma adapter for persisting accounts and sessions. Show the auth configuration, tRPC context creation, and a protected procedure that returns the current user's profile.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "PrismaAdapter",
+        "description": "NextAuth.js must use the Prisma adapter to persist user accounts, sessions, and verification tokens in the database."
+      },
+      {
+        "type": "contains",
+        "value": "GoogleProvider",
+        "description": "The auth configuration must include Google OAuth provider setup with client ID and secret from environment variables."
+      },
+      {
+        "type": "contains",
+        "value": "getServerSession",
+        "description": "The tRPC context must retrieve the session using getServerSession (or getServerAuthSession) so that procedures have access to the authenticated user."
+      },
+      {
+        "type": "contains",
+        "value": "callbacks",
+        "description": "NextAuth.js must configure session and JWT callbacks to include user ID in the session object for downstream use in tRPC procedures."
+      },
+      {
+        "type": "contains",
+        "value": "NEXTAUTH_SECRET",
+        "description": "The configuration must reference NEXTAUTH_SECRET environment variable for secure token signing, never a hardcoded value."
+      }
+    ]
+  }
+]

@@ -1,10 +1,10 @@
 ---
 name: skill-creator
-description: Create, test, improve, and package portable AI skills using the Agent Skills SKILL.md format across Claude Code, Codex, and GitHub Copilot, with Gemini conversion when needed. Use this when the user wants to build, repair, benchmark, or iterate on a reusable skill package.
-license: Apache-2.0
+description: "Use when creating new skills from scratch, modifying existing skills, measuring skill performance with evals, benchmarking skill quality with variance analysis, or optimizing skill instructions for better adherence and output quality. Supports 4 modes: create, edit, eval, and benchmark."
+license: MIT
 metadata:
   author: cubis-foundry
-  version: "1.0"
+  version: "3.0"
 compatibility: Claude Code, Codex, GitHub Copilot
 ---
 
@@ -12,76 +12,149 @@ compatibility: Claude Code, Codex, GitHub Copilot
 
 ## Purpose
 
-Create and improve reusable AI skill packages with a human-in-the-loop loop: define the skill, draft it, test it with the skill enabled, evaluate results qualitatively and quantitatively, rewrite based on signal, and repeat until the package is good enough to scale.
+Meta-skill for creating, editing, evaluating, and benchmarking skills in the Cubis Foundry skill library. Provides the full skill development lifecycle — from initial creation through eval-driven iteration to production-grade quality. References the complete 65-skill library as examples of the Pro Skill Standard.
 
 ## When to Use
 
-- The user wants to create a new skill package under `workflows/skills/<name>`.
-- The user wants to repair or modernize an existing `SKILL.md` package.
-- The user wants evals, benchmarks, or review tooling for a skill package.
-- The user wants to package one canonical skill for Claude Code, Codex, GitHub Copilot, and optionally Gemini.
+- Creating a new skill from scratch for the Foundry library or a custom project.
+- Editing or improving an existing skill's instructions, references, or evals.
+- Running evals to test skill output quality against assertions.
+- Benchmarking skill performance with variance analysis across multiple runs.
+- Adapting skills for different platforms (Claude Code, Codex, Gemini CLI, Antigravity, Copilot).
+- Reviewing skill quality against the Pro Skill Standard checklist.
+
+## Modes
+
+### Mode 1: Create
+Build a new skill from scratch with all required files.
+
+### Mode 2: Edit
+Improve an existing skill's instructions, add references, or fix eval failures.
+
+### Mode 3: Eval
+Run a skill's evals and report pass/fail with actionable feedback.
+
+### Mode 4: Benchmark
+Run evals multiple times, compute variance, and identify flaky assertions.
 
 ## Instructions
 
-1. Decide what the skill should do before writing files. Confirm the task boundary, activation phrases, expected outputs, supported platforms, and whether the skill needs objective evals.
+1. **Determine the mode before starting** — ask the user if unclear, because each mode has different inputs and outputs. Default to Create if the user says "make a skill" or "new skill."
 
-2. Write a first draft of the skill package. Keep one canonical `SKILL.md` as the source of truth. Add sidecars only when they reduce prompt bloat or remove repeated work.
+2. **For Create mode: gather the skill's domain, target audience, and trigger conditions** — these determine the skill name, description, and instruction scope, because a well-scoped skill has clear boundaries that prevent overlap with other skills.
 
-3. Create a small test set first. Add a few realistic prompts to `evals/` and keep them representative of the skill's actual use cases, not just ideal happy paths.
+3. **Choose a skill name that is kebab-case, descriptive, and unique** — check the existing skill library (65 skills across 10 categories) for naming conflicts, because duplicate or ambiguous names cause routing failures in the MCP skill tools.
 
-4. Run the skill with the skill enabled on the test prompts. Prefer Claude with access to the skill for the first qualitative pass so you can inspect whether the instructions actually trigger the right behavior.
+4. **Write the YAML frontmatter with all required fields** — name, description (with trigger conditions), license, metadata (author, version), and compatibility, because the frontmatter is parsed by the platform loader and invalid frontmatter causes silent skill loading failures.
 
-5. While runs are happening, draft or refine the quantitative evals. If quantitative evals already exist, review them, keep the ones that are still useful, and adjust only the ones that no longer match the intended behavior.
+5. **Write the description as a trigger specification** — start with "Use when..." followed by 3-6 specific trigger conditions, because the description is the primary input to the skill routing engine and vague descriptions cause mis-routing.
 
-6. Explain the evals to the user before over-optimizing against them. The user should understand what each prompt, assertion, or benchmark is measuring and what a pass or fail means.
+6. **Structure the body with mandatory sections** — Purpose (1 paragraph), When to Use (bullet list), Instructions (12-18 numbered items), Output Format, and References table, because this structure is the Pro Skill Standard and parsers expect it.
 
-7. Review the outputs both qualitatively and quantitatively. Use `eval-viewer/generate_review.py` so the user can inspect side-by-side outputs and benchmark summaries instead of relying only on raw JSON.
+7. **Write each instruction as WHAT + WHY** — state what to do, then explain why with "because..." reasoning, because instructions without reasoning are followed mechanically without adaptation to context.
 
-8. Rewrite the skill based on user feedback and the strongest benchmark signal. Fix root causes, not just individual failing prompts, and treat obvious flaws in the quantitative results as design feedback for the skill.
+8. **Order instructions by execution sequence** — setup/prerequisites first, then core workflow, then verification/cleanup, because numbered instructions imply ordering and out-of-order instructions cause confusion.
 
-9. Repeat the loop until the results are stable enough. Keep iterating until the user is satisfied or the skill behavior has clearly plateaued.
+9. **Include 12-18 instructions** — fewer than 12 leaves critical guidance gaps, more than 18 causes instruction fatigue and selective following, because the sweet spot balances completeness with adherence.
 
-10. Expand the test set and rerun at larger scale only after the small-set loop is working. Do not scale weak evals or unclear instructions.
+10. **Create 3-6 reference files** — each 80-150 lines covering a deep subtopic, because references enable progressive disclosure (loading detail only when needed) and keep the main SKILL.md focused.
 
-11. Use the right script for the job:
-    - `scripts/run_loop.py` is the original Claude-oriented optimization loop built on `run_eval.py`.
-    - `scripts/run_loop_universal.py` is the portable loop built on `run_eval_universal.py` and `platform_adapter.py`.
-    - Prefer the universal loop when the package is intended to stay portable across Claude Code, Codex, Copilot, and Gemini-style workflows.
+11. **Create evals with 2+ prompts and 5 assertions each** — evals are the skill's test suite, because untested skills degrade silently when instructions are modified.
+
+12. **Write assertions that test behavioral output, not exact strings** — use "identifies X", "recommends Y", "addresses Z" patterns, because LLM output varies in phrasing but should be consistent in substance.
+
+13. **Create 2 usage examples** — one basic (01-basic-usage.md) and one advanced (02-advanced-usage.md), because examples serve as both documentation and additional eval material.
+
+14. **For Edit mode: read the existing skill first, then identify specific gaps** — compare against the Pro Skill Standard checklist before making changes, because unfocused edits introduce inconsistencies.
+
+15. **For Eval mode: run each eval prompt through the skill and check assertions** — report pass/fail per assertion with specific evidence, because binary pass/fail without evidence makes iteration impossible.
+
+16. **For Benchmark mode: run evals 3+ times and compute assertion pass rates** — flag assertions with less than 80% pass rate as flaky, because flaky assertions indicate either ambiguous instructions or overly specific assertions.
+
+17. **For platform adaptations: tailor frontmatter and instruction references per platform** — Claude Code gets full frontmatter (allowed-tools, context:fork, agent), Codex/Gemini/Antigravity get name+description only, Copilot matches Claude format, because each platform parses different frontmatter fields.
+
+18. **Validate the complete skill package before declaring done** — check JSON validity of evals.json, verify all reference files mentioned in the table exist, confirm examples are complete, because broken references and invalid JSON cause runtime failures.
+
+## Pro Skill Standard Checklist
+
+- [ ] SKILL.md has valid YAML frontmatter with all required fields
+- [ ] Description starts with "Use when..." and lists 3-6 trigger conditions
+- [ ] Purpose section is exactly 1 paragraph
+- [ ] When to Use has 4-8 bullet points
+- [ ] Instructions have 12-18 items in WHAT + WHY format
+- [ ] Output Format section describes expected output structure
+- [ ] References table lists 3-6 files with "Load when" conditions
+- [ ] All referenced files exist in references/ directory
+- [ ] Each reference file is 80-150 lines of deep technical content
+- [ ] evals/evals.json is valid JSON with 2+ eval objects
+- [ ] Each eval has a prompt and 5+ assertions
+- [ ] evals/assertions.md explains each assertion in human-readable form
+- [ ] examples/01-*.md and 02-*.md exist with complete examples
+- [ ] No placeholders, TODOs, or stub content anywhere
 
 ## Output Format
 
-Produce a canonical skill package with:
+### Create Mode
+```
+## Skill Package: <name>
+[Complete file manifest with all created files]
 
-- a valid root `SKILL.md`
-- any needed `references/`, `scripts/`, `assets/`, `evals/`, and `eval-viewer/` files
-- a small initial prompt/eval set
-- review outputs the user can inspect
-- clear next-step changes when another iteration is required
+## Quality Check
+[Pro Skill Standard checklist with pass/fail per item]
+```
+
+### Eval Mode
+```
+## Eval Results: <skill-name>
+| Eval | Assertion | Result | Evidence |
+|------|-----------|--------|----------|
+```
+
+### Benchmark Mode
+```
+## Benchmark: <skill-name> (N runs)
+| Assertion | Pass Rate | Status |
+|-----------|-----------|--------|
+```
+
+## Skill Library Reference (65 Skills)
+
+### Category A — Languages (10)
+python-best-practices, typescript-best-practices, golang-best-practices, rust-best-practices, javascript-best-practices, java-best-practices, kotlin-best-practices, swift-best-practices, csharp-best-practices, php-best-practices
+
+### Category B — Frameworks (19)
+go-fiber, nestjs, fastapi, express-nodejs, gin-golang, laravel, django-drf, spring-boot, nextjs, react, vuejs, svelte-sveltekit, react-native, t3-stack, remix, prisma, sqlalchemy, drizzle-orm
+
+### Category C — Design/Architecture (7)
+frontend-design, system-design, microservices-design, api-design, database-design, architecture-doc, tech-doc
+
+### Category D — Testing/QA (7)
+playwright-interactive, playwright-persistent-browser, electron-qa, unit-testing, integration-testing, performance-testing, systematic-debugging
+
+### Category E — Security (5)
+owasp-security-review, pentest-skill, vibesec, secret-management, sanitize-pii
+
+### Category F — DevOps (4)
+ci-cd-pipeline, docker-compose-dev, kubernetes-deploy, observability
+
+### Category G — AI/ML (3)
+llm-eval, rag-patterns, prompt-engineering
+
+### Category H — Workflow (6)
+git-workflow, code-review, sadd, kaizen-iteration, requesting-code-review, receiving-code-review
+
+### Category I — Integrations (6)
+stripe-integration, expo-app, react-native-callstack, huggingface-ml, google-workspace, mcp-server-builder
+
+### Category J — Meta (1)
+skill-creator
 
 ## References
 
-Load only what the current step needs.
-
 | File | Load when |
 | --- | --- |
-| `references/platform-formats.md` | You need deployment or compatibility rules for Claude Code, Codex, Copilot, or Gemini conversion. |
-| `references/schemas.md` | You need the JSON structure for evals, grading artifacts, or review payloads. |
-
-## Scripts
-
-Use the existing tooling instead of re-inventing the loop:
-
-- `scripts/run_eval.py` for the original Claude-oriented eval pass
-- `scripts/run_loop.py` for iterative improvement on the original eval path
-- `scripts/run_eval_universal.py` for the cross-platform eval path
-- `scripts/run_loop_universal.py` for the portable iterative loop
-- `scripts/aggregate_benchmark.py` to summarize quantitative benchmark results
-- `eval-viewer/generate_review.py` to generate a reviewable output bundle for the user
-- `scripts/package_skill.py` when the skill is ready to distribute
-- `scripts/platform_adapter.py` when Gemini conversion or cross-platform deployment is required
-
-## Examples
-
-- "Create a skill for reviewing Flutter Riverpod code and set up a first batch of eval prompts."
-- "Repair this skill package, rerun the viewer, and help me interpret the benchmark regressions."
-- "Turn this prompt workflow into a reusable skill and iterate until the user-approved eval set passes."
+| `references/pro-skill-standard.md` | Creating or reviewing a skill against quality standards. |
+| `references/platform-adaptations.md` | Adapting a skill for different platforms (Claude, Codex, Gemini, Antigravity, Copilot). |
+| `references/eval-design.md` | Designing evals, writing assertions, or interpreting eval results. |
+| `references/skill-anatomy.md` | Understanding the structure and purpose of each file in a skill package. |
+| `references/routing-integration.md` | Integrating a skill into the routing matrix and rule files. |

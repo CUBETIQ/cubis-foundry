@@ -1,0 +1,66 @@
+[
+  {
+    "name": "normalized-schema-design",
+    "description": "Validate that the skill produces a properly normalized relational schema with appropriate constraints, key selection, and relationship modeling for a multi-entity domain.",
+    "input": "Design a database schema for an e-commerce platform. The domain includes: users (with profiles and addresses), products (with categories and inventory), orders (with line items and payment status), and reviews (tied to both users and products). Users can have multiple shipping addresses. Products belong to multiple categories. Orders contain multiple line items referencing products. Design the schema in PostgreSQL DDL with proper normalization, constraints, and relationships.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "REFERENCES",
+        "description": "Foreign key constraints must be declared explicitly to enforce referential integrity between entities (users-orders, orders-line_items, products-reviews)."
+      },
+      {
+        "type": "contains",
+        "value": "NOT NULL",
+        "description": "Required columns must have NOT NULL constraints to prevent incomplete records from being inserted at the database level."
+      },
+      {
+        "type": "contains",
+        "value": "UNIQUE",
+        "description": "Natural uniqueness constraints (such as email on users or composite keys on junction tables) must be enforced to prevent duplicate data."
+      },
+      {
+        "type": "contains",
+        "value": "CREATE TABLE",
+        "description": "The schema must be expressed as executable PostgreSQL DDL statements, not just prose descriptions of tables."
+      },
+      {
+        "type": "contains",
+        "value": "PRIMARY KEY",
+        "description": "Every table must have an explicit primary key declaration to ensure row uniqueness and enable efficient joins."
+      }
+    ]
+  },
+  {
+    "name": "index-optimization-strategy",
+    "description": "Validate that the skill produces an indexing strategy grounded in specific query patterns with composite index column ordering, covering indexes, and partial indexes where appropriate.",
+    "input": "Given a PostgreSQL orders table with columns (id, user_id, status, created_at, total_amount, shipping_address_id) and these query patterns: (1) fetch all orders for a user sorted by creation date descending, (2) count orders by status for a dashboard, (3) find orders above $100 created in the last 30 days, (4) look up orders by user and status together. Design an indexing strategy with CREATE INDEX statements and explain why each index serves its target query.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "CREATE INDEX",
+        "description": "Index definitions must be expressed as executable CREATE INDEX statements, not just recommendations in prose."
+      },
+      {
+        "type": "contains",
+        "value": "user_id",
+        "description": "An index on user_id must be present because multiple query patterns filter or join on user_id, making it the highest-value single-column index."
+      },
+      {
+        "type": "contains",
+        "value": "status",
+        "description": "The status column must appear in at least one index because the dashboard query groups by status and the lookup query filters by user and status together."
+      },
+      {
+        "type": "contains",
+        "value": "created_at",
+        "description": "The created_at column must be indexed (alone or in a composite) because queries sort by creation date and filter by date range."
+      },
+      {
+        "type": "contains",
+        "value": "WHERE",
+        "description": "At least one partial index or query explanation must reference WHERE clauses to demonstrate that indexes are designed for specific predicate patterns, not added blindly."
+      }
+    ]
+  }
+]

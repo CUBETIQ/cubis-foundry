@@ -1,0 +1,66 @@
+[
+  {
+    "name": "subscription-flow-with-webhooks",
+    "description": "Validate that the skill produces a complete subscription flow with Stripe Checkout, webhook handling for lifecycle events, idempotent processing, and proper subscription status synchronization.",
+    "input": "Implement a SaaS subscription system with Stripe. Users choose between Basic ($10/mo) and Pro ($25/mo) plans. Use Stripe Checkout for the payment flow. Handle all subscription lifecycle webhooks (created, updated, deleted, past_due). Store subscription state in a PostgreSQL database. Ensure webhook handlers are idempotent and return 200 immediately.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "stripe.checkout.sessions.create",
+        "description": "Must create Checkout Sessions server-side with explicit price IDs and customer references, never allowing the client to set amounts."
+      },
+      {
+        "type": "contains",
+        "value": "constructEvent",
+        "description": "Webhook handler must verify signatures using stripe.webhooks.constructEvent with the raw body and endpoint secret to prevent forged events."
+      },
+      {
+        "type": "contains",
+        "value": "customer.subscription",
+        "description": "Must handle subscription lifecycle events (customer.subscription.created, updated, deleted) to synchronize subscription state from Stripe to the database."
+      },
+      {
+        "type": "contains",
+        "value": "idempotency",
+        "description": "Must implement idempotent webhook processing by checking event IDs or object versions to prevent duplicate processing on retry delivery."
+      },
+      {
+        "type": "contains",
+        "value": "stripe_customer_id",
+        "description": "Must persist the Stripe customer ID in the application database to associate Stripe objects with application users across all operations."
+      }
+    ]
+  },
+  {
+    "name": "checkout-session-implementation",
+    "description": "Validate that the skill produces a secure Checkout Session implementation with proper configuration, success/cancel handling, metadata attachment, and post-payment fulfillment through webhooks.",
+    "input": "Build a Stripe Checkout integration for an e-commerce store using Next.js. Create an API route that generates Checkout Sessions for cart items. Include tax calculation with Stripe Tax. Attach order metadata to the session. Handle the checkout.session.completed webhook to fulfill the order. Support both card and Apple Pay/Google Pay payment methods. Include error handling and test card numbers for verification.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "line_items",
+        "description": "Checkout Session must specify line_items with price_data or price IDs, quantities, and tax behavior for each cart item."
+      },
+      {
+        "type": "contains",
+        "value": "success_url",
+        "description": "Must configure success_url and cancel_url for post-checkout redirects, using session ID template variables for order confirmation pages."
+      },
+      {
+        "type": "contains",
+        "value": "metadata",
+        "description": "Must attach application-specific metadata (order ID, user ID) to the Checkout Session for correlating Stripe events with internal records."
+      },
+      {
+        "type": "contains",
+        "value": "checkout.session.completed",
+        "description": "Must handle the checkout.session.completed webhook event for order fulfillment, not relying solely on client-side redirect for confirmation."
+      },
+      {
+        "type": "contains",
+        "value": "4242",
+        "description": "Must include Stripe test card numbers (4242424242424242 for success) for testing the payment flow in development."
+      }
+    ]
+  }
+]

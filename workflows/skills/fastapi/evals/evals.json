@@ -1,0 +1,66 @@
+[
+  {
+    "name": "authenticated-api-with-pydantic",
+    "description": "Validate that the skill produces a FastAPI application with JWT authentication, Pydantic v2 models with proper validation, dependency injection for auth, and correct response models.",
+    "prompt": "Create a FastAPI application for a user profile service. Implement JWT authentication using OAuth2PasswordBearer with a dependency that decodes tokens and returns the current user. Define Pydantic v2 models for UserCreate (with email validation and password constraints), UserResponse (excluding password), and UserUpdate. Create endpoints for registration, login (returns JWT), get current profile, and update profile. Use response_model on all endpoints and proper HTTPException for errors.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "OAuth2PasswordBearer",
+        "description": "Must use OAuth2PasswordBearer for token-based authentication that integrates with the OpenAPI security scheme."
+      },
+      {
+        "type": "contains",
+        "value": "BaseModel",
+        "description": "Must define Pydantic BaseModel subclasses for request validation and response serialization."
+      },
+      {
+        "type": "contains",
+        "value": "Depends(",
+        "description": "Must use Depends() for dependency injection of authentication, database sessions, and shared logic."
+      },
+      {
+        "type": "contains",
+        "value": "response_model",
+        "description": "Must declare response_model on path operations to enforce Pydantic serialization and prevent internal field leakage."
+      },
+      {
+        "type": "contains",
+        "value": "HTTPException",
+        "description": "Must raise HTTPException with specific status codes for authentication failures, not-found, and validation errors."
+      }
+    ]
+  },
+  {
+    "name": "async-background-tasks",
+    "description": "Validate that the skill produces correct async endpoint patterns with SQLAlchemy async sessions, background tasks, and proper dependency lifecycle management.",
+    "prompt": "Build a FastAPI notification service with async endpoints. Use SQLAlchemy 2.0 AsyncSession for database access with a yield dependency that manages the session lifecycle. Create an endpoint that accepts a notification payload, stores it in the database, and uses BackgroundTasks to send the notification via an async HTTP call with httpx. Include the async database session dependency, the Pydantic models, and an async test using httpx.AsyncClient with dependency overrides for the database session.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "AsyncSession",
+        "description": "Must use SQLAlchemy 2.0 AsyncSession for non-blocking database access in async endpoints."
+      },
+      {
+        "type": "contains",
+        "value": "BackgroundTasks",
+        "description": "Must use FastAPI BackgroundTasks for fire-and-forget work that runs after the response is sent."
+      },
+      {
+        "type": "contains",
+        "value": "async def",
+        "description": "Must declare endpoint functions as async def when performing async I/O operations."
+      },
+      {
+        "type": "contains",
+        "value": "dependency_overrides",
+        "description": "Must use app.dependency_overrides in tests to replace real dependencies with test doubles."
+      },
+      {
+        "type": "contains",
+        "value": "httpx",
+        "description": "Must use httpx (AsyncClient or ASGITransport) for async HTTP calls and async test client."
+      }
+    ]
+  }
+]
