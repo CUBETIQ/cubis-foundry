@@ -16,7 +16,7 @@ Official install targets: `codex`, `antigravity`, `copilot`, `claude`, `gemini`.
 
 Skill install default is profile-based:
 
-- default profile: `core`
+- default profile: `full`
 - add `--skill-profile web-backend` for broader web/backend stack
 - add `--all-skills` for full workflow + MCP catalog install
 
@@ -28,7 +28,7 @@ Skill install default is profile-based:
 - [Quickstarts](#quickstarts)
 - [Scope Model (Global vs Project)](#scope-model-global-vs-project)
 - [Credential Model (`cbx_config.json` only)](#credential-model-cbx_configjson-only)
-- [Postman and Stitch Setup Flows](#postman-and-stitch-setup-flows)
+- [MCP Setup Flows](#mcp-setup-flows)
 - [MCP Placement Matrix](#mcp-placement-matrix)
 - [Command Reference](#command-reference)
 - [Full Cleanup (`cbx remove all`)](#full-cleanup-cbx-remove-all)
@@ -43,7 +43,7 @@ Skill install default is profile-based:
 - Codex callable wrapper skills ($workflow-_, $agent-_)
 - Platform rule files (`AGENTS.md`, `GEMINI.md`, etc.)
 - Engineering artifacts in workspace (`ENGINEERING_RULES.md`, `TECH.md`)
-- Managed MCP config for Postman and Stitch
+- Managed MCP config for Postman, Stitch, and Playwright
 
 Generated rule files are intentionally route-first and lazy about skill loading:
 
@@ -94,8 +94,8 @@ Wizard flow:
 - Bundle selection
 - Multi-platform selection (`codex`, `antigravity`, `copilot`, `claude`, `gemini`)
 - Skills profile selection (`core`, `web-backend`, `full`)
-- MCP selection (`Cubis Foundry`, `Postman`, `Stitch`)
-- Separate scope selection for Skills and MCP (`project` or `global`)
+- MCP selection (`Cubis Foundry`, `Postman`, `Stitch`, `Playwright`)
+- Workspace-oriented install defaults (legacy `--skills-scope` / `--mcp-scope` flags are accepted for compatibility)
 - MCP runtime selection (`cbx mcp serve` local, Docker pull, Docker local build) when any MCP integration is enabled
 - Conditional Postman mode/key/workspace and Stitch key prompts
 - Final summary + confirmation
@@ -117,9 +117,7 @@ cbx init \
   --bundle agent-environment-setup \
   --platforms codex,antigravity,gemini \
   --skill-profile web-backend \
-  --skills-scope project \
-  --mcps cubis-foundry,postman,stitch \
-  --mcp-scope global \
+  --mcps cubis-foundry,postman,stitch,playwright \
   --postman-mode minimal \
   --postman-workspace-id null \
   --mcp-runtime local
@@ -173,13 +171,12 @@ cbx workflows install --platform gemini --scope global --bundle agent-environmen
 
 ## Scope Model (Global vs Project)
 
-Default install scope is `global`.
+`cbx workflows install` defaults to `project`.
 
 Behavior:
 
-- Skills are installed in global platform skill directories.
-- Workflows and agents are installed in project paths for active workspace behavior.
-- Rule files remain workspace-oriented for current repo context.
+- `--scope global` is accepted for compatibility on install, but workflow and rule placement is normalized to workspace-oriented behavior.
+- `cbx workflows config`, `cbx mcp`, and credential/profile commands still support explicit global scope where applicable.
 - Engineering files (`ENGINEERING_RULES.md`, `TECH.md`) are workspace files.
 
 ### Where files go
@@ -295,7 +292,7 @@ Alias commands are also available:
 
 - None. Use canonical `cbx workflows config keys ...` commands only.
 
-## Postman and Stitch Setup Flows
+## MCP Setup Flows
 
 ### Interactive Postman workspace selection
 
@@ -374,6 +371,24 @@ Default managed command template:
 }
 ```
 
+### Playwright
+
+`--playwright` patches a `PlaywrightMCP` entry into the selected platform runtime target without requiring Postman credentials or a generated Postman MCP definition file.
+
+```bash
+cbx workflows install --platform codex --bundle agent-environment-setup --playwright
+```
+
+Add `--no-foundry-mcp` when you want only the Playwright runtime entry without the side-by-side `cubis-foundry` server registration.
+
+Default managed URL:
+
+```text
+http://localhost:8931/mcp
+```
+
+Playwright MCP patching is supported for Codex, Antigravity, Gemini CLI, Copilot, and Claude runtime targets.
+
 ## MCP Placement Matrix
 
 Managed MCP definition files (`.cbx/mcp/...`):
@@ -413,7 +428,7 @@ Copilot:
 cbx workflows install --platform <codex|antigravity|copilot|claude|gemini> --bundle agent-environment-setup
 cbx workflows remove <bundle-or-workflow> --platform <platform>
 cbx workflows remove-all --scope <project|global|all> --platform <platform|all>
-cbx workflows prune-skills --platform <platform> --scope <project|global> --skill-profile <core|web-backend|full> [--include-mcp] [--dry-run]
+cbx workflows prune-skills --platform <platform> --scope <project|global> --skill-profile <core|web-backend|full> [--dry-run]
 cbx workflows doctor --platform <platform> --scope <project|global>
 cbx workflows sync-rules --platform <platform> --scope <project|global>
 ```
@@ -542,16 +557,13 @@ Context budget reporting (from MCP skill tools):
 Install profile flags:
 
 ```bash
-# default core profile (workflow skills only)
+# default full profile
 cbx workflows install --platform codex --bundle agent-environment-setup
 
 # expanded workflow profile
 cbx workflows install --platform codex --bundle agent-environment-setup --skill-profile web-backend
 
-# include MCP catalog with profile
-cbx workflows install --platform codex --bundle agent-environment-setup --skill-profile web-backend --include-mcp
-
-# full workflow + MCP catalogs
+# explicit full profile
 cbx workflows install --platform codex --bundle agent-environment-setup --all-skills
 ```
 

@@ -1,7 +1,7 @@
 # Platform Support Matrix
 
 > Generated from the current workflow bundle generators and rule templates.
-> Last updated: 2026-03-14.
+> Regenerate with `npm run generate:platform-assets`.
 
 ## Platforms
 
@@ -27,5 +27,6 @@
 
 - Canonical authoring stays in `workflows/skills` and `workflows/workflows/agent-environment-setup/shared`.
 - Platform outputs under `workflows/workflows/agent-environment-setup/platforms/*` are generated artifacts.
+- Codex installs workflow markdown plus compatibility wrapper skills at runtime; the generated platform bundle still includes agent adapter files.
 - Gemini CLI is a first-class install target, but specialist personas are embedded into workflows and `GEMINI.md` guidance rather than shipped as standalone agent files.
 - Antigravity remains separate from Gemini CLI because its project layout and agent execution model differ.

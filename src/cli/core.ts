@@ -5520,6 +5520,13 @@ async function applyPostmanMcpForPlatform({
     } catch {
       // Best effort. Add will still run and becomes source of truth.
     }
+    try {
+      await execFile("codex", ["mcp", "remove", PLAYWRIGHT_MCP_SERVER_ID], {
+        cwd,
+      });
+    } catch {
+      // Best effort. Add will still run and becomes source of truth.
+    }
 
     if (includePostmanMcp) {
       try {
@@ -5598,6 +5605,19 @@ async function applyPostmanMcpForPlatform({
       } catch (error) {
         warnings.push(
           `Failed to register ${FOUNDRY_MCP_SERVER_ID} MCP via Codex CLI. Ensure 'cbx' and 'codex' are installed and rerun. (${error.message})`,
+        );
+      }
+    }
+    if (includePlaywrightMcp) {
+      try {
+        await execFile(
+          "codex",
+          ["mcp", "add", PLAYWRIGHT_MCP_SERVER_ID, "--url", PLAYWRIGHT_MCP_URL],
+          { cwd },
+        );
+      } catch (error) {
+        warnings.push(
+          `Failed to register ${PLAYWRIGHT_MCP_SERVER_ID} MCP via Codex CLI. Ensure 'codex' is installed and rerun. (${error.message})`,
         );
       }
     }
@@ -5716,13 +5736,30 @@ async function resolvePostmanInstallSelection({
   }
 
   const stitchRequested = Boolean(options.stitch);
+  const playwrightRequested = Boolean(options.playwright);
   const postmanRequested =
     Boolean(options.postman) ||
     hasWorkspaceOption ||
     options.postmanMode !== undefined;
+  const stitchEnabled =
+    stitchRequested ||
+    (platform === "antigravity" &&
+      options.stitchDefaultForAntigravity !== false);
+  const foundryMcpRequested = options.foundryMcp === true;
+  const foundryMcpEnabled =
+    options.foundryMcp === false
+      ? false
+      : foundryMcpRequested || postmanRequested || stitchEnabled;
   const foundryOnlyRequested =
-    options.foundryMcp === true && !postmanRequested && !stitchRequested;
-  const enabled = postmanRequested || stitchRequested || foundryOnlyRequested;
+    foundryMcpRequested &&
+    !postmanRequested &&
+    !stitchRequested &&
+    !playwrightRequested;
+  const enabled =
+    postmanRequested ||
+    stitchRequested ||
+    playwrightRequested ||
+    foundryOnlyRequested;
   if (!enabled) return { enabled: false };
   const requestedPostmanMode = postmanRequested
     ? normalizePostmanMode(options.postmanMode, DEFAULT_POSTMAN_INSTALL_MODE)
@@ -5746,16 +5783,12 @@ async function resolvePostmanInstallSelection({
   if (requestedMcpScope?.warning) {
     warnings.push(requestedMcpScope.warning);
   }
-  const stitchEnabled =
-    stitchRequested ||
-    (platform === "antigravity" &&
-      options.stitchDefaultForAntigravity !== false);
   const envStitchApiKey = normalizePostmanApiKey(
     process.env[STITCH_API_KEY_ENV_VAR],
   );
   const requestedRuntime = normalizeMcpRuntime(
     options.mcpRuntime,
-    DEFAULT_MCP_RUNTIME,
+    foundryMcpEnabled ? DEFAULT_MCP_RUNTIME : "local",
   );
   const requestedFallback = normalizeMcpFallback(
     options.mcpFallback,
@@ -5768,8 +5801,8 @@ async function resolvePostmanInstallSelection({
     DEFAULT_MCP_UPDATE_POLICY,
   );
   const mcpBuildLocal = Boolean(options.mcpBuildLocal);
-  const mcpToolSync = options.mcpToolSync !== false;
-  const foundryMcpEnabled = options.foundryMcp !== false;
+  const mcpToolSync =
+    options.mcpToolSync !== false && (postmanRequested || stitchEnabled);
 
   const canPrompt =
     !options.yes && !options.dryRun && !process.env.CI && process.stdin.isTTY;
@@ -5783,10 +5816,10 @@ async function resolvePostmanInstallSelection({
     workspaceSelectionSource = "interactive";
   }
 
-  let effectiveRuntime = requestedRuntime;
-  let runtimeSkipped = false;
-  let dockerImageAction = "not-requested";
-  if (requestedRuntime === "docker") {
+  let effectiveRuntime = foundryMcpEnabled ? requestedRuntime : null;
+  let runtimeSkipped = !foundryMcpEnabled;
+  let dockerImageAction = foundryMcpEnabled ? "not-requested" : "not-needed";
+  if (foundryMcpEnabled && requestedRuntime === "docker") {
     const dockerAvailable = await checkDockerAvailable({ cwd });
     if (!dockerAvailable) {
       if (requestedFallback === "fail") {
@@ -5875,7 +5908,9 @@ async function resolvePostmanInstallSelection({
         ? POSTMAN_SKILL_ID
         : stitchEnabled
           ? STITCH_MCP_SERVER_ID
-          : FOUNDRY_MCP_SERVER_ID,
+          : playwrightRequested
+            ? PLAYWRIGHT_MCP_SERVER_ID
+            : FOUNDRY_MCP_SERVER_ID,
       platform,
       runtime: requestedRuntime,
       fallback: requestedFallback,
@@ -5918,12 +5953,20 @@ async function resolvePostmanInstallSelection({
       mcpUrl: STITCH_MCP_URL,
     };
   }
+  if (playwrightRequested) {
+    cbxConfig.playwright = {
+      enabled: true,
+      server: PLAYWRIGHT_MCP_SERVER_ID,
+      mcpUrl: PLAYWRIGHT_MCP_URL,
+    };
+  }
 
   return {
     enabled: true,
     postmanEnabled: postmanRequested,
     apiKeySource,
     stitchEnabled,
+    playwrightEnabled: playwrightRequested,
     stitchApiKeySource,
     mcpRuntime: requestedRuntime,
     effectiveMcpRuntime: runtimeSkipped ? null : effectiveRuntime,
@@ -6243,6 +6286,7 @@ async function configurePostmanInstallArtifacts({
     mcpToolSync: postmanSelection.mcpToolSync,
     foundryMcpEnabled: postmanSelection.foundryMcpEnabled,
     postmanEnabled: shouldInstallPostman,
+    playwrightEnabled: Boolean(postmanSelection.playwrightEnabled),
     postmanMode:
       shouldInstallPostman && effectiveMcpUrl
         ? resolvePostmanModeFromUrl(
@@ -6251,6 +6295,9 @@ async function configurePostmanInstallArtifacts({
           )
         : null,
     postmanMcpUrl: shouldInstallPostman ? effectiveMcpUrl : null,
+    playwrightMcpUrl: postmanSelection.playwrightEnabled
+      ? PLAYWRIGHT_MCP_URL
+      : null,
     apiKeySource: effectiveApiKeySource,
     stitchApiKeySource: effectiveStitchApiKeySource,
     defaultWorkspaceId: effectiveDefaultWorkspaceId,
@@ -6291,14 +6338,32 @@ async function applyPostmanConfigArtifacts({
   cwd = process.cwd(),
 }) {
   const warnings = [];
-  const postmanState = ensureCredentialServiceState(configValue, "postman");
+  const storedPostmanState = parseStoredPostmanConfig(configValue);
+  const postmanEnabled = Boolean(storedPostmanState);
+  const postmanState =
+    storedPostmanState ||
+    parseStoredCredentialServiceConfig({ service: "postman", rawService: {} });
   const stitchState = parseStoredStitchConfig(configValue);
-  const postmanApiKeyEnvVar =
-    normalizePostmanApiKey(postmanState.apiKeyEnvVar) ||
-    POSTMAN_API_KEY_ENV_VAR;
-  const postmanMcpUrl = postmanState.mcpUrl || POSTMAN_MCP_URL;
+  const postmanApiKeyEnvVar = postmanEnabled
+    ? normalizePostmanApiKey(postmanState.apiKeyEnvVar) ||
+      POSTMAN_API_KEY_ENV_VAR
+    : POSTMAN_API_KEY_ENV_VAR;
+  const postmanMcpUrl = postmanEnabled
+    ? postmanState.mcpUrl || POSTMAN_MCP_URL
+    : POSTMAN_MCP_URL;
   const stitchEnabled = Boolean(stitchState);
-  const playwrightEnabled = Boolean(configValue?.playwright);
+  const playwrightConfig =
+    configValue?.playwright &&
+    typeof configValue.playwright === "object" &&
+    !Array.isArray(configValue.playwright)
+      ? configValue.playwright
+      : null;
+  const playwrightEnabled = Boolean(
+    playwrightConfig?.enabled ?? configValue?.playwright,
+  );
+  const playwrightMcpUrl =
+    String(playwrightConfig?.mcpUrl || PLAYWRIGHT_MCP_URL).trim() ||
+    PLAYWRIGHT_MCP_URL;
   const stitchApiKeyEnvVar =
     normalizePostmanApiKey(stitchState?.apiKeyEnvVar) || STITCH_API_KEY_ENV_VAR;
   const stitchMcpUrl = stitchState?.mcpUrl || STITCH_MCP_URL;
@@ -6306,32 +6371,36 @@ async function applyPostmanConfigArtifacts({
     configValue?.mcp?.effectiveRuntime || configValue?.mcp?.runtime,
     "local",
   );
-  const resolvedPostmanApiKey = normalizePostmanApiKey(
-    process.env[postmanApiKeyEnvVar],
-  );
+  const resolvedPostmanApiKey = postmanEnabled
+    ? normalizePostmanApiKey(process.env[postmanApiKeyEnvVar])
+    : null;
   const resolvedStitchApiKey = normalizePostmanApiKey(
     process.env[stitchApiKeyEnvVar],
   );
 
-  const mcpDefinitionPath = resolvePostmanMcpDefinitionPath({
-    platform,
-    scope: mcpScope,
-    cwd,
-  });
-  const mcpDefinitionContent = `${JSON.stringify(
-    buildPostmanMcpDefinition({
-      apiKeyEnvVar: postmanApiKeyEnvVar,
-      apiKey: resolvedPostmanApiKey,
-      mcpUrl: postmanMcpUrl,
-    }),
-    null,
-    2,
-  )}\n`;
-  const mcpDefinitionResult = await writeGeneratedArtifact({
-    destination: mcpDefinitionPath,
-    content: mcpDefinitionContent,
-    dryRun,
-  });
+  let mcpDefinitionPath = null;
+  let mcpDefinitionResult = null;
+  if (postmanEnabled) {
+    mcpDefinitionPath = resolvePostmanMcpDefinitionPath({
+      platform,
+      scope: mcpScope,
+      cwd,
+    });
+    const mcpDefinitionContent = `${JSON.stringify(
+      buildPostmanMcpDefinition({
+        apiKeyEnvVar: postmanApiKeyEnvVar,
+        apiKey: resolvedPostmanApiKey,
+        mcpUrl: postmanMcpUrl,
+      }),
+      null,
+      2,
+    )}\n`;
+    mcpDefinitionResult = await writeGeneratedArtifact({
+      destination: mcpDefinitionPath,
+      content: mcpDefinitionContent,
+      dryRun,
+    });
+  }
 
   let stitchMcpDefinitionPath = null;
   let stitchMcpDefinitionResult = null;
@@ -6367,6 +6436,7 @@ async function applyPostmanConfigArtifacts({
       mcpScope,
       apiKeyEnvVar: postmanApiKeyEnvVar,
       mcpUrl: postmanMcpUrl,
+      includePostmanMcp: postmanEnabled,
       stitchApiKeyEnvVar,
       stitchMcpUrl,
       includeStitchMcp: stitchEnabled,
@@ -6380,6 +6450,9 @@ async function applyPostmanConfigArtifacts({
   }
 
   return {
+    postmanEnabled,
+    playwrightEnabled,
+    playwrightMcpUrl: playwrightEnabled ? playwrightMcpUrl : null,
     mcpDefinitionPath,
     mcpDefinitionResult,
     stitchMcpDefinitionPath,
@@ -7361,6 +7434,11 @@ function printPostmanSetupSummary({ postmanSetup }) {
 
   console.log("\nMCP setup:");
   console.log(`- MCP scope: ${postmanSetup.mcpScope}`);
+  if (postmanSetup.playwrightEnabled) {
+    console.log(
+      `- Playwright MCP: enabled (${postmanSetup.playwrightMcpUrl || PLAYWRIGHT_MCP_URL})`,
+    );
+  }
   if (postmanSetup.postmanEnabled && postmanSetup.postmanMode) {
     console.log(`- Postman mode: ${postmanSetup.postmanMode}`);
   }
@@ -7876,6 +7954,10 @@ function withInstallOptions(command) {
       "optional: include Stitch MCP profile/config alongside Postman",
     )
     .option(
+      "--playwright",
+      "optional: include Playwright MCP server wiring",
+    )
+    .option(
       "--postman-api-key <key>",
       "deprecated: inline key mode is disabled. Use env vars + profiles.",
     )
@@ -7934,7 +8016,7 @@ function withInstallOptions(command) {
     )
     .option(
       "--skill-profile <profile>",
-      "skill install profile: core|web-backend|full (default: core)",
+      "skill install profile: core|web-backend|full",
       DEFAULT_SKILL_PROFILE,
     )
     .option("--all-skills", "alias for --skill-profile full")
@@ -11884,7 +11966,12 @@ function normalizeInitPlatforms(value) {
 }
 
 function normalizeInitMcpSelections(value) {
-  const allowed = new Set(["cubis-foundry", "postman", "stitch"]);
+  const allowed = new Set([
+    "cubis-foundry",
+    "postman",
+    "stitch",
+    "playwright",
+  ]);
   const items = Array.isArray(value) ? value : parseCsvOption(value);
   const normalized = [];
   for (const item of items) {
@@ -12012,7 +12099,9 @@ async function runInitWizard(options) {
       throw new Error("No platforms selected.");
     }
 
-    const runtimeSelectableMcp = selections.selectedMcps.length > 0;
+    const runtimeSelectableMcp = selections.selectedMcps.some(
+      (item) => item !== "playwright",
+    );
 
     if (runtimeSelectableMcp && isInteractive) {
       const runtimeSelection = await promptInitMcpRuntime({

@@ -24,6 +24,8 @@ const GENERATED_DIR = path.join(BUNDLE_ROOT, "generated");
 const ROUTE_MANIFEST_FILE = "route-manifest.json";
 const BUNDLE_MANIFEST_FILE = "manifest.json";
 const CANONICAL_SKILLS_DIR = path.join(ROOT, "workflows", "skills");
+const DOCS_DIR = path.join(ROOT, "docs");
+const PLATFORM_SUPPORT_MATRIX_FILE = "platform-support-matrix.md";
 
 const PLATFORM_DIRS = {
   codex: path.join(BUNDLE_ROOT, "platforms", "codex"),
@@ -454,6 +456,52 @@ function buildBundleManifest({
   );
 }
 
+function buildPlatformSupportMatrixMarkdown({
+  sharedAgents,
+  sharedWorkflows,
+  topLevelSkillIds,
+}) {
+  const agentCount = sharedAgents.length;
+  const workflowCount = sharedWorkflows.length;
+  const skillCount = topLevelSkillIds.length;
+
+  return [
+    "# Platform Support Matrix",
+    "",
+    "> Generated from the current workflow bundle generators and rule templates.",
+    "> Regenerate with `npm run generate:platform-assets`.",
+    "",
+    "## Platforms",
+    "",
+    "| Platform | Rule File | Output Directory | Execution Model |",
+    "| --- | --- | --- | --- |",
+    "| **Antigravity** | `GEMINI.md` (`trigger: always_on`) | `.agent/` | Parallel agent-manager workflow with Gemini-family commands |",
+    "| **Gemini CLI** | `GEMINI.md` | `.gemini/` | Inline postures plus TOML commands, no standalone agent files |",
+    "| **Claude Code** | `CLAUDE.md` | `.claude/` | Workflow and agent markdown with Claude-native rules |",
+    "| **Codex** | `AGENTS.md` | `.agents/` | In-session postures plus compatibility wrapper skills |",
+    "| **GitHub Copilot** | `copilot-instructions.md` | `.github/` | Workflow markdown, agent markdown, and generated prompt files |",
+    "",
+    "## Bundle Artifacts",
+    "",
+    "| Artifact | Antigravity | Gemini CLI | Claude | Codex | Copilot |",
+    "| --- | --- | --- | --- | --- | --- |",
+    `| Agent files | ${agentCount} \`.md\` | none | ${agentCount} \`.md\` | ${agentCount} \`.md\` | ${agentCount} \`.md\` with sanitized frontmatter |`,
+    `| Workflow files | ${workflowCount} \`.md\` | ${workflowCount} \`.md\` | ${workflowCount} \`.md\` | ${workflowCount} \`.md\` | ${workflowCount} \`.md\` |`,
+    `| Commands or prompts | ${workflowCount} \`.toml\` | ${workflowCount} \`.toml\` | none | none | ${workflowCount} \`.prompt.md\` |`,
+    `| Skill mirrors | ${skillCount} skill dirs | ${skillCount} skill dirs | ${skillCount} skill dirs | ${skillCount} skill dirs | ${skillCount} skill dirs |`,
+    "| Compatibility aliases | none | none | none | `$agent-*`, `$workflow-*` | none |",
+    "",
+    "## Notes",
+    "",
+    "- Canonical authoring stays in `workflows/skills` and `workflows/workflows/agent-environment-setup/shared`.",
+    "- Platform outputs under `workflows/workflows/agent-environment-setup/platforms/*` are generated artifacts.",
+    "- Codex installs workflow markdown plus compatibility wrapper skills at runtime; the generated platform bundle still includes agent adapter files.",
+    "- Gemini CLI is a first-class install target, but specialist personas are embedded into workflows and `GEMINI.md` guidance rather than shipped as standalone agent files.",
+    "- Antigravity remains separate from Gemini CLI because its project layout and agent execution model differ.",
+    "",
+  ].join("\n");
+}
+
 function buildCopilotAgentMarkdown(sharedMarkdown) {
   const normalizedMarkdown = normalizeMarkdownSkillReferences(sharedMarkdown);
   const parsed = parseFrontmatter(normalizedMarkdown);
@@ -793,6 +841,7 @@ async function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
   const geminiCommands = new Map();
   const copilotPrompts = new Map();
   const generated = new Map();
+  const docs = new Map();
   const topLevelSkillIds = await listTopLevelCanonicalSkillIds();
 
   for (const agent of sharedAgents) {
@@ -813,6 +862,14 @@ async function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
   generated.set(
     BUNDLE_MANIFEST_FILE,
     buildBundleManifest({
+      sharedAgents,
+      sharedWorkflows,
+      topLevelSkillIds,
+    }),
+  );
+  docs.set(
+    PLATFORM_SUPPORT_MATRIX_FILE,
+    buildPlatformSupportMatrixMarkdown({
       sharedAgents,
       sharedWorkflows,
       topLevelSkillIds,
@@ -874,6 +931,7 @@ async function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
     geminiCommands,
     copilotPrompts,
     generated,
+    docs,
   };
 }
 
@@ -970,6 +1028,12 @@ function buildTargets(maps) {
         ),
       ),
       filter: (name) => name === BUNDLE_MANIFEST_FILE,
+    },
+    {
+      label: "platform support matrix",
+      dir: DOCS_DIR,
+      expected: maps.docs,
+      filter: (name) => name === PLATFORM_SUPPORT_MATRIX_FILE,
     },
   ];
 }
@@ -1158,6 +1222,11 @@ export async function run({ checkOnly = false } = {}) {
       cleanMdOnly: false,
     })),
   );
+  for (const [name, content] of maps.docs.entries()) {
+    const target = path.join(DOCS_DIR, name);
+    await writeFileNormalized(target, content);
+    written.push(target);
+  }
 
   console.log(
     JSON.stringify(

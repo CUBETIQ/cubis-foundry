@@ -1,3 +1,17 @@
 {
-  "servers": {}
+  "servers": {
+    "cubis-foundry": {
+      "type": "stdio",
+      "command": "cbx",
+      "args": [
+        "mcp",
+        "serve",
+        "--transport",
+        "stdio",
+        "--scope",
+        "project"
+      ],
+      "env": {}
+    }
+  }
 }

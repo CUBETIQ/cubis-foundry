@@ -423,6 +423,7 @@ rg -n '^Usage: cbx init \[options\]$' /tmp/cbx-c31.log >/dev/null
 rg -n 'guided interactive install wizard' /tmp/cbx-c31.log >/dev/null
 rg -n -- '--platforms <items>' /tmp/cbx-c31.log >/dev/null
 rg -n -- '--mcps <items>' /tmp/cbx-c31.log >/dev/null
+rg -n 'cubis-foundry,postman,stitch,playwright' /tmp/cbx-c31.log >/dev/null
 rg -n -- '--mcp-runtime <runtime>' /tmp/cbx-c31.log >/dev/null
 log_ok "Init wizard command is registered and discoverable"
 
@@ -443,7 +444,7 @@ node "$CLI" init --yes --dry-run --no-banner \
   --platforms codex,antigravity \
   --skill-profile web-backend \
   --skills-scope project \
-  --mcps cubis-foundry,postman,stitch \
+  --mcps cubis-foundry,postman,stitch,playwright \
   --mcp-scope global \
   --postman-mode minimal \
   --mcp-runtime local >/tmp/cbx-c32.log
@@ -453,7 +454,7 @@ rg -n 'Skill profile: web-backend' /tmp/cbx-c32.log >/dev/null
 rg -n 'MCP scope: project' /tmp/cbx-c32.log >/dev/null
 rg -n -- '--mcp-scope=global is ignored for install/init' /tmp/cbx-c32.log >/dev/null
 rg -n 'MCP runtime: local' /tmp/cbx-c32.log >/dev/null
-rg -n 'MCP selections: cubis-foundry, postman, stitch' /tmp/cbx-c32.log >/dev/null
+rg -n 'MCP selections: cubis-foundry, postman, stitch, playwright' /tmp/cbx-c32.log >/dev/null
 rg -n 'Postman mode: minimal' /tmp/cbx-c32.log >/dev/null
 rg -n "Stitch is not supported on 'codex'" /tmp/cbx-c32.log >/dev/null
 log_ok "Init wizard accepts explicit non-interactive selections"
@@ -471,6 +472,16 @@ if rg -n 'postman.json' /tmp/cbx-c33.log >/dev/null; then
   exit 1
 fi
 log_ok "Init wizard stitch-only mode avoids forced Postman artifacts"
+
+log_step "C3.3.1 Playwright-only install path"
+node "$CLI" workflows install --platform codex --bundle agent-environment-setup --playwright --dry-run --yes >/tmp/cbx-c331.log
+rg -n 'Playwright MCP: enabled \(http://localhost:8931/mcp\)' /tmp/cbx-c331.log >/dev/null
+rg -n 'Platform MCP target \(.+[\\/]\.vscode[\\/]mcp\.json\): would-(create|patch|replace)' /tmp/cbx-c331.log >/dev/null
+if rg -n 'Managed MCP definition \(' /tmp/cbx-c331.log >/dev/null; then
+  echo "[FAIL] Playwright-only install should not create a Postman MCP definition" >&2
+  exit 1
+fi
+log_ok "Playwright-only install configures runtime target without forcing Postman artifacts"
 
 log_step "C3.4 Remove-all dry-run surfaces"
 node "$CLI" workflows remove-all --scope all --dry-run --yes >/tmp/cbx-c34.log

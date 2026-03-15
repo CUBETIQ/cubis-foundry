@@ -28,7 +28,7 @@ export function registerWorkflowCommands(
   const workflowsCommand = program
     .command("workflows")
     .description(
-      "Install and manage workflow bundles for Antigravity, Codex, Copilot, and Claude",
+      "Install and manage workflow bundles for Antigravity, Codex, Copilot, Claude, and Gemini CLI",
     );
 
   workflowsCommand
@@ -94,7 +94,7 @@ export function registerWorkflowCommands(
         )
         .option(
           "--skill-profile <profile>",
-          "skill prune profile: core|web-backend|full (default: core)",
+          "skill prune profile: core|web-backend|full",
           deps.defaultSkillProfile,
         )
         .option("--all-skills", "alias for --skill-profile full")

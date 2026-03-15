@@ -60,7 +60,7 @@ export function buildInitExecutionPlan({
       stitchDefaultForAntigravity: false,
       mcpScope: selections.mcpScope,
       foundryMcp: wantsFoundry,
-      mcpToolSync: wantsPostman || stitchEnabled || wantsPlaywright,
+      mcpToolSync: wantsPostman || stitchEnabled,
       mcpRuntime: hasAnyMcp ? selections.mcpRuntime : "local",
       mcpFallback: "local",
       mcpBuildLocal: hasAnyMcp ? selections.mcpBuildLocal : false,

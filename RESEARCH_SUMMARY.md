@@ -1,7 +1,16 @@
 # Cubis Foundry — Platform Research Summary
 
-> Compiled for the Fresh Skill Library Build (v0.4.x)
-> Date: 2026-03-14
+> Validated against current repo state (`@cubis/foundry` 0.3.75)
+> Date: 2026-03-15
+
+---
+
+## 0. Validation Note — Current Cubis Foundry CLI
+
+- Current runtime surface is `cbx {init|workflows|mcp|rules|agents|remove}`.
+- `cbx` is a workflow-environment manager, not a direct coding-agent shell.
+- Use source code and `--help` output as the current CLI truth; some prose docs in-repo can drift.
+- `agents` is currently status-only in the public CLI, even though the platform bundle ships agent/workflow content.
 
 ---
 
@@ -27,8 +36,8 @@
 - `$ARGUMENTS` variable for skill arguments
 - `${CLAUDE_SKILL_DIR}` for relative path resolution
 
-### Commands (Legacy)
-- `.claude/commands/<name>.md` — replaced by skills system
+### Commands
+- `.claude/commands/<name>.md` — still supported for explicit commands; skills remain the preferred reusable capability surface
 
 ---
 
@@ -41,7 +50,7 @@
 
 ### Agent Format
 - **Path:** `.agents/agents/<name>.md`
-- **Note:** Agents are "postures" (internal mode switches), NOT spawned subprocesses
+- **Note:** Cubis Foundry models Codex specialists as postures by default, even though Codex now documents experimental multi-agent roles in `config.toml`
 - **Frontmatter:** name, description (limited frontmatter support)
 
 ### Rules
@@ -53,14 +62,14 @@
 - **Frontmatter:** command, description, triggers
 
 ### Key Features
-- No agent spawning — specialists are internal postures switched by routing rules
+- Cubis Foundry routes Codex specialists as internal postures by default
 - Network may be restricted in sandbox mode
 - References `AGENTS.md` as primary rule file
-- Simpler than Claude Code — no `context:fork`, no MCP tools
+- Native skills plus MCP client/server support; unlike Claude, Codex does not expose Cubis-style `skill_*` helper tools
 
 ---
 
-## 3. Gemini CLI (geminicli.com, v0.33.1)
+## 3. Gemini CLI (geminicli.com, validated March 2026)
 
 ### Skill Format
 - **Path:** `.gemini/skills/<name>/SKILL.md`
@@ -155,10 +164,10 @@
 |---|---|---|---|---|---|
 | Skill Path | `.claude/skills/` | `.agents/skills/` | `.gemini/skills/` | `.agent/skills/` | `.github/skills/` |
 | Frontmatter | Full (10+ fields) | name+desc only | name+desc only | name+desc only | Full (Claude fmt) |
-| Agent Spawning | Yes (context:fork) | No (postures) | Yes (kind:local) | No (Agent Manager) | Yes |
+| Agent Spawning | Yes (context:fork) | Experimental roles in `config.toml`; Cubis Foundry uses postures by default | Experimental markdown subagents | No (Agent Manager) | Yes |
 | Rule File | `CLAUDE.md` | `AGENTS.md` | `.gemini/GEMINI.md` | `.agent/rules/GEMINI.md` | `.github/copilot-instructions.md` |
-| MCP Tools | Yes (skill_*) | No | activate_skill | No | No |
-| Commands | Legacy .md | N/A | TOML | TOML | Prompt files |
+| Skill / MCP Surface | Yes (`skill_*`) | Native skills + MCP client/server | `activate_skill` + MCP client | No dedicated skill helper tools | No dedicated skill helper tools |
+| Commands | Markdown commands | Built-in slash commands | TOML | TOML | Prompt files |
 | Progressive Disclosure | References table | Manual | activate_skill | Manual | References table |
 
 ---
@@ -250,12 +259,12 @@ Codex, Gemini CLI, and Antigravity use the canonical version referenced by their
 
 ---
 
-## 9. Complete Skill Library (65 Skills)
+## 9. Complete Skill Library (67 Skills)
 
 ### A — Languages (10)
 python-best-practices, typescript-best-practices, golang-best-practices, rust-best-practices, javascript-best-practices, java-best-practices, kotlin-best-practices, swift-best-practices, csharp-best-practices, php-best-practices
 
-### B — Frameworks (19)
+### B — Frameworks (18)
 go-fiber, nestjs, fastapi, express-nodejs, gin-golang, laravel, django-drf, spring-boot, nextjs, react, vuejs, svelte-sveltekit, react-native, t3-stack, remix, prisma, sqlalchemy, drizzle-orm
 
 ### C — Design/Architecture (7)
@@ -281,3 +290,12 @@ stripe-integration, expo-app, react-native-callstack, huggingface-ml, google-wor
 
 ### J — Meta (1)
 skill-creator
+
+---
+
+## 10. Recommended Cubis Foundry Enhancements
+
+1. Generate the platform research/support matrix from canonical code and generator inputs to prevent count drift.
+2. Add a docs consistency check that compares public help text, README defaults, and platform support tables.
+3. Decide whether Playwright MCP should remain partial/internal or become a fully documented public init/install surface.
+4. Add a documented markdown-to-PDF export path if the PDF is intended to stay maintained.

@@ -20,10 +20,10 @@ Options:
 - `--target <path>`: run install logic against another project directory.
 - `--bundle <bundleId>`: preselect bundle id (used as interactive default and non-interactive value).
 - `--platforms <csv>`: comma-separated platforms (`codex,antigravity,copilot,claude,gemini`).
-- `--mcps <csv>`: comma-separated MCP integrations (`cubis-foundry,postman,stitch`).
+- `--mcps <csv>`: comma-separated MCP integrations (`cubis-foundry,postman,stitch,playwright`).
 - `--skill-profile <profile>`: `core`, `web-backend`, `full`.
-- `--skills-scope <scope>`: `project` or `global`.
-- `--mcp-scope <scope>`: `project` or `global`.
+- `--skills-scope <scope>`: deprecated for `cbx init`; installs are workspace-oriented.
+- `--mcp-scope <scope>`: deprecated for `cbx init`; MCP config is workspace-oriented during init.
 - `--postman-mode <mode>`: `full` or `minimal`.
 - `--postman-workspace-id <id|null>`: set default Postman workspace id in non-interactive mode (`null` clears default workspace).
 - `--mcp-runtime <docker|local>`: preselect MCP runtime (used in non-interactive mode and as interactive default).
@@ -37,11 +37,9 @@ Options:
 2. Bundle selection.
 3. Platform multi-select.
 4. Skills profile selection (`core`, `web-backend`, `full`).
-5. MCP multi-select (`Cubis Foundry`, `Postman`, `Stitch`).
-6. Skills scope selection (`project` or `global`).
-7. MCP scope selection (`project` or `global`).
-8. MCP runtime selection (`local command server`, `docker pull`, `docker local build`) when Postman or Stitch is selected.
-9. Conditional prompts:
+5. MCP multi-select (`Cubis Foundry`, `Postman`, `Stitch`, `Playwright`).
+6. MCP runtime selection (`local command server`, `docker pull`, `docker local build`) when Postman or Stitch is selected.
+7. Conditional prompts:
    - Postman selected:
      - Postman mode (`full` or `minimal`)
      - secure Postman API key input (optional)
@@ -50,8 +48,8 @@ Options:
        - manual workspace id input fallback
    - Stitch selected:
      - secure Stitch API key input (optional)
-10. Execution summary + confirmation.
-11. Sequential per-platform apply (stop on first failure).
+8. Execution summary + confirmation.
+9. Sequential per-platform apply (stop on first failure).
 
 ## Decision Mapping to Install Engine
 
@@ -60,17 +58,17 @@ Options:
 Core mappings:
 - Bundle -> `bundle`
 - Platform -> `platform`
-- Skills scope -> `scope`
 - Skills profile -> `skillProfile` / `allSkills`
-- MCP scope -> `mcpScope`
 - Runtime selection -> `mcpRuntime` + `mcpBuildLocal`
 - Postman selected -> `postman=true`
 - Stitch selected -> `stitch=true`
 - Cubis Foundry selected -> `foundryMcp=true`
+- Playwright selected -> `playwright=true`
 - Postman mode -> `postmanMode`
 - Postman workspace selection -> `postmanWorkspaceId`
 
 Special handling:
+- Legacy `--skills-scope`, `--scope`, and `--mcp-scope` values are accepted for compatibility, but `cbx init` coerces them to workspace-oriented behavior.
 - Stitch-only is supported.
 - Stitch on unsupported platforms is skipped with warnings.
 - Multi-platform mode is sequential and aborts on first platform failure.
@@ -99,3 +97,7 @@ No shell profile (`~/.zshrc`, `~/.bashrc`, PowerShell profile) is modified.
 - `Stitch`:
   - Supported for Antigravity runtime integration.
   - Non-Antigravity selections are skipped with warnings.
+
+- `Playwright`:
+  - Supported on all target platforms.
+  - Patches `PlaywrightMCP` into the platform runtime target without Postman credential requirements.
