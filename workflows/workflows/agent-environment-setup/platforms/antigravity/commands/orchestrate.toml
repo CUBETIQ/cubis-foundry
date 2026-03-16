@@ -4,7 +4,7 @@ Follow the /orchestrate workflow from .agent/workflows/orchestrate.md.
 
 Execution contract:
 1. Treat route selection as already resolved by this command; do not begin with skill discovery.
-2. Read `PRODUCT.md`, `ENGINEERING_RULES.md`, `ARCHITECTURE.md`, and `TECH.md` in that order when they exist before non-trivial execution.
+2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.
 Attached skills:
 - Load these exact skill IDs first: `system-design`, `api-design`, `database-design`, `deep-research`, `mcp-server-builder`, `tech-doc`, `prompt-engineering`, `skill-creator`.
 - Local skill file hints if installed: `.agent/skills/system-design/SKILL.md`, `.agent/skills/api-design/SKILL.md`, `.agent/skills/database-design/SKILL.md`, `.agent/skills/deep-research/SKILL.md`, `.agent/skills/mcp-server-builder/SKILL.md`, `.agent/skills/tech-doc/SKILL.md`, `.agent/skills/prompt-engineering/SKILL.md`, `.agent/skills/skill-creator/SKILL.md`.

@@ -596,12 +596,16 @@ function escapeTomlBasicString(value) {
 function buildAntigravityCommandToml(workflow) {
   const { id, command, description } = workflow;
   const attachedSkills = buildAttachedSkillsSection(workflow, "antigravity");
+  const docReadLine =
+    id === "architecture"
+      ? "2. Read `docs/foundation/PRODUCT.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution."
+      : "2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.";
   const prompt = [
     `Follow the ${command} workflow from .agent/workflows/${id}.md.`,
     "",
     "Execution contract:",
     "1. Treat route selection as already resolved by this command; do not begin with skill discovery.",
-    "2. Read `PRODUCT.md`, `ENGINEERING_RULES.md`, `ARCHITECTURE.md`, and `TECH.md` in that order when they exist before non-trivial execution.",
+    docReadLine,
     attachedSkills.trimEnd(),
     '3. Confirm the request fits the workflow\'s "When to use" section.',
     '4. Execute according to "Workflow steps" and apply "Context notes".',
@@ -624,12 +628,16 @@ function buildAntigravityCommandToml(workflow) {
 function buildGeminiCommandToml(workflow) {
   const { id, command, description } = workflow;
   const attachedSkills = buildAttachedSkillsSection(workflow, "gemini");
+  const docReadLine =
+    id === "architecture"
+      ? "2. Read `docs/foundation/PRODUCT.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution."
+      : "2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.";
   const prompt = [
     `Follow the ${command} workflow from .gemini/workflows/${id}.md.`,
     "",
     "Execution contract:",
     "1. Treat route selection as already resolved by this command; do not begin with skill discovery.",
-    "2. Read `PRODUCT.md`, `ENGINEERING_RULES.md`, `ARCHITECTURE.md`, and `TECH.md` in that order when they exist before non-trivial execution.",
+    docReadLine,
     attachedSkills.trimEnd(),
     '3. Confirm the request fits the workflow\'s "When to use" section.',
     '4. Execute according to "Workflow steps" and apply "Context notes".',
@@ -652,6 +660,10 @@ function buildGeminiCommandToml(workflow) {
 function buildCopilotPromptMarkdown(workflow) {
   const { id, command, description } = workflow;
   const attachedSkills = buildAttachedSkillsSection(workflow, "copilot");
+  const docReadLine =
+    id === "architecture"
+      ? "2. Read `docs/foundation/PRODUCT.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution."
+      : "2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.";
   return [
     `# Workflow Prompt: ${command}`,
     "",
@@ -662,7 +674,7 @@ function buildCopilotPromptMarkdown(workflow) {
     "",
     "Execution contract:",
     "1. Treat route selection as already resolved by this prompt; do not begin with skill discovery.",
-    "2. Read `PRODUCT.md`, `ENGINEERING_RULES.md`, `ARCHITECTURE.md`, and `TECH.md` in that order when they exist before non-trivial execution.",
+    docReadLine,
     attachedSkills.trimEnd(),
     "3. Apply workflow sections in order: When to use, Workflow steps, Context notes, Verification.",
     "4. Route to the workflow's primary specialist and only add supporting specialists when needed.",

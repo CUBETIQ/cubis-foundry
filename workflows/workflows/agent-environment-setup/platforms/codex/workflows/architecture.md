@@ -1,6 +1,6 @@
 ---
 command: "/architecture"
-description: "Refresh the project backbone docs in PRODUCT.md, ARCHITECTURE.md, ENGINEERING_RULES.md, TECH.md, ROADMAP.md, and ADR scaffolds with explicit structure, design-system, testing, and flow guidance."
+description: "Refresh the core project foundation docs in docs/foundation/PRODUCT.md, docs/foundation/ARCHITECTURE.md, docs/foundation/TECH.md, and ADR scaffolds with explicit structure, product context, testing, and flow guidance."
 triggers:
   [
     "architecture",
@@ -35,25 +35,27 @@ Use this when the task is to declare, refresh, or validate the project backbone 
 
 ## Workflow steps
 
-1. Inspect the repo first and read `PRODUCT.md`, `ENGINEERING_RULES.md`, `ARCHITECTURE.md`, and `TECH.md` in that order if they exist.
-2. Determine the current product surfaces, architecture style, module boundaries, design-system source of truth, roadmap themes, and testing strategy from the codebase.
-3. Update the managed backbone sections in `PRODUCT.md`, `ARCHITECTURE.md`, `ENGINEERING_RULES.md`, `TECH.md`, and `ROADMAP.md`.
-4. Add or refresh Mermaid diagrams and flow narratives inside `ARCHITECTURE.md` or `TECH.md` when they clarify system behavior.
-5. Seed or refresh `docs/adr/README.md` and keep ADR linkage explicit when decisions should be durable.
-6. Record whether the update was driven by a broader spec and whether future implementation must follow newly declared rules.
+1. Inspect the repo first and derive the current product surfaces, architecture style, module boundaries, technical constraints, and testing strategy from the codebase itself.
+2. Read concrete repo anchors before drafting: root README/manifests, main entrypoints, the primary app roots, existing `docs/specs/`, and representative source folders for each major surface.
+3. Read `docs/foundation/PRODUCT.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order if they exist.
+4. Update the managed foundation sections in `docs/foundation/PRODUCT.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md`.
+5. Add or refresh Mermaid diagrams and flow narratives inside `docs/foundation/ARCHITECTURE.md` or `docs/foundation/TECH.md` when they clarify system behavior.
+6. Seed or refresh `docs/foundation/adr/README.md` and `docs/foundation/adr/0000-template.md`, and keep ADR linkage explicit when decisions should be durable.
+7. Record whether the update was driven by a broader spec and whether future implementation must follow newly declared structure or product constraints.
 
 ## Context notes
 
 - This workflow is route-fixed and skill-fixed: do not start with `route_resolve` or `skill_search`.
-- `PRODUCT.md` captures intent, `ARCHITECTURE.md` captures accepted structure, `ENGINEERING_RULES.md` is normative, and `TECH.md` is descriptive. Keep them aligned but not redundant.
-- Preserve manual content outside the managed architecture sections.
+- `docs/foundation/PRODUCT.md` captures intent, `docs/foundation/ARCHITECTURE.md` captures accepted structure, and `docs/foundation/TECH.md` is the developer-facing technical map. Keep them aligned but not redundant.
+- Favor a lean arc42/C4 style: clear scope, boundaries, building blocks, runtime flows, deployment/testing notes, and only diagrams that add real value.
+- Preserve manual content outside the managed foundation sections.
 - Mark non-applicable sections explicitly instead of silently omitting them.
 
 ## Verification
 
-- Managed backbone sections exist in the target docs.
-- Product intent, architecture style, dependency rules, and design-system guidance are explicit.
-- `ARCHITECTURE.md` or `TECH.md` includes flow text and at least one Mermaid diagram when the repo has meaningful flow complexity.
+- Managed foundation sections exist in the target docs under `docs/foundation/`.
+- Product intent, architecture style, dependency rules, and technical guidance are explicit.
+- `docs/foundation/ARCHITECTURE.md` or `docs/foundation/TECH.md` includes flow text and at least one Mermaid diagram when the repo has meaningful flow complexity.
 - The update records `doc_impact` and whether future feature work must refresh the docs again.
 
 ## Output Contract
@@ -65,13 +67,11 @@ ARCHITECTURE_WORKFLOW_RESULT:
   primary_skills: [architecture-doc, system-design, tech-doc, frontend-design]
   supporting_skills: [api-design?, database-design?, sadd?, deep-research?]
   managed_targets:
-    product_doc: PRODUCT.md
-    architecture_doc: ARCHITECTURE.md
-    rules_doc: ENGINEERING_RULES.md
-    tech_doc: TECH.md
-    roadmap_doc: ROADMAP.md
-    adr_dir: docs/adr
-  files_updated: [PRODUCT.md, ARCHITECTURE.md, ENGINEERING_RULES.md, TECH.md, ROADMAP.md]
+    product_doc: docs/foundation/PRODUCT.md
+    architecture_doc: docs/foundation/ARCHITECTURE.md
+    tech_doc: docs/foundation/TECH.md
+    adr_dir: docs/foundation/adr
+  files_updated: [docs/foundation/PRODUCT.md, docs/foundation/ARCHITECTURE.md, docs/foundation/TECH.md]
   architecture_contract:
     style: <string>
     dependency_rules: [<string>]

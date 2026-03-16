@@ -91,7 +91,7 @@ if ((name === 'codex' && args[0] === 'exec' && args[1] === '--help') || (name !=
   process.exit(0);
 }
 const prompt = args[args.length - 1] || '';
-if (!prompt.includes('PRODUCT.md') || !prompt.includes('ARCHITECTURE.md') || !prompt.includes('ENGINEERING_RULES.md') || !prompt.includes('TECH.md') || !prompt.includes('ROADMAP.md') || !prompt.includes('Load these exact skill IDs first')) {
+if (!prompt.includes('docs/foundation/PRODUCT.md') || !prompt.includes('docs/foundation/ARCHITECTURE.md') || !prompt.includes('docs/foundation/TECH.md') || !prompt.includes('docs/foundation/adr/README.md') || !prompt.includes('Load these exact skill IDs first')) {
   console.error('prompt missing required architecture instructions');
   process.exit(2);
 }
@@ -105,7 +105,7 @@ if (name === 'gemini' && process.env.CBX_STUB_GEMINI_FAIL === '1') {
   process.exit(1);
 }
 process.stdout.write(JSON.stringify({
-  files_written: ['PRODUCT.md', 'ARCHITECTURE.md', 'ENGINEERING_RULES.md', 'TECH.md', 'ROADMAP.md', 'docs/adr/README.md'],
+  files_written: ['docs/foundation/PRODUCT.md', 'docs/foundation/ARCHITECTURE.md', 'docs/foundation/TECH.md', 'docs/foundation/adr/README.md', 'docs/foundation/adr/0000-template.md'],
   research_used: prompt.includes('external research evidence'),
   gaps: [],
   next_actions: []
@@ -168,6 +168,11 @@ function main() {
         Array.isArray(dryRunJson.invocation) && dryRunJson.invocation.length >= 2,
         `${platform} dry-run missing invocation`,
       );
+      assert(
+        Array.isArray(dryRunJson.managedTargets) &&
+          dryRunJson.managedTargets.every((item) => item.includes("/docs/foundation/")),
+        `${platform} dry-run should target docs/foundation`,
+      );
     }
 
     const buildRun = runCli(
@@ -176,31 +181,25 @@ function main() {
     );
     assert(buildRun.status === 0, `codex build failed: ${buildRun.stderr}`);
     const buildJson = parseJsonOutput(buildRun.stdout);
-    assert(buildJson.result.filesWritten.includes("PRODUCT.md"), "build result missing PRODUCT.md");
-    assert(buildJson.result.filesWritten.includes("ARCHITECTURE.md"), "build result missing ARCHITECTURE.md");
-    assert(buildJson.result.filesWritten.includes("ENGINEERING_RULES.md"), "build result missing ENGINEERING_RULES.md");
-    assert(buildJson.result.filesWritten.includes("TECH.md"), "build result missing TECH.md");
-    assert(buildJson.result.filesWritten.includes("ROADMAP.md"), "build result missing ROADMAP.md");
+    assert(buildJson.result.filesWritten.includes("docs/foundation/PRODUCT.md"), "build result missing docs/foundation/PRODUCT.md");
+    assert(buildJson.result.filesWritten.includes("docs/foundation/ARCHITECTURE.md"), "build result missing docs/foundation/ARCHITECTURE.md");
+    assert(buildJson.result.filesWritten.includes("docs/foundation/TECH.md"), "build result missing docs/foundation/TECH.md");
     assert(
       existsSync(path.join(workspace, ".cbx", "architecture-build.json")),
       "architecture metadata missing",
     );
-    const productDoc = readFileSync(path.join(workspace, "PRODUCT.md"), "utf8");
-    const architectureDoc = readFileSync(path.join(workspace, "ARCHITECTURE.md"), "utf8");
-    const rulesDoc = readFileSync(path.join(workspace, "ENGINEERING_RULES.md"), "utf8");
-    const techDoc = readFileSync(path.join(workspace, "TECH.md"), "utf8");
-    const roadmapDoc = readFileSync(path.join(workspace, "ROADMAP.md"), "utf8");
+    const productDoc = readFileSync(path.join(workspace, "docs", "foundation", "PRODUCT.md"), "utf8");
+    const architectureDoc = readFileSync(path.join(workspace, "docs", "foundation", "ARCHITECTURE.md"), "utf8");
+    const techDoc = readFileSync(path.join(workspace, "docs", "foundation", "TECH.md"), "utf8");
     assert(productDoc.includes("cbx:product:foundation:start"), "product doc missing managed block");
     assert(architectureDoc.includes("cbx:architecture:doc:start"), "architecture doc missing managed block");
-    assert(rulesDoc.includes("cbx:architecture:rules:start"), "rules doc missing architecture block");
     assert(techDoc.includes("cbx:architecture:tech:start"), "tech doc missing architecture block");
-    assert(roadmapDoc.includes("cbx:roadmap:foundation:start"), "roadmap doc missing managed block");
     assert(
-      existsSync(path.join(workspace, "docs", "adr", "README.md")),
+      existsSync(path.join(workspace, "docs", "foundation", "adr", "README.md")),
       "adr README missing",
     );
     assert(
-      existsSync(path.join(workspace, "docs", "adr", "0000-template.md")),
+      existsSync(path.join(workspace, "docs", "foundation", "adr", "0000-template.md")),
       "adr template missing",
     );
 
@@ -248,10 +247,14 @@ function main() {
       .map((line) => JSON.parse(line));
     assert(logLines.length >= 1, "stub execution log missing");
     assert(
-      logLines[0].prompt.includes("PRODUCT.md") &&
-        logLines[0].prompt.includes("ARCHITECTURE.md") &&
-        logLines[0].prompt.includes("Mermaid diagrams"),
-      "stub prompt missing Mermaid instruction",
+      logLines[0].prompt.includes("docs/foundation/PRODUCT.md") &&
+        logLines[0].prompt.includes("docs/foundation/ARCHITECTURE.md") &&
+        logLines[0].prompt.includes("docs/foundation/TECH.md") &&
+        logLines[0].prompt.includes("Inspect the repository first") &&
+        logLines[0].prompt.includes("Inspection anchors:") &&
+        logLines[0].prompt.includes("Every major claim should be grounded in repository evidence") &&
+        logLines[0].prompt.includes("AI-authored"),
+      "stub prompt missing scan-first foundation instructions",
     );
 
     console.log("Architecture build tests passed.");
