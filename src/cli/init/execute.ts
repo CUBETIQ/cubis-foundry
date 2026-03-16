@@ -33,16 +33,10 @@ export function buildInitExecutionPlan({
   );
 
   for (const platform of selections.platforms) {
-    const stitchSupported = platform === "antigravity";
-    const stitchEnabled = wantsStitch && stitchSupported;
+    const stitchEnabled = wantsStitch;
     const hasAnyMcp =
       wantsPostman || stitchEnabled || wantsFoundry || wantsPlaywright;
     const warnings: string[] = [];
-    if (wantsStitch && !stitchSupported) {
-      warnings.push(
-        `Stitch is not supported on '${platform}'. It will be skipped for this platform.`,
-      );
-    }
 
     const installOptions: Record<string, unknown> = {
       platform,
@@ -59,7 +53,6 @@ export function buildInitExecutionPlan({
       playwright: wantsPlaywright,
       stitchDefaultForAntigravity: false,
       mcpScope: selections.mcpScope,
-      foundryMcp: wantsFoundry,
       mcpToolSync: wantsPostman || stitchEnabled,
       mcpRuntime: hasAnyMcp ? selections.mcpRuntime : "local",
       mcpFallback: "local",
@@ -70,6 +63,9 @@ export function buildInitExecutionPlan({
         : undefined,
       initWizardMode: true,
     };
+    if (wantsFoundry) {
+      installOptions.foundryMcp = true;
+    }
 
     planItems.push({
       platform,

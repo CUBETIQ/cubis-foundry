@@ -346,6 +346,13 @@
     "userInvocable": true,
     "argumentHint": "SQLAlchemy model, query, or migration to work on"
   },
+  "stitch": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+    "contextFork": true,
+    "forkAgent": "frontend-specialist",
+    "userInvocable": true,
+    "argumentHint": "Stitch screen, design artifact, or UI diff to implement"
+  },
   "stripe-integration": {
     "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
     "contextFork": false,

@@ -1748,6 +1748,32 @@
     ]
   },
   {
+    "id": "stitch",
+    "package_id": "stitch",
+    "catalog_id": "stitch",
+    "kind": "skill",
+    "name": "stitch",
+    "canonical": true,
+    "canonical_id": "stitch",
+    "deprecated": false,
+    "replaced_by": null,
+    "aliases": [],
+    "category": "workflow-specialists",
+    "layer": "workflow-specialists",
+    "maturity": "incubating",
+    "tier": "experimental",
+    "tags": [
+      "stitch",
+      "workflow-specialists"
+    ],
+    "path": ".github/skills/stitch/SKILL.md",
+    "description": "Use when implementing or updating UI from Google Stitch artifacts, screen-to-code handoff, design-to-code diffs, or syncing an existing screen with the latest Stitch output through Cubis Foundry MCP.",
+    "triggers": [
+      "stitch",
+      "workflow-specialists"
+    ]
+  },
+  {
     "id": "stripe-integration",
     "package_id": "stripe-integration",
     "catalog_id": "stripe-integration",

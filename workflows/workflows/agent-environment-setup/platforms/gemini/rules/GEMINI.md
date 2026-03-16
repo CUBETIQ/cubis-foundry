@@ -196,6 +196,7 @@ Use this matrix to match incoming tasks to the correct skill and primary posture
 | sqlalchemy | Framework | SQLAlchemy ORM, sessions, alembic | Database Architect |
 | drizzle-orm | Framework | Drizzle ORM, schema, migrations | Database Architect |
 | frontend-design | Design | UI/UX, component architecture | Frontend Specialist |
+| stitch | Design | Stitch screens, design-to-code, UI diffing | Frontend Specialist |
 | system-design | Design | Distributed systems, scalability | Backend Specialist |
 | microservices-design | Design | Service decomposition, communication | Backend Specialist |
 | api-design | Design | REST/GraphQL API design, versioning | Backend Specialist |

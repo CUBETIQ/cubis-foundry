@@ -1,6 +1,6 @@
 # Cubis Foundry — Platform Research Summary
 
-> Validated against current repo state (`@cubis/foundry` 0.3.75)
+> Validated against current repo state (`@cubis/foundry` 0.3.76)
 > Date: 2026-03-15
 
 ---

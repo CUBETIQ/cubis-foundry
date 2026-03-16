@@ -8,7 +8,7 @@ triggers: ["mobile", "flutter", "ios", "android", "navigation"]
 
 ## When to use
 
-Use this for mobile app development, Flutter architecture, native integrations, or platform-specific behavior.
+Use this for mobile app development, Flutter architecture, Stitch-driven mobile screen handoff, native integrations, or platform-specific behavior.
 
 ## Routing
 
@@ -24,8 +24,9 @@ Use this for mobile app development, Flutter architecture, native integrations, 
 ## Skill Routing
 
 - Primary skills: `flutter-feature`, `mobile-design`
-- Supporting skills (optional): `i18n-localization`, `flutter-riverpod`, `flutter-go-router`, `flutter-design-system`, `flutter-testing`, `flutter-drift`, `flutter-offline-sync`, `flutter-state-machine`, `flutter-repository`, `dart-pro`, `swift-pro`, `kotlin-pro`
+- Supporting skills (optional): `stitch`, `i18n-localization`, `flutter-riverpod`, `flutter-go-router`, `flutter-design-system`, `flutter-testing`, `flutter-drift`, `flutter-offline-sync`, `flutter-state-machine`, `flutter-repository`, `dart-pro`, `swift-pro`, `kotlin-pro`
 - Start with `flutter-feature` for feature implementation and `mobile-design` for UX patterns. Add framework-specific Flutter skill when applicable. Add `i18n-localization` for multi-language support.
+- When the request starts from Stitch artifacts or a design sync, load `stitch` first and then pair it with `mobile-design` plus the narrowest mobile implementation skill for the target stack.
 
 ## Workflow steps
 
@@ -50,7 +51,7 @@ MOBILE_WORKFLOW_RESULT:
   primary_agent: mobile-developer
   supporting_agents: [frontend-specialist?, test-engineer?]
   primary_skills: [flutter-feature, mobile-design]
-  supporting_skills: [i18n-localization?, flutter-riverpod?, flutter-testing?, <flutter-specific>?]
+  supporting_skills: [stitch?, i18n-localization?, flutter-riverpod?, flutter-testing?, <flutter-specific>?]
   implementation:
     platforms: [ios, android]
     architecture_decisions: [<string>]

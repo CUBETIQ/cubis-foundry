@@ -8,7 +8,7 @@
 
 ## Validation Note (Cubis Foundry CLI, 2026-03-15)
 
-- Repo/runtime cross-checks in this workspace were validated against `@cubis/foundry` 0.3.75.
+- Repo/runtime cross-checks in this workspace were validated against `@cubis/foundry` 0.3.76.
 - Current `cbx` surface is `init`, `workflows`, `mcp`, `rules`, `agents`, and `remove`.
 - Treat current source code and `--help` output as the Cubis Foundry truth when this report and local product docs disagree.
 - Codex claims not present in current official OpenAI docs should be treated as unverified.

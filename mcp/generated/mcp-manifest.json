@@ -1,12 +1,12 @@
 {
   "$schema": "cubis-foundry-mcp-manifest-v1",
-  "generatedAt": "2026-03-14T15:00:13.047Z",
-  "contentHash": "84f64d134b87bf9e",
+  "generatedAt": "2026-03-16T03:40:17.907Z",
+  "contentHash": "bd54ecb5e4757c46",
   "summary": {
-    "totalSkills": 67,
+    "totalSkills": 68,
     "totalCategories": 12,
-    "totalBytes": 462863,
-    "estimatedTokens": 115716
+    "totalBytes": 468274,
+    "estimatedTokens": 117069
   },
   "categories": [
     {
@@ -35,7 +35,7 @@
     },
     {
       "name": "general",
-      "skillCount": 40
+      "skillCount": 41
     },
     {
       "name": "mcp",
@@ -1416,6 +1416,25 @@
         "version": "3.0"
       },
       "fileBytes": 6673
+    },
+    {
+      "id": "stitch",
+      "name": "stitch",
+      "displayName": null,
+      "description": "Use when implementing or updating UI from Google Stitch artifacts, screen-to-code handoff, design-to-code diffs, or syncing an existing screen with the latest Stitch output through Cubis Foundry MCP.",
+      "category": "general",
+      "keywords": [
+        "stitch"
+      ],
+      "triggers": [
+        "stitch"
+      ],
+      "path": "workflows/skills/stitch/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 5411
     },
     {
       "id": "stripe-integration",

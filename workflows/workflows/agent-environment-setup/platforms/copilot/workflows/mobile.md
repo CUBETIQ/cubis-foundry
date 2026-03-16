@@ -8,7 +8,7 @@ triggers: ["mobile", "flutter", "ios", "android", "navigation"]
 
 ## When to use
 
-Use this for mobile app development, Flutter architecture, native integrations, or platform-specific behavior.
+Use this for mobile app development, Flutter architecture, Stitch-driven mobile screen handoff, native integrations, or platform-specific behavior.
 
 ## Routing
 
@@ -24,8 +24,9 @@ Use this for mobile app development, Flutter architecture, native integrations, 
 ## Skill Routing
 
 - Primary skills: `expo-app`, `react-native`
-- Supporting skills (optional): `frontend-design`, `expo-app`, `expo-app`, `expo-app`, `expo-app`, `expo-app`, `expo-app`, `expo-app`, `expo-app`, `expo-app`, `swift-best-practices`, `kotlin-best-practices`
+- Supporting skills (optional): `stitch`, `frontend-design`, `expo-app`, `expo-app`, `expo-app`, `expo-app`, `expo-app`, `expo-app`, `expo-app`, `expo-app`, `expo-app`, `swift-best-practices`, `kotlin-best-practices`
 - Start with `expo-app` for feature implementation and `react-native` for UX patterns. Add framework-specific Flutter skill when applicable. Add `frontend-design` for multi-language support.
+- When the request starts from Stitch artifacts or a design sync, load `stitch` first and then pair it with `react-native` plus the narrowest mobile implementation skill for the target stack.
 
 ## Workflow steps
 
@@ -50,7 +51,7 @@ MOBILE_WORKFLOW_RESULT:
   primary_agent: mobile-developer
   supporting_agents: [frontend-specialist?, test-engineer?]
   primary_skills: [expo-app, react-native]
-  supporting_skills: [frontend-design?, expo-app?, expo-app?, <flutter-specific>?]
+  supporting_skills: [stitch?, frontend-design?, expo-app?, expo-app?, <flutter-specific>?]
   implementation:
     platforms: [ios, android]
     architecture_decisions: [<string>]

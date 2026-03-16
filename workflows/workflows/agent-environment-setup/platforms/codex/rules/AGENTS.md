@@ -344,6 +344,7 @@ Use this matrix to match incoming tasks to the correct skill and primary special
 | sqlalchemy | Framework | SQLAlchemy ORM, sessions, alembic | @database-architect |
 | drizzle-orm | Framework | Drizzle ORM, schema, migrations | @database-architect |
 | frontend-design | Design | UI/UX, component architecture | @frontend-specialist |
+| stitch | Design | Stitch screens, design-to-code, UI diffing | @frontend-specialist |
 | system-design | Design | Distributed systems, scalability | @backend-specialist |
 | microservices-design | Design | Service decomposition, communication | @backend-specialist |
 | api-design | Design | REST/GraphQL API design, versioning | @backend-specialist |

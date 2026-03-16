@@ -456,22 +456,51 @@ rg -n -- '--mcp-scope=global is ignored for install/init' /tmp/cbx-c32.log >/dev
 rg -n 'MCP runtime: local' /tmp/cbx-c32.log >/dev/null
 rg -n 'MCP selections: cubis-foundry, postman, stitch, playwright' /tmp/cbx-c32.log >/dev/null
 rg -n 'Postman mode: minimal' /tmp/cbx-c32.log >/dev/null
-rg -n "Stitch is not supported on 'codex'" /tmp/cbx-c32.log >/dev/null
+if rg -n "Stitch is not supported on 'codex'" /tmp/cbx-c32.log >/dev/null; then
+  echo "[FAIL] Init wizard still reports Stitch as unsupported on codex" >&2
+  exit 1
+fi
 log_ok "Init wizard accepts explicit non-interactive selections"
+
+log_step "C3.2.1 Init wizard stitch-only cross-platform path"
+node "$CLI" init --yes --dry-run --no-banner \
+  --platforms codex,claude,copilot,gemini,antigravity \
+  --mcps stitch \
+  --mcp-runtime local >/tmp/cbx-c321.log
+rg -n 'Platforms: codex, claude, copilot, gemini, antigravity' /tmp/cbx-c321.log >/dev/null
+rg -n 'MCP selections: stitch' /tmp/cbx-c321.log >/dev/null
+if rg -n 'Stitch is not supported on' /tmp/cbx-c321.log >/dev/null; then
+  echo "[FAIL] Stitch-only init still reports an unsupported platform" >&2
+  exit 1
+fi
+if [ "$(grep -Fc 'Foundry MCP gateway: enabled (cbx mcp serve)' /tmp/cbx-c321.log)" -ne 5 ]; then
+  echo "[FAIL] Stitch-only init did not enable Foundry MCP gateway for all 5 platforms" >&2
+  exit 1
+fi
+log_ok "Init wizard stitch-only mode works across all supported platforms"
 
 log_step "C3.3 Init wizard stitch-only path"
 node "$CLI" init --yes --dry-run --no-banner \
-  --platforms antigravity \
+  --platforms codex \
   --mcps stitch \
   --mcp-runtime local >/tmp/cbx-c33.log
 rg -n 'MCP selections: stitch' /tmp/cbx-c33.log >/dev/null
 rg -n 'MCP runtime: local' /tmp/cbx-c33.log >/dev/null
-rg -n 'Stitch MCP definition' /tmp/cbx-c33.log >/dev/null
+rg -n 'Foundry MCP gateway: enabled \(cbx mcp serve\)' /tmp/cbx-c33.log >/dev/null
+rg -n 'Legacy direct MCP cleanup \(.+codex[\\/]stitch\.json\): missing' /tmp/cbx-c33.log >/dev/null
 if rg -n 'postman.json' /tmp/cbx-c33.log >/dev/null; then
-  echo "[FAIL] Stitch-only init should not install Postman MCP definition" >&2
+  echo "[FAIL] Stitch-only init should not install Postman legacy artifacts" >&2
   exit 1
 fi
-log_ok "Init wizard stitch-only mode avoids forced Postman artifacts"
+if rg -n 'Postman upstream MCP URL' /tmp/cbx-c33.log >/dev/null; then
+  echo "[FAIL] Stitch-only init should not report Postman MCP wiring" >&2
+  exit 1
+fi
+if rg -n 'Ignoring --no-foundry-mcp' /tmp/cbx-c33.log >/dev/null; then
+  echo "[FAIL] Stitch-only init should not warn about --no-foundry-mcp unless explicitly requested" >&2
+  exit 1
+fi
+log_ok "Init wizard stitch-only mode avoids forced Postman artifacts and keeps Foundry gateway wiring"
 
 log_step "C3.3.1 Playwright-only install path"
 node "$CLI" workflows install --platform codex --bundle agent-environment-setup --playwright --dry-run --yes >/tmp/cbx-c331.log
@@ -482,6 +511,98 @@ if rg -n 'Managed MCP definition \(' /tmp/cbx-c331.log >/dev/null; then
   exit 1
 fi
 log_ok "Playwright-only install configures runtime target without forcing Postman artifacts"
+
+log_step "C3.3.2 Credential storage and migration regression"
+mkdir -p credcheck
+(
+  export HOME="$TMP_DIR/home"
+  export POSTMAN_API_KEY_DEFAULT="pmak_test_123456789"
+  export STITCH_API_KEY_DEFAULT="stak_test_987654321"
+  mkdir -p "$HOME"
+  cd credcheck
+  node "$CLI" workflows install --platform codex --bundle agent-environment-setup --postman --stitch --yes >/tmp/cbx-c332-install.log
+)
+[ -f credcheck/cbx_config.json ]
+[ -f credcheck/.vscode/mcp.json ]
+[ -f "$TMP_DIR/home/.cbx/credentials.env" ]
+rg -n '"apiKeyEnvVar": "POSTMAN_API_KEY_DEFAULT"' credcheck/cbx_config.json >/dev/null
+rg -n '"apiKeyEnvVar": "STITCH_API_KEY_DEFAULT"' credcheck/cbx_config.json >/dev/null
+rg -n '"cubis-foundry"' credcheck/.vscode/mcp.json >/dev/null
+rg -n 'pmak_test_123456789' "$TMP_DIR/home/.cbx/credentials.env" >/dev/null
+rg -n 'stak_test_987654321' "$TMP_DIR/home/.cbx/credentials.env" >/dev/null
+if rg -n 'pmak_test_123456789|stak_test_987654321' credcheck/cbx_config.json credcheck/.vscode/mcp.json /tmp/cbx-c332-install.log >/dev/null; then
+  echo "[FAIL] Secrets leaked into project config, runtime config, or install output" >&2
+  exit 1
+fi
+if rg -n '"postman"|"StitchMCP"' credcheck/.vscode/mcp.json >/dev/null; then
+  echo "[FAIL] Codex project runtime still contains legacy direct Postman/Stitch MCP entries" >&2
+  exit 1
+fi
+node - <<'NODE'
+const fs = require('fs');
+const path = require('path');
+const workspace = path.join(process.cwd(), 'credcheck');
+const configPath = path.join(workspace, 'cbx_config.json');
+const vscodePath = path.join(workspace, '.vscode', 'mcp.json');
+const postmanLegacyPath = path.join(workspace, '.cbx', 'mcp', 'codex', 'postman.json');
+const stitchLegacyPath = path.join(workspace, '.cbx', 'mcp', 'codex', 'stitch.json');
+const cfg = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+cfg.postman.profiles[0].apiKey = 'pmak_inline_leak';
+cfg.stitch.profiles[0].apiKey = 'stak_inline_leak';
+fs.writeFileSync(configPath, `${JSON.stringify(cfg, null, 2)}\n`, 'utf8');
+fs.mkdirSync(path.dirname(vscodePath), { recursive: true });
+fs.writeFileSync(vscodePath, `${JSON.stringify({
+  servers: {
+    postman: {
+      type: 'http',
+      url: 'https://mcp.postman.com/mcp',
+      headers: { Authorization: 'Bearer pmak_inline_leak' }
+    },
+    StitchMCP: {
+      type: 'stdio',
+      command: 'npx',
+      args: [
+        '-y',
+        'mcp-remote',
+        'https://stitch.googleapis.com/mcp',
+        '--header',
+        'X-Goog-Api-Key: stak_inline_leak'
+      ]
+    }
+  }
+}, null, 2)}\n`, 'utf8');
+fs.mkdirSync(path.dirname(postmanLegacyPath), { recursive: true });
+fs.writeFileSync(postmanLegacyPath, `${JSON.stringify({
+  headers: { Authorization: 'Bearer pmak_inline_leak' }
+}, null, 2)}\n`, 'utf8');
+fs.writeFileSync(stitchLegacyPath, `${JSON.stringify({
+  args: ['--header', 'X-Goog-Api-Key: stak_inline_leak']
+}, null, 2)}\n`, 'utf8');
+NODE
+(
+  export HOME="$TMP_DIR/home"
+  cd credcheck
+  node "$CLI" workflows config keys doctor --scope project >/tmp/cbx-c332-doctor.log
+  node "$CLI" workflows config keys migrate-inline --scope project >/tmp/cbx-c332-migrate.log
+)
+rg -n 'Credential leak findings: ' /tmp/cbx-c332-doctor.log >/dev/null
+rg -n 'credcheck/.vscode/mcp.json' /tmp/cbx-c332-doctor.log >/dev/null
+rg -n 'credcheck/.cbx/mcp/codex/postman.json' /tmp/cbx-c332-doctor.log >/dev/null
+rg -n 'credcheck/.cbx/mcp/codex/stitch.json' /tmp/cbx-c332-doctor.log >/dev/null
+rg -n 'Inline key fields found: 2' /tmp/cbx-c332-migrate.log >/dev/null
+rg -n 'Secure platform MCP target:' /tmp/cbx-c332-migrate.log >/dev/null
+[ ! -f credcheck/.cbx/mcp/codex/postman.json ]
+[ ! -f credcheck/.cbx/mcp/codex/stitch.json ]
+if rg -n 'pmak_inline_leak|stak_inline_leak' credcheck/cbx_config.json credcheck/.vscode/mcp.json /tmp/cbx-c332-doctor.log /tmp/cbx-c332-migrate.log >/dev/null; then
+  echo "[FAIL] Inline leaked secrets were not scrubbed after migrate-inline" >&2
+  exit 1
+fi
+if rg -n '"postman"|"StitchMCP"' credcheck/.vscode/mcp.json >/dev/null; then
+  echo "[FAIL] migrate-inline did not remove legacy direct Postman/Stitch runtime entries" >&2
+  exit 1
+fi
+rg -n '"cubis-foundry"' credcheck/.vscode/mcp.json >/dev/null
+log_ok "Secrets stay in the machine vault and migrate-inline repairs leaked legacy artifacts"
 
 log_step "C3.4 Remove-all dry-run surfaces"
 node "$CLI" workflows remove-all --scope all --dry-run --yes >/tmp/cbx-c34.log

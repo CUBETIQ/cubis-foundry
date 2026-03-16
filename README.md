@@ -27,7 +27,7 @@ Skill install default is profile-based:
 - [Guided Init Wizard (`cbx init`)](#guided-init-wizard-cbx-init)
 - [Quickstarts](#quickstarts)
 - [Scope Model (Global vs Project)](#scope-model-global-vs-project)
-- [Credential Model (`cbx_config.json` only)](#credential-model-cbx_configjson-only)
+- [Credential Model (Metadata + Machine Vault)](#credential-model-metadata--machine-vault)
 - [MCP Setup Flows](#mcp-setup-flows)
 - [MCP Placement Matrix](#mcp-placement-matrix)
 - [Command Reference](#command-reference)
@@ -76,7 +76,7 @@ Recommended environment setup:
 
 ```bash
 export POSTMAN_API_KEY_DEFAULT="<your-postman-api-key>"
-export STITCH_API_KEY_DEFAULT="<your-stitch-api-key>" # Antigravity StitchMCP only
+export STITCH_API_KEY_DEFAULT="<your-stitch-api-key>"
 cbx workflows config keys persist-env --service all --scope global
 ```
 
@@ -149,7 +149,7 @@ Important:
 cbx workflows install --platform antigravity --scope global --bundle agent-environment-setup --postman --postman-mode full
 ```
 
-This also manages default `StitchMCP` wiring for Antigravity.
+Postman and Stitch both route through the Cubis Foundry MCP gateway on this platform as well.
 
 ### Copilot
 
@@ -210,18 +210,21 @@ Gemini CLI:
 - Project rules: `<workspace>/.gemini/GEMINI.md`
 - Global rules: `~/.gemini/GEMINI.md`
 
-## Credential Model (`cbx_config.json` only)
+## Credential Model (Metadata + Machine Vault)
 
-`cbx_config.json` is the single supported credentials/config source.
+Secrets are now machine-scoped only.
+
+- `cbx_config.json` stores non-secret metadata such as active profile name, env-var alias, Postman workspace id, MCP URL, and runtime preferences.
+- `~/.cbx/credentials.env` stores the actual Postman/Stitch API key values managed by the CLI.
+- Generated runtime configs must never contain raw Postman bearer tokens or raw Stitch `X-Goog-Api-Key` values.
 
 Paths:
 
-- Global: `~/.cbx/cbx_config.json`
-- Project: `<workspace>/cbx_config.json`
+- Global metadata: `~/.cbx/cbx_config.json`
+- Project metadata: `<workspace>/cbx_config.json`
+- Machine credential vault: `~/.cbx/credentials.env`
 
 ### Profile schema
-
-Postman and Stitch now support multiple named profiles with active selection.
 
 ```json
 {
@@ -247,6 +250,7 @@ Postman and Stitch now support multiple named profiles with active selection.
     "mcpUrl": "https://stitch.googleapis.com/mcp"
   },
   "mcp": {
+    "server": "cubis-foundry",
     "runtime": "docker",
     "fallback": "local",
     "docker": {
@@ -260,7 +264,7 @@ Postman and Stitch now support multiple named profiles with active selection.
 }
 ```
 
-Inline keys are no longer allowed. Use env-var aliases only.
+Inline keys are rejected on new writes and scrubbed during migration.
 
 ### List/Add/Use/Remove profiles
 
@@ -284,7 +288,7 @@ cbx workflows config keys migrate-inline --scope global --redact
 # Doctor check for inline keys / unsafe headers
 cbx workflows config keys doctor --scope global
 
-# Persist selected env aliases to ~/.cbx/credentials.env (mode 600)
+# Persist selected env values into ~/.cbx/credentials.env (mode 600)
 cbx workflows config keys persist-env --service all --scope global
 ```
 
@@ -302,33 +306,23 @@ cbx workflows install --platform codex --scope global --bundle agent-environment
 
 If active Postman env var (for example `POSTMAN_API_KEY_DEFAULT`) is available and `--yes` is not used, installer can show workspace chooser and save selected `workspaceId` in active Postman profile.
 
-`--postman` now installs side-by-side MCP topology by default:
+`--postman` and `--stitch` now install gateway-backed MCP topology by default:
 
-- direct Postman MCP server (`postman`)
-- direct Stitch MCP server where applicable (`StitchMCP` for Antigravity)
-- local Foundry MCP command server (`cubis-foundry` via `cbx mcp serve --transport stdio --scope global`)
+- register `cubis-foundry` as the client-facing MCP server for the selected platform
+- expose `postman.*`, `stitch.*`, and status/catalog passthrough tools through that gateway
+- remove legacy direct Postman/Stitch MCP entries and generated `.cbx/mcp/*/{postman,stitch}.json` artifacts when present
 
-`--postman` also installs the `postman` skill. Managed platform rules then treat Postman intent as route-first with optional skill priming:
+`--postman` still installs the `postman` skill. `--stitch` now installs the canonical `stitch` skill. Managed platform rules route through those skills first when the prompt clearly targets those domains.
 
-- validate or search for the `postman` skill only when Postman intent is explicit or the route still needs domain context
-- load `skill_get "postman"` before execution only when that context is actually needed
-- use direct `postman` server tools for actual Postman collection/workspace/environment/run actions
-- keep Foundry `postman_*` tools limited to mode/status/default-workspace config
-- never auto-fallback from `runCollection` to `runMonitor`
-- recommend Postman CLI as the default secondary path after direct MCP execution fails
-- use monitor execution only when the user explicitly asks for monitor-based cloud execution
+- `postman.*` and `stitch.*` execution should happen through Foundry passthrough tools, not direct standalone client wiring
+- `cbx workflows config keys doctor` scans `cbx_config.json`, generated artifacts, and client runtime configs for leaked inline credentials
+- `cbx workflows config keys migrate-inline` scrubs leaked inline keys, rewrites profiles to env aliases, and reapplies secure Foundry MCP wiring
 
 Quota-safe execution facts:
 
 - Postman API rate limits are separate from monitor usage limits
 - monitor usage is plan/billing usage and is consumed by request count, region count, and auth requests
 - monitor runtime caps are separate from monitor quota and do not imply quota is still available
-
-To opt out of Foundry MCP registration during install:
-
-```bash
-cbx workflows install --platform codex --scope global --bundle agent-environment-setup --postman --postman-mode full --no-foundry-mcp
-```
 
 ### Manual workspace ID
 
@@ -348,28 +342,19 @@ If config already exists and you want to overwrite saved values:
 cbx workflows install --platform codex --scope global --bundle agent-environment-setup --postman --postman-mode full --overwrite --yes
 ```
 
-### StitchMCP (Antigravity)
+### Stitch on All Platforms
 
-Antigravity includes managed Stitch MCP support using active Stitch profile from `cbx_config.json`.
+Stitch is supported on all active Foundry platforms: `codex`, `claude`, `copilot`, `gemini`, and `antigravity`.
 
-Default managed command template:
-
-```json
-{
-  "StitchMCP": {
-    "$typeName": "exa.cascade_plugins_pb.CascadePluginCommandTemplate",
-    "command": "npx",
-    "args": [
-      "-y",
-      "mcp-remote",
-      "https://stitch.googleapis.com/mcp",
-      "--header",
-      "X-Goog-Api-Key: ${STITCH_API_KEY_DEFAULT}"
-    ],
-    "env": {}
-  }
-}
+```bash
+cbx workflows install --platform codex --bundle agent-environment-setup --stitch --yes
+cbx workflows install --platform claude --bundle agent-environment-setup --stitch --yes
+cbx workflows install --platform copilot --bundle agent-environment-setup --stitch --yes
+cbx workflows install --platform gemini --bundle agent-environment-setup --stitch --yes
+cbx workflows install --platform antigravity --bundle agent-environment-setup --stitch --yes
 ```
+
+The selected client receives `cubis-foundry` MCP wiring, and Stitch access flows through the Foundry gateway plus the `stitch` skill. See `docs/stitch_mcp.md` for the platform details and workflow guidance.
 
 ### Playwright
 
@@ -378,8 +363,6 @@ Default managed command template:
 ```bash
 cbx workflows install --platform codex --bundle agent-environment-setup --playwright
 ```
-
-Add `--no-foundry-mcp` when you want only the Playwright runtime entry without the side-by-side `cubis-foundry` server registration.
 
 Default managed URL:
 
@@ -391,18 +374,13 @@ Playwright MCP patching is supported for Codex, Antigravity, Gemini CLI, Copilot
 
 ## MCP Placement Matrix
 
-Managed MCP definition files (`.cbx/mcp/...`):
-
-- Global scope: `~/.cbx/mcp/<platform>/postman.json`
-- Project scope: `<workspace>/.cbx/mcp/<platform>/postman.json`
-
 Runtime target patching:
 
 Codex:
 
 - Global MCP runtime target: `~/.codex/config.toml` (via `codex mcp add/remove`)
 - Project MCP runtime target: `<workspace>/.vscode/mcp.json`
-- Foundry side-by-side server id: `cubis-foundry` (command: `cbx mcp serve --transport stdio --scope <global|project>`)
+- Foundry gateway server id: `cubis-foundry` (command: `cbx mcp serve --transport stdio --scope <global|project>`)
   - Install now pins scope explicitly (`global` or `project`) in this command.
   - When MCP runtime is set to `docker`, install points `cubis-foundry` at the local Docker endpoint (`http://127.0.0.1:3310/mcp`) instead of the stdio command.
 
@@ -410,15 +388,29 @@ Antigravity:
 
 - Global runtime target: `~/.gemini/settings.json` (`mcpServers`)
 - Project runtime target: `<workspace>/.gemini/settings.json` (`mcpServers`)
-- Foundry side-by-side server id: `cubis-foundry` (command template)
+- Foundry gateway server id: `cubis-foundry` (command template)
   - Install now pins scope explicitly (`global` or `project`) in this command.
 
 Copilot:
 
 - Global runtime target: `~/.copilot/mcp-config.json` (`servers`)
 - Project runtime target: `<workspace>/.vscode/mcp.json` (`servers`)
-- Foundry side-by-side server id: `cubis-foundry` (stdio command server)
+- Foundry gateway server id: `cubis-foundry` (stdio command server)
   - Install now pins scope explicitly (`global` or `project`) in this command.
+
+Claude:
+
+- Global runtime target: `~/.claude/mcp.json` (`mcpServers`)
+- Project runtime target: `<workspace>/.mcp.json` (`mcpServers`)
+- Foundry gateway server id: `cubis-foundry`
+
+Gemini CLI:
+
+- Global runtime target: `~/.gemini/settings.json` (`mcpServers`)
+- Project runtime target: `<workspace>/.gemini/settings.json` (`mcpServers`)
+- Foundry gateway server id: `cubis-foundry`
+
+Legacy direct Postman/Stitch definitions under `.cbx/mcp/<platform>/` are cleanup targets only and are no longer the default install model.
 
 ## Command Reference
 
@@ -639,8 +631,8 @@ What it removes (by scope/platform selection):
 
 - Generated workflows/agents/skills wrappers.
 - Managed rule blocks and generated engineering docs (`AGENTS.md`, `ENGINEERING_RULES.md`, `TECH.md`) where applicable.
-- Managed MCP definition files and runtime target entries.
-- Project/global `.cbx` state/config artifacts created by installer flows.
+- Managed runtime target entries plus any legacy direct Postman/Stitch MCP definition files.
+- Project/global `.cbx` metadata artifacts created by installer flows.
 - Optional global credentials file (`~/.cbx/credentials.env`) when `--include-credentials` is provided.
 
 To keep generated artifacts out of git in app repositories, add these ignore entries:
@@ -674,6 +666,17 @@ cbx workflows config --scope global --show
 ```
 
 Then confirm `status.postman.effectiveSource` is `env`.
+
+### `Stitch or Postman key leaked into cbx_config.json or client config`
+
+Use the credential doctor and migration flow:
+
+```bash
+cbx workflows config keys doctor --scope project
+cbx workflows config keys migrate-inline --scope project
+```
+
+This scans `cbx_config.json`, generated `.cbx/mcp` artifacts, `.vscode/mcp.json`, `.mcp.json`, `.gemini/settings.json`, `~/.copilot/mcp-config.json`, and `~/.codex/config.toml`, then scrubs inline keys and reapplies secure Foundry MCP wiring.
 
 ### `apiKeySource` looks unset even after export
 
@@ -765,10 +768,12 @@ cbx workflows config --scope global --clear-workspace-id
 
 ### Behavior changes in this release
 
-- `cbx_config.json` is now the only supported config source for Postman/Stitch credentials.
+- `cbx_config.json` is now metadata-only for Postman/Stitch; persisted secrets belong in `~/.cbx/credentials.env`.
 - Multi-profile key model added (`profiles[]` + `activeProfileName`).
 - `config keys` commands added (`list/add/use/remove`).
+- `config keys doctor`, `migrate-inline`, and `persist-env` now enforce secure credential storage and cleanup.
 - `config --show` now reports stored vs effective auth source.
+- Postman and Stitch client wiring now default to Cubis Foundry MCP gateway registration on every supported platform.
 - Install now defaults to indexed top-level all-skill install.
 - Nested duplicate skill directories are auto-cleaned during install.
 - Legacy aliases were removed (`skills`, root `install/init/platforms`, `workflows init`).
@@ -788,4 +793,9 @@ cbx workflows config --scope global --show
 
 - Postman API keys: <https://learning.postman.com/docs/developer/postman-api/authentication/>
 - Postman MCP setup: <https://learning.postman.com/docs/developer/postman-api/postman-mcp-server/set-up-postman-mcp-server>
+- Stitch MCP upstream: <https://github.com/davideast/stitch-mcp>
+- Codex MCP docs: <https://developers.openai.com/codex/mcp/>
+- Claude Code MCP docs: <https://docs.anthropic.com/en/docs/claude-code/mcp>
+- Gemini CLI MCP docs: <https://github.com/google-gemini/gemini-cli/blob/main/docs/tools/mcp-server.md>
+- VS Code / Copilot MCP docs: <https://code.visualstudio.com/docs/copilot/chat/mcp-servers>
 - Google Stitch MCP: <https://developers.google.com/stitch>

@@ -168,6 +168,57 @@ async function loadPlatformNote(platform) {
   return _platformNotes[platform];
 }
 
+function buildStitchPlatformSection(platform) {
+  if (platform === "codex") {
+    return `## Codex Stitch Flow
+
+- Treat Stitch as a repo-local implementation assistant, not a code drop. Verify the \`cubis-foundry\` MCP entry, inspect the workspace, then patch the existing screen with minimal diffs.
+- Keep the flow in one reasoning thread: preflight with \`stitch_get_status\` and \`mcp_gateway_status\`, fetch the artifact, map it to the current stack, then edit locally.
+- If the request sounds like "sync" or "update", compare the current component tree first and preserve validated local business logic while changing only UI structure, copy, tokens, and states.`;
+  }
+
+  if (platform === "claude") {
+    return `## Claude Stitch Flow
+
+- Use \`$ARGUMENTS\` as the requested Stitch screen or implementation brief when this skill is invoked directly.
+- Resolve any extra guidance from \`\${CLAUDE_SKILL_DIR}/references/platform-setup.md\`, \`\${CLAUDE_SKILL_DIR}/references/implementation-patterns.md\`, and \`\${CLAUDE_SKILL_DIR}/references/update-diff-workflow.md\`.
+- Start with Foundry gateway + Stitch status checks, then hand the concrete implementation work to the frontend-specialist fork only after the target artifact and destination surface are clear.`;
+  }
+
+  if (platform === "copilot") {
+    return `## Copilot Stitch Flow
+
+- Treat the user prompt itself as the skill argument. Restate the target screen, framework, and reuse constraints before editing code.
+- Pull extra context from the mirrored references when needed, for example \`#file:references/platform-setup.md\` and \`#file:references/update-diff-workflow.md\`.
+- Keep the task inline: verify Foundry gateway access from workspace \`.vscode/mcp.json\`, fetch the Stitch artifact, then apply a minimal repo-native patch without assuming subagents or custom tool restrictions.`;
+  }
+
+  if (platform === "gemini") {
+    return `## Gemini Stitch Flow
+
+- Activate the \`stitch\` skill inline, then verify the workspace or global \`.gemini/settings.json\` entry points at \`cubis-foundry\`.
+- Keep the flow sequential: gateway preflight, artifact fetch, framework mapping, local patch, verification.
+- When the prompt is vague, first rewrite it into a concrete implementation brief with target route, component boundaries, states, and responsive expectations before editing code.`;
+  }
+
+  if (platform === "antigravity") {
+    return `## Antigravity Stitch Flow
+
+- Use the \`stitch\` skill from \`.agent/skills/stitch\` as the preflight and artifact-retrieval entry point, then hand off focused implementation work through Agent Manager only if the task genuinely benefits from parallelism.
+- Keep Stitch verification with the initiating agent: confirm gateway status, screen identity, and destination files before dispatching any frontend-specialist work.
+- Preserve Antigravity's route-first posture: the result should still be a minimal, repo-native UI patch rather than a pasted design export.`;
+  }
+
+  return "";
+}
+
+function injectPlatformSpecificSkillGuidance(body, skillId, platform) {
+  if (skillId !== "stitch") return body;
+  const section = buildStitchPlatformSection(platform);
+  if (!section) return body;
+  return body.trimEnd() + "\n\n" + section + "\n";
+}
+
 function stripFrontmatterKeys(frontmatter, keysToRemove) {
   const lines = frontmatter.split(/\r?\n/);
   const kept = [];
@@ -244,6 +295,7 @@ async function enrichClaudeSkillMarkdown(markdown, skillId) {
 
   // Build body with platform notes
   let body = rewriteLegacySkillIds(extracted.body);
+  body = injectPlatformSpecificSkillGuidance(body, skillId, "claude");
   const note = await loadPlatformNote("claude");
   if (note) {
     body = body.trimEnd() + "\n\n" + note + "\n";
@@ -289,7 +341,7 @@ function retainMinimalSkillFrontmatter(frontmatter) {
     .trimEnd();
 }
 
-async function transformMinimalSkillMarkdown(markdown, platform) {
+async function transformMinimalSkillMarkdown(markdown, platform, skillId) {
   const extracted = extractFrontmatter(markdown);
   if (!extracted.matched) return markdown;
 
@@ -308,6 +360,8 @@ async function transformMinimalSkillMarkdown(markdown, platform) {
     body = body.replace(/\bsub-?agents?\b/gi, "inline specialist postures");
     body = body.replace(/`?context:\s*fork`?/gi, "inline skill execution");
   }
+
+  body = injectPlatformSpecificSkillGuidance(body, skillId, platform);
 
   const note = await loadPlatformNote(platform);
   if (note) {
@@ -357,7 +411,7 @@ function filterFrontmatterByAllowedKeys(frontmatter, allowedKeys) {
     .trimEnd();
 }
 
-async function transformCopilotSkillMarkdown(markdown) {
+async function transformCopilotSkillMarkdown(markdown, skillId) {
   const extracted = extractFrontmatter(markdown);
   if (!extracted.matched) return markdown;
 
@@ -371,6 +425,7 @@ async function transformCopilotSkillMarkdown(markdown) {
   body = body.replace(/\$ARGUMENTS/g, "user input");
   body = body.replace(/\$\{CLAUDE_SKILL_DIR\}/g, "the skill directory");
   body = body.replace(/`?context:\s*fork`?/gi, "");
+  body = injectPlatformSpecificSkillGuidance(body, skillId, "copilot");
 
   // Append Copilot platform notes
   const note = await loadPlatformNote("copilot");
@@ -408,17 +463,17 @@ async function copyFilteredSkillDir(source, destination, label, depth = 0) {
     if (entry.name === "SKILL.md") {
       const raw = await fs.readFile(sourcePath, "utf8");
       let transformed = raw;
+      const skillId = path.basename(source);
       if (label === "copilot") {
-        transformed = await transformCopilotSkillMarkdown(raw);
+        transformed = await transformCopilotSkillMarkdown(raw, skillId);
       } else if (label === "claude") {
-        const skillId = path.basename(source);
         transformed = await enrichClaudeSkillMarkdown(raw, skillId);
       } else if (
         label === "codex" ||
         label === "antigravity" ||
         label === "gemini"
       ) {
-        transformed = await transformMinimalSkillMarkdown(raw, label);
+        transformed = await transformMinimalSkillMarkdown(raw, label, skillId);
       }
       await fs.writeFile(destinationPath, transformed, "utf8");
       continue;

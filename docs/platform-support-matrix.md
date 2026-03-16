@@ -20,7 +20,7 @@
 | Agent files | 22 `.md` | none | 22 `.md` | 22 `.md` | 22 `.md` with sanitized frontmatter |
 | Workflow files | 18 `.md` | 18 `.md` | 18 `.md` | 18 `.md` | 18 `.md` |
 | Commands or prompts | 18 `.toml` | 18 `.toml` | none | none | 18 `.prompt.md` |
-| Skill mirrors | 67 skill dirs | 67 skill dirs | 67 skill dirs | 67 skill dirs | 67 skill dirs |
+| Skill mirrors | 68 skill dirs | 68 skill dirs | 68 skill dirs | 68 skill dirs | 68 skill dirs |
 | Compatibility aliases | none | none | none | `$agent-*`, `$workflow-*` | none |
 
 ## Notes

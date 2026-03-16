@@ -1,165 +1,149 @@
-````md
-# Stitch MCP Guide with Codex
+## Stitch MCP in Cubis Foundry
 
-Connect **Google Stitch** to **OpenAI Codex** using **MCP (Model Context Protocol)**, so Codex can pull real Stitch screen artifacts (code/images/metadata) instead of guessing UI.
+Cubis Foundry treats Google Stitch as a gateway-backed service on every active platform:
 
----
+- `codex`
+- `claude`
+- `copilot`
+- `gemini`
+- `antigravity`
 
-## What this does
+The CLI no longer installs standalone client-side Stitch MCP definitions as the default path. Instead, it registers `cubis-foundry` as the MCP server for the selected client, then exposes Stitch through Foundry passthrough tools and the canonical `stitch` skill.
 
-- Runs a local MCP server: `stitch-mcp proxy`
-- Registers it in Codex via `~/.codex/config.toml` (or `.codex/config.toml`)
-- Authenticates using `STITCH_API_KEY` (API-key mode, no OAuth)
+## Security Model
 
----
+- Raw Stitch API keys belong in `~/.cbx/credentials.env`.
+- `cbx_config.json` stores only metadata such as `activeProfileName`, `apiKeyEnvVar`, and `mcpUrl`.
+- Generated client runtime configs must not contain raw `X-Goog-Api-Key` values.
+- `cbx workflows config keys doctor` scans for leaked inline Stitch and Postman credentials.
+- `cbx workflows config keys migrate-inline` scrubs leaks and reapplies secure Foundry MCP wiring.
 
-## Prerequisites
-
-- Node.js (for `npx`)
-- Codex (CLI and/or IDE extension)
-- A Stitch API key
-
----
-
-## 1) Set your Stitch API key (recommended)
-
-### macOS / Linux
+Recommended setup:
 
 ```bash
-export STITCH_API_KEY="YOUR_STITCH_API_KEY"
-```
-````
-
-### Windows (PowerShell)
-
-```powershell
-$env:STITCH_API_KEY="YOUR_STITCH_API_KEY"
+export STITCH_API_KEY_DEFAULT="<your-stitch-api-key>"
+cbx workflows config keys persist-env --service stitch --scope global
 ```
 
-> Tip: Put it in your shell profile (`~/.zshrc`, `~/.bashrc`, etc.) so it persists.
+## Install
 
----
-
-## 2) Configure Codex to use Stitch MCP
-
-Codex MCP config file locations:
-
-- **User-level**: `~/.codex/config.toml`
-- **Project-level**: `.codex/config.toml` (use if you only want this for one repo)
-
-Add this to your config:
-
-```toml
-[mcp_servers.stitch]
-command = "npx"
-args = ["-y", "@_davideast/stitch-mcp", "proxy"]
-
-# Prefer forwarding env vars (keeps secrets out of the file)
-env_vars = ["STITCH_API_KEY"]
-```
-
-✅ This forwards `STITCH_API_KEY` from your terminal environment into the MCP server.
-
----
-
-## 3) Verify the MCP server is available in Codex
-
-Depending on your Codex version, try one of these:
+### Codex
 
 ```bash
-codex mcp --help
+cbx workflows install --platform codex --bundle agent-environment-setup --stitch --yes
 ```
 
-If your build supports listing:
+Runtime target:
+
+- global: `~/.codex/config.toml`
+- project: `<workspace>/.vscode/mcp.json`
+
+### Claude Code
 
 ```bash
-codex mcp list
+cbx workflows install --platform claude --bundle agent-environment-setup --stitch --yes
 ```
 
-If you use the Codex UI/TUI, open the MCP panel/command (often `/mcp`) to confirm the `stitch` server is active.
+Runtime target:
 
----
+- global: `~/.claude/mcp.json`
+- project: `<workspace>/.mcp.json`
 
-## 4) Use Stitch in your Codex prompt
-
-Examples you can paste into Codex:
-
-### A) Implement a Stitch screen in Flutter
-
-- Use the **stitch** MCP tools to list projects/screens.
-- Pick the screen named `<SCREEN_NAME>`.
-- Fetch screen artifacts (code + image if available).
-- Implement it in **Flutter** using my existing project style.
-- Keep layout, spacing, and typography consistent with Stitch.
-
-### B) Implement in React (Tailwind)
-
-- Use **stitch** MCP tools to find `<SCREEN_NAME>`.
-- Pull the latest screen code + snapshot.
-- Generate a **React + Tailwind** component that matches it exactly.
-- Keep components clean and reusable.
-
-### C) Update an existing screen
-
-- Use Stitch MCP to re-fetch `<SCREEN_NAME>` artifacts.
-- Compare with my local implementation.
-- Patch only the differences and keep my existing architecture.
-
----
-
-## Troubleshooting
-
-### API key not being used
-
-- Make sure `STITCH_API_KEY` is set in the **same terminal session** that launches Codex.
-- Ensure your config includes:
-
-  ```toml
-  env_vars = ["STITCH_API_KEY"]
-  ```
-
-### Node / npx issues
-
-Check:
+### GitHub Copilot
 
 ```bash
-node -v
-npx -v
+cbx workflows install --platform copilot --bundle agent-environment-setup --stitch --yes
 ```
 
-### Proxy health check (optional)
+Runtime target:
 
-Run the proxy directly to see errors:
+- global: `~/.copilot/mcp-config.json`
+- project: `<workspace>/.vscode/mcp.json`
+
+### Gemini CLI
 
 ```bash
-npx -y @_davideast/stitch-mcp proxy
+cbx workflows install --platform gemini --bundle agent-environment-setup --stitch --yes
 ```
 
-If there’s a built-in doctor command in your installed version, run:
+Runtime target:
+
+- global: `~/.gemini/settings.json`
+- project: `<workspace>/.gemini/settings.json`
+
+### Antigravity
 
 ```bash
-npx -y @_davideast/stitch-mcp doctor --verbose
+cbx workflows install --platform antigravity --bundle agent-environment-setup --stitch --yes
 ```
 
----
+Runtime target:
 
-## Security notes
+- global: `~/.gemini/settings.json`
+- project: `<workspace>/.gemini/settings.json`
 
-- Do **not** hardcode API keys in files that could be committed.
-- Prefer `env_vars = ["STITCH_API_KEY"]` and store keys in your shell env or a secrets manager.
+## What the Install Does
 
----
+- writes or updates `cbx_config.json` with Stitch profile metadata only
+- persists selected credential env values into `~/.cbx/credentials.env`
+- registers `cubis-foundry` in the selected client runtime config
+- installs the canonical `stitch` skill and generated platform mirrors
+- removes legacy direct Stitch/Postman runtime entries when found
+- removes legacy `.cbx/mcp/<platform>/stitch.json` artifacts when found
 
-## References (docs)
+## Verify
 
-```text
-OpenAI Codex MCP docs:
-https://developers.openai.com/codex/mcp/
+Use the Foundry gateway and Stitch status tools after install:
 
-stitch-mcp repository:
-https://github.com/davideast/stitch-mcp
+```bash
+cbx workflows config --scope project --show
+cbx mcp tools list --service stitch --scope project
 ```
 
+Inside the client session, verify with the gateway-facing tools before relying on Stitch artifacts:
+
+- `mcp_gateway_status`
+- `stitch_get_status`
+- `stitch_list_enabled_tools`
+
+## Expected Usage Pattern
+
+When a request mentions Stitch screens, design-to-code, screen sync, or UI diffs:
+
+1. Load the `stitch` skill first.
+2. Verify Stitch is configured and reachable.
+3. Fetch real Stitch artifacts before changing code.
+4. Map the artifacts into the repo’s actual design system and framework.
+5. Prefer minimal diffs when patching existing screens.
+
+Typical prompt shapes:
+
+- “Use Stitch to implement the latest login screen in this React app.”
+- “Sync this existing mobile screen to the newest Stitch artifact and patch only the diff.”
+- “Pull the Stitch screen and adapt it to our Tailwind token system.”
+
+## Repair Leaks or Legacy Wiring
+
+```bash
+cbx workflows config keys doctor --scope project
+cbx workflows config keys migrate-inline --scope project
 ```
 
-```
+This checks:
+
+- `<workspace>/cbx_config.json`
+- `~/.cbx/cbx_config.json`
+- generated `.cbx/mcp/*` artifacts
+- `.vscode/mcp.json`
+- `.mcp.json`
+- `.gemini/settings.json`
+- `~/.copilot/mcp-config.json`
+- `~/.codex/config.toml`
+
+## References
+
+- [Stitch MCP upstream](https://github.com/davideast/stitch-mcp)
+- [OpenAI Codex MCP docs](https://developers.openai.com/codex/mcp/)
+- [Claude Code MCP docs](https://docs.anthropic.com/en/docs/claude-code/mcp)
+- [Gemini CLI MCP docs](https://github.com/google-gemini/gemini-cli/blob/main/docs/tools/mcp-server.md)
+- [VS Code / Copilot MCP docs](https://code.visualstudio.com/docs/copilot/chat/mcp-servers)

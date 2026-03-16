@@ -1,0 +1,68 @@
+[
+  {
+    "id": "stitch-eval-01",
+    "name": "New screen from Stitch artifact",
+    "description": "Validate that the skill starts with Stitch and gateway preflight, pulls real Stitch artifacts, and maps them into the existing web stack instead of copying raw generated output.",
+    "prompt": "Implement a new account overview screen for a Next.js app from the latest Google Stitch artifact. The app already has `PageShell`, `Card`, `Button`, and tokenized typography primitives. Put the screen at `/account`, support desktop and mobile layouts, and keep the implementation aligned with the existing design system instead of pasting raw generated markup.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "stitch_get_status",
+        "description": "Must verify Stitch availability before relying on any artifact details."
+      },
+      {
+        "type": "contains",
+        "value": "mcp_gateway_status",
+        "description": "Must check Cubis Foundry MCP gateway status so the skill confirms Stitch passthrough is actually reachable."
+      },
+      {
+        "type": "contains",
+        "value": "stitch_list_enabled_tools",
+        "description": "Must inspect enabled Stitch tools before choosing which upstream artifact workflow to use."
+      },
+      {
+        "type": "pattern",
+        "value": "PageShell|Card|Button|design system|token",
+        "description": "Must map the Stitch output into the repo's existing primitives or token system rather than cloning raw one-off markup."
+      },
+      {
+        "type": "pattern",
+        "value": "responsive|mobile|desktop|accessib",
+        "description": "Must preserve responsive behavior and accessibility as part of the production implementation."
+      }
+    ]
+  },
+  {
+    "id": "stitch-eval-02",
+    "name": "Minimal-diff Stitch sync for existing screen",
+    "description": "Validate that the skill treats refreshed Stitch output as a diff input, preserves local business logic, and translates the update into the destination mobile stack.",
+    "prompt": "Update an existing React Native settings screen from refreshed Google Stitch output. Preserve analytics hooks, feature flags, and business logic already in the app. Only patch the visual and structural differences between the current local screen and the latest Stitch artifact, and keep the final result accessible and consistent with the app's existing components.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "stitch_get_status",
+        "description": "Must start with Stitch reachability checks before claiming parity with the latest artifact."
+      },
+      {
+        "type": "contains",
+        "value": "stitch_list_enabled_tools",
+        "description": "Must confirm which Stitch passthrough tools are enabled for the current environment."
+      },
+      {
+        "type": "pattern",
+        "value": "minimal diff|patch only|changed only|diff",
+        "description": "Must frame the work as a minimal patch against the existing implementation rather than a full rewrite."
+      },
+      {
+        "type": "pattern",
+        "value": "analytics|feature flag|business logic|preserve",
+        "description": "Must explicitly preserve validated local logic while updating only the UI surface."
+      },
+      {
+        "type": "pattern",
+        "value": "React Native|mobile|component|accessib|token",
+        "description": "Must translate the Stitch artifact into the destination mobile stack with accessibility and design-system awareness."
+      }
+    ]
+  }
+]

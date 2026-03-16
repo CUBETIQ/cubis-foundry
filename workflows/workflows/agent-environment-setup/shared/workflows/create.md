@@ -26,8 +26,9 @@ Use this for net-new implementation after design is stable.
 ## Skill Routing
 
 - Primary skills: `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`, `csharp-pro`, `kotlin-pro`, `rust-pro`, `php-pro`, `ruby-pro`, `c-pro`, `cpp-pro`, `dart-pro`, `swift-pro`
-- Supporting skills (optional): `api-designer`, `api-patterns`, `nodejs-best-practices`, `nestjs-expert`, `fastapi-expert`, `graphql-architect`, `drizzle-expert`, `firebase`, `mcp-builder`, `react-expert`, `react-best-practices`, `nextjs-developer`, `tailwind-patterns`, `frontend-design`, `design-system-builder`, `web-perf`, `skill-creator`, `stripe-best-practices`, `serverless-patterns`, `i18n-localization`
+- Supporting skills (optional): `api-designer`, `api-patterns`, `nodejs-best-practices`, `nestjs-expert`, `fastapi-expert`, `graphql-architect`, `drizzle-expert`, `firebase`, `mcp-builder`, `stitch`, `react-expert`, `react-best-practices`, `nextjs-developer`, `tailwind-patterns`, `frontend-design`, `design-system-builder`, `web-perf`, `skill-creator`, `stripe-best-practices`, `serverless-patterns`, `i18n-localization`
 - Pick one primary language skill from repo signals or touched files. Add the narrowest specialist only when the feature is clearly backend or frontend framework-specific.
+- If the request references Stitch screens, artifacts, design-to-code, or UI sync, add `stitch` first and route the implementation through the frontend or mobile specialist based on the destination surface.
 
 ## Workflow steps
 
@@ -49,7 +50,7 @@ CREATE_WORKFLOW_RESULT:
   primary_agent: orchestrator
   supporting_agents: [backend-specialist?, frontend-specialist?, mobile-developer?, test-engineer?]
   primary_skills: [<dominant-language-skill>]
-  supporting_skills: [<framework-specific-skills-used>]
+  supporting_skills: [stitch?, <framework-specific-skills-used>]
   implemented_scope:
     summary: <string>
     changed_artifacts: [<path-or-artifact>]

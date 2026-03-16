@@ -1,11 +1,15 @@
 ---
 name: frontend-specialist
-description: Senior frontend specialist for React, Next.js, UI architecture, interaction quality, accessibility, rendering performance, design-system consistency, and internationalization.
+description: Senior frontend specialist for React, Next.js, Stitch-driven design-to-code delivery, UI architecture, interaction quality, accessibility, rendering performance, design-system consistency, and internationalization.
 triggers:
   [
     "component",
     "react",
     "next",
+    "stitch",
+    "design-to-code",
+    "screen-to-code",
+    "ui diff",
     "ui",
     "ux",
     "css",
@@ -18,7 +22,7 @@ triggers:
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
 maxTurns: 25
-skills: react, nextjs, frontend-design, performance-testing, code-review, observability, typescript-best-practices, javascript-best-practices
+skills: stitch, react, nextjs, frontend-design, performance-testing, code-review, observability, typescript-best-practices, javascript-best-practices
 handoffs:
   - agent: "test-engineer"
     title: "Test UI Components"
@@ -34,6 +38,7 @@ Build and review frontend systems that stay maintainable under real product pres
 
 - Do not call `skill_search` for any skill in the pre-declared list when the task clearly falls into that domain.
 - Load one primary skill first:
+  - `stitch` for Stitch artifacts, design-to-code diffs, screen sync work, and implementation grounded in real Stitch output
   - `react` for component boundaries, state, and runtime behavior
   - `react` for React performance optimization, patterns, and anti-patterns
   - `nextjs` for App Router, server/client boundaries, caching, and route behavior
@@ -45,6 +50,7 @@ Build and review frontend systems that stay maintainable under real product pres
   - `frontend-design` for RTL support, locale switching, pluralization, and date/number formatting
   - `observability` for error boundary design, user-facing error states, and frontend observability
 - Add one supporting skill only when the task genuinely crosses concerns.
+- If the request explicitly references Stitch screens, artifacts, UI diffs, or design sync, load `stitch` first and then add the narrowest implementation skill for the actual stack.
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed by the current step.
 
 ## Skill References
@@ -53,6 +59,7 @@ Load on demand. Do not preload all references.
 
 | File                     | Load when                                                                                     |
 | ------------------------ | --------------------------------------------------------------------------------------------- |
+| `stitch`                 | The task starts from Stitch artifacts, design-to-code requests, screen sync, or UI diffs.    |
 | `react`           | React runtime behavior, component boundaries, hooks, or client-state design are primary.      |
 | `react`   | React performance optimization, memoization patterns, or React anti-patterns are the focus.   |
 | `nextjs`       | Next.js route behavior, server/client boundaries, caching, or deployment posture are primary. |
@@ -67,6 +74,7 @@ Load on demand. Do not preload all references.
 ## Operating Stance
 
 - Prefer clear state ownership and small client boundaries.
+- When Stitch is the source of truth, fetch and map the real artifact before editing local UI.
 - Treat accessibility and loading or error states as product correctness, not polish.
 - Measure performance before optimizing.
 - Keep one-off product logic out of shared primitives.

@@ -4561,10 +4561,14 @@ function resolvePostmanMcpDefinitionPath({
   );
 }
 
-function resolveStitchMcpDefinitionPath({ scope, cwd = process.cwd() }) {
+function resolveStitchMcpDefinitionPath({
+  platform,
+  scope,
+  cwd = process.cwd(),
+}) {
   return path.join(
     resolveMcpRootPath({ scope, cwd }),
-    "antigravity",
+    platform,
     "stitch.json",
   );
 }
@@ -5271,11 +5275,7 @@ async function removeGeneratedArtifactIfExists({ targetPath, dryRun = false }) {
 async function applyPostmanMcpForPlatform({
   platform,
   mcpScope,
-  apiKeyEnvVar,
-  mcpUrl,
-  includePostmanMcp = true,
-  stitchApiKeyEnvVar,
-  stitchMcpUrl,
+  includePostmanMcp = false,
   includeStitchMcp = false,
   includeFoundryMcp = true,
   includePlaywrightMcp = false,
@@ -5287,12 +5287,11 @@ async function applyPostmanMcpForPlatform({
   const warnings = [];
   const foundryScope = mcpScope === "global" ? "global" : "project";
   const normalizedFoundryRuntime = normalizeMcpRuntime(foundryRuntime, "local");
-  const resolvedPostmanApiKey = normalizePostmanApiKey(
-    process.env[apiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR],
-  );
-  const resolvedStitchApiKey = normalizePostmanApiKey(
-    process.env[stitchApiKeyEnvVar || STITCH_API_KEY_ENV_VAR],
-  );
+  const cleanupLegacyServers = (servers) => {
+    delete servers[POSTMAN_SKILL_ID];
+    delete servers[STITCH_MCP_SERVER_ID];
+    return servers;
+  };
   let foundryDockerPort = DEFAULT_MCP_DOCKER_HOST_PORT;
   if (includeFoundryMcp && normalizedFoundryRuntime === "docker") {
     const runningPort = await resolveDockerContainerHostPort({
@@ -5324,13 +5323,7 @@ async function applyPostmanMcpForPlatform({
           !Array.isArray(next.mcpServers)
             ? { ...next.mcpServers }
             : {};
-        if (includePostmanMcp) {
-          mcpServers[POSTMAN_SKILL_ID] = buildGeminiPostmanServer({
-            apiKeyEnvVar,
-            apiKey: resolvedPostmanApiKey,
-            mcpUrl,
-          });
-        }
+        cleanupLegacyServers(mcpServers);
         if (includeFoundryMcp) {
           mcpServers[FOUNDRY_MCP_SERVER_ID] = buildGeminiFoundryServer({
             scope: foundryScope,
@@ -5339,13 +5332,6 @@ async function applyPostmanMcpForPlatform({
           });
         } else {
           delete mcpServers[FOUNDRY_MCP_SERVER_ID];
-        }
-        if (includeStitchMcp) {
-          mcpServers[STITCH_MCP_SERVER_ID] = buildGeminiStitchServer({
-            apiKeyEnvVar: stitchApiKeyEnvVar,
-            apiKey: resolvedStitchApiKey,
-            mcpUrl: stitchMcpUrl,
-          });
         }
         if (includePlaywrightMcp) {
           mcpServers[PLAYWRIGHT_MCP_SERVER_ID] = buildGeminiPlaywrightServer();
@@ -5380,13 +5366,7 @@ async function applyPostmanMcpForPlatform({
             !Array.isArray(next.mcpServers)
               ? { ...next.mcpServers }
               : {};
-          if (includePostmanMcp) {
-            mcpServers[POSTMAN_SKILL_ID] = buildCopilotCliPostmanServer({
-              apiKeyEnvVar,
-              apiKey: resolvedPostmanApiKey,
-              mcpUrl,
-            });
-          }
+          cleanupLegacyServers(mcpServers);
           if (includeFoundryMcp) {
             mcpServers[FOUNDRY_MCP_SERVER_ID] = buildCopilotCliFoundryServer({
               scope: foundryScope,
@@ -5410,13 +5390,7 @@ async function applyPostmanMcpForPlatform({
           !Array.isArray(next.servers)
             ? { ...next.servers }
             : {};
-        if (includePostmanMcp) {
-          servers[POSTMAN_SKILL_ID] = buildVsCodePostmanServer({
-            apiKeyEnvVar,
-            apiKey: resolvedPostmanApiKey,
-            mcpUrl,
-          });
-        }
+        cleanupLegacyServers(servers);
         if (includeFoundryMcp) {
           servers[FOUNDRY_MCP_SERVER_ID] = buildVsCodeFoundryServer({
             scope: foundryScope,
@@ -5464,13 +5438,7 @@ async function applyPostmanMcpForPlatform({
             !Array.isArray(next.servers)
               ? { ...next.servers }
               : {};
-          if (includePostmanMcp) {
-            servers[POSTMAN_SKILL_ID] = buildVsCodePostmanServer({
-              apiKeyEnvVar,
-              apiKey: resolvedPostmanApiKey,
-              mcpUrl,
-            });
-          }
+          cleanupLegacyServers(servers);
           if (includeFoundryMcp) {
             servers[FOUNDRY_MCP_SERVER_ID] = buildVsCodeFoundryServer({
               scope: foundryScope,
@@ -5514,6 +5482,11 @@ async function applyPostmanMcpForPlatform({
       // Best effort. Add will still run and becomes source of truth.
     }
     try {
+      await execFile("codex", ["mcp", "remove", STITCH_MCP_SERVER_ID], { cwd });
+    } catch {
+      // Best effort. Add will still run and becomes source of truth.
+    }
+    try {
       await execFile("codex", ["mcp", "remove", FOUNDRY_MCP_SERVER_ID], {
         cwd,
       });
@@ -5526,52 +5499,6 @@ async function applyPostmanMcpForPlatform({
       });
     } catch {
       // Best effort. Add will still run and becomes source of truth.
-    }
-
-    if (includePostmanMcp) {
-      try {
-        await execFile(
-          "codex",
-          [
-            "mcp",
-            "add",
-            POSTMAN_SKILL_ID,
-            "--url",
-            mcpUrl,
-            "--bearer-token-env-var",
-            apiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR,
-          ],
-          { cwd },
-        );
-        const postmanToken = normalizePostmanApiKey(
-          process.env[apiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR],
-        );
-        const postmanPatch = await patchCodexPostmanHttpHeaders({
-          configPath: codexConfigPath,
-          mcpUrl,
-          bearerToken: postmanToken,
-          dryRun: false,
-        });
-        if (postmanPatch.action === "patched") {
-          warnings.push(
-            "Codex Postman MCP config patched to static Authorization header for startup reliability.",
-          );
-        }
-        if (postmanPatch.warnings?.length) {
-          warnings.push(...postmanPatch.warnings);
-        }
-      } catch (error) {
-        warnings.push(
-          `Failed to register Postman MCP via Codex CLI. Ensure 'codex' is installed and rerun. (${error.message})`,
-        );
-        return {
-          kind: "codex-cli",
-          scope: mcpScope,
-          path: codexConfigPath,
-          action: "failed",
-          warnings,
-        };
-      }
     }
 
     if (includeFoundryMcp) {
@@ -5646,6 +5573,7 @@ async function applyPostmanMcpForPlatform({
           !Array.isArray(next.mcpServers)
             ? { ...next.mcpServers }
             : {};
+        cleanupLegacyServers(mcpServers);
         if (includeFoundryMcp) {
           if (normalizedFoundryRuntime === "docker") {
             mcpServers[FOUNDRY_MCP_SERVER_ID] = {
@@ -5688,7 +5616,7 @@ async function applyPostmanMcpForPlatform({
     path: null,
     action: "skipped",
     warnings: [
-      `Unsupported platform '${platform}' for Postman MCP installation.`,
+      `Unsupported platform '${platform}' for Foundry MCP installation.`,
     ],
   };
 }
@@ -5741,15 +5669,13 @@ async function resolvePostmanInstallSelection({
     Boolean(options.postman) ||
     hasWorkspaceOption ||
     options.postmanMode !== undefined;
-  const stitchEnabled =
-    stitchRequested ||
-    (platform === "antigravity" &&
-      options.stitchDefaultForAntigravity !== false);
+  const stitchEnabled = stitchRequested;
+  const gatewayRequested = postmanRequested || stitchEnabled;
   const foundryMcpRequested = options.foundryMcp === true;
   const foundryMcpEnabled =
-    options.foundryMcp === false
+    options.foundryMcp === false && !gatewayRequested
       ? false
-      : foundryMcpRequested || postmanRequested || stitchEnabled;
+      : foundryMcpRequested || gatewayRequested;
   const foundryOnlyRequested =
     foundryMcpRequested &&
     !postmanRequested &&
@@ -5780,6 +5706,11 @@ async function resolvePostmanInstallSelection({
     : null;
   let mcpScope = requestedMcpScope?.scope || "project";
   const warnings = [];
+  if (options.foundryMcp === false && gatewayRequested) {
+    warnings.push(
+      "Ignoring --no-foundry-mcp because Postman/Stitch now route through the Cubis Foundry MCP gateway.",
+    );
+  }
   if (requestedMcpScope?.warning) {
     warnings.push(requestedMcpScope.warning);
   }
@@ -5904,10 +5835,9 @@ async function resolvePostmanInstallSelection({
     generatedAt: new Date().toISOString(),
     mcp: {
       scope: mcpScope,
-      server: postmanRequested
-        ? POSTMAN_SKILL_ID
-        : stitchEnabled
-          ? STITCH_MCP_SERVER_ID
+      server:
+        foundryMcpEnabled || gatewayRequested
+          ? FOUNDRY_MCP_SERVER_ID
           : playwrightRequested
             ? PLAYWRIGHT_MCP_SERVER_ID
             : FOUNDRY_MCP_SERVER_ID,
@@ -5994,6 +5924,7 @@ async function configurePostmanInstallArtifacts({
   profilePaths,
   postmanSelection,
   overwrite = false,
+  persistCredentials = true,
   dryRun = false,
   cwd = process.cwd(),
 }) {
@@ -6166,50 +6097,30 @@ async function configurePostmanInstallArtifacts({
     gitIgnoreResults.push(mcpIgnore);
   }
 
-  let mcpDefinitionPath = null;
-  let mcpDefinitionResult = null;
+  const legacyDefinitionCleanupResults = [];
   if (shouldInstallPostman) {
-    mcpDefinitionPath = resolvePostmanMcpDefinitionPath({
-      platform,
-      scope: postmanSelection.mcpScope,
-      cwd,
-    });
-    const mcpDefinitionContent = `${JSON.stringify(
-      buildPostmanMcpDefinition({
-        apiKeyEnvVar: effectiveApiKeyEnvVar,
-        apiKey: envApiKey,
-        mcpUrl: effectiveMcpUrl,
+    legacyDefinitionCleanupResults.push(
+      await removeGeneratedArtifactIfExists({
+        targetPath: resolvePostmanMcpDefinitionPath({
+          platform,
+          scope: postmanSelection.mcpScope,
+          cwd,
+        }),
+        dryRun,
       }),
-      null,
-      2,
-    )}\n`;
-    mcpDefinitionResult = await writeGeneratedArtifact({
-      destination: mcpDefinitionPath,
-      content: mcpDefinitionContent,
-      dryRun,
-    });
+    );
   }
-  let stitchMcpDefinitionPath = null;
-  let stitchMcpDefinitionResult = null;
   if (shouldInstallStitch) {
-    stitchMcpDefinitionPath = resolveStitchMcpDefinitionPath({
-      scope: postmanSelection.mcpScope,
-      cwd,
-    });
-    const stitchMcpDefinitionContent = `${JSON.stringify(
-      buildStitchMcpDefinition({
-        apiKeyEnvVar: effectiveStitchApiKeyEnvVar,
-        apiKey: envStitchApiKey,
-        mcpUrl: effectiveStitchMcpUrl,
+    legacyDefinitionCleanupResults.push(
+      await removeGeneratedArtifactIfExists({
+        targetPath: resolveStitchMcpDefinitionPath({
+          platform,
+          scope: postmanSelection.mcpScope,
+          cwd,
+        }),
+        dryRun,
       }),
-      null,
-      2,
-    )}\n`;
-    stitchMcpDefinitionResult = await writeGeneratedArtifact({
-      destination: stitchMcpDefinitionPath,
-      content: stitchMcpDefinitionContent,
-      dryRun,
-    });
+    );
   }
 
   const mcpRuntimeResult = postmanSelection.runtimeSkipped
@@ -6272,6 +6183,28 @@ async function configurePostmanInstallArtifacts({
         dryRun,
       })
     : null;
+  const credentialEnvVarNames = [];
+  if (persistCredentials && shouldInstallPostman && effectiveApiKeySource === "env") {
+    credentialEnvVarNames.push(
+      effectiveApiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR,
+    );
+  }
+  if (
+    persistCredentials &&
+    shouldInstallStitch &&
+    effectiveStitchApiKeySource === "env"
+  ) {
+    credentialEnvVarNames.push(
+      effectiveStitchApiKeyEnvVar || STITCH_API_KEY_ENV_VAR,
+    );
+  }
+  const persistedCredentials =
+    credentialEnvVarNames.length > 0
+      ? await persistManagedCredentialsEnv({
+          envVarNames: [...new Set(credentialEnvVarNames)],
+          dryRun,
+        })
+      : null;
 
   return {
     enabled: true,
@@ -6305,13 +6238,11 @@ async function configurePostmanInstallArtifacts({
     cbxConfigPath: postmanSelection.cbxConfigPath,
     cbxConfigResult,
     gitIgnoreResults,
-    mcpDefinitionPath,
-    mcpDefinitionResult,
-    stitchMcpDefinitionPath,
-    stitchMcpDefinitionResult,
+    legacyDefinitionCleanupResults,
     mcpRuntimeResult,
     mcpCatalogSyncResults,
     legacySkillMcpCleanup,
+    persistedCredentials,
   };
 }
 
@@ -6371,58 +6302,31 @@ async function applyPostmanConfigArtifacts({
     configValue?.mcp?.effectiveRuntime || configValue?.mcp?.runtime,
     "local",
   );
-  const resolvedPostmanApiKey = postmanEnabled
-    ? normalizePostmanApiKey(process.env[postmanApiKeyEnvVar])
-    : null;
-  const resolvedStitchApiKey = normalizePostmanApiKey(
-    process.env[stitchApiKeyEnvVar],
-  );
-
-  let mcpDefinitionPath = null;
-  let mcpDefinitionResult = null;
-  if (postmanEnabled) {
-    mcpDefinitionPath = resolvePostmanMcpDefinitionPath({
-      platform,
-      scope: mcpScope,
-      cwd,
-    });
-    const mcpDefinitionContent = `${JSON.stringify(
-      buildPostmanMcpDefinition({
-        apiKeyEnvVar: postmanApiKeyEnvVar,
-        apiKey: resolvedPostmanApiKey,
-        mcpUrl: postmanMcpUrl,
+  const legacyDefinitionCleanupResults = [];
+  if (postmanEnabled && platform) {
+    legacyDefinitionCleanupResults.push(
+      await removeGeneratedArtifactIfExists({
+        targetPath: resolvePostmanMcpDefinitionPath({
+          platform,
+          scope: mcpScope,
+          cwd,
+        }),
+        dryRun,
       }),
-      null,
-      2,
-    )}\n`;
-    mcpDefinitionResult = await writeGeneratedArtifact({
-      destination: mcpDefinitionPath,
-      content: mcpDefinitionContent,
-      dryRun,
-    });
+    );
   }
 
-  let stitchMcpDefinitionPath = null;
-  let stitchMcpDefinitionResult = null;
   if (stitchEnabled) {
-    stitchMcpDefinitionPath = resolveStitchMcpDefinitionPath({
-      scope: mcpScope,
-      cwd,
-    });
-    const stitchMcpDefinitionContent = `${JSON.stringify(
-      buildStitchMcpDefinition({
-        apiKeyEnvVar: stitchApiKeyEnvVar,
-        apiKey: resolvedStitchApiKey,
-        mcpUrl: stitchMcpUrl,
+    legacyDefinitionCleanupResults.push(
+      await removeGeneratedArtifactIfExists({
+        targetPath: resolveStitchMcpDefinitionPath({
+          platform,
+          scope: mcpScope,
+          cwd,
+        }),
+        dryRun,
       }),
-      null,
-      2,
-    )}\n`;
-    stitchMcpDefinitionResult = await writeGeneratedArtifact({
-      destination: stitchMcpDefinitionPath,
-      content: stitchMcpDefinitionContent,
-      dryRun,
-    });
+    );
   }
 
   let mcpRuntimeResult = null;
@@ -6453,10 +6357,7 @@ async function applyPostmanConfigArtifacts({
     postmanEnabled,
     playwrightEnabled,
     playwrightMcpUrl: playwrightEnabled ? playwrightMcpUrl : null,
-    mcpDefinitionPath,
-    mcpDefinitionResult,
-    stitchMcpDefinitionPath,
-    stitchMcpDefinitionResult,
+    legacyDefinitionCleanupResults,
     mcpRuntimeResult,
     warnings,
   };
@@ -7443,7 +7344,7 @@ function printPostmanSetupSummary({ postmanSetup }) {
     console.log(`- Postman mode: ${postmanSetup.postmanMode}`);
   }
   if (postmanSetup.postmanEnabled && postmanSetup.postmanMcpUrl) {
-    console.log(`- Postman MCP URL: ${postmanSetup.postmanMcpUrl}`);
+    console.log(`- Postman upstream MCP URL: ${postmanSetup.postmanMcpUrl}`);
   }
   console.log(
     `- Config file: ${postmanSetup.cbxConfigResult.action} (${postmanSetup.cbxConfigPath})`,
@@ -7463,7 +7364,7 @@ function printPostmanSetupSummary({ postmanSetup }) {
     `- MCP tool sync: ${postmanSetup.mcpToolSync ? "enabled" : "disabled"}`,
   );
   console.log(
-    `- Foundry MCP side-by-side: ${postmanSetup.foundryMcpEnabled ? (postmanSetup.effectiveMcpRuntime === "docker" ? "enabled (docker endpoint)" : "enabled (cbx mcp serve)") : "disabled"}`,
+    `- Foundry MCP gateway: ${postmanSetup.foundryMcpEnabled ? (postmanSetup.effectiveMcpRuntime === "docker" ? "enabled (docker endpoint)" : "enabled (cbx mcp serve)") : "disabled"}`,
   );
   if (postmanSetup.postmanEnabled) {
     console.log(`- Postman API key source: ${postmanSetup.apiKeySource}`);
@@ -7481,17 +7382,9 @@ function printPostmanSetupSummary({ postmanSetup }) {
       `- .gitignore (${ignoreResult.filePath}): ${ignoreResult.action}`,
     );
   }
-  if (postmanSetup.mcpDefinitionPath && postmanSetup.mcpDefinitionResult) {
+  for (const cleanupResult of postmanSetup.legacyDefinitionCleanupResults || []) {
     console.log(
-      `- Managed MCP definition (${postmanSetup.mcpDefinitionPath}): ${postmanSetup.mcpDefinitionResult.action}`,
-    );
-  }
-  if (
-    postmanSetup.stitchMcpDefinitionPath &&
-    postmanSetup.stitchMcpDefinitionResult
-  ) {
-    console.log(
-      `- Managed Stitch MCP definition (${postmanSetup.stitchMcpDefinitionPath}): ${postmanSetup.stitchMcpDefinitionResult.action}`,
+      `- Legacy direct MCP cleanup (${cleanupResult.path}): ${cleanupResult.action}`,
     );
   }
   if (postmanSetup.mcpRuntimeResult) {
@@ -7510,6 +7403,19 @@ function printPostmanSetupSummary({ postmanSetup }) {
           `- MCP catalog ${syncItem.service}: ${syncItem.action} (${syncItem.toolCount} tools)`,
         );
       }
+    }
+  }
+  if (postmanSetup.persistedCredentials) {
+    console.log(
+      `- Credential vault (${postmanSetup.persistedCredentials.envPath}): ${postmanSetup.persistedCredentials.action}`,
+    );
+    console.log(
+      `- Credential vars: ${postmanSetup.persistedCredentials.persisted.length > 0 ? postmanSetup.persistedCredentials.persisted.join(", ") : "(none)"}`,
+    );
+    if (postmanSetup.persistedCredentials.missing.length > 0) {
+      console.log(
+        `- Missing credential vars: ${postmanSetup.persistedCredentials.missing.join(", ")}`,
+      );
     }
   }
   if (postmanSetup.legacySkillMcpCleanup) {
@@ -7943,7 +7849,7 @@ function withInstallOptions(command) {
     .option("--overwrite", "overwrite existing files")
     .option(
       "--postman",
-      "optional: install Postman skill and generate cbx_config.json",
+      "optional: configure Postman profiles and gateway-backed Foundry MCP wiring",
     )
     .option(
       "--postman-mode <mode>",
@@ -7951,7 +7857,7 @@ function withInstallOptions(command) {
     )
     .option(
       "--stitch",
-      "optional: include Stitch MCP profile/config alongside Postman",
+      "optional: configure Stitch profiles and gateway-backed Foundry MCP wiring",
     )
     .option(
       "--playwright",
@@ -8004,7 +7910,7 @@ function withInstallOptions(command) {
     .option("--no-mcp-tool-sync", "disable automatic MCP tool catalog sync")
     .option(
       "--no-foundry-mcp",
-      "disable side-by-side cubis-foundry MCP registration during --postman setup",
+      "deprecated: Postman/Stitch always use Cubis Foundry MCP gateway wiring",
     )
     .option(
       "--terminal-integration",
@@ -8425,6 +8331,7 @@ async function performWorkflowInstall(
     profilePaths: installResult.profilePaths,
     postmanSelection,
     overwrite: Boolean(options.overwrite),
+    persistCredentials: !options.initWizardMode,
     dryRun,
     cwd,
   });
@@ -9345,14 +9252,16 @@ async function runWorkflowRemoveAll(options) {
           dryRun,
           records: removedRecords,
         });
-        if (platform === "antigravity") {
-          await removePathRecord({
-            targetPath: resolveStitchMcpDefinitionPath({ scope, cwd }),
-            category: `${platform}/${scope}/stitch-mcp-definition`,
-            dryRun,
-            records: removedRecords,
-          });
-        }
+        await removePathRecord({
+          targetPath: resolveStitchMcpDefinitionPath({
+            platform,
+            scope,
+            cwd,
+          }),
+          category: `${platform}/${scope}/stitch-mcp-definition`,
+          dryRun,
+          records: removedRecords,
+        });
 
         const runtimeResults = await removePlatformMcpRuntimeTargets({
           platform,
@@ -9674,7 +9583,7 @@ function prepareConfigDocument(existingValue, { scope, generatedBy }) {
   if (!next.mcp || typeof next.mcp !== "object" || Array.isArray(next.mcp))
     next.mcp = {};
   next.mcp.scope = scope;
-  if (!next.mcp.server) next.mcp.server = POSTMAN_SKILL_ID;
+  if (!next.mcp.server) next.mcp.server = FOUNDRY_MCP_SERVER_ID;
   return next;
 }
 
@@ -9961,28 +9870,158 @@ function migrateInlineCredentialsInConfig(configValue) {
   };
 }
 
-async function collectInlineHeaderFindings({ scope, cwd = process.cwd() }) {
-  const findings = [];
-  const stitchDefinitionPath = resolveStitchMcpDefinitionPath({ scope, cwd });
-  const geminiSettingsPath =
+function resolveCredentialLeakScanTargets({ scope, cwd = process.cwd() }) {
+  const workspaceRoot = findWorkspaceRoot(cwd);
+  const targets = new Set([
+    resolveLegacyPostmanConfigPath({ scope, cwd }),
     scope === "global"
       ? path.join(os.homedir(), ".gemini", "settings.json")
-      : path.join(findWorkspaceRoot(cwd), ".gemini", "settings.json");
+      : path.join(workspaceRoot, ".gemini", "settings.json"),
+    scope === "global"
+      ? path.join(os.homedir(), ".claude", "mcp.json")
+      : path.join(workspaceRoot, ".mcp.json"),
+    scope === "global"
+      ? path.join(os.homedir(), ".copilot", "mcp-config.json")
+      : path.join(workspaceRoot, ".vscode", "mcp.json"),
+  ]);
 
-  const scanFile = async (filePath) => {
-    if (!(await pathExists(filePath))) return;
-    const raw = await readFile(filePath, "utf8");
-    const unsafeStitchHeader =
-      /X-Goog-Api-Key:(?!\s*\$\{[A-Za-z_][A-Za-z0-9_]*\})\s*[^"\n]+/i;
-    const unsafeBearerHeader = /"Authorization"\s*:\s*"Bearer\s+(?!\$\{)[^"]+/i;
-    if (unsafeStitchHeader.test(raw) || unsafeBearerHeader.test(raw)) {
-      findings.push(filePath);
+  if (scope === "global") {
+    targets.add(path.join(os.homedir(), ".codex", "config.toml"));
+  }
+
+  for (const platform of Object.keys(WORKFLOW_PROFILES)) {
+    targets.add(resolvePostmanMcpDefinitionPath({ platform, scope, cwd }));
+    targets.add(resolveStitchMcpDefinitionPath({ platform, scope, cwd }));
+  }
+
+  return [...targets];
+}
+
+function collectCredentialLeakMatches(raw) {
+  const matches = [];
+  const patterns = [
+    {
+      id: "inline-apiKey-field",
+      pattern: /"apiKey"\s*:\s*"(?!\$\{)[^"]+/i,
+    },
+    {
+      id: "inline-bearer-header-json",
+      pattern: /"Authorization"\s*:\s*"Bearer\s+(?!\$\{)[^"]+/i,
+    },
+    {
+      id: "inline-bearer-header-toml",
+      pattern:
+        /http_headers\s*=\s*\{[^}]*Authorization\s*=\s*"Bearer\s+(?!\$\{)[^"]+/is,
+    },
+    {
+      id: "inline-stitch-header-arg",
+      pattern: /X-Goog-Api-Key:(?!\s*\$\{[A-Za-z_][A-Za-z0-9_]*\})\s*[^"\n]+/i,
+    },
+    {
+      id: "inline-stitch-header-json",
+      pattern: /"X-Goog-Api-Key"\s*:\s*"(?!\$\{)[^"]+/i,
+    },
+  ];
+
+  for (const { id, pattern } of patterns) {
+    if (pattern.test(raw)) {
+      matches.push(id);
     }
-  };
+  }
 
-  await scanFile(stitchDefinitionPath);
-  await scanFile(geminiSettingsPath);
+  return matches;
+}
+
+async function collectCredentialLeakFindings({ scope, cwd = process.cwd() }) {
+  const findings = [];
+  for (const filePath of resolveCredentialLeakScanTargets({ scope, cwd })) {
+    if (!(await pathExists(filePath))) continue;
+    const raw = await readFile(filePath, "utf8");
+    const matches = collectCredentialLeakMatches(raw);
+    if (matches.length > 0) {
+      findings.push({ filePath, matches });
+    }
+  }
   return findings;
+}
+
+async function cleanupLegacyDirectCredentialArtifacts({
+  scope,
+  dryRun = false,
+  cwd = process.cwd(),
+}) {
+  const workspaceRoot = findWorkspaceRoot(cwd);
+  const cleanupResults = [];
+  const legacyServerIds = [POSTMAN_SKILL_ID, STITCH_MCP_SERVER_ID];
+
+  cleanupResults.push(
+    await removeMcpRuntimeEntriesJson({
+      filePath:
+        scope === "global"
+          ? path.join(os.homedir(), ".gemini", "settings.json")
+          : path.join(workspaceRoot, ".gemini", "settings.json"),
+      keyName: "mcpServers",
+      serverIds: legacyServerIds,
+      dryRun,
+    }),
+  );
+  cleanupResults.push(
+    await removeMcpRuntimeEntriesJson({
+      filePath:
+        scope === "global"
+          ? path.join(os.homedir(), ".claude", "mcp.json")
+          : path.join(workspaceRoot, ".mcp.json"),
+      keyName: "mcpServers",
+      serverIds: legacyServerIds,
+      dryRun,
+    }),
+  );
+  if (scope === "global") {
+    cleanupResults.push(
+      await removeMcpRuntimeEntriesJson({
+        filePath: path.join(os.homedir(), ".copilot", "mcp-config.json"),
+        keyName: "mcpServers",
+        serverIds: legacyServerIds,
+        dryRun,
+      }),
+    );
+    cleanupResults.push(
+      await removeMcpRuntimeEntriesCodexToml({
+        filePath: path.join(os.homedir(), ".codex", "config.toml"),
+        serverIds: legacyServerIds,
+        dryRun,
+        cwd,
+      }),
+    );
+  } else {
+    cleanupResults.push(
+      await removeMcpRuntimeEntriesJson({
+        filePath: path.join(workspaceRoot, ".vscode", "mcp.json"),
+        keyName: "servers",
+        serverIds: legacyServerIds,
+        dryRun,
+      }),
+    );
+  }
+
+  for (const platform of Object.keys(WORKFLOW_PROFILES)) {
+    cleanupResults.push(
+      await removeGeneratedArtifactIfExists({
+        targetPath: resolvePostmanMcpDefinitionPath({ platform, scope, cwd }),
+        dryRun,
+      }),
+    );
+    cleanupResults.push(
+      await removeGeneratedArtifactIfExists({
+        targetPath: resolveStitchMcpDefinitionPath({ platform, scope, cwd }),
+        dryRun,
+      }),
+    );
+  }
+
+  return cleanupResults.filter(
+    (item) => item.action !== "missing" && item.action !== "unchanged",
+  );
 }
 
 async function runWorkflowConfigKeysList(options) {
@@ -10260,6 +10299,7 @@ async function runWorkflowConfigKeysMigrateInline(options) {
     const scopeArg = readCliOptionFromArgv("--scope");
     const scope = normalizeMcpScope(scopeArg ?? opts.scope, "global");
     const dryRun = hasCliFlag("--dry-run") || Boolean(opts.dryRun);
+    await loadManagedCredentialsEnv();
 
     const { configPath, existing, existingValue } = await loadConfigForScope({
       scope,
@@ -10276,6 +10316,22 @@ async function runWorkflowConfigKeysMigrateInline(options) {
       existingExists: existing.exists,
       dryRun,
     });
+    const cleanupResults = await cleanupLegacyDirectCredentialArtifacts({
+      scope,
+      dryRun,
+      cwd,
+    });
+    const platform = normalizePlatform(result.next?.mcp?.platform);
+    const secureArtifacts =
+      platform && WORKFLOW_PROFILES[platform]
+        ? await applyPostmanConfigArtifacts({
+            platform,
+            mcpScope: resolveMcpScopeFromConfigDocument(result.next, scope),
+            configValue: result.next,
+            dryRun,
+            cwd,
+          })
+        : null;
 
     console.log(`Config file: ${configPath}`);
     console.log(`Action: ${action}`);
@@ -10290,6 +10346,21 @@ async function runWorkflowConfigKeysMigrateInline(options) {
       for (const envVar of result.requiredEnvVars) {
         console.log(`- ${envVar}`);
       }
+    }
+    console.log(`Legacy direct MCP cleanup actions: ${cleanupResults.length}`);
+    for (const cleanup of cleanupResults) {
+      console.log(`- ${cleanup.action} ${cleanup.path}`);
+    }
+    if (secureArtifacts?.mcpRuntimeResult) {
+      console.log(
+        `Secure platform MCP target: ${secureArtifacts.mcpRuntimeResult.action} (${secureArtifacts.mcpRuntimeResult.path || "n/a"})`,
+      );
+    }
+    for (const cleanup of secureArtifacts?.legacyDefinitionCleanupResults || []) {
+      console.log(`- ${cleanup.action} ${cleanup.path}`);
+    }
+    for (const warning of secureArtifacts?.warnings || []) {
+      console.log(`Warning: ${warning}`);
     }
   } catch (error) {
     if (error?.name === "ExitPromptError") {
@@ -10307,6 +10378,7 @@ async function runWorkflowConfigKeysDoctor(options) {
     const cwd = process.cwd();
     const scopeArg = readCliOptionFromArgv("--scope");
     const scope = normalizeMcpScope(scopeArg ?? opts.scope, "global");
+    await loadManagedCredentialsEnv();
     const { configPath, existing, existingValue } = await loadConfigForScope({
       scope,
       cwd,
@@ -10319,7 +10391,7 @@ async function runWorkflowConfigKeysDoctor(options) {
     }
 
     const configFindings = collectInlineCredentialFindings(existingValue);
-    const artifactFindings = await collectInlineHeaderFindings({ scope, cwd });
+    const artifactFindings = await collectCredentialLeakFindings({ scope, cwd });
     const migrationPreview = migrateInlineCredentialsInConfig(existingValue);
 
     console.log(`Inline key findings: ${configFindings.length}`);
@@ -10327,9 +10399,9 @@ async function runWorkflowConfigKeysDoctor(options) {
       console.log(`- ${finding.path}`);
     }
 
-    console.log(`Unsafe header findings: ${artifactFindings.length}`);
-    for (const filePath of artifactFindings) {
-      console.log(`- ${filePath}`);
+    console.log(`Credential leak findings: ${artifactFindings.length}`);
+    for (const finding of artifactFindings) {
+      console.log(`- ${finding.filePath} [${finding.matches.join(", ")}]`);
     }
 
     if (migrationPreview.requiredEnvVars.length > 0) {
@@ -10345,7 +10417,7 @@ async function runWorkflowConfigKeysDoctor(options) {
       console.log(
         "Doctor result: issues detected. Run `cbx workflows config keys migrate-inline --scope " +
           scope +
-          "` and reinstall with `--overwrite`.",
+          "` to scrub keys and reapply secure Foundry MCP wiring.",
       );
     }
   } catch (error) {
@@ -10583,6 +10655,7 @@ async function runWorkflowConfig(options) {
     if (!next.mcp || typeof next.mcp !== "object" || Array.isArray(next.mcp)) {
       next.mcp = {};
     }
+    next.mcp.server = FOUNDRY_MCP_SERVER_ID;
     if (hasMcpRuntimeOption) {
       next.mcp.runtime = mcpRuntime;
       next.mcp.effectiveRuntime = mcpRuntime;
@@ -10654,15 +10727,10 @@ async function runWorkflowConfig(options) {
       console.log(`postman.mode: ${effectivePostmanMode}`);
       console.log(`postman.mcpUrl: ${effectivePostmanState.mcpUrl}`);
       if (postmanArtifacts) {
-        console.log(
-          `postman.definition: ${postmanArtifacts.mcpDefinitionResult.action} (${postmanArtifacts.mcpDefinitionPath})`,
-        );
-        if (
-          postmanArtifacts.stitchMcpDefinitionPath &&
-          postmanArtifacts.stitchMcpDefinitionResult
-        ) {
+        for (const cleanupResult of postmanArtifacts.legacyDefinitionCleanupResults ||
+          []) {
           console.log(
-            `stitch.definition: ${postmanArtifacts.stitchMcpDefinitionResult.action} (${postmanArtifacts.stitchMcpDefinitionPath})`,
+            `legacy.definition.cleanup: ${cleanupResult.action} (${cleanupResult.path})`,
           );
         }
         if (postmanArtifacts.mcpRuntimeResult) {
@@ -12274,11 +12342,16 @@ async function runInitWizard(options) {
     }
 
     if (emitJson) {
+      const sanitizedSelections = {
+        ...selections,
+        postmanApiKey: selections.postmanApiKey ? "***REDACTED***" : null,
+        stitchApiKey: selections.stitchApiKey ? "***REDACTED***" : null,
+      };
       console.log(
         JSON.stringify(
           {
             dryRun,
-            selections,
+            selections: sanitizedSelections,
             results,
             persistedCredentials,
           },
