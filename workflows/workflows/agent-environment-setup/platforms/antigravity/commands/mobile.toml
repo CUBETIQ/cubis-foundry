@@ -4,7 +4,7 @@ Follow the /mobile workflow from .agent/workflows/mobile.md.
 
 Execution contract:
 1. Treat route selection as already resolved by this command; do not begin with skill discovery.
-2. Read `ENGINEERING_RULES.md` first and `TECH.md` next when they exist before non-trivial execution.
+2. Read `PRODUCT.md`, `ENGINEERING_RULES.md`, `ARCHITECTURE.md`, and `TECH.md` in that order when they exist before non-trivial execution.
 Attached skills:
 - Load these exact skill IDs first: `expo-app`, `react-native`, `stitch`, `frontend-design`, `swift-best-practices`, `kotlin-best-practices`.
 - Local skill file hints if installed: `.agent/skills/expo-app/SKILL.md`, `.agent/skills/react-native/SKILL.md`, `.agent/skills/stitch/SKILL.md`, `.agent/skills/frontend-design/SKILL.md`, `.agent/skills/swift-best-practices/SKILL.md`, `.agent/skills/kotlin-best-practices/SKILL.md`.

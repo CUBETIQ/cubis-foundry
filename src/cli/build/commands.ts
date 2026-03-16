@@ -16,7 +16,7 @@ export function registerBuildCommands(
   buildCommand
     .command("architecture")
     .description(
-      "Refresh ENGINEERING_RULES.md and TECH.md via a strict platform-native CLI subprocess",
+      "Refresh PRODUCT.md, ARCHITECTURE.md, ENGINEERING_RULES.md, TECH.md, ROADMAP.md, and ADR scaffolds via a strict platform-native CLI subprocess",
     )
     .requiredOption(
       "--platform <platform>",

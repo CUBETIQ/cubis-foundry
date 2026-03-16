@@ -1,6 +1,6 @@
 ---
 command: "/architecture"
-description: "Refresh the project architecture contract and current-state map in ENGINEERING_RULES.md and TECH.md with explicit structure, design-system, testing, and flow guidance."
+description: "Refresh the project backbone docs in PRODUCT.md, ARCHITECTURE.md, ENGINEERING_RULES.md, TECH.md, ROADMAP.md, and ADR scaffolds with explicit structure, design-system, testing, and flow guidance."
 triggers:
   [
     "architecture",
@@ -18,7 +18,7 @@ triggers:
 
 ## When to use
 
-Use this when the task is to declare, refresh, or validate the project architecture contract and current-state map, especially after structure changes, scale changes, design-system changes, migrations, or major feature additions.
+Use this when the task is to declare, refresh, or validate the project backbone docs, especially after structure changes, scale changes, design-system changes, migrations, product-direction shifts, or major feature additions.
 
 ## Routing
 
@@ -35,24 +35,25 @@ Use this when the task is to declare, refresh, or validate the project architect
 
 ## Workflow steps
 
-1. Inspect the repo first and read `ENGINEERING_RULES.md` followed by `TECH.md` if they exist.
-2. Determine the current architecture style, module boundaries, design-system source of truth, and testing strategy from the codebase.
-3. Update only the managed architecture sections in `ENGINEERING_RULES.md` and `TECH.md`.
-4. Add or refresh Mermaid diagrams and flow narratives inside `TECH.md` when they clarify system behavior.
-5. Record whether the update was driven by a broader spec and whether future implementation must follow newly declared rules.
+1. Inspect the repo first and read `PRODUCT.md`, `ENGINEERING_RULES.md`, `ARCHITECTURE.md`, and `TECH.md` in that order if they exist.
+2. Determine the current product surfaces, architecture style, module boundaries, design-system source of truth, roadmap themes, and testing strategy from the codebase.
+3. Update the managed backbone sections in `PRODUCT.md`, `ARCHITECTURE.md`, `ENGINEERING_RULES.md`, `TECH.md`, and `ROADMAP.md`.
+4. Add or refresh Mermaid diagrams and flow narratives inside `ARCHITECTURE.md` or `TECH.md` when they clarify system behavior.
+5. Seed or refresh `docs/adr/README.md` and keep ADR linkage explicit when decisions should be durable.
+6. Record whether the update was driven by a broader spec and whether future implementation must follow newly declared rules.
 
 ## Context notes
 
 - This workflow is route-fixed and skill-fixed: do not start with `route_resolve` or `skill_search`.
-- `ENGINEERING_RULES.md` is normative. `TECH.md` is descriptive. Keep them aligned but not redundant.
+- `PRODUCT.md` captures intent, `ARCHITECTURE.md` captures accepted structure, `ENGINEERING_RULES.md` is normative, and `TECH.md` is descriptive. Keep them aligned but not redundant.
 - Preserve manual content outside the managed architecture sections.
 - Mark non-applicable sections explicitly instead of silently omitting them.
 
 ## Verification
 
-- Managed architecture sections exist in both target docs.
-- Architecture style, dependency rules, and design-system guidance are explicit.
-- `TECH.md` includes flow text and at least one Mermaid diagram when the repo has meaningful flow complexity.
+- Managed backbone sections exist in the target docs.
+- Product intent, architecture style, dependency rules, and design-system guidance are explicit.
+- `ARCHITECTURE.md` or `TECH.md` includes flow text and at least one Mermaid diagram when the repo has meaningful flow complexity.
 - The update records `doc_impact` and whether future feature work must refresh the docs again.
 
 ## Output Contract
@@ -64,9 +65,13 @@ ARCHITECTURE_WORKFLOW_RESULT:
   primary_skills: [architecture-doc, system-design, tech-doc, frontend-design]
   supporting_skills: [api-design?, database-design?, sadd?, deep-research?]
   managed_targets:
+    product_doc: PRODUCT.md
+    architecture_doc: ARCHITECTURE.md
     rules_doc: ENGINEERING_RULES.md
     tech_doc: TECH.md
-  files_updated: [ENGINEERING_RULES.md, TECH.md]
+    roadmap_doc: ROADMAP.md
+    adr_dir: docs/adr
+  files_updated: [PRODUCT.md, ARCHITECTURE.md, ENGINEERING_RULES.md, TECH.md, ROADMAP.md]
   architecture_contract:
     style: <string>
     dependency_rules: [<string>]

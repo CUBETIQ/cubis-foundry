@@ -4,7 +4,7 @@ Follow the /debug workflow from .agent/workflows/debug.md.
 
 Execution contract:
 1. Treat route selection as already resolved by this command; do not begin with skill discovery.
-2. Read `ENGINEERING_RULES.md` first and `TECH.md` next when they exist before non-trivial execution.
+2. Read `PRODUCT.md`, `ENGINEERING_RULES.md`, `ARCHITECTURE.md`, and `TECH.md` in that order when they exist before non-trivial execution.
 Attached skills:
 - Load these exact skill IDs first: `systematic-debugging`, `observability`, `unit-testing`, `typescript-best-practices`, `javascript-best-practices`, `python-best-practices`, `golang-best-practices`, `java-best-practices`, `csharp-best-practices`, `kotlin-best-practices`, `rust-best-practices`, `integration-testing`, `playwright-interactive`, `skill-creator`.
 - Local skill file hints if installed: `.agent/skills/systematic-debugging/SKILL.md`, `.agent/skills/observability/SKILL.md`, `.agent/skills/unit-testing/SKILL.md`, `.agent/skills/typescript-best-practices/SKILL.md`, `.agent/skills/javascript-best-practices/SKILL.md`, `.agent/skills/python-best-practices/SKILL.md`, `.agent/skills/golang-best-practices/SKILL.md`, `.agent/skills/java-best-practices/SKILL.md`.

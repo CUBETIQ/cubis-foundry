@@ -65,10 +65,22 @@ const ENGINEERING_ARCHITECTURE_BLOCK_START_RE =
   /<!--\s*cbx:architecture:rules:start[^>]*-->/g;
 const ENGINEERING_ARCHITECTURE_BLOCK_END_RE =
   /<!--\s*cbx:architecture:rules:end\s*-->/g;
+const PRODUCT_FOUNDATION_BLOCK_START_RE =
+  /<!--\s*cbx:product:foundation:start[^>]*-->/g;
+const PRODUCT_FOUNDATION_BLOCK_END_RE =
+  /<!--\s*cbx:product:foundation:end\s*-->/g;
+const ARCHITECTURE_DOC_BLOCK_START_RE =
+  /<!--\s*cbx:architecture:doc:start[^>]*-->/g;
+const ARCHITECTURE_DOC_BLOCK_END_RE =
+  /<!--\s*cbx:architecture:doc:end\s*-->/g;
 const TECH_ARCHITECTURE_BLOCK_START_RE =
   /<!--\s*cbx:architecture:tech:start[^>]*-->/g;
 const TECH_ARCHITECTURE_BLOCK_END_RE =
   /<!--\s*cbx:architecture:tech:end\s*-->/g;
+const ROADMAP_FOUNDATION_BLOCK_START_RE =
+  /<!--\s*cbx:roadmap:foundation:start[^>]*-->/g;
+const ROADMAP_FOUNDATION_BLOCK_END_RE =
+  /<!--\s*cbx:roadmap:foundation:end\s*-->/g;
 const COPILOT_ALLOWED_SKILL_FRONTMATTER_KEYS = new Set([
   "compatibility",
   "description",
@@ -1105,6 +1117,181 @@ function buildArchitectureMermaid(snapshot) {
   return lines.join("\n");
 }
 
+function inferProductFoundationProfile(snapshot, specRoots = []) {
+  const appRoots = (snapshot.architectureByApp || [])
+    .map((item) => item.rootPath)
+    .filter((value) => value && value !== ".");
+  const primarySurfaces = appRoots.length > 0 ? appRoots : snapshot.topDirs.slice(0, 6);
+  const userPersonas = [];
+
+  if (snapshot.frameworks.includes("Flutter")) {
+    userPersonas.push("End users interacting through mobile or desktop app surfaces");
+  }
+  if (
+    snapshot.frameworks.includes("Next.js") ||
+    snapshot.frameworks.includes("React") ||
+    snapshot.topDirs.includes("web")
+  ) {
+    userPersonas.push("Browser users and internal operators using web-facing flows");
+  }
+  if (snapshot.frameworks.includes("NestJS") || snapshot.topDirs.includes("api")) {
+    userPersonas.push("Internal services, operators, or partner systems consuming API boundaries");
+  }
+  if (userPersonas.length === 0) {
+    userPersonas.push(
+      "Project stakeholders are not obvious from the repo alone; refine personas from product context before major feature work.",
+    );
+  }
+
+  const coreJourneys = [];
+  if (specRoots.length > 0) {
+    coreJourneys.push(
+      `Active implementation themes are reflected in current spec packs: ${specRoots.join(", ")}.`,
+    );
+  }
+  if (primarySurfaces.length > 0) {
+    coreJourneys.push(
+      `Primary product surfaces currently live in: ${primarySurfaces.join(", ")}.`,
+    );
+  }
+  if (snapshot.isMcpServer || snapshot.mcpSignals.length > 0) {
+    coreJourneys.push("Tool-assisted and MCP-driven workflows are part of the operating model and should stay stable.");
+  }
+  if (coreJourneys.length === 0) {
+    coreJourneys.push(
+      "Repository evidence is thin; capture the primary user journeys here before scaling the codebase further.",
+    );
+  }
+
+  const successSignals = [
+    "Feature work should stay aligned to explicit user or operator value, not speculative abstractions.",
+    "Architecture changes should reduce onboarding, debugging, and testing cost over time.",
+  ];
+  if (snapshot.cicdSignals.length > 0) {
+    successSignals.push(
+      `Delivery flows already rely on ${snapshot.cicdSignals.join(", ")} signals; keep release friction low for that pipeline.`,
+    );
+  }
+
+  return {
+    productScope:
+      snapshot.readmeExcerpt ||
+      "No explicit product summary was detected from repo docs. Replace this with a concise product statement when better context exists.",
+    primarySurfaces,
+    userPersonas,
+    coreJourneys,
+    successSignals,
+  };
+}
+
+function buildProductFoundationSection(snapshot, specRoots = []) {
+  const profile = inferProductFoundationProfile(snapshot, specRoots);
+  const hash = hashStableObject(profile);
+
+  return [
+    `<!-- cbx:product:foundation:start version=1 profile=${hash} -->`,
+    "## Product Foundation (auto-managed)",
+    "",
+    "### Product Scope",
+    profile.productScope,
+    "",
+    "### Primary Surfaces",
+    ...(profile.primarySurfaces.length > 0
+      ? profile.primarySurfaces.map((item) => `- ${item}`)
+      : ["- No primary surfaces were detected automatically."]),
+    "",
+    "### Users and Operators",
+    ...profile.userPersonas.map((item) => `- ${item}`),
+    "",
+    "### Core Journeys",
+    ...profile.coreJourneys.map((item) => `- ${item}`),
+    "",
+    "### Success Signals",
+    ...profile.successSignals.map((item) => `- ${item}`),
+    "",
+    "### Product Guardrails",
+    "- Keep product intent stable across future features so agents do not optimize for the wrong user outcome.",
+    "- Refresh this managed section when scope, personas, operating model, or success metrics change materially.",
+    "<!-- cbx:product:foundation:end -->",
+    "",
+  ].join("\n");
+}
+
+function inferArchitectureDocProfile(snapshot, specRoots = []) {
+  const contract = inferArchitectureContractProfile(snapshot);
+  const architectureSignals = (snapshot.architectureByApp || []).map((item) => {
+    const label = item.rootPath === "." ? "repo root" : item.rootPath;
+    const signals =
+      item.architectureSignals && item.architectureSignals.length > 0
+        ? item.architectureSignals.join(", ")
+        : "not enough signals to classify";
+    return `${label}: ${signals}`;
+  });
+  const decisionAreas = [
+    "Module boundaries and dependency direction",
+    "Design-system ownership and reusable primitives",
+    "Testing and validation expectations by runtime boundary",
+  ];
+  if (specRoots.length > 0) {
+    decisionAreas.push(
+      `Active specs that may influence upcoming architecture work: ${specRoots.join(", ")}.`,
+    );
+  }
+
+  return {
+    style: contract.style,
+    designSystemSource: contract.designSystemSource,
+    moduleBoundaries: contract.moduleBoundaries,
+    architectureSignals,
+    decisionAreas,
+    scalingConstraints: contract.scalingConstraints,
+    testingStrategy: contract.testingStrategy,
+  };
+}
+
+function buildArchitectureDocSection(snapshot, specRoots = []) {
+  const profile = inferArchitectureDocProfile(snapshot, specRoots);
+  const hash = hashStableObject(profile);
+
+  return [
+    `<!-- cbx:architecture:doc:start version=1 profile=${hash} -->`,
+    "## Accepted Architecture Backbone (auto-managed)",
+    "",
+    "### System Overview",
+    `- Accepted style: ${profile.style}.`,
+    `- Design-system source of truth: ${profile.designSystemSource}`,
+    "",
+    "### Bounded Contexts and Module Boundaries",
+    ...(profile.moduleBoundaries.length > 0
+      ? profile.moduleBoundaries.map((item) => `- ${item}`)
+      : ["- No strong top-level module boundaries were detected automatically."]),
+    "",
+    "### Architecture Signals by Surface",
+    ...(profile.architectureSignals.length > 0
+      ? profile.architectureSignals.map((item) => `- ${item}`)
+      : ["- No app-level architecture signals were inferred from the repo scan."]),
+    "",
+    "### Decision Areas to Preserve",
+    ...profile.decisionAreas.map((item) => `- ${item}`),
+    "",
+    "### Scalability and Reliability Notes",
+    ...profile.scalingConstraints.map((item) => `- ${item}`),
+    "",
+    "### Testing and Operability",
+    ...profile.testingStrategy.map((item) => `- ${item}`),
+    "",
+    "### ADR Linkage",
+    "- Keep durable architecture decisions in `docs/adr/` and summarize the active decision set here.",
+    "",
+    "### Mermaid Diagram",
+    "```mermaid",
+    buildArchitectureDocMermaid(snapshot),
+    "```",
+    "<!-- cbx:architecture:doc:end -->",
+    "",
+  ].join("\n");
+}
+
 function buildEngineeringArchitectureSection(snapshot) {
   const profile = inferArchitectureContractProfile(snapshot);
   const hash = hashStableObject(profile);
@@ -1125,10 +1312,30 @@ function buildEngineeringArchitectureSection(snapshot) {
     ...profile.testingStrategy.map((rule) => `  - ${rule}`),
     "- Doc refresh policy:",
     "  - Update these managed sections when architecture, scale, boundaries, design-system rules, or testing strategy changes.",
-    "  - For non-trivial work, read this file before planning and read TECH.md next.",
+    "  - For non-trivial work, read PRODUCT.md, ENGINEERING_RULES.md, ARCHITECTURE.md, and TECH.md in that order when they exist.",
     "<!-- cbx:architecture:rules:end -->",
     "",
   ].join("\n");
+}
+
+function buildArchitectureDocMermaid(snapshot) {
+  const topDirs = snapshot.topDirs.slice(0, 5);
+  const lines = [
+    "flowchart LR",
+    '  product["Product Intent"] --> rules["Engineering Rules"]',
+    '  product --> arch["Architecture Backbone"]',
+    '  arch --> tech["Current Tech Snapshot"]',
+  ];
+  if (topDirs.length > 0) {
+    for (let index = 0; index < topDirs.length; index += 1) {
+      const dir = topDirs[index];
+      const nodeName = `D${index}`;
+      lines.push(`  arch --> ${nodeName}["${dir}/"]`);
+    }
+  }
+  lines.push('  arch --> adr["docs/adr"]');
+  lines.push('  product --> specs["docs/specs"]');
+  return lines.join("\n");
 }
 
 function buildTechArchitectureSection(snapshot) {
@@ -1182,6 +1389,56 @@ function buildTechArchitectureSection(snapshot) {
     "### External Research Evidence",
     "- Reserved for `cbx build architecture --research auto|always` when outside evidence informs the architecture notes.",
     "<!-- cbx:architecture:tech:end -->",
+    "",
+  ].join("\n");
+}
+
+function buildRoadmapFoundationSection(snapshot, specRoots = []) {
+  const payload = {
+    topDirs: snapshot.topDirs,
+    frameworks: snapshot.frameworks,
+    specRoots,
+  };
+  const hash = hashStableObject(payload);
+  const nowItems = specRoots.length > 0
+    ? specRoots.map((item) => `Track active change planning in \`${item}\`.`)
+    : [
+        "No active spec packs detected. Create a spec pack before starting the next non-trivial feature or migration.",
+      ];
+  const nextItems = [];
+  if (snapshot.frameworks.length > 0) {
+    nextItems.push(
+      `Keep shared conventions stable across the current stack: ${snapshot.frameworks.join(", ")}.`,
+    );
+  }
+  if (snapshot.cicdSignals.length > 0) {
+    nextItems.push(
+      `Preserve release compatibility with the detected delivery surfaces: ${snapshot.cicdSignals.join(", ")}.`,
+    );
+  }
+  if (nextItems.length === 0) {
+    nextItems.push(
+      "Document the next scaling milestones here once product direction and architecture constraints are clearer.",
+    );
+  }
+
+  return [
+    `<!-- cbx:roadmap:foundation:start version=1 profile=${hash} -->`,
+    "## Delivery Backbone (auto-managed)",
+    "",
+    "### Now",
+    ...nowItems.map((item) => `- ${item}`),
+    "",
+    "### Next",
+    ...nextItems.map((item) => `- ${item}`),
+    "",
+    "### Later",
+    "- Use this section for medium-term scaling themes, major migrations, or cross-team architecture investments.",
+    "",
+    "### Backbone Maintenance",
+    "- Keep PRODUCT.md, ARCHITECTURE.md, ENGINEERING_RULES.md, and TECH.md aligned when direction or structure changes.",
+    "- Link major roadmap themes back to specs and ADRs instead of burying them in chat-only planning.",
+    "<!-- cbx:roadmap:foundation:end -->",
     "",
   ].join("\n");
 }
@@ -1288,14 +1545,105 @@ function buildEngineeringRulesTemplate() {
   ].join("\n");
 }
 
+function buildProductTemplate(snapshot, specRoots = []) {
+  return [
+    "# Product",
+    "",
+    "This file is the durable product backbone for the project.",
+    "",
+    buildProductFoundationSection(snapshot, specRoots).trimEnd(),
+    "",
+  ].join("\n");
+}
+
+function buildArchitectureDocTemplate(snapshot, specRoots = []) {
+  return [
+    "# Architecture",
+    "",
+    "This file captures the accepted architecture backbone for the project.",
+    "",
+    buildArchitectureDocSection(snapshot, specRoots).trimEnd(),
+    "",
+  ].join("\n");
+}
+
+function buildRoadmapTemplate(snapshot, specRoots = []) {
+  return [
+    "# Roadmap",
+    "",
+    "This file captures the living delivery backbone for medium-term product and architecture work.",
+    "",
+    buildRoadmapFoundationSection(snapshot, specRoots).trimEnd(),
+    "",
+  ].join("\n");
+}
+
+function buildAdrReadme() {
+  return [
+    "# Architecture Decision Records",
+    "",
+    "Use this directory for durable decisions that future contributors and agents need to preserve.",
+    "",
+    "## When to add an ADR",
+    "",
+    "- Architecture style or boundary changes",
+    "- Data model or persistence strategy changes",
+    "- Deployment or scaling model changes",
+    "- Design-system ownership or shared UX pattern changes",
+    "",
+    "## Suggested format",
+    "",
+    "1. Context",
+    "2. Decision",
+    "3. Consequences",
+    "4. Validation",
+    "",
+    "Start with `0000-template.md` and create numbered follow-up ADRs for accepted decisions.",
+    "",
+  ].join("\n");
+}
+
+function buildAdrTemplate() {
+  return [
+    "# ADR 0000: Title",
+    "",
+    "## Status",
+    "",
+    "Proposed",
+    "",
+    "## Context",
+    "",
+    "- What problem or pressure led to this decision?",
+    "",
+    "## Decision",
+    "",
+    "- What is the chosen direction?",
+    "",
+    "## Consequences",
+    "",
+    "- What tradeoffs, benefits, or costs follow from this choice?",
+    "",
+    "## Validation",
+    "",
+    "- How will the team know this decision is working?",
+    "",
+  ].join("\n");
+}
+
 function buildEngineeringRulesManagedBlock({
   platform,
+  productFilePath,
+  architectureFilePath,
   engineeringRulesFilePath,
   techMdFilePath,
+  roadmapFilePath,
   ruleFilePath,
 }) {
+  const productRef = toPosixPath(path.resolve(productFilePath));
+  const architectureRef = toPosixPath(path.resolve(architectureFilePath));
   const engineeringRef = toPosixPath(path.resolve(engineeringRulesFilePath));
   const techRef = toPosixPath(path.resolve(techMdFilePath));
+  const roadmapRef = toPosixPath(path.resolve(roadmapFilePath));
   const ruleRef = toPosixPath(path.resolve(ruleFilePath));
 
   return [
@@ -1303,8 +1651,11 @@ function buildEngineeringRulesManagedBlock({
     "## Engineering Guardrails (auto-managed)",
     "Apply these before planning, coding, review, and release:",
     "",
+    `- Product backbone: \`${productRef}\``,
+    `- Accepted architecture: \`${architectureRef}\``,
     `- Required baseline: \`${engineeringRef}\``,
     `- Project tech map: \`${techRef}\``,
+    `- Delivery roadmap: \`${roadmapRef}\``,
     `- Active platform rule file: \`${ruleRef}\``,
     "",
     "Hard policy:",
@@ -1312,7 +1663,7 @@ function buildEngineeringRulesManagedBlock({
     "2. Keep architecture simple (KISS) and avoid speculative work (YAGNI).",
     "3. Apply SOLID pragmatically to reduce change risk, not add ceremony.",
     "4. Use clear naming with focused responsibilities and explicit boundaries.",
-    "5. For non-trivial work, read ENGINEERING_RULES.md first and TECH.md next before planning or implementation.",
+    "5. For non-trivial work, read PRODUCT.md, ENGINEERING_RULES.md, ARCHITECTURE.md, and TECH.md in that order when they exist before planning or implementation.",
     "6. Require validation evidence (lint/types/tests) before merge.",
     "7. Use Decision Log response style.",
     "8. Every Decision Log must include a `Skills Used` section listing skill, workflow, or agent names.",
@@ -1437,14 +1788,20 @@ async function upsertEngineeringRulesFile({
 async function upsertEngineeringRulesBlock({
   ruleFilePath,
   platform,
+  productFilePath,
+  architectureFilePath,
   engineeringRulesFilePath,
   techMdFilePath,
+  roadmapFilePath,
   dryRun = false,
 }) {
   const block = buildEngineeringRulesManagedBlock({
     platform,
+    productFilePath,
+    architectureFilePath,
     engineeringRulesFilePath,
     techMdFilePath,
+    roadmapFilePath,
     ruleFilePath,
   });
   const exists = await pathExists(ruleFilePath);
@@ -1558,28 +1915,59 @@ async function upsertTaggedSectionInFile({
 function buildArchitectureBuildMetadata({
   platform,
   researchMode,
+  productProfileHash,
+  architectureDocHash,
   rulesProfileHash,
   techSnapshotHash,
+  roadmapProfileHash,
 }) {
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     generatedBy: "cbx build architecture",
     generatedAt: new Date().toISOString(),
     platform,
     researchMode,
+    productProfileHash,
+    architectureDocHash,
     rulesProfileHash,
     techSnapshotHash,
+    roadmapProfileHash,
   };
 }
 
 async function ensureArchitectureDocScaffold({
   workspaceRoot,
   snapshot,
+  specRoots = [],
   overwrite = false,
   dryRun = false,
 }) {
+  const productPath = path.join(workspaceRoot, "PRODUCT.md");
+  const architectureDocPath = path.join(workspaceRoot, "ARCHITECTURE.md");
   const engineeringRulesPath = path.join(workspaceRoot, "ENGINEERING_RULES.md");
   const techMdPath = path.join(workspaceRoot, "TECH.md");
+  const roadmapPath = path.join(workspaceRoot, "ROADMAP.md");
+  const adrDir = path.join(workspaceRoot, "docs", "adr");
+  const adrReadmePath = path.join(adrDir, "README.md");
+  const adrTemplatePath = path.join(adrDir, "0000-template.md");
+
+  const productResult = await upsertTaggedSectionInFile({
+    targetPath: productPath,
+    initialContent: `${buildProductTemplate(snapshot, specRoots)}\n`,
+    block: buildProductFoundationSection(snapshot, specRoots),
+    startPattern: PRODUCT_FOUNDATION_BLOCK_START_RE,
+    endPattern: PRODUCT_FOUNDATION_BLOCK_END_RE,
+    dryRun,
+  });
+
+  const architectureDocResult = await upsertTaggedSectionInFile({
+    targetPath: architectureDocPath,
+    initialContent: `${buildArchitectureDocTemplate(snapshot, specRoots)}\n`,
+    block: buildArchitectureDocSection(snapshot, specRoots),
+    startPattern: ARCHITECTURE_DOC_BLOCK_START_RE,
+    endPattern: ARCHITECTURE_DOC_BLOCK_END_RE,
+    dryRun,
+  });
 
   const rulesTemplate = buildEngineeringRulesTemplate();
   const rulesFileResult = await upsertEngineeringRulesFile({
@@ -1613,13 +2001,45 @@ async function ensureArchitectureDocScaffold({
     dryRun,
   });
 
+  const roadmapResult = await upsertTaggedSectionInFile({
+    targetPath: roadmapPath,
+    initialContent: `${buildRoadmapTemplate(snapshot, specRoots)}\n`,
+    block: buildRoadmapFoundationSection(snapshot, specRoots),
+    startPattern: ROADMAP_FOUNDATION_BLOCK_START_RE,
+    endPattern: ROADMAP_FOUNDATION_BLOCK_END_RE,
+    dryRun,
+  });
+
+  const adrReadmeResult = await writeTextFile({
+    targetPath: adrReadmePath,
+    content: `${buildAdrReadme()}\n`,
+    overwrite,
+    dryRun,
+  });
+  const adrTemplateResult = await writeTextFile({
+    targetPath: adrTemplatePath,
+    content: `${buildAdrTemplate()}\n`,
+    overwrite,
+    dryRun,
+  });
+
   return {
+    productPath,
+    architectureDocPath,
     engineeringRulesPath,
     techMdPath,
+    roadmapPath,
+    adrReadmePath,
+    adrTemplatePath,
+    productResult,
+    architectureDocResult,
     rulesFileResult,
     rulesArchitectureResult,
     techResult,
     techArchitectureResult,
+    roadmapResult,
+    adrReadmeResult,
+    adrTemplateResult,
   };
 }
 
@@ -8755,14 +9175,6 @@ async function performWorkflowInstall(
     dryRun,
     cwd,
   });
-  const engineeringArtifactsResult = await upsertEngineeringArtifacts({
-    platform,
-    scope: ruleScope,
-    overwrite: false,
-    dryRun,
-    skipTech: false,
-    cwd,
-  });
   const postmanSetupResult = await configurePostmanInstallArtifacts({
     platform,
     scope,
@@ -8808,7 +9220,7 @@ async function performWorkflowInstall(
     bundleId,
     installResult,
     syncResult,
-    engineeringArtifactsResult,
+    engineeringArtifactsResult: null,
     postmanSetupResult,
     terminalVerificationRuleResult,
   };
@@ -8838,10 +9250,7 @@ async function runWorkflowInstall(options) {
       dryRun: result.dryRun,
     });
     printRuleSyncResult(result.syncResult);
-    printInstallEngineeringSummary({
-      engineeringResults: result.engineeringArtifactsResult.engineeringResults,
-      techResult: result.engineeringArtifactsResult.techResult,
-    });
+    printInstallDocumentationNotice();
     printPostmanSetupSummary({
       postmanSetup: result.postmanSetupResult,
     });
@@ -12296,6 +12705,16 @@ function printInstallEngineeringSummary({ engineeringResults, techResult }) {
   }
 }
 
+function printInstallDocumentationNotice() {
+  console.log("\nProject backbone docs:");
+  console.log(
+    "- Install only wires the rule references and workflow assets.",
+  );
+  console.log(
+    "- Use `cbx rules init` to scaffold ENGINEERING_RULES.md and TECH.md, or `cbx build architecture --platform <codex|claude|gemini|copilot>` to generate PRODUCT.md, ARCHITECTURE.md, ENGINEERING_RULES.md, TECH.md, ROADMAP.md, and ADR scaffolds.",
+  );
+}
+
 async function upsertEngineeringArtifacts({
   platform,
   scope,
@@ -12313,10 +12732,10 @@ async function upsertEngineeringArtifacts({
   const scaffold = await ensureArchitectureDocScaffold({
     workspaceRoot,
     snapshot,
+    specRoots: [],
     overwrite,
     dryRun,
   });
-  const techMdPath = path.join(workspaceRoot, "TECH.md");
   const targets = [{ ruleFilePath }];
 
   if (scope === "global") {
@@ -12341,8 +12760,11 @@ async function upsertEngineeringArtifacts({
     const blockResult = await upsertEngineeringRulesBlock({
       ruleFilePath: target.ruleFilePath,
       platform,
+      productFilePath: scaffold.productPath,
+      architectureFilePath: scaffold.architectureDocPath,
       engineeringRulesFilePath: scaffold.engineeringRulesPath,
-      techMdFilePath: techMdPath,
+      techMdFilePath: scaffold.techMdPath,
+      roadmapFilePath: scaffold.roadmapPath,
       dryRun,
     });
     engineeringResults.push({
@@ -12541,8 +12963,12 @@ function buildArchitecturePrompt({
   conditionalSkills,
   skillPathHints,
 }) {
+  const productPath = "PRODUCT.md";
+  const architecturePath = "ARCHITECTURE.md";
   const rulesPath = "ENGINEERING_RULES.md";
   const techPath = "TECH.md";
+  const roadmapPath = "ROADMAP.md";
+  const adrReadmePath = "docs/adr/README.md";
   const architectureSignals = snapshot.architectureByApp
     .filter((item) => (item.architectureSignals || []).length > 0)
     .map((item) => {
@@ -12554,9 +12980,9 @@ function buildArchitecturePrompt({
     `You are running inside ${platform}.`,
     "",
     "Objective:",
-    `- Inspect the repository at ${toPosixPath(workspaceRoot)} and refresh the managed architecture sections in ${rulesPath} and ${techPath}.`,
-    "- Keep ENGINEERING_RULES.md normative and TECH.md descriptive.",
-    "- Preserve manual content outside the managed `cbx:architecture:*` markers.",
+    `- Inspect the repository at ${toPosixPath(workspaceRoot)} and refresh the scalable project backbone in ${productPath}, ${architecturePath}, ${rulesPath}, ${techPath}, and ${roadmapPath}.`,
+    "- Keep PRODUCT.md focused on intent, ARCHITECTURE.md on accepted structure, ENGINEERING_RULES.md on normative rules, TECH.md on current-state evidence, and ROADMAP.md on delivery themes.",
+    "- Preserve manual content outside the managed `cbx:*` markers.",
     "",
     "Required skill bundle:",
     `- Load these exact skill IDs first: ${coreSkills.map((skillId) => `\`${skillId}\``).join(", ")}`,
@@ -12577,22 +13003,25 @@ function buildArchitecturePrompt({
       : "- Architecture signals: none confidently inferred from the repo scan",
     "",
     "Execution contract:",
-    "1. Read ENGINEERING_RULES.md first if present, then read TECH.md.",
+    `1. Read ${productPath}, ${rulesPath}, ${architecturePath}, and ${techPath} in that order when they exist.`,
     "2. Inspect the repo before making architecture claims.",
-    "3. Update only the content between the existing `cbx:architecture:rules` and `cbx:architecture:tech` markers.",
-    "4. Keep the marker lines themselves intact, including their hash metadata.",
-    "5. In ENGINEERING_RULES.md, state architecture style, dependency rules, feature or module structure rules, design-system source of truth, testability expectations, and doc refresh policy.",
-    "6. In TECH.md, update architecture snapshot, module or app topology, flow narratives, Mermaid diagrams, and scaling or deployment notes.",
+    "3. Update only the content between the existing managed markers in the backbone docs and preserve the marker lines themselves, including their hash metadata.",
+    "4. In PRODUCT.md, state product scope, primary surfaces, users or operators, core journeys, success signals, and product guardrails.",
+    "5. In ARCHITECTURE.md, state accepted architecture style, bounded contexts, stable decision areas, ADR linkage, and add at least one Mermaid architecture diagram if the repo is non-trivial.",
+    "6. In ENGINEERING_RULES.md, state architecture style, dependency rules, feature or module structure rules, design-system source of truth, testability expectations, and doc refresh policy.",
+    "7. In TECH.md, update architecture snapshot, module or app topology, flow narratives, Mermaid diagrams, and scaling or deployment notes.",
+    "8. In ROADMAP.md, capture current delivery themes, active spec-driven work, and major architecture follow-ups without turning it into a speculative wishlist.",
     researchMode === "never"
-      ? "7. Stay repo-only. Do not use outside research."
-      : "7. Use repo evidence first. Use official docs when needed. Treat Reddit or community sources only as labeled secondary evidence.",
+      ? "9. Stay repo-only. Do not use outside research."
+      : "9. Use repo evidence first. Use official docs when needed. Treat Reddit or community sources only as labeled secondary evidence.",
     researchMode === "always"
-      ? "8. Include an external research evidence subsection in TECH.md with clearly labeled primary and secondary evidence."
-      : "8. Include external research notes only if they materially informed the architecture update.",
-    "9. If the project clearly follows Clean Architecture, feature-first modules, or another stable structure, make that explicit so future implementation stays consistent.",
+      ? "10. Include an external research evidence subsection in TECH.md with clearly labeled primary and secondary evidence."
+      : "10. Include external research notes only if they materially informed the architecture update.",
+    "11. If the project clearly follows Clean Architecture, feature-first modules, or another stable structure, make that explicit so future implementation stays consistent.",
+    `12. Ensure ${adrReadmePath} exists as the ADR entrypoint and mention ADR follow-up when the repo lacks decision history.`,
     "",
     "Return one JSON object on the last line with this shape:",
-    '{"files_written":["ENGINEERING_RULES.md","TECH.md"],"research_used":false,"gaps":[],"next_actions":[]}',
+    '{"files_written":["PRODUCT.md","ARCHITECTURE.md","ENGINEERING_RULES.md","TECH.md","ROADMAP.md","docs/adr/README.md"],"research_used":false,"gaps":[],"next_actions":[]}',
     "",
     "Do not emit placeholder TODOs in the managed sections.",
   ].join("\n");
@@ -12620,6 +13049,95 @@ async function execFileCapture(command, args, options = {}) {
       code: error?.code || 1,
     };
   }
+}
+
+async function spawnCapture(command, args, options = {}) {
+  const { cwd, env, streamOutput = false } = options;
+  return await new Promise((resolve, reject) => {
+    let stdout = "";
+    let stderr = "";
+    const child = spawn(command, args, {
+      cwd,
+      env,
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+
+    child.stdout.on("data", (chunk) => {
+      const text = chunk.toString();
+      stdout += text;
+      if (streamOutput) process.stdout.write(text);
+    });
+
+    child.stderr.on("data", (chunk) => {
+      const text = chunk.toString();
+      stderr += text;
+      if (streamOutput) process.stderr.write(text);
+    });
+
+    child.on("error", (error) => {
+      if (error?.code === "ENOENT") {
+        reject(
+          new Error(`Required CLI '${command}' is not installed or not on PATH.`),
+        );
+        return;
+      }
+      reject(error);
+    });
+
+    child.on("close", (code) => {
+      resolve({
+        ok: code === 0,
+        stdout,
+        stderr,
+        code: code ?? 1,
+      });
+    });
+  });
+}
+
+function explainArchitectureBuildFailure(platform, execution) {
+  const combined = String(
+    `${execution.stderr || ""}\n${execution.stdout || ""}`.trim(),
+  );
+  const notes = [];
+
+  if (platform === "gemini") {
+    if (
+      combined.includes("Error during discovery for MCP server") ||
+      combined.includes("[MCP error]")
+    ) {
+      notes.push(
+        "Gemini CLI is failing while loading MCP servers from your Gemini settings. Start the required MCP runtime(s) first or disable the broken server entries in `.gemini/settings.json` before retrying.",
+      );
+    }
+    if (
+      combined.includes("cloudaicompanion.companions.generateChat") ||
+      combined.includes("PERMISSION_DENIED") ||
+      combined.includes("403")
+    ) {
+      notes.push(
+        "Gemini CLI reached Google auth, but the active account or project cannot generate chat content. Re-authenticate Gemini CLI with a permitted account or configure a supported Gemini API credential and project before retrying.",
+      );
+    }
+  }
+
+  if (platform === "claude" && combined.includes("permission")) {
+    notes.push(
+      "Claude CLI appears to be blocked by its own permission model. Re-run in a Claude environment that allows non-interactive edits for this workspace.",
+    );
+  }
+
+  if (notes.length === 0) {
+    return `Architecture build failed via ${platform}. ${combined}`.trim();
+  }
+
+  return [
+    `Architecture build failed via ${platform}.`,
+    ...notes.map((note) => `- ${note}`),
+    combined ? `Raw CLI output:\n${combined}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
 }
 
 async function probeArchitectureAdapter(platform, cwd) {
@@ -12710,9 +13228,8 @@ async function probeArchitectureAdapter(platform, cwd) {
 function normalizeArchitectureResult({
   stdout,
   workspaceRoot,
-  rulesPath,
-  techPath,
   researchMode,
+  changedFiles = [],
 }) {
   const trimmed = String(stdout || "").trim();
   if (trimmed) {
@@ -12722,9 +13239,12 @@ function normalizeArchitectureResult({
         const parsed = JSON.parse(lastLine);
         return {
           outputRoot: workspaceRoot,
-          filesWritten: Array.isArray(parsed.files_written)
-            ? parsed.files_written
-            : [rulesPath, techPath],
+          filesWritten:
+            changedFiles.length > 0
+              ? changedFiles
+              : Array.isArray(parsed.files_written)
+                ? parsed.files_written
+                : [],
           researchUsed:
             typeof parsed.research_used === "boolean"
               ? parsed.research_used
@@ -12743,7 +13263,7 @@ function normalizeArchitectureResult({
 
   return {
     outputRoot: workspaceRoot,
-    filesWritten: [rulesPath, techPath],
+    filesWritten: changedFiles,
     researchUsed: researchMode === "always",
     gaps: [],
     nextActions: [],
@@ -12751,17 +13271,44 @@ function normalizeArchitectureResult({
   };
 }
 
+async function captureFileContents(filePaths) {
+  const snapshot = {};
+  for (const filePath of filePaths) {
+    if (await pathExists(filePath)) {
+      snapshot[filePath] = await readFile(filePath, "utf8");
+    } else {
+      snapshot[filePath] = null;
+    }
+  }
+  return snapshot;
+}
+
 async function readArchitectureDriftStatus(workspaceRoot, snapshot) {
+  const specRoots = await listSpecPackRoots(workspaceRoot);
+  const productPath = path.join(workspaceRoot, "PRODUCT.md");
+  const architecturePath = path.join(workspaceRoot, "ARCHITECTURE.md");
   const rulesPath = path.join(workspaceRoot, "ENGINEERING_RULES.md");
   const techPath = path.join(workspaceRoot, "TECH.md");
+  const roadmapPath = path.join(workspaceRoot, "ROADMAP.md");
+  const adrReadmePath = path.join(workspaceRoot, "docs", "adr", "README.md");
   const metadataPath = path.join(
     workspaceRoot,
     ".cbx",
     ARCHITECTURE_BUILD_METADATA_FILENAME,
   );
+  const productExists = await pathExists(productPath);
+  const architectureExists = await pathExists(architecturePath);
   const rulesExists = await pathExists(rulesPath);
   const techExists = await pathExists(techPath);
+  const roadmapExists = await pathExists(roadmapPath);
+  const adrReadmeExists = await pathExists(adrReadmePath);
 
+  const expectedProductHash = hashStableObject(
+    inferProductFoundationProfile(snapshot, specRoots),
+  );
+  const expectedArchitectureHash = hashStableObject(
+    inferArchitectureDocProfile(snapshot, specRoots),
+  );
   const expectedRulesHash = hashStableObject(
     inferArchitectureContractProfile(snapshot),
   );
@@ -12771,10 +13318,54 @@ async function readArchitectureDriftStatus(workspaceRoot, snapshot) {
     frameworks: snapshot.frameworks,
     architectureByApp: snapshot.architectureByApp,
   });
+  const expectedRoadmapHash = hashStableObject({
+    topDirs: snapshot.topDirs,
+    frameworks: snapshot.frameworks,
+    specRoots,
+  });
 
   const findings = [];
+  let actualProductHash = null;
+  let actualArchitectureHash = null;
   let actualRulesHash = null;
   let actualTechHash = null;
+  let actualRoadmapHash = null;
+
+  if (!productExists) {
+    findings.push("PRODUCT.md is missing.");
+  } else {
+    const content = await readFile(productPath, "utf8");
+    actualProductHash = extractTaggedMarkerAttribute(
+      content,
+      PRODUCT_FOUNDATION_BLOCK_START_RE,
+      "profile",
+    );
+    if (!actualProductHash) {
+      findings.push("PRODUCT.md is missing the managed product foundation block.");
+    } else if (actualProductHash !== expectedProductHash) {
+      findings.push(
+        `PRODUCT.md foundation is stale (expected ${expectedProductHash}, found ${actualProductHash}).`,
+      );
+    }
+  }
+
+  if (!architectureExists) {
+    findings.push("ARCHITECTURE.md is missing.");
+  } else {
+    const content = await readFile(architecturePath, "utf8");
+    actualArchitectureHash = extractTaggedMarkerAttribute(
+      content,
+      ARCHITECTURE_DOC_BLOCK_START_RE,
+      "profile",
+    );
+    if (!actualArchitectureHash) {
+      findings.push("ARCHITECTURE.md is missing the managed architecture backbone block.");
+    } else if (actualArchitectureHash !== expectedArchitectureHash) {
+      findings.push(
+        `ARCHITECTURE.md backbone is stale (expected ${expectedArchitectureHash}, found ${actualArchitectureHash}).`,
+      );
+    }
+  }
 
   if (!rulesExists) {
     findings.push("ENGINEERING_RULES.md is missing.");
@@ -12812,6 +13403,28 @@ async function readArchitectureDriftStatus(workspaceRoot, snapshot) {
     }
   }
 
+  if (!roadmapExists) {
+    findings.push("ROADMAP.md is missing.");
+  } else {
+    const content = await readFile(roadmapPath, "utf8");
+    actualRoadmapHash = extractTaggedMarkerAttribute(
+      content,
+      ROADMAP_FOUNDATION_BLOCK_START_RE,
+      "profile",
+    );
+    if (!actualRoadmapHash) {
+      findings.push("ROADMAP.md is missing the managed roadmap foundation block.");
+    } else if (actualRoadmapHash !== expectedRoadmapHash) {
+      findings.push(
+        `ROADMAP.md backbone is stale (expected ${expectedRoadmapHash}, found ${actualRoadmapHash}).`,
+      );
+    }
+  }
+
+  if (!adrReadmeExists) {
+    findings.push("docs/adr/README.md is missing.");
+  }
+
   const metadata = await readJsonFileIfExists(metadataPath);
   if (!metadata.exists) {
     findings.push("Architecture build metadata is missing.");
@@ -12820,13 +13433,23 @@ async function readArchitectureDriftStatus(workspaceRoot, snapshot) {
   return {
     stale: findings.length > 0,
     findings,
+    productPath,
+    architecturePath,
     rulesPath,
     techPath,
+    roadmapPath,
+    adrReadmePath,
     metadataPath,
+    expectedProductHash,
+    expectedArchitectureHash,
     expectedRulesHash,
     expectedTechHash,
+    expectedRoadmapHash,
+    actualProductHash,
+    actualArchitectureHash,
     actualRulesHash,
     actualTechHash,
+    actualRoadmapHash,
   };
 }
 
@@ -12841,6 +13464,7 @@ async function runBuildArchitecture(options) {
     const cwd = process.cwd();
     const workspaceRoot = findWorkspaceRoot(cwd);
     const snapshot = await collectTechSnapshot(workspaceRoot);
+    const specRoots = await listSpecPackRoots(workspaceRoot);
 
     if (checkOnly) {
       const drift = await readArchitectureDriftStatus(workspaceRoot, snapshot);
@@ -12850,6 +13474,9 @@ async function runBuildArchitecture(options) {
         console.log(`Platform: ${platform}`);
         console.log(`Workspace: ${toPosixPath(workspaceRoot)}`);
         console.log(`Status: ${drift.stale ? "stale" : "fresh"}`);
+        console.log(
+          "Backbone docs: PRODUCT.md, ARCHITECTURE.md, ENGINEERING_RULES.md, TECH.md, ROADMAP.md, docs/adr/README.md",
+        );
         if (drift.findings.length > 0) {
           console.log("Findings:");
           for (const finding of drift.findings) {
@@ -12861,13 +13488,26 @@ async function runBuildArchitecture(options) {
       return;
     }
 
+    const managedFilePaths = [
+      path.join(workspaceRoot, "PRODUCT.md"),
+      path.join(workspaceRoot, "ARCHITECTURE.md"),
+      path.join(workspaceRoot, "ENGINEERING_RULES.md"),
+      path.join(workspaceRoot, "TECH.md"),
+      path.join(workspaceRoot, "ROADMAP.md"),
+      path.join(workspaceRoot, "docs", "adr", "README.md"),
+      path.join(workspaceRoot, "docs", "adr", "0000-template.md"),
+    ];
+    const filesBefore = dryRun
+      ? Object.fromEntries(managedFilePaths.map((filePath) => [filePath, null]))
+      : await captureFileContents(managedFilePaths);
+
     const scaffold = await ensureArchitectureDocScaffold({
       workspaceRoot,
       snapshot,
+      specRoots,
       overwrite,
       dryRun,
     });
-    const specRoots = await listSpecPackRoots(workspaceRoot);
     const coreSkills = [
       "architecture-doc",
       "system-design",
@@ -12906,8 +13546,13 @@ async function runBuildArchitecture(options) {
         invocation: [adapter.binary, ...args],
         researchMode,
         managedTargets: [
+          toPosixPath(scaffold.productPath),
+          toPosixPath(scaffold.architectureDocPath),
           toPosixPath(scaffold.engineeringRulesPath),
           toPosixPath(scaffold.techMdPath),
+          toPosixPath(scaffold.roadmapPath),
+          toPosixPath(scaffold.adrReadmePath),
+          toPosixPath(scaffold.adrTemplatePath),
         ],
         skillBundle,
       };
@@ -12927,18 +13572,37 @@ async function runBuildArchitecture(options) {
       return;
     }
 
-    const execution = await execFileCapture(adapter.binary, args, {
-      cwd: workspaceRoot,
-      env: process.env,
-    });
-    if (!execution.ok) {
-      throw new Error(
-        `Architecture build failed via ${adapter.binary}. ${String(execution.stderr || execution.stdout || "").trim()}`,
-      );
+    if (!emitJson) {
+      console.log(`Streaming ${adapter.binary} output...`);
     }
 
-    const rulesContent = await readFile(scaffold.engineeringRulesPath, "utf8");
-    const techContent = await readFile(scaffold.techMdPath, "utf8");
+    const execution = await spawnCapture(adapter.binary, args, {
+      cwd: workspaceRoot,
+      env: process.env,
+      streamOutput: !emitJson,
+    });
+    if (!execution.ok) {
+      throw new Error(explainArchitectureBuildFailure(platform, execution));
+    }
+
+    const filesAfter = await captureFileContents(managedFilePaths);
+    const changedFiles = managedFilePaths
+      .filter((filePath) => filesBefore[filePath] !== filesAfter[filePath])
+      .map((filePath) => toPosixPath(path.relative(workspaceRoot, filePath)));
+
+    const rulesContent =
+      filesAfter[scaffold.engineeringRulesPath] ??
+      (await readFile(scaffold.engineeringRulesPath, "utf8"));
+    const techContent =
+      filesAfter[scaffold.techMdPath] ?? (await readFile(scaffold.techMdPath, "utf8"));
+    const productContent =
+      filesAfter[scaffold.productPath] ?? (await readFile(scaffold.productPath, "utf8"));
+    const architectureContent =
+      filesAfter[scaffold.architectureDocPath] ??
+      (await readFile(scaffold.architectureDocPath, "utf8"));
+    const roadmapContent =
+      filesAfter[scaffold.roadmapPath] ?? (await readFile(scaffold.roadmapPath, "utf8"));
+
     const metadataPath = path.join(
       workspaceRoot,
       ".cbx",
@@ -12947,6 +13611,18 @@ async function runBuildArchitecture(options) {
     const metadata = buildArchitectureBuildMetadata({
       platform,
       researchMode,
+      productProfileHash:
+        extractTaggedMarkerAttribute(
+          productContent,
+          PRODUCT_FOUNDATION_BLOCK_START_RE,
+          "profile",
+        ) || "unknown",
+      architectureDocHash:
+        extractTaggedMarkerAttribute(
+          architectureContent,
+          ARCHITECTURE_DOC_BLOCK_START_RE,
+          "profile",
+        ) || "unknown",
       rulesProfileHash:
         extractTaggedMarkerAttribute(
           rulesContent,
@@ -12959,6 +13635,12 @@ async function runBuildArchitecture(options) {
           TECH_ARCHITECTURE_BLOCK_START_RE,
           "snapshot",
         ) || "unknown",
+      roadmapProfileHash:
+        extractTaggedMarkerAttribute(
+          roadmapContent,
+          ROADMAP_FOUNDATION_BLOCK_START_RE,
+          "profile",
+        ) || "unknown",
     });
     await mkdir(path.dirname(metadataPath), { recursive: true });
     await writeFile(
@@ -12970,9 +13652,8 @@ async function runBuildArchitecture(options) {
     const result = normalizeArchitectureResult({
       stdout: execution.stdout,
       workspaceRoot: toPosixPath(workspaceRoot),
-      rulesPath: "ENGINEERING_RULES.md",
-      techPath: "TECH.md",
       researchMode,
+      changedFiles: [...new Set(changedFiles)],
     });
 
     if (emitJson) {
@@ -12994,7 +13675,12 @@ async function runBuildArchitecture(options) {
     console.log(`Platform: ${platform}`);
     console.log(`Adapter: ${adapter.binary}`);
     console.log(`Workspace: ${toPosixPath(workspaceRoot)}`);
-    console.log(`Managed docs: ENGINEERING_RULES.md, TECH.md`);
+    console.log(
+      "Managed docs: PRODUCT.md, ARCHITECTURE.md, ENGINEERING_RULES.md, TECH.md, ROADMAP.md",
+    );
+    console.log(
+      "ADR scaffold: docs/adr/README.md, docs/adr/0000-template.md",
+    );
     console.log(`Skill bundle: ${skillBundle.join(", ")}`);
     console.log(
       `Files written: ${(result.filesWritten || []).join(", ") || "(none reported)"}`,
@@ -13273,11 +13959,7 @@ async function runInitWizard(options) {
           dryRun: installOutcome.dryRun,
         });
         printRuleSyncResult(installOutcome.syncResult);
-        printInstallEngineeringSummary({
-          engineeringResults:
-            installOutcome.engineeringArtifactsResult.engineeringResults,
-          techResult: installOutcome.engineeringArtifactsResult.techResult,
-        });
+        printInstallDocumentationNotice();
         printPostmanSetupSummary({
           postmanSetup: installOutcome.postmanSetupResult,
         });

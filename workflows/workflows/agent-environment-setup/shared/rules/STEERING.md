@@ -37,7 +37,7 @@ Follow this decision tree for EVERY user request:
 
 > **Rule:** Inspect the repo and task locally BEFORE choosing a route or loading any skill.
 > **Rule:** If the user already chose the route, do not re-route it unless the named workflow, agent, or skill is invalid.
-> **Rule:** For non-trivial work, read `ENGINEERING_RULES.md` first and `TECH.md` next when they exist before planning or implementing.
+> **Rule:** For non-trivial work, read `PRODUCT.md`, `ENGINEERING_RULES.md`, `ARCHITECTURE.md`, and `TECH.md` in that order when they exist before planning or implementing.
 
 ---
 
@@ -97,7 +97,7 @@ Research output contract:
 - **Gaps / unknowns** — what could not be verified.
 - **Recommended next route** — workflow, agent, or skill to use after research.
 
-When the research result shows a change to project structure, boundaries, design system, or testing strategy, surface `doc_impact` and recommend `/architecture` or a managed-doc refresh before or after implementation.
+When the research result shows a change to product direction, project structure, boundaries, design system, or testing strategy, surface `doc_impact` and recommend `/architecture` or a managed-doc refresh before or after implementation.
 
 ---
 
@@ -195,7 +195,7 @@ Use the best specialist first:
 4. State what was NOT validated.
 5. Use web search only when information may be stale, public comparison matters, or the user explicitly asks.
 6. Prefer official docs first. Treat Reddit/community sources as secondary evidence and label them that way.
-7. If the task changes project structure, scaling assumptions, or design-system rules, update or flag `ENGINEERING_RULES.md` and `TECH.md`.
+7. If the task changes product direction, project structure, scaling assumptions, or design-system rules, update or flag `PRODUCT.md`, `ARCHITECTURE.md`, `ENGINEERING_RULES.md`, `TECH.md`, and `ROADMAP.md` as needed.
 
 ---
 

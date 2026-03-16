@@ -1,7 +1,7 @@
 {
   "$schema": "cubis-foundry-route-manifest-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
-  "contentHash": "84d671504acfd27c",
+  "contentHash": "a6695155551556d8",
   "summary": {
     "totalRoutes": 42,
     "workflows": 20,
@@ -1211,7 +1211,7 @@
       "id": "architecture",
       "command": "/architecture",
       "displayName": "architecture",
-      "description": "Refresh the project architecture contract and current-state map in ENGINEERING_RULES.md and TECH.md with explicit structure, design-system, testing, and flow guidance.",
+      "description": "Refresh the project backbone docs in PRODUCT.md, ARCHITECTURE.md, ENGINEERING_RULES.md, TECH.md, ROADMAP.md, and ADR scaffolds with explicit structure, design-system, testing, and flow guidance.",
       "triggers": [
         "architecture",
         "design system",

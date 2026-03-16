@@ -38,12 +38,12 @@ Use this for non-trivial work that needs durable planning in Git before implemen
 1. Determine whether the task is non-trivial enough to justify a spec pack.
 2. Find an existing `docs/specs/<spec-id>/` pack or create a new stable `spec_id`.
 3. Write or refresh the spec pack with brief, acceptance, tasks, traceability, and handoff files.
-4. Record `architecture_impact`, `doc_impact`, and any required updates to `ENGINEERING_RULES.md` or `TECH.md`.
+4. Record `architecture_impact`, `doc_impact`, and any required updates to `PRODUCT.md`, `ARCHITECTURE.md`, `ENGINEERING_RULES.md`, `TECH.md`, or `ROADMAP.md`.
 5. Identify the next execution route and hand off without replanning the same work.
 
 ## Context notes
 
-- Read `ENGINEERING_RULES.md` first and `TECH.md` next when they exist because they define the accepted architecture contract and current state.
+- Read `PRODUCT.md`, `ENGINEERING_RULES.md`, `ARCHITECTURE.md`, and `TECH.md` in that order when they exist because they define the accepted product direction, architecture contract, and current state.
 - Prefer repo evidence first; escalate to `deep-research` only when freshness, public comparison, or explicit research requests require it.
 - Keep spec packs lean. Trivial one-step tasks should stay on the lightweight path with no new spec directory.
 

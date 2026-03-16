@@ -75,7 +75,7 @@ function createWorkspace() {
 
 function createStubBins() {
   const dir = mkdtempSync(path.join(os.tmpdir(), "cbx-arch-bins-"));
-  const stub = `#!/usr/bin/env node
+const stub = `#!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
 const name = path.basename(process.argv[1]);
@@ -91,7 +91,7 @@ if ((name === 'codex' && args[0] === 'exec' && args[1] === '--help') || (name !=
   process.exit(0);
 }
 const prompt = args[args.length - 1] || '';
-if (!prompt.includes('ENGINEERING_RULES.md') || !prompt.includes('TECH.md') || !prompt.includes('Load these exact skill IDs first')) {
+if (!prompt.includes('PRODUCT.md') || !prompt.includes('ARCHITECTURE.md') || !prompt.includes('ENGINEERING_RULES.md') || !prompt.includes('TECH.md') || !prompt.includes('ROADMAP.md') || !prompt.includes('Load these exact skill IDs first')) {
   console.error('prompt missing required architecture instructions');
   process.exit(2);
 }
@@ -99,8 +99,13 @@ const logPath = process.env.CBX_STUB_LOG;
 if (logPath) {
   fs.appendFileSync(logPath, JSON.stringify({ name, args, cwd: process.cwd(), prompt }) + '\\n');
 }
+if (name === 'gemini' && process.env.CBX_STUB_GEMINI_FAIL === '1') {
+  process.stderr.write("[MCP error] Error during discovery for MCP server 'PlaywrightMCP': fetch failed\\n");
+  process.stderr.write("Permission 'cloudaicompanion.companions.generateChat' denied on resource '//cloudaicompanion.googleapis.com/projects/test/locations/global'.\\n");
+  process.exit(1);
+}
 process.stdout.write(JSON.stringify({
-  files_written: ['ENGINEERING_RULES.md', 'TECH.md'],
+  files_written: ['PRODUCT.md', 'ARCHITECTURE.md', 'ENGINEERING_RULES.md', 'TECH.md', 'ROADMAP.md', 'docs/adr/README.md'],
   research_used: prompt.includes('external research evidence'),
   gaps: [],
   next_actions: []
@@ -171,16 +176,33 @@ function main() {
     );
     assert(buildRun.status === 0, `codex build failed: ${buildRun.stderr}`);
     const buildJson = parseJsonOutput(buildRun.stdout);
+    assert(buildJson.result.filesWritten.includes("PRODUCT.md"), "build result missing PRODUCT.md");
+    assert(buildJson.result.filesWritten.includes("ARCHITECTURE.md"), "build result missing ARCHITECTURE.md");
     assert(buildJson.result.filesWritten.includes("ENGINEERING_RULES.md"), "build result missing ENGINEERING_RULES.md");
     assert(buildJson.result.filesWritten.includes("TECH.md"), "build result missing TECH.md");
+    assert(buildJson.result.filesWritten.includes("ROADMAP.md"), "build result missing ROADMAP.md");
     assert(
       existsSync(path.join(workspace, ".cbx", "architecture-build.json")),
       "architecture metadata missing",
     );
+    const productDoc = readFileSync(path.join(workspace, "PRODUCT.md"), "utf8");
+    const architectureDoc = readFileSync(path.join(workspace, "ARCHITECTURE.md"), "utf8");
     const rulesDoc = readFileSync(path.join(workspace, "ENGINEERING_RULES.md"), "utf8");
     const techDoc = readFileSync(path.join(workspace, "TECH.md"), "utf8");
+    const roadmapDoc = readFileSync(path.join(workspace, "ROADMAP.md"), "utf8");
+    assert(productDoc.includes("cbx:product:foundation:start"), "product doc missing managed block");
+    assert(architectureDoc.includes("cbx:architecture:doc:start"), "architecture doc missing managed block");
     assert(rulesDoc.includes("cbx:architecture:rules:start"), "rules doc missing architecture block");
     assert(techDoc.includes("cbx:architecture:tech:start"), "tech doc missing architecture block");
+    assert(roadmapDoc.includes("cbx:roadmap:foundation:start"), "roadmap doc missing managed block");
+    assert(
+      existsSync(path.join(workspace, "docs", "adr", "README.md")),
+      "adr README missing",
+    );
+    assert(
+      existsSync(path.join(workspace, "docs", "adr", "0000-template.md")),
+      "adr template missing",
+    );
 
     const checkFresh = runCli(
       ["build", "architecture", "--platform", "codex", "--check", "--json"],
@@ -205,6 +227,20 @@ function main() {
     );
     assert(missingRun.status !== 0, "missing copilot runtime should fail");
 
+    const geminiFailRun = runCli(
+      ["build", "architecture", "--platform", "gemini"],
+      { cwd: workspace, env: { ...env, CBX_STUB_GEMINI_FAIL: "1" } },
+    );
+    assert(geminiFailRun.status !== 0, "gemini failure should be surfaced");
+    assert(
+      geminiFailRun.stderr.includes("Gemini CLI is failing while loading MCP servers"),
+      "gemini failure missing MCP guidance",
+    );
+    assert(
+      geminiFailRun.stderr.includes("cannot generate chat content"),
+      "gemini failure missing auth guidance",
+    );
+
     const logLines = readFileSync(logPath, "utf8")
       .trim()
       .split(/\r?\n/)
@@ -212,7 +248,9 @@ function main() {
       .map((line) => JSON.parse(line));
     assert(logLines.length >= 1, "stub execution log missing");
     assert(
-      logLines[0].prompt.includes("Mermaid diagrams"),
+      logLines[0].prompt.includes("PRODUCT.md") &&
+        logLines[0].prompt.includes("ARCHITECTURE.md") &&
+        logLines[0].prompt.includes("Mermaid diagrams"),
       "stub prompt missing Mermaid instruction",
     );
 

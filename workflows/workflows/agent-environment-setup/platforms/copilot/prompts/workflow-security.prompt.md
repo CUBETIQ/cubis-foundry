@@ -7,7 +7,7 @@ Use this prompt with the matching workflow file:
 
 Execution contract:
 1. Treat route selection as already resolved by this prompt; do not begin with skill discovery.
-2. Read `ENGINEERING_RULES.md` first and `TECH.md` next when they exist before non-trivial execution.
+2. Read `PRODUCT.md`, `ENGINEERING_RULES.md`, `ARCHITECTURE.md`, and `TECH.md` in that order when they exist before non-trivial execution.
 Attached skills:
 - Load these exact skill IDs first: `owasp-security-review`, `code-review`, `api-design`, `typescript-best-practices`, `javascript-best-practices`, `python-best-practices`, `golang-best-practices`, `rust-best-practices`.
 - Local skill file hints if installed: `.github/skills/owasp-security-review/SKILL.md`, `.github/skills/code-review/SKILL.md`, `.github/skills/api-design/SKILL.md`, `.github/skills/typescript-best-practices/SKILL.md`, `.github/skills/javascript-best-practices/SKILL.md`, `.github/skills/python-best-practices/SKILL.md`, `.github/skills/golang-best-practices/SKILL.md`, `.github/skills/rust-best-practices/SKILL.md`.

@@ -1,10 +1,10 @@
-description = "Refresh the project architecture contract and current-state map in ENGINEERING_RULES.md and TECH.md with explicit structure, design-system, testing, and flow guidance."
+description = "Refresh the project backbone docs in PRODUCT.md, ARCHITECTURE.md, ENGINEERING_RULES.md, TECH.md, ROADMAP.md, and ADR scaffolds with explicit structure, design-system, testing, and flow guidance."
 prompt = '''
 Follow the /architecture workflow from .agent/workflows/architecture.md.
 
 Execution contract:
 1. Treat route selection as already resolved by this command; do not begin with skill discovery.
-2. Read `ENGINEERING_RULES.md` first and `TECH.md` next when they exist before non-trivial execution.
+2. Read `PRODUCT.md`, `ENGINEERING_RULES.md`, `ARCHITECTURE.md`, and `TECH.md` in that order when they exist before non-trivial execution.
 Attached skills:
 - Load these exact skill IDs first: `architecture-doc`, `system-design`, `tech-doc`, `frontend-design`, `api-design`, `database-design`, `sadd`, `deep-research`.
 - Local skill file hints if installed: `.agent/skills/architecture-doc/SKILL.md`, `.agent/skills/system-design/SKILL.md`, `.agent/skills/tech-doc/SKILL.md`, `.agent/skills/frontend-design/SKILL.md`, `.agent/skills/api-design/SKILL.md`, `.agent/skills/database-design/SKILL.md`, `.agent/skills/sadd/SKILL.md`, `.agent/skills/deep-research/SKILL.md`.

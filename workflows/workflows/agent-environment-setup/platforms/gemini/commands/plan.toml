@@ -4,7 +4,7 @@ Follow the /plan workflow from .gemini/workflows/plan.md.
 
 Execution contract:
 1. Treat route selection as already resolved by this command; do not begin with skill discovery.
-2. Read `ENGINEERING_RULES.md` first and `TECH.md` next when they exist before non-trivial execution.
+2. Read `PRODUCT.md`, `ENGINEERING_RULES.md`, `ARCHITECTURE.md`, and `TECH.md` in that order when they exist before non-trivial execution.
 Attached skills:
 - Load these exact skill IDs first: `system-design`, `api-design`, `database-design`, `deep-research`, `mcp-server-builder`, `tech-doc`, `prompt-engineering`, `skill-creator`.
 - Local skill file hints if installed: `.gemini/skills/system-design/SKILL.md`, `.gemini/skills/api-design/SKILL.md`, `.gemini/skills/database-design/SKILL.md`, `.gemini/skills/deep-research/SKILL.md`, `.gemini/skills/mcp-server-builder/SKILL.md`, `.gemini/skills/tech-doc/SKILL.md`, `.gemini/skills/prompt-engineering/SKILL.md`, `.gemini/skills/skill-creator/SKILL.md`.

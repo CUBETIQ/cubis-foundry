@@ -464,6 +464,24 @@ if rg -n "Stitch is not supported on 'codex'" /tmp/cbx-c32.log >/dev/null; then
 fi
 log_ok "Init wizard accepts explicit non-interactive selections"
 
+log_step "C3.2.2 Init wizard does not generate architecture docs"
+mkdir -p init-no-docs
+(
+  cd init-no-docs
+  node "$CLI" init --yes --no-banner \
+    --bundle agent-environment-setup \
+    --platforms codex \
+    --skill-profile web-backend \
+    --skills-scope project \
+    --mcps cubis-foundry \
+    --mcp-runtime local >/tmp/cbx-c322.log
+)
+[ -f init-no-docs/AGENTS.md ]
+[ ! -f init-no-docs/ENGINEERING_RULES.md ]
+[ ! -f init-no-docs/TECH.md ]
+rg -n 'Install only wires the rule references and workflow assets' /tmp/cbx-c322.log >/dev/null
+log_ok "Init wizard leaves ENGINEERING_RULES.md and TECH.md for rules init or build architecture"
+
 log_step "C3.2.1 Init wizard stitch-only cross-platform path"
 node "$CLI" init --yes --dry-run --no-banner \
   --platforms codex,claude,copilot,gemini,antigravity \
