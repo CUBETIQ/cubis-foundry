@@ -425,6 +425,8 @@ Keep MCP context lazy and exact. Skills are supporting context, not the route la
 8. Do not auto-prime every specialist with a skill. Load only what the task clearly needs.
 9. For research: repo/local evidence first, official docs next, Reddit/community only as labeled secondary evidence.
 10. Escalate to research only when freshness matters, public comparison matters, or the user explicitly asks to research/verify.
-11. Use upstream MCP servers such as `postman`, `stitch`, or `playwright` for real cloud/browser actions when available.
+11. For non-trivial work, read `ENGINEERING_RULES.md` first and `TECH.md` next when they exist.
+12. If those docs declare architecture or design-system rules, follow them unless the current spec or task explicitly changes them.
+13. Use upstream MCP servers such as `postman`, `stitch`, or `playwright` for real cloud/browser actions when available.
 
 <!-- cbx:mcp:auto:end -->

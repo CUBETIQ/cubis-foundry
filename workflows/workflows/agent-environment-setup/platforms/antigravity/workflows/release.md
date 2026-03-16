@@ -20,6 +20,7 @@ Use this when preparing a release, deploying to production, or managing a rollou
 
 - This workflow file, active platform rules, and selected agents or skills guide execution.
 - Attach the release scope, version number, changelog draft, and deployment target.
+- Read `ENGINEERING_RULES.md` and `TECH.md` before release if the shipped changes touched architecture, scaling assumptions, or design-system rules.
 
 ## Skill Routing
 
@@ -35,6 +36,7 @@ Use this when preparing a release, deploying to production, or managing a rollou
 4. Execute staged rollout with health checks at each stage.
 5. Verify production health post-deployment.
 6. Document rollback procedure and post-release status.
+7. Set `doc_impact` if the release includes architecture-affecting work that should refresh the managed docs.
 
 ## Verification
 
@@ -61,6 +63,7 @@ RELEASE_WORKFLOW_RESULT:
     stages_completed: [<string>]
     health_checks: [<string>]
   rollback_plan: <string>
+  doc_impact: none | tech | rules | both
   follow_up_items: [<string>] | []
 ```
 

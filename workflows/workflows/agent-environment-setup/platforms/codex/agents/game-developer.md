@@ -39,4 +39,4 @@ Build games that are fun, performant, and maintainable across target platforms.
 - Provide frame budget analysis for performance-sensitive changes.
 - Note any physics, rendering, or networking assumptions.
 
-> **Codex note:** Specialists are internal reasoning postures, not spawned processes. Switch postures by adopting the specialist's guidelines inline.
+> **Codex note:** Prefer native Codex delegation when the host exposes it. If delegation is unavailable, switch specialist postures inline and preserve the same scope and verification contract.

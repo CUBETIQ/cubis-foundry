@@ -245,10 +245,10 @@ log_ok "Antigravity global sync updates workspace rule managed block and preserv
 
 log_step "A2.3 Rules init (Antigravity)"
 node "$CLI" rules init --platform antigravity --scope project --overwrite >/tmp/cbx-a23.log
-[ -f .agent/rules/ENGINEERING_RULES.md ]
+[ -f ENGINEERING_RULES.md ]
 [ -f TECH.md ]
 rg -n '^<!-- cbx:engineering:auto:start platform=antigravity version=1 -->' .agent/rules/GEMINI.md >/dev/null
-rg -n 'YAGNI' .agent/rules/ENGINEERING_RULES.md >/dev/null
+rg -n 'YAGNI' ENGINEERING_RULES.md >/dev/null
 rg -n '^# TECH\.md$' TECH.md >/dev/null
 log_ok "Antigravity rules init creates ENGINEERING_RULES.md, TECH.md, and rule block"
 

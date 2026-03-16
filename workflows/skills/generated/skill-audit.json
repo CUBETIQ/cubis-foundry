@@ -2,7 +2,7 @@
   "$schema": "cubis-foundry-skill-audit-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
   "summary": {
-    "keep": 69,
+    "keep": 70,
     "review": 0,
     "alias-only": 0
   },
@@ -503,6 +503,15 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
+      "id": "spec-driven-delivery",
+      "canonical_id": "spec-driven-delivery",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
       "id": "spring-boot",
       "canonical_id": "spring-boot",
       "status": "keep",
@@ -629,5 +638,5 @@
       "reason": "Canonical skill remains active in the layered catalog."
     }
   ],
-  "contentHash": "101f661a3eeb90cd"
+  "contentHash": "e89ff93cdf3025e8"
 }

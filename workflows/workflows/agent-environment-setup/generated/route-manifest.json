@@ -1,10 +1,10 @@
 {
   "$schema": "cubis-foundry-route-manifest-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
-  "contentHash": "47cf8920e99d0258",
+  "contentHash": "84d671504acfd27c",
   "summary": {
-    "totalRoutes": 40,
-    "workflows": 18,
+    "totalRoutes": 42,
+    "workflows": 20,
     "agents": 22
   },
   "routes": [
@@ -1208,6 +1208,64 @@
     },
     {
       "kind": "workflow",
+      "id": "architecture",
+      "command": "/architecture",
+      "displayName": "architecture",
+      "description": "Refresh the project architecture contract and current-state map in ENGINEERING_RULES.md and TECH.md with explicit structure, design-system, testing, and flow guidance.",
+      "triggers": [
+        "architecture",
+        "design system",
+        "adr",
+        "clean architecture",
+        "system map",
+        "app structure",
+        "technical governance",
+        "flow diagram"
+      ],
+      "primaryAgent": "project-planner",
+      "supportingAgents": [
+        "documentation-writer",
+        "researcher",
+        "backend-specialist",
+        "frontend-specialist",
+        "database-architect"
+      ],
+      "primarySkills": [
+        "architecture-doc",
+        "system-design",
+        "tech-doc",
+        "frontend-design"
+      ],
+      "supportingSkills": [
+        "api-design",
+        "database-design",
+        "sadd",
+        "deep-research"
+      ],
+      "artifacts": {
+        "codex": {
+          "workflowFile": "architecture.md",
+          "compatibilityAlias": "$workflow-architecture"
+        },
+        "copilot": {
+          "workflowFile": "architecture.md",
+          "promptFile": "workflow-architecture.prompt.md"
+        },
+        "antigravity": {
+          "workflowFile": "architecture.md",
+          "commandFile": "architecture.toml"
+        },
+        "claude": {
+          "workflowFile": "architecture.md"
+        },
+        "gemini": {
+          "workflowFile": "architecture.md",
+          "commandFile": "architecture.toml"
+        }
+      }
+    },
+    {
+      "kind": "workflow",
       "id": "backend",
       "command": "/backend",
       "displayName": "backend",
@@ -1792,7 +1850,6 @@
       "description": "Build a decision-complete implementation plan with interfaces, failure modes, and acceptance criteria.",
       "triggers": [
         "plan",
-        "spec",
         "design",
         "roadmap",
         "acceptance",
@@ -2058,6 +2115,62 @@
         "gemini": {
           "workflowFile": "security.md",
           "commandFile": "security.toml"
+        }
+      }
+    },
+    {
+      "kind": "workflow",
+      "id": "spec",
+      "command": "/spec",
+      "displayName": "spec",
+      "description": "Create or refresh a Git-tracked spec pack for non-trivial work, including acceptance criteria, traceability, architecture impact, and next-route handoff.",
+      "triggers": [
+        "spec",
+        "sdd",
+        "source of truth",
+        "traceability",
+        "acceptance criteria",
+        "openspec",
+        "requirements",
+        "architecture impact"
+      ],
+      "primaryAgent": "project-planner",
+      "supportingAgents": [
+        "researcher",
+        "orchestrator",
+        "documentation-writer"
+      ],
+      "primarySkills": [
+        "spec-driven-delivery",
+        "sadd"
+      ],
+      "supportingSkills": [
+        "system-design",
+        "architecture-doc",
+        "deep-research",
+        "api-design",
+        "database-design",
+        "tech-doc"
+      ],
+      "artifacts": {
+        "codex": {
+          "workflowFile": "spec.md",
+          "compatibilityAlias": "$workflow-spec"
+        },
+        "copilot": {
+          "workflowFile": "spec.md",
+          "promptFile": "workflow-spec.prompt.md"
+        },
+        "antigravity": {
+          "workflowFile": "spec.md",
+          "commandFile": "spec.toml"
+        },
+        "claude": {
+          "workflowFile": "spec.md"
+        },
+        "gemini": {
+          "workflowFile": "spec.md",
+          "commandFile": "spec.toml"
         }
       }
     },

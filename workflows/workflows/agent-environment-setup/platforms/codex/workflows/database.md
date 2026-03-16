@@ -20,6 +20,7 @@ Use this for schema design, query optimization, migration planning, or database 
 
 - This workflow file, active platform rules, and selected agents or skills guide execution.
 - Attach existing schema, migration history, query patterns, and performance requirements.
+- Read `ENGINEERING_RULES.md` and `TECH.md` before changing data ownership, persistence boundaries, or shared schema conventions.
 
 ## Skill Routing
 
@@ -34,6 +35,7 @@ Use this for schema design, query optimization, migration planning, or database 
 3. Plan migration with rollback strategy.
 4. Optimize queries and indexes for known access patterns.
 5. Validate data integrity constraints.
+6. Set `doc_impact` if the change alters data boundaries, core entities, or persistence patterns that future work should follow.
 
 ## Verification
 
@@ -57,8 +59,9 @@ DATABASE_WORKFLOW_RESULT:
   query_optimization:
     queries_reviewed: <number>
     indexes_recommended: [<string>] | []
+  doc_impact: none | tech | rules | both
   integrity_checks: [<string>]
   follow_up_items: [<string>] | []
 ```
 
-> **Codex note:** This workflow runs inside a network-restricted sandbox. Specialists are reasoning postures defined in AGENTS.md, not spawned processes.
+> **Codex note:** Prefer native Codex delegation when the host exposes it. Otherwise follow AGENTS.md specialist postures inline while keeping the same routing and verification contract.

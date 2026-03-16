@@ -59,4 +59,4 @@ Measure first, optimize second, verify always.
 - Before/after comparison with same measurement methodology.
 - Performance budget recommendations.
 
-> **Codex note:** Specialists are internal reasoning postures, not spawned processes. Switch postures by adopting the specialist's guidelines inline.
+> **Codex note:** Prefer native Codex delegation when the host exposes it. If delegation is unavailable, switch specialist postures inline and preserve the same scope and verification contract.

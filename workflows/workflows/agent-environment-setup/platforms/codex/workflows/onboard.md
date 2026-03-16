@@ -27,6 +27,7 @@ Use this when joining a new project, exploring an unfamiliar codebase, or prepar
 
 - This workflow file, active platform rules, and selected agents or skills guide execution.
 - Provide the repo URL, focus areas, and any specific questions to answer during onboarding.
+- Read `ENGINEERING_RULES.md` first and `TECH.md` next when present so onboarding distinguishes the intended contract from current implementation reality.
 
 ## Skill Routing
 
@@ -68,4 +69,4 @@ ONBOARD_WORKFLOW_RESULT:
   knowledge_gaps: [<string>] | []
 ```
 
-> **Codex note:** This workflow runs inside a network-restricted sandbox. Specialists are reasoning postures defined in AGENTS.md, not spawned processes.
+> **Codex note:** Prefer native Codex delegation when the host exposes it. Otherwise follow AGENTS.md specialist postures inline while keeping the same routing and verification contract.

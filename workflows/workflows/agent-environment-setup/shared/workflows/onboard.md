@@ -27,12 +27,13 @@ Use this when joining a new project, exploring an unfamiliar codebase, or prepar
 
 - This workflow file, active platform rules, and selected agents or skills guide execution.
 - Provide the repo URL, focus areas, and any specific questions to answer during onboarding.
+- Read `ENGINEERING_RULES.md` first and `TECH.md` next when present so onboarding distinguishes the intended contract from current implementation reality.
 
 ## Skill Routing
 
-- Primary skills: `deep-research`, `architecture-designer`
-- Supporting skills (optional): `legacy-modernizer`, `database-skills`, `typescript-pro`, `javascript-pro`, `python-pro`
-- Start with `deep-research` for systematic exploration and `architecture-designer` for architecture mapping. Add `legacy-modernizer` for undocumented systems. Prefer repo evidence first; use external sources only when setup or dependency behavior cannot be confirmed locally.
+- Primary skills: `deep-research`, `system-design`
+- Supporting skills (optional): `legacy-modernizer`, `database-design`, `typescript-pro`, `javascript-pro`, `python-pro`
+- Start with `deep-research` for systematic exploration and `system-design` for architecture mapping. Add `legacy-modernizer` for undocumented systems. Prefer repo evidence first; use external sources only when setup or dependency behavior cannot be confirmed locally.
 
 ## Workflow steps
 
@@ -55,8 +56,8 @@ Use this when joining a new project, exploring an unfamiliar codebase, or prepar
 ONBOARD_WORKFLOW_RESULT:
   primary_agent: researcher
   supporting_agents: [code-archaeologist?, backend-specialist?, frontend-specialist?]
-  primary_skills: [deep-research, architecture-designer]
-  supporting_skills: [legacy-modernizer?, database-skills?]
+  primary_skills: [deep-research, system-design]
+  supporting_skills: [legacy-modernizer?, database-design?]
   project_overview:
     purpose: <string>
     tech_stack: [<string>]

@@ -19,7 +19,7 @@ triggers:
 tools: Read, Grep, Glob, Bash
 model: inherit
 maxTurns: 25
-skills: architecture-designer, api-designer, skill-creator, typescript-pro, javascript-pro
+skills: system-design, api-design, skill-creator, typescript-pro, javascript-pro
 ---
 
 # Product Manager
@@ -28,9 +28,9 @@ Turn ambiguous requests into clear, testable feature definitions with prioritize
 
 ## Skill Loading Contract
 
-- Do not call `skill_search` for `architecture-designer` or `api-designer` when the task is clearly product definition, requirements, or feature scoping.
-- Load `architecture-designer` when the product decision has system design implications.
-- Load `api-designer` when the feature definition needs API contract clarity.
+- Do not call `skill_search` for `system-design` or `api-design` when the task is clearly product definition, requirements, or feature scoping.
+- Load `system-design` when the product decision has system design implications.
+- Load `api-design` when the feature definition needs API contract clarity.
 - Load `skill-creator` only when defining requirements for skill packages.
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed.
 
@@ -38,8 +38,8 @@ Turn ambiguous requests into clear, testable feature definitions with prioritize
 
 | File                    | Load when                                                           |
 | ----------------------- | ------------------------------------------------------------------- |
-| `architecture-designer` | Product decision has system design or architecture implications.    |
-| `api-designer`          | Feature needs API contract definition or integration specification. |
+| `system-design` | Product decision has system design or architecture implications.    |
+| `api-design`          | Feature needs API contract definition or integration specification. |
 | `skill-creator`         | Defining requirements for skill packages.                           |
 
 ## Operating Stance

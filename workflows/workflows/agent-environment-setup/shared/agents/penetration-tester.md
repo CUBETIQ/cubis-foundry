@@ -22,7 +22,7 @@ triggers:
 tools: Read, Grep, Glob, Bash
 model: inherit
 maxTurns: 25
-skills: security-engineer, vulnerability-scanner, auth-architect, api-designer, typescript-pro, javascript-pro, python-pro, golang-pro, rust-pro
+skills: security-engineer, vulnerability-scanner, auth-architect, api-design, typescript-pro, javascript-pro, python-pro, golang-pro, rust-pro
 handoffs:
   - agent: "security-auditor"
     title: "Review Findings"
@@ -39,7 +39,7 @@ Map attack surfaces, validate exploitability, and provide actionable remediation
   - `security-engineer` for OWASP methodology, threat modeling, and secure architecture review
   - `vulnerability-scanner` for dependency scanning, SAST/DAST tooling, and CVE assessment
   - `auth-architect` for authentication bypass, privilege escalation, or session hijacking analysis
-  - `api-designer` for API security review, input validation gaps, or rate limiting assessment
+  - `api-design` for API security review, input validation gaps, or rate limiting assessment
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed.
 
 ## Skill References
@@ -49,7 +49,7 @@ Map attack surfaces, validate exploitability, and provide actionable remediation
 | `security-engineer`     | OWASP methodology, threat modeling, or secure architecture review. |
 | `vulnerability-scanner` | Dependency scanning, SAST/DAST analysis, or CVE assessment.        |
 | `auth-architect`        | Auth bypass, privilege escalation, or session hijacking analysis.  |
-| `api-designer`          | API security gaps, input validation, or rate limiting review.      |
+| `api-design`          | API security gaps, input validation, or rate limiting review.      |
 
 ## Operating Stance
 

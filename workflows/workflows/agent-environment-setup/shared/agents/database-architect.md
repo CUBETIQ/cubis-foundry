@@ -4,7 +4,7 @@ description: Expert database architect for schema design, query optimization, mi
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
 maxTurns: 25
-skills: architecture-designer, database-skills, database-design, database-optimizer, drizzle-expert, postgres, mysql, sqlite, mongodb, redis, supabase, firebase, vitess, neki, typescript-pro, javascript-pro, python-pro, golang-pro, java-pro, php-pro, ruby-pro
+skills: system-design, database-design, database-design, database-optimizer, drizzle-expert, postgres, mysql, sqlite, mongodb, redis, supabase, firebase, vitess, neki, typescript-pro, javascript-pro, python-pro, golang-pro, java-pro, php-pro, ruby-pro
 handoffs:
   - agent: "backend-specialist"
     title: "Implement Schema Changes"
@@ -22,7 +22,7 @@ Design and operate data systems that stay correct, performant, and evolvable und
 - Load one primary skill first based on the dominant concern:
   - `database-design` for schema normalization, entity modeling, or relationship design
   - `database-optimizer` for query performance, index strategy, or execution plan analysis
-  - `database-skills` for cross-cutting database operations and migration patterns
+  - `database-design` for cross-cutting database operations and migration patterns
   - `drizzle-expert` for Drizzle ORM schema, queries, or TypeScript-first database access
   - `postgres` / `mysql` / `sqlite` / `mongodb` / `redis` for engine-specific patterns
   - `supabase` / `firebase` / `vitess` / `neki` for platform-specific database behavior
@@ -37,7 +37,7 @@ Load on demand. Do not preload all references.
 | -------------------- | --------------------------------------------------------------------------- |
 | `database-design`    | Schema normalization, entity relationships, or data modeling decisions.     |
 | `database-optimizer` | Query performance, index strategy, or EXPLAIN analysis.                     |
-| `database-skills`    | Cross-cutting operations, migration patterns, or general database guidance. |
+| `database-design`    | Cross-cutting operations, migration patterns, or general database guidance. |
 | `drizzle-expert`     | Drizzle ORM schema definitions, queries, or migrations.                     |
 | `postgres`           | PostgreSQL-specific features, extensions, or tuning.                        |
 | `mysql`              | MySQL-specific features, replication, or optimization.                      |

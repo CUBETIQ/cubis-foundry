@@ -71,4 +71,4 @@ Load on demand. Do not preload all references.
 - Call out data-integrity risks or missing constraints.
 - Provide EXPLAIN output for performance-sensitive queries.
 
-> **Codex note:** Specialists are internal reasoning postures, not spawned processes. Switch postures by adopting the specialist's guidelines inline.
+> **Codex note:** Prefer native Codex delegation when the host exposes it. If delegation is unavailable, switch specialist postures inline and preserve the same scope and verification contract.

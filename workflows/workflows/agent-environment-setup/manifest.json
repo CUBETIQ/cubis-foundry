@@ -6,6 +6,7 @@
     "antigravity": {
       "workflows": [
         "accessibility.md",
+        "architecture.md",
         "backend.md",
         "create.md",
         "database.md",
@@ -21,6 +22,7 @@
         "release.md",
         "review.md",
         "security.md",
+        "spec.md",
         "test.md",
         "vercel.md"
       ],
@@ -104,6 +106,7 @@
         "sanitize-pii",
         "secret-management",
         "skill-creator",
+        "spec-driven-delivery",
         "spring-boot",
         "sqlalchemy",
         "stitch",
@@ -129,6 +132,7 @@
       ],
       "commands": [
         "accessibility.toml",
+        "architecture.toml",
         "backend.toml",
         "create.toml",
         "database.toml",
@@ -144,6 +148,7 @@
         "release.toml",
         "review.toml",
         "security.toml",
+        "spec.toml",
         "test.toml",
         "vercel.toml"
       ]
@@ -151,6 +156,7 @@
     "codex": {
       "workflows": [
         "accessibility.md",
+        "architecture.md",
         "backend.md",
         "create.md",
         "database.md",
@@ -166,6 +172,7 @@
         "release.md",
         "review.md",
         "security.md",
+        "spec.md",
         "test.md",
         "vercel.md"
       ],
@@ -249,6 +256,7 @@
         "sanitize-pii",
         "secret-management",
         "skill-creator",
+        "spec-driven-delivery",
         "spring-boot",
         "sqlalchemy",
         "stitch",
@@ -276,6 +284,7 @@
     "copilot": {
       "workflows": [
         "accessibility.md",
+        "architecture.md",
         "backend.md",
         "create.md",
         "database.md",
@@ -291,6 +300,7 @@
         "release.md",
         "review.md",
         "security.md",
+        "spec.md",
         "test.md",
         "vercel.md"
       ],
@@ -374,6 +384,7 @@
         "sanitize-pii",
         "secret-management",
         "skill-creator",
+        "spec-driven-delivery",
         "spring-boot",
         "sqlalchemy",
         "stitch",
@@ -399,6 +410,7 @@
       ],
       "prompts": [
         "workflow-accessibility.prompt.md",
+        "workflow-architecture.prompt.md",
         "workflow-backend.prompt.md",
         "workflow-create.prompt.md",
         "workflow-database.prompt.md",
@@ -414,6 +426,7 @@
         "workflow-release.prompt.md",
         "workflow-review.prompt.md",
         "workflow-security.prompt.md",
+        "workflow-spec.prompt.md",
         "workflow-test.prompt.md",
         "workflow-vercel.prompt.md"
       ]
@@ -421,6 +434,7 @@
     "claude": {
       "workflows": [
         "accessibility.md",
+        "architecture.md",
         "backend.md",
         "create.md",
         "database.md",
@@ -436,6 +450,7 @@
         "release.md",
         "review.md",
         "security.md",
+        "spec.md",
         "test.md",
         "vercel.md"
       ],
@@ -519,6 +534,7 @@
         "sanitize-pii",
         "secret-management",
         "skill-creator",
+        "spec-driven-delivery",
         "spring-boot",
         "sqlalchemy",
         "stitch",
@@ -567,6 +583,7 @@
     "gemini": {
       "workflows": [
         "accessibility.md",
+        "architecture.md",
         "backend.md",
         "create.md",
         "database.md",
@@ -582,6 +599,7 @@
         "release.md",
         "review.md",
         "security.md",
+        "spec.md",
         "test.md",
         "vercel.md"
       ],
@@ -642,6 +660,7 @@
         "sanitize-pii",
         "secret-management",
         "skill-creator",
+        "spec-driven-delivery",
         "spring-boot",
         "sqlalchemy",
         "stitch",
@@ -667,6 +686,7 @@
       ],
       "commands": [
         "accessibility.toml",
+        "architecture.toml",
         "backend.toml",
         "create.toml",
         "database.toml",
@@ -682,6 +702,7 @@
         "release.toml",
         "review.toml",
         "security.toml",
+        "spec.toml",
         "test.toml",
         "vercel.toml"
       ]

@@ -5,7 +5,7 @@ tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
 maxTurns: 30
 memory: project
-skills: architecture-designer, api-designer, database-skills, deep-research, mcp-builder, openai-docs, prompt-engineer, skill-creator, typescript-pro, javascript-pro, python-pro
+skills: system-design, api-design, database-design, deep-research, mcp-server-builder, openai-docs, prompt-engineering, skill-creator, typescript-pro, javascript-pro, python-pro
 handoffs:
   - agent: "orchestrator"
     title: "Start Implementation"
@@ -21,9 +21,9 @@ Decompose complex requests into implementable plans with clear ownership, depend
 ## Skill Loading Contract
 
 - Do not call `skill_search` for any skill in the pre-declared list when the task is clearly project planning, architecture design, or task decomposition.
-- Load `architecture-designer` for system design tradeoffs in the plan.
-- Load `api-designer` when the plan involves API contract decisions.
-- Load `database-skills` when the plan involves data modeling or migration.
+- Load `system-design` for system design tradeoffs in the plan.
+- Load `api-design` when the plan involves API contract decisions.
+- Load `database-design` when the plan involves data modeling or migration.
 - Load `deep-research` when planning requires fresh external information, public comparison, or evidence beyond the repo.
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed.
 
@@ -31,11 +31,11 @@ Decompose complex requests into implementable plans with clear ownership, depend
 
 | File                    | Load when                                                          |
 | ----------------------- | ------------------------------------------------------------------ |
-| `architecture-designer` | Plan involves system design tradeoffs or component boundaries.     |
-| `api-designer`          | Plan involves API contract decisions or integration points.        |
-| `database-skills`       | Plan involves data modeling, schema design, or migration strategy. |
+| `system-design` | Plan involves system design tradeoffs or component boundaries.     |
+| `api-design`          | Plan involves API contract decisions or integration points.        |
+| `database-design`       | Plan involves data modeling, schema design, or migration strategy. |
 | `deep-research`         | Planning requires external research or approach comparison.        |
-| `mcp-builder`           | Plan involves MCP server or tool implementation.                   |
+| `mcp-server-builder`           | Plan involves MCP server or tool implementation.                   |
 | `skill-creator`         | Plan involves skill package creation or modification.              |
 
 ## Operating Stance

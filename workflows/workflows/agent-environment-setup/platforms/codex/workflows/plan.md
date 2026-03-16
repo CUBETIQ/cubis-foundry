@@ -4,7 +4,6 @@ description: "Build a decision-complete implementation plan with interfaces, fai
 triggers:
   [
     "plan",
-    "spec",
     "design",
     "roadmap",
     "acceptance",
@@ -32,6 +31,8 @@ Use this when starting a new feature, project, or significant change that needs 
 
 - This workflow file, active platform rules, and selected agents or skills guide execution.
 - Attach the feature request, problem statement, constraints, and any existing design documents.
+- Read `ENGINEERING_RULES.md` first and `TECH.md` next when they exist before finalizing a non-trivial plan.
+- Reuse an existing `docs/specs/<spec-id>/` pack when the change already has one instead of creating a parallel planning track.
 
 ## Skill Routing
 
@@ -46,7 +47,8 @@ Use this when starting a new feature, project, or significant change that needs 
 3. Decompose into tasks with ownership and dependencies.
 4. Define interfaces, contracts, and failure modes.
 5. Produce acceptance criteria for each milestone.
-6. Identify risks, unknowns, and mitigation strategies.
+6. Record `architecture_impact`, `doc_impact`, and `traceability_status` when the work is non-trivial.
+7. Identify risks, unknowns, and mitigation strategies.
 
 ## Verification
 
@@ -63,6 +65,8 @@ PLAN_WORKFLOW_RESULT:
   supporting_agents: [orchestrator?, backend-specialist?, frontend-specialist?, database-architect?]
   primary_skills: [system-design, api-design]
   supporting_skills: [database-design?, deep-research?, mcp-server-builder?]
+  spec_id: <string> | null
+  spec_root: docs/specs/<spec-id> | null
   plan:
     scope_summary: <string>
     tasks:
@@ -74,7 +78,13 @@ PLAN_WORKFLOW_RESULT:
     interfaces: [<string>]
     risks: [<string>]
     milestones: [<string>]
+  architecture_impact:
+    summary: <string>
+    affects_structure: true | false
+    affects_design_system: true | false
+  doc_impact: none | tech | rules | both
+  traceability_status: complete | partial | blocked
   follow_up_items: [<string>] | []
 ```
 
-> **Codex note:** This workflow runs inside a network-restricted sandbox. Specialists are reasoning postures defined in AGENTS.md, not spawned processes.
+> **Codex note:** Prefer native Codex delegation when the host exposes it. Otherwise follow AGENTS.md specialist postures inline while keeping the same routing and verification contract.

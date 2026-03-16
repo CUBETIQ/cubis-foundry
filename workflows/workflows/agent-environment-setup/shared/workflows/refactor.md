@@ -20,11 +20,12 @@ Use this when improving code structure, reducing tech debt, or modularizing with
 
 - This workflow file, active platform rules, and selected agents or skills guide execution.
 - Attach the target code, pain points, and any constraints on what can change.
+- Read `ENGINEERING_RULES.md` and `TECH.md` first so behavior-preserving structure changes do not drift from the accepted architecture contract.
 
 ## Skill Routing
 
 - Primary skills: `static-analysis`, `legacy-modernizer`
-- Supporting skills (optional): `testing-patterns`, `architecture-designer`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`
+- Supporting skills (optional): `testing-patterns`, `system-design`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`
 - Start with `static-analysis` for automated code quality assessment. Add `legacy-modernizer` for modernization patterns. Add `testing-patterns` when refactoring needs test coverage to proceed safely.
 
 ## Workflow steps
@@ -34,6 +35,7 @@ Use this when improving code structure, reducing tech debt, or modularizing with
 3. Apply one refactoring at a time with behavior preservation.
 4. Verify behavior unchanged after each step.
 5. Document the improved structure and any conventions established.
+6. Set `doc_impact` when the refactor changes project structure, module boundaries, or design-system conventions.
 
 ## Verification
 
@@ -49,7 +51,7 @@ REFACTOR_WORKFLOW_RESULT:
   primary_agent: code-archaeologist
   supporting_agents: [backend-specialist?, frontend-specialist?, test-engineer?, validator?]
   primary_skills: [static-analysis, legacy-modernizer]
-  supporting_skills: [testing-patterns?, architecture-designer?]
+  supporting_skills: [testing-patterns?, system-design?]
   refactoring_summary:
     targets: [<string>]
     changes_applied: [<string>]
@@ -57,6 +59,7 @@ REFACTOR_WORKFLOW_RESULT:
   quality_improvement:
     complexity_before: <string>
     complexity_after: <string>
+  doc_impact: none | tech | rules | both
   tests_added: [<test-file-path>] | []
   follow_up_items: [<string>] | []
 ```

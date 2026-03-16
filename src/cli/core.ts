@@ -14,6 +14,7 @@ import {
   symlink,
   writeFile,
 } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { createRequire } from "node:module";
 import { spawn, execFile as execFileCallback } from "node:child_process";
 import os from "node:os";
@@ -60,6 +61,14 @@ const ENGINEERING_RULES_FILE_BLOCK_START_RE =
   /<!--\s*cbx:engineering:rules:start[^>]*-->/g;
 const ENGINEERING_RULES_FILE_BLOCK_END_RE =
   /<!--\s*cbx:engineering:rules:end\s*-->/g;
+const ENGINEERING_ARCHITECTURE_BLOCK_START_RE =
+  /<!--\s*cbx:architecture:rules:start[^>]*-->/g;
+const ENGINEERING_ARCHITECTURE_BLOCK_END_RE =
+  /<!--\s*cbx:architecture:rules:end\s*-->/g;
+const TECH_ARCHITECTURE_BLOCK_START_RE =
+  /<!--\s*cbx:architecture:tech:start[^>]*-->/g;
+const TECH_ARCHITECTURE_BLOCK_END_RE =
+  /<!--\s*cbx:architecture:tech:end\s*-->/g;
 const COPILOT_ALLOWED_SKILL_FRONTMATTER_KEYS = new Set([
   "compatibility",
   "description",
@@ -253,11 +262,18 @@ const PLAYWRIGHT_MCP_URL = `http://localhost:${PLAYWRIGHT_DEFAULT_PORT}/mcp`;
 const POSTMAN_WORKSPACE_MANUAL_CHOICE = "__postman_workspace_manual__";
 const CBX_CONFIG_FILENAME = "cbx_config.json";
 const CBX_CREDENTIALS_ENV_FILENAME = "credentials.env";
+const ARCHITECTURE_BUILD_METADATA_FILENAME = "architecture-build.json";
 const LEGACY_POSTMAN_CONFIG_FILENAME = ["postman", "setting.json"].join("_");
 const DEFAULT_CREDENTIAL_PROFILE_NAME = "default";
 const RESERVED_CREDENTIAL_PROFILE_NAMES = new Set(["all"]);
 const CREDENTIAL_SERVICES = new Set(["postman", "stitch"]);
 const MCP_RUNTIMES = new Set(["docker", "local"]);
+const ARCHITECTURE_BUILD_PLATFORMS = new Set([
+  "codex",
+  "claude",
+  "gemini",
+  "copilot",
+]);
 const MCP_FALLBACKS = new Set(["local", "fail", "skip"]);
 const MCP_UPDATE_POLICIES = new Set(["pinned", "latest"]);
 const DEFAULT_MCP_RUNTIME = "docker";
@@ -957,6 +973,219 @@ function buildAntigravityTerminalVerificationBlock({
   ].join("\n");
 }
 
+function hashStableObject(value) {
+  return createHash("sha256")
+    .update(JSON.stringify(value))
+    .digest("hex")
+    .slice(0, 12);
+}
+
+function firstNonEmpty(values) {
+  for (const value of values || []) {
+    if (value) return value;
+  }
+  return null;
+}
+
+function inferArchitectureContractProfile(snapshot) {
+  const allSignals = [];
+  for (const app of snapshot.architectureByApp || []) {
+    for (const signal of app.architectureSignals || []) {
+      if (!allSignals.includes(signal)) allSignals.push(signal);
+    }
+  }
+
+  const style =
+    firstNonEmpty([
+      allSignals.find((signal) => /clean architecture/i.test(signal)),
+      allSignals.find((signal) => /hexagonal/i.test(signal)),
+      allSignals.find((signal) => /feature-first/i.test(signal)),
+      allSignals.find((signal) => /mvvm/i.test(signal)),
+      allSignals.find((signal) => /mvc/i.test(signal)),
+    ]) || "Undeclared — align to current repository conventions";
+
+  const moduleBoundaries = snapshot.annotatedDirs
+    .slice(0, 8)
+    .map(({ name, purpose }) =>
+      purpose ? `${name}/ (${purpose})` : `${name}/`,
+    );
+
+  const dependencyRules = [];
+  if (/clean architecture/i.test(style)) {
+    dependencyRules.push(
+      "Domain code must not depend on infrastructure, framework, or presentation layers.",
+    );
+    dependencyRules.push(
+      "Adapters may depend inward on domain contracts, never the reverse.",
+    );
+  } else if (/hexagonal/i.test(style)) {
+    dependencyRules.push(
+      "Ports stay stable at the boundary; adapters implement them without leaking infrastructure concerns inward.",
+    );
+  } else {
+    dependencyRules.push(
+      "Respect existing feature and package boundaries; avoid hidden cross-module imports.",
+    );
+  }
+  dependencyRules.push(
+    "Shared UI, data, and platform conventions belong in the declared common layer, not duplicated per feature.",
+  );
+
+  const designSystemSource =
+    firstNonEmpty([
+      snapshot.topDirs.includes("components")
+        ? "components/ is the primary shared UI surface."
+        : null,
+      snapshot.topDirs.includes("design-system")
+        ? "design-system/ is the primary shared UI surface."
+        : null,
+      snapshot.topDirs.includes("app")
+        ? "App-level UI patterns should be centralized and reused across screens."
+        : null,
+    ]) || "No dedicated design-system directory detected; infer shared UI rules from current components and screens.";
+
+  const testingStrategy = [];
+  if (snapshot.keyScripts.some((script) => script.name === "lint")) {
+    testingStrategy.push("Linting is part of the baseline quality gate.");
+  }
+  if (snapshot.keyScripts.some((script) => script.name.includes("type"))) {
+    testingStrategy.push(
+      "Static typing or analysis should pass before merge when the stack supports it.",
+    );
+  }
+  if (snapshot.keyScripts.some((script) => script.name.startsWith("test"))) {
+    testingStrategy.push(
+      "Focused automated tests should cover the changed behavior before merge.",
+    );
+  }
+  if (testingStrategy.length === 0) {
+    testingStrategy.push(
+      "Add focused validation evidence for non-trivial changes even when no standard test command is detected.",
+    );
+  }
+
+  const scalingConstraints = inferTechnicalConstraints(snapshot, {
+    suggestedProfile: inferContextBudget(snapshot).suggestedProfile,
+  });
+
+  const docUpdateTriggers = [
+    "feature additions that change module boundaries or shared UI rules",
+    "migrations, scale changes, or deployment-shape changes",
+    "refactors that establish new conventions future work should follow",
+  ];
+
+  return {
+    style,
+    moduleBoundaries,
+    dependencyRules,
+    designSystemSource,
+    testingStrategy,
+    scalingConstraints,
+    docUpdateTriggers,
+  };
+}
+
+function buildArchitectureMermaid(snapshot) {
+  const topDirs = snapshot.topDirs.slice(0, 4);
+  const flowNodes = topDirs.length > 0 ? topDirs : ["src", "docs"];
+  const lines = [
+    "flowchart TD",
+    '  user["User / Entry Point"] --> app["Application Surface"]',
+  ];
+  for (let index = 0; index < flowNodes.length; index += 1) {
+    const nodeName = flowNodes[index].replace(/[^A-Za-z0-9]/g, "") || `N${index}`;
+    lines.push(`  app --> ${nodeName}["${flowNodes[index]}/"]`);
+  }
+  if (snapshot.isMcpServer || snapshot.mcpSignals.length > 0) {
+    lines.push('  app --> mcp["MCP / Tooling Surface"]');
+  }
+  if (snapshot.cicdSignals.length > 0) {
+    lines.push('  app --> deploy["Delivery / Runtime"]');
+  }
+  return lines.join("\n");
+}
+
+function buildEngineeringArchitectureSection(snapshot) {
+  const profile = inferArchitectureContractProfile(snapshot);
+  const hash = hashStableObject(profile);
+
+  return [
+    `<!-- cbx:architecture:rules:start version=1 profile=${hash} -->`,
+    "## 10) Architecture Contract (auto-managed)",
+    "",
+    `- Declared style: ${profile.style}.`,
+    `- Design-system source of truth: ${profile.designSystemSource}`,
+    "- Dependency direction rules:",
+    ...profile.dependencyRules.map((rule) => `  - ${rule}`),
+    "- Module and package boundaries to preserve:",
+    ...(profile.moduleBoundaries.length > 0
+      ? profile.moduleBoundaries.map((rule) => `  - ${rule}`)
+      : ["  - No strong module boundary was detected automatically; keep new boundaries explicit in specs and ADRs."]),
+    "- Testability expectations:",
+    ...profile.testingStrategy.map((rule) => `  - ${rule}`),
+    "- Doc refresh policy:",
+    "  - Update these managed sections when architecture, scale, boundaries, design-system rules, or testing strategy changes.",
+    "  - For non-trivial work, read this file before planning and read TECH.md next.",
+    "<!-- cbx:architecture:rules:end -->",
+    "",
+  ].join("\n");
+}
+
+function buildTechArchitectureSection(snapshot) {
+  const profile = inferArchitectureContractProfile(snapshot);
+  const payload = {
+    style: profile.style,
+    topDirs: snapshot.topDirs,
+    frameworks: snapshot.frameworks,
+    architectureByApp: snapshot.architectureByApp,
+  };
+  const hash = hashStableObject(payload);
+  const architectureSignals = profile.style
+    ? [`- Primary inferred style: ${profile.style}.`]
+    : [];
+
+  return [
+    `<!-- cbx:architecture:tech:start version=1 snapshot=${hash} -->`,
+    "## Architecture Snapshot (auto-managed)",
+    ...(architectureSignals.length > 0 ? ["", ...architectureSignals] : []),
+    ...(snapshot.architectureByApp.length > 0
+      ? [
+          "- App-level structure signals:",
+          ...snapshot.architectureByApp.slice(0, 6).map((item) => {
+            const label = item.rootPath === "." ? "repo root" : item.rootPath;
+            const signals =
+              item.architectureSignals.length > 0
+                ? item.architectureSignals.join(", ")
+                : "not enough signals to classify";
+            return `  - ${label}: ${signals}`;
+          }),
+        ]
+      : ["- No app-level architecture signals detected automatically."]),
+    "",
+    "### Module / App Topology",
+    ...(profile.moduleBoundaries.length > 0
+      ? profile.moduleBoundaries.map((item) => `- ${item}`)
+      : ["- No significant top-level module boundaries detected automatically."]),
+    "",
+    "### Flow Narratives",
+    "- Describe the primary request, data, and background-job flows here when architecture generation runs.",
+    "- Keep this section current when scale changes or new integration boundaries are introduced.",
+    "",
+    "### Mermaid Diagram",
+    "```mermaid",
+    buildArchitectureMermaid(snapshot),
+    "```",
+    "",
+    "### Scaling / Deployment / Testing Snapshot",
+    ...profile.scalingConstraints.map((item) => `- ${item}`),
+    "",
+    "### External Research Evidence",
+    "- Reserved for `cbx build architecture --research auto|always` when outside evidence informs the architecture notes.",
+    "<!-- cbx:architecture:tech:end -->",
+    "",
+  ].join("\n");
+}
+
 function buildEngineeringRulesTemplate() {
   return [
     "# Engineering Rules",
@@ -1039,6 +1268,21 @@ function buildEngineeringRulesTemplate() {
     "",
     "- `TECH.md` is generated from current codebase reality.",
     "- Re-run `cbx rules tech-md --overwrite` after major stack or architecture changes.",
+    "",
+    "<!-- cbx:architecture:rules:start version=1 profile=bootstrap -->",
+    "## 10) Architecture Contract (auto-managed)",
+    "",
+    "- Declared style: bootstrap placeholder. Re-run `cbx build architecture --platform <codex|claude|gemini|copilot>` to refresh this contract from the repo.",
+    "- Design-system source of truth: bootstrap placeholder.",
+    "- Dependency direction rules:",
+    "  - Replace this placeholder with the managed architecture block when architecture generation runs.",
+    "- Module and package boundaries to preserve:",
+    "  - Replace this placeholder with the managed architecture block when architecture generation runs.",
+    "- Testability expectations:",
+    "  - Replace this placeholder with the managed architecture block when architecture generation runs.",
+    "- Doc refresh policy:",
+    "  - Update this section when architecture, scale, boundaries, design-system rules, or testing strategy changes.",
+    "<!-- cbx:architecture:rules:end -->",
     "<!-- cbx:engineering:rules:end -->",
     "",
   ].join("\n");
@@ -1068,10 +1312,11 @@ function buildEngineeringRulesManagedBlock({
     "2. Keep architecture simple (KISS) and avoid speculative work (YAGNI).",
     "3. Apply SOLID pragmatically to reduce change risk, not add ceremony.",
     "4. Use clear naming with focused responsibilities and explicit boundaries.",
-    "5. Require validation evidence (lint/types/tests) before merge.",
-    "6. Use Decision Log response style.",
-    "7. Every Decision Log must include a `Skills Used` section listing skill, workflow, or agent names.",
-    "8. If no skill loaded, `Skills Used: none` is mandatory.",
+    "5. For non-trivial work, read ENGINEERING_RULES.md first and TECH.md next before planning or implementation.",
+    "6. Require validation evidence (lint/types/tests) before merge.",
+    "7. Use Decision Log response style.",
+    "8. Every Decision Log must include a `Skills Used` section listing skill, workflow, or agent names.",
+    "9. If no skill loaded, `Skills Used: none` is mandatory.",
     "",
     "<!-- cbx:engineering:auto:end -->",
   ].join("\n");
@@ -1251,6 +1496,130 @@ async function upsertEngineeringRulesBlock({
         : "created",
     filePath: ruleFilePath,
     warnings,
+  };
+}
+
+function extractTaggedMarkerAttribute(content, startPattern, key) {
+  const match = String(content || "").match(startPattern);
+  if (!match || !match[0]) return null;
+  const attributeMatch = match[0].match(new RegExp(`${key}=([^\\s>]+)`));
+  return attributeMatch?.[1] || null;
+}
+
+async function upsertTaggedSectionInFile({
+  targetPath,
+  initialContent,
+  block,
+  startPattern,
+  endPattern,
+  dryRun = false,
+}) {
+  const exists = await pathExists(targetPath);
+  const original = exists ? await readFile(targetPath, "utf8") : initialContent;
+  const analysis = analyzeTaggedBlock(original, startPattern, endPattern);
+  let nextContent = original;
+
+  if (!exists || analysis.status === "absent") {
+    const trimmed = String(original || "").trimEnd();
+    nextContent =
+      trimmed.length > 0 ? `${trimmed}\n\n${block}\n` : `${block}\n`;
+  } else if (analysis.range) {
+    nextContent = `${original.slice(0, analysis.range.start)}${block}${original.slice(analysis.range.end)}`;
+  } else {
+    const trimmed = String(original || "").trimEnd();
+    nextContent =
+      trimmed.length > 0 ? `${trimmed}\n\n${block}\n` : `${block}\n`;
+  }
+
+  if (nextContent === original) {
+    return {
+      action: "unchanged",
+      filePath: targetPath,
+    };
+  }
+
+  if (!dryRun) {
+    await mkdir(path.dirname(targetPath), { recursive: true });
+    await writeFile(targetPath, nextContent, "utf8");
+  }
+
+  return {
+    action: exists
+      ? dryRun
+        ? "would-patch"
+        : "patched"
+      : dryRun
+        ? "would-create"
+        : "created",
+    filePath: targetPath,
+  };
+}
+
+function buildArchitectureBuildMetadata({
+  platform,
+  researchMode,
+  rulesProfileHash,
+  techSnapshotHash,
+}) {
+  return {
+    schemaVersion: 1,
+    generatedBy: "cbx build architecture",
+    generatedAt: new Date().toISOString(),
+    platform,
+    researchMode,
+    rulesProfileHash,
+    techSnapshotHash,
+  };
+}
+
+async function ensureArchitectureDocScaffold({
+  workspaceRoot,
+  snapshot,
+  overwrite = false,
+  dryRun = false,
+}) {
+  const engineeringRulesPath = path.join(workspaceRoot, "ENGINEERING_RULES.md");
+  const techMdPath = path.join(workspaceRoot, "TECH.md");
+
+  const rulesTemplate = buildEngineeringRulesTemplate();
+  const rulesFileResult = await upsertEngineeringRulesFile({
+    targetPath: engineeringRulesPath,
+    template: rulesTemplate,
+    overwrite,
+    dryRun,
+  });
+  const rulesArchitectureResult = await upsertTaggedSectionInFile({
+    targetPath: engineeringRulesPath,
+    initialContent: `${rulesTemplate}\n`,
+    block: buildEngineeringArchitectureSection(snapshot),
+    startPattern: ENGINEERING_ARCHITECTURE_BLOCK_START_RE,
+    endPattern: ENGINEERING_ARCHITECTURE_BLOCK_END_RE,
+    dryRun,
+  });
+
+  const techContent = `${buildTechMd(snapshot)}\n`;
+  const techResult = await writeTextFile({
+    targetPath: techMdPath,
+    content: techContent,
+    overwrite,
+    dryRun,
+  });
+  const techArchitectureResult = await upsertTaggedSectionInFile({
+    targetPath: techMdPath,
+    initialContent: techContent,
+    block: buildTechArchitectureSection(snapshot),
+    startPattern: TECH_ARCHITECTURE_BLOCK_START_RE,
+    endPattern: TECH_ARCHITECTURE_BLOCK_END_RE,
+    dryRun,
+  });
+
+  return {
+    engineeringRulesPath,
+    techMdPath,
+    rulesFileResult,
+    rulesArchitectureResult,
+    techResult,
+    techArchitectureResult,
   };
 }
 
@@ -2233,7 +2602,7 @@ function inferRecommendedSkills(snapshot) {
     hasFramework("Mongoose") ||
     hasFramework("SQLAlchemy")
   ) {
-    recommended.add("database-skills");
+    recommended.add("database-design");
   }
 
   if (recommended.size === 0) {
@@ -2562,6 +2931,9 @@ function buildTechMd(snapshot, { compact = false } = {}) {
   lines.push(
     "- Use `--all-skills` only when task scope clearly requires full catalog breadth.",
   );
+  lines.push("");
+
+  lines.push(buildTechArchitectureSection(snapshot).trimEnd());
   lines.push("");
 
   if (!compact) {
@@ -11937,6 +12309,13 @@ async function upsertEngineeringArtifacts({
     throw new Error(`No rule file configured for platform '${platform}'.`);
 
   const workspaceRoot = findWorkspaceRoot(cwd);
+  const snapshot = await collectTechSnapshot(workspaceRoot);
+  const scaffold = await ensureArchitectureDocScaffold({
+    workspaceRoot,
+    snapshot,
+    overwrite,
+    dryRun,
+  });
   const techMdPath = path.join(workspaceRoot, "TECH.md");
   const targets = [{ ruleFilePath }];
 
@@ -11957,46 +12336,29 @@ async function upsertEngineeringArtifacts({
     }
   }
 
-  const template = buildEngineeringRulesTemplate();
   const engineeringResults = [];
   for (const target of targets) {
-    const rulesFilePath = path.join(
-      path.dirname(target.ruleFilePath),
-      "ENGINEERING_RULES.md",
-    );
-    const rulesFileResult = await upsertEngineeringRulesFile({
-      targetPath: rulesFilePath,
-      template,
-      overwrite,
-      dryRun,
-    });
     const blockResult = await upsertEngineeringRulesBlock({
       ruleFilePath: target.ruleFilePath,
       platform,
-      engineeringRulesFilePath: rulesFilePath,
+      engineeringRulesFilePath: scaffold.engineeringRulesPath,
       techMdFilePath: techMdPath,
       dryRun,
     });
     engineeringResults.push({
       ruleFilePath: target.ruleFilePath,
-      rulesFilePath,
-      rulesFileResult,
+      rulesFilePath: scaffold.engineeringRulesPath,
+      rulesFileResult: scaffold.rulesArchitectureResult.action === "unchanged"
+        ? scaffold.rulesFileResult
+        : scaffold.rulesArchitectureResult,
       blockResult,
     });
   }
 
   let techResult = null;
   if (!skipTech) {
-    const snapshot = await collectTechSnapshot(workspaceRoot);
-    const content = buildTechMd(snapshot);
-    const fileResult = await writeTextFile({
-      targetPath: techMdPath,
-      content: `${content}\n`,
-      overwrite,
-      dryRun,
-    });
     techResult = {
-      ...fileResult,
+      ...scaffold.techArchitectureResult,
       snapshot,
     };
   }
@@ -12074,6 +12436,575 @@ async function runRulesTechMd(options) {
       console.log(
         "\nDry-run complete. Re-run without `--dry-run` to apply changes.",
       );
+    }
+  } catch (error) {
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+function normalizeArchitectureBuildPlatform(value) {
+  const normalized = normalizePlatform(value);
+  if (!normalized || !ARCHITECTURE_BUILD_PLATFORMS.has(normalized)) {
+    throw new Error(
+      "Architecture build platform must be one of: codex, claude, gemini, copilot.",
+    );
+  }
+  return normalized;
+}
+
+function normalizeArchitectureResearchMode(value) {
+  const normalized = String(value || "auto")
+    .trim()
+    .toLowerCase();
+  if (!["auto", "always", "never"].includes(normalized)) {
+    throw new Error("Research mode must be one of: auto, always, never.");
+  }
+  return normalized;
+}
+
+async function listSpecPackRoots(workspaceRoot) {
+  const specsRoot = path.join(workspaceRoot, "docs", "specs");
+  if (!(await pathExists(specsRoot))) return [];
+  const entries = await readdir(specsRoot, { withFileTypes: true });
+  return entries
+    .filter((entry) => entry.isDirectory() && !entry.name.startsWith("."))
+    .map((entry) => `docs/specs/${entry.name}`)
+    .sort((a, b) => a.localeCompare(b))
+    .slice(0, 8);
+}
+
+function resolveArchitectureConditionalSkills(snapshot, specRoots, researchMode) {
+  const conditional = [];
+  const frameworks = new Set(snapshot.frameworks || []);
+  const topDirs = new Set(snapshot.topDirs || []);
+  const jsPackages = new Set(snapshot.packageSignals?.javascript || []);
+
+  if (
+    snapshot.isMcpServer ||
+    frameworks.has("Next.js") ||
+    frameworks.has("NestJS") ||
+    frameworks.has("FastAPI") ||
+    topDirs.has("api") ||
+    topDirs.has("routes") ||
+    topDirs.has("controllers")
+  ) {
+    conditional.push("api-design");
+  }
+
+  if (
+    topDirs.has("db") ||
+    topDirs.has("database") ||
+    topDirs.has("migrations") ||
+    jsPackages.has("prisma") ||
+    jsPackages.has("drizzle-orm") ||
+    frameworks.has("SQLAlchemy")
+  ) {
+    conditional.push("database-design");
+  }
+
+  if (specRoots.length > 0) {
+    conditional.push("sadd");
+  }
+
+  if (researchMode === "always") {
+    conditional.push("deep-research");
+  } else if (
+    researchMode === "auto" &&
+    !snapshot.readmeExcerpt &&
+    snapshot.architectureByApp.every(
+      (item) => (item.architectureSignals || []).length === 0,
+    )
+  ) {
+    conditional.push("deep-research");
+  }
+
+  return [...new Set(conditional)];
+}
+
+async function resolveArchitectureSkillPathHints(platform, cwd, skillIds) {
+  const profilePaths = await resolveProfilePaths(platform, "project", cwd);
+  const skillsDir = profilePaths.skillsDir;
+  if (!skillsDir) return [];
+  return skillIds
+    .map((skillId) => path.join(skillsDir, skillId, "SKILL.md"))
+    .map((filePath) => toPosixPath(path.relative(findWorkspaceRoot(cwd), filePath)));
+}
+
+function buildArchitecturePrompt({
+  platform,
+  workspaceRoot,
+  snapshot,
+  specRoots,
+  researchMode,
+  coreSkills,
+  conditionalSkills,
+  skillPathHints,
+}) {
+  const rulesPath = "ENGINEERING_RULES.md";
+  const techPath = "TECH.md";
+  const architectureSignals = snapshot.architectureByApp
+    .filter((item) => (item.architectureSignals || []).length > 0)
+    .map((item) => {
+      const label = item.rootPath === "." ? "repo root" : item.rootPath;
+      return `${label}: ${item.architectureSignals.join(", ")}`;
+    });
+
+  return [
+    `You are running inside ${platform}.`,
+    "",
+    "Objective:",
+    `- Inspect the repository at ${toPosixPath(workspaceRoot)} and refresh the managed architecture sections in ${rulesPath} and ${techPath}.`,
+    "- Keep ENGINEERING_RULES.md normative and TECH.md descriptive.",
+    "- Preserve manual content outside the managed `cbx:architecture:*` markers.",
+    "",
+    "Required skill bundle:",
+    `- Load these exact skill IDs first: ${coreSkills.map((skillId) => `\`${skillId}\``).join(", ")}`,
+    conditionalSkills.length > 0
+      ? `- Additional skills to load now: ${conditionalSkills.map((skillId) => `\`${skillId}\``).join(", ")}`
+      : "- Conditional skills to load now: none",
+    skillPathHints.length > 0
+      ? `- Local skill file hints if installed: ${skillPathHints.map((hint) => `\`${hint}\``).join(", ")}`
+      : "- Local skill file hints if installed: none detected",
+    "- Treat the route and skill bundle as already resolved. Do not begin with route discovery.",
+    "",
+    "Repository context:",
+    `- Frameworks: ${snapshot.frameworks.length > 0 ? snapshot.frameworks.join(", ") : "none detected"}`,
+    `- Top directories: ${snapshot.topDirs.length > 0 ? snapshot.topDirs.join(", ") : "none detected"}`,
+    `- Existing spec packs: ${specRoots.length > 0 ? specRoots.join(", ") : "none detected"}`,
+    architectureSignals.length > 0
+      ? `- Architecture signals: ${architectureSignals.join(" | ")}`
+      : "- Architecture signals: none confidently inferred from the repo scan",
+    "",
+    "Execution contract:",
+    "1. Read ENGINEERING_RULES.md first if present, then read TECH.md.",
+    "2. Inspect the repo before making architecture claims.",
+    "3. Update only the content between the existing `cbx:architecture:rules` and `cbx:architecture:tech` markers.",
+    "4. Keep the marker lines themselves intact, including their hash metadata.",
+    "5. In ENGINEERING_RULES.md, state architecture style, dependency rules, feature or module structure rules, design-system source of truth, testability expectations, and doc refresh policy.",
+    "6. In TECH.md, update architecture snapshot, module or app topology, flow narratives, Mermaid diagrams, and scaling or deployment notes.",
+    researchMode === "never"
+      ? "7. Stay repo-only. Do not use outside research."
+      : "7. Use repo evidence first. Use official docs when needed. Treat Reddit or community sources only as labeled secondary evidence.",
+    researchMode === "always"
+      ? "8. Include an external research evidence subsection in TECH.md with clearly labeled primary and secondary evidence."
+      : "8. Include external research notes only if they materially informed the architecture update.",
+    "9. If the project clearly follows Clean Architecture, feature-first modules, or another stable structure, make that explicit so future implementation stays consistent.",
+    "",
+    "Return one JSON object on the last line with this shape:",
+    '{"files_written":["ENGINEERING_RULES.md","TECH.md"],"research_used":false,"gaps":[],"next_actions":[]}',
+    "",
+    "Do not emit placeholder TODOs in the managed sections.",
+  ].join("\n");
+}
+
+async function execFileCapture(command, args, options = {}) {
+  try {
+    const result = await execFile(command, args, {
+      ...options,
+      maxBuffer: 8 * 1024 * 1024,
+    });
+    return {
+      ok: true,
+      stdout: result.stdout || "",
+      stderr: result.stderr || "",
+    };
+  } catch (error) {
+    if (error?.code === "ENOENT") {
+      throw new Error(`Required CLI '${command}' is not installed or not on PATH.`);
+    }
+    return {
+      ok: false,
+      stdout: error?.stdout || "",
+      stderr: error?.stderr || "",
+      code: error?.code || 1,
+    };
+  }
+}
+
+async function probeArchitectureAdapter(platform, cwd) {
+  if (platform === "codex") {
+    const help = await execFileCapture("codex", ["exec", "--help"], { cwd });
+    return {
+      platform,
+      binary: "codex",
+      helpText: `${help.stdout}\n${help.stderr}`.trim(),
+      buildInvocation(prompt) {
+        const args = ["exec"];
+        if (this.helpText.includes("--skip-git-repo-check")) {
+          args.push("--skip-git-repo-check");
+        }
+        args.push(prompt);
+        return args;
+      },
+    };
+  }
+
+  if (platform === "claude") {
+    const help = await execFileCapture("claude", ["--help"], { cwd });
+    const helpText = `${help.stdout}\n${help.stderr}`.trim();
+    const printFlag = helpText.includes("--print")
+      ? "--print"
+      : helpText.includes(" -p") || helpText.includes("\n-p")
+        ? "-p"
+        : null;
+    if (!printFlag) {
+      throw new Error(
+        "Claude CLI was found, but no headless print mode was detected. Install a Claude Code build that supports --print or -p.",
+      );
+    }
+    return {
+      platform,
+      binary: "claude",
+      helpText,
+      buildInvocation(prompt) {
+        return [printFlag, prompt];
+      },
+    };
+  }
+
+  if (platform === "gemini") {
+    const help = await execFileCapture("gemini", ["--help"], { cwd });
+    const helpText = `${help.stdout}\n${help.stderr}`.trim();
+    const promptFlag = helpText.includes("--prompt")
+      ? "--prompt"
+      : helpText.includes(" -p") || helpText.includes("\n-p")
+        ? "-p"
+        : null;
+    if (!promptFlag) {
+      throw new Error(
+        "Gemini CLI was found, but no prompt flag was detected. Install a Gemini CLI build with --prompt or -p support.",
+      );
+    }
+    return {
+      platform,
+      binary: "gemini",
+      helpText,
+      buildInvocation(prompt) {
+        return [promptFlag, prompt];
+      },
+    };
+  }
+
+  const help = await execFileCapture("copilot", ["--help"], { cwd });
+  const helpText = `${help.stdout}\n${help.stderr}`.trim();
+  const supportsPrompt = helpText.includes("--prompt");
+  const supportsChatPrompt =
+    helpText.includes("chat") && helpText.includes("--prompt");
+  if (!supportsPrompt && !supportsChatPrompt) {
+    throw new Error(
+      "Copilot CLI was found, but no headless prompt mode was detected. This command requires a native Copilot CLI surface with --prompt support.",
+    );
+  }
+  return {
+    platform,
+    binary: "copilot",
+    helpText,
+    buildInvocation(prompt) {
+      if (supportsPrompt) return ["--prompt", prompt];
+      return ["chat", "--prompt", prompt];
+    },
+  };
+}
+
+function normalizeArchitectureResult({
+  stdout,
+  workspaceRoot,
+  rulesPath,
+  techPath,
+  researchMode,
+}) {
+  const trimmed = String(stdout || "").trim();
+  if (trimmed) {
+    const lastLine = trimmed.split(/\r?\n/).pop();
+    if (lastLine && lastLine.startsWith("{") && lastLine.endsWith("}")) {
+      try {
+        const parsed = JSON.parse(lastLine);
+        return {
+          outputRoot: workspaceRoot,
+          filesWritten: Array.isArray(parsed.files_written)
+            ? parsed.files_written
+            : [rulesPath, techPath],
+          researchUsed:
+            typeof parsed.research_used === "boolean"
+              ? parsed.research_used
+              : researchMode === "always",
+          gaps: Array.isArray(parsed.gaps) ? parsed.gaps : [],
+          nextActions: Array.isArray(parsed.next_actions)
+            ? parsed.next_actions
+            : [],
+          rawOutput: trimmed,
+        };
+      } catch {
+        // fall through to default normalization
+      }
+    }
+  }
+
+  return {
+    outputRoot: workspaceRoot,
+    filesWritten: [rulesPath, techPath],
+    researchUsed: researchMode === "always",
+    gaps: [],
+    nextActions: [],
+    rawOutput: trimmed,
+  };
+}
+
+async function readArchitectureDriftStatus(workspaceRoot, snapshot) {
+  const rulesPath = path.join(workspaceRoot, "ENGINEERING_RULES.md");
+  const techPath = path.join(workspaceRoot, "TECH.md");
+  const metadataPath = path.join(
+    workspaceRoot,
+    ".cbx",
+    ARCHITECTURE_BUILD_METADATA_FILENAME,
+  );
+  const rulesExists = await pathExists(rulesPath);
+  const techExists = await pathExists(techPath);
+
+  const expectedRulesHash = hashStableObject(
+    inferArchitectureContractProfile(snapshot),
+  );
+  const expectedTechHash = hashStableObject({
+    style: inferArchitectureContractProfile(snapshot).style,
+    topDirs: snapshot.topDirs,
+    frameworks: snapshot.frameworks,
+    architectureByApp: snapshot.architectureByApp,
+  });
+
+  const findings = [];
+  let actualRulesHash = null;
+  let actualTechHash = null;
+
+  if (!rulesExists) {
+    findings.push("ENGINEERING_RULES.md is missing.");
+  } else {
+    const content = await readFile(rulesPath, "utf8");
+    actualRulesHash = extractTaggedMarkerAttribute(
+      content,
+      ENGINEERING_ARCHITECTURE_BLOCK_START_RE,
+      "profile",
+    );
+    if (!actualRulesHash) {
+      findings.push("ENGINEERING_RULES.md is missing the managed architecture contract block.");
+    } else if (actualRulesHash !== expectedRulesHash) {
+      findings.push(
+        `ENGINEERING_RULES.md architecture profile is stale (expected ${expectedRulesHash}, found ${actualRulesHash}).`,
+      );
+    }
+  }
+
+  if (!techExists) {
+    findings.push("TECH.md is missing.");
+  } else {
+    const content = await readFile(techPath, "utf8");
+    actualTechHash = extractTaggedMarkerAttribute(
+      content,
+      TECH_ARCHITECTURE_BLOCK_START_RE,
+      "snapshot",
+    );
+    if (!actualTechHash) {
+      findings.push("TECH.md is missing the managed architecture snapshot block.");
+    } else if (actualTechHash !== expectedTechHash) {
+      findings.push(
+        `TECH.md architecture snapshot is stale (expected ${expectedTechHash}, found ${actualTechHash}).`,
+      );
+    }
+  }
+
+  const metadata = await readJsonFileIfExists(metadataPath);
+  if (!metadata.exists) {
+    findings.push("Architecture build metadata is missing.");
+  }
+
+  return {
+    stale: findings.length > 0,
+    findings,
+    rulesPath,
+    techPath,
+    metadataPath,
+    expectedRulesHash,
+    expectedTechHash,
+    actualRulesHash,
+    actualTechHash,
+  };
+}
+
+async function runBuildArchitecture(options) {
+  try {
+    const platform = normalizeArchitectureBuildPlatform(options.platform);
+    const researchMode = normalizeArchitectureResearchMode(options.research);
+    const overwrite = Boolean(options.overwrite);
+    const dryRun = Boolean(options.dryRun);
+    const emitJson = Boolean(options.json);
+    const checkOnly = Boolean(options.check);
+    const cwd = process.cwd();
+    const workspaceRoot = findWorkspaceRoot(cwd);
+    const snapshot = await collectTechSnapshot(workspaceRoot);
+
+    if (checkOnly) {
+      const drift = await readArchitectureDriftStatus(workspaceRoot, snapshot);
+      if (emitJson) {
+        console.log(JSON.stringify(drift, null, 2));
+      } else {
+        console.log(`Platform: ${platform}`);
+        console.log(`Workspace: ${toPosixPath(workspaceRoot)}`);
+        console.log(`Status: ${drift.stale ? "stale" : "fresh"}`);
+        if (drift.findings.length > 0) {
+          console.log("Findings:");
+          for (const finding of drift.findings) {
+            console.log(`- ${finding}`);
+          }
+        }
+      }
+      if (drift.stale) process.exit(1);
+      return;
+    }
+
+    const scaffold = await ensureArchitectureDocScaffold({
+      workspaceRoot,
+      snapshot,
+      overwrite,
+      dryRun,
+    });
+    const specRoots = await listSpecPackRoots(workspaceRoot);
+    const coreSkills = [
+      "architecture-doc",
+      "system-design",
+      "tech-doc",
+      "frontend-design",
+    ];
+    const conditionalSkills = resolveArchitectureConditionalSkills(
+      snapshot,
+      specRoots,
+      researchMode,
+    );
+    const skillBundle = [...coreSkills, ...conditionalSkills];
+    const skillPathHints = await resolveArchitectureSkillPathHints(
+      platform,
+      cwd,
+      skillBundle,
+    );
+    const prompt = buildArchitecturePrompt({
+      platform,
+      workspaceRoot,
+      snapshot,
+      specRoots,
+      researchMode,
+      coreSkills,
+      conditionalSkills,
+      skillPathHints,
+    });
+    const adapter = await probeArchitectureAdapter(platform, workspaceRoot);
+    const args = adapter.buildInvocation(prompt);
+
+    if (dryRun) {
+      const summary = {
+        platform,
+        workspaceRoot: toPosixPath(workspaceRoot),
+        adapter: adapter.binary,
+        invocation: [adapter.binary, ...args],
+        researchMode,
+        managedTargets: [
+          toPosixPath(scaffold.engineeringRulesPath),
+          toPosixPath(scaffold.techMdPath),
+        ],
+        skillBundle,
+      };
+      if (emitJson) {
+        console.log(JSON.stringify(summary, null, 2));
+      } else {
+        console.log(`Platform: ${platform}`);
+        console.log(`Workspace: ${toPosixPath(workspaceRoot)}`);
+        console.log(`Adapter: ${adapter.binary}`);
+        console.log(`Research mode: ${researchMode}`);
+        console.log(
+          `Managed targets: ${toPosixPath(scaffold.engineeringRulesPath)}, ${toPosixPath(scaffold.techMdPath)}`,
+        );
+        console.log(`Skill bundle: ${skillBundle.join(", ")}`);
+        console.log(`Invocation: ${[adapter.binary, ...args].join(" ")}`);
+      }
+      return;
+    }
+
+    const execution = await execFileCapture(adapter.binary, args, {
+      cwd: workspaceRoot,
+      env: process.env,
+    });
+    if (!execution.ok) {
+      throw new Error(
+        `Architecture build failed via ${adapter.binary}. ${String(execution.stderr || execution.stdout || "").trim()}`,
+      );
+    }
+
+    const rulesContent = await readFile(scaffold.engineeringRulesPath, "utf8");
+    const techContent = await readFile(scaffold.techMdPath, "utf8");
+    const metadataPath = path.join(
+      workspaceRoot,
+      ".cbx",
+      ARCHITECTURE_BUILD_METADATA_FILENAME,
+    );
+    const metadata = buildArchitectureBuildMetadata({
+      platform,
+      researchMode,
+      rulesProfileHash:
+        extractTaggedMarkerAttribute(
+          rulesContent,
+          ENGINEERING_ARCHITECTURE_BLOCK_START_RE,
+          "profile",
+        ) || "unknown",
+      techSnapshotHash:
+        extractTaggedMarkerAttribute(
+          techContent,
+          TECH_ARCHITECTURE_BLOCK_START_RE,
+          "snapshot",
+        ) || "unknown",
+    });
+    await mkdir(path.dirname(metadataPath), { recursive: true });
+    await writeFile(
+      metadataPath,
+      `${JSON.stringify(metadata, null, 2)}\n`,
+      "utf8",
+    );
+
+    const result = normalizeArchitectureResult({
+      stdout: execution.stdout,
+      workspaceRoot: toPosixPath(workspaceRoot),
+      rulesPath: "ENGINEERING_RULES.md",
+      techPath: "TECH.md",
+      researchMode,
+    });
+
+    if (emitJson) {
+      console.log(
+        JSON.stringify(
+          {
+            platform,
+            adapter: adapter.binary,
+            skillBundle,
+            result,
+          },
+          null,
+          2,
+        ),
+      );
+      return;
+    }
+
+    console.log(`Platform: ${platform}`);
+    console.log(`Adapter: ${adapter.binary}`);
+    console.log(`Workspace: ${toPosixPath(workspaceRoot)}`);
+    console.log(`Managed docs: ENGINEERING_RULES.md, TECH.md`);
+    console.log(`Skill bundle: ${skillBundle.join(", ")}`);
+    console.log(
+      `Files written: ${(result.filesWritten || []).join(", ") || "(none reported)"}`,
+    );
+    console.log(`Research used: ${result.researchUsed ? "yes" : "no"}`);
+    if (result.gaps.length > 0) {
+      console.log(`Gaps: ${result.gaps.join("; ")}`);
+    }
+    if (result.nextActions.length > 0) {
+      console.log(`Next actions: ${result.nextActions.join("; ")}`);
     }
   } catch (error) {
     console.error(`\nError: ${error.message}`);
@@ -12467,6 +13398,7 @@ export function buildCliProgram() {
     defaultMcpDockerContainerName: DEFAULT_MCP_DOCKER_CONTAINER_NAME,
     runRulesInit,
     runRulesTechMd,
+    runBuildArchitecture,
   });
 }
 

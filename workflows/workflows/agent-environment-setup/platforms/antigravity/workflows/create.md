@@ -22,6 +22,7 @@ Use this for net-new implementation after design is stable.
 
 - This workflow file, active platform rules, and selected agents or skills guide execution.
 - Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
+- Read `ENGINEERING_RULES.md` first and `TECH.md` next for non-trivial work so new code follows the declared architecture and design-system rules.
 
 ## Skill Routing
 
@@ -35,7 +36,8 @@ Use this for net-new implementation after design is stable.
 1. Confirm target files and contracts.
 2. Implement smallest coherent increment.
 3. Validate behavior with focused tests.
-4. Capture remaining gaps and follow-ups.
+4. Capture `doc_impact` when the feature changes architecture, boundaries, scale, or design-system rules.
+5. Capture remaining gaps and follow-ups.
 
 ## Verification
 
@@ -55,6 +57,7 @@ CREATE_WORKFLOW_RESULT:
     summary: <string>
     changed_artifacts: [<path-or-artifact>]
   behavioral_impact: [<string>]
+  doc_impact: none | tech | rules | both
   verification:
     checks_run: [<command-or-test>]
     evidence: [<string>]

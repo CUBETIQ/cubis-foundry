@@ -1,12 +1,12 @@
 {
   "$schema": "cubis-foundry-mcp-manifest-v1",
-  "generatedAt": "2026-03-16T06:24:25.564Z",
-  "contentHash": "d8be0915fea44ef1",
+  "generatedAt": "2026-03-16T08:09:40.415Z",
+  "contentHash": "51105f5d732a4902",
   "summary": {
-    "totalSkills": 69,
+    "totalSkills": 70,
     "totalCategories": 12,
-    "totalBytes": 473404,
-    "estimatedTokens": 118351
+    "totalBytes": 477777,
+    "estimatedTokens": 119445
   },
   "categories": [
     {
@@ -35,7 +35,7 @@
     },
     {
       "name": "general",
-      "skillCount": 42
+      "skillCount": 43
     },
     {
       "name": "mcp",
@@ -1397,6 +1397,33 @@
         "version": "3.0"
       },
       "fileBytes": 9072
+    },
+    {
+      "id": "spec-driven-delivery",
+      "name": "spec-driven-delivery",
+      "displayName": null,
+      "description": "Use when turning a non-trivial request into a Git-tracked spec pack, maintaining traceability during execution, and updating specs before code when requirements or architecture change.",
+      "category": "general",
+      "keywords": [
+        "spec-driven-delivery",
+        "spec driven delivery",
+        "spec",
+        "driven",
+        "delivery"
+      ],
+      "triggers": [
+        "spec-driven-delivery",
+        "spec driven delivery",
+        "spec",
+        "driven",
+        "delivery"
+      ],
+      "path": "workflows/skills/spec-driven-delivery/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 4373
     },
     {
       "id": "spring-boot",

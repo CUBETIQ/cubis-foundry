@@ -197,6 +197,7 @@ async function validateCopilotPrompt(
   filePath,
   workflowFileName,
   command,
+  primarySkills,
   errors,
 ) {
   if (!(await exists(filePath))) {
@@ -224,6 +225,16 @@ async function validateCopilotPrompt(
   if (!raw.includes("official docs as primary evidence")) {
     error(errors, filePath, "copilot prompt missing official-docs-first research guidance");
   }
+  if (!raw.includes("Load these exact skill IDs first")) {
+    error(errors, filePath, "copilot prompt missing direct skill attachment guidance");
+  }
+  if (primarySkills[0] && !raw.includes(primarySkills[0])) {
+    error(
+      errors,
+      filePath,
+      `copilot prompt missing primary attached skill '${primarySkills[0]}'`,
+    );
+  }
   if (command && !raw.includes(command)) {
     error(
       errors,
@@ -237,6 +248,7 @@ async function validateAntigravityCommand(
   filePath,
   workflowFileName,
   command,
+  primarySkills,
   errors,
 ) {
   if (!(await exists(filePath))) {
@@ -274,6 +286,16 @@ async function validateAntigravityCommand(
   }
   if (!raw.includes("secondary evidence")) {
     error(errors, filePath, "command missing labeled-secondary-evidence guidance");
+  }
+  if (!raw.includes("Load these exact skill IDs first")) {
+    error(errors, filePath, "command missing direct skill attachment guidance");
+  }
+  if (primarySkills[0] && !raw.includes(primarySkills[0])) {
+    error(
+      errors,
+      filePath,
+      `command missing primary attached skill '${primarySkills[0]}'`,
+    );
   }
   if (command && !raw.includes(command)) {
     error(
@@ -535,6 +557,7 @@ async function main() {
         ),
         route.artifacts?.copilot?.workflowFile || "",
         route.command,
+        route.primarySkills || [],
         errors,
       );
 
@@ -546,6 +569,7 @@ async function main() {
         ),
         route.artifacts?.antigravity?.workflowFile || "",
         route.command,
+        route.primarySkills || [],
         errors,
       );
       await validateAntigravityCommand(
@@ -556,6 +580,7 @@ async function main() {
         ),
         route.artifacts?.gemini?.workflowFile || "",
         route.command,
+        route.primarySkills || [],
         errors,
       );
       continue;

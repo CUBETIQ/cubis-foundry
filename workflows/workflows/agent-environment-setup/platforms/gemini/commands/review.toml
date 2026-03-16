@@ -4,11 +4,16 @@ Follow the /review workflow from .gemini/workflows/review.md.
 
 Execution contract:
 1. Treat route selection as already resolved by this command; do not begin with skill discovery.
-2. Confirm the request fits the workflow's "When to use" section.
-3. Execute according to "Workflow steps" and apply "Context notes".
-4. Complete "Verification" checks and report concrete evidence.
-5. If freshness, public comparison, or explicit research needs appear, pause implementation and load `deep-research` or route to the researcher posture first.
-6. For outside evidence: repo first, official docs next, Reddit/community only as labeled secondary evidence.
+2. Read `ENGINEERING_RULES.md` first and `TECH.md` next when they exist before non-trivial execution.
+Attached skills:
+- Load these exact skill IDs first: `code-review`, `unit-testing`, `owasp-security-review`, `performance-testing`, `react`, `nextjs`, `typescript-best-practices`, `javascript-best-practices`, `python-best-practices`, `golang-best-practices`.
+- Local skill file hints if installed: `.gemini/skills/code-review/SKILL.md`, `.gemini/skills/unit-testing/SKILL.md`, `.gemini/skills/owasp-security-review/SKILL.md`, `.gemini/skills/performance-testing/SKILL.md`, `.gemini/skills/react/SKILL.md`, `.gemini/skills/nextjs/SKILL.md`, `.gemini/skills/typescript-best-practices/SKILL.md`, `.gemini/skills/javascript-best-practices/SKILL.md`.
+- Treat the skill bundle as already resolved for this workflow. Do not start with route discovery.
+3. Confirm the request fits the workflow's "When to use" section.
+4. Execute according to "Workflow steps" and apply "Context notes".
+5. Complete "Verification" checks and report concrete evidence.
+6. If freshness, public comparison, or explicit research needs appear, pause implementation and load `deep-research` or route to the researcher posture first.
+7. For outside evidence: repo first, official docs next, Reddit/community only as labeled secondary evidence.
 
 If command arguments are provided, treat them as additional user context.
 '''

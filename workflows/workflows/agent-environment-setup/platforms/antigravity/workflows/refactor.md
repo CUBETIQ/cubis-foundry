@@ -20,6 +20,7 @@ Use this when improving code structure, reducing tech debt, or modularizing with
 
 - This workflow file, active platform rules, and selected agents or skills guide execution.
 - Attach the target code, pain points, and any constraints on what can change.
+- Read `ENGINEERING_RULES.md` and `TECH.md` first so behavior-preserving structure changes do not drift from the accepted architecture contract.
 
 ## Skill Routing
 
@@ -34,6 +35,7 @@ Use this when improving code structure, reducing tech debt, or modularizing with
 3. Apply one refactoring at a time with behavior preservation.
 4. Verify behavior unchanged after each step.
 5. Document the improved structure and any conventions established.
+6. Set `doc_impact` when the refactor changes project structure, module boundaries, or design-system conventions.
 
 ## Verification
 
@@ -57,6 +59,7 @@ REFACTOR_WORKFLOW_RESULT:
   quality_improvement:
     complexity_before: <string>
     complexity_after: <string>
+  doc_impact: none | tech | rules | both
   tests_added: [<test-file-path>] | []
   follow_up_items: [<string>] | []
 ```

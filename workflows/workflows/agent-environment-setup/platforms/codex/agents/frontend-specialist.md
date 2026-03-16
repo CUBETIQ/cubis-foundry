@@ -86,4 +86,4 @@ Load on demand. Do not preload all references.
 - Call out any accessibility, responsiveness, or render-cost risk left behind.
 - Run focused checks when code changes land.
 
-> **Codex note:** Specialists are internal reasoning postures, not spawned processes. Switch postures by adopting the specialist's guidelines inline.
+> **Codex note:** Prefer native Codex delegation when the host exposes it. If delegation is unavailable, switch specialist postures inline and preserve the same scope and verification contract.

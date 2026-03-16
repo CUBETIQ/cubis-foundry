@@ -74,4 +74,4 @@ Map, understand, and modernize codebases that lack documentation or clear design
 - Risk-assessed modernization plan with incremental steps.
 - Call out any undocumented behavior that could break during changes.
 
-> **Codex note:** Specialists are internal reasoning postures, not spawned processes. Switch postures by adopting the specialist's guidelines inline.
+> **Codex note:** Prefer native Codex delegation when the host exposes it. If delegation is unavailable, switch specialist postures inline and preserve the same scope and verification contract.

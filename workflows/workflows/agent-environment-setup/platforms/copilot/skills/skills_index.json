@@ -1722,6 +1722,40 @@
     ]
   },
   {
+    "id": "spec-driven-delivery",
+    "package_id": "spec-driven-delivery",
+    "catalog_id": "spec-driven-delivery",
+    "kind": "skill",
+    "name": "spec-driven-delivery",
+    "canonical": true,
+    "canonical_id": "spec-driven-delivery",
+    "deprecated": false,
+    "replaced_by": null,
+    "aliases": [],
+    "category": "workflow-specialists",
+    "layer": "workflow-specialists",
+    "maturity": "incubating",
+    "tier": "experimental",
+    "tags": [
+      "delivery",
+      "driven",
+      "spec",
+      "spec driven delivery",
+      "spec-driven-delivery",
+      "workflow-specialists"
+    ],
+    "path": ".github/skills/spec-driven-delivery/SKILL.md",
+    "description": "Use when turning a non-trivial request into a Git-tracked spec pack, maintaining traceability during execution, and updating specs before code when requirements or architecture change.",
+    "triggers": [
+      "spec-driven-delivery",
+      "spec driven delivery",
+      "spec",
+      "driven",
+      "delivery",
+      "workflow-specialists"
+    ]
+  },
+  {
     "id": "spring-boot",
     "package_id": "spring-boot",
     "catalog_id": "spring-boot",

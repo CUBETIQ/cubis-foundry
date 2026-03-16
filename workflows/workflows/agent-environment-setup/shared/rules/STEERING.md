@@ -21,6 +21,10 @@ Follow this decision tree for EVERY user request:
 │   └─ Run skill_validate on that exact ID.
 │       ├─ Valid? → Load it and proceed. Stop.
 │       └─ Invalid/unavailable? → Fall through. Do not guess.
+├─ Is it non-trivial work with requirements, traceability, or spec language?
+│   └─ Prefer /spec unless the user already chose another valid route. Stop.
+├─ Is it architecture, design-system, ADR, or structure-governance work?
+│   └─ Prefer /architecture unless the user already chose another valid route. Stop.
 ├─ Is it multi-step work in ONE domain?
 │   └─ Pick the best-fit workflow. Load it. Stop.
 ├─ Is it cross-domain work spanning 2+ specialties?
@@ -33,6 +37,7 @@ Follow this decision tree for EVERY user request:
 
 > **Rule:** Inspect the repo and task locally BEFORE choosing a route or loading any skill.
 > **Rule:** If the user already chose the route, do not re-route it unless the named workflow, agent, or skill is invalid.
+> **Rule:** For non-trivial work, read `ENGINEERING_RULES.md` first and `TECH.md` next when they exist before planning or implementing.
 
 ---
 
@@ -48,6 +53,8 @@ Follow this decision tree for EVERY user request:
 | **skill_search**     | Fuzzy discovery tool                  | Domain unclear, no skill ID known yet                 | One narrow search AFTER route_resolve      | "what skill covers Prisma?"                 |
 | **route_resolve**    | Intent → route mapper                 | Free-text request doesn't match any known route       | MCP tool call with task description        | "I need to optimize my database"            |
 | **Orchestrator**     | Multi-specialist coordinator          | Work genuinely spans 2+ domains                       | `/orchestrate` or `@orchestrator`          | "build full-stack feature with auth"        |
+| **Spec workflow**    | Git-tracked spec pack                 | Non-trivial work needs durable scope, acceptance, and traceability | `/spec`                           | "turn this feature into an implementation spec" |
+| **Architecture workflow** | Architecture and design-system memory | Need to refresh structure, flows, ADRs, or design-system rules | `/architecture`                 | "update the clean architecture contract" |
 
 ---
 
@@ -65,6 +72,7 @@ Skills are **supporting context** unless the user explicitly named the exact ski
 8. Load reference files one at a time with `skill_get_reference` — only when a specific reference is needed.
 9. Do not auto-prime every specialist. Only load what `primarySkills` recommends or the task clearly needs.
 10. Never pass workflow IDs or agent IDs to skill tools.
+11. For `/architecture` and strict subprocess architecture generation, treat the skill bundle as already resolved. Attach the named skills directly instead of discovering them lazily.
 
 ---
 
@@ -88,6 +96,8 @@ Research output contract:
 - **Secondary/community evidence** — useful but lower-trust signals, clearly labeled.
 - **Gaps / unknowns** — what could not be verified.
 - **Recommended next route** — workflow, agent, or skill to use after research.
+
+When the research result shows a change to project structure, boundaries, design system, or testing strategy, surface `doc_impact` and recommend `/architecture` or a managed-doc refresh before or after implementation.
 
 ---
 
@@ -154,7 +164,9 @@ Use the best specialist first:
 
 | Intent Pattern                          | Workflow           | Primary Agent          |
 | --------------------------------------- | ------------------ | ---------------------- |
+| Build a spec pack with traceability     | `/spec`            | `@project-planner`     |
 | Plan a feature, design, or architecture | `/plan`            | `@project-planner`     |
+| Refresh architecture or design-system docs | `/architecture` | `@project-planner`     |
 | Implement a feature with quality gates  | `/create`          | varies by domain       |
 | Debug a complex issue                   | `/debug`           | `@debugger`            |
 | Write or verify tests                   | `/test`            | `@test-engineer`       |
@@ -183,6 +195,7 @@ Use the best specialist first:
 4. State what was NOT validated.
 5. Use web search only when information may be stale, public comparison matters, or the user explicitly asks.
 6. Prefer official docs first. Treat Reddit/community sources as secondary evidence and label them that way.
+7. If the task changes project structure, scaling assumptions, or design-system rules, update or flag `ENGINEERING_RULES.md` and `TECH.md`.
 
 ---
 

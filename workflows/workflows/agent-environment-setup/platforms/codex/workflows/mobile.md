@@ -20,6 +20,7 @@ Use this for mobile app development, Flutter architecture, Stitch-driven mobile 
 
 - This workflow file, active platform rules, and selected agents or skills guide execution.
 - Attach platform targets (iOS, Android, both), Flutter version, and relevant screen/feature context.
+- Read `ENGINEERING_RULES.md` and `TECH.md` before implementing non-trivial mobile work so screens and features follow the declared architecture and design-system rules.
 
 ## Skill Routing
 
@@ -35,6 +36,7 @@ Use this for mobile app development, Flutter architecture, Stitch-driven mobile 
 3. Implement with consideration for iOS/Android differences.
 4. Write widget and integration tests.
 5. Review for platform-specific edge cases and UX conventions.
+6. Set `doc_impact` if the feature changes navigation, shared UI rules, or mobile architecture conventions.
 
 ## Verification
 
@@ -62,7 +64,8 @@ MOBILE_WORKFLOW_RESULT:
   platform_notes:
     ios: [<string>] | []
     android: [<string>] | []
+  doc_impact: none | tech | rules | both
   follow_up_items: [<string>] | []
 ```
 
-> **Codex note:** This workflow runs inside a network-restricted sandbox. Specialists are reasoning postures defined in AGENTS.md, not spawned processes.
+> **Codex note:** Prefer native Codex delegation when the host exposes it. Otherwise follow AGENTS.md specialist postures inline while keeping the same routing and verification contract.

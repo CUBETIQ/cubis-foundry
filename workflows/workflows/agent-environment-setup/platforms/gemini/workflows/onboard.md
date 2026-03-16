@@ -27,6 +27,7 @@ Use this when joining a new project, exploring an unfamiliar codebase, or prepar
 
 - This workflow file, active platform rules, and selected agents or skills guide execution.
 - Provide the repo URL, focus areas, and any specific questions to answer during onboarding.
+- Read `ENGINEERING_RULES.md` first and `TECH.md` next when present so onboarding distinguishes the intended contract from current implementation reality.
 
 ## Skill Routing
 

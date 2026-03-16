@@ -28,12 +28,13 @@ Use this for technology migrations, framework upgrades, dependency updates, or m
 
 - This workflow file, active platform rules, and selected agents or skills guide execution.
 - Attach the migration target, current versions, breaking change lists, and impact assessment.
+- Read `ENGINEERING_RULES.md` and `TECH.md` first because migrations often change accepted patterns and current-state architecture at the same time.
 
 ## Skill Routing
 
-- Primary skills: `legacy-modernizer`, `architecture-designer`
+- Primary skills: `legacy-modernizer`, `system-design`
 - Supporting skills (optional): `static-analysis`, `testing-patterns`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`
-- Start with `legacy-modernizer` for migration methodology and `architecture-designer` for system impact. Add `static-analysis` for automated codemod or compatibility analysis.
+- Start with `legacy-modernizer` for migration methodology and `system-design` for system impact. Add `static-analysis` for automated codemod or compatibility analysis.
 
 ## Workflow steps
 
@@ -42,7 +43,8 @@ Use this for technology migrations, framework upgrades, dependency updates, or m
 3. Plan incremental migration steps with rollback points.
 4. Execute migration one step at a time with verification.
 5. Update tests and documentation for new patterns.
-6. Verify full system behavior after migration complete.
+6. Set `doc_impact` when the migration changes architecture, deployment shape, boundaries, or design-system rules.
+7. Verify full system behavior after migration complete.
 
 ## Verification
 
@@ -58,7 +60,7 @@ Use this for technology migrations, framework upgrades, dependency updates, or m
 MIGRATE_WORKFLOW_RESULT:
   primary_agent: code-archaeologist
   supporting_agents: [backend-specialist?, frontend-specialist?, test-engineer?, validator?]
-  primary_skills: [legacy-modernizer, architecture-designer]
+  primary_skills: [legacy-modernizer, system-design]
   supporting_skills: [static-analysis?, testing-patterns?]
   migration:
     from: <string>
@@ -69,5 +71,6 @@ MIGRATE_WORKFLOW_RESULT:
   verification:
     tests_passed: true | false
     performance_impact: <string>
+  doc_impact: none | tech | rules | both
   follow_up_items: [<string>] | []
 ```

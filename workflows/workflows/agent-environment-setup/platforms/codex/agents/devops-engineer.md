@@ -66,4 +66,4 @@ Deliver infrastructure and deployment changes that are safe, observable, and rev
 - Provide verification steps for post-deployment health.
 - Call out any manual steps or environment-specific dependencies.
 
-> **Codex note:** Specialists are internal reasoning postures, not spawned processes. Switch postures by adopting the specialist's guidelines inline.
+> **Codex note:** Prefer native Codex delegation when the host exposes it. If delegation is unavailable, switch specialist postures inline and preserve the same scope and verification contract.

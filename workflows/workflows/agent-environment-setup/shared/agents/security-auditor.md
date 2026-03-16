@@ -30,7 +30,7 @@ triggers:
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
 maxTurns: 25
-skills: security-engineer, auth-architect, vulnerability-scanner, static-analysis, api-designer, graphql-architect, nodejs-best-practices, nestjs-expert, fastapi-expert, typescript-pro, javascript-pro, python-pro, golang-pro, rust-pro
+skills: security-engineer, auth-architect, vulnerability-scanner, static-analysis, api-design, graphql-architect, nodejs-best-practices, nestjs-expert, fastapi-expert, typescript-pro, javascript-pro, python-pro, golang-pro, rust-pro
 handoffs:
   - agent: "penetration-tester"
     title: "Run Exploit Simulation"
@@ -61,7 +61,7 @@ Review code and architecture for exploitability with evidence-first triage and a
 | `auth-architect`        | Auth flow review, token management, session design, or access control audit. |
 | `vulnerability-scanner` | Dependency scanning, SAST/DAST results, or CVE triage.                       |
 | `static-analysis`       | Automated code analysis, linting for security rules, or code quality tools.  |
-| `api-designer`          | API security review — rate limiting, input validation, auth headers.         |
+| `api-design`          | API security review — rate limiting, input validation, auth headers.         |
 | `graphql-architect`     | GraphQL-specific security — depth limiting, introspection, authorization.    |
 
 ## Exploitability-First Triage

@@ -22,11 +22,12 @@ Use this for net-new implementation after design is stable.
 
 - This workflow file, active platform rules, and selected agents or skills guide execution.
 - Attach logs, screenshots, failing output, and relevant paths when context is incomplete.
+- Read `ENGINEERING_RULES.md` first and `TECH.md` next for non-trivial work so new code follows the declared architecture and design-system rules.
 
 ## Skill Routing
 
 - Primary skills: `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`, `csharp-pro`, `kotlin-pro`, `rust-pro`, `php-pro`, `ruby-pro`, `c-pro`, `cpp-pro`, `dart-pro`, `swift-pro`
-- Supporting skills (optional): `api-designer`, `api-patterns`, `nodejs-best-practices`, `nestjs-expert`, `fastapi-expert`, `graphql-architect`, `drizzle-expert`, `firebase`, `mcp-builder`, `stitch`, `react-expert`, `react-best-practices`, `nextjs-developer`, `tailwind-patterns`, `frontend-design`, `design-system-builder`, `web-perf`, `skill-creator`, `stripe-best-practices`, `serverless-patterns`, `i18n-localization`
+- Supporting skills (optional): `api-design`, `api-patterns`, `nodejs-best-practices`, `nestjs-expert`, `fastapi-expert`, `graphql-architect`, `drizzle-expert`, `firebase`, `mcp-server-builder`, `stitch`, `react-expert`, `react-best-practices`, `nextjs-developer`, `tailwind-patterns`, `frontend-design`, `design-system-builder`, `web-perf`, `skill-creator`, `stripe-best-practices`, `serverless-patterns`, `i18n-localization`
 - Pick one primary language skill from repo signals or touched files. Add the narrowest specialist only when the feature is clearly backend or frontend framework-specific.
 - If the request references Stitch screens, artifacts, design-to-code, or UI sync, add `stitch` first and route the implementation through the frontend or mobile specialist based on the destination surface.
 
@@ -35,7 +36,8 @@ Use this for net-new implementation after design is stable.
 1. Confirm target files and contracts.
 2. Implement smallest coherent increment.
 3. Validate behavior with focused tests.
-4. Capture remaining gaps and follow-ups.
+4. Capture `doc_impact` when the feature changes architecture, boundaries, scale, or design-system rules.
+5. Capture remaining gaps and follow-ups.
 
 ## Verification
 
@@ -55,6 +57,7 @@ CREATE_WORKFLOW_RESULT:
     summary: <string>
     changed_artifacts: [<path-or-artifact>]
   behavioral_impact: [<string>]
+  doc_impact: none | tech | rules | both
   verification:
     checks_run: [<command-or-test>]
     evidence: [<string>]

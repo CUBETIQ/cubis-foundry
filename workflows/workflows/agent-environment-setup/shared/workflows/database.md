@@ -20,12 +20,13 @@ Use this for schema design, query optimization, migration planning, or database 
 
 - This workflow file, active platform rules, and selected agents or skills guide execution.
 - Attach existing schema, migration history, query patterns, and performance requirements.
+- Read `ENGINEERING_RULES.md` and `TECH.md` before changing data ownership, persistence boundaries, or shared schema conventions.
 
 ## Skill Routing
 
-- Primary skills: `database-design`, `database-optimizer`, `database-skills`
+- Primary skills: `database-design`, `database-optimizer`, `database-design`
 - Supporting skills (optional): `drizzle-expert`, `postgres`, `mysql`, `sqlite`, `mongodb`, `redis`, `supabase`, `firebase`, `vitess`, `typescript-pro`, `javascript-pro`, `python-pro`
-- Start with `database-design` for schema work, `database-optimizer` for performance, or `database-skills` for general database operations. Add engine-specific skill when applicable.
+- Start with `database-design` for schema work, `database-optimizer` for performance, or `database-design` for general database operations. Add engine-specific skill when applicable.
 
 ## Workflow steps
 
@@ -34,6 +35,7 @@ Use this for schema design, query optimization, migration planning, or database 
 3. Plan migration with rollback strategy.
 4. Optimize queries and indexes for known access patterns.
 5. Validate data integrity constraints.
+6. Set `doc_impact` if the change alters data boundaries, core entities, or persistence patterns that future work should follow.
 
 ## Verification
 
@@ -48,7 +50,7 @@ Use this for schema design, query optimization, migration planning, or database 
 DATABASE_WORKFLOW_RESULT:
   primary_agent: database-architect
   supporting_agents: [backend-specialist?, test-engineer?]
-  primary_skills: [database-design, database-optimizer, database-skills]
+  primary_skills: [database-design, database-optimizer, database-design]
   supporting_skills: [<engine-specific-skill>?, drizzle-expert?]
   schema_changes:
     tables_affected: [<string>]
@@ -57,6 +59,7 @@ DATABASE_WORKFLOW_RESULT:
   query_optimization:
     queries_reviewed: <number>
     indexes_recommended: [<string>] | []
+  doc_impact: none | tech | rules | both
   integrity_checks: [<string>]
   follow_up_items: [<string>] | []
 ```

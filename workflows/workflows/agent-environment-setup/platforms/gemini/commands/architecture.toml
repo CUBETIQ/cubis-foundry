@@ -1,0 +1,19 @@
+description = "Refresh the project architecture contract and current-state map in ENGINEERING_RULES.md and TECH.md with explicit structure, design-system, testing, and flow guidance."
+prompt = '''
+Follow the /architecture workflow from .gemini/workflows/architecture.md.
+
+Execution contract:
+1. Treat route selection as already resolved by this command; do not begin with skill discovery.
+2. Read `ENGINEERING_RULES.md` first and `TECH.md` next when they exist before non-trivial execution.
+Attached skills:
+- Load these exact skill IDs first: `architecture-doc`, `system-design`, `tech-doc`, `frontend-design`, `api-design`, `database-design`, `sadd`, `deep-research`.
+- Local skill file hints if installed: `.gemini/skills/architecture-doc/SKILL.md`, `.gemini/skills/system-design/SKILL.md`, `.gemini/skills/tech-doc/SKILL.md`, `.gemini/skills/frontend-design/SKILL.md`, `.gemini/skills/api-design/SKILL.md`, `.gemini/skills/database-design/SKILL.md`, `.gemini/skills/sadd/SKILL.md`, `.gemini/skills/deep-research/SKILL.md`.
+- Treat the skill bundle as already resolved for this workflow. Do not start with route discovery.
+3. Confirm the request fits the workflow's "When to use" section.
+4. Execute according to "Workflow steps" and apply "Context notes".
+5. Complete "Verification" checks and report concrete evidence.
+6. If freshness, public comparison, or explicit research needs appear, pause implementation and load `deep-research` or route to the researcher posture first.
+7. For outside evidence: repo first, official docs next, Reddit/community only as labeled secondary evidence.
+
+If command arguments are provided, treat them as additional user context.
+'''

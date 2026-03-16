@@ -36,6 +36,7 @@ Use this for backend architecture, API design, service implementation, or Postma
 
 - This workflow file, active platform rules, and selected agents or skills guide execution.
 - Attach API specifications, schema diagrams, Postman collections, and relevant service code.
+- Read `ENGINEERING_RULES.md` and `TECH.md` before changing service boundaries or shared backend structure.
 
 ## Skill Routing
 
@@ -50,6 +51,7 @@ Use this for backend architecture, API design, service implementation, or Postma
 3. Implement backend logic with proper error handling and validation.
 4. Write integration tests covering happy path and error cases.
 5. Review for security, performance, and reliability.
+6. Set `doc_impact` if the change alters service boundaries, shared contracts, or operational shape.
 
 ## Verification
 
@@ -74,6 +76,7 @@ BACKEND_WORKFLOW_RESULT:
   implementation:
     files_changed: [<path>]
     tests_added: [<path>]
+  doc_impact: none | tech | rules | both
   verification:
     checks_run: [<command-or-test>]
     evidence: [<string>]

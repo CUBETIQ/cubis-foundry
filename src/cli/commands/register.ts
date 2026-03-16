@@ -8,6 +8,7 @@ import type {
 import { registerWorkflowCommands } from "../workflows/commands.js";
 import { registerMcpCommands } from "../mcp/commands.js";
 import { registerRulesCommands } from "../rules/commands.js";
+import { registerBuildCommands } from "../build/commands.js";
 
 export interface CliRegistrationDeps {
   cliVersion: string;
@@ -33,6 +34,7 @@ export interface CliRegistrationDeps {
   defaultMcpDockerContainerName: string;
   runRulesInit: WorkflowAction;
   runRulesTechMd: WorkflowAction;
+  runBuildArchitecture: WorkflowAction;
 }
 
 export function registerCommands(deps: CliRegistrationDeps) {
@@ -112,6 +114,10 @@ export function registerCommands(deps: CliRegistrationDeps) {
   registerRulesCommands(program, {
     runRulesInit: deps.runRulesInit,
     runRulesTechMd: deps.runRulesTechMd,
+  });
+
+  registerBuildCommands(program, {
+    runBuildArchitecture: deps.runBuildArchitecture,
   });
 
   const agentsCommand = program

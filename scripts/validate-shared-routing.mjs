@@ -16,6 +16,14 @@ const SHARED_ROOT = path.join(
 const SHARED_WORKFLOWS_DIR = path.join(SHARED_ROOT, "workflows");
 const SHARED_AGENTS_DIR = path.join(SHARED_ROOT, "agents");
 const CANONICAL_SKILLS_ROOT = path.join(ROOT, "workflows", "skills");
+const REQUIRED_SHARED_OVERRIDE_FILES = [
+  path.join(SHARED_ROOT, "rules", "STEERING.md"),
+  path.join(SHARED_ROOT, "rules", "overrides", "codex.md"),
+  path.join(SHARED_ROOT, "rules", "overrides", "claude.md"),
+  path.join(SHARED_ROOT, "rules", "overrides", "copilot.md"),
+  path.join(SHARED_ROOT, "rules", "overrides", "gemini.md"),
+  path.join(SHARED_ROOT, "rules", "overrides", "antigravity.md"),
+];
 
 const REQUIRED_WORKFLOW_SECTIONS = [
   "When to use",
@@ -262,6 +270,11 @@ async function validateAgentFile(filePath, errors) {
 
 async function main() {
   const errors = [];
+  for (const filePath of REQUIRED_SHARED_OVERRIDE_FILES) {
+    if (!(await pathExists(filePath))) {
+      error(errors, filePath, "required shared routing source is missing");
+    }
+  }
   const workflowFiles = await listMarkdownFiles(SHARED_WORKFLOWS_DIR);
   const agentFiles = await listMarkdownFiles(SHARED_AGENTS_DIR);
   const validAgents = new Set(agentFiles.map((fileName) => path.basename(fileName, ".md")));

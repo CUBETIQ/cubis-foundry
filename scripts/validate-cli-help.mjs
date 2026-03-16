@@ -44,6 +44,7 @@ assertIncludes(
 );
 assertIncludes(normalizedRootHelp, "init", "root help");
 assertIncludes(normalizedRootHelp, "workflows", "root help");
+assertIncludes(normalizedRootHelp, "build", "root help");
 
 const workflowsCommand = findCommand(program, "workflows");
 const workflowsHelp = workflowsCommand
@@ -103,6 +104,39 @@ assertIncludes(
   normalizedInitHelp,
   "--mcp-runtime <runtime>",
   "init help",
+);
+
+const buildCommand = findCommand(program, "build");
+const buildHelp = buildCommand
+  ? buildCommand.helpInformation().replace(/\r\n/g, "\n")
+  : "";
+const normalizedBuildHelp = normalizeWhitespace(buildHelp);
+assertIncludes(
+  normalizedBuildHelp,
+  "strict platform-native build helpers",
+  "build help",
+);
+const architectureCommand = buildCommand
+  ? findCommand(buildCommand, "architecture")
+  : null;
+const architectureHelp = architectureCommand
+  ? architectureCommand.helpInformation().replace(/\r\n/g, "\n")
+  : "";
+const normalizedArchitectureHelp = normalizeWhitespace(architectureHelp);
+assertIncludes(
+  normalizedArchitectureHelp,
+  "--platform <platform>",
+  "build architecture help",
+);
+assertIncludes(
+  normalizedArchitectureHelp,
+  "codex|claude|gemini|copilot",
+  "build architecture help",
+);
+assertIncludes(
+  normalizedArchitectureHelp,
+  "--research <mode>",
+  "build architecture help",
 );
 
 if (failures.length > 0) {

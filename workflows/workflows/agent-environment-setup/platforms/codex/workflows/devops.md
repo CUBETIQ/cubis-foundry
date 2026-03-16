@@ -75,4 +75,4 @@ DEVOPS_WORKFLOW_RESULT:
   follow_up_items: [<string>] | []
 ```
 
-> **Codex note:** This workflow runs inside a network-restricted sandbox. Specialists are reasoning postures defined in AGENTS.md, not spawned processes.
+> **Codex note:** Prefer native Codex delegation when the host exposes it. Otherwise follow AGENTS.md specialist postures inline while keeping the same routing and verification contract.

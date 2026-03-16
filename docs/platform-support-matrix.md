@@ -18,9 +18,9 @@
 | Artifact | Antigravity | Gemini CLI | Claude | Codex | Copilot |
 | --- | --- | --- | --- | --- | --- |
 | Agent files | 22 `.md` | none | 22 `.md` | 22 `.md` | 22 `.md` with sanitized frontmatter |
-| Workflow files | 18 `.md` | 18 `.md` | 18 `.md` | 18 `.md` | 18 `.md` |
-| Commands or prompts | 18 `.toml` | 18 `.toml` | none | none | 18 `.prompt.md` |
-| Skill mirrors | 69 skill dirs | 69 skill dirs | 69 skill dirs | 69 skill dirs | 69 skill dirs |
+| Workflow files | 20 `.md` | 20 `.md` | 20 `.md` | 20 `.md` | 20 `.md` |
+| Commands or prompts | 20 `.toml` | 20 `.toml` | none | none | 20 `.prompt.md` |
+| Skill mirrors | 70 skill dirs | 70 skill dirs | 70 skill dirs | 70 skill dirs | 70 skill dirs |
 | Hook templates | none | none | 3 template files | none | none |
 | Compatibility aliases | none | none | none | `$agent-*`, `$workflow-*` | none |
 

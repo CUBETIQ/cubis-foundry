@@ -58,4 +58,4 @@ Turn ambiguous requests into clear, testable feature definitions with prioritize
 - Priority ranking with reasoning.
 - Dependencies and risks identified.
 
-> **Codex note:** Specialists are internal reasoning postures, not spawned processes. Switch postures by adopting the specialist's guidelines inline.
+> **Codex note:** Prefer native Codex delegation when the host exposes it. If delegation is unavailable, switch specialist postures inline and preserve the same scope and verification contract.

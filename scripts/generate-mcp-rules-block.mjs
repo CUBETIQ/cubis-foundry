@@ -88,7 +88,13 @@ function buildMcpBlock(manifest) {
     "10. Escalate to research only when freshness matters, public comparison matters, or the user explicitly asks to research/verify.",
   );
   lines.push(
-    "11. Use upstream MCP servers such as `postman`, `stitch`, or `playwright` for real cloud/browser actions when available.",
+    "11. For non-trivial work, read `ENGINEERING_RULES.md` first and `TECH.md` next when they exist.",
+  );
+  lines.push(
+    "12. If those docs declare architecture or design-system rules, follow them unless the current spec or task explicitly changes them.",
+  );
+  lines.push(
+    "13. Use upstream MCP servers such as `postman`, `stitch`, or `playwright` for real cloud/browser actions when available.",
   );
   lines.push("");
   lines.push(BLOCK_END);

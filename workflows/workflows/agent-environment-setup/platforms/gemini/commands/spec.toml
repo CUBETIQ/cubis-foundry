@@ -1,0 +1,19 @@
+description = "Create or refresh a Git-tracked spec pack for non-trivial work, including acceptance criteria, traceability, architecture impact, and next-route handoff."
+prompt = '''
+Follow the /spec workflow from .gemini/workflows/spec.md.
+
+Execution contract:
+1. Treat route selection as already resolved by this command; do not begin with skill discovery.
+2. Read `ENGINEERING_RULES.md` first and `TECH.md` next when they exist before non-trivial execution.
+Attached skills:
+- Load these exact skill IDs first: `spec-driven-delivery`, `sadd`, `system-design`, `architecture-doc`, `deep-research`, `api-design`, `database-design`, `tech-doc`.
+- Local skill file hints if installed: `.gemini/skills/spec-driven-delivery/SKILL.md`, `.gemini/skills/sadd/SKILL.md`, `.gemini/skills/system-design/SKILL.md`, `.gemini/skills/architecture-doc/SKILL.md`, `.gemini/skills/deep-research/SKILL.md`, `.gemini/skills/api-design/SKILL.md`, `.gemini/skills/database-design/SKILL.md`, `.gemini/skills/tech-doc/SKILL.md`.
+- Treat the skill bundle as already resolved for this workflow. Do not start with route discovery.
+3. Confirm the request fits the workflow's "When to use" section.
+4. Execute according to "Workflow steps" and apply "Context notes".
+5. Complete "Verification" checks and report concrete evidence.
+6. If freshness, public comparison, or explicit research needs appear, pause implementation and load `deep-research` or route to the researcher posture first.
+7. For outside evidence: repo first, official docs next, Reddit/community only as labeled secondary evidence.
+
+If command arguments are provided, treat them as additional user context.
+'''

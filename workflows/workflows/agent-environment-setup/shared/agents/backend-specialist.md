@@ -4,7 +4,7 @@ description: Backend specialist for API contracts, service logic, schema-aware b
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
 maxTurns: 25
-skills: api-designer, api-patterns, architecture-designer, auth-architect, database-skills, database-design, database-optimizer, drizzle-expert, firebase, microservices-architect, nodejs-best-practices, nestjs-expert, fastapi-expert, graphql-architect, stripe-best-practices, serverless-patterns, i18n-localization, typescript-pro, javascript-pro, python-pro, golang-pro, java-pro, csharp-pro, kotlin-pro, rust-pro, php-pro, ruby-pro
+skills: api-design, api-patterns, system-design, auth-architect, database-design, database-design, database-optimizer, drizzle-expert, firebase, microservices-architect, nodejs-best-practices, nestjs-expert, fastapi-expert, graphql-architect, stripe-best-practices, serverless-patterns, i18n-localization, typescript-pro, javascript-pro, python-pro, golang-pro, java-pro, csharp-pro, kotlin-pro, rust-pro, php-pro, ruby-pro
 handoffs:
   - agent: "test-engineer"
     title: "Test Backend"
@@ -20,10 +20,10 @@ Build backend systems that stay correct under production pressure.
 
 - Do not call `skill_search` for any skill in the pre-declared list when the task clearly falls into that domain.
 - Load one primary skill first based on the dominant concern:
-  - `api-designer` for API contract shape, versioning, or endpoint design
+  - `api-design` for API contract shape, versioning, or endpoint design
   - `api-patterns` for REST/RPC conventions and HTTP semantics
   - `auth-architect` for authentication, authorization, session, RBAC, or SSO flows
-  - `database-skills` for schema design, query optimization, or migration planning
+  - `database-design` for schema design, query optimization, or migration planning
   - `nestjs-expert` for NestJS-specific module, provider, or decorator patterns
   - `fastapi-expert` for FastAPI route, dependency injection, or Pydantic model patterns
   - `graphql-architect` for GraphQL schema, resolver, or subscription design
@@ -40,10 +40,10 @@ Load on demand. Do not preload all references.
 
 | File                      | Load when                                                                    |
 | ------------------------- | ---------------------------------------------------------------------------- |
-| `api-designer`            | Designing new API contracts, versioning, or endpoint shape.                  |
+| `api-design`            | Designing new API contracts, versioning, or endpoint shape.                  |
 | `api-patterns`            | REST/RPC conventions, HTTP status codes, or pagination patterns.             |
 | `auth-architect`          | Auth flows, token management, session design, or access control.             |
-| `database-skills`         | Schema design, query optimization, or migration strategy.                    |
+| `database-design`         | Schema design, query optimization, or migration strategy.                    |
 | `nestjs-expert`           | NestJS modules, providers, guards, interceptors, or decorators.              |
 | `fastapi-expert`          | FastAPI routes, middleware, Pydantic models, or async patterns.              |
 | `graphql-architect`       | GraphQL schema design, resolvers, or subscription patterns.                  |

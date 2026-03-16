@@ -2,10 +2,10 @@
   "$schema": "cubis-foundry-skill-catalog-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
   "summary": {
-    "totalEntries": 69,
-    "totalSkills": 69,
+    "totalEntries": 70,
+    "totalSkills": 70,
     "totalSubskills": 0,
-    "canonicalSkills": 69,
+    "canonicalSkills": 70,
     "compatibilityAliases": 0,
     "layers": [
       "core-operating",
@@ -1749,6 +1749,40 @@
       ]
     },
     {
+      "id": "spec-driven-delivery",
+      "package_id": "spec-driven-delivery",
+      "catalog_id": "spec-driven-delivery",
+      "kind": "skill",
+      "path": "workflows/skills/spec-driven-delivery/SKILL.md",
+      "name": "spec-driven-delivery",
+      "description": "Use when turning a non-trivial request into a Git-tracked spec pack, maintaining traceability during execution, and updating specs before code when requirements or architecture change.",
+      "canonical": true,
+      "canonical_id": "spec-driven-delivery",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "delivery",
+        "driven",
+        "spec",
+        "spec driven delivery",
+        "spec-driven-delivery",
+        "workflow-specialists"
+      ],
+      "triggers": [
+        "spec-driven-delivery",
+        "spec driven delivery",
+        "spec",
+        "driven",
+        "delivery",
+        "workflow-specialists"
+      ]
+    },
+    {
       "id": "spring-boot",
       "package_id": "spring-boot",
       "catalog_id": "spring-boot",
@@ -2173,5 +2207,5 @@
       ]
     }
   ],
-  "contentHash": "b27e549d17f95efb"
+  "contentHash": "b8ed402a6bbe2ed2"
 }

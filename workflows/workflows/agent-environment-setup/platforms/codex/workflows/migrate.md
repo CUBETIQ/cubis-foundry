@@ -28,6 +28,7 @@ Use this for technology migrations, framework upgrades, dependency updates, or m
 
 - This workflow file, active platform rules, and selected agents or skills guide execution.
 - Attach the migration target, current versions, breaking change lists, and impact assessment.
+- Read `ENGINEERING_RULES.md` and `TECH.md` first because migrations often change accepted patterns and current-state architecture at the same time.
 
 ## Skill Routing
 
@@ -42,7 +43,8 @@ Use this for technology migrations, framework upgrades, dependency updates, or m
 3. Plan incremental migration steps with rollback points.
 4. Execute migration one step at a time with verification.
 5. Update tests and documentation for new patterns.
-6. Verify full system behavior after migration complete.
+6. Set `doc_impact` when the migration changes architecture, deployment shape, boundaries, or design-system rules.
+7. Verify full system behavior after migration complete.
 
 ## Verification
 
@@ -69,7 +71,8 @@ MIGRATE_WORKFLOW_RESULT:
   verification:
     tests_passed: true | false
     performance_impact: <string>
+  doc_impact: none | tech | rules | both
   follow_up_items: [<string>] | []
 ```
 
-> **Codex note:** This workflow runs inside a network-restricted sandbox. Specialists are reasoning postures defined in AGENTS.md, not spawned processes.
+> **Codex note:** Prefer native Codex delegation when the host exposes it. Otherwise follow AGENTS.md specialist postures inline while keeping the same routing and verification contract.

@@ -25,7 +25,7 @@ Use this for security audits, vulnerability assessments, threat modeling, or sec
 ## Skill Routing
 
 - Primary skills: `security-engineer`, `auth-architect`
-- Supporting skills (optional): `vulnerability-scanner`, `static-analysis`, `api-designer`, `graphql-architect`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `rust-pro`
+- Supporting skills (optional): `vulnerability-scanner`, `static-analysis`, `api-design`, `graphql-architect`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `rust-pro`
 - Start with `security-engineer` for OWASP methodology and threat modeling. Add `auth-architect` for authentication/authorization review. Add `vulnerability-scanner` for dependency scanning and CVE triage.
 
 ## Workflow steps
@@ -51,7 +51,7 @@ SECURITY_WORKFLOW_RESULT:
   primary_agent: security-auditor
   supporting_agents: [penetration-tester?, backend-specialist?, frontend-specialist?, validator?]
   primary_skills: [security-engineer, auth-architect]
-  supporting_skills: [vulnerability-scanner?, static-analysis?, api-designer?]
+  supporting_skills: [vulnerability-scanner?, static-analysis?, api-design?]
   threat_model:
     assets: [<string>]
     threats: [<string>]

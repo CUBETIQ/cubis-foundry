@@ -236,6 +236,35 @@ function parseWorkflowSkillRouting(body) {
   };
 }
 
+const PLATFORM_SKILL_HINT_ROOTS = {
+  antigravity: ".agent/skills",
+  codex: ".agents/skills",
+  copilot: ".github/skills",
+  claude: ".claude/skills",
+  gemini: ".gemini/skills",
+};
+
+function buildAttachedSkillsSection(workflow, platform) {
+  const { primarySkills, supportingSkills } = parseWorkflowSkillRouting(
+    workflow.body,
+  );
+  const attachedSkills = unique([...primarySkills, ...supportingSkills]);
+  if (attachedSkills.length === 0) return "";
+
+  const skillRoot = PLATFORM_SKILL_HINT_ROOTS[platform];
+  const pathHints = attachedSkills
+    .slice(0, 8)
+    .map((skillId) => `${skillRoot}/${skillId}/SKILL.md`);
+
+  return [
+    "Attached skills:",
+    `- Load these exact skill IDs first: ${attachedSkills.map((skillId) => `\`${skillId}\``).join(", ")}.`,
+    `- Local skill file hints if installed: ${pathHints.map((hint) => `\`${hint}\``).join(", ")}.`,
+    "- Treat the skill bundle as already resolved for this workflow. Do not start with route discovery.",
+    "",
+  ].join("\n");
+}
+
 function parseAgentTriggers(agent) {
   const direct = getArray(agent.frontmatter, "triggers");
   if (direct.length > 0) return direct;
@@ -564,17 +593,21 @@ function escapeTomlBasicString(value) {
     .replace(/\n/g, "\\n");
 }
 
-function buildAntigravityCommandToml({ id, command, description }) {
+function buildAntigravityCommandToml(workflow) {
+  const { id, command, description } = workflow;
+  const attachedSkills = buildAttachedSkillsSection(workflow, "antigravity");
   const prompt = [
     `Follow the ${command} workflow from .agent/workflows/${id}.md.`,
     "",
     "Execution contract:",
     "1. Treat route selection as already resolved by this command; do not begin with skill discovery.",
-    '2. Confirm the request fits the workflow\'s "When to use" section.',
-    '3. Execute according to "Workflow steps" and apply "Context notes".',
-    '4. Complete "Verification" checks and report concrete evidence.',
-    "5. If freshness, public comparison, or explicit research needs appear, pause implementation and load `deep-research` or hand off to `@researcher` first.",
-    "6. For outside evidence: repo first, official docs next, Reddit/community only as labeled secondary evidence.",
+    "2. Read `ENGINEERING_RULES.md` first and `TECH.md` next when they exist before non-trivial execution.",
+    attachedSkills.trimEnd(),
+    '3. Confirm the request fits the workflow\'s "When to use" section.',
+    '4. Execute according to "Workflow steps" and apply "Context notes".',
+    '5. Complete "Verification" checks and report concrete evidence.',
+    "6. If freshness, public comparison, or explicit research needs appear, pause implementation and load `deep-research` or hand off to `@researcher` first.",
+    "7. For outside evidence: repo first, official docs next, Reddit/community only as labeled secondary evidence.",
     "",
     "If command arguments are provided, treat them as additional user context.",
   ].join("\n");
@@ -588,17 +621,21 @@ function buildAntigravityCommandToml({ id, command, description }) {
   ].join("\n");
 }
 
-function buildGeminiCommandToml({ id, command, description }) {
+function buildGeminiCommandToml(workflow) {
+  const { id, command, description } = workflow;
+  const attachedSkills = buildAttachedSkillsSection(workflow, "gemini");
   const prompt = [
     `Follow the ${command} workflow from .gemini/workflows/${id}.md.`,
     "",
     "Execution contract:",
     "1. Treat route selection as already resolved by this command; do not begin with skill discovery.",
-    '2. Confirm the request fits the workflow\'s "When to use" section.',
-    '3. Execute according to "Workflow steps" and apply "Context notes".',
-    '4. Complete "Verification" checks and report concrete evidence.',
-    "5. If freshness, public comparison, or explicit research needs appear, pause implementation and load `deep-research` or route to the researcher posture first.",
-    "6. For outside evidence: repo first, official docs next, Reddit/community only as labeled secondary evidence.",
+    "2. Read `ENGINEERING_RULES.md` first and `TECH.md` next when they exist before non-trivial execution.",
+    attachedSkills.trimEnd(),
+    '3. Confirm the request fits the workflow\'s "When to use" section.',
+    '4. Execute according to "Workflow steps" and apply "Context notes".',
+    '5. Complete "Verification" checks and report concrete evidence.',
+    "6. If freshness, public comparison, or explicit research needs appear, pause implementation and load `deep-research` or route to the researcher posture first.",
+    "7. For outside evidence: repo first, official docs next, Reddit/community only as labeled secondary evidence.",
     "",
     "If command arguments are provided, treat them as additional user context.",
   ].join("\n");
@@ -612,7 +649,9 @@ function buildGeminiCommandToml({ id, command, description }) {
   ].join("\n");
 }
 
-function buildCopilotPromptMarkdown({ id, command, description }) {
+function buildCopilotPromptMarkdown(workflow) {
+  const { id, command, description } = workflow;
+  const attachedSkills = buildAttachedSkillsSection(workflow, "copilot");
   return [
     `# Workflow Prompt: ${command}`,
     "",
@@ -623,10 +662,12 @@ function buildCopilotPromptMarkdown({ id, command, description }) {
     "",
     "Execution contract:",
     "1. Treat route selection as already resolved by this prompt; do not begin with skill discovery.",
-    "2. Apply workflow sections in order: When to use, Workflow steps, Context notes, Verification.",
-    "3. Route to the workflow's primary specialist and only add supporting specialists when needed.",
-    "4. If freshness or public comparison matters, run `deep-research` before implementation and use official docs as primary evidence.",
-    "5. Return actions taken, verification evidence, and any gaps.",
+    "2. Read `ENGINEERING_RULES.md` first and `TECH.md` next when they exist before non-trivial execution.",
+    attachedSkills.trimEnd(),
+    "3. Apply workflow sections in order: When to use, Workflow steps, Context notes, Verification.",
+    "4. Route to the workflow's primary specialist and only add supporting specialists when needed.",
+    "5. If freshness or public comparison matters, run `deep-research` before implementation and use official docs as primary evidence.",
+    "6. Return actions taken, verification evidence, and any gaps.",
     "",
   ].join("\n");
 }
@@ -874,7 +915,7 @@ function buildCodexAgentMarkdown(sharedMarkdown) {
   );
 
   const codexNote =
-    "\n\n> **Codex note:** Specialists are internal reasoning postures, not spawned processes. Switch postures by adopting the specialist's guidelines inline.\n";
+    "\n\n> **Codex note:** Prefer native Codex delegation when the host exposes it. If delegation is unavailable, switch specialist postures inline and preserve the same scope and verification contract.\n";
 
   return `---\n${parsed.raw}\n---\n${body.trimEnd()}${codexNote}`;
 }
@@ -903,7 +944,7 @@ function buildCodexWorkflowMarkdown(sharedMarkdown) {
   );
 
   const codexNote =
-    "\n\n> **Codex note:** This workflow runs inside a network-restricted sandbox. Specialists are reasoning postures defined in AGENTS.md, not spawned processes.\n";
+    "\n\n> **Codex note:** Prefer native Codex delegation when the host exposes it. Otherwise follow AGENTS.md specialist postures inline while keeping the same routing and verification contract.\n";
 
   return `---\n${parsed.raw}\n---\n${body.trimEnd()}${codexNote}`;
 }
