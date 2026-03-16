@@ -39,15 +39,18 @@ Use this when the task is to declare, refresh, or validate the project backbone 
 2. Read concrete repo anchors before drafting: root README/manifests, main entrypoints, the primary app roots, existing `docs/specs/`, and representative source folders for each major surface.
 3. Read `docs/foundation/PRODUCT.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order if they exist.
 4. Update the managed foundation sections in `docs/foundation/PRODUCT.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md`.
-5. Add or refresh Mermaid diagrams and flow narratives inside `docs/foundation/ARCHITECTURE.md` or `docs/foundation/TECH.md` when they clarify system behavior.
-6. Seed or refresh `docs/foundation/adr/README.md` and `docs/foundation/adr/0000-template.md`, and keep ADR linkage explicit when decisions should be durable.
-7. Record whether the update was driven by a broader spec and whether future implementation must follow newly declared structure or product constraints.
+5. Make `docs/foundation/ARCHITECTURE.md` explicitly state the architecture type in use and include a folder-structure guide for the important apps/packages/directories.
+6. Add or refresh Mermaid diagrams and flow narratives inside `docs/foundation/ARCHITECTURE.md` or `docs/foundation/TECH.md` when they clarify system behavior.
+7. Seed or refresh `docs/foundation/adr/README.md` and `docs/foundation/adr/0000-template.md`, and keep ADR linkage explicit when decisions should be durable.
+8. Record whether the update was driven by a broader spec and whether future implementation must follow newly declared structure or product constraints.
 
 ## Context notes
 
 - This workflow is route-fixed and skill-fixed: do not start with `route_resolve` or `skill_search`.
 - `docs/foundation/PRODUCT.md` captures intent, `docs/foundation/ARCHITECTURE.md` captures accepted structure, and `docs/foundation/TECH.md` is the developer-facing technical map. Keep them aligned but not redundant.
 - Favor a lean arc42/C4 style: clear scope, boundaries, building blocks, runtime flows, deployment/testing notes, and only diagrams that add real value.
+- `docs/foundation/ARCHITECTURE.md` should guide future contributors, not just describe the system. Be explicit about architecture style and folder ownership.
+- Prefer stable section headings over ad hoc prose so future refreshes stay clean and easy to diff.
 - Preserve manual content outside the managed foundation sections.
 - Mark non-applicable sections explicitly instead of silently omitting them.
 

@@ -104,6 +104,44 @@ if (name === 'gemini' && process.env.CBX_STUB_GEMINI_FAIL === '1') {
   process.stderr.write("Permission 'cloudaicompanion.companions.generateChat' denied on resource '//cloudaicompanion.googleapis.com/projects/test/locations/global'.\\n");
   process.exit(1);
 }
+const foundationDir = path.join(process.cwd(), 'docs', 'foundation');
+const fileMap = {
+  product: path.join(foundationDir, 'PRODUCT.md'),
+  architecture: path.join(foundationDir, 'ARCHITECTURE.md'),
+  tech: path.join(foundationDir, 'TECH.md')
+};
+const richBlocks = {
+  product: [
+    '<!-- cbx:product:foundation:start version=1 profile=stub -->',
+    '## Product Scope',
+    'Stub product content grounded in repo evidence.',
+    '<!-- cbx:product:foundation:end -->',
+    ''
+  ].join('\\n'),
+  architecture: [
+    '<!-- cbx:architecture:doc:start version=1 profile=stub -->',
+    '## Architecture Type',
+    '- Feature-first modular app with a modular monolith backend.',
+    '',
+    '## Folder Structure Guide',
+    '- apps/ owns runnable surfaces.',
+    '- packages/ owns shared code.',
+    '<!-- cbx:architecture:doc:end -->',
+    ''
+  ].join('\\n'),
+  tech: [
+    '<!-- cbx:architecture:tech:start version=1 snapshot=stub -->',
+    '## Stack Snapshot',
+    '- Stub tech content.',
+    '<!-- cbx:architecture:tech:end -->',
+    ''
+  ].join('\\n')
+};
+for (const [nameKey, block] of Object.entries(richBlocks)) {
+  const filePath = fileMap[nameKey];
+  const existing = fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : '';
+  fs.writeFileSync(filePath, existing + '\\n' + block, 'utf8');
+}
 process.stdout.write(JSON.stringify({
   files_written: ['docs/foundation/PRODUCT.md', 'docs/foundation/ARCHITECTURE.md', 'docs/foundation/TECH.md', 'docs/foundation/adr/README.md', 'docs/foundation/adr/0000-template.md'],
   research_used: prompt.includes('external research evidence'),
@@ -195,6 +233,26 @@ function main() {
     assert(architectureDoc.includes("cbx:architecture:doc:start"), "architecture doc missing managed block");
     assert(techDoc.includes("cbx:architecture:tech:start"), "tech doc missing architecture block");
     assert(
+      (productDoc.match(/cbx:product:foundation:start/g) || []).length === 1,
+      "product doc should contain one managed block after normalization",
+    );
+    assert(
+      (architectureDoc.match(/cbx:architecture:doc:start/g) || []).length === 1,
+      "architecture doc should contain one managed block after normalization",
+    );
+    assert(
+      (techDoc.match(/cbx:architecture:tech:start/g) || []).length === 1,
+      "tech doc should contain one managed block after normalization",
+    );
+    assert(
+      architectureDoc.includes("## Architecture Type"),
+      "architecture doc should include explicit architecture type guidance",
+    );
+    assert(
+      architectureDoc.includes("## Folder Structure Guide"),
+      "architecture doc should include folder structure guidance",
+    );
+    assert(
       existsSync(path.join(workspace, "docs", "foundation", "adr", "README.md")),
       "adr README missing",
     );
@@ -249,10 +307,15 @@ function main() {
     assert(
       logLines[0].prompt.includes("docs/foundation/PRODUCT.md") &&
         logLines[0].prompt.includes("docs/foundation/ARCHITECTURE.md") &&
-        logLines[0].prompt.includes("docs/foundation/TECH.md") &&
+      logLines[0].prompt.includes("docs/foundation/TECH.md") &&
         logLines[0].prompt.includes("Inspect the repository first") &&
         logLines[0].prompt.includes("Inspection anchors:") &&
         logLines[0].prompt.includes("Every major claim should be grounded in repository evidence") &&
+        logLines[0].prompt.includes("explicit architecture classification") &&
+        logLines[0].prompt.includes("folder-structure guide") &&
+        logLines[0].prompt.includes("Use exact required headings in docs/foundation/PRODUCT.md") &&
+        logLines[0].prompt.includes("## Repository Structure Guide") &&
+        logLines[0].prompt.includes("## Change Hotspots") &&
         logLines[0].prompt.includes("AI-authored"),
       "stub prompt missing scan-first foundation instructions",
     );

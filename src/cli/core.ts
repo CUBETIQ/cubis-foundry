@@ -13199,19 +13199,24 @@ function buildArchitecturePrompt({
     `4. Then read ${productPath}, ${architecturePath}, and ${techPath} in that order when they exist so you can preserve useful manual context and update existing managed sections cleanly.`,
     `5. Replace or update only the content between the existing managed markers in ${productPath}, ${architecturePath}, and ${techPath}. Do not append a second marker block.`,
     `6. In ${productPath}, write a concrete product foundation: product purpose, primary users/operators, main journeys, business capabilities, operational constraints, and what future contributors must preserve.`,
-    `7. In ${architecturePath}, write a lean but detailed architecture backbone in a pragmatic arc42/C4 style: system purpose and constraints, bounded contexts, major building blocks, dependency rules, data and integration boundaries, runtime flows, deployment/operability notes, testing/debugging strategy, and only the diagram levels that add real value.`,
-    `8. In ${techPath}, write the developer-facing technical map: stack, repo layout, key commands, entrypoints, data stores, external services, environment/config surfaces, MCP/tooling footprint, and change hotspots future agents should inspect before editing code.`,
-    "9. Every major claim should be grounded in repository evidence. Mention concrete repo paths in the docs when a structural claim would otherwise be ambiguous.",
-    "10. Avoid placeholder filler, generic checklists, and duplicated content across files. Each doc should have a clear job.",
-    "11. Do not create ROADMAP.md, ENGINEERING_RULES.md, or other extra docs unless the prompt explicitly asks for them.",
+    `7. In ${architecturePath}, write a lean but detailed architecture backbone in a pragmatic arc42/C4 style: system purpose and constraints, explicit architecture classification, bounded contexts, major building blocks, dependency rules, data and integration boundaries, runtime flows, deployment/operability notes, testing/debugging strategy, and only the diagram levels that add real value.`,
+    `8. ${architecturePath} must include a dedicated folder-structure guide that lists the important apps/packages/directories, what each owns, and how contributors should treat those boundaries when editing code.`,
+    `9. In ${techPath}, write the developer-facing technical map: stack, repo layout, key commands, entrypoints, data stores, external services, environment/config surfaces, MCP/tooling footprint, and change hotspots future agents should inspect before editing code.`,
+    `10. ${techPath} should complement ${architecturePath}; do not repeat the same structure prose unless it helps a developer act faster.`,
+    `11. Use exact required headings in ${productPath}: \`## Product Scope\`, \`## Product Purpose\`, \`## Primary Users And Operators\`, \`## Main Journeys\`, \`## Business Capabilities That Matter\`, \`## Operational Constraints\`, \`## Preservation Rules For Future Contributors\`.`,
+    `12. Use exact required headings in ${architecturePath}: \`## Architecture Type\`, \`## System Purpose\`, \`## Constraints And Architectural Drivers\`, \`## Repository Structure Guide\`, \`## Bounded Contexts\`, \`## Major Building Blocks\`, \`## Dependency Rules\`, \`## Data Boundaries\`, \`## Integration Boundaries\`, \`## Runtime Flows\`, \`## Deployment And Operability\`, \`## Testing And Debugging Strategy\`, \`## Architectural Guidance\`.`,
+    `13. Use exact required headings in ${techPath}: \`## Stack Snapshot\`, \`## Repository Layout\`, \`## Entrypoints\`, \`## Key Commands\`, \`## Runtime Data Stores\`, \`## External Services And Integration Surfaces\`, \`## Environment And Config Surfaces\`, \`## Generated Artifacts To Respect\`, \`## Change Hotspots\`, \`## Practical Editing Notes\`.`,
+    "14. Every major claim should be grounded in repository evidence. Mention concrete repo paths in the docs when a structural claim would otherwise be ambiguous.",
+    "15. Avoid placeholder filler, generic checklists, and duplicated content across files. Each doc should have a clear job.",
+    "16. Do not create ROADMAP.md, ENGINEERING_RULES.md, or other extra docs unless the prompt explicitly asks for them.",
     researchMode === "never"
-      ? "12. Stay repo-only. Do not use outside research."
-      : "12. Use repo evidence first. Use official docs when needed. Treat Reddit or community sources only as labeled secondary evidence.",
+      ? "17. Stay repo-only. Do not use outside research."
+      : "17. Use repo evidence first. Use official docs when needed. Treat Reddit or community sources only as labeled secondary evidence.",
     researchMode === "always"
-      ? `13. Include an external research evidence subsection in ${techPath} with clearly labeled primary and secondary evidence.`
-      : "13. Include external research notes only if they materially informed the architecture update.",
-    `14. If the project clearly follows Clean Architecture, feature-first modules, DDD, modular monolith, or another stable structure, make that explicit in ${architecturePath} with evidence from the repo.`,
-    `15. Ensure ${adrReadmePath} and ${adrTemplatePath} exist as ADR entrypoints, but keep them lean.`,
+      ? `18. Include an external research evidence subsection in ${techPath} with clearly labeled primary and secondary evidence.`
+      : "18. Include external research notes only if they materially informed the architecture update.",
+    `19. If the project clearly follows Clean Architecture, feature-first modules, DDD, modular monolith, or another stable structure, make that explicit in ${architecturePath} with evidence from the repo.`,
+    `20. Ensure ${adrReadmePath} and ${adrTemplatePath} exist as ADR entrypoints, but keep them lean.`,
     "",
     "Return one JSON object on the last line with this shape:",
     `{"files_written":["${productPath}","${architecturePath}","${techPath}","${adrReadmePath}","${adrTemplatePath}"],"research_used":false,"gaps":[],"next_actions":[]}`,
@@ -13476,6 +13481,85 @@ async function captureFileContents(filePaths) {
   return snapshot;
 }
 
+function collectTaggedBlocks(content, startPattern, endPattern) {
+  const blocks = [];
+  let cursor = 0;
+  const startMatcher = new RegExp(
+    startPattern.source,
+    startPattern.flags.replace(/g/g, ""),
+  );
+  const endMatcher = new RegExp(
+    endPattern.source,
+    endPattern.flags.replace(/g/g, ""),
+  );
+  while (cursor < content.length) {
+    const remaining = content.slice(cursor);
+    const startMatch = remaining.match(startMatcher);
+    if (!startMatch || startMatch.index == null) break;
+    const startIndex = cursor + startMatch.index;
+    const afterStart = content.slice(startIndex + startMatch[0].length);
+    const endMatch = afterStart.match(endMatcher);
+    if (!endMatch || endMatch.index == null) break;
+    const endIndex =
+      startIndex + startMatch[0].length + endMatch.index + endMatch[0].length;
+    const block = content.slice(startIndex, endIndex);
+    const inner = content
+      .slice(startIndex + startMatch[0].length, endIndex - endMatch[0].length)
+      .trim();
+    blocks.push({
+      startIndex,
+      endIndex,
+      block,
+      score: inner.length,
+    });
+    cursor = endIndex;
+  }
+  return blocks;
+}
+
+async function collapseDuplicateTaggedBlocks({
+  targetPath,
+  startPattern,
+  endPattern,
+}) {
+  if (!(await pathExists(targetPath))) return { changed: false };
+
+  const content = await readFile(targetPath, "utf8");
+  const blocks = collectTaggedBlocks(content, startPattern, endPattern);
+  if (blocks.length <= 1) return { changed: false };
+
+  const bestBlock = [...blocks].sort((a, b) => b.score - a.score)[0];
+  const first = blocks[0];
+  const last = blocks[blocks.length - 1];
+  const normalized =
+    content.slice(0, first.startIndex) +
+    bestBlock.block +
+    content.slice(last.endIndex);
+
+  if (normalized === content) return { changed: false };
+
+  await writeFile(targetPath, normalized, "utf8");
+  return { changed: true };
+}
+
+async function normalizeArchitectureBuildOutputs(scaffold) {
+  await collapseDuplicateTaggedBlocks({
+    targetPath: scaffold.productPath,
+    startPattern: PRODUCT_FOUNDATION_BLOCK_START_RE,
+    endPattern: PRODUCT_FOUNDATION_BLOCK_END_RE,
+  });
+  await collapseDuplicateTaggedBlocks({
+    targetPath: scaffold.architectureDocPath,
+    startPattern: ARCHITECTURE_DOC_BLOCK_START_RE,
+    endPattern: ARCHITECTURE_DOC_BLOCK_END_RE,
+  });
+  await collapseDuplicateTaggedBlocks({
+    targetPath: scaffold.techMdPath,
+    startPattern: TECH_ARCHITECTURE_BLOCK_START_RE,
+    endPattern: TECH_ARCHITECTURE_BLOCK_END_RE,
+  });
+}
+
 async function readArchitectureDriftStatus(workspaceRoot, snapshot) {
   const productPath = path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "PRODUCT.md");
   const architecturePath = path.join(
@@ -13700,6 +13784,8 @@ async function runBuildArchitecture(options) {
     if (!execution.ok) {
       throw new Error(explainArchitectureBuildFailure(platform, execution));
     }
+
+    await normalizeArchitectureBuildOutputs(scaffold);
 
     const filesAfter = await captureFileContents(managedFilePaths);
     const changedFiles = managedFilePaths
