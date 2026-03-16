@@ -5,6 +5,7 @@
 - Workflows: `.claude/workflows`
 - Agents: `.claude/agents`
 - Skills: `.claude/skills`
+- Hook templates: `.claude/hooks`
 - Rules file: `CLAUDE.md`
 - Scoped rules: `.claude/rules/*.md` (with `paths:` frontmatter)
 
@@ -26,4 +27,5 @@
 - Scoped rules in `.claude/rules/*.md` use `paths:` frontmatter for targeted file-pattern matching.
 - Global rules live in `~/.claude/CLAUDE.md` and apply to all projects.
 - Skills with `context: fork` spawn as isolated subagents for research-heavy or exploratory tasks.
+- Optional hook templates in `.claude/hooks/` can reinforce explicit-route honoring and research escalation at `UserPromptSubmit`.
 - Use `$ARGUMENTS` in skill content for dynamic parameterization from user queries.

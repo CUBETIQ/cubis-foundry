@@ -2,7 +2,7 @@
   "$schema": "cubis-foundry-skill-audit-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
   "summary": {
-    "keep": 68,
+    "keep": 69,
     "review": 0,
     "alias-only": 0
   },
@@ -59,6 +59,15 @@
       "layer": "databases",
       "category": "databases",
       "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "deep-research",
+      "canonical_id": "deep-research",
+      "status": "keep",
+      "layer": "core-operating",
+      "category": "core-operating",
+      "tier": "experimental",
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
@@ -620,5 +629,5 @@
       "reason": "Canonical skill remains active in the layered catalog."
     }
   ],
-  "contentHash": "43507f9496b367a5"
+  "contentHash": "101f661a3eeb90cd"
 }

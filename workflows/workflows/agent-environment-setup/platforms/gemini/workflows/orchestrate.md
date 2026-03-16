@@ -24,8 +24,8 @@ Use this when a task spans multiple domains (backend + frontend, security + infr
 ## Skill Routing
 
 - Primary skills: `system-design`, `api-design`
-- Supporting skills (optional): `database-design`, `architecture-doc`, `mcp-server-builder`, `tech-doc`, `prompt-engineering`, `skill-creator`
-- Start with `system-design` for system design coordination and `api-design` for integration contracts. Add supporting skills based on the coordination challenge.
+- Supporting skills (optional): `database-design`, `deep-research`, `mcp-server-builder`, `tech-doc`, `prompt-engineering`, `skill-creator`
+- Start with `system-design` for system design coordination and `api-design` for integration contracts. Add `deep-research` before implementation when the coordination challenge depends on fresh external facts or public comparison.
 
 ## Workflow steps
 

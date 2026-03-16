@@ -30,9 +30,9 @@ Use this when joining a new project, exploring an unfamiliar codebase, or prepar
 
 ## Skill Routing
 
-- Primary skills: `architecture-doc`, `system-design`
+- Primary skills: `deep-research`, `system-design`
 - Supporting skills (optional): `system-design`, `database-design`, `typescript-best-practices`, `javascript-best-practices`, `python-best-practices`
-- Start with `architecture-doc` for systematic exploration and `system-design` for architecture mapping. Add `system-design` for undocumented systems.
+- Start with `deep-research` for systematic exploration and `system-design` for architecture mapping. Add `system-design` for undocumented systems. Prefer repo evidence first; use external sources only when setup or dependency behavior cannot be confirmed locally.
 
 ## Workflow steps
 
@@ -55,7 +55,7 @@ Use this when joining a new project, exploring an unfamiliar codebase, or prepar
 ONBOARD_WORKFLOW_RESULT:
   primary_agent: researcher
   supporting_agents: [code-archaeologist?, backend-specialist?, frontend-specialist?]
-  primary_skills: [architecture-doc, system-design]
+  primary_skills: [deep-research, system-design]
   supporting_skills: [system-design?, database-design?]
   project_overview:
     purpose: <string>

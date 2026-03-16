@@ -1,12 +1,12 @@
 {
   "$schema": "cubis-foundry-mcp-manifest-v1",
-  "generatedAt": "2026-03-16T03:40:17.907Z",
-  "contentHash": "bd54ecb5e4757c46",
+  "generatedAt": "2026-03-16T06:24:25.564Z",
+  "contentHash": "d8be0915fea44ef1",
   "summary": {
-    "totalSkills": 68,
+    "totalSkills": 69,
     "totalCategories": 12,
-    "totalBytes": 468274,
-    "estimatedTokens": 117069
+    "totalBytes": 473404,
+    "estimatedTokens": 118351
   },
   "categories": [
     {
@@ -35,7 +35,7 @@
     },
     {
       "name": "general",
-      "skillCount": 41
+      "skillCount": 42
     },
     {
       "name": "mcp",
@@ -204,6 +204,31 @@
         "version": "3.0"
       },
       "fileBytes": 5691
+    },
+    {
+      "id": "deep-research",
+      "name": "deep-research",
+      "displayName": null,
+      "description": "Use when investigating latest vendor behavior, comparing tools or platforms, verifying claims beyond the repo, or gathering external evidence before implementation.",
+      "category": "general",
+      "keywords": [
+        "deep-research",
+        "deep research",
+        "deep",
+        "research"
+      ],
+      "triggers": [
+        "deep-research",
+        "deep research",
+        "deep",
+        "research"
+      ],
+      "path": "workflows/skills/deep-research/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 5130
     },
     {
       "id": "django-drf",

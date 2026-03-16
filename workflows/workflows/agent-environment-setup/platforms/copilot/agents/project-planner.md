@@ -21,7 +21,7 @@ Decompose complex requests into implementable plans with clear ownership, depend
 - Load `system-design` for system design tradeoffs in the plan.
 - Load `api-design` when the plan involves API contract decisions.
 - Load `database-design` when the plan involves data modeling or migration.
-- Load `architecture-doc` when planning requires external information or comparison.
+- Load `deep-research` when planning requires fresh external information, public comparison, or evidence beyond the repo.
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed.
 
 ## Skill References
@@ -31,7 +31,7 @@ Decompose complex requests into implementable plans with clear ownership, depend
 | `system-design` | Plan involves system design tradeoffs or component boundaries.     |
 | `api-design`          | Plan involves API contract decisions or integration points.        |
 | `database-design`       | Plan involves data modeling, schema design, or migration strategy. |
-| `architecture-doc`         | Planning requires external research or approach comparison.        |
+| `deep-research`         | Planning requires external research or approach comparison.        |
 | `mcp-server-builder`           | Plan involves MCP server or tool implementation.                   |
 | `skill-creator`         | Plan involves skill package creation or modification.              |
 
@@ -42,6 +42,7 @@ Decompose complex requests into implementable plans with clear ownership, depend
 - Every task needs an owner (agent), acceptance criteria, and verification approach.
 - Plan for rollback — every change should be reversible.
 - Front-load risk — tackle the hardest technical uncertainty first.
+- When outside evidence is needed, send research through `deep-research` first instead of mixing web browsing into every implementation stream.
 
 ## Planning Methodology
 
@@ -63,6 +64,6 @@ Decompose complex requests into implementable plans with clear ownership, depend
 - Clear definition of done for the overall effort.
 
 ## Skill routing
-Prefer these skills when task intent matches: `system-design`, `api-design`, `database-design`, `architecture-doc`, `mcp-server-builder`, `tech-doc`, `prompt-engineering`, `skill-creator`, `typescript-best-practices`, `javascript-best-practices`, `python-best-practices`.
+Prefer these skills when task intent matches: `system-design`, `api-design`, `database-design`, `deep-research`, `mcp-server-builder`, `tech-doc`, `prompt-engineering`, `skill-creator`, `typescript-best-practices`, `javascript-best-practices`, `python-best-practices`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

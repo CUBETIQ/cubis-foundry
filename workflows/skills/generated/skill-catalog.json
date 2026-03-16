@@ -2,10 +2,10 @@
   "$schema": "cubis-foundry-skill-catalog-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
   "summary": {
-    "totalEntries": 68,
-    "totalSkills": 68,
+    "totalEntries": 69,
+    "totalSkills": 69,
     "totalSubskills": 0,
-    "canonicalSkills": 68,
+    "canonicalSkills": 69,
     "compatibilityAliases": 0,
     "layers": [
       "core-operating",
@@ -218,6 +218,38 @@
         "database",
         "design",
         "databases"
+      ]
+    },
+    {
+      "id": "deep-research",
+      "package_id": "deep-research",
+      "catalog_id": "deep-research",
+      "kind": "skill",
+      "path": "workflows/skills/deep-research/SKILL.md",
+      "name": "deep-research",
+      "description": "Use when investigating latest vendor behavior, comparing tools or platforms, verifying claims beyond the repo, or gathering external evidence before implementation.",
+      "canonical": true,
+      "canonical_id": "deep-research",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "core-operating",
+      "layer": "core-operating",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "core-operating",
+        "deep",
+        "deep research",
+        "deep-research",
+        "research"
+      ],
+      "triggers": [
+        "deep-research",
+        "deep research",
+        "deep",
+        "research",
+        "core-operating"
       ]
     },
     {
@@ -2141,5 +2173,5 @@
       ]
     }
   ],
-  "contentHash": "e308bfb0084478a8"
+  "contentHash": "b27e549d17f95efb"
 }

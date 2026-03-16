@@ -174,17 +174,20 @@ const WORKFLOW_PROFILES = {
       workflowDirs: [".claude/workflows"],
       agentDirs: [".claude/agents"],
       skillDirs: [".claude/skills"],
+      hookDirs: [".claude/hooks"],
       ruleFilesByPriority: ["CLAUDE.md"],
     },
     global: {
       workflowDirs: ["~/.claude/workflows"],
       agentDirs: ["~/.claude/agents"],
       skillDirs: ["~/.claude/skills"],
+      hookDirs: ["~/.claude/hooks"],
       ruleFilesByPriority: ["~/.claude/CLAUDE.md"],
     },
     detectorPaths: [
       "CLAUDE.md",
       ".claude",
+      ".claude/hooks",
       ".claude/rules",
       ".claude/settings.json",
     ],
@@ -2783,6 +2786,7 @@ async function recordBundleInstallState({
     skills: artifacts.skills.map(toPosixPath),
     commands: (artifacts.commands || []).map(toPosixPath),
     prompts: (artifacts.prompts || []).map(toPosixPath),
+    hooks: (artifacts.hooks || []).map(toPosixPath),
   };
 
   await writeState(scope, state, cwd);
@@ -2815,6 +2819,7 @@ async function resolveProfilePaths(profileId, scope, cwd = process.cwd()) {
   const skillDirs = Array.isArray(cfg.skillDirs) ? cfg.skillDirs : [];
   const commandDirs = Array.isArray(cfg.commandDirs) ? cfg.commandDirs : [];
   const promptDirs = Array.isArray(cfg.promptDirs) ? cfg.promptDirs : [];
+  const hookDirs = Array.isArray(cfg.hookDirs) ? cfg.hookDirs : [];
 
   const resolvePreferredDir = async (dirs) => {
     if (dirs.length === 0) return null;
@@ -2831,6 +2836,7 @@ async function resolveProfilePaths(profileId, scope, cwd = process.cwd()) {
     skillsDir: await resolvePreferredDir(skillDirs),
     commandsDir: commandDirs[0] ? expandPath(commandDirs[0], cwd) : null,
     promptsDir: promptDirs[0] ? expandPath(promptDirs[0], cwd) : null,
+    hooksDir: hookDirs[0] ? expandPath(hookDirs[0], cwd) : null,
     ruleFilesByPriority: cfg.ruleFilesByPriority.map((filePath) =>
       expandPath(filePath, cwd),
     ),
@@ -2862,6 +2868,7 @@ function resolveProfilePathCandidates(profileId, scope, cwd = process.cwd()) {
     skillsDirs: expandUniquePaths(cfg.skillDirs, cwd),
     commandsDirs: expandUniquePaths(cfg.commandDirs, cwd),
     promptsDirs: expandUniquePaths(cfg.promptDirs, cwd),
+    hooksDirs: expandUniquePaths(cfg.hookDirs, cwd),
     ruleFilesByPriority: expandUniquePaths(cfg.ruleFilesByPriority, cwd),
   };
 }
@@ -2895,6 +2902,7 @@ async function resolveArtifactProfilePaths(
     agentsDir: workspacePaths.agentsDir,
     commandsDir: workspacePaths.commandsDir ?? scopedPaths.commandsDir,
     promptsDir: workspacePaths.promptsDir ?? scopedPaths.promptsDir,
+    hooksDir: scopedPaths.hooksDir,
   };
 }
 
@@ -6681,6 +6689,13 @@ async function installBundleArtifacts({
     ) {
       await mkdir(profilePaths.promptsDir, { recursive: true });
     }
+    if (
+      profilePaths.hooksDir &&
+      Array.isArray(platformSpec.hooks) &&
+      platformSpec.hooks.some((entry) => typeof entry?.file === "string")
+    ) {
+      await mkdir(profilePaths.hooksDir, { recursive: true });
+    }
   }
 
   const bundleRoot = path.join(agentAssetsRoot(), "workflows", bundleId);
@@ -6694,6 +6709,7 @@ async function installBundleArtifacts({
     skills: [],
     commands: [],
     prompts: [],
+    hooks: [],
   };
 
   // Bind useSymlinks into copyArtifact so every call site inherits it
@@ -6802,6 +6818,40 @@ async function installBundleArtifacts({
       dryRun,
     });
     artifacts.prompts.push(destination);
+    if (result.action === "skipped" || result.action === "would-skip")
+      skipped.push(destination);
+    else installed.push(destination);
+  }
+  const hookFiles = Array.isArray(platformSpec.hooks)
+    ? platformSpec.hooks
+        .map((entry) =>
+          typeof entry === "string"
+            ? entry
+            : typeof entry?.file === "string"
+              ? entry.file
+              : null,
+        )
+        .filter(Boolean)
+    : [];
+  for (const hookFile of hookFiles) {
+    if (!profilePaths.hooksDir) continue;
+    const source = path.join(platformRoot, "hooks", hookFile);
+    const destination = path.join(
+      profilePaths.hooksDir,
+      path.basename(hookFile),
+    );
+
+    if (!(await pathExists(source))) {
+      throw new Error(`Missing hook source file: ${source}`);
+    }
+
+    const result = await copyArt({
+      source,
+      destination,
+      overwrite,
+      dryRun,
+    });
+    artifacts.hooks.push(destination);
     if (result.action === "skipped" || result.action === "would-skip")
       skipped.push(destination);
     else installed.push(destination);
@@ -7099,6 +7149,22 @@ async function removeBundleArtifacts({
     const destination = path.join(
       profilePaths.promptsDir,
       path.basename(promptFile),
+    );
+    if (await safeRemove(destination, dryRun)) removed.push(destination);
+  }
+
+  for (const hookEntry of platformSpec.hooks || []) {
+    if (!profilePaths.hooksDir) continue;
+    const hookFile =
+      typeof hookEntry === "string"
+        ? hookEntry
+        : typeof hookEntry?.file === "string"
+          ? hookEntry.file
+          : null;
+    if (!hookFile) continue;
+    const destination = path.join(
+      profilePaths.hooksDir,
+      path.basename(hookFile),
     );
     if (await safeRemove(destination, dryRun)) removed.push(destination);
   }

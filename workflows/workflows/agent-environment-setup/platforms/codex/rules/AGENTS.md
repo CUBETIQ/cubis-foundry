@@ -43,7 +43,7 @@ Execute this tree top-to-bottom. Stop at the **first match**. Never skip levels.
 ├─ [TRIVIAL] Single-step, obvious, reversible?
 │   → Execute directly. No routing. Stop.
 │
-├─ [EXPLICIT] User named a workflow or @specialist?
+├─ [EXPLICIT] User named a workflow, @specialist, or exact skill?
 │   → Honor that route exactly. Stop.
 │
 ├─ [SINGLE-DOMAIN] Multi-step but contained in one specialty?
@@ -63,6 +63,7 @@ Execute this tree top-to-bottom. Stop at the **first match**. Never skip levels.
 **Hard rules:**
 
 - Never pre-load skills before route resolution.
+- If the user names an exact skill ID, run `skill_validate` on that ID before `route_resolve`.
 - Never invoke a specialist posture when direct execution suffices.
 - Never chain more than one `skill_search` per request.
 - Codex compatibility aliases (`$workflow-*`, `$agent-*`) are accepted as hints only — not primary route surfaces.
@@ -367,6 +368,7 @@ Use this matrix to match incoming tasks to the correct skill and primary special
 | docker-compose-dev | DevOps | Docker Compose local dev environments | @devops-engineer |
 | kubernetes-deploy | DevOps | K8s manifests, Helm charts, deployment | @devops-engineer |
 | observability | DevOps | Logging, metrics, tracing, alerting | @devops-engineer |
+| deep-research | Research | Latest docs, public comparisons, external verification | @researcher |
 | llm-eval | AI/ML | LLM evaluation, benchmarking, evals | @researcher |
 | rag-patterns | AI/ML | RAG architecture, embeddings, retrieval | @researcher |
 | prompt-engineering | AI/ML | Prompt design, few-shot, chain-of-thought | @researcher |
@@ -414,12 +416,15 @@ Selection policy:
 Keep MCP context lazy and exact. Skills are supporting context, not the route layer.
 
 1. Never begin with `skill_search`. Inspect the repo/task locally first.
-2. Resolve workflows, agents, or free-text route intent with `route_resolve` before loading any skills.
-3. If the route is still unresolved and local grounding leaves the domain unclear, use one narrow `skill_search`.
-4. Always run `skill_validate` on the exact selected ID before `skill_get`.
-5. Call `skill_get` with `includeReferences:false` by default.
-6. Load at most one sidecar markdown file at a time with `skill_get_reference`.
-7. Do not auto-prime every specialist with a skill. Load only what the task clearly needs.
-8. Use upstream MCP servers such as `postman`, `stitch`, or `playwright` for real cloud/browser actions when available.
+2. If the user already named `/workflow`, `@agent`, or an exact skill ID, honor it directly. For exact skills, run `skill_validate` first and skip `route_resolve` when valid.
+3. Resolve only free-text workflow/agent intent with `route_resolve` before loading non-explicit skills.
+4. If the route is still unresolved and local grounding leaves the domain unclear, use one narrow `skill_search`.
+5. Always run `skill_validate` on the exact selected ID before `skill_get`.
+6. Call `skill_get` with `includeReferences:false` by default.
+7. Load at most one sidecar markdown file at a time with `skill_get_reference`.
+8. Do not auto-prime every specialist with a skill. Load only what the task clearly needs.
+9. For research: repo/local evidence first, official docs next, Reddit/community only as labeled secondary evidence.
+10. Escalate to research only when freshness matters, public comparison matters, or the user explicitly asks to research/verify.
+11. Use upstream MCP servers such as `postman`, `stitch`, or `playwright` for real cloud/browser actions when available.
 
 <!-- cbx:mcp:auto:end -->

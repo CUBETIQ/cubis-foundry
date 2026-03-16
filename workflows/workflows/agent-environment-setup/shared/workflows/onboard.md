@@ -32,7 +32,7 @@ Use this when joining a new project, exploring an unfamiliar codebase, or prepar
 
 - Primary skills: `deep-research`, `architecture-designer`
 - Supporting skills (optional): `legacy-modernizer`, `database-skills`, `typescript-pro`, `javascript-pro`, `python-pro`
-- Start with `deep-research` for systematic exploration and `architecture-designer` for architecture mapping. Add `legacy-modernizer` for undocumented systems.
+- Start with `deep-research` for systematic exploration and `architecture-designer` for architecture mapping. Add `legacy-modernizer` for undocumented systems. Prefer repo evidence first; use external sources only when setup or dependency behavior cannot be confirmed locally.
 
 ## Workflow steps
 

@@ -28,8 +28,8 @@ Your only permitted actions:
 
 ## Skill Loading Contract
 
-- Do not call `skill_search` for `system-design`, `api-design`, `database-design`, `architecture-doc`, `mcp-server-builder`, `tech-doc`, `prompt-engineering`, or `skill-creator` when the task is clearly multi-stream coordination, planning, architecture design, contract design, research, or skill package work.
-- Use `system-design` when the coordination problem is really a design tradeoff problem, `api-design` when integration contracts are the coordination bottleneck, `database-design` when the shared dependency is a data-model or migration concern, `architecture-doc` when the coordination risk is stale or conflicting external information, `mcp-server-builder` for MCP-specific streams, `tech-doc` for OpenAI-doc verification streams, `prompt-engineering` for instruction-quality streams, and `skill-creator` when the coordinated changes are in skills, mirrors, routing, or packaging.
+- Do not call `skill_search` for `system-design`, `api-design`, `database-design`, `deep-research`, `mcp-server-builder`, `tech-doc`, `prompt-engineering`, or `skill-creator` when the task is clearly multi-stream coordination, planning, architecture design, contract design, research, or skill package work.
+- Use `system-design` when the coordination problem is really a design tradeoff problem, `api-design` when integration contracts are the coordination bottleneck, `database-design` when the shared dependency is a data-model or migration concern, `deep-research` when the coordination risk is stale or conflicting external information, `mcp-server-builder` for MCP-specific streams, `tech-doc` for OpenAI-doc verification streams, `prompt-engineering` for instruction-quality streams, and `skill-creator` when the coordinated changes are in skills, mirrors, routing, or packaging.
 - Prefer platform-native delegation features when available, but keep the orchestration contract stable even when execution stays in a single track.
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed by the current coordination step.
 
@@ -42,7 +42,7 @@ Load on demand. Do not preload all references.
 | `system-design` | Coordination depends on resolving system design or interface tradeoffs first.                             |
 | `api-design`          | The critical shared dependency is an API contract or integration boundary.                                |
 | `database-design`       | The coordination risk centers on schema, migration, data ownership, or engine choice.                     |
-| `architecture-doc`         | External sources, latest information, or public-repo comparisons are blocking confident execution.        |
+| `deep-research`         | External sources, latest information, or public-repo comparisons are blocking confident execution.        |
 | `mcp-server-builder`           | One stream is MCP server design, tool shape, or transport selection.                                      |
 | `tech-doc`           | One stream needs current OpenAI docs or version-specific behavior verification.                           |
 | `prompt-engineering`       | One stream is repairing prompts, agent rules, or instruction quality.                                     |
@@ -155,7 +155,8 @@ ANTI-LAZINESS:
 5. **Iterate, don't accept mediocrity** — if output is incomplete or wrong, re-delegate with feedback.
 6. **Track progress visibly** — maintain a task list showing status of each work item.
 7. **Fail fast on blockers** — if a dependency is missing or a task is stuck after 3 iterations, escalate.
-8. **Synthesize at the end** — combine outputs with concrete actions, risks, and verification evidence.
+8. **Route research explicitly** — when freshness or public comparison matters, delegate to `@researcher` or load `deep-research` before implementation.
+9. **Synthesize at the end** — combine outputs with concrete actions, risks, and verification evidence.
 
 ## Anti-Patterns to Prevent
 
@@ -185,6 +186,6 @@ ORCHESTRATION_RESULT:
 ```
 
 ## Skill routing
-Prefer these skills when task intent matches: `system-design`, `api-design`, `database-design`, `architecture-doc`, `mcp-server-builder`, `tech-doc`, `prompt-engineering`, `skill-creator`, `typescript-best-practices`, `javascript-best-practices`, `python-best-practices`.
+Prefer these skills when task intent matches: `system-design`, `api-design`, `database-design`, `deep-research`, `mcp-server-builder`, `tech-doc`, `prompt-engineering`, `skill-creator`, `typescript-best-practices`, `javascript-best-practices`, `python-best-practices`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

@@ -221,6 +221,9 @@ async function validateCopilotPrompt(
   if (!raw.includes("do not begin with skill discovery")) {
     error(errors, filePath, "copilot prompt missing no-skill-discovery guard");
   }
+  if (!raw.includes("official docs as primary evidence")) {
+    error(errors, filePath, "copilot prompt missing official-docs-first research guidance");
+  }
   if (command && !raw.includes(command)) {
     error(
       errors,
@@ -265,6 +268,12 @@ async function validateAntigravityCommand(
       filePath,
       "antigravity command missing no-skill-discovery guard",
     );
+  }
+  if (!raw.includes("official docs next")) {
+    error(errors, filePath, "command missing official-docs-first research guidance");
+  }
+  if (!raw.includes("secondary evidence")) {
+    error(errors, filePath, "command missing labeled-secondary-evidence guidance");
   }
   if (command && !raw.includes(command)) {
     error(
@@ -335,6 +344,16 @@ async function validateRuleFile(filePath, errors) {
       filePath,
       "rules file missing validated skill loading guidance",
     );
+  }
+  if (
+    !raw.includes("exact skill ID") &&
+    !raw.includes("Named skill detected") &&
+    !raw.includes("named skill")
+  ) {
+    error(errors, filePath, "rules file missing explicit-skill short-circuit guidance");
+  }
+  if (!raw.includes("official docs") || !raw.includes("secondary evidence")) {
+    error(errors, filePath, "rules file missing research source-ladder guidance");
   }
   if (
     !raw.includes("cbx:mcp:auto:start") &&

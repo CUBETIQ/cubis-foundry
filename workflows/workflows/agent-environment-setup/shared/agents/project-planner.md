@@ -24,7 +24,7 @@ Decompose complex requests into implementable plans with clear ownership, depend
 - Load `architecture-designer` for system design tradeoffs in the plan.
 - Load `api-designer` when the plan involves API contract decisions.
 - Load `database-skills` when the plan involves data modeling or migration.
-- Load `deep-research` when planning requires external information or comparison.
+- Load `deep-research` when planning requires fresh external information, public comparison, or evidence beyond the repo.
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed.
 
 ## Skill References
@@ -45,6 +45,7 @@ Decompose complex requests into implementable plans with clear ownership, depend
 - Every task needs an owner (agent), acceptance criteria, and verification approach.
 - Plan for rollback — every change should be reversible.
 - Front-load risk — tackle the hardest technical uncertainty first.
+- When outside evidence is needed, send research through `deep-research` first instead of mixing web browsing into every implementation stream.
 
 ## Planning Methodology
 

@@ -36,13 +36,13 @@ Use this when starting a new feature, project, or significant change that needs 
 ## Skill Routing
 
 - Primary skills: `system-design`, `api-design`
-- Supporting skills (optional): `database-design`, `architecture-doc`, `mcp-server-builder`, `tech-doc`, `prompt-engineering`, `skill-creator`
-- Start with `system-design` for system design and `api-design` for API contracts. Add `database-design` when data modeling is central, `architecture-doc` when external knowledge is needed.
+- Supporting skills (optional): `database-design`, `deep-research`, `mcp-server-builder`, `tech-doc`, `prompt-engineering`, `skill-creator`
+- Start with `system-design` for system design and `api-design` for API contracts. Add `database-design` when data modeling is central, `deep-research` when fresh external knowledge or public comparison is needed.
 
 ## Workflow steps
 
 1. Clarify scope, success criteria, and constraints.
-2. Research existing patterns and dependencies.
+2. Research existing patterns and dependencies, starting in-repo and escalating to `deep-research` only when outside evidence is required.
 3. Decompose into tasks with ownership and dependencies.
 4. Define interfaces, contracts, and failure modes.
 5. Produce acceptance criteria for each milestone.
@@ -62,7 +62,7 @@ PLAN_WORKFLOW_RESULT:
   primary_agent: project-planner
   supporting_agents: [orchestrator?, backend-specialist?, frontend-specialist?, database-architect?]
   primary_skills: [system-design, api-design]
-  supporting_skills: [database-design?, architecture-doc?, mcp-server-builder?]
+  supporting_skills: [database-design?, deep-research?, mcp-server-builder?]
   plan:
     scope_summary: <string>
     tasks:

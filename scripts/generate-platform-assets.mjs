@@ -393,7 +393,7 @@ function buildBundleManifest({
   const promptFiles = sharedWorkflows
     .map((workflow) => `workflow-${workflow.id}.prompt.md`)
     .sort((a, b) => a.localeCompare(b));
-  const hooks = [
+  const defaultHooks = [
     {
       type: "conductor-reference",
       optional: true,
@@ -401,12 +401,39 @@ function buildBundleManifest({
         "If Conductor artifacts exist, workflows can reference them as supporting context.",
     },
   ];
+  const claudeHooks = [
+    ...defaultHooks,
+    {
+      type: "template",
+      event: "UserPromptSubmit",
+      file: "README.md",
+      optional: true,
+      description:
+        "Usage guide for the Claude route/research hook templates.",
+    },
+    {
+      type: "template",
+      event: "UserPromptSubmit",
+      file: "settings.snippet.json",
+      optional: true,
+      description:
+        "Settings snippet that wires the route/research reminder hook into Claude Code.",
+    },
+    {
+      type: "template",
+      event: "UserPromptSubmit",
+      file: "route-research-guard.mjs",
+      optional: true,
+      description:
+        "Hook script template that reinforces explicit-route honoring and research escalation.",
+    },
+  ];
 
   return (
     JSON.stringify(
       {
         id: "agent-environment-setup",
-        version: "1.4.0",
+        version: "1.5.0",
         description:
           "Workflow-first AI agent environment setup for Antigravity, Codex, Copilot, Claude Code, and Gemini CLI.",
         platforms: {
@@ -415,7 +442,7 @@ function buildBundleManifest({
             agents: agentFiles,
             skills: topLevelSkillIds,
             rulesTemplate: "platforms/antigravity/rules/GEMINI.md",
-            hooks,
+            hooks: defaultHooks,
             commands: commandFiles,
           },
           codex: {
@@ -423,14 +450,14 @@ function buildBundleManifest({
             agents: agentFiles,
             skills: topLevelSkillIds,
             rulesTemplate: "platforms/codex/rules/AGENTS.md",
-            hooks,
+            hooks: defaultHooks,
           },
           copilot: {
             workflows: workflowFiles,
             agents: agentFiles,
             skills: topLevelSkillIds,
             rulesTemplate: "platforms/copilot/rules/copilot-instructions.md",
-            hooks,
+            hooks: defaultHooks,
             prompts: promptFiles,
           },
           claude: {
@@ -438,14 +465,14 @@ function buildBundleManifest({
             agents: agentFiles,
             skills: topLevelSkillIds,
             rulesTemplate: "platforms/claude/rules/CLAUDE.md",
-            hooks,
+            hooks: claudeHooks,
           },
           gemini: {
             workflows: workflowFiles,
             agents: [],
             skills: topLevelSkillIds,
             rulesTemplate: "platforms/gemini/rules/GEMINI.md",
-            hooks,
+            hooks: defaultHooks,
             commands: commandFiles,
           },
         },
@@ -489,6 +516,7 @@ function buildPlatformSupportMatrixMarkdown({
     `| Workflow files | ${workflowCount} \`.md\` | ${workflowCount} \`.md\` | ${workflowCount} \`.md\` | ${workflowCount} \`.md\` | ${workflowCount} \`.md\` |`,
     `| Commands or prompts | ${workflowCount} \`.toml\` | ${workflowCount} \`.toml\` | none | none | ${workflowCount} \`.prompt.md\` |`,
     `| Skill mirrors | ${skillCount} skill dirs | ${skillCount} skill dirs | ${skillCount} skill dirs | ${skillCount} skill dirs | ${skillCount} skill dirs |`,
+    "| Hook templates | none | none | 3 template files | none | none |",
     "| Compatibility aliases | none | none | none | `$agent-*`, `$workflow-*` | none |",
     "",
     "## Notes",
@@ -545,6 +573,8 @@ function buildAntigravityCommandToml({ id, command, description }) {
     '2. Confirm the request fits the workflow\'s "When to use" section.',
     '3. Execute according to "Workflow steps" and apply "Context notes".',
     '4. Complete "Verification" checks and report concrete evidence.',
+    "5. If freshness, public comparison, or explicit research needs appear, pause implementation and load `deep-research` or hand off to `@researcher` first.",
+    "6. For outside evidence: repo first, official docs next, Reddit/community only as labeled secondary evidence.",
     "",
     "If command arguments are provided, treat them as additional user context.",
   ].join("\n");
@@ -567,6 +597,8 @@ function buildGeminiCommandToml({ id, command, description }) {
     '2. Confirm the request fits the workflow\'s "When to use" section.',
     '3. Execute according to "Workflow steps" and apply "Context notes".',
     '4. Complete "Verification" checks and report concrete evidence.',
+    "5. If freshness, public comparison, or explicit research needs appear, pause implementation and load `deep-research` or route to the researcher posture first.",
+    "6. For outside evidence: repo first, official docs next, Reddit/community only as labeled secondary evidence.",
     "",
     "If command arguments are provided, treat them as additional user context.",
   ].join("\n");
@@ -593,8 +625,98 @@ function buildCopilotPromptMarkdown({ id, command, description }) {
     "1. Treat route selection as already resolved by this prompt; do not begin with skill discovery.",
     "2. Apply workflow sections in order: When to use, Workflow steps, Context notes, Verification.",
     "3. Route to the workflow's primary specialist and only add supporting specialists when needed.",
-    "4. Return actions taken, verification evidence, and any gaps.",
+    "4. If freshness or public comparison matters, run `deep-research` before implementation and use official docs as primary evidence.",
+    "5. Return actions taken, verification evidence, and any gaps.",
     "",
+  ].join("\n");
+}
+
+function buildClaudeHookReadme() {
+  return [
+    "# Claude Route/Research Hook Templates",
+    "",
+    "These files are generated by Cubis Foundry as optional Claude Code hook templates.",
+    "",
+    "Use them when you want Claude to reinforce two behaviors on `UserPromptSubmit`:",
+    "",
+    "- honor explicit `/workflow`, `@agent`, or exact skill selections before rerouting",
+    "- escalate to repo-first, official-first research when freshness or public comparison matters",
+    "",
+    "Files:",
+    "",
+    "- `settings.snippet.json` — example hook configuration to copy into `.claude/settings.json` or `.claude/settings.local.json`",
+    "- `route-research-guard.mjs` — hook script that reads the submitted prompt and emits a targeted `systemMessage` reminder",
+    "",
+    "The template is intentionally non-destructive. It does not block prompts by default; it adds context for Claude before prompt processing.",
+  ].join("\n");
+}
+
+function buildClaudeHookSettingsSnippet() {
+  return (
+    JSON.stringify(
+      {
+        hooks: {
+          UserPromptSubmit: [
+            {
+              matcher: "*",
+              hooks: [
+                {
+                  type: "command",
+                  command:
+                    'node "$CLAUDE_PROJECT_DIR/.claude/hooks/route-research-guard.mjs"',
+                },
+              ],
+            },
+          ],
+        },
+      },
+      null,
+      2,
+    ) + "\n"
+  );
+}
+
+function buildClaudeHookScript() {
+  return [
+    "#!/usr/bin/env node",
+    "",
+    "const buffers = [];",
+    "for await (const chunk of process.stdin) buffers.push(chunk);",
+    'const raw = Buffer.concat(buffers).toString("utf8");',
+    'let prompt = "";',
+    "try {",
+    '  const parsed = JSON.parse(raw || "{}");',
+    '  prompt = String(parsed.prompt || parsed.userPrompt || parsed.message || "");',
+    "} catch {",
+    '  prompt = "";',
+    "}",
+    "",
+    "const normalized = prompt.toLowerCase();",
+    "const reminders = [];",
+    "",
+    'if (/(^|\\s)(\\/[-a-z0-9]+|@[a-z0-9_-]+)/i.test(prompt)) {',
+    "  reminders.push(",
+    '    "Explicit route detected. Honor the named workflow or agent directly unless it is invalid."', 
+    "  );",
+    "}",
+    "",
+    'if (/(^|[^a-z0-9-])(deep-research|stitch|skill-creator|frontend-design|api-design|database-design)([^a-z0-9-]|$)/i.test(normalized)) {',
+    "  reminders.push(",
+    '    "Named skill detected. Run skill_validate on the exact skill ID first and skip route_resolve when it validates."',
+    "  );",
+    "}",
+    "",
+    'if (/(research|latest|compare|comparison|verify|official docs|reddit|community)/i.test(normalized)) {',
+    "  reminders.push(",
+    '    "Research trigger detected. Inspect the repo first, use official docs as primary evidence, and treat Reddit/community sources as labeled secondary evidence."',
+    "  );",
+    "}",
+    "",
+    "const payload = reminders.length > 0",
+    '  ? { continue: true, systemMessage: reminders.join(" ") }',
+    "  : { continue: true };",
+    "",
+    "process.stdout.write(JSON.stringify(payload));",
   ].join("\n");
 }
 
@@ -840,6 +962,7 @@ async function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
   const antigravityCommands = new Map();
   const geminiCommands = new Map();
   const copilotPrompts = new Map();
+  const claudeHooks = new Map();
   const generated = new Map();
   const docs = new Map();
   const topLevelSkillIds = await listTopLevelCanonicalSkillIds();
@@ -917,6 +1040,10 @@ async function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
     );
   }
 
+  claudeHooks.set("README.md", buildClaudeHookReadme());
+  claudeHooks.set("settings.snippet.json", buildClaudeHookSettingsSnippet());
+  claudeHooks.set("route-research-guard.mjs", buildClaudeHookScript());
+
   return {
     codexAgents,
     antigravityAgents,
@@ -930,6 +1057,7 @@ async function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
     antigravityCommands,
     geminiCommands,
     copilotPrompts,
+    claudeHooks,
     generated,
     docs,
   };
@@ -996,6 +1124,15 @@ function buildTargets(maps) {
       dir: path.join(PLATFORM_DIRS.claude, "workflows"),
       expected: maps.claudeWorkflows,
       filter: (name) => name.endsWith(".md"),
+    },
+    {
+      label: "claude hooks",
+      dir: path.join(PLATFORM_DIRS.claude, "hooks"),
+      expected: maps.claudeHooks,
+      filter: (name) =>
+        name === "README.md" ||
+        name === "settings.snippet.json" ||
+        name === "route-research-guard.mjs",
     },
     {
       label: "gemini workflows",
@@ -1184,6 +1321,13 @@ export async function run({ checkOnly = false } = {}) {
       rootDir: path.join(PLATFORM_DIRS.claude, "workflows"),
       fileMap: maps.claudeWorkflows,
       cleanMdOnly: true,
+    })),
+  );
+  written.push(
+    ...(await applyOutputMap({
+      rootDir: path.join(PLATFORM_DIRS.claude, "hooks"),
+      fileMap: maps.claudeHooks,
+      cleanMdOnly: false,
     })),
   );
   written.push(

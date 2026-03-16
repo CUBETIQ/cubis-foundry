@@ -213,6 +213,8 @@ fi
 [ -f .agent/terminal-integration/verify-task.sh ]
 rg -n '"provider": "codex"' .agent/terminal-integration/config.json >/dev/null
 rg -n '^<!-- cbx:terminal:verification:start provider=codex version=1 -->' .agent/rules/GEMINI.md >/dev/null
+assert_file_contains_literal .gemini/commands/backend.toml "official docs next" "Antigravity Gemini command"
+assert_file_contains_literal .gemini/commands/backend.toml "secondary evidence" "Antigravity Gemini command"
 assert_workflow_contract .agent/workflows "Antigravity"
 log_ok "Antigravity files installed"
 
@@ -670,6 +672,7 @@ if rg -n '^skills:' .github/agents/backend-specialist.md >/dev/null; then
   echo "[FAIL] Copilot agent file still contains unsupported skills attribute" >&2
   exit 1
 fi
+assert_file_contains_literal .github/prompts/workflow-backend.prompt.md "official docs as primary evidence" "Copilot workflow prompt"
 assert_workflow_contract .github/copilot/workflows "Copilot"
 node - <<'NODE'
 const fs = require('fs');
@@ -772,6 +775,19 @@ node "$CLI" workflows remove agent-environment-setup --platform copilot --scope 
 [ -f .github/copilot-instructions.md ]
 rg -n 'No installed workflows found yet\.' .github/copilot-instructions.md >/dev/null
 log_ok "Copilot bundle removed and managed block kept"
+
+log_step "Q1 Claude apply + hook templates"
+node "$CLI" workflows install --platform claude --bundle agent-environment-setup --overwrite --yes >/tmp/cbx-q1.log
+[ -f CLAUDE.md ]
+[ -f .claude/workflows/backend.md ]
+[ -f .claude/agents/researcher.md ]
+[ -f .claude/hooks/README.md ]
+[ -f .claude/hooks/settings.snippet.json ]
+[ -f .claude/hooks/route-research-guard.mjs ]
+assert_file_contains_literal .claude/hooks/settings.snippet.json "UserPromptSubmit" "Claude hook settings snippet"
+assert_file_contains_literal .claude/hooks/route-research-guard.mjs "skill_validate" "Claude hook script"
+assert_file_contains_literal .claude/hooks/route-research-guard.mjs "official docs as primary evidence" "Claude hook script"
+log_ok "Claude install includes route/research hook templates"
 
 log_step "DONE"
 echo "ALL_OK"

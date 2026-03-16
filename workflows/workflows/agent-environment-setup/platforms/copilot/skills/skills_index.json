@@ -194,6 +194,38 @@
     ]
   },
   {
+    "id": "deep-research",
+    "package_id": "deep-research",
+    "catalog_id": "deep-research",
+    "kind": "skill",
+    "name": "deep-research",
+    "canonical": true,
+    "canonical_id": "deep-research",
+    "deprecated": false,
+    "replaced_by": null,
+    "aliases": [],
+    "category": "core-operating",
+    "layer": "core-operating",
+    "maturity": "incubating",
+    "tier": "experimental",
+    "tags": [
+      "core-operating",
+      "deep",
+      "deep research",
+      "deep-research",
+      "research"
+    ],
+    "path": ".github/skills/deep-research/SKILL.md",
+    "description": "Use when investigating latest vendor behavior, comparing tools or platforms, verifying claims beyond the repo, or gathering external evidence before implementation.",
+    "triggers": [
+      "deep-research",
+      "deep research",
+      "deep",
+      "research",
+      "core-operating"
+    ]
+  },
+  {
     "id": "django-drf",
     "package_id": "django-drf",
     "catalog_id": "django-drf",

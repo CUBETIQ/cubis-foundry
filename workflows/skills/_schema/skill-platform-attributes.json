@@ -38,6 +38,13 @@
     "userInvocable": true,
     "argumentHint": "Schema, query, or data model to design"
   },
+  "deep-research": {
+    "allowedTools": ["Read", "Grep", "Glob", "Bash"],
+    "contextFork": true,
+    "forkAgent": "researcher",
+    "userInvocable": true,
+    "argumentHint": "Topic, vendor capability, or public comparison to research"
+  },
   "django-drf": {
     "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
     "contextFork": false,

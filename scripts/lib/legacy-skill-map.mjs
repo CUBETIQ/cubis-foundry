@@ -17,7 +17,6 @@ export const LEGACY_SKILL_ID_MAP = Object.freeze({
   "database-optimizer": "database-design",
   "database-skills": "database-design",
   "debugging-strategies": "systematic-debugging",
-  "deep-research": "architecture-doc",
   "design-system-builder": "frontend-design",
   "devops-engineer": "ci-cd-pipeline",
   "docker-kubernetes": "kubernetes-deploy",

@@ -25,7 +25,7 @@ Use this when a task spans multiple domains (backend + frontend, security + infr
 
 - Primary skills: `architecture-designer`, `api-designer`
 - Supporting skills (optional): `database-skills`, `deep-research`, `mcp-builder`, `openai-docs`, `prompt-engineer`, `skill-creator`
-- Start with `architecture-designer` for system design coordination and `api-designer` for integration contracts. Add supporting skills based on the coordination challenge.
+- Start with `architecture-designer` for system design coordination and `api-designer` for integration contracts. Add `deep-research` before implementation when the coordination challenge depends on fresh external facts or public comparison.
 
 ## Workflow steps
 

@@ -212,9 +212,59 @@ function buildStitchPlatformSection(platform) {
   return "";
 }
 
+function buildDeepResearchPlatformSection(platform) {
+  if (platform === "codex") {
+    return `## Codex Research Flow
+
+- Start in the repo. Gather code, config, tests, and docs before using any external source.
+- When external evidence is required, prefer official docs first and keep community evidence clearly labeled as secondary because Codex environments may be network-restricted or stale.
+- End with a concrete next route: direct execution, a workflow, an agent posture, or one exact follow-up skill.`;
+  }
+
+  if (platform === "claude") {
+    return `## Claude Research Flow
+
+- Use \`$ARGUMENTS\` as the research topic when this skill is invoked directly.
+- Prefer official docs, upstream repos, and maintainer material before blog posts or Reddit threads.
+- If Claude hook templates are installed, let them reinforce repo-first inspection and research escalation, but keep the final research output aligned with this skill's evidence contract.`;
+  }
+
+  if (platform === "copilot") {
+    return `## Copilot Research Flow
+
+- Restate the research question, freshness requirement, and comparison scope before gathering sources.
+- Use repo evidence and \`#file:\` context first, then bring in official docs, then labeled community evidence only if it adds implementation color.
+- Finish with the next recommended route so the research result can hand off cleanly into a workflow, prompt file, or agent.`;
+  }
+
+  if (platform === "gemini") {
+    return `## Gemini Research Flow
+
+- Treat Gemini commands and GEMINI.md as routing aids, not primary evidence. The evidence still comes from the repo first, then official docs, then labeled community sources.
+- Use the mirrored references to keep the research output structured: verified facts, secondary evidence, gaps, and recommended next route.
+- When a request is implementation-heavy but freshness matters, complete the research pass first, then move into the chosen workflow.`;
+  }
+
+  if (platform === "antigravity") {
+    return `## Antigravity Research Flow
+
+- Keep research repo-first even when Agent Manager is available. Do not fan out web browsing before you understand the local system.
+- Official docs and upstream sources stay primary. Reddit and other community posts can inform practical tradeoffs, but label them as secondary evidence.
+- Use Agent Manager only when the research can be cleanly split into independent tracks, then synthesize one final evidence-backed recommendation.`;
+  }
+
+  return "";
+}
+
 function injectPlatformSpecificSkillGuidance(body, skillId, platform) {
-  if (skillId !== "stitch") return body;
-  const section = buildStitchPlatformSection(platform);
+  let section = "";
+  if (skillId === "stitch") {
+    section = buildStitchPlatformSection(platform);
+  } else if (skillId === "deep-research") {
+    section = buildDeepResearchPlatformSection(platform);
+  } else {
+    return body;
+  }
   if (!section) return body;
   return body.trimEnd() + "\n\n" + section + "\n";
 }

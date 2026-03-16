@@ -37,12 +37,12 @@ Use this when starting a new feature, project, or significant change that needs 
 
 - Primary skills: `architecture-designer`, `api-designer`
 - Supporting skills (optional): `database-skills`, `deep-research`, `mcp-builder`, `openai-docs`, `prompt-engineer`, `skill-creator`
-- Start with `architecture-designer` for system design and `api-designer` for API contracts. Add `database-skills` when data modeling is central, `deep-research` when external knowledge is needed.
+- Start with `architecture-designer` for system design and `api-designer` for API contracts. Add `database-skills` when data modeling is central, `deep-research` when fresh external knowledge or public comparison is needed.
 
 ## Workflow steps
 
 1. Clarify scope, success criteria, and constraints.
-2. Research existing patterns and dependencies.
+2. Research existing patterns and dependencies, starting in-repo and escalating to `deep-research` only when outside evidence is required.
 3. Decompose into tasks with ownership and dependencies.
 4. Define interfaces, contracts, and failure modes.
 5. Produce acceptance criteria for each milestone.

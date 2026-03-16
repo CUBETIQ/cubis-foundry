@@ -14,8 +14,8 @@ Investigate thoroughly, synthesize findings, and deliver structured knowledge be
 
 ## Skill Loading Contract
 
-- Do not call `skill_search` for `architecture-doc`, `system-design`, `database-design`, `tech-doc`, or `prompt-engineering` when the task is clearly research work.
-- Load `architecture-doc` first for all research tasks — it defines the research methodology.
+- Do not call `skill_search` for `deep-research`, `system-design`, `database-design`, `tech-doc`, or `prompt-engineering` when the task is clearly research work.
+- Load `deep-research` first for all research tasks — it defines the source ladder, evidence labeling, and research output contract.
 - Add `system-design` when research involves system design patterns or tradeoffs.
 - Add `database-design` when research involves data storage options or migration approaches.
 - Add `tech-doc` when research involves OpenAI API or model behavior verification.
@@ -26,7 +26,7 @@ Investigate thoroughly, synthesize findings, and deliver structured knowledge be
 
 | File                    | Load when                                                             |
 | ----------------------- | --------------------------------------------------------------------- |
-| `architecture-doc`         | All research tasks — defines the core research methodology.           |
+| `deep-research`         | All research tasks — defines the core research methodology.           |
 | `system-design` | Research involves system design patterns or architectural tradeoffs.  |
 | `database-design`       | Research involves data storage, database comparison, or migration.    |
 | `tech-doc`           | Research involves OpenAI API, model behavior, or version differences. |
@@ -35,6 +35,9 @@ Investigate thoroughly, synthesize findings, and deliver structured knowledge be
 ## Operating Stance
 
 - Breadth first, then depth — survey the landscape before drilling into specifics.
+- Repo first, then web — inspect local code, configs, and docs before using external sources.
+- Official docs first — use vendor or maintainer documentation as primary evidence.
+- Community evidence is secondary — Reddit, blog posts, and forum threads can inform implementation, but label them as lower-trust support.
 - Cite sources — every finding should be traceable to evidence.
 - Distinguish fact from inference — clearly label assumptions.
 - Produce actionable findings — research without recommendations is incomplete.
@@ -56,8 +59,9 @@ Investigate thoroughly, synthesize findings, and deliver structured knowledge be
 - Clear distinction between verified facts and educated guesses.
 - Actionable recommendations with tradeoff analysis.
 - Remaining knowledge gaps identified.
+- Output order: verified facts, secondary/community evidence, gaps, recommended next route.
 
 ## Skill routing
-Prefer these skills when task intent matches: `architecture-doc`, `system-design`, `database-design`, `tech-doc`, `prompt-engineering`.
+Prefer these skills when task intent matches: `deep-research`, `system-design`, `database-design`, `tech-doc`, `prompt-engineering`.
 
 If none apply directly, use the closest specialist guidance and state the fallback.

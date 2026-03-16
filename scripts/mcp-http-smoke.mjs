@@ -277,6 +277,51 @@ async function main() {
     throw new Error("skill_validate failed for skill-creator");
   }
 
+  const stitchValidateResult = await callTool({
+    endpointUrl: endpoint,
+    sessionId,
+    name: "skill_validate",
+    args: { id: "stitch" },
+  });
+  const stitchValidatePayload = parseToolTextPayload(stitchValidateResult);
+  if (
+    stitchValidatePayload.exists !== true ||
+    stitchValidatePayload.canonicalId !== "stitch"
+  ) {
+    throw new Error("skill_validate failed for explicit named skill stitch");
+  }
+
+  const missingSkillValidateResult = await callTool({
+    endpointUrl: endpoint,
+    sessionId,
+    name: "skill_validate",
+    args: { id: "missing-skill-id" },
+  });
+  const missingSkillValidatePayload = parseToolTextPayload(
+    missingSkillValidateResult,
+  );
+  if (
+    missingSkillValidatePayload.exists !== false ||
+    missingSkillValidatePayload.canonicalId !== null
+  ) {
+    throw new Error("skill_validate failed clean fallback for unknown skill");
+  }
+
+  const researchRouteResolveResult = await callTool({
+    endpointUrl: endpoint,
+    sessionId,
+    name: "route_resolve",
+    args: { intent: "research latest Claude Code hooks behavior" },
+  });
+  const researchRoutePayload = parseToolTextPayload(researchRouteResolveResult);
+  if (
+    researchRoutePayload.resolved !== true ||
+    researchRoutePayload.id !== "researcher" ||
+    researchRoutePayload.primarySkillHint !== "deep-research"
+  ) {
+    throw new Error("route_resolve failed research escalation routing");
+  }
+
   const listCategoriesResult = await callTool({
     endpointUrl: endpoint,
     sessionId,
@@ -384,6 +429,7 @@ async function main() {
   console.log(`sessionId=${sessionId}`);
   console.log(`tools.total=${toolNames.length}`);
   console.log(`route_resolve.kind=${routeResolvePayload.kind}`);
+  console.log(`route_resolve.research=${researchRoutePayload.id}`);
   console.log(`tools.postman.namespaced=${namespacedPostman}`);
   console.log(`tools.stitch.namespaced=${namespacedStitch}`);
   console.log(`tools.postman.alias=${aliasPostman}`);

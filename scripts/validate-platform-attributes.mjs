@@ -1117,6 +1117,25 @@ async function main() {
       const rulesPath = path.join(BUNDLE_ROOT, spec.rulesTemplate);
       if (!(await pathExists(rulesPath))) {
         error(errors, rulesPath, "rulesTemplate path is missing");
+      } else {
+        const rulesRaw = await fs.readFile(rulesPath, "utf8");
+        const headerMatch = rulesRaw.match(/^# Generated from (.+)$/m);
+        if (headerMatch) {
+          const sharedSources = headerMatch[1]
+            .split("+")
+            .map((item) => item.trim())
+            .filter(Boolean);
+          for (const sourcePath of sharedSources) {
+            const resolved = path.join(BUNDLE_ROOT, sourcePath);
+            if (!(await pathExists(resolved))) {
+              error(
+                errors,
+                rulesPath,
+                `generated rule header references missing source '${sourcePath}'`,
+              );
+            }
+          }
+        }
       }
     } else {
       error(
@@ -1124,6 +1143,27 @@ async function main() {
         MANIFEST_PATH,
         `rulesTemplate missing for platform '${platformId}'`,
       );
+    }
+
+    const hookEntries = Array.isArray(spec.hooks) ? spec.hooks : [];
+    for (const hookEntry of hookEntries) {
+      const hookFile =
+        typeof hookEntry === "string"
+          ? hookEntry
+          : typeof hookEntry?.file === "string"
+            ? hookEntry.file
+            : null;
+      if (!hookFile) continue;
+      const hookPath = path.join(
+        BUNDLE_ROOT,
+        "platforms",
+        platformId,
+        "hooks",
+        hookFile,
+      );
+      if (!(await pathExists(hookPath))) {
+        error(errors, hookPath, `hook template '${hookFile}' is missing`);
+      }
     }
   }
 

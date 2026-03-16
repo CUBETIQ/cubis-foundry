@@ -158,7 +158,8 @@ ANTI-LAZINESS:
 5. **Iterate, don't accept mediocrity** — if output is incomplete or wrong, re-delegate with feedback.
 6. **Track progress visibly** — maintain a task list showing status of each work item.
 7. **Fail fast on blockers** — if a dependency is missing or a task is stuck after 3 iterations, escalate.
-8. **Synthesize at the end** — combine outputs with concrete actions, risks, and verification evidence.
+8. **Route research explicitly** — when freshness or public comparison matters, delegate to `@researcher` or load `deep-research` before implementation.
+9. **Synthesize at the end** — combine outputs with concrete actions, risks, and verification evidence.
 
 ## Anti-Patterns to Prevent
 

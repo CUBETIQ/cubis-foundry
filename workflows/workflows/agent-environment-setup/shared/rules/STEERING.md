@@ -1,9 +1,9 @@
 # Cubis Foundry — Shared Steering Protocol
 
-This is the canonical steering template. Platform-specific rules files are generated from this template
-plus per-platform overrides. Edit only here — never edit platform rules files directly.
+This is the canonical steering source for routing policy and managed MCP block language.
+Keep platform rule files aligned with this template plus per-platform overrides, and do not duplicate the managed block into agent or workflow markdown.
 
-Generation: `npm run generate:platform-assets` (or `cbx workflows sync-rules`)
+Managed-block sync: `npm run inject:mcp-rules:all` (or `cbx workflows sync-rules`)
 
 ---
 
@@ -17,6 +17,10 @@ Follow this decision tree for EVERY user request:
 │   └─ Execute directly. No routing needed. Stop.
 ├─ Did user explicitly name a workflow or agent?
 │   └─ Honor that route first. Stop.
+├─ Did user explicitly name an exact skill ID?
+│   └─ Run skill_validate on that exact ID.
+│       ├─ Valid? → Load it and proceed. Stop.
+│       └─ Invalid/unavailable? → Fall through. Do not guess.
 ├─ Is it multi-step work in ONE domain?
 │   └─ Pick the best-fit workflow. Load it. Stop.
 ├─ Is it cross-domain work spanning 2+ specialties?
@@ -28,6 +32,7 @@ Follow this decision tree for EVERY user request:
 ```
 
 > **Rule:** Inspect the repo and task locally BEFORE choosing a route or loading any skill.
+> **Rule:** If the user already chose the route, do not re-route it unless the named workflow, agent, or skill is invalid.
 
 ---
 
@@ -38,6 +43,7 @@ Follow this decision tree for EVERY user request:
 | **Direct execution** | No routing needed                     | Small, clear, single-step tasks                       | Just do it                                 | "rename this variable"                      |
 | **Workflow**         | Multi-step recipe with verification   | Structured task with known pattern                    | `/plan`, `/create`, `/debug`, `/test`      | "plan the auth system"                      |
 | **Agent**            | Specialist persona with domain skills | Domain expertise needed for execution                 | `@backend-specialist`, `@security-auditor` | "design the API schema"                     |
+| **Named skill**      | Exact skill selected by the user      | User already named the skill and it validates cleanly | `skill_validate` → `skill_get`             | "use stitch for this screen"                |
 | **Skill (MCP)**      | Supporting domain knowledge           | Domain context that a workflow or agent doesn't cover | `skill_get` after `skill_validate`         | loading `typescript-pro` for TS conventions |
 | **skill_search**     | Fuzzy discovery tool                  | Domain unclear, no skill ID known yet                 | One narrow search AFTER route_resolve      | "what skill covers Prisma?"                 |
 | **route_resolve**    | Intent → route mapper                 | Free-text request doesn't match any known route       | MCP tool call with task description        | "I need to optimize my database"            |
@@ -47,17 +53,41 @@ Follow this decision tree for EVERY user request:
 
 ## 3) Skill Loading Protocol
 
-Skills are **supporting context** — always route first, then load what the route recommends.
+Skills are **supporting context** unless the user explicitly named the exact skill. In that case validate the named skill first, then proceed without route discovery.
 
 1. **Never begin with `skill_search`.** Inspect the repo/task locally first.
-2. Resolve the route (workflow, agent, or direct execution) before loading any skills.
-3. **After routing: if `route_resolve` returned `primarySkillHint` or `primarySkills`, load the first via `skill_validate` → `skill_get` before executing. Not optional for non-trivial tasks.**
-4. If `detectedLanguageSkill` is returned and matches the project, load it too (if not already loaded this session).
-5. Domain still unclear after routing? → ONE narrow `skill_search`. Not two.
-6. Call `skill_get` with `includeReferences: false` by default.
-7. Load reference files one at a time with `skill_get_reference` — only when a specific reference is needed.
-8. Do not auto-prime every specialist. Only load what `primarySkills` recommends or the task clearly needs.
-9. Never pass workflow IDs or agent IDs to skill tools.
+2. If the user explicitly named an exact skill ID, run `skill_validate` on that ID before any `route_resolve` call.
+3. Resolve the route (workflow, agent, or direct execution) before loading any non-explicit skills.
+4. **After routing: if `route_resolve` returned `primarySkillHint` or `primarySkills`, load the first via `skill_validate` → `skill_get` before executing. Not optional for non-trivial tasks.**
+5. If `detectedLanguageSkill` is returned and matches the project, load it too (if not already loaded this session).
+6. Domain still unclear after routing? → ONE narrow `skill_search`. Not two.
+7. Call `skill_get` with `includeReferences: false` by default.
+8. Load reference files one at a time with `skill_get_reference` — only when a specific reference is needed.
+9. Do not auto-prime every specialist. Only load what `primarySkills` recommends or the task clearly needs.
+10. Never pass workflow IDs or agent IDs to skill tools.
+
+---
+
+## 4A) Research Escalation
+
+Use external research only when one of these is true:
+
+1. Freshness matters: latest APIs, model behavior, vendor docs, pricing, policies, releases, or client capabilities.
+2. Public comparison matters: tradeoff analysis across tools, frameworks, libraries, or hosted services.
+3. The user explicitly asks to research, compare, verify, or gather outside evidence.
+
+Research source ladder:
+
+1. **Repo/local evidence first** — inspect code, config, docs, tests, and installed artifacts before going outside the workspace.
+2. **Official docs next** — vendor docs, upstream repos, standards, or maintainer documentation are primary evidence.
+3. **Community evidence last** — Reddit, blog posts, issue threads, and forum posts are allowed only as labeled secondary evidence.
+
+Research output contract:
+
+- **Verified facts** — claims backed by primary sources or local repo evidence.
+- **Secondary/community evidence** — useful but lower-trust signals, clearly labeled.
+- **Gaps / unknowns** — what could not be verified.
+- **Recommended next route** — workflow, agent, or skill to use after research.
 
 ---
 
@@ -151,7 +181,8 @@ Use the best specialist first:
 2. Keep diffs small and reversible when possible.
 3. Verify with focused checks before finalizing.
 4. State what was NOT validated.
-5. Use web search only when information may be stale or the user explicitly asks.
+5. Use web search only when information may be stale, public comparison matters, or the user explicitly asks.
+6. Prefer official docs first. Treat Reddit/community sources as secondary evidence and label them that way.
 
 ---
 

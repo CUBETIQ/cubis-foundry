@@ -12,6 +12,7 @@
 | auth, jwt, oauth, rbac, session, secrets | `secure-code-guardian` | `nodejs-best-practices` |
 | postman, collection, newman, environment | `postman` | `api-designer` |
 | stitch, design-to-code, screen-to-code, ui diff, sync screen | `stitch` | `frontend-design` |
+| research, latest docs, compare approaches, survey ecosystem, official docs | `deep-research` | `prompt-engineering` |
 | create skill, update skill, fix skill metadata, repair references | `skill-creator` | — |
 
 ### Routing policy

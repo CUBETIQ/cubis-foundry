@@ -1,6 +1,6 @@
 {
   "id": "agent-environment-setup",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Workflow-first AI agent environment setup for Antigravity, Codex, Copilot, Claude Code, and Gemini CLI.",
   "platforms": {
     "antigravity": {
@@ -55,6 +55,7 @@
         "code-review",
         "csharp-best-practices",
         "database-design",
+        "deep-research",
         "django-drf",
         "docker-compose-dev",
         "drizzle-orm",
@@ -199,6 +200,7 @@
         "code-review",
         "csharp-best-practices",
         "database-design",
+        "deep-research",
         "django-drf",
         "docker-compose-dev",
         "drizzle-orm",
@@ -323,6 +325,7 @@
         "code-review",
         "csharp-best-practices",
         "database-design",
+        "deep-research",
         "django-drf",
         "docker-compose-dev",
         "drizzle-orm",
@@ -467,6 +470,7 @@
         "code-review",
         "csharp-best-practices",
         "database-design",
+        "deep-research",
         "django-drf",
         "docker-compose-dev",
         "drizzle-orm",
@@ -536,6 +540,27 @@
           "type": "conductor-reference",
           "optional": true,
           "description": "If Conductor artifacts exist, workflows can reference them as supporting context."
+        },
+        {
+          "type": "template",
+          "event": "UserPromptSubmit",
+          "file": "README.md",
+          "optional": true,
+          "description": "Usage guide for the Claude route/research hook templates."
+        },
+        {
+          "type": "template",
+          "event": "UserPromptSubmit",
+          "file": "settings.snippet.json",
+          "optional": true,
+          "description": "Settings snippet that wires the route/research reminder hook into Claude Code."
+        },
+        {
+          "type": "template",
+          "event": "UserPromptSubmit",
+          "file": "route-research-guard.mjs",
+          "optional": true,
+          "description": "Hook script template that reinforces explicit-route honoring and research escalation."
         }
       ]
     },
@@ -568,6 +593,7 @@
         "code-review",
         "csharp-best-practices",
         "database-design",
+        "deep-research",
         "django-drf",
         "docker-compose-dev",
         "drizzle-orm",

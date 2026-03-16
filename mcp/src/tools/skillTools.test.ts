@@ -85,7 +85,7 @@ function createRouteManifest(): RouteManifest {
     $schema: "cubis-foundry-route-manifest-v1",
     generatedAt: new Date(0).toISOString(),
     contentHash: "test",
-    summary: { totalRoutes: 6, workflows: 5, agents: 1 },
+    summary: { totalRoutes: 7, workflows: 5, agents: 2 },
     routes: [
       {
         kind: "workflow",
@@ -205,6 +205,23 @@ function createRouteManifest(): RouteManifest {
           codex: { compatibilityAlias: "$agent-test-engineer", agentFile: "test-engineer.md" },
           copilot: { agentFile: "test-engineer.md" },
           antigravity: { agentFile: "test-engineer.md" },
+        },
+      },
+      {
+        kind: "agent",
+        id: "researcher",
+        command: null,
+        displayName: "researcher",
+        description: "Expert in codebase research and external verification",
+        triggers: ["research", "latest", "compare", "investigate", "survey"],
+        primaryAgent: "researcher",
+        supportingAgents: [],
+        primarySkills: ["deep-research", "architecture-designer"],
+        supportingSkills: ["prompt-engineer"],
+        artifacts: {
+          codex: { compatibilityAlias: "$agent-researcher", agentFile: "researcher.md" },
+          copilot: { agentFile: "researcher.md" },
+          antigravity: { agentFile: "researcher.md" },
         },
       },
     ],
@@ -610,6 +627,22 @@ describe("skill tools", () => {
       primarySkillHint: "skill-creator",
       matchedBy: "skill-creator-intent",
     });
+  });
+
+  it("routes research intent to researcher with deep-research as the primary skill hint", async () => {
+    const result = payload(
+      await handleRouteResolve(
+        { intent: "research latest Claude Code hooks behavior" },
+        createRouteManifest(),
+      ),
+    );
+    expect(result).toMatchObject({
+      resolved: true,
+      kind: "agent",
+      id: "researcher",
+      primarySkillHint: "deep-research",
+    });
+    expect(["trigger-match", "intent-match"]).toContain(result.matchedBy);
   });
 
   it("falls back cleanly when no route matches the intent", async () => {
