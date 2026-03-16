@@ -28,7 +28,7 @@ Use this for technology migrations, framework upgrades, dependency updates, or m
 
 - This workflow file, active platform rules, and selected agents or skills guide execution.
 - Attach the migration target, current versions, breaking change lists, and impact assessment.
-- Read `ENGINEERING_RULES.md` and `TECH.md` first because migrations often change accepted patterns and current-state architecture at the same time.
+- Read `ENGINEERING_RULES.md` and `docs/foundation/TECH.md` first because migrations often change accepted patterns and current-state architecture at the same time. After migration, flag updates needed in `docs/foundation/ARCHITECTURE.md` for `## Risks And Tech Debt`.
 
 ## Skill Routing
 

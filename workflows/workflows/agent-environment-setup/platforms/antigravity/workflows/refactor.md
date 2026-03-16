@@ -20,7 +20,7 @@ Use this when improving code structure, reducing tech debt, or modularizing with
 
 - This workflow file, active platform rules, and selected agents or skills guide execution.
 - Attach the target code, pain points, and any constraints on what can change.
-- Read `ENGINEERING_RULES.md` and `TECH.md` first so behavior-preserving structure changes do not drift from the accepted architecture contract.
+- Read `ENGINEERING_RULES.md` and `docs/foundation/TECH.md` first so behavior-preserving structure changes do not drift from the accepted architecture contract. Check `docs/foundation/ARCHITECTURE.md` for `## Dependency Rules` and `## Crosscutting Concerns` before restructuring.
 
 ## Skill Routing
 

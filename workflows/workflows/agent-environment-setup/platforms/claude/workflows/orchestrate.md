@@ -20,7 +20,7 @@ Use this when a task spans multiple domains (backend + frontend, security + infr
 
 - This workflow file, active platform rules, and selected agents or skills guide execution.
 - Attach the full task description, constraints, acceptance criteria, and relevant context when starting.
-- Read `ENGINEERING_RULES.md` and `TECH.md` before decomposing non-trivial work, then reuse any existing `docs/specs/<spec-id>/` pack as the handoff source of truth.
+- Read `ENGINEERING_RULES.md` and `docs/foundation/TECH.md` before decomposing non-trivial work. Check `docs/foundation/TECH.md` for build/validation commands and `docs/foundation/PRODUCT.md` for domain glossary. Then reuse any existing `docs/specs/<spec-id>/` pack as the handoff source of truth.
 
 ## Skill Routing
 

@@ -20,7 +20,7 @@ Use this when preparing a release, deploying to production, or managing a rollou
 
 - This workflow file, active platform rules, and selected agents or skills guide execution.
 - Attach the release scope, version number, changelog draft, and deployment target.
-- Read `ENGINEERING_RULES.md` and `TECH.md` before release if the shipped changes touched architecture, scaling assumptions, or design-system rules.
+- Read `ENGINEERING_RULES.md` and `docs/foundation/TECH.md` before release if the shipped changes touched architecture, scaling assumptions, or design-system rules. Check `docs/foundation/TECH.md` for `## Build And Validation` and `## CI CD Pipeline` steps to verify the release pipeline.
 
 ## Skill Routing
 

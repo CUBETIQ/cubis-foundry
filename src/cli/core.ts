@@ -71,8 +71,7 @@ const PRODUCT_FOUNDATION_BLOCK_END_RE =
   /<!--\s*cbx:product:foundation:end\s*-->/g;
 const ARCHITECTURE_DOC_BLOCK_START_RE =
   /<!--\s*cbx:architecture:doc:start[^>]*-->/g;
-const ARCHITECTURE_DOC_BLOCK_END_RE =
-  /<!--\s*cbx:architecture:doc:end\s*-->/g;
+const ARCHITECTURE_DOC_BLOCK_END_RE = /<!--\s*cbx:architecture:doc:end\s*-->/g;
 const TECH_ARCHITECTURE_BLOCK_START_RE =
   /<!--\s*cbx:architecture:tech:start[^>]*-->/g;
 const TECH_ARCHITECTURE_BLOCK_END_RE =
@@ -1056,7 +1055,8 @@ function inferArchitectureContractProfile(snapshot) {
       snapshot.topDirs.includes("app")
         ? "App-level UI patterns should be centralized and reused across screens."
         : null,
-    ]) || "No dedicated design-system directory detected; infer shared UI rules from current components and screens.";
+    ]) ||
+    "No dedicated design-system directory detected; infer shared UI rules from current components and screens.";
 
   const testingStrategy = [];
   if (snapshot.keyScripts.some((script) => script.name === "lint")) {
@@ -1107,7 +1107,8 @@ function buildArchitectureMermaid(snapshot) {
     '  user["User / Entry Point"] --> app["Application Surface"]',
   ];
   for (let index = 0; index < flowNodes.length; index += 1) {
-    const nodeName = flowNodes[index].replace(/[^A-Za-z0-9]/g, "") || `N${index}`;
+    const nodeName =
+      flowNodes[index].replace(/[^A-Za-z0-9]/g, "") || `N${index}`;
     lines.push(`  app --> ${nodeName}["${flowNodes[index]}/"]`);
   }
   if (snapshot.isMcpServer || snapshot.mcpSignals.length > 0) {
@@ -1123,21 +1124,31 @@ function inferProductFoundationProfile(snapshot, specRoots = []) {
   const appRoots = (snapshot.architectureByApp || [])
     .map((item) => item.rootPath)
     .filter((value) => value && value !== ".");
-  const primarySurfaces = appRoots.length > 0 ? appRoots : snapshot.topDirs.slice(0, 6);
+  const primarySurfaces =
+    appRoots.length > 0 ? appRoots : snapshot.topDirs.slice(0, 6);
   const userPersonas = [];
 
   if (snapshot.frameworks.includes("Flutter")) {
-    userPersonas.push("End users interacting through mobile or desktop app surfaces");
+    userPersonas.push(
+      "End users interacting through mobile or desktop app surfaces",
+    );
   }
   if (
     snapshot.frameworks.includes("Next.js") ||
     snapshot.frameworks.includes("React") ||
     snapshot.topDirs.includes("web")
   ) {
-    userPersonas.push("Browser users and internal operators using web-facing flows");
+    userPersonas.push(
+      "Browser users and internal operators using web-facing flows",
+    );
   }
-  if (snapshot.frameworks.includes("NestJS") || snapshot.topDirs.includes("api")) {
-    userPersonas.push("Internal services, operators, or partner systems consuming API boundaries");
+  if (
+    snapshot.frameworks.includes("NestJS") ||
+    snapshot.topDirs.includes("api")
+  ) {
+    userPersonas.push(
+      "Internal services, operators, or partner systems consuming API boundaries",
+    );
   }
   if (userPersonas.length === 0) {
     userPersonas.push(
@@ -1157,7 +1168,9 @@ function inferProductFoundationProfile(snapshot, specRoots = []) {
     );
   }
   if (snapshot.isMcpServer || snapshot.mcpSignals.length > 0) {
-    coreJourneys.push("Tool-assisted and MCP-driven workflows are part of the operating model and should stay stable.");
+    coreJourneys.push(
+      "Tool-assisted and MCP-driven workflows are part of the operating model and should stay stable.",
+    );
   }
   if (coreJourneys.length === 0) {
     coreJourneys.push(
@@ -1266,12 +1279,16 @@ function buildArchitectureDocSection(snapshot, specRoots = []) {
     "### Bounded Contexts and Module Boundaries",
     ...(profile.moduleBoundaries.length > 0
       ? profile.moduleBoundaries.map((item) => `- ${item}`)
-      : ["- No strong top-level module boundaries were detected automatically."]),
+      : [
+          "- No strong top-level module boundaries were detected automatically.",
+        ]),
     "",
     "### Architecture Signals by Surface",
     ...(profile.architectureSignals.length > 0
       ? profile.architectureSignals.map((item) => `- ${item}`)
-      : ["- No app-level architecture signals were inferred from the repo scan."]),
+      : [
+          "- No app-level architecture signals were inferred from the repo scan.",
+        ]),
     "",
     "### Decision Areas to Preserve",
     ...profile.decisionAreas.map((item) => `- ${item}`),
@@ -1309,7 +1326,9 @@ function buildEngineeringArchitectureSection(snapshot) {
     "- Module and package boundaries to preserve:",
     ...(profile.moduleBoundaries.length > 0
       ? profile.moduleBoundaries.map((rule) => `  - ${rule}`)
-      : ["  - No strong module boundary was detected automatically; keep new boundaries explicit in specs and ADRs."]),
+      : [
+          "  - No strong module boundary was detected automatically; keep new boundaries explicit in specs and ADRs.",
+        ]),
     "- Testability expectations:",
     ...profile.testingStrategy.map((rule) => `  - ${rule}`),
     "- Doc refresh policy:",
@@ -1374,7 +1393,9 @@ function buildTechArchitectureSection(snapshot) {
     "### Module / App Topology",
     ...(profile.moduleBoundaries.length > 0
       ? profile.moduleBoundaries.map((item) => `- ${item}`)
-      : ["- No significant top-level module boundaries detected automatically."]),
+      : [
+          "- No significant top-level module boundaries detected automatically.",
+        ]),
     "",
     "### Flow Narratives",
     "- Describe the primary request, data, and background-job flows here when architecture generation runs.",
@@ -1402,11 +1423,12 @@ function buildRoadmapFoundationSection(snapshot, specRoots = []) {
     specRoots,
   };
   const hash = hashStableObject(payload);
-  const nowItems = specRoots.length > 0
-    ? specRoots.map((item) => `Track active change planning in \`${item}\`.`)
-    : [
-        "No active spec packs detected. Create a spec pack before starting the next non-trivial feature or migration.",
-      ];
+  const nowItems =
+    specRoots.length > 0
+      ? specRoots.map((item) => `Track active change planning in \`${item}\`.`)
+      : [
+          "No active spec packs detected. Create a spec pack before starting the next non-trivial feature or migration.",
+        ];
   const nextItems = [];
   if (snapshot.frameworks.length > 0) {
     nextItems.push(
@@ -1687,6 +1709,28 @@ function buildEngineeringRulesManagedBlock({
   const roadmapRef = toPosixPath(path.resolve(roadmapFilePath));
   const ruleRef = toPosixPath(path.resolve(ruleFilePath));
 
+  const supportsAtImport = platform === "claude" || platform === "gemini";
+  const ruleFileDir = path.dirname(path.resolve(ruleFilePath));
+  const relProduct = toPosixPath(
+    path.relative(ruleFileDir, path.resolve(productFilePath)),
+  );
+  const relArchitecture = toPosixPath(
+    path.relative(ruleFileDir, path.resolve(architectureFilePath)),
+  );
+  const relTech = toPosixPath(
+    path.relative(ruleFileDir, path.resolve(techMdFilePath)),
+  );
+
+  const importLines = supportsAtImport
+    ? [
+        "",
+        "Foundation docs (auto-imported into context):",
+        `@${relProduct}`,
+        `@${relArchitecture}`,
+        `@${relTech}`,
+      ]
+    : [];
+
   return [
     `<!-- cbx:engineering:auto:start platform=${platform} version=1 -->`,
     "## Engineering Guardrails (auto-managed)",
@@ -1698,13 +1742,14 @@ function buildEngineeringRulesManagedBlock({
     `- Project tech map: \`${techRef}\``,
     `- Delivery roadmap: \`${roadmapRef}\``,
     `- Active platform rule file: \`${ruleRef}\``,
+    ...importLines,
     "",
     "Hard policy:",
     "1. Start from product outcomes and ship the smallest valuable slice.",
     "2. Keep architecture simple (KISS) and avoid speculative work (YAGNI).",
     "3. Apply SOLID pragmatically to reduce change risk, not add ceremony.",
     "4. Use clear naming with focused responsibilities and explicit boundaries.",
-    `5. For non-trivial work, read ${FOUNDATION_DOCS_DIR}/PRODUCT.md, ENGINEERING_RULES.md, ${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md, and ${FOUNDATION_DOCS_DIR}/TECH.md in that order when they exist before planning or implementation.`,
+    `5. For non-trivial work, read ${FOUNDATION_DOCS_DIR}/PRODUCT.md, ENGINEERING_RULES.md, ${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md, and ${FOUNDATION_DOCS_DIR}/TECH.md in that order when they exist before planning or implementation. Check ${FOUNDATION_DOCS_DIR}/PRODUCT.md for domain glossary and ${FOUNDATION_DOCS_DIR}/TECH.md for build/validation commands.`,
     "6. Require validation evidence (lint/types/tests) before merge.",
     "7. Use Decision Log response style.",
     "8. Every Decision Log must include a `Skills Used` section listing skill, workflow, or agent names.",
@@ -3557,7 +3602,8 @@ function targetStateKey(platform, scope) {
 }
 
 function getStateFilePath(scope, cwd = process.cwd()) {
-  if (scope === "global") return path.join(os.homedir(), ".cbx", "state.json");
+  if (scope === "global")
+    return path.join(resolveManagedHomeDir(), ".cbx", "state.json");
   return path.join(cwd, ".cbx", "workflows-state.json");
 }
 
@@ -5317,7 +5363,7 @@ async function writeGeneratedArtifact({
 
 function resolveLegacyPostmanConfigPath({ scope, cwd = process.cwd() }) {
   if (scope === "global") {
-    return path.join(os.homedir(), ".cbx", LEGACY_POSTMAN_CONFIG_FILENAME);
+    return path.join(resolveManagedHomeDir(), ".cbx", LEGACY_POSTMAN_CONFIG_FILENAME);
   }
   const workspaceRoot = findWorkspaceRoot(cwd);
   return path.join(workspaceRoot, LEGACY_POSTMAN_CONFIG_FILENAME);
@@ -5325,7 +5371,7 @@ function resolveLegacyPostmanConfigPath({ scope, cwd = process.cwd() }) {
 
 function resolveCbxConfigPath({ scope, cwd = process.cwd() }) {
   if (scope === "global") {
-    return path.join(os.homedir(), ".cbx", CBX_CONFIG_FILENAME);
+    return path.join(resolveManagedHomeDir(), ".cbx", CBX_CONFIG_FILENAME);
   }
   const workspaceRoot = findWorkspaceRoot(cwd);
   return path.join(workspaceRoot, CBX_CONFIG_FILENAME);
@@ -5345,14 +5391,23 @@ async function assertNoLegacyOnlyPostmanConfig({ scope, cwd = process.cwd() }) {
 
 function resolveMcpRootPath({ scope, cwd = process.cwd() }) {
   if (scope === "global") {
-    return path.join(os.homedir(), ".cbx", "mcp");
+    return path.join(resolveManagedHomeDir(), ".cbx", "mcp");
   }
   const workspaceRoot = findWorkspaceRoot(cwd);
   return path.join(workspaceRoot, ".cbx", "mcp");
 }
 
+function resolveManagedHomeDir() {
+  const override = String(
+    process.env.HOME ||
+      process.env.USERPROFILE ||
+      "",
+  ).trim();
+  return override || os.homedir();
+}
+
 function resolveManagedCredentialsEnvPath() {
-  return path.join(os.homedir(), ".cbx", CBX_CREDENTIALS_ENV_FILENAME);
+  return path.join(resolveManagedHomeDir(), ".cbx", CBX_CREDENTIALS_ENV_FILENAME);
 }
 
 function parseShellEnvValue(rawValue) {
@@ -5491,11 +5546,7 @@ function resolveStitchMcpDefinitionPath({
   scope,
   cwd = process.cwd(),
 }) {
-  return path.join(
-    resolveMcpRootPath({ scope, cwd }),
-    platform,
-    "stitch.json",
-  );
+  return path.join(resolveMcpRootPath({ scope, cwd }), platform, "stitch.json");
 }
 
 function buildPostmanAuthHeader({
@@ -7109,7 +7160,11 @@ async function configurePostmanInstallArtifacts({
       })
     : null;
   const credentialEnvVarNames = [];
-  if (persistCredentials && shouldInstallPostman && effectiveApiKeySource === "env") {
+  if (
+    persistCredentials &&
+    shouldInstallPostman &&
+    effectiveApiKeySource === "env"
+  ) {
     credentialEnvVarNames.push(
       effectiveApiKeyEnvVar || POSTMAN_API_KEY_ENV_VAR,
     );
@@ -8365,7 +8420,8 @@ function printPostmanSetupSummary({ postmanSetup }) {
       `- .gitignore (${ignoreResult.filePath}): ${ignoreResult.action}`,
     );
   }
-  for (const cleanupResult of postmanSetup.legacyDefinitionCleanupResults || []) {
+  for (const cleanupResult of postmanSetup.legacyDefinitionCleanupResults ||
+    []) {
     console.log(
       `- Legacy direct MCP cleanup (${cleanupResult.path}): ${cleanupResult.action}`,
     );
@@ -8842,10 +8898,7 @@ function withInstallOptions(command) {
       "--stitch",
       "optional: configure Stitch profiles and gateway-backed Foundry MCP wiring",
     )
-    .option(
-      "--playwright",
-      "optional: include Playwright MCP server wiring",
-    )
+    .option("--playwright", "optional: include Playwright MCP server wiring")
     .option(
       "--postman-api-key <key>",
       "deprecated: inline key mode is disabled. Use env vars + profiles.",
@@ -11010,7 +11063,7 @@ async function runWorkflowConfigKeysList(options) {
       cwd,
     });
 
-    console.log(`Config file: ${configPath}`);
+    console.log(`Config file: ${toPosixPath(configPath)}`);
     if (!existing.exists) {
       console.log("Status: missing");
       return;
@@ -11321,15 +11374,16 @@ async function runWorkflowConfigKeysMigrateInline(options) {
     }
     console.log(`Legacy direct MCP cleanup actions: ${cleanupResults.length}`);
     for (const cleanup of cleanupResults) {
-      console.log(`- ${cleanup.action} ${cleanup.path}`);
+      console.log(`- ${cleanup.action} ${toPosixPath(cleanup.path)}`);
     }
     if (secureArtifacts?.mcpRuntimeResult) {
       console.log(
-        `Secure platform MCP target: ${secureArtifacts.mcpRuntimeResult.action} (${secureArtifacts.mcpRuntimeResult.path || "n/a"})`,
+        `Secure platform MCP target: ${secureArtifacts.mcpRuntimeResult.action} (${secureArtifacts.mcpRuntimeResult.path ? toPosixPath(secureArtifacts.mcpRuntimeResult.path) : "n/a"})`,
       );
     }
-    for (const cleanup of secureArtifacts?.legacyDefinitionCleanupResults || []) {
-      console.log(`- ${cleanup.action} ${cleanup.path}`);
+    for (const cleanup of secureArtifacts?.legacyDefinitionCleanupResults ||
+      []) {
+      console.log(`- ${cleanup.action} ${toPosixPath(cleanup.path)}`);
     }
     for (const warning of secureArtifacts?.warnings || []) {
       console.log(`Warning: ${warning}`);
@@ -11356,14 +11410,17 @@ async function runWorkflowConfigKeysDoctor(options) {
       cwd,
     });
 
-    console.log(`Config file: ${configPath}`);
+    console.log(`Config file: ${toPosixPath(configPath)}`);
     if (!existing.exists) {
       console.log("Status: missing");
       return;
     }
 
     const configFindings = collectInlineCredentialFindings(existingValue);
-    const artifactFindings = await collectCredentialLeakFindings({ scope, cwd });
+    const artifactFindings = await collectCredentialLeakFindings({
+      scope,
+      cwd,
+    });
     const migrationPreview = migrateInlineCredentialsInConfig(existingValue);
 
     console.log(`Inline key findings: ${configFindings.length}`);
@@ -11373,7 +11430,7 @@ async function runWorkflowConfigKeysDoctor(options) {
 
     console.log(`Credential leak findings: ${artifactFindings.length}`);
     for (const finding of artifactFindings) {
-      console.log(`- ${finding.filePath} [${finding.matches.join(", ")}]`);
+      console.log(`- ${toPosixPath(finding.filePath)} [${finding.matches.join(", ")}]`);
     }
 
     if (migrationPreview.requiredEnvVars.length > 0) {
@@ -12291,7 +12348,7 @@ async function runMcpServe(options) {
 
 function resolveCbxRootPath({ scope, cwd = process.cwd() }) {
   if (scope === "global") {
-    return path.join(os.homedir(), ".cbx");
+    return path.join(resolveManagedHomeDir(), ".cbx");
   }
   const workspaceRoot = findWorkspaceRoot(cwd);
   return path.join(workspaceRoot, ".cbx");
@@ -12832,9 +12889,7 @@ function printInstallEngineeringSummary({ engineeringResults, techResult }) {
 
 function printInstallDocumentationNotice() {
   console.log("\nProject backbone docs:");
-  console.log(
-    "- Install only wires the rule references and workflow assets.",
-  );
+  console.log("- Install only wires the rule references and workflow assets.");
   console.log(
     `- Use \`cbx rules init\` to scaffold ENGINEERING_RULES.md and TECH.md, or \`cbx build architecture --platform <codex|claude|gemini|copilot>\` to generate ${FOUNDATION_DOCS_DIR}/PRODUCT.md, ${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md, ${FOUNDATION_DOCS_DIR}/TECH.md, and ADR scaffolds.`,
   );
@@ -12895,9 +12950,10 @@ async function upsertEngineeringArtifacts({
     engineeringResults.push({
       ruleFilePath: target.ruleFilePath,
       rulesFilePath: scaffold.engineeringRulesPath,
-      rulesFileResult: scaffold.rulesArchitectureResult.action === "unchanged"
-        ? scaffold.rulesFileResult
-        : scaffold.rulesArchitectureResult,
+      rulesFileResult:
+        scaffold.rulesArchitectureResult.action === "unchanged"
+          ? scaffold.rulesFileResult
+          : scaffold.rulesArchitectureResult,
       blockResult,
     });
   }
@@ -13083,7 +13139,11 @@ async function resolveArchitectureInspectionAnchors(
   return ordered.slice(0, 18);
 }
 
-function resolveArchitectureConditionalSkills(snapshot, specRoots, researchMode) {
+function resolveArchitectureConditionalSkills(
+  snapshot,
+  specRoots,
+  researchMode,
+) {
   const conditional = [];
   const frameworks = new Set(snapshot.frameworks || []);
   const topDirs = new Set(snapshot.topDirs || []);
@@ -13137,7 +13197,9 @@ async function resolveArchitectureSkillPathHints(platform, cwd, skillIds) {
   if (!skillsDir) return [];
   return skillIds
     .map((skillId) => path.join(skillsDir, skillId, "SKILL.md"))
-    .map((filePath) => toPosixPath(path.relative(findWorkspaceRoot(cwd), filePath)));
+    .map((filePath) =>
+      toPosixPath(path.relative(findWorkspaceRoot(cwd), filePath)),
+    );
 }
 
 function buildArchitecturePrompt({
@@ -13163,13 +13225,26 @@ function buildArchitecturePrompt({
       return `${label}: ${item.architectureSignals.join(", ")}`;
     });
 
+  const platformCapabilities = {
+    codex:
+      "You can read, write, and execute shell commands. Use `codex exec` mode.",
+    claude:
+      "You can read, write files, and run bash commands. Use non-interactive mode.",
+    gemini:
+      "You can read, write files, and run commands within your sandbox. Follow Gemini CLI conventions.",
+    copilot:
+      "You can read, write files, and use terminal commands. Follow Copilot agent conventions.",
+  };
+
   return [
     `You are running inside ${platform}.`,
+    platformCapabilities[platform] || "",
     "",
     "Objective:",
     `- Inspect the repository at ${toPosixPath(workspaceRoot)} and author or refresh the core foundation docs in ${productPath}, ${architecturePath}, ${techPath}, ${adrReadmePath}, and ${adrTemplatePath}.`,
     "- The content should be primarily AI-authored from repository inspection, not copied from placeholder scaffolding.",
     "- Preserve manual content outside the managed `cbx:*` markers.",
+    "- The output docs must be immediately useful to any AI agent (Copilot, Claude, Gemini, Codex) inspecting this repo for the first time, reducing search and exploration time.",
     "",
     "Required skill bundle:",
     `- Load these exact skill IDs first: ${coreSkills.map((skillId) => `\`${skillId}\``).join(", ")}`,
@@ -13189,8 +13264,33 @@ function buildArchitecturePrompt({
       ? `- Architecture signals: ${architectureSignals.join(" | ")}`
       : "- Architecture signals: none confidently inferred from the repo scan",
     `- Entry points: ${snapshot.entryPoints.length > 0 ? snapshot.entryPoints.slice(0, 8).join(" | ") : "none detected"}`,
-    `- Key scripts: ${snapshot.keyScripts.length > 0 ? snapshot.keyScripts.slice(0, 8).map((item) => `${item.name}=${item.command}`).join(" | ") : "none detected"}`,
+    `- Key scripts: ${
+      snapshot.keyScripts.length > 0
+        ? snapshot.keyScripts
+            .slice(0, 8)
+            .map((item) => `${item.name}=${item.command}`)
+            .join(" | ")
+        : "none detected"
+    }`,
     `- Inspection anchors: ${inspectionAnchors.length > 0 ? inspectionAnchors.join(", ") : "no concrete anchors detected; inspect the repo root, main source trees, and manifest files manually"}`,
+    "",
+    "Markdown formatting rules (apply to all generated docs):",
+    "- Start each file with a single `# Title` heading. Never use more than one H1 per file.",
+    "- Use `## Heading` for major sections, `### Heading` for subsections. Never skip heading levels (e.g., do not jump from `##` to `####`).",
+    "- Separate headings from surrounding content with exactly one blank line above and below.",
+    "- Use fenced code blocks with triple backticks and a language identifier (```bash, ```typescript, ```json, ```yaml, ```mermaid) for all code, commands, and diagrams. Never use indented code blocks.",
+    "- Use `-` for unordered lists. Use `1.` for ordered lists. Indent nested lists by 2 spaces.",
+    "- Use `inline code` backticks for file paths, command names, env vars, config keys, and identifiers.",
+    "- Use Mermaid fenced blocks (```mermaid) for diagrams. Validate that diagram syntax is correct: `graph TD`, `sequenceDiagram`, `flowchart LR`, or `C4Context` style. Every node and edge must be syntactically valid.",
+    "- Tables must have a header row, a separator row with dashes and pipes, and aligned columns. Example:",
+    "  ```",
+    "  | Column A | Column B |",
+    "  | -------- | -------- |",
+    "  | value    | value    |",
+    "  ```",
+    "- Use `> blockquote` only for callouts or important notes, prefixed with **Note:** or **Warning:**.",
+    "- Relative links to other repo files should use repo-relative paths: `[ARCHITECTURE.md](docs/foundation/ARCHITECTURE.md)`.",
+    "- End every file with a single trailing newline. No trailing whitespace on lines.",
     "",
     "Execution contract:",
     "1. Inspect the repository first before writing any backbone doc content. Derive structure, product surfaces, runtime boundaries, and technical constraints from the actual codebase.",
@@ -13198,25 +13298,75 @@ function buildArchitecturePrompt({
     "3. Do not infer architecture from filenames alone when you can open representative files. Read enough source to validate the main app boundaries, runtime flows, and persistence/integration patterns.",
     `4. Then read ${productPath}, ${architecturePath}, and ${techPath} in that order when they exist so you can preserve useful manual context and update existing managed sections cleanly.`,
     `5. Replace or update only the content between the existing managed markers in ${productPath}, ${architecturePath}, and ${techPath}. Do not append a second marker block.`,
-    `6. In ${productPath}, write a concrete product foundation: product purpose, primary users/operators, main journeys, business capabilities, operational constraints, and what future contributors must preserve.`,
-    `7. In ${architecturePath}, write a lean but detailed architecture backbone in a pragmatic arc42/C4 style: system purpose and constraints, explicit architecture classification, bounded contexts, major building blocks, dependency rules, data and integration boundaries, runtime flows, deployment/operability notes, testing/debugging strategy, and only the diagram levels that add real value.`,
-    `8. ${architecturePath} must include a dedicated folder-structure guide that lists the important apps/packages/directories, what each owns, and how contributors should treat those boundaries when editing code.`,
-    `9. In ${techPath}, write the developer-facing technical map: stack, repo layout, key commands, entrypoints, data stores, external services, environment/config surfaces, MCP/tooling footprint, and change hotspots future agents should inspect before editing code.`,
-    `10. ${techPath} should complement ${architecturePath}; do not repeat the same structure prose unless it helps a developer act faster.`,
-    `11. Use exact required headings in ${productPath}: \`## Product Scope\`, \`## Product Purpose\`, \`## Primary Users And Operators\`, \`## Main Journeys\`, \`## Business Capabilities That Matter\`, \`## Operational Constraints\`, \`## Preservation Rules For Future Contributors\`.`,
-    `12. Use exact required headings in ${architecturePath}: \`## Architecture Type\`, \`## System Purpose\`, \`## Constraints And Architectural Drivers\`, \`## Repository Structure Guide\`, \`## Bounded Contexts\`, \`## Major Building Blocks\`, \`## Dependency Rules\`, \`## Data Boundaries\`, \`## Integration Boundaries\`, \`## Runtime Flows\`, \`## Deployment And Operability\`, \`## Testing And Debugging Strategy\`, \`## Architectural Guidance\`.`,
-    `13. Use exact required headings in ${techPath}: \`## Stack Snapshot\`, \`## Repository Layout\`, \`## Entrypoints\`, \`## Key Commands\`, \`## Runtime Data Stores\`, \`## External Services And Integration Surfaces\`, \`## Environment And Config Surfaces\`, \`## Generated Artifacts To Respect\`, \`## Change Hotspots\`, \`## Practical Editing Notes\`.`,
-    "14. Every major claim should be grounded in repository evidence. Mention concrete repo paths in the docs when a structural claim would otherwise be ambiguous.",
-    "15. Avoid placeholder filler, generic checklists, and duplicated content across files. Each doc should have a clear job.",
-    "16. Do not create ROADMAP.md, ENGINEERING_RULES.md, or other extra docs unless the prompt explicitly asks for them.",
+    "",
+    `6. In ${productPath}, write a concrete product foundation:`,
+    "   - Product purpose with a one-sentence elevator pitch an AI agent can use as context.",
+    "   - Primary users/operators with their key goals.",
+    "   - Main journeys as numbered sequences an agent can follow to understand the happy path.",
+    "   - Business capabilities that matter, linked to repo paths that implement them.",
+    "   - Operational constraints and SLA/uptime expectations if evident.",
+    "   - What future contributors must preserve (invariants, contracts, compatibility guarantees).",
+    "   - A domain glossary defining project-specific terms, abbreviations, and bounded-context language so AI agents use consistent vocabulary.",
+    "",
+    `7. In ${architecturePath}, write a lean but detailed architecture backbone in a pragmatic arc42/C4 style:`,
+    "   - Architecture classification (monolith, modular monolith, microservices, serverless, hybrid) with evidence.",
+    "   - System purpose, constraints, and architectural drivers.",
+    "   - Bounded contexts with ownership boundaries mapped to directories.",
+    "   - Major building blocks as a table or Mermaid C4 diagram with responsibilities.",
+    "   - Dependency rules: what can import what, forbidden coupling, and layering policy.",
+    "   - Data and integration boundaries with protocol/format details.",
+    "   - Runtime flows as Mermaid sequence diagrams for the top 2-3 critical paths.",
+    "   - Crosscutting concerns: logging, auth, error handling, i18n patterns with repo-path evidence.",
+    "   - Quality requirements derived from the codebase (performance budgets, test coverage, accessibility).",
+    "   - Known risks and tech debt visible in the codebase (TODOs, deprecated deps, missing tests).",
+    "   - Deployment/operability notes.",
+    "   - Testing/debugging strategy with concrete test commands and coverage tooling.",
+    "   - A dedicated folder-structure guide listing every important directory, what it owns, and contributor rules.",
+    "",
+    `8. In ${techPath}, write the developer-facing technical map that an AI agent can use to start working immediately:`,
+    "   - Stack snapshot as a table (runtime, language, framework, version if discoverable).",
+    "   - Repository layout: directory tree with one-line purpose per directory.",
+    "   - Entrypoints: the exact files that bootstrap each app/service/CLI.",
+    "   - Key commands: the exact shell commands for bootstrap, build, test, lint, format, run, and deploy. Validate that these commands actually exist in the project manifests. Document required order and preconditions.",
+    "   - Build and validation: the validated sequence of commands to go from clean clone to passing CI locally, including environment prerequisites (Node version, Python version, Docker, etc.).",
+    "   - CI/CD pipeline: describe the CI/CD workflow files, their triggers, and what checks must pass before merge.",
+    "   - Runtime data stores and migration commands.",
+    "   - External services and integration surfaces with protocol details.",
+    "   - Environment and config surfaces: list every env var the app reads, its purpose, default value if any, and whether it is required or optional.",
+    "   - MCP/tooling footprint if present.",
+    "   - Generated artifacts: files that are auto-generated and must not be hand-edited.",
+    "   - Error patterns and debugging: common error messages, their causes, and resolution steps discovered during inspection.",
+    "   - Change hotspots: files/directories that change most often or have the most coupling, so agents know where to look first.",
+    "   - Practical editing notes: conventions for naming, imports, test file placement, and PR hygiene.",
+    "",
+    `9. ${techPath} should complement ${architecturePath}; do not repeat the same structure prose unless it helps a developer act faster.`,
+    "",
+    `10. Use exact required headings in ${productPath}: \`## Product Scope\`, \`## Product Purpose\`, \`## Primary Users And Operators\`, \`## Main Journeys\`, \`## Business Capabilities That Matter\`, \`## Operational Constraints\`, \`## Preservation Rules For Future Contributors\`, \`## Domain Glossary\`.`,
+    `11. Use exact required headings in ${architecturePath}: \`## Architecture Type\`, \`## System Purpose\`, \`## Constraints And Architectural Drivers\`, \`## Repository Structure Guide\`, \`## Bounded Contexts\`, \`## Major Building Blocks\`, \`## Dependency Rules\`, \`## Data Boundaries\`, \`## Integration Boundaries\`, \`## Runtime Flows\`, \`## Crosscutting Concerns\`, \`## Quality Requirements\`, \`## Risks And Tech Debt\`, \`## Deployment And Operability\`, \`## Testing And Debugging Strategy\`, \`## Architectural Guidance\`.`,
+    `12. Use exact required headings in ${techPath}: \`## Stack Snapshot\`, \`## Repository Layout\`, \`## Entrypoints\`, \`## Key Commands\`, \`## Build And Validation\`, \`## CI CD Pipeline\`, \`## Runtime Data Stores\`, \`## External Services And Integration Surfaces\`, \`## Environment And Config Surfaces\`, \`## Generated Artifacts To Respect\`, \`## Error Patterns And Debugging\`, \`## Change Hotspots\`, \`## Practical Editing Notes\`.`,
+    "",
+    "13. Every major claim should be grounded in repository evidence. Mention concrete repo paths in the docs when a structural claim would otherwise be ambiguous.",
+    "14. Avoid placeholder filler, generic checklists, and duplicated content across files. Each doc should have a clear job.",
+    "15. Do not create ROADMAP.md, ENGINEERING_RULES.md, or other extra docs unless the prompt explicitly asks for them.",
     researchMode === "never"
-      ? "17. Stay repo-only. Do not use outside research."
-      : "17. Use repo evidence first. Use official docs when needed. Treat Reddit or community sources only as labeled secondary evidence.",
+      ? "16. Stay repo-only. Do not use outside research."
+      : "16. Use repo evidence first. Use official docs when needed. Treat Reddit or community sources only as labeled secondary evidence.",
     researchMode === "always"
-      ? `18. Include an external research evidence subsection in ${techPath} with clearly labeled primary and secondary evidence.`
-      : "18. Include external research notes only if they materially informed the architecture update.",
-    `19. If the project clearly follows Clean Architecture, feature-first modules, DDD, modular monolith, or another stable structure, make that explicit in ${architecturePath} with evidence from the repo.`,
-    `20. Ensure ${adrReadmePath} and ${adrTemplatePath} exist as ADR entrypoints, but keep them lean.`,
+      ? `17. Include an external research evidence subsection in ${techPath} with clearly labeled primary and secondary evidence.`
+      : "17. Include external research notes only if they materially informed the architecture update.",
+    `18. If the project clearly follows Clean Architecture, feature-first modules, DDD, modular monolith, or another stable structure, make that explicit in ${architecturePath} with evidence from the repo.`,
+    `19. Ensure ${adrReadmePath} and ${adrTemplatePath} exist as ADR entrypoints, but keep them lean.`,
+    "20. In all docs, when referencing other foundation docs, use relative markdown links: `[ARCHITECTURE.md](docs/foundation/ARCHITECTURE.md)`. This lets AI agents and humans navigate between docs.",
+    "21. Validate all Mermaid diagram syntax before writing. Each diagram must render without errors. Use simple node IDs (alphanumeric, no special characters) and quote labels containing spaces.",
+    "22. For each key command documented, note the expected exit code (0 for success) and any common failure modes. This helps AI agents validate their own changes.",
+    "",
+    "Platform context-loading awareness (these docs will be @imported into agent rule files):",
+    "- Claude loads CLAUDE.md at session start via @file imports; each imported doc should be concise and self-contained.",
+    "- Gemini loads GEMINI.md hierarchically with JIT context; structure docs with clear H2 headings so sections are independently useful.",
+    "- Codex concatenates AGENTS.md files root-to-CWD with a default 32 KiB combined limit; keep total foundation doc prose lean.",
+    "- Copilot loads copilot-instructions.md automatically; headings and inline code markers aid discoverability.",
+    "- Target each individual foundation doc under 300 lines so it stays effective when imported into any platform's context window.",
+    "- Front-load the most actionable information (commands, paths, constraints) in each doc; put supplementary detail later.",
     "",
     "Return one JSON object on the last line with this shape:",
     `{"files_written":["${productPath}","${architecturePath}","${techPath}","${adrReadmePath}","${adrTemplatePath}"],"research_used":false,"gaps":[],"next_actions":[]}`,
@@ -13225,9 +13375,40 @@ function buildArchitecturePrompt({
   ].join("\n");
 }
 
+let architectureExecFileCaptureOverride = null;
+let architectureSpawnCaptureOverride = null;
+
+export function __setArchitectureCommandCaptureForTests(overrides = {}) {
+  architectureExecFileCaptureOverride =
+    overrides.execFileCapture || architectureExecFileCaptureOverride;
+  architectureSpawnCaptureOverride =
+    overrides.spawnCapture || architectureSpawnCaptureOverride;
+}
+
+export function __resetArchitectureCommandCaptureForTests() {
+  architectureExecFileCaptureOverride = null;
+  architectureSpawnCaptureOverride = null;
+}
+
 async function execFileCapture(command, args, options = {}) {
+  if (architectureExecFileCaptureOverride) {
+    return await architectureExecFileCaptureOverride(command, args, options);
+  }
+  const resolvedCommand =
+    process.platform === "win32"
+      ? await resolveWindowsCommand(command)
+      : command;
+  if (
+    process.platform === "win32" &&
+    /\.(cmd|bat)$/i.test(resolvedCommand)
+  ) {
+    return await spawnCapture(resolvedCommand, args, {
+      ...options,
+      useShell: true,
+    });
+  }
   try {
-    const result = await execFile(command, args, {
+    const result = await execFile(resolvedCommand, args, {
       ...options,
       maxBuffer: 8 * 1024 * 1024,
     });
@@ -13238,7 +13419,9 @@ async function execFileCapture(command, args, options = {}) {
     };
   } catch (error) {
     if (error?.code === "ENOENT") {
-      throw new Error(`Required CLI '${command}' is not installed or not on PATH.`);
+      throw new Error(
+        `Required CLI '${command}' is not installed or not on PATH.`,
+      );
     }
     return {
       ok: false,
@@ -13249,14 +13432,51 @@ async function execFileCapture(command, args, options = {}) {
   }
 }
 
+async function resolveWindowsCommand(command) {
+  if (process.platform !== "win32") return command;
+  if (path.isAbsolute(command) || /[\\/]/.test(command)) return command;
+  try {
+    const result = await execFile("where.exe", [command], {
+      windowsHide: true,
+      maxBuffer: 1024 * 1024,
+    });
+    const resolved = String(result.stdout || "")
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .find(Boolean);
+    if (resolved) return resolved;
+  } catch (error) {
+    if (error?.code === "ENOENT") {
+      throw new Error(`Required CLI '${command}' is not installed or not on PATH.`);
+    }
+  }
+  const missingError = new Error(
+    `Required CLI '${command}' is not installed or not on PATH.`,
+  );
+  missingError.code = "ENOENT";
+  throw missingError;
+}
+
 async function spawnCapture(command, args, options = {}) {
-  const { cwd, env, streamOutput = false } = options;
+  if (architectureSpawnCaptureOverride) {
+    return await architectureSpawnCaptureOverride(command, args, options);
+  }
+  const { cwd, env, streamOutput = false, useShell } = options;
+  const resolvedCommand =
+    process.platform === "win32"
+      ? await resolveWindowsCommand(command)
+      : command;
+  const shell =
+    typeof useShell === "boolean"
+      ? useShell
+      : process.platform === "win32" && /\.(cmd|bat)$/i.test(resolvedCommand);
   return await new Promise((resolve, reject) => {
     let stdout = "";
     let stderr = "";
-    const child = spawn(command, args, {
+    const child = spawn(resolvedCommand, args, {
       cwd,
       env,
+      shell,
       stdio: ["ignore", "pipe", "pipe"],
     });
 
@@ -13275,7 +13495,9 @@ async function spawnCapture(command, args, options = {}) {
     child.on("error", (error) => {
       if (error?.code === "ENOENT") {
         reject(
-          new Error(`Required CLI '${command}' is not installed or not on PATH.`),
+          new Error(
+            `Required CLI '${command}' is not installed or not on PATH.`,
+          ),
         );
         return;
       }
@@ -13561,14 +13783,22 @@ async function normalizeArchitectureBuildOutputs(scaffold) {
 }
 
 async function readArchitectureDriftStatus(workspaceRoot, snapshot) {
-  const productPath = path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "PRODUCT.md");
+  const productPath = path.join(
+    workspaceRoot,
+    FOUNDATION_DOCS_DIR,
+    "PRODUCT.md",
+  );
   const architecturePath = path.join(
     workspaceRoot,
     FOUNDATION_DOCS_DIR,
     "ARCHITECTURE.md",
   );
   const techPath = path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "TECH.md");
-  const adrReadmePath = path.join(workspaceRoot, FOUNDATION_ADR_DIR, "README.md");
+  const adrReadmePath = path.join(
+    workspaceRoot,
+    FOUNDATION_ADR_DIR,
+    "README.md",
+  );
   const metadataPath = path.join(
     workspaceRoot,
     ".cbx",
@@ -13757,9 +13987,7 @@ async function runBuildArchitecture(options) {
         console.log(`Workspace: ${toPosixPath(workspaceRoot)}`);
         console.log(`Adapter: ${adapter.binary}`);
         console.log(`Research mode: ${researchMode}`);
-        console.log(
-          `Managed targets: ${summary.managedTargets.join(", ")}`,
-        );
+        console.log(`Managed targets: ${summary.managedTargets.join(", ")}`);
         console.log(`Skill bundle: ${skillBundle.join(", ")}`);
         console.log(`Invocation: ${[adapter.binary, ...args].join(" ")}`);
       }
@@ -13793,9 +14021,11 @@ async function runBuildArchitecture(options) {
       .map((filePath) => toPosixPath(path.relative(workspaceRoot, filePath)));
 
     const techContent =
-      filesAfter[scaffold.techMdPath] ?? (await readFile(scaffold.techMdPath, "utf8"));
+      filesAfter[scaffold.techMdPath] ??
+      (await readFile(scaffold.techMdPath, "utf8"));
     const productContent =
-      filesAfter[scaffold.productPath] ?? (await readFile(scaffold.productPath, "utf8"));
+      filesAfter[scaffold.productPath] ??
+      (await readFile(scaffold.productPath, "utf8"));
     const architectureContent =
       filesAfter[scaffold.architectureDocPath] ??
       (await readFile(scaffold.architectureDocPath, "utf8"));
@@ -13891,12 +14121,7 @@ function normalizeInitPlatforms(value) {
 }
 
 function normalizeInitMcpSelections(value) {
-  const allowed = new Set([
-    "cubis-foundry",
-    "postman",
-    "stitch",
-    "playwright",
-  ]);
+  const allowed = new Set(["cubis-foundry", "postman", "stitch", "playwright"]);
   const items = Array.isArray(value) ? value : parseCsvOption(value);
   const normalized = [];
   for (const item of items) {

@@ -21,7 +21,7 @@ Use this for large-scale implementation work that spans multiple sessions or mil
 - This workflow file, active platform rules, and selected agents or skills guide execution.
 - Attach the implementation plan, milestone definitions, and acceptance criteria per milestone.
 - Reuse `docs/specs/<spec-id>/` when present instead of maintaining a separate progress source of truth.
-- Read `ENGINEERING_RULES.md` first and `TECH.md` next before starting milestone execution.
+- Read `ENGINEERING_RULES.md` first and `docs/foundation/TECH.md` next before starting milestone execution. Use `## Build And Validation` for the validated build sequence and `## Key Commands` for test/lint commands.
 
 ## Skill Routing
 

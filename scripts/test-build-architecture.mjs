@@ -11,7 +11,11 @@ import {
 } from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { execFileSync, spawnSync } from "node:child_process";
+import {
+  __resetArchitectureCommandCaptureForTests,
+  __setArchitectureCommandCaptureForTests,
+  runCli as runCliInProcess,
+} from "../dist/cli/core.js";
 
 const ROOT = process.cwd();
 const CLI = path.join(ROOT, "bin", "cubis.js");
@@ -78,7 +82,7 @@ function createStubBins() {
 const stub = `#!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
-const name = path.basename(process.argv[1]);
+const name = path.parse(process.argv[1]).name;
 const args = process.argv.slice(2);
 const help = {
   codex: 'codex exec [--skip-git-repo-check] <prompt>',
@@ -153,16 +157,241 @@ process.stdout.write(JSON.stringify({
     const file = path.join(dir, name);
     writeFileSync(file, stub, "utf8");
     chmodSync(file, 0o755);
+    const windowsWrapper = path.join(dir, `${name}.cmd`);
+    writeFileSync(
+      windowsWrapper,
+      `@echo off\r\nnode "%~dp0\\${name}" %*\r\n`,
+      "utf8",
+    );
   }
   return dir;
 }
 
-function runCli(args, { cwd, env }) {
-  return spawnSync(process.execPath, [CLI, ...args], {
-    cwd,
-    env,
-    encoding: "utf8",
-  });
+function withPathEnv(pathValue, extras = {}) {
+  const env = { ...process.env, ...extras };
+  const pathKey =
+    Object.keys(process.env).find((key) => key.toLowerCase() === "path") ||
+    "PATH";
+  for (const key of Object.keys(env)) {
+    if (key.toLowerCase() === "path" && key !== pathKey) {
+      delete env[key];
+    }
+  }
+  env[pathKey] = pathValue;
+  return env;
+}
+
+function commandExistsOnPath(command, pathValue) {
+  const entries = String(pathValue || "")
+    .split(path.delimiter)
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+  const suffixes =
+    process.platform === "win32" ? ["", ".cmd", ".bat", ".exe"] : [""];
+  return entries.some((entry) =>
+    suffixes.some((suffix) => existsSync(path.join(entry, `${command}${suffix}`))),
+  );
+}
+
+function createArchitectureCommandStubs(logPath) {
+  const help = {
+    codex: "codex exec [--skip-git-repo-check] <prompt>",
+    claude: "claude --print <prompt>",
+    gemini: "gemini --prompt <prompt>",
+    copilot: "copilot --prompt <prompt>",
+  };
+
+  function assertCommandAvailable(command) {
+    const pathValue =
+      process.env.PATH ||
+      process.env.Path ||
+      process.env.path ||
+      "";
+    if (!commandExistsOnPath(command, pathValue)) {
+      const error = new Error(
+        `Required CLI '${command}' is not installed or not on PATH.`,
+      );
+      error.code = "ENOENT";
+      throw error;
+    }
+  }
+
+  return {
+    async execFileCapture(command, args) {
+      assertCommandAvailable(command);
+      if (
+        (command === "codex" && args[0] === "exec" && args[1] === "--help") ||
+        (command !== "codex" && args[0] === "--help")
+      ) {
+        return {
+          ok: true,
+          stdout: help[command] || "",
+          stderr: "",
+        };
+      }
+      return { ok: true, stdout: "", stderr: "" };
+    },
+    async spawnCapture(command, args, options = {}) {
+      assertCommandAvailable(command);
+      const prompt = args[args.length - 1] || "";
+      const normalizedPrompt = prompt.replace(/\\/g, "/");
+      if (
+        !normalizedPrompt.includes("docs/foundation/PRODUCT.md") ||
+        !normalizedPrompt.includes("docs/foundation/ARCHITECTURE.md") ||
+        !normalizedPrompt.includes("docs/foundation/TECH.md") ||
+        !normalizedPrompt.includes("docs/foundation/adr/README.md") ||
+        !normalizedPrompt.includes("Load these exact skill IDs first")
+      ) {
+        return {
+          ok: false,
+          stdout: "",
+          stderr: "prompt missing required architecture instructions",
+          code: 2,
+        };
+      }
+      if (logPath) {
+        writeFileSync(
+          logPath,
+          `${JSON.stringify({
+            name: command,
+            args,
+            cwd: options.cwd || process.cwd(),
+            prompt,
+          })}\n`,
+          { encoding: "utf8", flag: existsSync(logPath) ? "a" : "w" },
+        );
+      }
+      if (command === "gemini" && process.env.CBX_STUB_GEMINI_FAIL === "1") {
+        return {
+          ok: false,
+          stdout: "",
+          stderr:
+            "[MCP error] Error during discovery for MCP server 'PlaywrightMCP': fetch failed\n" +
+            "Permission 'cloudaicompanion.companions.generateChat' denied on resource '//cloudaicompanion.googleapis.com/projects/test/locations/global'.\n",
+          code: 1,
+        };
+      }
+
+      const foundationDir = path.join(
+        options.cwd || process.cwd(),
+        "docs",
+        "foundation",
+      );
+      const fileMap = {
+        product: path.join(foundationDir, "PRODUCT.md"),
+        architecture: path.join(foundationDir, "ARCHITECTURE.md"),
+        tech: path.join(foundationDir, "TECH.md"),
+      };
+      const richBlocks = {
+        product: [
+          "<!-- cbx:product:foundation:start version=1 profile=stub -->",
+          "## Product Scope",
+          "Stub product content grounded in repo evidence.",
+          "<!-- cbx:product:foundation:end -->",
+          "",
+        ].join("\n"),
+        architecture: [
+          "<!-- cbx:architecture:doc:start version=1 profile=stub -->",
+          "## Architecture Type",
+          "- Feature-first modular app with a modular monolith backend.",
+          "",
+          "## Folder Structure Guide",
+          "- apps/ owns runnable surfaces.",
+          "- packages/ owns shared code.",
+          "<!-- cbx:architecture:doc:end -->",
+          "",
+        ].join("\n"),
+        tech: [
+          "<!-- cbx:architecture:tech:start version=1 snapshot=stub -->",
+          "## Stack Snapshot",
+          "- Stub tech content.",
+          "<!-- cbx:architecture:tech:end -->",
+          "",
+        ].join("\n"),
+      };
+      for (const [nameKey, block] of Object.entries(richBlocks)) {
+        const filePath = fileMap[nameKey];
+        const existing = existsSync(filePath) ? readFileSync(filePath, "utf8") : "";
+        writeFileSync(filePath, `${existing}\n${block}`, "utf8");
+      }
+      return {
+        ok: true,
+        stdout: JSON.stringify({
+          files_written: [
+            "docs/foundation/PRODUCT.md",
+            "docs/foundation/ARCHITECTURE.md",
+            "docs/foundation/TECH.md",
+            "docs/foundation/adr/README.md",
+            "docs/foundation/adr/0000-template.md",
+          ],
+          research_used: prompt.includes("external research evidence"),
+          gaps: [],
+          next_actions: [],
+        }),
+        stderr: "",
+        code: 0,
+      };
+    },
+  };
+}
+
+async function runCli(args, { cwd, env }) {
+  const originalCwd = process.cwd();
+  const originalEnv = { ...process.env };
+  const originalExit = process.exit;
+  const originalStdoutWrite = process.stdout.write.bind(process.stdout);
+  const originalStderrWrite = process.stderr.write.bind(process.stderr);
+  let stdout = "";
+  let stderr = "";
+  let status = 0;
+
+  process.stdout.write = (chunk, encoding, callback) => {
+    stdout += chunk instanceof Buffer ? chunk.toString() : String(chunk);
+    if (typeof encoding === "function") encoding();
+    if (typeof callback === "function") callback();
+    return true;
+  };
+  process.stderr.write = (chunk, encoding, callback) => {
+    stderr += chunk instanceof Buffer ? chunk.toString() : String(chunk);
+    if (typeof encoding === "function") encoding();
+    if (typeof callback === "function") callback();
+    return true;
+  };
+  process.exit = (code = 0) => {
+    const error = new Error(`process.exit(${code})`);
+    error.code = code;
+    throw error;
+  };
+
+  try {
+    process.chdir(cwd);
+    for (const key of Object.keys(process.env)) {
+      delete process.env[key];
+    }
+    Object.assign(process.env, env);
+    await runCliInProcess([process.execPath, CLI, ...args]);
+  } catch (error) {
+    status =
+      typeof error?.code === "number"
+        ? error.code
+        : error?.message?.startsWith("process.exit(")
+          ? 1
+          : 1;
+    if (!stderr && error?.message && !error.message.startsWith("process.exit(")) {
+      stderr += `${error.message}\n`;
+    }
+  } finally {
+    process.chdir(originalCwd);
+    for (const key of Object.keys(process.env)) {
+      delete process.env[key];
+    }
+    Object.assign(process.env, originalEnv);
+    process.exit = originalExit;
+    process.stdout.write = originalStdoutWrite;
+    process.stderr.write = originalStderrWrite;
+  }
+
+  return { status, stdout, stderr };
 }
 
 function assert(condition, message) {
@@ -175,19 +404,21 @@ function parseJsonOutput(output) {
   return JSON.parse(String(output || "").trim());
 }
 
-function main() {
+async function main() {
   const workspace = createWorkspace();
   const stubDir = createStubBins();
   const logPath = path.join(workspace, "stub-log.jsonl");
-  const env = {
-    ...process.env,
-    PATH: `${stubDir}:${process.env.PATH || ""}`,
-    CBX_STUB_LOG: logPath,
-  };
+  const env = withPathEnv(
+    `${stubDir}${path.delimiter}${process.env.PATH || ""}`,
+    { CBX_STUB_LOG: logPath },
+  );
+  __setArchitectureCommandCaptureForTests(
+    createArchitectureCommandStubs(logPath),
+  );
 
   try {
     for (const platform of ["codex", "claude", "gemini", "copilot"]) {
-      const dryRun = runCli(
+      const dryRun = await runCli(
         ["build", "architecture", "--platform", platform, "--dry-run", "--json"],
         { cwd: workspace, env },
       );
@@ -213,7 +444,7 @@ function main() {
       );
     }
 
-    const buildRun = runCli(
+    const buildRun = await runCli(
       ["build", "architecture", "--platform", "codex", "--json"],
       { cwd: workspace, env },
     );
@@ -261,30 +492,29 @@ function main() {
       "adr template missing",
     );
 
-    const checkFresh = runCli(
+    const checkFresh = await runCli(
       ["build", "architecture", "--platform", "codex", "--check", "--json"],
       { cwd: workspace, env },
     );
     assert(checkFresh.status === 0, `fresh architecture check failed: ${checkFresh.stderr}`);
 
     rmSync(path.join(workspace, ".cbx", "architecture-build.json"), { force: true });
-    const checkStale = runCli(
+    const checkStale = await runCli(
       ["build", "architecture", "--platform", "codex", "--check"],
       { cwd: workspace, env },
     );
     assert(checkStale.status !== 0, "stale architecture check should fail");
 
-    const missingEnv = {
-      ...process.env,
-      PATH: mkdtempSync(path.join(os.tmpdir(), "cbx-empty-path-")),
-    };
-    const missingRun = runCli(
+    const missingEnv = withPathEnv(
+      mkdtempSync(path.join(os.tmpdir(), "cbx-empty-path-")),
+    );
+    const missingRun = await runCli(
       ["build", "architecture", "--platform", "copilot", "--dry-run"],
       { cwd: workspace, env: missingEnv },
     );
     assert(missingRun.status !== 0, "missing copilot runtime should fail");
 
-    const geminiFailRun = runCli(
+    const geminiFailRun = await runCli(
       ["build", "architecture", "--platform", "gemini"],
       { cwd: workspace, env: { ...env, CBX_STUB_GEMINI_FAIL: "1" } },
     );
@@ -303,28 +533,33 @@ function main() {
       .split(/\r?\n/)
       .filter(Boolean)
       .map((line) => JSON.parse(line));
+    const loggedPrompt = String(logLines[0]?.prompt || "").replace(/\\/g, "/");
     assert(logLines.length >= 1, "stub execution log missing");
     assert(
-      logLines[0].prompt.includes("docs/foundation/PRODUCT.md") &&
-        logLines[0].prompt.includes("docs/foundation/ARCHITECTURE.md") &&
-      logLines[0].prompt.includes("docs/foundation/TECH.md") &&
-        logLines[0].prompt.includes("Inspect the repository first") &&
-        logLines[0].prompt.includes("Inspection anchors:") &&
-        logLines[0].prompt.includes("Every major claim should be grounded in repository evidence") &&
-        logLines[0].prompt.includes("explicit architecture classification") &&
-        logLines[0].prompt.includes("folder-structure guide") &&
-        logLines[0].prompt.includes("Use exact required headings in docs/foundation/PRODUCT.md") &&
-        logLines[0].prompt.includes("## Repository Structure Guide") &&
-        logLines[0].prompt.includes("## Change Hotspots") &&
-        logLines[0].prompt.includes("AI-authored"),
+      loggedPrompt.includes("docs/foundation/PRODUCT.md") &&
+        loggedPrompt.includes("docs/foundation/ARCHITECTURE.md") &&
+        loggedPrompt.includes("docs/foundation/TECH.md") &&
+        loggedPrompt.includes("Inspect the repository first") &&
+        loggedPrompt.includes("Inspection anchors:") &&
+        loggedPrompt.includes("Every major claim should be grounded in repository evidence") &&
+        loggedPrompt.includes("Architecture classification") &&
+        loggedPrompt.includes("folder-structure guide") &&
+        loggedPrompt.includes("Use exact required headings in docs/foundation/PRODUCT.md") &&
+        loggedPrompt.includes("## Repository Structure Guide") &&
+        loggedPrompt.includes("## Change Hotspots") &&
+        loggedPrompt.includes("AI-authored"),
       "stub prompt missing scan-first foundation instructions",
     );
 
     console.log("Architecture build tests passed.");
   } finally {
+    __resetArchitectureCommandCaptureForTests();
     rmSync(workspace, { recursive: true, force: true });
     rmSync(stubDir, { recursive: true, force: true });
   }
 }
 
-main();
+main().catch((error) => {
+  console.error(error?.stack || error?.message || String(error));
+  process.exit(1);
+});

@@ -20,7 +20,7 @@ Use this for mobile app development, Flutter architecture, Stitch-driven mobile 
 
 - This workflow file, active platform rules, and selected agents or skills guide execution.
 - Attach platform targets (iOS, Android, both), Flutter version, and relevant screen/feature context.
-- Read `ENGINEERING_RULES.md` and `TECH.md` before implementing non-trivial mobile work so screens and features follow the declared architecture and design-system rules.
+- Read `ENGINEERING_RULES.md` and `docs/foundation/TECH.md` before implementing non-trivial mobile work so screens and features follow the declared architecture and design-system rules. Check `docs/foundation/PRODUCT.md` for `## Domain Glossary` to use consistent terminology.
 
 ## Skill Routing
 

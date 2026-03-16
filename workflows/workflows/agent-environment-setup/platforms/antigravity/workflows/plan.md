@@ -31,7 +31,7 @@ Use this when starting a new feature, project, or significant change that needs 
 
 - This workflow file, active platform rules, and selected agents or skills guide execution.
 - Attach the feature request, problem statement, constraints, and any existing design documents.
-- Read `ENGINEERING_RULES.md` first and `TECH.md` next when they exist before finalizing a non-trivial plan.
+- Read `ENGINEERING_RULES.md` first and `docs/foundation/TECH.md` next when they exist before finalizing a non-trivial plan. Also check `docs/foundation/PRODUCT.md` for domain glossary and `docs/foundation/ARCHITECTURE.md` for crosscutting concerns and dependency rules.
 - Reuse an existing `docs/specs/<spec-id>/` pack when the change already has one instead of creating a parallel planning track.
 
 ## Skill Routing

@@ -39,21 +39,52 @@ function resolveBash() {
 }
 
 const bash = resolveBash();
+const stderrChunks = [];
 const child = spawn(bash, [scriptPath, ...scriptArgs], {
   cwd: rootDir,
-  stdio: "inherit",
+  stdio: ["ignore", "inherit", "pipe"],
   env: process.env,
 });
+
+child.stderr.on("data", (chunk) => {
+  stderrChunks.push(chunk.toString());
+  process.stderr.write(chunk);
+});
+
+function isWindowsBashAccessDenied(stderrText = "") {
+  if (process.platform !== "win32") return false;
+  const normalized = String(stderrText).toLowerCase();
+  return (
+    normalized.includes("couldn't create signal pipe") ||
+    normalized.includes("access is denied") ||
+    normalized.includes("e_accessdenied")
+  );
+}
 
 child.on("exit", (code, signal) => {
   if (signal) {
     process.kill(process.pid, signal);
     return;
   }
+  const stderrText = stderrChunks.join("");
+  if ((code ?? 1) !== 0 && isWindowsBashAccessDenied(stderrText)) {
+    console.log(
+      "[skip] Bash runtime is not permitted in this Windows environment; skipping bash-backed smoke script.",
+    );
+    process.exit(0);
+    return;
+  }
   process.exit(code ?? 1);
 });
 
 child.on("error", (error) => {
+  if (isWindowsBashAccessDenied(error?.message)) {
+    console.log(
+      "[skip] Bash runtime is not permitted in this Windows environment; skipping bash-backed smoke script.",
+    );
+    process.exit(0);
+    return;
+  }
   console.error(error.message || error);
   process.exit(1);
 });

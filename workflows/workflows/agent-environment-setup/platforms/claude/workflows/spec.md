@@ -38,7 +38,7 @@ Use this for non-trivial work that needs durable planning in Git before implemen
 1. Determine whether the task is non-trivial enough to justify a spec pack.
 2. Find an existing `docs/specs/<spec-id>/` pack or create a new stable `spec_id`.
 3. Write or refresh the spec pack with brief, acceptance, tasks, traceability, and handoff files.
-4. Record `architecture_impact`, `doc_impact`, and any required updates to `docs/foundation/PRODUCT.md`, `docs/foundation/ARCHITECTURE.md`, `ENGINEERING_RULES.md`, or `docs/foundation/TECH.md`.
+4. Record `architecture_impact`, `doc_impact`, and any required updates to `docs/foundation/PRODUCT.md`, `docs/foundation/ARCHITECTURE.md`, `ENGINEERING_RULES.md`, or `docs/foundation/TECH.md`. If the change adds new terms, update the `## Domain Glossary` in `docs/foundation/PRODUCT.md`. If the change introduces new crosscutting patterns or tech debt, flag updates needed in `docs/foundation/ARCHITECTURE.md`.
 5. Identify the next execution route and hand off without replanning the same work.
 
 ## Context notes
