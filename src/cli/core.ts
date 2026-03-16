@@ -13377,6 +13377,13 @@ function buildArchitecturePrompt({
 
 let architectureExecFileCaptureOverride = null;
 let architectureSpawnCaptureOverride = null;
+const WINDOWS_COMMAND_EXTENSION_PREFERENCE = [
+  ".exe",
+  ".cmd",
+  ".bat",
+  ".com",
+  "",
+];
 
 export function __setArchitectureCommandCaptureForTests(overrides = {}) {
   architectureExecFileCaptureOverride =
@@ -13390,13 +13397,98 @@ export function __resetArchitectureCommandCaptureForTests() {
   architectureSpawnCaptureOverride = null;
 }
 
+function getEnvValueCaseInsensitive(env, key) {
+  if (!env) return "";
+  const match = Object.keys(env).find(
+    (candidate) => candidate.toLowerCase() === key.toLowerCase(),
+  );
+  return match ? String(env[match] || "") : "";
+}
+
+function rankWindowsCommandCandidate(command, candidate) {
+  const requestedBase = path.parse(command).name.toLowerCase();
+  const parsedCandidate = path.parse(candidate);
+  if (parsedCandidate.name.toLowerCase() !== requestedBase) return -1;
+  const ext = parsedCandidate.ext.toLowerCase();
+  const rank = WINDOWS_COMMAND_EXTENSION_PREFERENCE.indexOf(ext);
+  if (rank !== -1) {
+    return WINDOWS_COMMAND_EXTENSION_PREFERENCE.length - rank;
+  }
+  return 0;
+}
+
+function pickWindowsCommandCandidate(command, candidates) {
+  const normalized = (candidates || [])
+    .map((candidate) => String(candidate || "").trim())
+    .filter(Boolean);
+  if (normalized.length === 0) return null;
+
+  const ranked = normalized
+    .map((candidate) => ({
+      candidate,
+      score: rankWindowsCommandCandidate(command, candidate),
+    }))
+    .sort((left, right) => right.score - left.score);
+
+  return ranked[0]?.candidate || normalized[0];
+}
+
+function scanWindowsPathForCommand(command, env = process.env) {
+  const pathValue = getEnvValueCaseInsensitive(env, "PATH");
+  if (!pathValue) return null;
+
+  const pathEntries = pathValue
+    .split(path.delimiter)
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+  const requestedExt = path.extname(command).toLowerCase();
+  const pathExts = getEnvValueCaseInsensitive(env, "PATHEXT")
+    .split(";")
+    .map((ext) => ext.trim().toLowerCase())
+    .filter(Boolean)
+    .map((ext) => (ext.startsWith(".") ? ext : `.${ext}`));
+  const suffixes = requestedExt
+    ? [""]
+    : Array.from(
+        new Set([
+          ...WINDOWS_COMMAND_EXTENSION_PREFERENCE,
+          ...pathExts,
+        ]),
+      );
+  const candidates = [];
+
+  for (const entry of pathEntries) {
+    const basePath = path.join(entry, command);
+    if (requestedExt && existsSync(basePath)) {
+      candidates.push(basePath);
+      continue;
+    }
+    for (const suffix of suffixes) {
+      const candidate = suffix ? `${basePath}${suffix}` : basePath;
+      if (existsSync(candidate)) {
+        candidates.push(candidate);
+      }
+    }
+  }
+
+  return pickWindowsCommandCandidate(command, candidates);
+}
+
+export function __pickWindowsCommandCandidateForTests(command, candidates) {
+  return pickWindowsCommandCandidate(command, candidates);
+}
+
+export function __scanWindowsPathForCommandForTests(command, env) {
+  return scanWindowsPathForCommand(command, env);
+}
+
 async function execFileCapture(command, args, options = {}) {
   if (architectureExecFileCaptureOverride) {
     return await architectureExecFileCaptureOverride(command, args, options);
   }
   const resolvedCommand =
     process.platform === "win32"
-      ? await resolveWindowsCommand(command)
+      ? await resolveWindowsCommand(command, options.env)
       : command;
   if (
     process.platform === "win32" &&
@@ -13432,24 +13524,29 @@ async function execFileCapture(command, args, options = {}) {
   }
 }
 
-async function resolveWindowsCommand(command) {
+async function resolveWindowsCommand(command, env = process.env) {
   if (process.platform !== "win32") return command;
   if (path.isAbsolute(command) || /[\\/]/.test(command)) return command;
+  const pathCandidate = scanWindowsPathForCommand(command, env);
   try {
     const result = await execFile("where.exe", [command], {
       windowsHide: true,
       maxBuffer: 1024 * 1024,
     });
-    const resolved = String(result.stdout || "")
+    const candidates = String(result.stdout || "")
       .split(/\r?\n/)
       .map((line) => line.trim())
-      .find(Boolean);
+      .filter(Boolean);
+    const resolved = pickWindowsCommandCandidate(command, candidates);
     if (resolved) return resolved;
   } catch (error) {
     if (error?.code === "ENOENT") {
+      if (pathCandidate) return pathCandidate;
       throw new Error(`Required CLI '${command}' is not installed or not on PATH.`);
     }
+    if (pathCandidate) return pathCandidate;
   }
+  if (pathCandidate) return pathCandidate;
   const missingError = new Error(
     `Required CLI '${command}' is not installed or not on PATH.`,
   );
@@ -13464,7 +13561,7 @@ async function spawnCapture(command, args, options = {}) {
   const { cwd, env, streamOutput = false, useShell } = options;
   const resolvedCommand =
     process.platform === "win32"
-      ? await resolveWindowsCommand(command)
+      ? await resolveWindowsCommand(command, env)
       : command;
   const shell =
     typeof useShell === "boolean"

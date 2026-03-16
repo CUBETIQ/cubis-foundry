@@ -12,7 +12,9 @@ import {
 import os from "node:os";
 import path from "node:path";
 import {
+  __pickWindowsCommandCandidateForTests,
   __resetArchitectureCommandCaptureForTests,
+  __scanWindowsPathForCommandForTests,
   __setArchitectureCommandCaptureForTests,
   runCli as runCliInProcess,
 } from "../dist/cli/core.js";
@@ -161,6 +163,12 @@ process.stdout.write(JSON.stringify({
     writeFileSync(
       windowsWrapper,
       `@echo off\r\nnode "%~dp0\\${name}" %*\r\n`,
+      "utf8",
+    );
+    const powerShellWrapper = path.join(dir, `${name}.ps1`);
+    writeFileSync(
+      powerShellWrapper,
+      `node "$PSScriptRoot\\${name}" @args\r\n`,
       "utf8",
     );
   }
@@ -417,6 +425,28 @@ async function main() {
   );
 
   try {
+    const codexCandidates = [
+      path.join(stubDir, "codex"),
+      path.join(stubDir, "codex.cmd"),
+      path.join(stubDir, "codex.ps1"),
+    ];
+    const preferredCodexCandidate = __pickWindowsCommandCandidateForTests(
+      "codex",
+      codexCandidates,
+    );
+    assert(
+      preferredCodexCandidate.endsWith("codex.cmd"),
+      `windows command resolution should prefer codex.cmd, got ${preferredCodexCandidate}`,
+    );
+    const scannedCodexCandidate = __scanWindowsPathForCommandForTests("codex", {
+      PATH: stubDir,
+      PATHEXT: ".COM;.EXE;.BAT;.CMD;.PS1",
+    });
+    assert(
+      scannedCodexCandidate.endsWith("codex.cmd"),
+      `windows PATH scan should prefer codex.cmd, got ${scannedCodexCandidate}`,
+    );
+
     for (const platform of ["codex", "claude", "gemini", "copilot"]) {
       const dryRun = await runCli(
         ["build", "architecture", "--platform", platform, "--dry-run", "--json"],
