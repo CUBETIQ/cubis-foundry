@@ -9,6 +9,14 @@ import {
   normalizeSkillIds,
   rewriteLegacySkillIds,
 } from "./lib/legacy-skill-map.mjs";
+import {
+  AUDITED_REFERENCES,
+  ORCHESTRATION_SUBTYPES,
+  PATTERN_REGISTRY,
+  buildParityDocs,
+  buildPlatformCapabilityContracts,
+  buildUpstreamCapabilityAudit,
+} from "./lib/platform-parity.mjs";
 
 const ROOT = process.cwd();
 const BUNDLE_ROOT = path.join(
@@ -22,10 +30,25 @@ const SHARED_AGENTS_DIR = path.join(SHARED_ROOT, "agents");
 const SHARED_WORKFLOWS_DIR = path.join(SHARED_ROOT, "workflows");
 const GENERATED_DIR = path.join(BUNDLE_ROOT, "generated");
 const ROUTE_MANIFEST_FILE = "route-manifest.json";
+const PATTERN_REGISTRY_FILE = "pattern-registry.json";
+const PLATFORM_CAPABILITIES_FILE = "platform-capabilities.json";
+const UPSTREAM_CAPABILITY_AUDIT_FILE = "upstream-capability-audit.json";
 const BUNDLE_MANIFEST_FILE = "manifest.json";
 const CANONICAL_SKILLS_DIR = path.join(ROOT, "workflows", "skills");
 const DOCS_DIR = path.join(ROOT, "docs");
-const PLATFORM_SUPPORT_MATRIX_FILE = "platform-support-matrix.md";
+const MANAGED_PARITY_DOC_FILES = new Set([
+  "platform-support-matrix.md",
+  "cross-platform-pattern-catalog.md",
+  "platform-capability-details.md",
+  "platform-parity-matrix.md",
+  "degraded-projection-matrix.md",
+  "safety-matrix.md",
+  "instruction-config-profile-matrix.md",
+  "session-headless-matrix.md",
+  "orchestration-pattern-matrix.md",
+  "mcp-browser-matrix.md",
+  "blocked-pattern-report.md",
+]);
 
 const PLATFORM_DIRS = {
   codex: path.join(BUNDLE_ROOT, "platforms", "codex"),
@@ -434,6 +457,8 @@ function buildBundleManifest({
   sharedAgents,
   sharedWorkflows,
   topLevelSkillIds,
+  platformCapabilityContracts,
+  parityDocFiles,
 }) {
   const workflowSkillDirs = sharedWorkflows
     .map((workflow) => workflow.id)
@@ -488,14 +513,45 @@ function buildBundleManifest({
         "Hook script template that reinforces explicit-route honoring and research escalation.",
     },
   ];
+  const blockingSummary = Object.fromEntries(
+    Object.entries(platformCapabilityContracts).map(([platformId, contract]) => [
+      platformId,
+      {
+        native: contract.pattern_support.filter(
+          (item) => item.support_level === "native",
+        ).length,
+        degraded: contract.pattern_support.filter(
+          (item) => item.support_level === "degraded",
+        ).length,
+        blocked: contract.pattern_support.filter(
+          (item) => item.support_level === "blocked",
+        ).length,
+      },
+    ]),
+  );
 
   return (
     JSON.stringify(
       {
         id: "agent-environment-setup",
-        version: "1.5.0",
+        version: "1.7.0",
         description:
           "Workflow-first AI agent environment setup for Antigravity, Codex, Copilot, Claude Code, and Gemini CLI.",
+        parity: {
+          auditedReferences: AUDITED_REFERENCES,
+          orchestrationSubtypes: ORCHESTRATION_SUBTYPES,
+          artifacts: {
+            patternRegistry: `generated/${PATTERN_REGISTRY_FILE}`,
+            platformCapabilities: `generated/${PLATFORM_CAPABILITIES_FILE}`,
+            upstreamCapabilityAudit: `generated/${UPSTREAM_CAPABILITY_AUDIT_FILE}`,
+            docs: parityDocFiles.map((file) => `docs/${file}`),
+          },
+          summary: {
+            totalPatterns: PATTERN_REGISTRY.length,
+            totalPlatforms: Object.keys(platformCapabilityContracts).length,
+            blockingSummary,
+          },
+        },
         platforms: {
           antigravity: {
             workflows: [],
@@ -546,55 +602,6 @@ function buildBundleManifest({
       2,
     ) + "\n"
   );
-}
-
-function buildPlatformSupportMatrixMarkdown({
-  sharedAgents,
-  sharedWorkflows,
-  topLevelSkillIds,
-}) {
-  const agentCount = sharedAgents.length;
-  const workflowCount = sharedWorkflows.length;
-  const skillCount = topLevelSkillIds.length;
-
-  return [
-    "# Platform Support Matrix",
-    "",
-    "> Generated from the current workflow bundle generators and rule templates.",
-    "> Regenerate with `npm run generate:platform-assets`.",
-    "",
-    "## Platforms",
-    "",
-    "| Platform | Rule File | Output Directory | Execution Model |",
-    "| --- | --- | --- | --- |",
-    "| **Antigravity** | `GEMINI.md` | `.agents/` + `.gemini/commands/` | Rules + open-standard skills + generated command routes |",
-    "| **Gemini CLI** | `GEMINI.md` | `.gemini/commands/` | Native TOML commands for workflows and specialist routes |",
-    "| **Claude Code** | `CLAUDE.md` | `.claude/` | Native agents plus workflow skills |",
-    "| **Codex** | `AGENTS.md` | `.codex/agents/` + `.agents/skills/` | Native subagents plus workflow skills |",
-    "| **GitHub Copilot** | `copilot-instructions.md` | `.github/` | Native agents, skills, and generated prompt files |",
-    "",
-    "## Bundle Artifacts",
-    "",
-    "| Artifact | Antigravity | Gemini CLI | Claude | Codex | Copilot |",
-    "| --- | --- | --- | --- | --- | --- |",
-    `| Agent files | none | none | ${agentCount} \`.md\` | ${agentCount} \`.toml\` | ${agentCount} \`.md\` with sanitized frontmatter |`,
-    `| Workflow route files | none | none | none | none | none |`,
-    `| Commands or prompts | ${workflowCount + agentCount} \`.toml\` | ${workflowCount + agentCount} \`.toml\` | none | none | ${workflowCount} \`.prompt.md\` |`,
-    `| Generated workflow skills | none | none | ${workflowCount} skill dirs | ${workflowCount} skill dirs | none |`,
-    `| Canonical skill mirrors | ${skillCount} skill dirs | none | ${skillCount} skill dirs | ${skillCount} skill dirs | ${skillCount} skill dirs |`,
-    "| Hook templates | none | none | 3 template files | none | none |",
-    "| Compatibility aliases | none | none | none | none | none |",
-    "",
-    "## Notes",
-    "",
-    "- Canonical authoring stays in `workflows/skills` and `workflows/workflows/agent-environment-setup/shared`.",
-    "- Platform outputs under `workflows/workflows/agent-environment-setup/platforms/*` are generated artifacts.",
-    "- Codex uses native `.codex/agents/*.toml` custom agents and `.agents/skills/<workflow-id>/SKILL.md` workflow skills.",
-    "- Claude uses native agents plus workflow skills; custom commands remain supported upstream but are no longer the generated default here.",
-    "- Antigravity and Gemini both route workflows through native command files. Antigravity additionally installs `.agents/rules` and open-standard skills under `.agents/skills`.",
-    "- Single-project installs are designed to coexist: shared skill surfaces are intentional, platform-owned files live in separate directories, and no platform writes another platform's native agent surface.",
-    "",
-  ].join("\n");
 }
 
 function buildCopilotAgentMarkdown(sharedMarkdown) {
@@ -963,6 +970,15 @@ async function writeFileNormalized(filePath, content) {
   await fs.writeFile(filePath, normalized, "utf8");
 }
 
+async function removeStaleManagedParityDocs({ docsDir, activeDocFiles }) {
+  for (const fileName of MANAGED_PARITY_DOC_FILES) {
+    if (activeDocFiles.has(fileName)) continue;
+    const target = path.join(docsDir, fileName);
+    if (!(await pathExists(target))) continue;
+    await fs.rm(target, { force: true });
+  }
+}
+
 async function applyOutputMap({ rootDir, fileMap }) {
   if (await pathExists(rootDir)) {
     await fs.rm(rootDir, { recursive: true, force: true });
@@ -1054,6 +1070,9 @@ async function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
   const generated = new Map();
   const docs = new Map();
   const topLevelSkillIds = await listTopLevelCanonicalSkillIds();
+  const platformCapabilityContracts = buildPlatformCapabilityContracts();
+  const upstreamCapabilityAudit = buildUpstreamCapabilityAudit();
+  const parityDocs = buildParityDocs(platformCapabilityContracts);
 
   for (const agent of sharedAgents) {
     const agentId = normalizeMarkdownId(agent.fileName);
@@ -1086,21 +1105,48 @@ async function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
     buildRouteManifest({ sharedAgents, sharedWorkflows }),
   );
   generated.set(
+    PATTERN_REGISTRY_FILE,
+    `${JSON.stringify(
+      {
+        $schema: "cubis-foundry-pattern-registry-v1",
+        generatedAt: new Date(0).toISOString(),
+        auditedReferences: AUDITED_REFERENCES,
+        orchestrationSubtypes: ORCHESTRATION_SUBTYPES,
+        patterns: PATTERN_REGISTRY,
+      },
+      null,
+      2,
+    )}\n`,
+  );
+  generated.set(
+    PLATFORM_CAPABILITIES_FILE,
+    `${JSON.stringify(
+      {
+        $schema: "cubis-foundry-platform-capabilities-v1",
+        generatedAt: new Date(0).toISOString(),
+        platforms: platformCapabilityContracts,
+      },
+      null,
+      2,
+    )}\n`,
+  );
+  generated.set(
+    UPSTREAM_CAPABILITY_AUDIT_FILE,
+    `${JSON.stringify(upstreamCapabilityAudit, null, 2)}\n`,
+  );
+  generated.set(
     BUNDLE_MANIFEST_FILE,
     buildBundleManifest({
       sharedAgents,
       sharedWorkflows,
       topLevelSkillIds,
+      platformCapabilityContracts,
+      parityDocFiles: [...parityDocs.keys()],
     }),
   );
-  docs.set(
-    PLATFORM_SUPPORT_MATRIX_FILE,
-    buildPlatformSupportMatrixMarkdown({
-      sharedAgents,
-      sharedWorkflows,
-      topLevelSkillIds,
-    }),
-  );
+  for (const [name, content] of parityDocs.entries()) {
+    docs.set(name, content);
+  }
 
   for (const workflow of sharedWorkflows) {
     codexGeneratedSkills.set(
@@ -1252,10 +1298,18 @@ function buildTargets(maps) {
       dir: GENERATED_DIR,
       expected: new Map(
         [...maps.generated.entries()].filter(
-          ([name]) => name === ROUTE_MANIFEST_FILE,
+          ([name]) =>
+            name === ROUTE_MANIFEST_FILE ||
+            name === PATTERN_REGISTRY_FILE ||
+            name === PLATFORM_CAPABILITIES_FILE ||
+            name === UPSTREAM_CAPABILITY_AUDIT_FILE,
         ),
       ),
-      filter: (name) => name === ROUTE_MANIFEST_FILE,
+      filter: (name) =>
+        name === ROUTE_MANIFEST_FILE ||
+        name === PATTERN_REGISTRY_FILE ||
+        name === PLATFORM_CAPABILITIES_FILE ||
+        name === UPSTREAM_CAPABILITY_AUDIT_FILE,
     },
     {
       label: "bundle manifest",
@@ -1268,10 +1322,10 @@ function buildTargets(maps) {
       filter: (name) => name === BUNDLE_MANIFEST_FILE,
     },
     {
-      label: "platform support matrix",
+      label: "parity docs",
       dir: DOCS_DIR,
       expected: maps.docs,
-      filter: (name) => name === PLATFORM_SUPPORT_MATRIX_FILE,
+      filter: (name) => maps.docs.has(name),
     },
   ];
 }
@@ -1449,7 +1503,11 @@ export async function run({ checkOnly = false } = {}) {
       rootDir: GENERATED_DIR,
       fileMap: new Map(
         [...maps.generated.entries()].filter(
-          ([name]) => name === ROUTE_MANIFEST_FILE,
+          ([name]) =>
+            name === ROUTE_MANIFEST_FILE ||
+            name === PATTERN_REGISTRY_FILE ||
+            name === PLATFORM_CAPABILITIES_FILE ||
+            name === UPSTREAM_CAPABILITY_AUDIT_FILE,
         ),
       ),
     })),
@@ -1460,6 +1518,10 @@ export async function run({ checkOnly = false } = {}) {
     await writeFileNormalized(target, content);
     written.push(target);
   }
+  await removeStaleManagedParityDocs({
+    docsDir: DOCS_DIR,
+    activeDocFiles: new Set(maps.docs.keys()),
+  });
   for (const [name, content] of maps.docs.entries()) {
     const target = path.join(DOCS_DIR, name);
     await writeFileNormalized(target, content);

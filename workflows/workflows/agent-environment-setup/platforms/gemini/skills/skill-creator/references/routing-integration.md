@@ -18,7 +18,13 @@ User request
 
 ## Rule File Integration
 
-Each platform has a rule file with a skill routing matrix. When adding a new skill, update the matrix in every platform's rule file.
+Rule behavior is defined canonically in the shared steering layer, then specialized per platform by overrides and generated outputs.
+
+- Update `workflows/workflows/agent-environment-setup/shared/rules/STEERING.md` when the routing contract itself changes.
+- Update `workflows/workflows/agent-environment-setup/shared/rules/overrides/<platform>.md` only for platform-specific deviations.
+- Regenerate platform rule files after canonical edits instead of hand-editing every generated platform file.
+
+Each generated platform rule file still exposes a routing matrix or equivalent skill-routing surface, but the source of truth is the shared steering + override layer.
 
 ### Skill Routing Matrix Format
 
@@ -50,7 +56,9 @@ Each platform has a rule file with a skill routing matrix. When adding a new ski
 
 ### When to Create Mirrors
 
-Create platform-specific mirrors for Claude Code and Copilot. Other platforms use the canonical version.
+Create or regenerate platform skill mirrors for every supported platform. The authoring source remains canonical under `workflows/skills/`, but the install/runtime surfaces use generated platform mirrors.
+
+This applies to skills only. Do not reuse the skill mirror process for shared agents, workflow markdown, prompt files, or command files.
 
 ### Claude Code Mirror
 
@@ -77,7 +85,18 @@ Same format as Claude (Copilot reads Claude format). Add notes about:
 
 ### Codex / Gemini / Antigravity
 
-No mirror needed. The canonical version is used directly. Routing is handled by the platform rule file.
+These platforms also receive generated skill mirrors. Keep their frontmatter minimal and let the generated rule files plus MCP/routing behavior carry the platform-specific execution model.
+
+## Agent and Workflow Projections
+
+Shared agents and workflows must go through platform-specific generators because their output format differs by platform.
+
+- Codex agents are emitted as `.toml` native agents.
+- Claude and Copilot agents are emitted as markdown with sanitized platform frontmatter.
+- Gemini and Antigravity workflows and agent routes are emitted as TOML command files.
+- Copilot workflows are emitted as prompt files rather than skill mirrors.
+
+If a change affects custom agents, workflow prompts, or command behavior, update the shared source and rerun the platform asset generator instead of relying on `sync-skill-mirrors`.
 
 ## Agent Assignment
 
@@ -102,17 +121,20 @@ Each skill should be assigned a primary agent in the routing matrix. Choose base
 
 After adding a skill to the routing infrastructure:
 
-1. Run `npm run test:attributes` — validates frontmatter across all skills
-2. Run `npm run check:generated-assets` — verifies platform mirrors are in sync
-3. Verify the skill appears in `npm run generate:skills-index`
-4. Test `route_resolve` with a prompt that should match the new skill
-5. Test `skill_validate` with the new skill's name
-6. Test `skill_get` to confirm the SKILL.md loads correctly
+1. Update canonical skill content under `workflows/skills/<name>/`
+2. Update shared steering or platform overrides if the routing contract changed
+3. Run `npm run generate:all` or the narrower mirror/rule/platform-asset generation commands
+4. Run `npm run test:attributes` — validates frontmatter across all skills
+5. Run `npm run check:generated-assets` — verifies platform mirrors are in sync
+6. Verify the skill appears in `npm run generate:skills-index`
+7. Test `route_resolve` with a prompt that should match the new skill
+8. Test `skill_validate` with the new skill's name
+9. Test `skill_get` to confirm the SKILL.md loads correctly
 
 ## Common Integration Mistakes
 
-1. **Forgetting to update all 5 platform rule files** — every platform needs the skill in its routing matrix
+1. **Editing generated platform rule files directly** — change shared `STEERING.md` or a platform override, then regenerate
 2. **Mismatched names** — directory name, frontmatter name, and routing matrix name must all match
 3. **Wrong agent assignment** — assigning a frontend skill to @backend-specialist causes incorrect context loading
-4. **Missing mirror creation** — Claude and Copilot platforms need mirrors with platform-specific frontmatter
+4. **Using skill mirror sync for non-skill assets** — agents, prompts, and command files have their own platform-native generation path
 5. **Invalid evals.json** — JSON syntax errors cause the eval runner to skip the skill silently

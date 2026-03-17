@@ -105,16 +105,30 @@ allowed-tools: [Read, Edit, Write, Bash, Grep, Glob]
 ## Adaptation Strategy
 
 ### Canonical Version (workflows/skills/)
-The canonical skill in `workflows/skills/<name>/` uses the full Pro Skill Standard format with rich frontmatter. This is the source of truth.
+The canonical skill in `workflows/skills/<name>/` is the authoring source of truth.
 
-### Claude Code Mirror
-Placed at `platforms/claude/skills/<name>/SKILL.md`. Uses full Claude frontmatter. Instructions may reference `context:fork`, `$ARGUMENTS`, and `${CLAUDE_SKILL_DIR}`.
+### Generated Platform Mirrors
+Generated mirrors are maintained for Claude Code, Copilot, Codex, Gemini CLI, and Antigravity under `platforms/<platform>/skills/<name>/SKILL.md`.
 
-### Copilot Mirror
-Placed at `platforms/copilot/skills/<name>/SKILL.md`. Same as Claude (Copilot reads Claude format). May add notes about prompt files and path-scoped instructions.
+- Claude Code mirrors can use Claude-specific frontmatter and instruction references such as `context: fork`, `$ARGUMENTS`, and `${CLAUDE_SKILL_DIR}`.
+- Copilot mirrors stay Claude-compatible where useful, but Copilot-native behavior still follows Copilot's own constraints.
+- Codex, Gemini CLI, and Antigravity mirrors usually keep minimal frontmatter and rely on platform rules plus MCP/routing behavior for the rest.
+- Do not assume one mirror transform works for every asset type. Skills, custom agents, workflow projections, prompts, and command files each have different platform constraints and must be generated through their own platform-aware pipeline.
 
-### Codex, Gemini CLI, Antigravity
-These platforms use the canonical version directly, referenced by their respective rule files. No separate mirror needed — the rule files handle routing.
+### Shared Steering + Platform Overrides
+Routing and loading behavior should not be documented independently in every platform skill.
+
+- `shared/rules/STEERING.md` is the canonical routing and skill-loading source.
+- `shared/rules/overrides/<platform>.md` adds platform-specific behavior.
+- Generated platform rule files are composed from the shared steering file plus the relevant platform override.
+
+### Non-Skill Assets
+Custom agents and workflow projections are not mirrored with the same logic as skills.
+
+- Skills are mirrored with platform-specific frontmatter and body transforms.
+- Shared agents are compiled into platform-native outputs such as Claude/Copilot markdown agents or Codex TOML agents.
+- Workflows are compiled into platform-native workflow skills, command files, or prompt files depending on the target platform.
+- Regenerate these with the platform asset generator, not by copying skill directories.
 
 ## Instruction Adaptation
 
@@ -124,5 +138,5 @@ When the canonical instructions reference platform-specific features, adapt them
 |-----------|------------|-------|--------|-------------|---------|
 | "fork to subagent" | `context: fork` | "switch posture" | "activate agent" | "use workflow" | `context: fork` |
 | "load reference" | `skill_get_reference` | "read file" | `activate_skill` | "read file" | `skill_get_reference` |
-| "use MCP tool" | `skill_validate` | N/A | `activate_skill` | N/A | N/A |
+| "use MCP tool" | `skill_validate` / `skill_get` | `skill_validate` / `skill_get` when MCP is connected | `skill_validate` / `skill_get` when MCP is connected; `activate_skill` only when using Gemini-native skill loading | `skill_validate` / `skill_get` when MCP is configured | `skill_validate` / `skill_get` when MCP is configured |
 | "run script" | `Bash` | `Bash` (may be sandboxed) | Shell | Shell | `Bash` |

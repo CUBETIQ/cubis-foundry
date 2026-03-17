@@ -5,6 +5,12 @@ import process from "node:process";
 import { promises as fs } from "node:fs";
 import { checkPlatformAssets } from "./generate-platform-assets.mjs";
 import { normalizeSkillId } from "./lib/legacy-skill-map.mjs";
+import {
+  AUDITED_REFERENCES,
+  ORCHESTRATION_SUBTYPES,
+  PATTERN_REGISTRY,
+  buildPlatformCapabilityContracts,
+} from "./lib/platform-parity.mjs";
 
 const ROOT = process.cwd();
 const ASSETS_ROOT = path.join(ROOT, "workflows");
@@ -17,6 +23,21 @@ const SHARED_ROOT = path.join(BUNDLE_ROOT, "shared");
 const SHARED_AGENTS_DIR = path.join(SHARED_ROOT, "agents");
 const SHARED_WORKFLOWS_DIR = path.join(SHARED_ROOT, "workflows");
 const MANIFEST_PATH = path.join(BUNDLE_ROOT, "manifest.json");
+const GENERATED_PATTERN_REGISTRY_PATH = path.join(
+  BUNDLE_ROOT,
+  "generated",
+  "pattern-registry.json",
+);
+const GENERATED_PLATFORM_CAPABILITIES_PATH = path.join(
+  BUNDLE_ROOT,
+  "generated",
+  "platform-capabilities.json",
+);
+const GENERATED_UPSTREAM_AUDIT_PATH = path.join(
+  BUNDLE_ROOT,
+  "generated",
+  "upstream-capability-audit.json",
+);
 const GENERATE_PLATFORM_ASSETS_SCRIPT = path.join(
   ROOT,
   "scripts",
@@ -202,6 +223,422 @@ function toBoolean(value) {
   if (typeof value !== "string") return false;
   const normalized = value.trim().toLowerCase();
   return normalized === "true" || normalized === "yes" || normalized === "1";
+}
+
+async function validateParityManifest(manifest, errors) {
+  const parity = manifest?.parity;
+  if (!parity || typeof parity !== "object") {
+    error(errors, MANIFEST_PATH, "manifest missing parity section");
+    return;
+  }
+
+  const auditedReferences = Array.isArray(parity.auditedReferences)
+    ? parity.auditedReferences
+    : [];
+  if (auditedReferences.length !== AUDITED_REFERENCES.length) {
+    error(
+      errors,
+      MANIFEST_PATH,
+      `auditedReferences count mismatch: expected ${AUDITED_REFERENCES.length}, found ${auditedReferences.length}`,
+    );
+  }
+
+  for (const reference of AUDITED_REFERENCES) {
+    const match = auditedReferences.find(
+      (item) =>
+        item?.runtime === reference.runtime &&
+        item?.audited_commit === reference.audited_commit,
+    );
+    if (!match) {
+      error(
+        errors,
+        MANIFEST_PATH,
+        `auditedReferences missing ${reference.runtime}@${reference.audited_commit}`,
+      );
+    }
+  }
+
+  const orchestrationSubtypes = Array.isArray(parity.orchestrationSubtypes)
+    ? parity.orchestrationSubtypes
+    : [];
+  if (orchestrationSubtypes.length !== ORCHESTRATION_SUBTYPES.length) {
+    error(
+      errors,
+      MANIFEST_PATH,
+      `orchestrationSubtypes count mismatch: expected ${ORCHESTRATION_SUBTYPES.length}, found ${orchestrationSubtypes.length}`,
+    );
+  }
+
+  for (const subtype of ORCHESTRATION_SUBTYPES) {
+    const match = orchestrationSubtypes.find((item) => item?.id === subtype.id);
+    if (!match) {
+      error(errors, MANIFEST_PATH, `missing orchestration subtype '${subtype.id}'`);
+    }
+  }
+
+  const artifacts =
+    parity.artifacts && typeof parity.artifacts === "object" ? parity.artifacts : {};
+  const expectedArtifacts = {
+    patternRegistry: "generated/pattern-registry.json",
+    platformCapabilities: "generated/platform-capabilities.json",
+    upstreamCapabilityAudit: "generated/upstream-capability-audit.json",
+  };
+  for (const [key, expectedValue] of Object.entries(expectedArtifacts)) {
+    if (artifacts[key] !== expectedValue) {
+      error(
+        errors,
+        MANIFEST_PATH,
+        `parity.artifacts.${key} must equal '${expectedValue}'`,
+      );
+    }
+  }
+
+  const expectedDocArtifacts = [
+    "docs/platform-support-matrix.md",
+    "docs/cross-platform-pattern-catalog.md",
+    "docs/platform-capability-details.md",
+  ];
+  const actualDocArtifacts = Array.isArray(artifacts.docs) ? artifacts.docs : [];
+  if (actualDocArtifacts.length !== expectedDocArtifacts.length) {
+    error(
+      errors,
+      MANIFEST_PATH,
+      `parity.artifacts.docs count mismatch: expected ${expectedDocArtifacts.length}, found ${actualDocArtifacts.length}`,
+    );
+  }
+  for (const expectedDoc of expectedDocArtifacts) {
+    if (!actualDocArtifacts.includes(expectedDoc)) {
+      error(
+        errors,
+        MANIFEST_PATH,
+        `parity.artifacts.docs missing '${expectedDoc}'`,
+      );
+    }
+  }
+
+  const summary = parity.summary && typeof parity.summary === "object" ? parity.summary : {};
+  const expectedPlatformIds = ["codex", "antigravity", "copilot", "claude", "gemini"];
+  if (summary.totalPatterns !== PATTERN_REGISTRY.length) {
+    error(
+      errors,
+      MANIFEST_PATH,
+      `parity.summary.totalPatterns mismatch: expected ${PATTERN_REGISTRY.length}, found ${summary.totalPatterns}`,
+    );
+  }
+  if (summary.totalPlatforms !== expectedPlatformIds.length) {
+    error(
+      errors,
+      MANIFEST_PATH,
+      `parity.summary.totalPlatforms mismatch: expected ${expectedPlatformIds.length}, found ${summary.totalPlatforms}`,
+    );
+  }
+
+  const expectedContracts = buildPlatformCapabilityContracts();
+  const expectedBlockingSummary = Object.fromEntries(
+    Object.entries(expectedContracts).map(([platformId, contract]) => [
+      platformId,
+      {
+        native: contract.pattern_support.filter((item) => item.support_level === "native")
+          .length,
+        degraded: contract.pattern_support.filter(
+          (item) => item.support_level === "degraded",
+        ).length,
+        blocked: contract.pattern_support.filter((item) => item.support_level === "blocked")
+          .length,
+      },
+    ]),
+  );
+  for (const platformId of expectedPlatformIds) {
+    const actualCounts = summary.blockingSummary?.[platformId];
+    const expectedCounts = expectedBlockingSummary[platformId];
+    if (
+      !actualCounts ||
+      actualCounts.native !== expectedCounts.native ||
+      actualCounts.degraded !== expectedCounts.degraded ||
+      actualCounts.blocked !== expectedCounts.blocked
+    ) {
+      error(
+        errors,
+        MANIFEST_PATH,
+        `parity.summary.blockingSummary mismatch for '${platformId}'`,
+      );
+    }
+  }
+
+  let generatedPatternRegistry;
+  let generatedPlatformCapabilities;
+  let generatedUpstreamAudit;
+  try {
+    generatedPatternRegistry = JSON.parse(
+      await fs.readFile(GENERATED_PATTERN_REGISTRY_PATH, "utf8"),
+    );
+  } catch (err) {
+    error(
+      errors,
+      GENERATED_PATTERN_REGISTRY_PATH,
+      `failed to read generated pattern registry: ${err.message || err}`,
+    );
+    generatedPatternRegistry = null;
+  }
+  try {
+    generatedPlatformCapabilities = JSON.parse(
+      await fs.readFile(GENERATED_PLATFORM_CAPABILITIES_PATH, "utf8"),
+    );
+  } catch (err) {
+    error(
+      errors,
+      GENERATED_PLATFORM_CAPABILITIES_PATH,
+      `failed to read generated platform capabilities: ${err.message || err}`,
+    );
+    generatedPlatformCapabilities = null;
+  }
+  try {
+    generatedUpstreamAudit = JSON.parse(
+      await fs.readFile(GENERATED_UPSTREAM_AUDIT_PATH, "utf8"),
+    );
+  } catch (err) {
+    error(
+      errors,
+      GENERATED_UPSTREAM_AUDIT_PATH,
+      `failed to read generated upstream audit: ${err.message || err}`,
+    );
+    generatedUpstreamAudit = null;
+  }
+
+  const patternRegistry = Array.isArray(generatedPatternRegistry?.patterns)
+    ? generatedPatternRegistry.patterns
+    : [];
+  if (patternRegistry.length !== PATTERN_REGISTRY.length) {
+    error(
+      errors,
+      GENERATED_PATTERN_REGISTRY_PATH,
+      `patterns count mismatch: expected ${PATTERN_REGISTRY.length}, found ${patternRegistry.length}`,
+    );
+  }
+  const requiredPatternKeys = [
+    "pattern_id",
+    "category",
+    "canonical_surface",
+    "source_repos",
+    "required_capabilities",
+    "degraded_projection_policy",
+    "acceptance_contract",
+    "docs_contract",
+    "test_contract",
+  ];
+  const expectedPatternIds = new Set(PATTERN_REGISTRY.map((item) => item.pattern_id));
+
+  for (const item of patternRegistry) {
+    if (!item || typeof item !== "object") {
+      error(errors, GENERATED_PATTERN_REGISTRY_PATH, "patternRegistry contains a non-object entry");
+      continue;
+    }
+    const patternId = String(item.pattern_id || "").trim();
+    if (!patternId) {
+      error(errors, GENERATED_PATTERN_REGISTRY_PATH, "patternRegistry entry missing pattern_id");
+      continue;
+    }
+    if (!expectedPatternIds.has(patternId)) {
+      error(
+        errors,
+        GENERATED_PATTERN_REGISTRY_PATH,
+        `patternRegistry contains unknown pattern '${patternId}'`,
+      );
+    }
+    for (const key of requiredPatternKeys) {
+      if (!(key in item)) {
+        error(
+          errors,
+          GENERATED_PATTERN_REGISTRY_PATH,
+          `patternRegistry entry '${patternId}' missing key '${key}'`,
+        );
+      }
+    }
+  }
+
+  if (
+    !Array.isArray(generatedPatternRegistry?.auditedReferences) ||
+    generatedPatternRegistry.auditedReferences.length !== AUDITED_REFERENCES.length
+  ) {
+    error(
+      errors,
+      GENERATED_PATTERN_REGISTRY_PATH,
+      "generated pattern registry auditedReferences mismatch",
+    );
+  }
+  if (
+    !Array.isArray(generatedPatternRegistry?.orchestrationSubtypes) ||
+    generatedPatternRegistry.orchestrationSubtypes.length !== ORCHESTRATION_SUBTYPES.length
+  ) {
+    error(
+      errors,
+      GENERATED_PATTERN_REGISTRY_PATH,
+      "generated pattern registry orchestrationSubtypes mismatch",
+    );
+  }
+
+  const platformContracts =
+    generatedPlatformCapabilities?.platforms &&
+    typeof generatedPlatformCapabilities.platforms === "object"
+      ? generatedPlatformCapabilities.platforms
+      : {};
+  for (const platformId of expectedPlatformIds) {
+    const contract = platformContracts?.[platformId];
+    if (!contract || typeof contract !== "object") {
+      error(
+        errors,
+        GENERATED_PLATFORM_CAPABILITIES_PATH,
+        `platform capabilities missing platform '${platformId}'`,
+      );
+      continue;
+    }
+
+    for (const section of [
+      "platform_id",
+      "runtime_family",
+      "instruction_capabilities",
+      "config_capabilities",
+      "agent_capabilities",
+      "skill_capabilities",
+      "session_capabilities",
+      "mcp_capabilities",
+      "safety_capabilities",
+      "pattern_support",
+    ]) {
+      if (!(section in contract)) {
+        error(
+          errors,
+          GENERATED_PLATFORM_CAPABILITIES_PATH,
+          `platform capabilities ${platformId} missing '${section}'`,
+        );
+      }
+    }
+
+    const supportEntries = Array.isArray(contract.pattern_support)
+      ? contract.pattern_support
+      : [];
+    if (supportEntries.length !== PATTERN_REGISTRY.length) {
+      error(
+        errors,
+        GENERATED_PLATFORM_CAPABILITIES_PATH,
+        `platform '${platformId}' pattern_support count mismatch: expected ${PATTERN_REGISTRY.length}, found ${supportEntries.length}`,
+      );
+    }
+
+    const seenPatternIds = new Set();
+    for (const entry of supportEntries) {
+      const patternId = String(entry?.pattern_id || "").trim();
+      if (!patternId) {
+        error(
+          errors,
+          GENERATED_PLATFORM_CAPABILITIES_PATH,
+          `platform '${platformId}' has pattern_support entry without pattern_id`,
+        );
+        continue;
+      }
+      if (seenPatternIds.has(patternId)) {
+        error(
+          errors,
+          GENERATED_PLATFORM_CAPABILITIES_PATH,
+          `platform '${platformId}' duplicates pattern '${patternId}' in pattern_support`,
+        );
+      }
+      seenPatternIds.add(patternId);
+      if (!expectedPatternIds.has(patternId) && !PATTERN_REGISTRY.find((item) => item.pattern_id === patternId)) {
+        error(
+          errors,
+          GENERATED_PLATFORM_CAPABILITIES_PATH,
+          `platform '${platformId}' references unknown pattern '${patternId}'`,
+        );
+      }
+      if (!["native", "degraded", "blocked"].includes(entry.support_level)) {
+        error(
+          errors,
+          GENERATED_PLATFORM_CAPABILITIES_PATH,
+          `platform '${platformId}' pattern '${patternId}' has invalid support_level '${entry.support_level}'`,
+        );
+      }
+      if (!entry.projection_surface) {
+        error(
+          errors,
+          GENERATED_PLATFORM_CAPABILITIES_PATH,
+          `platform '${platformId}' pattern '${patternId}' missing projection_surface`,
+        );
+      }
+      if (!entry.behavior_notes) {
+        error(
+          errors,
+          GENERATED_PLATFORM_CAPABILITIES_PATH,
+          `platform '${platformId}' pattern '${patternId}' missing behavior_notes`,
+        );
+      }
+      if (!Array.isArray(entry.hard_limits) || entry.hard_limits.length === 0) {
+        error(
+          errors,
+          GENERATED_PLATFORM_CAPABILITIES_PATH,
+          `platform '${platformId}' pattern '${patternId}' missing hard_limits`,
+        );
+      }
+      if (
+        !Array.isArray(entry.verification_steps) ||
+        entry.verification_steps.length === 0
+      ) {
+        error(
+          errors,
+          GENERATED_PLATFORM_CAPABILITIES_PATH,
+          `platform '${platformId}' pattern '${patternId}' missing verification_steps`,
+        );
+      }
+      if (entry.support_level === "blocked") {
+        error(
+          errors,
+          GENERATED_PLATFORM_CAPABILITIES_PATH,
+          `platform '${platformId}' blocks pattern '${patternId}' — semantic parity is expected for all current platforms`,
+        );
+      }
+      if (entry.support_level !== "blocked" && entry.installable !== true) {
+        error(
+          errors,
+          GENERATED_PLATFORM_CAPABILITIES_PATH,
+          `platform '${platformId}' pattern '${patternId}' should be installable when support_level is '${entry.support_level}'`,
+        );
+      }
+    }
+
+    for (const patternId of expectedPatternIds) {
+      if (!seenPatternIds.has(patternId)) {
+        error(
+          errors,
+          GENERATED_PLATFORM_CAPABILITIES_PATH,
+          `platform '${platformId}' missing pattern_support entry for '${patternId}'`,
+        );
+      }
+    }
+  }
+
+  const audits = Array.isArray(generatedUpstreamAudit?.audits) ? generatedUpstreamAudit.audits : [];
+  if (audits.length !== AUDITED_REFERENCES.length) {
+    error(
+      errors,
+      GENERATED_UPSTREAM_AUDIT_PATH,
+      `audit count mismatch: expected ${AUDITED_REFERENCES.length}, found ${audits.length}`,
+    );
+  }
+  for (const reference of AUDITED_REFERENCES) {
+    const match = audits.find(
+      (item) =>
+        item?.runtime === reference.runtime &&
+        item?.audit_source_id === reference.audit_source_id &&
+        item?.audited_commit === reference.audited_commit,
+    );
+    if (!match) {
+      error(
+        errors,
+        GENERATED_UPSTREAM_AUDIT_PATH,
+        `generated upstream audit missing ${reference.runtime}@${reference.audited_commit}`,
+      );
+    }
+  }
 }
 
 async function pathExists(targetPath) {
@@ -1021,6 +1458,7 @@ async function main() {
   }
 
   const manifest = JSON.parse(await readUtf8(MANIFEST_PATH));
+  await validateParityManifest(manifest, errors);
   const canonicalMap = await buildCanonicalSkillMap();
   const canonicalSubSkillSet = await buildCanonicalSubSkillSet(canonicalMap);
   const indexedSkillIds = await resolveIndexedTopLevelSkillIds(canonicalMap);

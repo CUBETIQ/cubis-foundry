@@ -2,7 +2,7 @@
 
 Workflow-first installer for multi-platform AI agent environments.
 
-Last updated: 2026-03-04.
+Last updated: 2026-03-17.
 
 `cbx` installs workflows, skills, wrappers, and rule files for:
 
@@ -25,6 +25,8 @@ Skill install default is profile-based:
 - [What This CLI Manages](#what-this-cli-manages)
 - [Install](#install)
 - [Guided Init Wizard (`cbx init`)](#guided-init-wizard-cbx-init)
+- [What `cbx init` Generates](#what-cbx-init-generates)
+- [Build Flows](#build-flows)
 - [Quickstarts](#quickstarts)
 - [Scope Model (Global vs Project)](#scope-model-global-vs-project)
 - [Credential Model (Metadata + Machine Vault)](#credential-model-metadata--machine-vault)
@@ -56,6 +58,7 @@ Source of truth inside this repo:
 
 - `workflows/skills/<id>` is the canonical source for skill packages.
 - `workflows/workflows/agent-environment-setup/shared/{agents,workflows}` is the canonical source for custom agents and workflows.
+- `scripts/lib/platform-parity.mjs` is the canonical source for the cross-platform parity registry, audited upstream references, and per-platform capability contracts.
 - `workflows/workflows/agent-environment-setup/platforms/*` contains generated platform adapters and mirrors, not the authoring source.
 - Active generated skill mirrors are maintained for `codex`, `antigravity`, `copilot`, `claude`, and `gemini`.
 - Any leftover `cursor` or `windsurf` folders under `platforms/*` should be treated as legacy artifacts, not active CLI targets.
@@ -129,6 +132,164 @@ Use `cbx init` when you want step-by-step guided setup.
 Detailed wizard behavior and platform matrix:
 
 - `docs/cli-init-wizard.md`
+
+## What `cbx init` Generates
+
+`cbx init` is a guided wrapper around `cbx workflows install`. It does not generate repo source files inside Foundry itself. It generates install artifacts in the target workspace for each selected runtime.
+
+Step by step:
+
+1. Collect selections for bundle, platforms, skill profile, MCP integrations, and MCP runtime.
+2. Map those answers into the shared install engine used by `cbx workflows install`.
+3. Apply each selected platform sequentially. If one platform fails, init stops on that failure.
+4. Write platform runtime artifacts into the workspace-oriented install targets.
+5. Persist non-secret metadata into `cbx_config.json` and machine-scoped secrets into `~/.cbx/credentials.env` when keys were supplied.
+6. Patch the selected platform MCP runtime config when `cubis-foundry`, `postman`, `stitch`, or `playwright` is enabled.
+
+What gets written per selected platform:
+
+- `codex`
+  - `<workspace>/AGENTS.md`
+  - `<workspace>/.codex/agents/*`
+  - `<workspace>/.agents/skills/*`
+  - `<workspace>/.vscode/mcp.json` when MCP is enabled
+- `antigravity`
+  - `<workspace>/.agents/rules/GEMINI.md`
+  - `<workspace>/.agents/skills/*`
+  - `<workspace>/.gemini/commands/*`
+  - `<workspace>/.gemini/settings.json` when MCP is enabled
+- `copilot`
+  - `<workspace>/AGENTS.md`
+  - `<workspace>/.github/copilot-instructions.md`
+  - `<workspace>/.github/agents/*`
+  - `<workspace>/.github/skills/*`
+  - `<workspace>/.github/prompts/*`
+  - `<workspace>/.vscode/mcp.json` when MCP is enabled
+- `claude`
+  - `<workspace>/CLAUDE.md`
+  - `<workspace>/.claude/agents/*`
+  - `<workspace>/.claude/skills/*`
+  - `<workspace>/.claude/hooks/*`
+  - `<workspace>/.mcp.json` when MCP is enabled
+- `gemini`
+  - `<workspace>/.gemini/GEMINI.md`
+  - `<workspace>/.gemini/commands/*`
+  - `<workspace>/.gemini/settings.json` when MCP is enabled
+
+Also generated during init when applicable:
+
+- `<workspace>/cbx_config.json` for non-secret Foundry metadata
+- `~/.cbx/credentials.env` for persisted machine-local secrets
+- Workspace engineering files managed by the selected bundle, if that bundle includes them
+
+Important:
+
+- `cbx init --dry-run` shows the plan and writes nothing.
+- Init uses workspace-oriented behavior even if legacy scope flags are passed for compatibility.
+- No raw API keys are written into runtime config files or generated workspace artifacts.
+
+## Build Flows
+
+There are three different “build” paths in this repo. They generate different things.
+
+### 1. `cbx build architecture`
+
+This is the end-user build helper for project foundation docs.
+
+```bash
+cbx build architecture --platform codex
+```
+
+Step by step:
+
+1. Probe the selected runtime surface (`codex`, `claude`, `gemini`, or `copilot`).
+2. Inspect the repository and current foundation docs.
+3. Generate or refresh the managed foundation document set under `docs/foundation/`.
+4. Update ADR scaffolding used by the architecture workflow.
+
+Files generated or refreshed:
+
+- `docs/foundation/MEMORY.md`
+- `docs/foundation/PRODUCT.md`
+- `docs/foundation/ARCHITECTURE.md`
+- `docs/foundation/TECH.md`
+- `docs/foundation/memory/domain.md`
+- `docs/foundation/memory/runtime.md`
+- `docs/foundation/memory/integrations.md`
+- `docs/foundation/memory/debugging.md`
+- `docs/foundation/adr/README.md`
+- `docs/foundation/adr/0000-template.md`
+
+Use `--dry-run` to preview the planned invocation and `--check` to detect drift without writing.
+
+### 2. `npm run build:cli`
+
+This is the maintainer TypeScript compile step for the CLI itself.
+
+```bash
+npm run build:cli
+```
+
+What it generates:
+
+- compiled CLI output under `dist/cli/*`
+
+What it does not generate:
+
+- no platform mirrors
+- no workflow/skill adapters
+- no parity docs
+- no MCP manifest
+
+### 3. `npm run generate:all`
+
+This is the maintainer asset-generation pipeline for the Foundry repo.
+
+```bash
+npm run generate:all
+```
+
+Step by step:
+
+1. `npm run generate:platform-assets`
+   - regenerates `workflows/workflows/agent-environment-setup/platforms/*`
+   - refreshes the bundle manifest at `workflows/workflows/agent-environment-setup/manifest.json`
+     - keeps a compact parity summary and artifact pointers instead of embedding the full registry inline
+   - refreshes parity JSON:
+     - `workflows/workflows/agent-environment-setup/generated/pattern-registry.json`
+     - `workflows/workflows/agent-environment-setup/generated/platform-capabilities.json`
+     - `workflows/workflows/agent-environment-setup/generated/upstream-capability-audit.json`
+   - refreshes parity docs:
+     - `docs/platform-support-matrix.md`
+     - `docs/cross-platform-pattern-catalog.md`
+     - `docs/platform-capability-details.md`
+2. `npm run sync:skill-mirrors`
+   - syncs generated skill mirrors into active platform adapters
+3. `npm run generate:skills-index`
+   - refreshes:
+     - `workflows/skills/skills_index.json`
+     - `workflows/workflows/agent-environment-setup/platforms/claude/skills/skills_index.json`
+     - `workflows/workflows/agent-environment-setup/platforms/copilot/skills/skills_index.json`
+4. `npm run generate:skill-catalog`
+   - refreshes:
+     - `workflows/skills/generated/skill-catalog.json`
+     - `workflows/skills/generated/skill-audit.json`
+5. `npm run generate:mcp-manifest`
+   - refreshes:
+     - `mcp/generated/mcp-manifest.json`
+6. `npm run inject:mcp-rules:all`
+   - updates the managed MCP blocks in:
+     - `workflows/workflows/agent-environment-setup/platforms/codex/rules/AGENTS.md`
+     - `workflows/workflows/agent-environment-setup/platforms/antigravity/rules/GEMINI.md`
+     - `workflows/workflows/agent-environment-setup/platforms/gemini/rules/GEMINI.md`
+     - `workflows/workflows/agent-environment-setup/platforms/copilot/rules/copilot-instructions.md`
+     - `workflows/workflows/agent-environment-setup/platforms/claude/rules/CLAUDE.md`
+
+Recommended maintainer loop:
+
+1. Edit canonical sources under `workflows/skills/*` and `workflows/workflows/agent-environment-setup/shared/*`.
+2. Run `npm run generate:all`.
+3. Run `npm run test:ci`.
 
 ## Quickstarts
 
@@ -489,6 +650,8 @@ Generated MCP artifacts:
 
 - `mcp/generated/mcp-manifest.json` (catalog snapshot used by managed rule blocks)
 - `mcp/generated/README.md` (artifact notes)
+- `workflows/workflows/agent-environment-setup/generated/{pattern-registry,platform-capabilities,upstream-capability-audit}.json`
+- `docs/{platform-support-matrix,cross-platform-pattern-catalog,platform-capability-details}.md`
 
 Foundry local serve command (canonical entrypoint for MCP client registration):
 

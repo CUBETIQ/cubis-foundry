@@ -1,0 +1,848 @@
+{
+  "$schema": "cubis-foundry-pattern-registry-v1",
+  "generatedAt": "1970-01-01T00:00:00.000Z",
+  "auditedReferences": [
+    {
+      "runtime": "claude",
+      "audit_source_id": "claude-audit-ref",
+      "audited_commit": "1ac2b97df6199f8f76b3896d28f470ea44a90c25",
+      "audited_at": "2026-03-17",
+      "audited_version_or_date": "2026-03-17"
+    },
+    {
+      "runtime": "codex",
+      "audit_source_id": "codex-audit-ref",
+      "audited_commit": "782a03a2d4eb69d475075cbd6df6c1af4fb35e64",
+      "audited_at": "2026-03-17",
+      "audited_version_or_date": "2026-03-17"
+    }
+  ],
+  "orchestrationSubtypes": [
+    {
+      "id": "command-agent-skill",
+      "label": "command -> agent -> skill",
+      "source_repos": [
+        "claude-audit-ref",
+        "foundry"
+      ],
+      "canonical_projection": "Workflow entrypoint resolves intent, hands off to a specialist agent, loads supporting skills, and validates the outcome."
+    },
+    {
+      "id": "skill-skill",
+      "label": "skill -> skill",
+      "source_repos": [
+        "codex-audit-ref"
+      ],
+      "canonical_projection": "Composable skill pipeline with a typed handoff contract between sequential skills."
+    },
+    {
+      "id": "orchestrator-specialists-validator",
+      "label": "orchestrator -> specialists -> validator",
+      "source_repos": [
+        "foundry",
+        "claude-audit-ref",
+        "codex-audit-ref"
+      ],
+      "canonical_projection": "Control-plane orchestration pattern where an orchestrator delegates to specialists and accepts only validated outputs."
+    }
+  ],
+  "patterns": [
+    {
+      "pattern_id": "instructions-file",
+      "id": "instructions-file",
+      "category": "instructions",
+      "intent": "Expose a root instruction file that Foundry can install and document per runtime.",
+      "source_repos": [
+        "claude-audit-ref",
+        "codex-audit-ref"
+      ],
+      "canonical_surface": "One primary repository instruction file is installed at the runtime's canonical path.",
+      "canonical_user_experience": "One primary repository instruction file is installed at the runtime's canonical path.",
+      "required_capabilities": [
+        "instruction-file",
+        "project-rules-surface"
+      ],
+      "required_runtime_capabilities": [
+        "instruction-file",
+        "project-rules-surface"
+      ],
+      "degraded_projection_policy": "If the runtime has multiple rule surfaces, Foundry declares one primary instruction surface and documents additional runtime-owned companions.",
+      "projection_rules": "If the runtime has multiple rule surfaces, Foundry declares one primary instruction surface and documents additional runtime-owned companions.",
+      "acceptance_contract": "Each platform publishes one install target for repository-level instructions.",
+      "docs_contract": "Document file name, install path, and whether companion rule files also exist.",
+      "test_contract": "Generated docs and install metadata must agree on the primary instruction path."
+    },
+    {
+      "pattern_id": "instructions-hierarchy",
+      "id": "instructions-hierarchy",
+      "category": "instructions",
+      "intent": "Describe how runtime instruction files layer and override one another.",
+      "source_repos": [
+        "claude-audit-ref",
+        "codex-audit-ref"
+      ],
+      "canonical_surface": "Foundry records load order, precedence, and monorepo behavior for each runtime.",
+      "canonical_user_experience": "Foundry records load order, precedence, and monorepo behavior for each runtime.",
+      "required_capabilities": [
+        "hierarchical-instruction-loading"
+      ],
+      "required_runtime_capabilities": [
+        "hierarchical-instruction-loading"
+      ],
+      "degraded_projection_policy": "If hierarchy is not fully native, Foundry documents the degraded loading contract and keeps repo rules route-first.",
+      "projection_rules": "If hierarchy is not fully native, Foundry documents the degraded loading contract and keeps repo rules route-first.",
+      "acceptance_contract": "Each platform declares precedence and whether descendant or ancestor loading is native or degraded.",
+      "docs_contract": "Document load order, precedence, and monorepo notes.",
+      "test_contract": "Capability data must contain a support entry for hierarchy on every platform."
+    },
+    {
+      "pattern_id": "instructions-override",
+      "id": "instructions-override",
+      "category": "instructions",
+      "intent": "Support a personal override layer when the runtime allows it.",
+      "source_repos": [
+        "codex-audit-ref",
+        "claude-audit-ref"
+      ],
+      "canonical_surface": "Foundry distinguishes team-shared instructions from personal overrides.",
+      "canonical_user_experience": "Foundry distinguishes team-shared instructions from personal overrides.",
+      "required_capabilities": [
+        "personal-override-surface"
+      ],
+      "required_runtime_capabilities": [
+        "personal-override-surface"
+      ],
+      "degraded_projection_policy": "If no dedicated override file exists, Foundry maps the concept to local user-only settings or documents the limitation.",
+      "projection_rules": "If no dedicated override file exists, Foundry maps the concept to local user-only settings or documents the limitation.",
+      "acceptance_contract": "Every platform declares either a native override surface or a degraded personal-only workaround.",
+      "docs_contract": "Document override path or degraded substitute.",
+      "test_contract": "Validation fails if a platform omits override semantics entirely."
+    },
+    {
+      "pattern_id": "config-layering",
+      "id": "config-layering",
+      "category": "configuration",
+      "intent": "Model global, project, and invocation-time configuration layers.",
+      "source_repos": [
+        "codex-audit-ref",
+        "claude-audit-ref"
+      ],
+      "canonical_surface": "Foundry emits the user config path, project config path, and one-off override surfaces per runtime.",
+      "canonical_user_experience": "Foundry emits the user config path, project config path, and one-off override surfaces per runtime.",
+      "required_capabilities": [
+        "global-config",
+        "project-config",
+        "invocation-override"
+      ],
+      "required_runtime_capabilities": [
+        "global-config",
+        "project-config",
+        "invocation-override"
+      ],
+      "degraded_projection_policy": "If the runtime lacks a native project config, Foundry maps project policy into generated rules and install metadata.",
+      "projection_rules": "If the runtime lacks a native project config, Foundry maps project policy into generated rules and install metadata.",
+      "acceptance_contract": "Each platform defines user/project/invocation config behavior.",
+      "docs_contract": "Document config paths, precedence, and override surfaces.",
+      "test_contract": "Generated config matrix must list all platforms with non-empty entries."
+    },
+    {
+      "pattern_id": "config-profiles",
+      "id": "config-profiles",
+      "category": "configuration",
+      "intent": "Represent named safety and execution presets across runtimes.",
+      "source_repos": [
+        "codex-audit-ref"
+      ],
+      "canonical_surface": "Foundry defines review, development, unattended, and trusted presets, mapped to native profiles or degraded install-time presets.",
+      "canonical_user_experience": "Foundry defines review, development, unattended, and trusted presets, mapped to native profiles or degraded install-time presets.",
+      "required_capabilities": [
+        "named-profiles-or-presets"
+      ],
+      "required_runtime_capabilities": [
+        "named-profiles-or-presets"
+      ],
+      "degraded_projection_policy": "If profiles are not native, Foundry documents equivalent install-time presets and warnings.",
+      "projection_rules": "If profiles are not native, Foundry documents equivalent install-time presets and warnings.",
+      "acceptance_contract": "All platforms expose review, development, and unattended preset semantics.",
+      "docs_contract": "Document whether presets are native profiles or degraded mappings.",
+      "test_contract": "Safety docs must include review/dev/unattended rows for every platform."
+    },
+    {
+      "pattern_id": "workflow-entrypoint",
+      "id": "workflow-entrypoint",
+      "category": "workflow",
+      "intent": "Provide a user-facing entrypoint for structured workflows.",
+      "source_repos": [
+        "claude-audit-ref",
+        "codex-audit-ref",
+        "foundry"
+      ],
+      "canonical_surface": "Foundry projects workflows into native commands, prompts, or workflow skills depending on runtime.",
+      "canonical_user_experience": "Foundry projects workflows into native commands, prompts, or workflow skills depending on runtime.",
+      "required_capabilities": [
+        "workflow-entry-surface"
+      ],
+      "required_runtime_capabilities": [
+        "workflow-entry-surface"
+      ],
+      "degraded_projection_policy": "If a runtime lacks a native workflow primitive, Foundry uses the nearest supported entry surface and documents it as degraded.",
+      "projection_rules": "If a runtime lacks a native workflow primitive, Foundry uses the nearest supported entry surface and documents it as degraded.",
+      "acceptance_contract": "Each workflow has one per-platform entry surface and generated artifact.",
+      "docs_contract": "Document the entry surface by platform.",
+      "test_contract": "Manifest and generated files must agree on each workflow artifact."
+    },
+    {
+      "pattern_id": "supporting-skill",
+      "id": "supporting-skill",
+      "category": "skills",
+      "intent": "Use reusable skills as supporting context or user-invocable workflows.",
+      "source_repos": [
+        "claude-audit-ref",
+        "codex-audit-ref",
+        "foundry"
+      ],
+      "canonical_surface": "Foundry keeps skills canonical in one source tree and projects them into runtime-specific skill surfaces.",
+      "canonical_user_experience": "Foundry keeps skills canonical in one source tree and projects them into runtime-specific skill surfaces.",
+      "required_capabilities": [
+        "skill-surface"
+      ],
+      "required_runtime_capabilities": [
+        "skill-surface"
+      ],
+      "degraded_projection_policy": "If skills are not native, Foundry projects them into routeable knowledge modules or generated workflow surfaces.",
+      "projection_rules": "If skills are not native, Foundry projects them into routeable knowledge modules or generated workflow surfaces.",
+      "acceptance_contract": "Each platform declares how canonical skills are surfaced.",
+      "docs_contract": "Document native skill path or degraded equivalent.",
+      "test_contract": "Validation fails if canonical skills are silently omitted for a platform."
+    },
+    {
+      "pattern_id": "skill-discovery",
+      "id": "skill-discovery",
+      "category": "skills",
+      "intent": "Describe how skills are discovered and when they are loaded.",
+      "source_repos": [
+        "claude-audit-ref",
+        "codex-audit-ref"
+      ],
+      "canonical_surface": "Foundry captures skill discovery rules, precedence, and lazy/full loading behavior.",
+      "canonical_user_experience": "Foundry captures skill discovery rules, precedence, and lazy/full loading behavior.",
+      "required_capabilities": [
+        "skill-discovery-semantics"
+      ],
+      "required_runtime_capabilities": [
+        "skill-discovery-semantics"
+      ],
+      "degraded_projection_policy": "If the runtime lacks auto-discovery, Foundry uses explicit route resolution and documents the difference.",
+      "projection_rules": "If the runtime lacks auto-discovery, Foundry uses explicit route resolution and documents the difference.",
+      "acceptance_contract": "Each platform declares local/user discovery and auto-discovery semantics.",
+      "docs_contract": "Document discovery paths and precedence behavior.",
+      "test_contract": "Parity docs must list discovery semantics for all platforms."
+    },
+    {
+      "pattern_id": "skill-frontmatter",
+      "id": "skill-frontmatter",
+      "category": "skills",
+      "intent": "Normalize the supported SKILL frontmatter fields across runtimes.",
+      "source_repos": [
+        "claude-audit-ref",
+        "codex-audit-ref",
+        "foundry"
+      ],
+      "canonical_surface": "Foundry records the canonical frontmatter model and per-platform support level for each behavior class.",
+      "canonical_user_experience": "Foundry records the canonical frontmatter model and per-platform support level for each behavior class.",
+      "required_capabilities": [
+        "skill-frontmatter-support"
+      ],
+      "required_runtime_capabilities": [
+        "skill-frontmatter-support"
+      ],
+      "degraded_projection_policy": "Unsupported fields are downgraded to documentation-only behavior and surfaced as degraded.",
+      "projection_rules": "Unsupported fields are downgraded to documentation-only behavior and surfaced as degraded.",
+      "acceptance_contract": "Each platform declares whether frontmatter is native, sanitized, or degraded.",
+      "docs_contract": "Document the supported field surface and sanitization behavior.",
+      "test_contract": "Validation fails if a platform with skills lacks a frontmatter support entry."
+    },
+    {
+      "pattern_id": "skill-string-substitution",
+      "id": "skill-string-substitution",
+      "category": "skills",
+      "intent": "Carry argument-substitution semantics such as $ARGUMENTS or positional args.",
+      "source_repos": [
+        "codex-audit-ref"
+      ],
+      "canonical_surface": "Foundry treats string substitutions as part of the canonical skill contract and documents their runtime projection.",
+      "canonical_user_experience": "Foundry treats string substitutions as part of the canonical skill contract and documents their runtime projection.",
+      "required_capabilities": [
+        "skill-argument-binding"
+      ],
+      "required_runtime_capabilities": [
+        "skill-argument-binding"
+      ],
+      "degraded_projection_policy": "If a runtime lacks direct substitution support, Foundry maps the values into workflow prompt text or arguments.",
+      "projection_rules": "If a runtime lacks direct substitution support, Foundry maps the values into workflow prompt text or arguments.",
+      "acceptance_contract": "Each platform declares how skill arguments are bound.",
+      "docs_contract": "Document argument binding semantics and limits.",
+      "test_contract": "Capability matrix must include argument binding for every platform."
+    },
+    {
+      "pattern_id": "skill-forked-execution",
+      "id": "skill-forked-execution",
+      "category": "skills",
+      "intent": "Allow a skill to run in isolated execution when the runtime supports it.",
+      "source_repos": [
+        "claude-audit-ref",
+        "codex-audit-ref"
+      ],
+      "canonical_surface": "Foundry models isolated skill execution as a first-class projection, even when it degrades to agent handoff.",
+      "canonical_user_experience": "Foundry models isolated skill execution as a first-class projection, even when it degrades to agent handoff.",
+      "required_capabilities": [
+        "isolated-skill-execution"
+      ],
+      "required_runtime_capabilities": [
+        "isolated-skill-execution"
+      ],
+      "degraded_projection_policy": "If the runtime lacks forked skill execution, Foundry maps it to a specialist or subagent handoff.",
+      "projection_rules": "If the runtime lacks forked skill execution, Foundry maps it to a specialist or subagent handoff.",
+      "acceptance_contract": "Each platform declares native or degraded isolation for skills.",
+      "docs_contract": "Document how isolated execution is achieved per runtime.",
+      "test_contract": "Validation fails if isolation-dependent patterns lack a declared projection."
+    },
+    {
+      "pattern_id": "agent-registration",
+      "id": "agent-registration",
+      "category": "agents",
+      "intent": "Register specialist agents in the runtime's native format.",
+      "source_repos": [
+        "claude-audit-ref",
+        "codex-audit-ref",
+        "foundry"
+      ],
+      "canonical_surface": "Foundry projects specialist agents into native agent files, agent config, or generated command surfaces.",
+      "canonical_user_experience": "Foundry projects specialist agents into native agent files, agent config, or generated command surfaces.",
+      "required_capabilities": [
+        "agent-registration-surface"
+      ],
+      "required_runtime_capabilities": [
+        "agent-registration-surface"
+      ],
+      "degraded_projection_policy": "If runtime-native agents do not exist, Foundry projects specialist routes into generated commands or prompts.",
+      "projection_rules": "If runtime-native agents do not exist, Foundry projects specialist routes into generated commands or prompts.",
+      "acceptance_contract": "Every platform declares how specialists are registered.",
+      "docs_contract": "Document native agent paths or degraded specialist routes.",
+      "test_contract": "Manifest agent entries must match generated agent artifacts."
+    },
+    {
+      "pattern_id": "specialist-agent",
+      "id": "specialist-agent",
+      "category": "agents",
+      "intent": "Provide narrow, opinionated specialist personas for domain work.",
+      "source_repos": [
+        "claude-audit-ref",
+        "codex-audit-ref",
+        "foundry"
+      ],
+      "canonical_surface": "Foundry specialists remain semantically stable even when projected into different runtime surfaces.",
+      "canonical_user_experience": "Foundry specialists remain semantically stable even when projected into different runtime surfaces.",
+      "required_capabilities": [
+        "specialist-persona-surface"
+      ],
+      "required_runtime_capabilities": [
+        "specialist-persona-surface"
+      ],
+      "degraded_projection_policy": "If a runtime cannot spawn native agents, Foundry still projects specialist routes with explicit scope and verification contracts.",
+      "projection_rules": "If a runtime cannot spawn native agents, Foundry still projects specialist routes with explicit scope and verification contracts.",
+      "acceptance_contract": "Every platform maps each shared specialist into a native or degraded surface.",
+      "docs_contract": "Document specialist routing semantics and scope limits.",
+      "test_contract": "Validation fails if a shared specialist has no platform projection."
+    },
+    {
+      "pattern_id": "agent-preloaded-skill",
+      "id": "agent-preloaded-skill",
+      "category": "agents",
+      "intent": "Allow agents to preload skills as background knowledge.",
+      "source_repos": [
+        "claude-audit-ref",
+        "codex-audit-ref"
+      ],
+      "canonical_surface": "Foundry captures preloaded-skill semantics separately from user-invocable skills.",
+      "canonical_user_experience": "Foundry captures preloaded-skill semantics separately from user-invocable skills.",
+      "required_capabilities": [
+        "preloaded-skill-support"
+      ],
+      "required_runtime_capabilities": [
+        "preloaded-skill-support"
+      ],
+      "degraded_projection_policy": "If preloading is not native, Foundry injects attached skill guidance into the generated specialist surface and marks it degraded.",
+      "projection_rules": "If preloading is not native, Foundry injects attached skill guidance into the generated specialist surface and marks it degraded.",
+      "acceptance_contract": "Each platform declares how preloaded skills are attached to agents.",
+      "docs_contract": "Document native preload wiring or degraded attached-skill section.",
+      "test_contract": "Generated agent projections must include attached skills when declared."
+    },
+    {
+      "pattern_id": "multi-agent-orchestration",
+      "id": "multi-agent-orchestration",
+      "category": "agents",
+      "intent": "Fan out work to multiple agents or specialists in parallel.",
+      "source_repos": [
+        "claude-audit-ref",
+        "codex-audit-ref",
+        "foundry"
+      ],
+      "canonical_surface": "Foundry treats multi-agent fanout as a control-plane pattern with runtime-specific execution surfaces.",
+      "canonical_user_experience": "Foundry treats multi-agent fanout as a control-plane pattern with runtime-specific execution surfaces.",
+      "required_capabilities": [
+        "parallel-specialist-execution"
+      ],
+      "required_runtime_capabilities": [
+        "parallel-specialist-execution"
+      ],
+      "degraded_projection_policy": "If native multi-agent support is absent, Foundry degrades to orchestrator-managed repeated delegation with explicit ownership.",
+      "projection_rules": "If native multi-agent support is absent, Foundry degrades to orchestrator-managed repeated delegation with explicit ownership.",
+      "acceptance_contract": "Each platform declares native or degraded parallel delegation support.",
+      "docs_contract": "Document concurrency, depth, and fanout notes.",
+      "test_contract": "Capability matrix must include multi-agent orchestration for all platforms."
+    },
+    {
+      "pattern_id": "batch-agent-fanout",
+      "id": "batch-agent-fanout",
+      "category": "agents",
+      "intent": "Run many homogeneous tasks through a worker fanout pattern.",
+      "source_repos": [
+        "codex-audit-ref"
+      ],
+      "canonical_surface": "Foundry models structured batch fanout separately from general orchestration.",
+      "canonical_user_experience": "Foundry models structured batch fanout separately from general orchestration.",
+      "required_capabilities": [
+        "batch-worker-fanout"
+      ],
+      "required_runtime_capabilities": [
+        "batch-worker-fanout"
+      ],
+      "degraded_projection_policy": "If batch fanout is not native, Foundry maps it to orchestrator-managed repeated delegation and marks the limits.",
+      "projection_rules": "If batch fanout is not native, Foundry maps it to orchestrator-managed repeated delegation and marks the limits.",
+      "acceptance_contract": "Each platform declares native or degraded batch fanout semantics.",
+      "docs_contract": "Document batch size, timeout, and collection constraints.",
+      "test_contract": "Validation fails if a platform omits batch fanout semantics entirely."
+    },
+    {
+      "pattern_id": "orchestration-chain",
+      "id": "orchestration-chain",
+      "category": "workflow",
+      "intent": "Capture the major composition styles used across upstream repos and Foundry.",
+      "source_repos": [
+        "claude-audit-ref",
+        "codex-audit-ref",
+        "foundry"
+      ],
+      "canonical_surface": "Foundry normalizes command -> agent -> skill, skill -> skill, and orchestrator -> specialists -> validator as explicit orchestration subtypes.",
+      "canonical_user_experience": "Foundry normalizes command -> agent -> skill, skill -> skill, and orchestrator -> specialists -> validator as explicit orchestration subtypes.",
+      "required_capabilities": [
+        "orchestration-subtype-support"
+      ],
+      "required_runtime_capabilities": [
+        "orchestration-subtype-support"
+      ],
+      "degraded_projection_policy": "If a runtime cannot express a subtype natively, Foundry routes it through the nearest control-plane equivalent.",
+      "projection_rules": "If a runtime cannot express a subtype natively, Foundry routes it through the nearest control-plane equivalent.",
+      "acceptance_contract": "Every platform declares support for each canonical orchestration subtype.",
+      "docs_contract": "Document subtype support and runtime projection rules.",
+      "test_contract": "Orchestration docs must include all three subtypes."
+    },
+    {
+      "pattern_id": "review-and-validation",
+      "id": "review-and-validation",
+      "category": "workflow",
+      "intent": "Separate implementation from validation and review.",
+      "source_repos": [
+        "claude-audit-ref",
+        "codex-audit-ref",
+        "foundry"
+      ],
+      "canonical_surface": "Foundry keeps validation as a first-class stage with specialist or workflow support.",
+      "canonical_user_experience": "Foundry keeps validation as a first-class stage with specialist or workflow support.",
+      "required_capabilities": [
+        "validation-gate"
+      ],
+      "required_runtime_capabilities": [
+        "validation-gate"
+      ],
+      "degraded_projection_policy": "If a runtime lacks a dedicated validator surface, Foundry uses a degraded review workflow contract.",
+      "projection_rules": "If a runtime lacks a dedicated validator surface, Foundry uses a degraded review workflow contract.",
+      "acceptance_contract": "Every platform defines a review/validation projection.",
+      "docs_contract": "Document review and validation entry surfaces.",
+      "test_contract": "Validation data must include a review/validation support entry for each platform."
+    },
+    {
+      "pattern_id": "research-escalation",
+      "id": "research-escalation",
+      "category": "workflow",
+      "intent": "Escalate from repo evidence to official docs and then community evidence only when needed.",
+      "source_repos": [
+        "claude-audit-ref",
+        "foundry"
+      ],
+      "canonical_surface": "Foundry enforces repo-first and official-first research policy in rules, workflows, and docs.",
+      "canonical_user_experience": "Foundry enforces repo-first and official-first research policy in rules, workflows, and docs.",
+      "required_capabilities": [
+        "research-policy-surface"
+      ],
+      "required_runtime_capabilities": [
+        "research-policy-surface"
+      ],
+      "degraded_projection_policy": "When the runtime lacks tool-level enforcement, Foundry degrades to generated steering and workflow contract language.",
+      "projection_rules": "When the runtime lacks tool-level enforcement, Foundry degrades to generated steering and workflow contract language.",
+      "acceptance_contract": "All platforms declare research policy enforcement behavior.",
+      "docs_contract": "Document repo-first and official-first escalation behavior.",
+      "test_contract": "Rules and docs must align on research policy wording."
+    },
+    {
+      "pattern_id": "memory-loading",
+      "id": "memory-loading",
+      "category": "memory",
+      "intent": "Model project memory and specialist memory loading behavior.",
+      "source_repos": [
+        "claude-audit-ref",
+        "codex-audit-ref",
+        "foundry"
+      ],
+      "canonical_surface": "Foundry documents main memory files, specialist memory behavior, and foundation-doc loading order.",
+      "canonical_user_experience": "Foundry documents main memory files, specialist memory behavior, and foundation-doc loading order.",
+      "required_capabilities": [
+        "memory-surface"
+      ],
+      "required_runtime_capabilities": [
+        "memory-surface"
+      ],
+      "degraded_projection_policy": "If runtime-native memory is weak or absent, Foundry degrades to project foundation docs and route contracts.",
+      "projection_rules": "If runtime-native memory is weak or absent, Foundry degrades to project foundation docs and route contracts.",
+      "acceptance_contract": "Each platform declares native and degraded memory behavior.",
+      "docs_contract": "Document root memory files, specialist memory, and load order.",
+      "test_contract": "Memory docs must cover all platforms."
+    },
+    {
+      "pattern_id": "project-vs-global-scope",
+      "id": "project-vs-global-scope",
+      "category": "configuration",
+      "intent": "Capture project-scoped versus global-scoped installation behavior.",
+      "source_repos": [
+        "claude-audit-ref",
+        "codex-audit-ref",
+        "foundry"
+      ],
+      "canonical_surface": "Foundry records where project and global artifacts land for every platform.",
+      "canonical_user_experience": "Foundry records where project and global artifacts land for every platform.",
+      "required_capabilities": [
+        "scope-model"
+      ],
+      "required_runtime_capabilities": [
+        "scope-model"
+      ],
+      "degraded_projection_policy": "If runtime scope is not fully symmetric, Foundry documents the normalized install behavior.",
+      "projection_rules": "If runtime scope is not fully symmetric, Foundry documents the normalized install behavior.",
+      "acceptance_contract": "All platforms publish project/global scope paths.",
+      "docs_contract": "Document scope paths and precedence.",
+      "test_contract": "Scope matrix must include all supported platforms."
+    },
+    {
+      "pattern_id": "hook-support",
+      "id": "hook-support",
+      "category": "runtime",
+      "intent": "Model runtime hook support and degraded rule-based equivalents.",
+      "source_repos": [
+        "claude-audit-ref"
+      ],
+      "canonical_surface": "Foundry treats hooks as native where available and advisory rule reinforcement elsewhere.",
+      "canonical_user_experience": "Foundry treats hooks as native where available and advisory rule reinforcement elsewhere.",
+      "required_capabilities": [
+        "hook-surface"
+      ],
+      "required_runtime_capabilities": [
+        "hook-surface"
+      ],
+      "degraded_projection_policy": "If runtime hooks are not native, Foundry projects the pattern into generated steering, prompt guards, or install guidance.",
+      "projection_rules": "If runtime hooks are not native, Foundry projects the pattern into generated steering, prompt guards, or install guidance.",
+      "acceptance_contract": "Each platform declares native or degraded hook support.",
+      "docs_contract": "Document event support and degraded alternatives.",
+      "test_contract": "Validation fails if hook support is omitted from a platform contract."
+    },
+    {
+      "pattern_id": "mcp-integration",
+      "id": "mcp-integration",
+      "category": "mcp",
+      "intent": "Connect external MCP servers through runtime-specific configuration.",
+      "source_repos": [
+        "claude-audit-ref",
+        "codex-audit-ref",
+        "foundry"
+      ],
+      "canonical_surface": "Foundry emits shared MCP guidance plus runtime-specific install targets.",
+      "canonical_user_experience": "Foundry emits shared MCP guidance plus runtime-specific install targets.",
+      "required_capabilities": [
+        "mcp-client-surface"
+      ],
+      "required_runtime_capabilities": [
+        "mcp-client-surface"
+      ],
+      "degraded_projection_policy": "If direct MCP support is limited, Foundry routes through its gateway and documents the degraded behavior.",
+      "projection_rules": "If direct MCP support is limited, Foundry routes through its gateway and documents the degraded behavior.",
+      "acceptance_contract": "Every platform defines an MCP client surface.",
+      "docs_contract": "Document config location, scope, and security guidance.",
+      "test_contract": "MCP matrix must include all platforms."
+    },
+    {
+      "pattern_id": "agent-scoped-mcp",
+      "id": "agent-scoped-mcp",
+      "category": "mcp",
+      "intent": "Limit MCP access to the agents or workflows that need it.",
+      "source_repos": [
+        "codex-audit-ref",
+        "claude-audit-ref"
+      ],
+      "canonical_surface": "Foundry models scoped MCP access as a separate pattern from global MCP wiring.",
+      "canonical_user_experience": "Foundry models scoped MCP access as a separate pattern from global MCP wiring.",
+      "required_capabilities": [
+        "scoped-mcp-surface"
+      ],
+      "required_runtime_capabilities": [
+        "scoped-mcp-surface"
+      ],
+      "degraded_projection_policy": "If per-agent scoping is not native, Foundry documents the nearest workflow or install-time narrowing pattern.",
+      "projection_rules": "If per-agent scoping is not native, Foundry documents the nearest workflow or install-time narrowing pattern.",
+      "acceptance_contract": "Each platform declares agent- or route-scoped MCP support.",
+      "docs_contract": "Document native scoped MCP behavior or degraded equivalent.",
+      "test_contract": "Capability matrix must include scoped MCP support for every platform."
+    },
+    {
+      "pattern_id": "runtime-as-mcp-server",
+      "id": "runtime-as-mcp-server",
+      "category": "mcp",
+      "intent": "Expose the runtime itself as an MCP server when supported.",
+      "source_repos": [
+        "codex-audit-ref"
+      ],
+      "canonical_surface": "Foundry treats runtime-as-server as a first-class capability and documents gateway fallbacks elsewhere.",
+      "canonical_user_experience": "Foundry treats runtime-as-server as a first-class capability and documents gateway fallbacks elsewhere.",
+      "required_capabilities": [
+        "runtime-as-mcp-server"
+      ],
+      "required_runtime_capabilities": [
+        "runtime-as-mcp-server"
+      ],
+      "degraded_projection_policy": "If a runtime cannot act as an MCP server, Foundry documents the gateway or external server substitute.",
+      "projection_rules": "If a runtime cannot act as an MCP server, Foundry documents the gateway or external server substitute.",
+      "acceptance_contract": "Each platform declares native or degraded runtime-as-server behavior.",
+      "docs_contract": "Document whether the runtime can expose an MCP server surface directly.",
+      "test_contract": "Validation fails if a platform omits runtime-as-server semantics entirely."
+    },
+    {
+      "pattern_id": "browser-verification",
+      "id": "browser-verification",
+      "category": "browser",
+      "intent": "Use a shared browser capability for live verification when configured and allowed.",
+      "source_repos": [
+        "claude-audit-ref",
+        "codex-audit-ref",
+        "foundry"
+      ],
+      "canonical_surface": "Foundry normalizes browser verification around shared Playwright/browser MCP policy.",
+      "canonical_user_experience": "Foundry normalizes browser verification around shared Playwright/browser MCP policy.",
+      "required_capabilities": [
+        "browser-tooling-surface"
+      ],
+      "required_runtime_capabilities": [
+        "browser-tooling-surface"
+      ],
+      "degraded_projection_policy": "If browser tooling is unavailable, Foundry documents the constraint and keeps the policy explicit.",
+      "projection_rules": "If browser tooling is unavailable, Foundry documents the constraint and keeps the policy explicit.",
+      "acceptance_contract": "Every platform declares browser verification support.",
+      "docs_contract": "Document browser/MCP safety rules and available surfaces.",
+      "test_contract": "Browser matrix must cover all platforms."
+    },
+    {
+      "pattern_id": "sandbox-policy",
+      "id": "sandbox-policy",
+      "category": "safety",
+      "intent": "Map runtime sandbox or containment modes into a shared safety model.",
+      "source_repos": [
+        "codex-audit-ref",
+        "claude-audit-ref"
+      ],
+      "canonical_surface": "Foundry defines review-safe, dev-safe, and trusted execution boundaries for each runtime.",
+      "canonical_user_experience": "Foundry defines review-safe, dev-safe, and trusted execution boundaries for each runtime.",
+      "required_capabilities": [
+        "sandbox-or-containment-surface"
+      ],
+      "required_runtime_capabilities": [
+        "sandbox-or-containment-surface"
+      ],
+      "degraded_projection_policy": "If sandboxing is not native, Foundry degrades to rule guidance and environment constraints.",
+      "projection_rules": "If sandboxing is not native, Foundry degrades to rule guidance and environment constraints.",
+      "acceptance_contract": "Each platform defines review/dev/trusted containment behavior.",
+      "docs_contract": "Document sandbox modes and practical defaults.",
+      "test_contract": "Safety matrix must include sandbox behavior for every platform."
+    },
+    {
+      "pattern_id": "approval-policy",
+      "id": "approval-policy",
+      "category": "safety",
+      "intent": "Map runtime approval or permission modes into shared autonomy presets.",
+      "source_repos": [
+        "codex-audit-ref",
+        "claude-audit-ref"
+      ],
+      "canonical_surface": "Foundry defines review, development, unattended, and trusted autonomy levels per runtime.",
+      "canonical_user_experience": "Foundry defines review, development, unattended, and trusted autonomy levels per runtime.",
+      "required_capabilities": [
+        "approval-or-permission-surface"
+      ],
+      "required_runtime_capabilities": [
+        "approval-or-permission-surface"
+      ],
+      "degraded_projection_policy": "If approval modes are not native, Foundry degrades to documented operator policy and install-time guidance.",
+      "projection_rules": "If approval modes are not native, Foundry degrades to documented operator policy and install-time guidance.",
+      "acceptance_contract": "Each platform declares review/dev/unattended approval behavior.",
+      "docs_contract": "Document approval modes and dangerous combinations.",
+      "test_contract": "Safety docs must cover approval behavior on every platform."
+    },
+    {
+      "pattern_id": "session-resume",
+      "id": "session-resume",
+      "category": "session",
+      "intent": "Resume a previous task context when the runtime supports session persistence.",
+      "source_repos": [
+        "codex-audit-ref",
+        "claude-audit-ref"
+      ],
+      "canonical_surface": "Foundry models session resume separately from memory and config layering.",
+      "canonical_user_experience": "Foundry models session resume separately from memory and config layering.",
+      "required_capabilities": [
+        "session-resume-surface"
+      ],
+      "required_runtime_capabilities": [
+        "session-resume-surface"
+      ],
+      "degraded_projection_policy": "If session resume is not native, Foundry degrades to fresh-session handoff artifacts and explicit stateless continuation.",
+      "projection_rules": "If session resume is not native, Foundry degrades to fresh-session handoff artifacts and explicit stateless continuation.",
+      "acceptance_contract": "Each platform declares native or degraded resume behavior.",
+      "docs_contract": "Document session resume semantics and limitations.",
+      "test_contract": "Session matrix must include resume support for every platform."
+    },
+    {
+      "pattern_id": "session-fork",
+      "id": "session-fork",
+      "category": "session",
+      "intent": "Fork an existing task context to explore alternatives without mutating the original.",
+      "source_repos": [
+        "codex-audit-ref",
+        "claude-audit-ref"
+      ],
+      "canonical_surface": "Foundry models context forking as a separate workflow primitive.",
+      "canonical_user_experience": "Foundry models context forking as a separate workflow primitive.",
+      "required_capabilities": [
+        "session-fork-surface"
+      ],
+      "required_runtime_capabilities": [
+        "session-fork-surface"
+      ],
+      "degraded_projection_policy": "If session forking is not native, Foundry degrades to explicit handoff packs or fresh-session replay.",
+      "projection_rules": "If session forking is not native, Foundry degrades to explicit handoff packs or fresh-session replay.",
+      "acceptance_contract": "Each platform declares native or degraded fork behavior.",
+      "docs_contract": "Document forking semantics and caveats.",
+      "test_contract": "Session docs must cover fork behavior for every platform."
+    },
+    {
+      "pattern_id": "headless-exec",
+      "id": "headless-exec",
+      "category": "session",
+      "intent": "Run non-interactive execution in CI or scripts when the runtime supports it.",
+      "source_repos": [
+        "codex-audit-ref",
+        "claude-audit-ref"
+      ],
+      "canonical_surface": "Foundry records headless or print-mode execution support and machine-readable output support.",
+      "canonical_user_experience": "Foundry records headless or print-mode execution support and machine-readable output support.",
+      "required_capabilities": [
+        "headless-surface",
+        "machine-readable-output"
+      ],
+      "required_runtime_capabilities": [
+        "headless-surface",
+        "machine-readable-output"
+      ],
+      "degraded_projection_policy": "If headless execution is not native, Foundry degrades to stateless invocation guidance and marks machine-readable output limits.",
+      "projection_rules": "If headless execution is not native, Foundry degrades to stateless invocation guidance and marks machine-readable output limits.",
+      "acceptance_contract": "Each platform declares native or degraded headless support.",
+      "docs_contract": "Document headless invocation and structured output support.",
+      "test_contract": "Session/headless matrix must include all platforms."
+    },
+    {
+      "pattern_id": "worktree-isolation",
+      "id": "worktree-isolation",
+      "category": "runtime",
+      "intent": "Allow isolated worktree execution when the runtime supports it.",
+      "source_repos": [
+        "claude-audit-ref",
+        "codex-audit-ref"
+      ],
+      "canonical_surface": "Foundry keeps worktree isolation as a first-class runtime capability.",
+      "canonical_user_experience": "Foundry keeps worktree isolation as a first-class runtime capability.",
+      "required_capabilities": [
+        "worktree-or-isolated-checkout"
+      ],
+      "required_runtime_capabilities": [
+        "worktree-or-isolated-checkout"
+      ],
+      "degraded_projection_policy": "If worktree support is not native, Foundry degrades to documented external git-worktree workflows.",
+      "projection_rules": "If worktree support is not native, Foundry degrades to documented external git-worktree workflows.",
+      "acceptance_contract": "Each platform declares native or degraded worktree behavior.",
+      "docs_contract": "Document whether worktree isolation is runtime-native or external.",
+      "test_contract": "Capability matrix must include worktree behavior for every platform."
+    },
+    {
+      "pattern_id": "scheduled-task",
+      "id": "scheduled-task",
+      "category": "runtime",
+      "intent": "Support recurring or scheduled workflows when available.",
+      "source_repos": [
+        "claude-audit-ref"
+      ],
+      "canonical_surface": "Foundry models scheduled work as a runtime capability with degraded automation fallbacks.",
+      "canonical_user_experience": "Foundry models scheduled work as a runtime capability with degraded automation fallbacks.",
+      "required_capabilities": [
+        "scheduled-task-surface"
+      ],
+      "required_runtime_capabilities": [
+        "scheduled-task-surface"
+      ],
+      "degraded_projection_policy": "If scheduling is not native, Foundry degrades to explicit external automation or inbox-driven recurrence.",
+      "projection_rules": "If scheduling is not native, Foundry degrades to explicit external automation or inbox-driven recurrence.",
+      "acceptance_contract": "Each platform declares native or degraded scheduling behavior.",
+      "docs_contract": "Document native scheduling or degraded automation guidance.",
+      "test_contract": "Validation fails if scheduling semantics are omitted from a platform contract."
+    },
+    {
+      "pattern_id": "upstream-capability-audit",
+      "id": "upstream-capability-audit",
+      "category": "governance",
+      "intent": "Track upstream runtime capability drift against audited reference repos.",
+      "source_repos": [
+        "claude-audit-ref",
+        "codex-audit-ref",
+        "foundry"
+      ],
+      "canonical_surface": "Foundry emits an audit artifact and generated docs that record audited references, parity impacts, and blockers.",
+      "canonical_user_experience": "Foundry emits an audit artifact and generated docs that record audited references, parity impacts, and blockers.",
+      "required_capabilities": [
+        "audit-artifact"
+      ],
+      "required_runtime_capabilities": [
+        "audit-artifact"
+      ],
+      "degraded_projection_policy": "If runtime metadata is partial, Foundry still records the audit entry and any projection gaps.",
+      "projection_rules": "If runtime metadata is partial, Foundry still records the audit entry and any projection gaps.",
+      "acceptance_contract": "The bundle ships audited reference inputs and a generated audit report.",
+      "docs_contract": "Document audited refs, parity impacts, and current blockers.",
+      "test_contract": "Validation fails if the audit artifact or audited refs are missing."
+    }
+  ]
+}

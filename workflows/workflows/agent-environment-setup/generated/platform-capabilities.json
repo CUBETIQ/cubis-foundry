@@ -1,0 +1,2931 @@
+{
+  "$schema": "cubis-foundry-platform-capabilities-v1",
+  "generatedAt": "1970-01-01T00:00:00.000Z",
+  "platforms": {
+    "codex": {
+      "platform_id": "codex",
+      "runtime_family": "codex-cli",
+      "instruction_capabilities": {
+        "root_instruction_file": "AGENTS.md",
+        "project_instruction_path": "<workspace>/AGENTS.md",
+        "global_instruction_path": "~/.codex/AGENTS.md",
+        "hierarchical_loading": "native ancestor-loading",
+        "personal_override": "AGENTS.override.md",
+        "size_guidance": "Keep project instructions concise; byte-based cap applies."
+      },
+      "config_capabilities": {
+        "user_config_path": "~/.codex/config.toml",
+        "project_config_path": "<workspace>/.codex/config.toml",
+        "override_surfaces": [
+          "CLI flags",
+          "-c key=value"
+        ],
+        "profiles": "native"
+      },
+      "agent_capabilities": {
+        "native_agent_surface": ".codex/agents/*.toml",
+        "skill_surface": ".agents/skills/<id>/SKILL.md",
+        "workflow_entry_surface": "generated workflow skills",
+        "multi_agent": "native",
+        "batch_fanout": "native or tool-assisted"
+      },
+      "skill_capabilities": {
+        "discovery": "project -> user -> built-in",
+        "preloaded_skills": "native",
+        "frontmatter": "native",
+        "argument_binding": "native",
+        "isolated_skill_execution": "native via forked execution or subagent projection"
+      },
+      "session_capabilities": {
+        "resume": "native",
+        "fork": "native",
+        "headless_exec": "native",
+        "machine_readable_output": "native",
+        "worktree_isolation": "native or external git worktree"
+      },
+      "mcp_capabilities": {
+        "client_surface": "[mcp_servers.*] in .codex/config.toml",
+        "scoped_mcp": "native agent-scoped MCP",
+        "runtime_as_server": "native via codex mcp-server",
+        "browser_verification": "native when browser MCP is configured"
+      },
+      "safety_capabilities": {
+        "review_mode": "read-only + untrusted",
+        "development_mode": "workspace-write + on-request",
+        "unattended_mode": "read-only + never",
+        "trusted_mode": "workspace-write or danger-full-access + never",
+        "warnings": [
+          "Do not pair danger-full-access with never outside a real containment boundary."
+        ]
+      },
+      "pattern_support": [
+        {
+          "pattern_id": "instructions-file",
+          "support_level": "native",
+          "projection_surface": "AGENTS.md",
+          "behavior_notes": "Codex has native instructions-file support via AGENTS.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for instructions-file."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native instructions-file projection is present in the generated manifest.",
+            "Verify native docs for instructions-file are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit instructions-file."
+          ]
+        },
+        {
+          "pattern_id": "instructions-hierarchy",
+          "support_level": "native",
+          "projection_surface": "AGENTS.md",
+          "behavior_notes": "Codex has native instructions-hierarchy support via AGENTS.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for instructions-hierarchy."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native instructions-hierarchy projection is present in the generated manifest.",
+            "Verify native docs for instructions-hierarchy are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit instructions-hierarchy."
+          ]
+        },
+        {
+          "pattern_id": "instructions-override",
+          "support_level": "native",
+          "projection_surface": "AGENTS.md",
+          "behavior_notes": "Codex has native instructions-override support via AGENTS.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for instructions-override."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native instructions-override projection is present in the generated manifest.",
+            "Verify native docs for instructions-override are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit instructions-override."
+          ]
+        },
+        {
+          "pattern_id": "config-layering",
+          "support_level": "native",
+          "projection_surface": "<workspace>/.codex/config.toml",
+          "behavior_notes": "Codex has native config-layering support via <workspace>/.codex/config.toml.",
+          "hard_limits": [
+            "Native runtime limits still apply for config-layering."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native config-layering projection is present in the generated manifest.",
+            "Verify native docs for config-layering are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit config-layering."
+          ]
+        },
+        {
+          "pattern_id": "config-profiles",
+          "support_level": "native",
+          "projection_surface": "<workspace>/.codex/config.toml",
+          "behavior_notes": "Codex has native config-profiles support via <workspace>/.codex/config.toml.",
+          "hard_limits": [
+            "Native runtime limits still apply for config-profiles."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native config-profiles projection is present in the generated manifest.",
+            "Verify native docs for config-profiles are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit config-profiles."
+          ]
+        },
+        {
+          "pattern_id": "workflow-entrypoint",
+          "support_level": "native",
+          "projection_surface": "generated workflow skills",
+          "behavior_notes": "Codex has native workflow-entrypoint support via generated workflow skills.",
+          "hard_limits": [
+            "Native runtime limits still apply for workflow-entrypoint."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native workflow-entrypoint projection is present in the generated manifest.",
+            "Verify native docs for workflow-entrypoint are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit workflow-entrypoint."
+          ]
+        },
+        {
+          "pattern_id": "supporting-skill",
+          "support_level": "native",
+          "projection_surface": ".agents/skills/<id>/SKILL.md",
+          "behavior_notes": "Codex has native supporting-skill support via .agents/skills/<id>/SKILL.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for supporting-skill."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native supporting-skill projection is present in the generated manifest.",
+            "Verify native docs for supporting-skill are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit supporting-skill."
+          ]
+        },
+        {
+          "pattern_id": "skill-discovery",
+          "support_level": "native",
+          "projection_surface": ".agents/skills/<id>/SKILL.md",
+          "behavior_notes": "Codex has native skill-discovery support via .agents/skills/<id>/SKILL.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for skill-discovery."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native skill-discovery projection is present in the generated manifest.",
+            "Verify native docs for skill-discovery are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit skill-discovery."
+          ]
+        },
+        {
+          "pattern_id": "skill-frontmatter",
+          "support_level": "native",
+          "projection_surface": ".agents/skills/<id>/SKILL.md",
+          "behavior_notes": "Codex has native skill-frontmatter support via .agents/skills/<id>/SKILL.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for skill-frontmatter."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native skill-frontmatter projection is present in the generated manifest.",
+            "Verify native docs for skill-frontmatter are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit skill-frontmatter."
+          ]
+        },
+        {
+          "pattern_id": "skill-string-substitution",
+          "support_level": "native",
+          "projection_surface": ".agents/skills/<id>/SKILL.md",
+          "behavior_notes": "Codex has native skill-string-substitution support via .agents/skills/<id>/SKILL.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for skill-string-substitution."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native skill-string-substitution projection is present in the generated manifest.",
+            "Verify native docs for skill-string-substitution are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit skill-string-substitution."
+          ]
+        },
+        {
+          "pattern_id": "skill-forked-execution",
+          "support_level": "native",
+          "projection_surface": ".agents/skills/<id>/SKILL.md",
+          "behavior_notes": "Codex has native skill-forked-execution support via .agents/skills/<id>/SKILL.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for skill-forked-execution."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native skill-forked-execution projection is present in the generated manifest.",
+            "Verify native docs for skill-forked-execution are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit skill-forked-execution."
+          ]
+        },
+        {
+          "pattern_id": "agent-registration",
+          "support_level": "native",
+          "projection_surface": ".codex/agents/*.toml",
+          "behavior_notes": "Codex has native agent-registration support via .codex/agents/*.toml.",
+          "hard_limits": [
+            "Native runtime limits still apply for agent-registration."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native agent-registration projection is present in the generated manifest.",
+            "Verify native docs for agent-registration are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit agent-registration."
+          ]
+        },
+        {
+          "pattern_id": "specialist-agent",
+          "support_level": "native",
+          "projection_surface": ".codex/agents/*.toml",
+          "behavior_notes": "Codex has native specialist-agent support via .codex/agents/*.toml.",
+          "hard_limits": [
+            "Native runtime limits still apply for specialist-agent."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native specialist-agent projection is present in the generated manifest.",
+            "Verify native docs for specialist-agent are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit specialist-agent."
+          ]
+        },
+        {
+          "pattern_id": "agent-preloaded-skill",
+          "support_level": "native",
+          "projection_surface": ".codex/agents/*.toml",
+          "behavior_notes": "Codex has native agent-preloaded-skill support via .codex/agents/*.toml.",
+          "hard_limits": [
+            "Native runtime limits still apply for agent-preloaded-skill."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native agent-preloaded-skill projection is present in the generated manifest.",
+            "Verify native docs for agent-preloaded-skill are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit agent-preloaded-skill."
+          ]
+        },
+        {
+          "pattern_id": "multi-agent-orchestration",
+          "support_level": "native",
+          "projection_surface": ".codex/agents/*.toml",
+          "behavior_notes": "Codex has native multi-agent-orchestration support via .codex/agents/*.toml.",
+          "hard_limits": [
+            "Native runtime limits still apply for multi-agent-orchestration."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native multi-agent-orchestration projection is present in the generated manifest.",
+            "Verify native docs for multi-agent-orchestration are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit multi-agent-orchestration."
+          ]
+        },
+        {
+          "pattern_id": "batch-agent-fanout",
+          "support_level": "native",
+          "projection_surface": ".codex/agents/*.toml",
+          "behavior_notes": "Codex has native batch-agent-fanout support via .codex/agents/*.toml.",
+          "hard_limits": [
+            "Native runtime limits still apply for batch-agent-fanout."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native batch-agent-fanout projection is present in the generated manifest.",
+            "Verify native docs for batch-agent-fanout are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit batch-agent-fanout."
+          ]
+        },
+        {
+          "pattern_id": "orchestration-chain",
+          "support_level": "native",
+          "projection_surface": "generated workflow skills",
+          "behavior_notes": "Codex has native orchestration-chain support via generated workflow skills.",
+          "hard_limits": [
+            "Native runtime limits still apply for orchestration-chain."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native orchestration-chain projection is present in the generated manifest.",
+            "Verify native docs for orchestration-chain are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit orchestration-chain."
+          ]
+        },
+        {
+          "pattern_id": "review-and-validation",
+          "support_level": "native",
+          "projection_surface": "generated workflow skills",
+          "behavior_notes": "Codex has native review-and-validation support via generated workflow skills.",
+          "hard_limits": [
+            "Native runtime limits still apply for review-and-validation."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native review-and-validation projection is present in the generated manifest.",
+            "Verify native docs for review-and-validation are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit review-and-validation."
+          ]
+        },
+        {
+          "pattern_id": "research-escalation",
+          "support_level": "native",
+          "projection_surface": "generated workflow skills",
+          "behavior_notes": "Codex has native research-escalation support via generated workflow skills.",
+          "hard_limits": [
+            "Native runtime limits still apply for research-escalation."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native research-escalation projection is present in the generated manifest.",
+            "Verify native docs for research-escalation are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit research-escalation."
+          ]
+        },
+        {
+          "pattern_id": "memory-loading",
+          "support_level": "native",
+          "projection_surface": "AGENTS.md",
+          "behavior_notes": "Codex has native memory-loading support via AGENTS.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for memory-loading."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native memory-loading projection is present in the generated manifest.",
+            "Verify native docs for memory-loading are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit memory-loading."
+          ]
+        },
+        {
+          "pattern_id": "project-vs-global-scope",
+          "support_level": "native",
+          "projection_surface": "<workspace>/.codex/config.toml",
+          "behavior_notes": "Codex has native project-vs-global-scope support via <workspace>/.codex/config.toml.",
+          "hard_limits": [
+            "Native runtime limits still apply for project-vs-global-scope."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native project-vs-global-scope projection is present in the generated manifest.",
+            "Verify native docs for project-vs-global-scope are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit project-vs-global-scope."
+          ]
+        },
+        {
+          "pattern_id": "hook-support",
+          "support_level": "degraded",
+          "projection_surface": "generated workflow skills",
+          "behavior_notes": "Codex parity uses generated steering and skill/routing contracts instead of a first-class hook system.",
+          "hard_limits": [
+            "Degraded projection for hook-support is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded hook-support projection is present in the generated manifest.",
+            "Verify degraded docs for hook-support are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit hook-support."
+          ]
+        },
+        {
+          "pattern_id": "mcp-integration",
+          "support_level": "native",
+          "projection_surface": "[mcp_servers.*] in .codex/config.toml",
+          "behavior_notes": "Codex has native mcp-integration support via [mcp_servers.*] in .codex/config.toml.",
+          "hard_limits": [
+            "Native runtime limits still apply for mcp-integration."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native mcp-integration projection is present in the generated manifest.",
+            "Verify native docs for mcp-integration are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit mcp-integration."
+          ]
+        },
+        {
+          "pattern_id": "agent-scoped-mcp",
+          "support_level": "native",
+          "projection_surface": "[mcp_servers.*] in .codex/config.toml",
+          "behavior_notes": "Codex has native agent-scoped-mcp support via [mcp_servers.*] in .codex/config.toml.",
+          "hard_limits": [
+            "Native runtime limits still apply for agent-scoped-mcp."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native agent-scoped-mcp projection is present in the generated manifest.",
+            "Verify native docs for agent-scoped-mcp are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit agent-scoped-mcp."
+          ]
+        },
+        {
+          "pattern_id": "runtime-as-mcp-server",
+          "support_level": "native",
+          "projection_surface": "[mcp_servers.*] in .codex/config.toml",
+          "behavior_notes": "Codex has native runtime-as-mcp-server support via [mcp_servers.*] in .codex/config.toml.",
+          "hard_limits": [
+            "Native runtime limits still apply for runtime-as-mcp-server."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native runtime-as-mcp-server projection is present in the generated manifest.",
+            "Verify native docs for runtime-as-mcp-server are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit runtime-as-mcp-server."
+          ]
+        },
+        {
+          "pattern_id": "browser-verification",
+          "support_level": "native",
+          "projection_surface": "native when browser MCP is configured",
+          "behavior_notes": "Codex has native browser-verification support via native when browser MCP is configured.",
+          "hard_limits": [
+            "Native runtime limits still apply for browser-verification."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native browser-verification projection is present in the generated manifest.",
+            "Verify native docs for browser-verification are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit browser-verification."
+          ]
+        },
+        {
+          "pattern_id": "sandbox-policy",
+          "support_level": "native",
+          "projection_surface": "workspace-write + on-request",
+          "behavior_notes": "Codex has native sandbox-policy support via workspace-write + on-request.",
+          "hard_limits": [
+            "Native runtime limits still apply for sandbox-policy."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native sandbox-policy projection is present in the generated manifest.",
+            "Verify native docs for sandbox-policy are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit sandbox-policy."
+          ]
+        },
+        {
+          "pattern_id": "approval-policy",
+          "support_level": "native",
+          "projection_surface": "workspace-write + on-request",
+          "behavior_notes": "Codex has native approval-policy support via workspace-write + on-request.",
+          "hard_limits": [
+            "Native runtime limits still apply for approval-policy."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native approval-policy projection is present in the generated manifest.",
+            "Verify native docs for approval-policy are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit approval-policy."
+          ]
+        },
+        {
+          "pattern_id": "session-resume",
+          "support_level": "native",
+          "projection_surface": "native",
+          "behavior_notes": "Codex has native session-resume support via native.",
+          "hard_limits": [
+            "Native runtime limits still apply for session-resume."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native session-resume projection is present in the generated manifest.",
+            "Verify native docs for session-resume are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit session-resume."
+          ]
+        },
+        {
+          "pattern_id": "session-fork",
+          "support_level": "native",
+          "projection_surface": "native",
+          "behavior_notes": "Codex has native session-fork support via native.",
+          "hard_limits": [
+            "Native runtime limits still apply for session-fork."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native session-fork projection is present in the generated manifest.",
+            "Verify native docs for session-fork are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit session-fork."
+          ]
+        },
+        {
+          "pattern_id": "headless-exec",
+          "support_level": "native",
+          "projection_surface": "native",
+          "behavior_notes": "Codex has native headless-exec support via native.",
+          "hard_limits": [
+            "Native runtime limits still apply for headless-exec."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native headless-exec projection is present in the generated manifest.",
+            "Verify native docs for headless-exec are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit headless-exec."
+          ]
+        },
+        {
+          "pattern_id": "worktree-isolation",
+          "support_level": "native",
+          "projection_surface": "generated workflow skills",
+          "behavior_notes": "Codex has native worktree-isolation support via generated workflow skills.",
+          "hard_limits": [
+            "Native runtime limits still apply for worktree-isolation."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native worktree-isolation projection is present in the generated manifest.",
+            "Verify native docs for worktree-isolation are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit worktree-isolation."
+          ]
+        },
+        {
+          "pattern_id": "scheduled-task",
+          "support_level": "degraded",
+          "projection_surface": "generated workflow skills",
+          "behavior_notes": "Recurring work is projected into external automation or future Foundry automation, not native in-session scheduling.",
+          "hard_limits": [
+            "Degraded projection for scheduled-task is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded scheduled-task projection is present in the generated manifest.",
+            "Verify degraded docs for scheduled-task are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit scheduled-task."
+          ]
+        },
+        {
+          "pattern_id": "upstream-capability-audit",
+          "support_level": "native",
+          "projection_surface": "Generated audit artifacts and CI validation",
+          "behavior_notes": "Codex has native upstream-capability-audit support via Generated audit artifacts and CI validation.",
+          "hard_limits": [
+            "Native runtime limits still apply for upstream-capability-audit."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native upstream-capability-audit projection is present in the generated manifest.",
+            "Verify native docs for upstream-capability-audit are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit upstream-capability-audit."
+          ]
+        }
+      ]
+    },
+    "claude": {
+      "platform_id": "claude",
+      "runtime_family": "claude-code",
+      "instruction_capabilities": {
+        "root_instruction_file": "CLAUDE.md",
+        "project_instruction_path": "<workspace>/CLAUDE.md",
+        "global_instruction_path": "~/.claude/CLAUDE.md",
+        "hierarchical_loading": "native ancestor-loading with lazy descendant loading",
+        "personal_override": ".claude/settings.local.json and user/global rules",
+        "size_guidance": "Keep CLAUDE.md concise; split domain specifics into rules and skills."
+      },
+      "config_capabilities": {
+        "user_config_path": "~/.claude/settings.json",
+        "project_config_path": "<workspace>/.claude/settings.json",
+        "override_surfaces": [
+          "CLI flags",
+          ".claude/settings.local.json"
+        ],
+        "profiles": "degraded via settings presets and runtime modes"
+      },
+      "agent_capabilities": {
+        "native_agent_surface": ".claude/agents/*.md",
+        "skill_surface": ".claude/skills/<id>/SKILL.md",
+        "workflow_entry_surface": "workflow skills and native commands",
+        "multi_agent": "native or experimental",
+        "batch_fanout": "degraded via orchestrator-managed fanout"
+      },
+      "skill_capabilities": {
+        "discovery": "project -> user -> plugin",
+        "preloaded_skills": "native",
+        "frontmatter": "native",
+        "argument_binding": "degraded across commands and skills",
+        "isolated_skill_execution": "native via context fork"
+      },
+      "session_capabilities": {
+        "resume": "native",
+        "fork": "native or session-branch equivalent",
+        "headless_exec": "native via print/headless surfaces",
+        "machine_readable_output": "degraded",
+        "worktree_isolation": "native or runtime-supported"
+      },
+      "mcp_capabilities": {
+        "client_surface": ".mcp.json and Claude settings",
+        "scoped_mcp": "native agent-scoped MCP",
+        "runtime_as_server": "degraded via Foundry gateway or external MCP server",
+        "browser_verification": "native when browser MCP is configured"
+      },
+      "safety_capabilities": {
+        "review_mode": "plan mode or restrictive permissions",
+        "development_mode": "accept-edits style settings and project hooks",
+        "unattended_mode": "degraded; depends on runtime mode and environment",
+        "trusted_mode": "bypass-style modes only in contained environments",
+        "warnings": [
+          "Treat bypass or dangerous permissions as trusted-mode only."
+        ]
+      },
+      "pattern_support": [
+        {
+          "pattern_id": "instructions-file",
+          "support_level": "native",
+          "projection_surface": "CLAUDE.md",
+          "behavior_notes": "Claude Code has native instructions-file support via CLAUDE.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for instructions-file."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native instructions-file projection is present in the generated manifest.",
+            "Verify native docs for instructions-file are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit instructions-file."
+          ]
+        },
+        {
+          "pattern_id": "instructions-hierarchy",
+          "support_level": "native",
+          "projection_surface": "CLAUDE.md",
+          "behavior_notes": "Claude Code has native instructions-hierarchy support via CLAUDE.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for instructions-hierarchy."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native instructions-hierarchy projection is present in the generated manifest.",
+            "Verify native docs for instructions-hierarchy are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit instructions-hierarchy."
+          ]
+        },
+        {
+          "pattern_id": "instructions-override",
+          "support_level": "degraded",
+          "projection_surface": "CLAUDE.md",
+          "behavior_notes": "Personal overrides are projected through local settings and user-scoped rules rather than a dedicated override file.",
+          "hard_limits": [
+            "Degraded projection for instructions-override is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded instructions-override projection is present in the generated manifest.",
+            "Verify degraded docs for instructions-override are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit instructions-override."
+          ]
+        },
+        {
+          "pattern_id": "config-layering",
+          "support_level": "native",
+          "projection_surface": "<workspace>/.claude/settings.json",
+          "behavior_notes": "Claude Code has native config-layering support via <workspace>/.claude/settings.json.",
+          "hard_limits": [
+            "Native runtime limits still apply for config-layering."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native config-layering projection is present in the generated manifest.",
+            "Verify native docs for config-layering are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit config-layering."
+          ]
+        },
+        {
+          "pattern_id": "config-profiles",
+          "support_level": "degraded",
+          "projection_surface": "<workspace>/.claude/settings.json",
+          "behavior_notes": "Named profiles are projected into documented safety presets instead of a native profile table.",
+          "hard_limits": [
+            "Degraded projection for config-profiles is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded config-profiles projection is present in the generated manifest.",
+            "Verify degraded docs for config-profiles are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit config-profiles."
+          ]
+        },
+        {
+          "pattern_id": "workflow-entrypoint",
+          "support_level": "native",
+          "projection_surface": "workflow skills and native commands",
+          "behavior_notes": "Claude Code has native workflow-entrypoint support via workflow skills and native commands.",
+          "hard_limits": [
+            "Native runtime limits still apply for workflow-entrypoint."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native workflow-entrypoint projection is present in the generated manifest.",
+            "Verify native docs for workflow-entrypoint are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit workflow-entrypoint."
+          ]
+        },
+        {
+          "pattern_id": "supporting-skill",
+          "support_level": "native",
+          "projection_surface": ".claude/skills/<id>/SKILL.md",
+          "behavior_notes": "Claude Code has native supporting-skill support via .claude/skills/<id>/SKILL.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for supporting-skill."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native supporting-skill projection is present in the generated manifest.",
+            "Verify native docs for supporting-skill are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit supporting-skill."
+          ]
+        },
+        {
+          "pattern_id": "skill-discovery",
+          "support_level": "native",
+          "projection_surface": ".claude/skills/<id>/SKILL.md",
+          "behavior_notes": "Claude Code has native skill-discovery support via .claude/skills/<id>/SKILL.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for skill-discovery."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native skill-discovery projection is present in the generated manifest.",
+            "Verify native docs for skill-discovery are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit skill-discovery."
+          ]
+        },
+        {
+          "pattern_id": "skill-frontmatter",
+          "support_level": "native",
+          "projection_surface": ".claude/skills/<id>/SKILL.md",
+          "behavior_notes": "Claude Code has native skill-frontmatter support via .claude/skills/<id>/SKILL.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for skill-frontmatter."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native skill-frontmatter projection is present in the generated manifest.",
+            "Verify native docs for skill-frontmatter are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit skill-frontmatter."
+          ]
+        },
+        {
+          "pattern_id": "skill-string-substitution",
+          "support_level": "degraded",
+          "projection_surface": ".claude/skills/<id>/SKILL.md",
+          "behavior_notes": "Argument binding is available but not modeled as a Codex-style substitution contract everywhere.",
+          "hard_limits": [
+            "Degraded projection for skill-string-substitution is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded skill-string-substitution projection is present in the generated manifest.",
+            "Verify degraded docs for skill-string-substitution are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit skill-string-substitution."
+          ]
+        },
+        {
+          "pattern_id": "skill-forked-execution",
+          "support_level": "native",
+          "projection_surface": ".claude/skills/<id>/SKILL.md",
+          "behavior_notes": "Claude Code has native skill-forked-execution support via .claude/skills/<id>/SKILL.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for skill-forked-execution."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native skill-forked-execution projection is present in the generated manifest.",
+            "Verify native docs for skill-forked-execution are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit skill-forked-execution."
+          ]
+        },
+        {
+          "pattern_id": "agent-registration",
+          "support_level": "native",
+          "projection_surface": ".claude/agents/*.md",
+          "behavior_notes": "Claude Code has native agent-registration support via .claude/agents/*.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for agent-registration."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native agent-registration projection is present in the generated manifest.",
+            "Verify native docs for agent-registration are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit agent-registration."
+          ]
+        },
+        {
+          "pattern_id": "specialist-agent",
+          "support_level": "native",
+          "projection_surface": ".claude/agents/*.md",
+          "behavior_notes": "Claude Code has native specialist-agent support via .claude/agents/*.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for specialist-agent."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native specialist-agent projection is present in the generated manifest.",
+            "Verify native docs for specialist-agent are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit specialist-agent."
+          ]
+        },
+        {
+          "pattern_id": "agent-preloaded-skill",
+          "support_level": "native",
+          "projection_surface": ".claude/agents/*.md",
+          "behavior_notes": "Claude Code has native agent-preloaded-skill support via .claude/agents/*.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for agent-preloaded-skill."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native agent-preloaded-skill projection is present in the generated manifest.",
+            "Verify native docs for agent-preloaded-skill are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit agent-preloaded-skill."
+          ]
+        },
+        {
+          "pattern_id": "multi-agent-orchestration",
+          "support_level": "native",
+          "projection_surface": ".claude/agents/*.md",
+          "behavior_notes": "Claude Code has native multi-agent-orchestration support via .claude/agents/*.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for multi-agent-orchestration."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native multi-agent-orchestration projection is present in the generated manifest.",
+            "Verify native docs for multi-agent-orchestration are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit multi-agent-orchestration."
+          ]
+        },
+        {
+          "pattern_id": "batch-agent-fanout",
+          "support_level": "degraded",
+          "projection_surface": ".claude/agents/*.md",
+          "behavior_notes": "Batch fanout is handled through orchestrator-managed delegation rather than a native CSV batch primitive.",
+          "hard_limits": [
+            "Degraded projection for batch-agent-fanout is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded batch-agent-fanout projection is present in the generated manifest.",
+            "Verify degraded docs for batch-agent-fanout are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit batch-agent-fanout."
+          ]
+        },
+        {
+          "pattern_id": "orchestration-chain",
+          "support_level": "native",
+          "projection_surface": "workflow skills and native commands",
+          "behavior_notes": "Claude Code has native orchestration-chain support via workflow skills and native commands.",
+          "hard_limits": [
+            "Native runtime limits still apply for orchestration-chain."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native orchestration-chain projection is present in the generated manifest.",
+            "Verify native docs for orchestration-chain are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit orchestration-chain."
+          ]
+        },
+        {
+          "pattern_id": "review-and-validation",
+          "support_level": "native",
+          "projection_surface": "workflow skills and native commands",
+          "behavior_notes": "Claude Code has native review-and-validation support via workflow skills and native commands.",
+          "hard_limits": [
+            "Native runtime limits still apply for review-and-validation."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native review-and-validation projection is present in the generated manifest.",
+            "Verify native docs for review-and-validation are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit review-and-validation."
+          ]
+        },
+        {
+          "pattern_id": "research-escalation",
+          "support_level": "native",
+          "projection_surface": "workflow skills and native commands",
+          "behavior_notes": "Claude Code has native research-escalation support via workflow skills and native commands.",
+          "hard_limits": [
+            "Native runtime limits still apply for research-escalation."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native research-escalation projection is present in the generated manifest.",
+            "Verify native docs for research-escalation are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit research-escalation."
+          ]
+        },
+        {
+          "pattern_id": "memory-loading",
+          "support_level": "native",
+          "projection_surface": "CLAUDE.md",
+          "behavior_notes": "Claude Code has native memory-loading support via CLAUDE.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for memory-loading."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native memory-loading projection is present in the generated manifest.",
+            "Verify native docs for memory-loading are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit memory-loading."
+          ]
+        },
+        {
+          "pattern_id": "project-vs-global-scope",
+          "support_level": "native",
+          "projection_surface": "<workspace>/.claude/settings.json",
+          "behavior_notes": "Claude Code has native project-vs-global-scope support via <workspace>/.claude/settings.json.",
+          "hard_limits": [
+            "Native runtime limits still apply for project-vs-global-scope."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native project-vs-global-scope projection is present in the generated manifest.",
+            "Verify native docs for project-vs-global-scope are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit project-vs-global-scope."
+          ]
+        },
+        {
+          "pattern_id": "hook-support",
+          "support_level": "native",
+          "projection_surface": "workflow skills and native commands",
+          "behavior_notes": "Claude Code has native hook-support support via workflow skills and native commands.",
+          "hard_limits": [
+            "Native runtime limits still apply for hook-support."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native hook-support projection is present in the generated manifest.",
+            "Verify native docs for hook-support are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit hook-support."
+          ]
+        },
+        {
+          "pattern_id": "mcp-integration",
+          "support_level": "native",
+          "projection_surface": ".mcp.json and Claude settings",
+          "behavior_notes": "Claude Code has native mcp-integration support via .mcp.json and Claude settings.",
+          "hard_limits": [
+            "Native runtime limits still apply for mcp-integration."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native mcp-integration projection is present in the generated manifest.",
+            "Verify native docs for mcp-integration are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit mcp-integration."
+          ]
+        },
+        {
+          "pattern_id": "agent-scoped-mcp",
+          "support_level": "native",
+          "projection_surface": ".mcp.json and Claude settings",
+          "behavior_notes": "Claude Code has native agent-scoped-mcp support via .mcp.json and Claude settings.",
+          "hard_limits": [
+            "Native runtime limits still apply for agent-scoped-mcp."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native agent-scoped-mcp projection is present in the generated manifest.",
+            "Verify native docs for agent-scoped-mcp are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit agent-scoped-mcp."
+          ]
+        },
+        {
+          "pattern_id": "runtime-as-mcp-server",
+          "support_level": "degraded",
+          "projection_surface": ".mcp.json and Claude settings",
+          "behavior_notes": "Claude parity uses Foundry or external servers for MCP serving; the runtime is primarily an MCP client.",
+          "hard_limits": [
+            "Degraded projection for runtime-as-mcp-server is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded runtime-as-mcp-server projection is present in the generated manifest.",
+            "Verify degraded docs for runtime-as-mcp-server are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit runtime-as-mcp-server."
+          ]
+        },
+        {
+          "pattern_id": "browser-verification",
+          "support_level": "native",
+          "projection_surface": "native when browser MCP is configured",
+          "behavior_notes": "Claude Code has native browser-verification support via native when browser MCP is configured.",
+          "hard_limits": [
+            "Native runtime limits still apply for browser-verification."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native browser-verification projection is present in the generated manifest.",
+            "Verify native docs for browser-verification are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit browser-verification."
+          ]
+        },
+        {
+          "pattern_id": "sandbox-policy",
+          "support_level": "native",
+          "projection_surface": "accept-edits style settings and project hooks",
+          "behavior_notes": "Claude Code has native sandbox-policy support via accept-edits style settings and project hooks.",
+          "hard_limits": [
+            "Native runtime limits still apply for sandbox-policy."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native sandbox-policy projection is present in the generated manifest.",
+            "Verify native docs for sandbox-policy are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit sandbox-policy."
+          ]
+        },
+        {
+          "pattern_id": "approval-policy",
+          "support_level": "native",
+          "projection_surface": "accept-edits style settings and project hooks",
+          "behavior_notes": "Claude Code has native approval-policy support via accept-edits style settings and project hooks.",
+          "hard_limits": [
+            "Native runtime limits still apply for approval-policy."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native approval-policy projection is present in the generated manifest.",
+            "Verify native docs for approval-policy are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit approval-policy."
+          ]
+        },
+        {
+          "pattern_id": "session-resume",
+          "support_level": "native",
+          "projection_surface": "native",
+          "behavior_notes": "Claude Code has native session-resume support via native.",
+          "hard_limits": [
+            "Native runtime limits still apply for session-resume."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native session-resume projection is present in the generated manifest.",
+            "Verify native docs for session-resume are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit session-resume."
+          ]
+        },
+        {
+          "pattern_id": "session-fork",
+          "support_level": "native",
+          "projection_surface": "native",
+          "behavior_notes": "Claude Code has native session-fork support via native.",
+          "hard_limits": [
+            "Native runtime limits still apply for session-fork."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native session-fork projection is present in the generated manifest.",
+            "Verify native docs for session-fork are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit session-fork."
+          ]
+        },
+        {
+          "pattern_id": "headless-exec",
+          "support_level": "native",
+          "projection_surface": "native",
+          "behavior_notes": "Claude Code has native headless-exec support via native.",
+          "hard_limits": [
+            "Native runtime limits still apply for headless-exec."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native headless-exec projection is present in the generated manifest.",
+            "Verify native docs for headless-exec are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit headless-exec."
+          ]
+        },
+        {
+          "pattern_id": "worktree-isolation",
+          "support_level": "native",
+          "projection_surface": "workflow skills and native commands",
+          "behavior_notes": "Claude Code has native worktree-isolation support via workflow skills and native commands.",
+          "hard_limits": [
+            "Native runtime limits still apply for worktree-isolation."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native worktree-isolation projection is present in the generated manifest.",
+            "Verify native docs for worktree-isolation are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit worktree-isolation."
+          ]
+        },
+        {
+          "pattern_id": "scheduled-task",
+          "support_level": "native",
+          "projection_surface": "workflow skills and native commands",
+          "behavior_notes": "Claude Code has native scheduled-task support via workflow skills and native commands.",
+          "hard_limits": [
+            "Native runtime limits still apply for scheduled-task."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native scheduled-task projection is present in the generated manifest.",
+            "Verify native docs for scheduled-task are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit scheduled-task."
+          ]
+        },
+        {
+          "pattern_id": "upstream-capability-audit",
+          "support_level": "native",
+          "projection_surface": "Generated audit artifacts and CI validation",
+          "behavior_notes": "Claude Code has native upstream-capability-audit support via Generated audit artifacts and CI validation.",
+          "hard_limits": [
+            "Native runtime limits still apply for upstream-capability-audit."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native upstream-capability-audit projection is present in the generated manifest.",
+            "Verify native docs for upstream-capability-audit are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit upstream-capability-audit."
+          ]
+        }
+      ]
+    },
+    "copilot": {
+      "platform_id": "copilot",
+      "runtime_family": "copilot-chat",
+      "instruction_capabilities": {
+        "root_instruction_file": "AGENTS.md + .github/copilot-instructions.md",
+        "project_instruction_path": "<workspace>/AGENTS.md and <workspace>/.github/copilot-instructions.md",
+        "global_instruction_path": "~/.copilot/copilot-instructions.md",
+        "hierarchical_loading": "degraded through generated rule surfaces",
+        "personal_override": "global user instruction file",
+        "size_guidance": "Keep generated prompts concise; Copilot consumes both AGENTS.md and Copilot instructions."
+      },
+      "config_capabilities": {
+        "user_config_path": "~/.copilot/mcp-config.json",
+        "project_config_path": "<workspace>/.vscode/mcp.json",
+        "override_surfaces": [
+          "VS Code settings",
+          "runtime UI controls"
+        ],
+        "profiles": "degraded via Foundry presets"
+      },
+      "agent_capabilities": {
+        "native_agent_surface": ".github/agents/*.md",
+        "skill_surface": ".github/skills/<id>/SKILL.md",
+        "workflow_entry_surface": ".github/prompts/*.prompt.md",
+        "multi_agent": "degraded",
+        "batch_fanout": "degraded"
+      },
+      "skill_capabilities": {
+        "discovery": "degraded",
+        "preloaded_skills": "degraded",
+        "frontmatter": "sanitized/degraded",
+        "argument_binding": "degraded",
+        "isolated_skill_execution": "degraded"
+      },
+      "session_capabilities": {
+        "resume": "degraded",
+        "fork": "degraded",
+        "headless_exec": "degraded",
+        "machine_readable_output": "degraded",
+        "worktree_isolation": "external"
+      },
+      "mcp_capabilities": {
+        "client_surface": ".vscode/mcp.json or user mcp-config.json",
+        "scoped_mcp": "degraded",
+        "runtime_as_server": "degraded via Foundry gateway",
+        "browser_verification": "native when Playwright/browser MCP is configured"
+      },
+      "safety_capabilities": {
+        "review_mode": "degraded preset guidance",
+        "development_mode": "degraded preset guidance",
+        "unattended_mode": "degraded or external automation",
+        "trusted_mode": "degraded and environment-dependent",
+        "warnings": [
+          "Copilot parity relies on generated prompts and environment policy more than native approval controls."
+        ]
+      },
+      "pattern_support": [
+        {
+          "pattern_id": "instructions-file",
+          "support_level": "native",
+          "projection_surface": "AGENTS.md + .github/copilot-instructions.md",
+          "behavior_notes": "GitHub Copilot has native instructions-file support via AGENTS.md + .github/copilot-instructions.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for instructions-file."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native instructions-file projection is present in the generated manifest.",
+            "Verify native docs for instructions-file are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit instructions-file."
+          ]
+        },
+        {
+          "pattern_id": "instructions-hierarchy",
+          "support_level": "degraded",
+          "projection_surface": "AGENTS.md + .github/copilot-instructions.md",
+          "behavior_notes": "GitHub Copilot projects instructions-hierarchy in degraded form via AGENTS.md + .github/copilot-instructions.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for instructions-hierarchy is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded instructions-hierarchy projection is present in the generated manifest.",
+            "Verify degraded docs for instructions-hierarchy are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit instructions-hierarchy."
+          ]
+        },
+        {
+          "pattern_id": "instructions-override",
+          "support_level": "degraded",
+          "projection_surface": "AGENTS.md + .github/copilot-instructions.md",
+          "behavior_notes": "GitHub Copilot projects instructions-override in degraded form via AGENTS.md + .github/copilot-instructions.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for instructions-override is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded instructions-override projection is present in the generated manifest.",
+            "Verify degraded docs for instructions-override are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit instructions-override."
+          ]
+        },
+        {
+          "pattern_id": "config-layering",
+          "support_level": "degraded",
+          "projection_surface": "<workspace>/.vscode/mcp.json",
+          "behavior_notes": "GitHub Copilot projects config-layering in degraded form via <workspace>/.vscode/mcp.json and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for config-layering is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded config-layering projection is present in the generated manifest.",
+            "Verify degraded docs for config-layering are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit config-layering."
+          ]
+        },
+        {
+          "pattern_id": "config-profiles",
+          "support_level": "degraded",
+          "projection_surface": "<workspace>/.vscode/mcp.json",
+          "behavior_notes": "GitHub Copilot projects config-profiles in degraded form via <workspace>/.vscode/mcp.json and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for config-profiles is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded config-profiles projection is present in the generated manifest.",
+            "Verify degraded docs for config-profiles are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit config-profiles."
+          ]
+        },
+        {
+          "pattern_id": "workflow-entrypoint",
+          "support_level": "native",
+          "projection_surface": ".github/prompts/*.prompt.md",
+          "behavior_notes": "GitHub Copilot has native workflow-entrypoint support via .github/prompts/*.prompt.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for workflow-entrypoint."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native workflow-entrypoint projection is present in the generated manifest.",
+            "Verify native docs for workflow-entrypoint are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit workflow-entrypoint."
+          ]
+        },
+        {
+          "pattern_id": "supporting-skill",
+          "support_level": "native",
+          "projection_surface": ".github/skills/<id>/SKILL.md",
+          "behavior_notes": "GitHub Copilot has native supporting-skill support via .github/skills/<id>/SKILL.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for supporting-skill."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native supporting-skill projection is present in the generated manifest.",
+            "Verify native docs for supporting-skill are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit supporting-skill."
+          ]
+        },
+        {
+          "pattern_id": "skill-discovery",
+          "support_level": "degraded",
+          "projection_surface": ".github/skills/<id>/SKILL.md",
+          "behavior_notes": "GitHub Copilot projects skill-discovery in degraded form via .github/skills/<id>/SKILL.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for skill-discovery is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded skill-discovery projection is present in the generated manifest.",
+            "Verify degraded docs for skill-discovery are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit skill-discovery."
+          ]
+        },
+        {
+          "pattern_id": "skill-frontmatter",
+          "support_level": "degraded",
+          "projection_surface": ".github/skills/<id>/SKILL.md",
+          "behavior_notes": "GitHub Copilot projects skill-frontmatter in degraded form via .github/skills/<id>/SKILL.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for skill-frontmatter is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded skill-frontmatter projection is present in the generated manifest.",
+            "Verify degraded docs for skill-frontmatter are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit skill-frontmatter."
+          ]
+        },
+        {
+          "pattern_id": "skill-string-substitution",
+          "support_level": "degraded",
+          "projection_surface": ".github/skills/<id>/SKILL.md",
+          "behavior_notes": "GitHub Copilot projects skill-string-substitution in degraded form via .github/skills/<id>/SKILL.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for skill-string-substitution is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded skill-string-substitution projection is present in the generated manifest.",
+            "Verify degraded docs for skill-string-substitution are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit skill-string-substitution."
+          ]
+        },
+        {
+          "pattern_id": "skill-forked-execution",
+          "support_level": "degraded",
+          "projection_surface": ".github/skills/<id>/SKILL.md",
+          "behavior_notes": "GitHub Copilot projects skill-forked-execution in degraded form via .github/skills/<id>/SKILL.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for skill-forked-execution is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded skill-forked-execution projection is present in the generated manifest.",
+            "Verify degraded docs for skill-forked-execution are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit skill-forked-execution."
+          ]
+        },
+        {
+          "pattern_id": "agent-registration",
+          "support_level": "native",
+          "projection_surface": ".github/agents/*.md",
+          "behavior_notes": "GitHub Copilot has native agent-registration support via .github/agents/*.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for agent-registration."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native agent-registration projection is present in the generated manifest.",
+            "Verify native docs for agent-registration are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit agent-registration."
+          ]
+        },
+        {
+          "pattern_id": "specialist-agent",
+          "support_level": "native",
+          "projection_surface": ".github/agents/*.md",
+          "behavior_notes": "GitHub Copilot has native specialist-agent support via .github/agents/*.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for specialist-agent."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native specialist-agent projection is present in the generated manifest.",
+            "Verify native docs for specialist-agent are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit specialist-agent."
+          ]
+        },
+        {
+          "pattern_id": "agent-preloaded-skill",
+          "support_level": "degraded",
+          "projection_surface": ".github/agents/*.md",
+          "behavior_notes": "GitHub Copilot projects agent-preloaded-skill in degraded form via .github/agents/*.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for agent-preloaded-skill is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded agent-preloaded-skill projection is present in the generated manifest.",
+            "Verify degraded docs for agent-preloaded-skill are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit agent-preloaded-skill."
+          ]
+        },
+        {
+          "pattern_id": "multi-agent-orchestration",
+          "support_level": "degraded",
+          "projection_surface": ".github/agents/*.md",
+          "behavior_notes": "GitHub Copilot projects multi-agent-orchestration in degraded form via .github/agents/*.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for multi-agent-orchestration is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded multi-agent-orchestration projection is present in the generated manifest.",
+            "Verify degraded docs for multi-agent-orchestration are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit multi-agent-orchestration."
+          ]
+        },
+        {
+          "pattern_id": "batch-agent-fanout",
+          "support_level": "degraded",
+          "projection_surface": ".github/agents/*.md",
+          "behavior_notes": "GitHub Copilot projects batch-agent-fanout in degraded form via .github/agents/*.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for batch-agent-fanout is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded batch-agent-fanout projection is present in the generated manifest.",
+            "Verify degraded docs for batch-agent-fanout are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit batch-agent-fanout."
+          ]
+        },
+        {
+          "pattern_id": "orchestration-chain",
+          "support_level": "degraded",
+          "projection_surface": ".github/prompts/*.prompt.md",
+          "behavior_notes": "GitHub Copilot projects orchestration-chain in degraded form via .github/prompts/*.prompt.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for orchestration-chain is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded orchestration-chain projection is present in the generated manifest.",
+            "Verify degraded docs for orchestration-chain are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit orchestration-chain."
+          ]
+        },
+        {
+          "pattern_id": "review-and-validation",
+          "support_level": "degraded",
+          "projection_surface": ".github/prompts/*.prompt.md",
+          "behavior_notes": "GitHub Copilot projects review-and-validation in degraded form via .github/prompts/*.prompt.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for review-and-validation is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded review-and-validation projection is present in the generated manifest.",
+            "Verify degraded docs for review-and-validation are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit review-and-validation."
+          ]
+        },
+        {
+          "pattern_id": "research-escalation",
+          "support_level": "degraded",
+          "projection_surface": ".github/prompts/*.prompt.md",
+          "behavior_notes": "GitHub Copilot projects research-escalation in degraded form via .github/prompts/*.prompt.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for research-escalation is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded research-escalation projection is present in the generated manifest.",
+            "Verify degraded docs for research-escalation are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit research-escalation."
+          ]
+        },
+        {
+          "pattern_id": "memory-loading",
+          "support_level": "degraded",
+          "projection_surface": "AGENTS.md + .github/copilot-instructions.md",
+          "behavior_notes": "GitHub Copilot projects memory-loading in degraded form via AGENTS.md + .github/copilot-instructions.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for memory-loading is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded memory-loading projection is present in the generated manifest.",
+            "Verify degraded docs for memory-loading are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit memory-loading."
+          ]
+        },
+        {
+          "pattern_id": "project-vs-global-scope",
+          "support_level": "native",
+          "projection_surface": "<workspace>/.vscode/mcp.json",
+          "behavior_notes": "GitHub Copilot has native project-vs-global-scope support via <workspace>/.vscode/mcp.json.",
+          "hard_limits": [
+            "Native runtime limits still apply for project-vs-global-scope."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native project-vs-global-scope projection is present in the generated manifest.",
+            "Verify native docs for project-vs-global-scope are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit project-vs-global-scope."
+          ]
+        },
+        {
+          "pattern_id": "hook-support",
+          "support_level": "degraded",
+          "projection_surface": ".github/prompts/*.prompt.md",
+          "behavior_notes": "GitHub Copilot projects hook-support in degraded form via .github/prompts/*.prompt.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for hook-support is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded hook-support projection is present in the generated manifest.",
+            "Verify degraded docs for hook-support are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit hook-support."
+          ]
+        },
+        {
+          "pattern_id": "mcp-integration",
+          "support_level": "native",
+          "projection_surface": ".vscode/mcp.json or user mcp-config.json",
+          "behavior_notes": "GitHub Copilot has native mcp-integration support via .vscode/mcp.json or user mcp-config.json.",
+          "hard_limits": [
+            "Native runtime limits still apply for mcp-integration."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native mcp-integration projection is present in the generated manifest.",
+            "Verify native docs for mcp-integration are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit mcp-integration."
+          ]
+        },
+        {
+          "pattern_id": "agent-scoped-mcp",
+          "support_level": "degraded",
+          "projection_surface": ".vscode/mcp.json or user mcp-config.json",
+          "behavior_notes": "GitHub Copilot projects agent-scoped-mcp in degraded form via .vscode/mcp.json or user mcp-config.json and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for agent-scoped-mcp is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded agent-scoped-mcp projection is present in the generated manifest.",
+            "Verify degraded docs for agent-scoped-mcp are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit agent-scoped-mcp."
+          ]
+        },
+        {
+          "pattern_id": "runtime-as-mcp-server",
+          "support_level": "degraded",
+          "projection_surface": ".vscode/mcp.json or user mcp-config.json",
+          "behavior_notes": "GitHub Copilot projects runtime-as-mcp-server in degraded form via .vscode/mcp.json or user mcp-config.json and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for runtime-as-mcp-server is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded runtime-as-mcp-server projection is present in the generated manifest.",
+            "Verify degraded docs for runtime-as-mcp-server are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit runtime-as-mcp-server."
+          ]
+        },
+        {
+          "pattern_id": "browser-verification",
+          "support_level": "native",
+          "projection_surface": "native when Playwright/browser MCP is configured",
+          "behavior_notes": "GitHub Copilot has native browser-verification support via native when Playwright/browser MCP is configured.",
+          "hard_limits": [
+            "Native runtime limits still apply for browser-verification."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native browser-verification projection is present in the generated manifest.",
+            "Verify native docs for browser-verification are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit browser-verification."
+          ]
+        },
+        {
+          "pattern_id": "sandbox-policy",
+          "support_level": "degraded",
+          "projection_surface": "degraded preset guidance",
+          "behavior_notes": "GitHub Copilot projects sandbox-policy in degraded form via degraded preset guidance and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for sandbox-policy is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded sandbox-policy projection is present in the generated manifest.",
+            "Verify degraded docs for sandbox-policy are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit sandbox-policy."
+          ]
+        },
+        {
+          "pattern_id": "approval-policy",
+          "support_level": "degraded",
+          "projection_surface": "degraded preset guidance",
+          "behavior_notes": "GitHub Copilot projects approval-policy in degraded form via degraded preset guidance and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for approval-policy is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded approval-policy projection is present in the generated manifest.",
+            "Verify degraded docs for approval-policy are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit approval-policy."
+          ]
+        },
+        {
+          "pattern_id": "session-resume",
+          "support_level": "degraded",
+          "projection_surface": "degraded",
+          "behavior_notes": "GitHub Copilot projects session-resume in degraded form via degraded and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for session-resume is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded session-resume projection is present in the generated manifest.",
+            "Verify degraded docs for session-resume are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit session-resume."
+          ]
+        },
+        {
+          "pattern_id": "session-fork",
+          "support_level": "degraded",
+          "projection_surface": "degraded",
+          "behavior_notes": "GitHub Copilot projects session-fork in degraded form via degraded and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for session-fork is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded session-fork projection is present in the generated manifest.",
+            "Verify degraded docs for session-fork are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit session-fork."
+          ]
+        },
+        {
+          "pattern_id": "headless-exec",
+          "support_level": "degraded",
+          "projection_surface": "degraded",
+          "behavior_notes": "GitHub Copilot projects headless-exec in degraded form via degraded and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for headless-exec is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded headless-exec projection is present in the generated manifest.",
+            "Verify degraded docs for headless-exec are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit headless-exec."
+          ]
+        },
+        {
+          "pattern_id": "worktree-isolation",
+          "support_level": "degraded",
+          "projection_surface": ".github/prompts/*.prompt.md",
+          "behavior_notes": "GitHub Copilot projects worktree-isolation in degraded form via .github/prompts/*.prompt.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for worktree-isolation is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded worktree-isolation projection is present in the generated manifest.",
+            "Verify degraded docs for worktree-isolation are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit worktree-isolation."
+          ]
+        },
+        {
+          "pattern_id": "scheduled-task",
+          "support_level": "degraded",
+          "projection_surface": ".github/prompts/*.prompt.md",
+          "behavior_notes": "GitHub Copilot projects scheduled-task in degraded form via .github/prompts/*.prompt.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for scheduled-task is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded scheduled-task projection is present in the generated manifest.",
+            "Verify degraded docs for scheduled-task are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit scheduled-task."
+          ]
+        },
+        {
+          "pattern_id": "upstream-capability-audit",
+          "support_level": "native",
+          "projection_surface": "Generated audit artifacts and CI validation",
+          "behavior_notes": "GitHub Copilot has native upstream-capability-audit support via Generated audit artifacts and CI validation.",
+          "hard_limits": [
+            "Native runtime limits still apply for upstream-capability-audit."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native upstream-capability-audit projection is present in the generated manifest.",
+            "Verify native docs for upstream-capability-audit are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit upstream-capability-audit."
+          ]
+        }
+      ]
+    },
+    "gemini": {
+      "platform_id": "gemini",
+      "runtime_family": "gemini-cli",
+      "instruction_capabilities": {
+        "root_instruction_file": ".gemini/GEMINI.md",
+        "project_instruction_path": "<workspace>/.gemini/GEMINI.md",
+        "global_instruction_path": "~/.gemini/GEMINI.md",
+        "hierarchical_loading": "degraded through generated command/rule surfaces",
+        "personal_override": "global or local runtime settings",
+        "size_guidance": "Keep generated commands and Gemini rules concise."
+      },
+      "config_capabilities": {
+        "user_config_path": "~/.gemini/settings.json",
+        "project_config_path": "<workspace>/.gemini/settings.json",
+        "override_surfaces": [
+          "runtime settings",
+          "Foundry install flags"
+        ],
+        "profiles": "degraded via Foundry presets"
+      },
+      "agent_capabilities": {
+        "native_agent_surface": "degraded via generated command routes",
+        "skill_surface": "degraded via shared skill installs",
+        "workflow_entry_surface": ".gemini/commands/*.toml",
+        "multi_agent": "degraded",
+        "batch_fanout": "degraded"
+      },
+      "skill_capabilities": {
+        "discovery": "degraded",
+        "preloaded_skills": "degraded",
+        "frontmatter": "degraded",
+        "argument_binding": "degraded",
+        "isolated_skill_execution": "degraded"
+      },
+      "session_capabilities": {
+        "resume": "degraded",
+        "fork": "degraded",
+        "headless_exec": "degraded",
+        "machine_readable_output": "degraded",
+        "worktree_isolation": "external"
+      },
+      "mcp_capabilities": {
+        "client_surface": ".gemini/settings.json mcpServers",
+        "scoped_mcp": "degraded",
+        "runtime_as_server": "degraded via Foundry gateway",
+        "browser_verification": "native when MCP/browser tooling is configured"
+      },
+      "safety_capabilities": {
+        "review_mode": "degraded preset guidance",
+        "development_mode": "degraded preset guidance",
+        "unattended_mode": "degraded or external automation",
+        "trusted_mode": "degraded and environment-dependent",
+        "warnings": [
+          "Gemini parity uses generated commands and Foundry policy to emulate profile-like safety defaults."
+        ]
+      },
+      "pattern_support": [
+        {
+          "pattern_id": "instructions-file",
+          "support_level": "native",
+          "projection_surface": ".gemini/GEMINI.md",
+          "behavior_notes": "Gemini CLI has native instructions-file support via .gemini/GEMINI.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for instructions-file."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native instructions-file projection is present in the generated manifest.",
+            "Verify native docs for instructions-file are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit instructions-file."
+          ]
+        },
+        {
+          "pattern_id": "instructions-hierarchy",
+          "support_level": "degraded",
+          "projection_surface": ".gemini/GEMINI.md",
+          "behavior_notes": "Gemini CLI projects instructions-hierarchy in degraded form via .gemini/GEMINI.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for instructions-hierarchy is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded instructions-hierarchy projection is present in the generated manifest.",
+            "Verify degraded docs for instructions-hierarchy are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit instructions-hierarchy."
+          ]
+        },
+        {
+          "pattern_id": "instructions-override",
+          "support_level": "degraded",
+          "projection_surface": ".gemini/GEMINI.md",
+          "behavior_notes": "Gemini CLI projects instructions-override in degraded form via .gemini/GEMINI.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for instructions-override is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded instructions-override projection is present in the generated manifest.",
+            "Verify degraded docs for instructions-override are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit instructions-override."
+          ]
+        },
+        {
+          "pattern_id": "config-layering",
+          "support_level": "degraded",
+          "projection_surface": "<workspace>/.gemini/settings.json",
+          "behavior_notes": "Gemini CLI projects config-layering in degraded form via <workspace>/.gemini/settings.json and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for config-layering is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded config-layering projection is present in the generated manifest.",
+            "Verify degraded docs for config-layering are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit config-layering."
+          ]
+        },
+        {
+          "pattern_id": "config-profiles",
+          "support_level": "degraded",
+          "projection_surface": "<workspace>/.gemini/settings.json",
+          "behavior_notes": "Gemini CLI projects config-profiles in degraded form via <workspace>/.gemini/settings.json and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for config-profiles is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded config-profiles projection is present in the generated manifest.",
+            "Verify degraded docs for config-profiles are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit config-profiles."
+          ]
+        },
+        {
+          "pattern_id": "workflow-entrypoint",
+          "support_level": "native",
+          "projection_surface": ".gemini/commands/*.toml",
+          "behavior_notes": "Gemini CLI has native workflow-entrypoint support via .gemini/commands/*.toml.",
+          "hard_limits": [
+            "Native runtime limits still apply for workflow-entrypoint."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native workflow-entrypoint projection is present in the generated manifest.",
+            "Verify native docs for workflow-entrypoint are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit workflow-entrypoint."
+          ]
+        },
+        {
+          "pattern_id": "supporting-skill",
+          "support_level": "degraded",
+          "projection_surface": "degraded via shared skill installs",
+          "behavior_notes": "Gemini CLI projects supporting-skill in degraded form via degraded via shared skill installs and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for supporting-skill is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded supporting-skill projection is present in the generated manifest.",
+            "Verify degraded docs for supporting-skill are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit supporting-skill."
+          ]
+        },
+        {
+          "pattern_id": "skill-discovery",
+          "support_level": "degraded",
+          "projection_surface": "degraded via shared skill installs",
+          "behavior_notes": "Gemini CLI projects skill-discovery in degraded form via degraded via shared skill installs and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for skill-discovery is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded skill-discovery projection is present in the generated manifest.",
+            "Verify degraded docs for skill-discovery are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit skill-discovery."
+          ]
+        },
+        {
+          "pattern_id": "skill-frontmatter",
+          "support_level": "degraded",
+          "projection_surface": "degraded via shared skill installs",
+          "behavior_notes": "Gemini CLI projects skill-frontmatter in degraded form via degraded via shared skill installs and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for skill-frontmatter is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded skill-frontmatter projection is present in the generated manifest.",
+            "Verify degraded docs for skill-frontmatter are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit skill-frontmatter."
+          ]
+        },
+        {
+          "pattern_id": "skill-string-substitution",
+          "support_level": "degraded",
+          "projection_surface": "degraded via shared skill installs",
+          "behavior_notes": "Gemini CLI projects skill-string-substitution in degraded form via degraded via shared skill installs and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for skill-string-substitution is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded skill-string-substitution projection is present in the generated manifest.",
+            "Verify degraded docs for skill-string-substitution are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit skill-string-substitution."
+          ]
+        },
+        {
+          "pattern_id": "skill-forked-execution",
+          "support_level": "degraded",
+          "projection_surface": "degraded via shared skill installs",
+          "behavior_notes": "Gemini CLI projects skill-forked-execution in degraded form via degraded via shared skill installs and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for skill-forked-execution is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded skill-forked-execution projection is present in the generated manifest.",
+            "Verify degraded docs for skill-forked-execution are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit skill-forked-execution."
+          ]
+        },
+        {
+          "pattern_id": "agent-registration",
+          "support_level": "degraded",
+          "projection_surface": "degraded via generated command routes",
+          "behavior_notes": "Gemini CLI projects agent-registration in degraded form via degraded via generated command routes and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for agent-registration is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded agent-registration projection is present in the generated manifest.",
+            "Verify degraded docs for agent-registration are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit agent-registration."
+          ]
+        },
+        {
+          "pattern_id": "specialist-agent",
+          "support_level": "degraded",
+          "projection_surface": "degraded via generated command routes",
+          "behavior_notes": "Gemini CLI projects specialist-agent in degraded form via degraded via generated command routes and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for specialist-agent is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded specialist-agent projection is present in the generated manifest.",
+            "Verify degraded docs for specialist-agent are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit specialist-agent."
+          ]
+        },
+        {
+          "pattern_id": "agent-preloaded-skill",
+          "support_level": "degraded",
+          "projection_surface": "degraded via generated command routes",
+          "behavior_notes": "Gemini CLI projects agent-preloaded-skill in degraded form via degraded via generated command routes and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for agent-preloaded-skill is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded agent-preloaded-skill projection is present in the generated manifest.",
+            "Verify degraded docs for agent-preloaded-skill are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit agent-preloaded-skill."
+          ]
+        },
+        {
+          "pattern_id": "multi-agent-orchestration",
+          "support_level": "degraded",
+          "projection_surface": "degraded via generated command routes",
+          "behavior_notes": "Gemini CLI projects multi-agent-orchestration in degraded form via degraded via generated command routes and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for multi-agent-orchestration is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded multi-agent-orchestration projection is present in the generated manifest.",
+            "Verify degraded docs for multi-agent-orchestration are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit multi-agent-orchestration."
+          ]
+        },
+        {
+          "pattern_id": "batch-agent-fanout",
+          "support_level": "degraded",
+          "projection_surface": "degraded via generated command routes",
+          "behavior_notes": "Gemini CLI projects batch-agent-fanout in degraded form via degraded via generated command routes and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for batch-agent-fanout is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded batch-agent-fanout projection is present in the generated manifest.",
+            "Verify degraded docs for batch-agent-fanout are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit batch-agent-fanout."
+          ]
+        },
+        {
+          "pattern_id": "orchestration-chain",
+          "support_level": "native",
+          "projection_surface": ".gemini/commands/*.toml",
+          "behavior_notes": "Gemini CLI has native orchestration-chain support via .gemini/commands/*.toml.",
+          "hard_limits": [
+            "Native runtime limits still apply for orchestration-chain."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native orchestration-chain projection is present in the generated manifest.",
+            "Verify native docs for orchestration-chain are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit orchestration-chain."
+          ]
+        },
+        {
+          "pattern_id": "review-and-validation",
+          "support_level": "native",
+          "projection_surface": ".gemini/commands/*.toml",
+          "behavior_notes": "Gemini CLI has native review-and-validation support via .gemini/commands/*.toml.",
+          "hard_limits": [
+            "Native runtime limits still apply for review-and-validation."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native review-and-validation projection is present in the generated manifest.",
+            "Verify native docs for review-and-validation are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit review-and-validation."
+          ]
+        },
+        {
+          "pattern_id": "research-escalation",
+          "support_level": "native",
+          "projection_surface": ".gemini/commands/*.toml",
+          "behavior_notes": "Gemini CLI has native research-escalation support via .gemini/commands/*.toml.",
+          "hard_limits": [
+            "Native runtime limits still apply for research-escalation."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native research-escalation projection is present in the generated manifest.",
+            "Verify native docs for research-escalation are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit research-escalation."
+          ]
+        },
+        {
+          "pattern_id": "memory-loading",
+          "support_level": "degraded",
+          "projection_surface": ".gemini/GEMINI.md",
+          "behavior_notes": "Gemini CLI projects memory-loading in degraded form via .gemini/GEMINI.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for memory-loading is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded memory-loading projection is present in the generated manifest.",
+            "Verify degraded docs for memory-loading are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit memory-loading."
+          ]
+        },
+        {
+          "pattern_id": "project-vs-global-scope",
+          "support_level": "native",
+          "projection_surface": "<workspace>/.gemini/settings.json",
+          "behavior_notes": "Gemini CLI has native project-vs-global-scope support via <workspace>/.gemini/settings.json.",
+          "hard_limits": [
+            "Native runtime limits still apply for project-vs-global-scope."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native project-vs-global-scope projection is present in the generated manifest.",
+            "Verify native docs for project-vs-global-scope are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit project-vs-global-scope."
+          ]
+        },
+        {
+          "pattern_id": "hook-support",
+          "support_level": "degraded",
+          "projection_surface": ".gemini/commands/*.toml",
+          "behavior_notes": "Gemini CLI projects hook-support in degraded form via .gemini/commands/*.toml and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for hook-support is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded hook-support projection is present in the generated manifest.",
+            "Verify degraded docs for hook-support are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit hook-support."
+          ]
+        },
+        {
+          "pattern_id": "mcp-integration",
+          "support_level": "native",
+          "projection_surface": ".gemini/settings.json mcpServers",
+          "behavior_notes": "Gemini CLI has native mcp-integration support via .gemini/settings.json mcpServers.",
+          "hard_limits": [
+            "Native runtime limits still apply for mcp-integration."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native mcp-integration projection is present in the generated manifest.",
+            "Verify native docs for mcp-integration are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit mcp-integration."
+          ]
+        },
+        {
+          "pattern_id": "agent-scoped-mcp",
+          "support_level": "degraded",
+          "projection_surface": ".gemini/settings.json mcpServers",
+          "behavior_notes": "Gemini CLI projects agent-scoped-mcp in degraded form via .gemini/settings.json mcpServers and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for agent-scoped-mcp is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded agent-scoped-mcp projection is present in the generated manifest.",
+            "Verify degraded docs for agent-scoped-mcp are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit agent-scoped-mcp."
+          ]
+        },
+        {
+          "pattern_id": "runtime-as-mcp-server",
+          "support_level": "degraded",
+          "projection_surface": ".gemini/settings.json mcpServers",
+          "behavior_notes": "Gemini CLI projects runtime-as-mcp-server in degraded form via .gemini/settings.json mcpServers and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for runtime-as-mcp-server is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded runtime-as-mcp-server projection is present in the generated manifest.",
+            "Verify degraded docs for runtime-as-mcp-server are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit runtime-as-mcp-server."
+          ]
+        },
+        {
+          "pattern_id": "browser-verification",
+          "support_level": "native",
+          "projection_surface": "native when MCP/browser tooling is configured",
+          "behavior_notes": "Gemini CLI has native browser-verification support via native when MCP/browser tooling is configured.",
+          "hard_limits": [
+            "Native runtime limits still apply for browser-verification."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native browser-verification projection is present in the generated manifest.",
+            "Verify native docs for browser-verification are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit browser-verification."
+          ]
+        },
+        {
+          "pattern_id": "sandbox-policy",
+          "support_level": "degraded",
+          "projection_surface": "degraded preset guidance",
+          "behavior_notes": "Gemini CLI projects sandbox-policy in degraded form via degraded preset guidance and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for sandbox-policy is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded sandbox-policy projection is present in the generated manifest.",
+            "Verify degraded docs for sandbox-policy are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit sandbox-policy."
+          ]
+        },
+        {
+          "pattern_id": "approval-policy",
+          "support_level": "degraded",
+          "projection_surface": "degraded preset guidance",
+          "behavior_notes": "Gemini CLI projects approval-policy in degraded form via degraded preset guidance and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for approval-policy is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded approval-policy projection is present in the generated manifest.",
+            "Verify degraded docs for approval-policy are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit approval-policy."
+          ]
+        },
+        {
+          "pattern_id": "session-resume",
+          "support_level": "degraded",
+          "projection_surface": "degraded",
+          "behavior_notes": "Gemini CLI projects session-resume in degraded form via degraded and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for session-resume is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded session-resume projection is present in the generated manifest.",
+            "Verify degraded docs for session-resume are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit session-resume."
+          ]
+        },
+        {
+          "pattern_id": "session-fork",
+          "support_level": "degraded",
+          "projection_surface": "degraded",
+          "behavior_notes": "Gemini CLI projects session-fork in degraded form via degraded and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for session-fork is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded session-fork projection is present in the generated manifest.",
+            "Verify degraded docs for session-fork are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit session-fork."
+          ]
+        },
+        {
+          "pattern_id": "headless-exec",
+          "support_level": "degraded",
+          "projection_surface": "degraded",
+          "behavior_notes": "Gemini CLI projects headless-exec in degraded form via degraded and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for headless-exec is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded headless-exec projection is present in the generated manifest.",
+            "Verify degraded docs for headless-exec are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit headless-exec."
+          ]
+        },
+        {
+          "pattern_id": "worktree-isolation",
+          "support_level": "degraded",
+          "projection_surface": ".gemini/commands/*.toml",
+          "behavior_notes": "Gemini CLI projects worktree-isolation in degraded form via .gemini/commands/*.toml and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for worktree-isolation is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded worktree-isolation projection is present in the generated manifest.",
+            "Verify degraded docs for worktree-isolation are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit worktree-isolation."
+          ]
+        },
+        {
+          "pattern_id": "scheduled-task",
+          "support_level": "degraded",
+          "projection_surface": ".gemini/commands/*.toml",
+          "behavior_notes": "Gemini CLI projects scheduled-task in degraded form via .gemini/commands/*.toml and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for scheduled-task is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded scheduled-task projection is present in the generated manifest.",
+            "Verify degraded docs for scheduled-task are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit scheduled-task."
+          ]
+        },
+        {
+          "pattern_id": "upstream-capability-audit",
+          "support_level": "native",
+          "projection_surface": "Generated audit artifacts and CI validation",
+          "behavior_notes": "Gemini CLI has native upstream-capability-audit support via Generated audit artifacts and CI validation.",
+          "hard_limits": [
+            "Native runtime limits still apply for upstream-capability-audit."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native upstream-capability-audit projection is present in the generated manifest.",
+            "Verify native docs for upstream-capability-audit are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit upstream-capability-audit."
+          ]
+        }
+      ]
+    },
+    "antigravity": {
+      "platform_id": "antigravity",
+      "runtime_family": "antigravity-gemini",
+      "instruction_capabilities": {
+        "root_instruction_file": ".agents/rules/GEMINI.md",
+        "project_instruction_path": "<workspace>/.agents/rules/GEMINI.md",
+        "global_instruction_path": "~/.gemini/GEMINI.md",
+        "hierarchical_loading": "degraded through generated rule/command surfaces",
+        "personal_override": "global runtime rules and local install choices",
+        "size_guidance": "Keep generated commands and rules concise."
+      },
+      "config_capabilities": {
+        "user_config_path": "~/.gemini/settings.json",
+        "project_config_path": "<workspace>/.gemini/settings.json",
+        "override_surfaces": [
+          "runtime settings",
+          "Foundry install flags"
+        ],
+        "profiles": "degraded via Foundry presets"
+      },
+      "agent_capabilities": {
+        "native_agent_surface": "degraded via generated specialist commands",
+        "skill_surface": ".agents/skills/<id>/SKILL.md",
+        "workflow_entry_surface": ".gemini/commands/*.toml",
+        "multi_agent": "degraded",
+        "batch_fanout": "degraded"
+      },
+      "skill_capabilities": {
+        "discovery": "native for shared skill installs",
+        "preloaded_skills": "degraded",
+        "frontmatter": "degraded",
+        "argument_binding": "degraded",
+        "isolated_skill_execution": "degraded"
+      },
+      "session_capabilities": {
+        "resume": "degraded",
+        "fork": "degraded",
+        "headless_exec": "degraded",
+        "machine_readable_output": "degraded",
+        "worktree_isolation": "external"
+      },
+      "mcp_capabilities": {
+        "client_surface": "Foundry gateway + runtime MCP settings",
+        "scoped_mcp": "degraded",
+        "runtime_as_server": "degraded via Foundry gateway",
+        "browser_verification": "native when Playwright/browser MCP is configured"
+      },
+      "safety_capabilities": {
+        "review_mode": "degraded preset guidance",
+        "development_mode": "degraded preset guidance",
+        "unattended_mode": "degraded or external automation",
+        "trusted_mode": "degraded and environment-dependent",
+        "warnings": [
+          "Antigravity parity depends on generated command routes more than native profile or agent controls."
+        ]
+      },
+      "pattern_support": [
+        {
+          "pattern_id": "instructions-file",
+          "support_level": "native",
+          "projection_surface": ".agents/rules/GEMINI.md",
+          "behavior_notes": "Antigravity has native instructions-file support via .agents/rules/GEMINI.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for instructions-file."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native instructions-file projection is present in the generated manifest.",
+            "Verify native docs for instructions-file are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit instructions-file."
+          ]
+        },
+        {
+          "pattern_id": "instructions-hierarchy",
+          "support_level": "degraded",
+          "projection_surface": ".agents/rules/GEMINI.md",
+          "behavior_notes": "Antigravity projects instructions-hierarchy in degraded form via .agents/rules/GEMINI.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for instructions-hierarchy is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded instructions-hierarchy projection is present in the generated manifest.",
+            "Verify degraded docs for instructions-hierarchy are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit instructions-hierarchy."
+          ]
+        },
+        {
+          "pattern_id": "instructions-override",
+          "support_level": "degraded",
+          "projection_surface": ".agents/rules/GEMINI.md",
+          "behavior_notes": "Antigravity projects instructions-override in degraded form via .agents/rules/GEMINI.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for instructions-override is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded instructions-override projection is present in the generated manifest.",
+            "Verify degraded docs for instructions-override are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit instructions-override."
+          ]
+        },
+        {
+          "pattern_id": "config-layering",
+          "support_level": "degraded",
+          "projection_surface": "<workspace>/.gemini/settings.json",
+          "behavior_notes": "Antigravity projects config-layering in degraded form via <workspace>/.gemini/settings.json and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for config-layering is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded config-layering projection is present in the generated manifest.",
+            "Verify degraded docs for config-layering are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit config-layering."
+          ]
+        },
+        {
+          "pattern_id": "config-profiles",
+          "support_level": "degraded",
+          "projection_surface": "<workspace>/.gemini/settings.json",
+          "behavior_notes": "Antigravity projects config-profiles in degraded form via <workspace>/.gemini/settings.json and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for config-profiles is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded config-profiles projection is present in the generated manifest.",
+            "Verify degraded docs for config-profiles are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit config-profiles."
+          ]
+        },
+        {
+          "pattern_id": "workflow-entrypoint",
+          "support_level": "native",
+          "projection_surface": ".gemini/commands/*.toml",
+          "behavior_notes": "Antigravity has native workflow-entrypoint support via .gemini/commands/*.toml.",
+          "hard_limits": [
+            "Native runtime limits still apply for workflow-entrypoint."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native workflow-entrypoint projection is present in the generated manifest.",
+            "Verify native docs for workflow-entrypoint are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit workflow-entrypoint."
+          ]
+        },
+        {
+          "pattern_id": "supporting-skill",
+          "support_level": "native",
+          "projection_surface": ".agents/skills/<id>/SKILL.md",
+          "behavior_notes": "Antigravity has native supporting-skill support via .agents/skills/<id>/SKILL.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for supporting-skill."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native supporting-skill projection is present in the generated manifest.",
+            "Verify native docs for supporting-skill are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit supporting-skill."
+          ]
+        },
+        {
+          "pattern_id": "skill-discovery",
+          "support_level": "native",
+          "projection_surface": ".agents/skills/<id>/SKILL.md",
+          "behavior_notes": "Antigravity has native skill-discovery support via .agents/skills/<id>/SKILL.md.",
+          "hard_limits": [
+            "Native runtime limits still apply for skill-discovery."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native skill-discovery projection is present in the generated manifest.",
+            "Verify native docs for skill-discovery are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit skill-discovery."
+          ]
+        },
+        {
+          "pattern_id": "skill-frontmatter",
+          "support_level": "degraded",
+          "projection_surface": ".agents/skills/<id>/SKILL.md",
+          "behavior_notes": "Antigravity projects skill-frontmatter in degraded form via .agents/skills/<id>/SKILL.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for skill-frontmatter is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded skill-frontmatter projection is present in the generated manifest.",
+            "Verify degraded docs for skill-frontmatter are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit skill-frontmatter."
+          ]
+        },
+        {
+          "pattern_id": "skill-string-substitution",
+          "support_level": "degraded",
+          "projection_surface": ".agents/skills/<id>/SKILL.md",
+          "behavior_notes": "Antigravity projects skill-string-substitution in degraded form via .agents/skills/<id>/SKILL.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for skill-string-substitution is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded skill-string-substitution projection is present in the generated manifest.",
+            "Verify degraded docs for skill-string-substitution are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit skill-string-substitution."
+          ]
+        },
+        {
+          "pattern_id": "skill-forked-execution",
+          "support_level": "degraded",
+          "projection_surface": ".agents/skills/<id>/SKILL.md",
+          "behavior_notes": "Antigravity projects skill-forked-execution in degraded form via .agents/skills/<id>/SKILL.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for skill-forked-execution is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded skill-forked-execution projection is present in the generated manifest.",
+            "Verify degraded docs for skill-forked-execution are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit skill-forked-execution."
+          ]
+        },
+        {
+          "pattern_id": "agent-registration",
+          "support_level": "degraded",
+          "projection_surface": "degraded via generated specialist commands",
+          "behavior_notes": "Antigravity projects agent-registration in degraded form via degraded via generated specialist commands and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for agent-registration is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded agent-registration projection is present in the generated manifest.",
+            "Verify degraded docs for agent-registration are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit agent-registration."
+          ]
+        },
+        {
+          "pattern_id": "specialist-agent",
+          "support_level": "degraded",
+          "projection_surface": "degraded via generated specialist commands",
+          "behavior_notes": "Antigravity projects specialist-agent in degraded form via degraded via generated specialist commands and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for specialist-agent is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded specialist-agent projection is present in the generated manifest.",
+            "Verify degraded docs for specialist-agent are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit specialist-agent."
+          ]
+        },
+        {
+          "pattern_id": "agent-preloaded-skill",
+          "support_level": "degraded",
+          "projection_surface": "degraded via generated specialist commands",
+          "behavior_notes": "Antigravity projects agent-preloaded-skill in degraded form via degraded via generated specialist commands and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for agent-preloaded-skill is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded agent-preloaded-skill projection is present in the generated manifest.",
+            "Verify degraded docs for agent-preloaded-skill are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit agent-preloaded-skill."
+          ]
+        },
+        {
+          "pattern_id": "multi-agent-orchestration",
+          "support_level": "degraded",
+          "projection_surface": "degraded via generated specialist commands",
+          "behavior_notes": "Antigravity projects multi-agent-orchestration in degraded form via degraded via generated specialist commands and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for multi-agent-orchestration is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded multi-agent-orchestration projection is present in the generated manifest.",
+            "Verify degraded docs for multi-agent-orchestration are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit multi-agent-orchestration."
+          ]
+        },
+        {
+          "pattern_id": "batch-agent-fanout",
+          "support_level": "degraded",
+          "projection_surface": "degraded via generated specialist commands",
+          "behavior_notes": "Antigravity projects batch-agent-fanout in degraded form via degraded via generated specialist commands and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for batch-agent-fanout is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded batch-agent-fanout projection is present in the generated manifest.",
+            "Verify degraded docs for batch-agent-fanout are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit batch-agent-fanout."
+          ]
+        },
+        {
+          "pattern_id": "orchestration-chain",
+          "support_level": "native",
+          "projection_surface": ".gemini/commands/*.toml",
+          "behavior_notes": "Antigravity has native orchestration-chain support via .gemini/commands/*.toml.",
+          "hard_limits": [
+            "Native runtime limits still apply for orchestration-chain."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native orchestration-chain projection is present in the generated manifest.",
+            "Verify native docs for orchestration-chain are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit orchestration-chain."
+          ]
+        },
+        {
+          "pattern_id": "review-and-validation",
+          "support_level": "native",
+          "projection_surface": ".gemini/commands/*.toml",
+          "behavior_notes": "Antigravity has native review-and-validation support via .gemini/commands/*.toml.",
+          "hard_limits": [
+            "Native runtime limits still apply for review-and-validation."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native review-and-validation projection is present in the generated manifest.",
+            "Verify native docs for review-and-validation are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit review-and-validation."
+          ]
+        },
+        {
+          "pattern_id": "research-escalation",
+          "support_level": "native",
+          "projection_surface": ".gemini/commands/*.toml",
+          "behavior_notes": "Antigravity has native research-escalation support via .gemini/commands/*.toml.",
+          "hard_limits": [
+            "Native runtime limits still apply for research-escalation."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native research-escalation projection is present in the generated manifest.",
+            "Verify native docs for research-escalation are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit research-escalation."
+          ]
+        },
+        {
+          "pattern_id": "memory-loading",
+          "support_level": "degraded",
+          "projection_surface": ".agents/rules/GEMINI.md",
+          "behavior_notes": "Antigravity projects memory-loading in degraded form via .agents/rules/GEMINI.md and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for memory-loading is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded memory-loading projection is present in the generated manifest.",
+            "Verify degraded docs for memory-loading are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit memory-loading."
+          ]
+        },
+        {
+          "pattern_id": "project-vs-global-scope",
+          "support_level": "native",
+          "projection_surface": "<workspace>/.gemini/settings.json",
+          "behavior_notes": "Antigravity has native project-vs-global-scope support via <workspace>/.gemini/settings.json.",
+          "hard_limits": [
+            "Native runtime limits still apply for project-vs-global-scope."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native project-vs-global-scope projection is present in the generated manifest.",
+            "Verify native docs for project-vs-global-scope are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit project-vs-global-scope."
+          ]
+        },
+        {
+          "pattern_id": "hook-support",
+          "support_level": "degraded",
+          "projection_surface": ".gemini/commands/*.toml",
+          "behavior_notes": "Antigravity projects hook-support in degraded form via .gemini/commands/*.toml and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for hook-support is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded hook-support projection is present in the generated manifest.",
+            "Verify degraded docs for hook-support are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit hook-support."
+          ]
+        },
+        {
+          "pattern_id": "mcp-integration",
+          "support_level": "native",
+          "projection_surface": "Foundry gateway + runtime MCP settings",
+          "behavior_notes": "Antigravity has native mcp-integration support via Foundry gateway + runtime MCP settings.",
+          "hard_limits": [
+            "Native runtime limits still apply for mcp-integration."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native mcp-integration projection is present in the generated manifest.",
+            "Verify native docs for mcp-integration are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit mcp-integration."
+          ]
+        },
+        {
+          "pattern_id": "agent-scoped-mcp",
+          "support_level": "degraded",
+          "projection_surface": "Foundry gateway + runtime MCP settings",
+          "behavior_notes": "Antigravity projects agent-scoped-mcp in degraded form via Foundry gateway + runtime MCP settings and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for agent-scoped-mcp is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded agent-scoped-mcp projection is present in the generated manifest.",
+            "Verify degraded docs for agent-scoped-mcp are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit agent-scoped-mcp."
+          ]
+        },
+        {
+          "pattern_id": "runtime-as-mcp-server",
+          "support_level": "degraded",
+          "projection_surface": "Foundry gateway + runtime MCP settings",
+          "behavior_notes": "Antigravity projects runtime-as-mcp-server in degraded form via Foundry gateway + runtime MCP settings and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for runtime-as-mcp-server is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded runtime-as-mcp-server projection is present in the generated manifest.",
+            "Verify degraded docs for runtime-as-mcp-server are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit runtime-as-mcp-server."
+          ]
+        },
+        {
+          "pattern_id": "browser-verification",
+          "support_level": "native",
+          "projection_surface": "native when Playwright/browser MCP is configured",
+          "behavior_notes": "Antigravity has native browser-verification support via native when Playwright/browser MCP is configured.",
+          "hard_limits": [
+            "Native runtime limits still apply for browser-verification."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native browser-verification projection is present in the generated manifest.",
+            "Verify native docs for browser-verification are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit browser-verification."
+          ]
+        },
+        {
+          "pattern_id": "sandbox-policy",
+          "support_level": "degraded",
+          "projection_surface": "degraded preset guidance",
+          "behavior_notes": "Antigravity projects sandbox-policy in degraded form via degraded preset guidance and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for sandbox-policy is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded sandbox-policy projection is present in the generated manifest.",
+            "Verify degraded docs for sandbox-policy are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit sandbox-policy."
+          ]
+        },
+        {
+          "pattern_id": "approval-policy",
+          "support_level": "degraded",
+          "projection_surface": "degraded preset guidance",
+          "behavior_notes": "Antigravity projects approval-policy in degraded form via degraded preset guidance and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for approval-policy is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded approval-policy projection is present in the generated manifest.",
+            "Verify degraded docs for approval-policy are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit approval-policy."
+          ]
+        },
+        {
+          "pattern_id": "session-resume",
+          "support_level": "degraded",
+          "projection_surface": "degraded",
+          "behavior_notes": "Antigravity projects session-resume in degraded form via degraded and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for session-resume is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded session-resume projection is present in the generated manifest.",
+            "Verify degraded docs for session-resume are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit session-resume."
+          ]
+        },
+        {
+          "pattern_id": "session-fork",
+          "support_level": "degraded",
+          "projection_surface": "degraded",
+          "behavior_notes": "Antigravity projects session-fork in degraded form via degraded and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for session-fork is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded session-fork projection is present in the generated manifest.",
+            "Verify degraded docs for session-fork are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit session-fork."
+          ]
+        },
+        {
+          "pattern_id": "headless-exec",
+          "support_level": "degraded",
+          "projection_surface": "degraded",
+          "behavior_notes": "Antigravity projects headless-exec in degraded form via degraded and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for headless-exec is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded headless-exec projection is present in the generated manifest.",
+            "Verify degraded docs for headless-exec are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit headless-exec."
+          ]
+        },
+        {
+          "pattern_id": "worktree-isolation",
+          "support_level": "degraded",
+          "projection_surface": ".gemini/commands/*.toml",
+          "behavior_notes": "Antigravity projects worktree-isolation in degraded form via .gemini/commands/*.toml and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for worktree-isolation is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded worktree-isolation projection is present in the generated manifest.",
+            "Verify degraded docs for worktree-isolation are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit worktree-isolation."
+          ]
+        },
+        {
+          "pattern_id": "scheduled-task",
+          "support_level": "degraded",
+          "projection_surface": ".gemini/commands/*.toml",
+          "behavior_notes": "Antigravity projects scheduled-task in degraded form via .gemini/commands/*.toml and explicit Foundry control-plane guidance.",
+          "hard_limits": [
+            "Degraded projection for scheduled-task is semantic, not exact UI parity.",
+            "Operator-visible docs must be treated as part of the contract."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify degraded scheduled-task projection is present in the generated manifest.",
+            "Verify degraded docs for scheduled-task are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit scheduled-task."
+          ]
+        },
+        {
+          "pattern_id": "upstream-capability-audit",
+          "support_level": "native",
+          "projection_surface": "Generated audit artifacts and CI validation",
+          "behavior_notes": "Antigravity has native upstream-capability-audit support via Generated audit artifacts and CI validation.",
+          "hard_limits": [
+            "Native runtime limits still apply for upstream-capability-audit."
+          ],
+          "installable": true,
+          "verification_steps": [
+            "Verify native upstream-capability-audit projection is present in the generated manifest.",
+            "Verify native docs for upstream-capability-audit are emitted and linked from the parity set.",
+            "Ensure install metadata does not silently omit upstream-capability-audit."
+          ]
+        }
+      ]
+    }
+  }
+}

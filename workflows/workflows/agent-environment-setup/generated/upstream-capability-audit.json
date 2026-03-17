@@ -1,0 +1,38 @@
+{
+  "$schema": "cubis-foundry-upstream-capability-audit-v1",
+  "generatedAt": "1970-01-01T00:00:00.000Z",
+  "audits": [
+    {
+      "runtime": "claude",
+      "audit_source_id": "claude-audit-ref",
+      "audited_commit": "1ac2b97df6199f8f76b3896d28f470ea44a90c25",
+      "audited_version_or_date": "2026-03-17",
+      "audited_at": "2026-03-17",
+      "diff_summary": "Reference repo audited and mapped into the canonical parity registry and platform contracts.",
+      "parity_impacts": [
+        "Maintains the runtime-specific feature vocabulary used by the parity registry.",
+        "Provides source evidence for native vs degraded support decisions."
+      ],
+      "required_manifest_changes": [
+        "Keep pattern registry, capability contracts, and generated docs in sync with the audited reference."
+      ],
+      "blocking_items": []
+    },
+    {
+      "runtime": "codex",
+      "audit_source_id": "codex-audit-ref",
+      "audited_commit": "782a03a2d4eb69d475075cbd6df6c1af4fb35e64",
+      "audited_version_or_date": "2026-03-17",
+      "audited_at": "2026-03-17",
+      "diff_summary": "Reference repo audited and mapped into the canonical parity registry and platform contracts.",
+      "parity_impacts": [
+        "Maintains the runtime-specific feature vocabulary used by the parity registry.",
+        "Provides source evidence for native vs degraded support decisions."
+      ],
+      "required_manifest_changes": [
+        "Keep pattern registry, capability contracts, and generated docs in sync with the audited reference."
+      ],
+      "blocking_items": []
+    }
+  ]
+}

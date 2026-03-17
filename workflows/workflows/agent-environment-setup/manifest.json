@@ -1,7 +1,95 @@
 {
   "id": "agent-environment-setup",
-  "version": "1.5.0",
+  "version": "1.7.0",
   "description": "Workflow-first AI agent environment setup for Antigravity, Codex, Copilot, Claude Code, and Gemini CLI.",
+  "parity": {
+    "auditedReferences": [
+      {
+        "runtime": "claude",
+        "audit_source_id": "claude-audit-ref",
+        "audited_commit": "1ac2b97df6199f8f76b3896d28f470ea44a90c25",
+        "audited_at": "2026-03-17",
+        "audited_version_or_date": "2026-03-17"
+      },
+      {
+        "runtime": "codex",
+        "audit_source_id": "codex-audit-ref",
+        "audited_commit": "782a03a2d4eb69d475075cbd6df6c1af4fb35e64",
+        "audited_at": "2026-03-17",
+        "audited_version_or_date": "2026-03-17"
+      }
+    ],
+    "orchestrationSubtypes": [
+      {
+        "id": "command-agent-skill",
+        "label": "command -> agent -> skill",
+        "source_repos": [
+          "claude-audit-ref",
+          "foundry"
+        ],
+        "canonical_projection": "Workflow entrypoint resolves intent, hands off to a specialist agent, loads supporting skills, and validates the outcome."
+      },
+      {
+        "id": "skill-skill",
+        "label": "skill -> skill",
+        "source_repos": [
+          "codex-audit-ref"
+        ],
+        "canonical_projection": "Composable skill pipeline with a typed handoff contract between sequential skills."
+      },
+      {
+        "id": "orchestrator-specialists-validator",
+        "label": "orchestrator -> specialists -> validator",
+        "source_repos": [
+          "foundry",
+          "claude-audit-ref",
+          "codex-audit-ref"
+        ],
+        "canonical_projection": "Control-plane orchestration pattern where an orchestrator delegates to specialists and accepts only validated outputs."
+      }
+    ],
+    "artifacts": {
+      "patternRegistry": "generated/pattern-registry.json",
+      "platformCapabilities": "generated/platform-capabilities.json",
+      "upstreamCapabilityAudit": "generated/upstream-capability-audit.json",
+      "docs": [
+        "docs/platform-support-matrix.md",
+        "docs/cross-platform-pattern-catalog.md",
+        "docs/platform-capability-details.md"
+      ]
+    },
+    "summary": {
+      "totalPatterns": 34,
+      "totalPlatforms": 5,
+      "blockingSummary": {
+        "codex": {
+          "native": 32,
+          "degraded": 2,
+          "blocked": 0
+        },
+        "claude": {
+          "native": 29,
+          "degraded": 5,
+          "blocked": 0
+        },
+        "copilot": {
+          "native": 9,
+          "degraded": 25,
+          "blocked": 0
+        },
+        "gemini": {
+          "native": 9,
+          "degraded": 25,
+          "blocked": 0
+        },
+        "antigravity": {
+          "native": 11,
+          "degraded": 23,
+          "blocked": 0
+        }
+      }
+    }
+  },
   "platforms": {
     "antigravity": {
       "workflows": [],
