@@ -28,11 +28,9 @@ If any check fails, restart your reasoning.
 
 | Asset           | Location                 |
 | --------------- | ------------------------ |
-| Workflows       | `.agent/workflows`       |
-| Agents          | `.agent/agents`          |
-| Skills          | `.agent/skills`          |
+| Skills          | `.agents/skills`         |
 | Gemini commands | `.gemini/commands`       |
-| Rules file      | `.agent/rules/GEMINI.md` |
+| Rules file      | `.agents/rules/GEMINI.md` |
 
 ---
 
@@ -75,16 +73,16 @@ Execute this tree top-to-bottom. Stop at the **first match**. Never skip levels.
 
 ## 3) Layer Reference
 
-| Layer              | What it is                   | When to invoke                        | How                                |
-| ------------------ | ---------------------------- | ------------------------------------- | ---------------------------------- |
-| **Direct**         | Zero routing                 | Trivial, single-step, obvious tasks   | Just do it                         |
-| **Gemini command** | Platform-native command      | Task matches installed command        | `.gemini/commands/*.toml`          |
-| **Workflow**       | Structured multi-step recipe | Known pattern, repeatable process     | `/plan`, `/create`, `/debug`, etc. |
-| **Agent**          | Specialist persona + context | Domain depth or parallel workstream   | `@specialist` reference            |
-| **Skill (MCP)**    | Focused knowledge module     | Domain context after route is set     | `skill_validate` → `skill_get`     |
-| **skill_search**   | Fuzzy skill discovery        | Domain unclear after route_resolve    | One narrow call only               |
-| **route_resolve**  | Intent → route mapping       | Free-text intent doesn't match        | MCP tool call                      |
-| **Orchestrator**   | Multi-specialist coordinator | Work crosses 2+ domains with handoffs | `@orchestrator` or Agent Manager   |
+| Layer              | What it is                      | When to invoke                        | How                                |
+| ------------------ | ------------------------------- | ------------------------------------- | ---------------------------------- |
+| **Direct**         | Zero routing                    | Trivial, single-step, obvious tasks   | Just do it                         |
+| **Gemini command** | Platform-native command         | Task matches installed command        | `.gemini/commands/*.toml`          |
+| **Workflow route** | Structured recipe projected to command | Known pattern, repeatable process | `/plan`, `/create`, `/debug`, etc. |
+| **Agent route**    | Specialist route projected to command | Domain depth or parallel workstream | `@specialist` via command/rule flow |
+| **Skill (MCP)**    | Focused knowledge module        | Domain context after route is set     | `skill_validate` → `skill_get`     |
+| **skill_search**   | Fuzzy skill discovery           | Domain unclear after route_resolve    | One narrow call only               |
+| **route_resolve**  | Intent → route mapping          | Free-text intent doesn't match        | MCP tool call                      |
+| **Orchestrator**   | Multi-specialist coordinator    | Work crosses 2+ domains with handoffs | `@orchestrator` or Agent Manager   |
 
 ---
 

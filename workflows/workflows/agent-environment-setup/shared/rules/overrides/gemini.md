@@ -2,15 +2,13 @@
 
 ## Platform Paths
 
-- Workflows: `.gemini/workflows`
-- Skills: `.gemini/skills`
 - Commands: `.gemini/commands`
 - Rules file: `.gemini/GEMINI.md` (or `GEMINI.md` at repo root when used directly)
 
 ## Platform-Specific Routing
 
 1. **Explicit Gemini command** (`.gemini/commands/*.toml`) — highest priority route.
-2. **Explicit workflow or named skill** — honor it directly before route discovery.
+2. Foundry compiles both `/workflow` and `@agent` routes into command entry points when targeting Gemini CLI.
 3. Standard workflow and MCP routing from shared steering.
 
 ## Platform Notes

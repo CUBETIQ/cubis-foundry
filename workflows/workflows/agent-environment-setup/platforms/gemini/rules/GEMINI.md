@@ -22,15 +22,14 @@ If any check fails, restart your reasoning.
 
 ## 1) Platform Paths
 
-| Asset        | Location               |
-| ------------ | ---------------------- |
-| Skills       | `.gemini/skills`       |
-| Agents       | `.gemini/agents`       |
-| Commands     | `.gemini/commands`     |
-| Rules        | `.gemini/GEMINI.md`    |
-| Extensions   | `.gemini/extensions`   |
+| Asset            | Location                 |
+| ---------------- | ------------------------ |
+| Commands         | `.gemini/commands`       |
+| Rules            | `.gemini/GEMINI.md`      |
+| Optional skill hints | `.agents/skills/*/SKILL.md` |
+| Extensions       | `.gemini/extensions`     |
 
-> **Gemini CLI note:** Skills use name+description frontmatter only. No `context:fork` or `allowed-tools`. Commands use TOML format. Use `activate_skill` for progressive skill disclosure.
+> **Gemini CLI note:** Foundry compiles both `/workflow` and `@agent` routes into TOML command files. Skills remain MCP-loaded guidance; local `.agents/skills` paths are hints only when present.
 
 ---
 
@@ -44,18 +43,18 @@ Execute this tree top-to-bottom. Stop at the **first match**. Never skip levels.
 ├─ [TRIVIAL] Single-step, obvious, reversible?
 │   → Execute directly. No routing. Stop.
 │
-├─ [EXPLICIT] User named a command, specialist, or exact skill?
+├─ [EXPLICIT] User named a command, /workflow, @agent, or exact skill?
 │   → Honor that route exactly. Stop.
 │
 ├─ [SINGLE-DOMAIN] Multi-step but contained in one specialty?
-│   → Load best-fit skill via activate_skill. Execute. Stop.
+│   → Run the matching command route. Execute. Stop.
 │
 ├─ [CROSS-DOMAIN] Spans 2+ specialties with real handoff needs?
-│   → Coordinate specialists sequentially. Stop.
+│   → Coordinate specialists through command routes or sequential posture shifts. Stop.
 │
 ├─ [UNRESOLVED] None of the above matched cleanly?
-│   → Check Skill Routing Matrix below.
-│   → If still unclear: ask user. Stop.
+│   → Call route_resolve MCP tool.
+│   → If still unclear: ONE narrow skill_search. Stop.
 │
 └─ [FAILED] All routes exhausted?
     → Ask user for a single clarifying constraint. Stop.
@@ -65,7 +64,7 @@ Execute this tree top-to-bottom. Stop at the **first match**. Never skip levels.
 
 - Never pre-load skills before route resolution.
 - If the user names an exact skill ID, run `skill_validate` on that ID before `route_resolve`.
-- Never chain multiple skill loads per request.
+- Never chain more than one `skill_search` per request.
 - Treat this file as **durable project memory** — not a per-task playbook.
 
 ---
@@ -74,9 +73,10 @@ Execute this tree top-to-bottom. Stop at the **first match**. Never skip levels.
 
 1. **Inspect repo/task locally first.** Always. No exceptions.
 2. Route resolution comes before any skill consideration.
-3. **After routing:** use `activate_skill` to load the matched skill.
-4. Skills use progressive disclosure — load references only when the task requires them.
-5. Do not pre-prime every task with a skill. Load only what the task clearly needs.
+3. **After routing:** if `route_resolve` returns `primarySkillHint` or `primarySkills`, load the first via `skill_validate` → `skill_get` before non-trivial execution.
+4. Use `.gemini/commands/*.toml` as the native execution surface for `/workflow` and `@agent` routes.
+5. Load MCP skill references only when the current step needs them.
+6. Do not pre-prime every task with a skill. Load only what the task clearly needs.
 
 ---
 

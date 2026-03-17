@@ -1,19 +1,82 @@
 description = "Drive Vercel implementation and operations via vercel-expert with deployment, runtime, security, and observability guardrails."
 prompt = '''
-Follow the /vercel workflow from .agent/workflows/vercel.md.
+Execute the native projection of the /vercel workflow.
+
+Drive Vercel implementation and operations via vercel-expert with deployment, runtime, security, and observability guardrails.
 
 Execution contract:
 1. Treat route selection as already resolved by this command; do not begin with skill discovery.
 2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.
 Attached skills:
 - Load these exact skill IDs first: `nextjs`, `ci-cd-pipeline`, `performance-testing`, `react`, `frontend-design`, `javascript-best-practices`, `typescript-best-practices`.
-- Local skill file hints if installed: `.agent/skills/nextjs/SKILL.md`, `.agent/skills/ci-cd-pipeline/SKILL.md`, `.agent/skills/performance-testing/SKILL.md`, `.agent/skills/react/SKILL.md`, `.agent/skills/frontend-design/SKILL.md`, `.agent/skills/javascript-best-practices/SKILL.md`, `.agent/skills/typescript-best-practices/SKILL.md`.
+- Local skill file hints if installed: `.agents/skills/nextjs/SKILL.md`, `.agents/skills/ci-cd-pipeline/SKILL.md`, `.agents/skills/performance-testing/SKILL.md`, `.agents/skills/react/SKILL.md`, `.agents/skills/frontend-design/SKILL.md`, `.agents/skills/javascript-best-practices/SKILL.md`, `.agents/skills/typescript-best-practices/SKILL.md`.
 - Treat the skill bundle as already resolved for this workflow. Do not start with route discovery.
-3. Confirm the request fits the workflow's "When to use" section.
+3. Confirm the request fits the workflow's "When to use" section before acting.
 4. Execute according to "Workflow steps" and apply "Context notes".
 5. Complete "Verification" checks and report concrete evidence.
-6. If freshness, public comparison, or explicit research needs appear, pause implementation and load `deep-research` or hand off to `@researcher` first.
+6. If freshness, public comparison, or explicit research needs appear, pause implementation and load `deep-research` or route to research first.
 7. For outside evidence: repo first, official docs next, Reddit/community only as labeled secondary evidence.
+
+Workflow source:
+# Vercel Workflow
+
+## When to use
+
+Use this for Vercel-specific deployment, configuration, runtime optimization, or platform operations.
+
+## Routing
+
+- Primary specialist: `@vercel-expert`
+- Infrastructure support: `@devops-engineer`
+- Verification support: `@test-engineer`
+
+## Context notes
+
+- This workflow file, active platform rules, and selected agents or skills guide execution.
+- Attach the Vercel project config, deployment target, and any specific Vercel feature requirements.
+
+## Skill Routing
+
+- Primary skills: `nextjs-developer`, `serverless-patterns`
+- Supporting skills (optional): `web-perf`, `react-expert`, `tailwind-patterns`, `nodejs-best-practices`, `typescript-pro`, `javascript-pro`
+- Start with `nextjs-developer` for Next.js on Vercel and `serverless-patterns` for runtime behavior. Add `web-perf` for performance optimization.
+
+## Workflow steps
+
+1. Assess deployment requirements and runtime selection (Edge vs Serverless vs Static).
+2. Configure project settings and environment variables.
+3. Set up deployment pipeline with preview deployments.
+4. Verify deployment health and performance.
+5. Configure monitoring and alerting.
+
+## Verification
+
+- Deployment successful with no build errors.
+- Runtime selection appropriate for each route.
+- Environment variables correctly configured per environment.
+- Preview deployments working for PRs.
+- Performance metrics within acceptable ranges.
+
+## Output Contract
+
+```yaml
+VERCEL_WORKFLOW_RESULT:
+  primary_agent: vercel-expert
+  supporting_agents: [devops-engineer?, test-engineer?]
+  primary_skills: [nextjs-developer, serverless-patterns]
+  supporting_skills: [web-perf?, react-expert?]
+  deployment:
+    project: <string>
+    runtime: <edge | serverless | static>
+    environment: <development | preview | production>
+    status: success | failure
+  configuration:
+    env_vars: [<string>]
+    domains: [<string>]
+    caching: <string>
+  monitoring: <string>
+  follow_up_items: [<string>] | []
+```
 
 If command arguments are provided, treat them as additional user context.
 '''

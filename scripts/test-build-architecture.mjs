@@ -97,7 +97,7 @@ if ((name === 'codex' && args[0] === 'exec' && args[1] === '--help') || (name !=
   process.exit(0);
 }
 const prompt = args[args.length - 1] || '';
-if (!prompt.includes('docs/foundation/PRODUCT.md') || !prompt.includes('docs/foundation/ARCHITECTURE.md') || !prompt.includes('docs/foundation/TECH.md') || !prompt.includes('docs/foundation/adr/README.md') || !prompt.includes('Load these exact skill IDs first')) {
+if (!prompt.includes('docs/foundation/MEMORY.md') || !prompt.includes('docs/foundation/PRODUCT.md') || !prompt.includes('docs/foundation/ARCHITECTURE.md') || !prompt.includes('docs/foundation/TECH.md') || !prompt.includes('docs/foundation/memory/domain.md') || !prompt.includes('docs/foundation/adr/README.md') || !prompt.includes('Load these exact skill IDs first')) {
   console.error('prompt missing required architecture instructions');
   process.exit(2);
 }
@@ -112,11 +112,23 @@ if (name === 'gemini' && process.env.CBX_STUB_GEMINI_FAIL === '1') {
 }
 const foundationDir = path.join(process.cwd(), 'docs', 'foundation');
 const fileMap = {
+  memory: path.join(foundationDir, 'MEMORY.md'),
   product: path.join(foundationDir, 'PRODUCT.md'),
   architecture: path.join(foundationDir, 'ARCHITECTURE.md'),
-  tech: path.join(foundationDir, 'TECH.md')
+  tech: path.join(foundationDir, 'TECH.md'),
+  domain: path.join(foundationDir, 'memory', 'domain.md'),
+  runtime: path.join(foundationDir, 'memory', 'runtime.md'),
+  integrations: path.join(foundationDir, 'memory', 'integrations.md'),
+  debugging: path.join(foundationDir, 'memory', 'debugging.md')
 };
 const richBlocks = {
+  memory: [
+    '<!-- cbx:memory:foundation:start version=1 profile=stub -->',
+    '## Project Memory',
+    'Stub memory index grounded in repo evidence.',
+    '<!-- cbx:memory:foundation:end -->',
+    ''
+  ].join('\\n'),
   product: [
     '<!-- cbx:product:foundation:start version=1 profile=stub -->',
     '## Product Scope',
@@ -141,6 +153,34 @@ const richBlocks = {
     '- Stub tech content.',
     '<!-- cbx:architecture:tech:end -->',
     ''
+  ].join('\\n'),
+  domain: [
+    '<!-- cbx:memory:topic:start topic=domain version=1 -->',
+    '## Domain Summary',
+    'Stub domain memory.',
+    '<!-- cbx:memory:topic:end -->',
+    ''
+  ].join('\\n'),
+  runtime: [
+    '<!-- cbx:memory:topic:start topic=runtime version=1 -->',
+    '## Runtime Summary',
+    'Stub runtime memory.',
+    '<!-- cbx:memory:topic:end -->',
+    ''
+  ].join('\\n'),
+  integrations: [
+    '<!-- cbx:memory:topic:start topic=integrations version=1 -->',
+    '## Integration Summary',
+    'Stub integration memory.',
+    '<!-- cbx:memory:topic:end -->',
+    ''
+  ].join('\\n'),
+  debugging: [
+    '<!-- cbx:memory:topic:start topic=debugging version=1 -->',
+    '## Debugging Summary',
+    'Stub debugging memory.',
+    '<!-- cbx:memory:topic:end -->',
+    ''
   ].join('\\n')
 };
 for (const [nameKey, block] of Object.entries(richBlocks)) {
@@ -149,7 +189,7 @@ for (const [nameKey, block] of Object.entries(richBlocks)) {
   fs.writeFileSync(filePath, existing + '\\n' + block, 'utf8');
 }
 process.stdout.write(JSON.stringify({
-  files_written: ['docs/foundation/PRODUCT.md', 'docs/foundation/ARCHITECTURE.md', 'docs/foundation/TECH.md', 'docs/foundation/adr/README.md', 'docs/foundation/adr/0000-template.md'],
+  files_written: ['docs/foundation/MEMORY.md', 'docs/foundation/PRODUCT.md', 'docs/foundation/ARCHITECTURE.md', 'docs/foundation/TECH.md', 'docs/foundation/memory/domain.md', 'docs/foundation/memory/runtime.md', 'docs/foundation/memory/integrations.md', 'docs/foundation/memory/debugging.md', 'docs/foundation/adr/README.md', 'docs/foundation/adr/0000-template.md'],
   research_used: prompt.includes('external research evidence'),
   gaps: [],
   next_actions: []
@@ -244,9 +284,11 @@ function createArchitectureCommandStubs(logPath) {
       const prompt = args[args.length - 1] || "";
       const normalizedPrompt = prompt.replace(/\\/g, "/");
       if (
+        !normalizedPrompt.includes("docs/foundation/MEMORY.md") ||
         !normalizedPrompt.includes("docs/foundation/PRODUCT.md") ||
         !normalizedPrompt.includes("docs/foundation/ARCHITECTURE.md") ||
         !normalizedPrompt.includes("docs/foundation/TECH.md") ||
+        !normalizedPrompt.includes("docs/foundation/memory/domain.md") ||
         !normalizedPrompt.includes("docs/foundation/adr/README.md") ||
         !normalizedPrompt.includes("Load these exact skill IDs first")
       ) {
@@ -286,11 +328,23 @@ function createArchitectureCommandStubs(logPath) {
         "foundation",
       );
       const fileMap = {
+        memory: path.join(foundationDir, "MEMORY.md"),
         product: path.join(foundationDir, "PRODUCT.md"),
         architecture: path.join(foundationDir, "ARCHITECTURE.md"),
         tech: path.join(foundationDir, "TECH.md"),
+        domain: path.join(foundationDir, "memory", "domain.md"),
+        runtime: path.join(foundationDir, "memory", "runtime.md"),
+        integrations: path.join(foundationDir, "memory", "integrations.md"),
+        debugging: path.join(foundationDir, "memory", "debugging.md"),
       };
       const richBlocks = {
+        memory: [
+          "<!-- cbx:memory:foundation:start version=1 profile=stub -->",
+          "## Project Memory",
+          "Stub memory index grounded in repo evidence.",
+          "<!-- cbx:memory:foundation:end -->",
+          "",
+        ].join("\n"),
         product: [
           "<!-- cbx:product:foundation:start version=1 profile=stub -->",
           "## Product Scope",
@@ -316,6 +370,34 @@ function createArchitectureCommandStubs(logPath) {
           "<!-- cbx:architecture:tech:end -->",
           "",
         ].join("\n"),
+        domain: [
+          "<!-- cbx:memory:topic:start topic=domain version=1 -->",
+          "## Domain Summary",
+          "Stub domain memory.",
+          "<!-- cbx:memory:topic:end -->",
+          "",
+        ].join("\n"),
+        runtime: [
+          "<!-- cbx:memory:topic:start topic=runtime version=1 -->",
+          "## Runtime Summary",
+          "Stub runtime memory.",
+          "<!-- cbx:memory:topic:end -->",
+          "",
+        ].join("\n"),
+        integrations: [
+          "<!-- cbx:memory:topic:start topic=integrations version=1 -->",
+          "## Integration Summary",
+          "Stub integration memory.",
+          "<!-- cbx:memory:topic:end -->",
+          "",
+        ].join("\n"),
+        debugging: [
+          "<!-- cbx:memory:topic:start topic=debugging version=1 -->",
+          "## Debugging Summary",
+          "Stub debugging memory.",
+          "<!-- cbx:memory:topic:end -->",
+          "",
+        ].join("\n"),
       };
       for (const [nameKey, block] of Object.entries(richBlocks)) {
         const filePath = fileMap[nameKey];
@@ -326,9 +408,14 @@ function createArchitectureCommandStubs(logPath) {
         ok: true,
         stdout: JSON.stringify({
           files_written: [
+            "docs/foundation/MEMORY.md",
             "docs/foundation/PRODUCT.md",
             "docs/foundation/ARCHITECTURE.md",
             "docs/foundation/TECH.md",
+            "docs/foundation/memory/domain.md",
+            "docs/foundation/memory/runtime.md",
+            "docs/foundation/memory/integrations.md",
+            "docs/foundation/memory/debugging.md",
             "docs/foundation/adr/README.md",
             "docs/foundation/adr/0000-template.md",
           ],
@@ -447,7 +534,7 @@ async function main() {
       `windows PATH scan should prefer codex.cmd, got ${scannedCodexCandidate}`,
     );
 
-    for (const platform of ["codex", "claude", "gemini", "copilot"]) {
+    for (const platform of ["codex", "claude", "gemini", "copilot", "antigravity"]) {
       const dryRun = await runCli(
         ["build", "architecture", "--platform", platform, "--dry-run", "--json"],
         { cwd: workspace, env },
@@ -480,6 +567,7 @@ async function main() {
     );
     assert(buildRun.status === 0, `codex build failed: ${buildRun.stderr}`);
     const buildJson = parseJsonOutput(buildRun.stdout);
+    assert(buildJson.result.filesWritten.includes("docs/foundation/MEMORY.md"), "build result missing docs/foundation/MEMORY.md");
     assert(buildJson.result.filesWritten.includes("docs/foundation/PRODUCT.md"), "build result missing docs/foundation/PRODUCT.md");
     assert(buildJson.result.filesWritten.includes("docs/foundation/ARCHITECTURE.md"), "build result missing docs/foundation/ARCHITECTURE.md");
     assert(buildJson.result.filesWritten.includes("docs/foundation/TECH.md"), "build result missing docs/foundation/TECH.md");
@@ -487,12 +575,20 @@ async function main() {
       existsSync(path.join(workspace, ".cbx", "architecture-build.json")),
       "architecture metadata missing",
     );
+    const memoryDoc = readFileSync(path.join(workspace, "docs", "foundation", "MEMORY.md"), "utf8");
     const productDoc = readFileSync(path.join(workspace, "docs", "foundation", "PRODUCT.md"), "utf8");
     const architectureDoc = readFileSync(path.join(workspace, "docs", "foundation", "ARCHITECTURE.md"), "utf8");
     const techDoc = readFileSync(path.join(workspace, "docs", "foundation", "TECH.md"), "utf8");
+    const domainMemoryDoc = readFileSync(path.join(workspace, "docs", "foundation", "memory", "domain.md"), "utf8");
+    const runtimeMemoryDoc = readFileSync(path.join(workspace, "docs", "foundation", "memory", "runtime.md"), "utf8");
     assert(productDoc.includes("cbx:product:foundation:start"), "product doc missing managed block");
+    assert(memoryDoc.includes("cbx:memory:foundation:start"), "memory doc missing managed block");
     assert(architectureDoc.includes("cbx:architecture:doc:start"), "architecture doc missing managed block");
     assert(techDoc.includes("cbx:architecture:tech:start"), "tech doc missing architecture block");
+    assert(
+      (memoryDoc.match(/cbx:memory:foundation:start/g) || []).length === 1,
+      "memory doc should contain one managed block after normalization",
+    );
     assert(
       (productDoc.match(/cbx:product:foundation:start/g) || []).length === 1,
       "product doc should contain one managed block after normalization",
@@ -512,6 +608,14 @@ async function main() {
     assert(
       architectureDoc.includes("## Folder Structure Guide"),
       "architecture doc should include folder structure guidance",
+    );
+    assert(
+      domainMemoryDoc.includes("cbx:memory:topic:start"),
+      "domain memory doc should include managed topic block",
+    );
+    assert(
+      runtimeMemoryDoc.includes("cbx:memory:topic:start"),
+      "runtime memory doc should include managed topic block",
     );
     assert(
       existsSync(path.join(workspace, "docs", "foundation", "adr", "README.md")),

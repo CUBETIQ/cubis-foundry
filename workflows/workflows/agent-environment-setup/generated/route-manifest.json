@@ -1,7 +1,7 @@
 {
-  "$schema": "cubis-foundry-route-manifest-v1",
+  "$schema": "cubis-foundry-route-manifest-v2",
   "generatedAt": "1970-01-01T00:00:00.000Z",
-  "contentHash": "899035d77675ed16",
+  "contentHash": "75374abae89a8fc1",
   "summary": {
     "totalRoutes": 42,
     "workflows": 20,
@@ -63,20 +63,24 @@
       ],
       "artifacts": {
         "codex": {
-          "agentFile": "backend-specialist.md",
-          "compatibilityAlias": "$agent-backend-specialist"
+          "target": "agent",
+          "agentFile": "backend-specialist.toml"
         },
         "copilot": {
+          "target": "agent",
           "agentFile": "backend-specialist.md"
         },
         "antigravity": {
-          "agentFile": "backend-specialist.md"
+          "target": "command",
+          "commandFile": "agent-backend-specialist.toml"
         },
         "claude": {
+          "target": "agent",
           "agentFile": "backend-specialist.md"
         },
         "gemini": {
-          "posture": "backend-specialist"
+          "target": "command",
+          "commandFile": "agent-backend-specialist.toml"
         }
       }
     },
@@ -114,20 +118,24 @@
       ],
       "artifacts": {
         "codex": {
-          "agentFile": "code-archaeologist.md",
-          "compatibilityAlias": "$agent-code-archaeologist"
+          "target": "agent",
+          "agentFile": "code-archaeologist.toml"
         },
         "copilot": {
+          "target": "agent",
           "agentFile": "code-archaeologist.md"
         },
         "antigravity": {
-          "agentFile": "code-archaeologist.md"
+          "target": "command",
+          "commandFile": "agent-code-archaeologist.toml"
         },
         "claude": {
+          "target": "agent",
           "agentFile": "code-archaeologist.md"
         },
         "gemini": {
-          "posture": "code-archaeologist"
+          "target": "command",
+          "commandFile": "agent-code-archaeologist.toml"
         }
       }
     },
@@ -164,20 +172,24 @@
       ],
       "artifacts": {
         "codex": {
-          "agentFile": "database-architect.md",
-          "compatibilityAlias": "$agent-database-architect"
+          "target": "agent",
+          "agentFile": "database-architect.toml"
         },
         "copilot": {
+          "target": "agent",
           "agentFile": "database-architect.md"
         },
         "antigravity": {
-          "agentFile": "database-architect.md"
+          "target": "command",
+          "commandFile": "agent-database-architect.toml"
         },
         "claude": {
+          "target": "agent",
           "agentFile": "database-architect.md"
         },
         "gemini": {
-          "posture": "database-architect"
+          "target": "command",
+          "commandFile": "agent-database-architect.toml"
         }
       }
     },
@@ -209,20 +221,24 @@
       ],
       "artifacts": {
         "codex": {
-          "agentFile": "debugger.md",
-          "compatibilityAlias": "$agent-debugger"
+          "target": "agent",
+          "agentFile": "debugger.toml"
         },
         "copilot": {
+          "target": "agent",
           "agentFile": "debugger.md"
         },
         "antigravity": {
-          "agentFile": "debugger.md"
+          "target": "command",
+          "commandFile": "agent-debugger.toml"
         },
         "claude": {
+          "target": "agent",
           "agentFile": "debugger.md"
         },
         "gemini": {
-          "posture": "debugger"
+          "target": "command",
+          "commandFile": "agent-debugger.toml"
         }
       }
     },
@@ -261,20 +277,24 @@
       ],
       "artifacts": {
         "codex": {
-          "agentFile": "devops-engineer.md",
-          "compatibilityAlias": "$agent-devops-engineer"
+          "target": "agent",
+          "agentFile": "devops-engineer.toml"
         },
         "copilot": {
+          "target": "agent",
           "agentFile": "devops-engineer.md"
         },
         "antigravity": {
-          "agentFile": "devops-engineer.md"
+          "target": "command",
+          "commandFile": "agent-devops-engineer.toml"
         },
         "claude": {
+          "target": "agent",
           "agentFile": "devops-engineer.md"
         },
         "gemini": {
-          "posture": "devops-engineer"
+          "target": "command",
+          "commandFile": "agent-devops-engineer.toml"
         }
       }
     },
@@ -304,20 +324,24 @@
       ],
       "artifacts": {
         "codex": {
-          "agentFile": "documentation-writer.md",
-          "compatibilityAlias": "$agent-documentation-writer"
+          "target": "agent",
+          "agentFile": "documentation-writer.toml"
         },
         "copilot": {
+          "target": "agent",
           "agentFile": "documentation-writer.md"
         },
         "antigravity": {
-          "agentFile": "documentation-writer.md"
+          "target": "command",
+          "commandFile": "agent-documentation-writer.toml"
         },
         "claude": {
+          "target": "agent",
           "agentFile": "documentation-writer.md"
         },
         "gemini": {
-          "posture": "documentation-writer"
+          "target": "command",
+          "commandFile": "agent-documentation-writer.toml"
         }
       }
     },
@@ -361,20 +385,24 @@
       ],
       "artifacts": {
         "codex": {
-          "agentFile": "frontend-specialist.md",
-          "compatibilityAlias": "$agent-frontend-specialist"
+          "target": "agent",
+          "agentFile": "frontend-specialist.toml"
         },
         "copilot": {
+          "target": "agent",
           "agentFile": "frontend-specialist.md"
         },
         "antigravity": {
-          "agentFile": "frontend-specialist.md"
+          "target": "command",
+          "commandFile": "agent-frontend-specialist.toml"
         },
         "claude": {
+          "target": "agent",
           "agentFile": "frontend-specialist.md"
         },
         "gemini": {
-          "posture": "frontend-specialist"
+          "target": "command",
+          "commandFile": "agent-frontend-specialist.toml"
         }
       }
     },
@@ -408,20 +436,24 @@
       ],
       "artifacts": {
         "codex": {
-          "agentFile": "game-developer.md",
-          "compatibilityAlias": "$agent-game-developer"
+          "target": "agent",
+          "agentFile": "game-developer.toml"
         },
         "copilot": {
+          "target": "agent",
           "agentFile": "game-developer.md"
         },
         "antigravity": {
-          "agentFile": "game-developer.md"
+          "target": "command",
+          "commandFile": "agent-game-developer.toml"
         },
         "claude": {
+          "target": "agent",
           "agentFile": "game-developer.md"
         },
         "gemini": {
-          "posture": "game-developer"
+          "target": "command",
+          "commandFile": "agent-game-developer.toml"
         }
       }
     },
@@ -459,20 +491,24 @@
       ],
       "artifacts": {
         "codex": {
-          "agentFile": "mobile-developer.md",
-          "compatibilityAlias": "$agent-mobile-developer"
+          "target": "agent",
+          "agentFile": "mobile-developer.toml"
         },
         "copilot": {
+          "target": "agent",
           "agentFile": "mobile-developer.md"
         },
         "antigravity": {
-          "agentFile": "mobile-developer.md"
+          "target": "command",
+          "commandFile": "agent-mobile-developer.toml"
         },
         "claude": {
+          "target": "agent",
           "agentFile": "mobile-developer.md"
         },
         "gemini": {
-          "posture": "mobile-developer"
+          "target": "command",
+          "commandFile": "agent-mobile-developer.toml"
         }
       }
     },
@@ -509,20 +545,24 @@
       ],
       "artifacts": {
         "codex": {
-          "agentFile": "orchestrator.md",
-          "compatibilityAlias": "$agent-orchestrator"
+          "target": "agent",
+          "agentFile": "orchestrator.toml"
         },
         "copilot": {
+          "target": "agent",
           "agentFile": "orchestrator.md"
         },
         "antigravity": {
-          "agentFile": "orchestrator.md"
+          "target": "command",
+          "commandFile": "agent-orchestrator.toml"
         },
         "claude": {
+          "target": "agent",
           "agentFile": "orchestrator.md"
         },
         "gemini": {
-          "posture": "orchestrator"
+          "target": "command",
+          "commandFile": "agent-orchestrator.toml"
         }
       }
     },
@@ -564,20 +604,24 @@
       ],
       "artifacts": {
         "codex": {
-          "agentFile": "penetration-tester.md",
-          "compatibilityAlias": "$agent-penetration-tester"
+          "target": "agent",
+          "agentFile": "penetration-tester.toml"
         },
         "copilot": {
+          "target": "agent",
           "agentFile": "penetration-tester.md"
         },
         "antigravity": {
-          "agentFile": "penetration-tester.md"
+          "target": "command",
+          "commandFile": "agent-penetration-tester.toml"
         },
         "claude": {
+          "target": "agent",
           "agentFile": "penetration-tester.md"
         },
         "gemini": {
-          "posture": "penetration-tester"
+          "target": "command",
+          "commandFile": "agent-penetration-tester.toml"
         }
       }
     },
@@ -612,20 +656,24 @@
       ],
       "artifacts": {
         "codex": {
-          "agentFile": "performance-optimizer.md",
-          "compatibilityAlias": "$agent-performance-optimizer"
+          "target": "agent",
+          "agentFile": "performance-optimizer.toml"
         },
         "copilot": {
+          "target": "agent",
           "agentFile": "performance-optimizer.md"
         },
         "antigravity": {
-          "agentFile": "performance-optimizer.md"
+          "target": "command",
+          "commandFile": "agent-performance-optimizer.toml"
         },
         "claude": {
+          "target": "agent",
           "agentFile": "performance-optimizer.md"
         },
         "gemini": {
-          "posture": "performance-optimizer"
+          "target": "command",
+          "commandFile": "agent-performance-optimizer.toml"
         }
       }
     },
@@ -662,20 +710,24 @@
       ],
       "artifacts": {
         "codex": {
-          "agentFile": "product-manager.md",
-          "compatibilityAlias": "$agent-product-manager"
+          "target": "agent",
+          "agentFile": "product-manager.toml"
         },
         "copilot": {
+          "target": "agent",
           "agentFile": "product-manager.md"
         },
         "antigravity": {
-          "agentFile": "product-manager.md"
+          "target": "command",
+          "commandFile": "agent-product-manager.toml"
         },
         "claude": {
+          "target": "agent",
           "agentFile": "product-manager.md"
         },
         "gemini": {
-          "posture": "product-manager"
+          "target": "command",
+          "commandFile": "agent-product-manager.toml"
         }
       }
     },
@@ -712,20 +764,24 @@
       ],
       "artifacts": {
         "codex": {
-          "agentFile": "project-planner.md",
-          "compatibilityAlias": "$agent-project-planner"
+          "target": "agent",
+          "agentFile": "project-planner.toml"
         },
         "copilot": {
+          "target": "agent",
           "agentFile": "project-planner.md"
         },
         "antigravity": {
-          "agentFile": "project-planner.md"
+          "target": "command",
+          "commandFile": "agent-project-planner.toml"
         },
         "claude": {
+          "target": "agent",
           "agentFile": "project-planner.md"
         },
         "gemini": {
-          "posture": "project-planner"
+          "target": "command",
+          "commandFile": "agent-project-planner.toml"
         }
       }
     },
@@ -766,20 +822,24 @@
       ],
       "artifacts": {
         "codex": {
-          "agentFile": "qa-automation-engineer.md",
-          "compatibilityAlias": "$agent-qa-automation-engineer"
+          "target": "agent",
+          "agentFile": "qa-automation-engineer.toml"
         },
         "copilot": {
+          "target": "agent",
           "agentFile": "qa-automation-engineer.md"
         },
         "antigravity": {
-          "agentFile": "qa-automation-engineer.md"
+          "target": "command",
+          "commandFile": "agent-qa-automation-engineer.toml"
         },
         "claude": {
+          "target": "agent",
           "agentFile": "qa-automation-engineer.md"
         },
         "gemini": {
-          "posture": "qa-automation-engineer"
+          "target": "command",
+          "commandFile": "agent-qa-automation-engineer.toml"
         }
       }
     },
@@ -814,20 +874,24 @@
       ],
       "artifacts": {
         "codex": {
-          "agentFile": "researcher.md",
-          "compatibilityAlias": "$agent-researcher"
+          "target": "agent",
+          "agentFile": "researcher.toml"
         },
         "copilot": {
+          "target": "agent",
           "agentFile": "researcher.md"
         },
         "antigravity": {
-          "agentFile": "researcher.md"
+          "target": "command",
+          "commandFile": "agent-researcher.toml"
         },
         "claude": {
+          "target": "agent",
           "agentFile": "researcher.md"
         },
         "gemini": {
-          "posture": "researcher"
+          "target": "command",
+          "commandFile": "agent-researcher.toml"
         }
       }
     },
@@ -880,20 +944,24 @@
       ],
       "artifacts": {
         "codex": {
-          "agentFile": "security-auditor.md",
-          "compatibilityAlias": "$agent-security-auditor"
+          "target": "agent",
+          "agentFile": "security-auditor.toml"
         },
         "copilot": {
+          "target": "agent",
           "agentFile": "security-auditor.md"
         },
         "antigravity": {
-          "agentFile": "security-auditor.md"
+          "target": "command",
+          "commandFile": "agent-security-auditor.toml"
         },
         "claude": {
+          "target": "agent",
           "agentFile": "security-auditor.md"
         },
         "gemini": {
-          "posture": "security-auditor"
+          "target": "command",
+          "commandFile": "agent-security-auditor.toml"
         }
       }
     },
@@ -924,20 +992,24 @@
       ],
       "artifacts": {
         "codex": {
-          "agentFile": "seo-specialist.md",
-          "compatibilityAlias": "$agent-seo-specialist"
+          "target": "agent",
+          "agentFile": "seo-specialist.toml"
         },
         "copilot": {
+          "target": "agent",
           "agentFile": "seo-specialist.md"
         },
         "antigravity": {
-          "agentFile": "seo-specialist.md"
+          "target": "command",
+          "commandFile": "agent-seo-specialist.toml"
         },
         "claude": {
+          "target": "agent",
           "agentFile": "seo-specialist.md"
         },
         "gemini": {
-          "posture": "seo-specialist"
+          "target": "command",
+          "commandFile": "agent-seo-specialist.toml"
         }
       }
     },
@@ -980,20 +1052,24 @@
       ],
       "artifacts": {
         "codex": {
-          "agentFile": "sre-engineer.md",
-          "compatibilityAlias": "$agent-sre-engineer"
+          "target": "agent",
+          "agentFile": "sre-engineer.toml"
         },
         "copilot": {
+          "target": "agent",
           "agentFile": "sre-engineer.md"
         },
         "antigravity": {
-          "agentFile": "sre-engineer.md"
+          "target": "command",
+          "commandFile": "agent-sre-engineer.toml"
         },
         "claude": {
+          "target": "agent",
           "agentFile": "sre-engineer.md"
         },
         "gemini": {
-          "posture": "sre-engineer"
+          "target": "command",
+          "commandFile": "agent-sre-engineer.toml"
         }
       }
     },
@@ -1036,20 +1112,24 @@
       ],
       "artifacts": {
         "codex": {
-          "agentFile": "test-engineer.md",
-          "compatibilityAlias": "$agent-test-engineer"
+          "target": "agent",
+          "agentFile": "test-engineer.toml"
         },
         "copilot": {
+          "target": "agent",
           "agentFile": "test-engineer.md"
         },
         "antigravity": {
-          "agentFile": "test-engineer.md"
+          "target": "command",
+          "commandFile": "agent-test-engineer.toml"
         },
         "claude": {
+          "target": "agent",
           "agentFile": "test-engineer.md"
         },
         "gemini": {
-          "posture": "test-engineer"
+          "target": "command",
+          "commandFile": "agent-test-engineer.toml"
         }
       }
     },
@@ -1086,20 +1166,24 @@
       ],
       "artifacts": {
         "codex": {
-          "agentFile": "validator.md",
-          "compatibilityAlias": "$agent-validator"
+          "target": "agent",
+          "agentFile": "validator.toml"
         },
         "copilot": {
+          "target": "agent",
           "agentFile": "validator.md"
         },
         "antigravity": {
-          "agentFile": "validator.md"
+          "target": "command",
+          "commandFile": "agent-validator.toml"
         },
         "claude": {
+          "target": "agent",
           "agentFile": "validator.md"
         },
         "gemini": {
-          "posture": "validator"
+          "target": "command",
+          "commandFile": "agent-validator.toml"
         }
       }
     },
@@ -1135,20 +1219,24 @@
       ],
       "artifacts": {
         "codex": {
-          "agentFile": "vercel-expert.md",
-          "compatibilityAlias": "$agent-vercel-expert"
+          "target": "agent",
+          "agentFile": "vercel-expert.toml"
         },
         "copilot": {
+          "target": "agent",
           "agentFile": "vercel-expert.md"
         },
         "antigravity": {
-          "agentFile": "vercel-expert.md"
+          "target": "command",
+          "commandFile": "agent-vercel-expert.toml"
         },
         "claude": {
+          "target": "agent",
           "agentFile": "vercel-expert.md"
         },
         "gemini": {
-          "posture": "vercel-expert"
+          "target": "command",
+          "commandFile": "agent-vercel-expert.toml"
         }
       }
     },
@@ -1186,22 +1274,23 @@
       ],
       "artifacts": {
         "codex": {
-          "workflowFile": "accessibility.md",
-          "compatibilityAlias": "$workflow-accessibility"
+          "target": "skill",
+          "skillDir": "accessibility"
         },
         "copilot": {
-          "workflowFile": "accessibility.md",
-          "promptFile": "workflow-accessibility.prompt.md"
+          "target": "prompt",
+          "promptFile": "accessibility.prompt.md"
         },
         "antigravity": {
-          "workflowFile": "accessibility.md",
+          "target": "command",
           "commandFile": "accessibility.toml"
         },
         "claude": {
-          "workflowFile": "accessibility.md"
+          "target": "skill",
+          "skillDir": "accessibility"
         },
         "gemini": {
-          "workflowFile": "accessibility.md",
+          "target": "command",
           "commandFile": "accessibility.toml"
         }
       }
@@ -1211,7 +1300,7 @@
       "id": "architecture",
       "command": "/architecture",
       "displayName": "architecture",
-      "description": "Refresh the core project foundation docs in docs/foundation/PRODUCT.md, docs/foundation/ARCHITECTURE.md, docs/foundation/TECH.md, and ADR scaffolds with explicit structure, product context, testing, and flow guidance.",
+      "description": "Refresh the core project foundation docs in docs/foundation/MEMORY.md, docs/foundation/PRODUCT.md, docs/foundation/ARCHITECTURE.md, docs/foundation/TECH.md, docs/foundation/memory/*.md, and ADR scaffolds with explicit structure, product context, testing, and flow guidance.",
       "triggers": [
         "architecture",
         "design system",
@@ -1244,22 +1333,23 @@
       ],
       "artifacts": {
         "codex": {
-          "workflowFile": "architecture.md",
-          "compatibilityAlias": "$workflow-architecture"
+          "target": "skill",
+          "skillDir": "architecture"
         },
         "copilot": {
-          "workflowFile": "architecture.md",
-          "promptFile": "workflow-architecture.prompt.md"
+          "target": "prompt",
+          "promptFile": "architecture.prompt.md"
         },
         "antigravity": {
-          "workflowFile": "architecture.md",
+          "target": "command",
           "commandFile": "architecture.toml"
         },
         "claude": {
-          "workflowFile": "architecture.md"
+          "target": "skill",
+          "skillDir": "architecture"
         },
         "gemini": {
-          "workflowFile": "architecture.md",
+          "target": "command",
           "commandFile": "architecture.toml"
         }
       }
@@ -1313,22 +1403,23 @@
       ],
       "artifacts": {
         "codex": {
-          "workflowFile": "backend.md",
-          "compatibilityAlias": "$workflow-backend"
+          "target": "skill",
+          "skillDir": "backend"
         },
         "copilot": {
-          "workflowFile": "backend.md",
-          "promptFile": "workflow-backend.prompt.md"
+          "target": "prompt",
+          "promptFile": "backend.prompt.md"
         },
         "antigravity": {
-          "workflowFile": "backend.md",
+          "target": "command",
           "commandFile": "backend.toml"
         },
         "claude": {
-          "workflowFile": "backend.md"
+          "target": "skill",
+          "skillDir": "backend"
         },
         "gemini": {
-          "workflowFile": "backend.md",
+          "target": "command",
           "commandFile": "backend.toml"
         }
       }
@@ -1385,22 +1476,23 @@
       ],
       "artifacts": {
         "codex": {
-          "workflowFile": "create.md",
-          "compatibilityAlias": "$workflow-create"
+          "target": "skill",
+          "skillDir": "create"
         },
         "copilot": {
-          "workflowFile": "create.md",
-          "promptFile": "workflow-create.prompt.md"
+          "target": "prompt",
+          "promptFile": "create.prompt.md"
         },
         "antigravity": {
-          "workflowFile": "create.md",
+          "target": "command",
           "commandFile": "create.toml"
         },
         "claude": {
-          "workflowFile": "create.md"
+          "target": "skill",
+          "skillDir": "create"
         },
         "gemini": {
-          "workflowFile": "create.md",
+          "target": "command",
           "commandFile": "create.toml"
         }
       }
@@ -1435,22 +1527,23 @@
       ],
       "artifacts": {
         "codex": {
-          "workflowFile": "database.md",
-          "compatibilityAlias": "$workflow-database"
+          "target": "skill",
+          "skillDir": "database"
         },
         "copilot": {
-          "workflowFile": "database.md",
-          "promptFile": "workflow-database.prompt.md"
+          "target": "prompt",
+          "promptFile": "database.prompt.md"
         },
         "antigravity": {
-          "workflowFile": "database.md",
+          "target": "command",
           "commandFile": "database.toml"
         },
         "claude": {
-          "workflowFile": "database.md"
+          "target": "skill",
+          "skillDir": "database"
         },
         "gemini": {
-          "workflowFile": "database.md",
+          "target": "command",
           "commandFile": "database.toml"
         }
       }
@@ -1494,22 +1587,23 @@
       ],
       "artifacts": {
         "codex": {
-          "workflowFile": "debug.md",
-          "compatibilityAlias": "$workflow-debug"
+          "target": "skill",
+          "skillDir": "debug"
         },
         "copilot": {
-          "workflowFile": "debug.md",
-          "promptFile": "workflow-debug.prompt.md"
+          "target": "prompt",
+          "promptFile": "debug.prompt.md"
         },
         "antigravity": {
-          "workflowFile": "debug.md",
+          "target": "command",
           "commandFile": "debug.toml"
         },
         "claude": {
-          "workflowFile": "debug.md"
+          "target": "skill",
+          "skillDir": "debug"
         },
         "gemini": {
-          "workflowFile": "debug.md",
+          "target": "command",
           "commandFile": "debug.toml"
         }
       }
@@ -1555,22 +1649,23 @@
       ],
       "artifacts": {
         "codex": {
-          "workflowFile": "devops.md",
-          "compatibilityAlias": "$workflow-devops"
+          "target": "skill",
+          "skillDir": "devops"
         },
         "copilot": {
-          "workflowFile": "devops.md",
-          "promptFile": "workflow-devops.prompt.md"
+          "target": "prompt",
+          "promptFile": "devops.prompt.md"
         },
         "antigravity": {
-          "workflowFile": "devops.md",
+          "target": "command",
           "commandFile": "devops.toml"
         },
         "claude": {
-          "workflowFile": "devops.md"
+          "target": "skill",
+          "skillDir": "devops"
         },
         "gemini": {
-          "workflowFile": "devops.md",
+          "target": "command",
           "commandFile": "devops.toml"
         }
       }
@@ -1607,22 +1702,23 @@
       ],
       "artifacts": {
         "codex": {
-          "workflowFile": "implement-track.md",
-          "compatibilityAlias": "$workflow-implement-track"
+          "target": "skill",
+          "skillDir": "implement-track"
         },
         "copilot": {
-          "workflowFile": "implement-track.md",
-          "promptFile": "workflow-implement-track.prompt.md"
+          "target": "prompt",
+          "promptFile": "implement-track.prompt.md"
         },
         "antigravity": {
-          "workflowFile": "implement-track.md",
+          "target": "command",
           "commandFile": "implement-track.toml"
         },
         "claude": {
-          "workflowFile": "implement-track.md"
+          "target": "skill",
+          "skillDir": "implement-track"
         },
         "gemini": {
-          "workflowFile": "implement-track.md",
+          "target": "command",
           "commandFile": "implement-track.toml"
         }
       }
@@ -1661,22 +1757,23 @@
       ],
       "artifacts": {
         "codex": {
-          "workflowFile": "migrate.md",
-          "compatibilityAlias": "$workflow-migrate"
+          "target": "skill",
+          "skillDir": "migrate"
         },
         "copilot": {
-          "workflowFile": "migrate.md",
-          "promptFile": "workflow-migrate.prompt.md"
+          "target": "prompt",
+          "promptFile": "migrate.prompt.md"
         },
         "antigravity": {
-          "workflowFile": "migrate.md",
+          "target": "command",
           "commandFile": "migrate.toml"
         },
         "claude": {
-          "workflowFile": "migrate.md"
+          "target": "skill",
+          "skillDir": "migrate"
         },
         "gemini": {
-          "workflowFile": "migrate.md",
+          "target": "command",
           "commandFile": "migrate.toml"
         }
       }
@@ -1712,22 +1809,23 @@
       ],
       "artifacts": {
         "codex": {
-          "workflowFile": "mobile.md",
-          "compatibilityAlias": "$workflow-mobile"
+          "target": "skill",
+          "skillDir": "mobile"
         },
         "copilot": {
-          "workflowFile": "mobile.md",
-          "promptFile": "workflow-mobile.prompt.md"
+          "target": "prompt",
+          "promptFile": "mobile.prompt.md"
         },
         "antigravity": {
-          "workflowFile": "mobile.md",
+          "target": "command",
           "commandFile": "mobile.toml"
         },
         "claude": {
-          "workflowFile": "mobile.md"
+          "target": "skill",
+          "skillDir": "mobile"
         },
         "gemini": {
-          "workflowFile": "mobile.md",
+          "target": "command",
           "commandFile": "mobile.toml"
         }
       }
@@ -1764,22 +1862,23 @@
       ],
       "artifacts": {
         "codex": {
-          "workflowFile": "onboard.md",
-          "compatibilityAlias": "$workflow-onboard"
+          "target": "skill",
+          "skillDir": "onboard"
         },
         "copilot": {
-          "workflowFile": "onboard.md",
-          "promptFile": "workflow-onboard.prompt.md"
+          "target": "prompt",
+          "promptFile": "onboard.prompt.md"
         },
         "antigravity": {
-          "workflowFile": "onboard.md",
+          "target": "command",
           "commandFile": "onboard.toml"
         },
         "claude": {
-          "workflowFile": "onboard.md"
+          "target": "skill",
+          "skillDir": "onboard"
         },
         "gemini": {
-          "workflowFile": "onboard.md",
+          "target": "command",
           "commandFile": "onboard.toml"
         }
       }
@@ -1822,22 +1921,23 @@
       ],
       "artifacts": {
         "codex": {
-          "workflowFile": "orchestrate.md",
-          "compatibilityAlias": "$workflow-orchestrate"
+          "target": "skill",
+          "skillDir": "orchestrate"
         },
         "copilot": {
-          "workflowFile": "orchestrate.md",
-          "promptFile": "workflow-orchestrate.prompt.md"
+          "target": "prompt",
+          "promptFile": "orchestrate.prompt.md"
         },
         "antigravity": {
-          "workflowFile": "orchestrate.md",
+          "target": "command",
           "commandFile": "orchestrate.toml"
         },
         "claude": {
-          "workflowFile": "orchestrate.md"
+          "target": "skill",
+          "skillDir": "orchestrate"
         },
         "gemini": {
-          "workflowFile": "orchestrate.md",
+          "target": "command",
           "commandFile": "orchestrate.toml"
         }
       }
@@ -1880,22 +1980,23 @@
       ],
       "artifacts": {
         "codex": {
-          "workflowFile": "plan.md",
-          "compatibilityAlias": "$workflow-plan"
+          "target": "skill",
+          "skillDir": "plan"
         },
         "copilot": {
-          "workflowFile": "plan.md",
-          "promptFile": "workflow-plan.prompt.md"
+          "target": "prompt",
+          "promptFile": "plan.prompt.md"
         },
         "antigravity": {
-          "workflowFile": "plan.md",
+          "target": "command",
           "commandFile": "plan.toml"
         },
         "claude": {
-          "workflowFile": "plan.md"
+          "target": "skill",
+          "skillDir": "plan"
         },
         "gemini": {
-          "workflowFile": "plan.md",
+          "target": "command",
           "commandFile": "plan.toml"
         }
       }
@@ -1934,22 +2035,23 @@
       ],
       "artifacts": {
         "codex": {
-          "workflowFile": "refactor.md",
-          "compatibilityAlias": "$workflow-refactor"
+          "target": "skill",
+          "skillDir": "refactor"
         },
         "copilot": {
-          "workflowFile": "refactor.md",
-          "promptFile": "workflow-refactor.prompt.md"
+          "target": "prompt",
+          "promptFile": "refactor.prompt.md"
         },
         "antigravity": {
-          "workflowFile": "refactor.md",
+          "target": "command",
           "commandFile": "refactor.toml"
         },
         "claude": {
-          "workflowFile": "refactor.md"
+          "target": "skill",
+          "skillDir": "refactor"
         },
         "gemini": {
-          "workflowFile": "refactor.md",
+          "target": "command",
           "commandFile": "refactor.toml"
         }
       }
@@ -1987,22 +2089,23 @@
       ],
       "artifacts": {
         "codex": {
-          "workflowFile": "release.md",
-          "compatibilityAlias": "$workflow-release"
+          "target": "skill",
+          "skillDir": "release"
         },
         "copilot": {
-          "workflowFile": "release.md",
-          "promptFile": "workflow-release.prompt.md"
+          "target": "prompt",
+          "promptFile": "release.prompt.md"
         },
         "antigravity": {
-          "workflowFile": "release.md",
+          "target": "command",
           "commandFile": "release.toml"
         },
         "claude": {
-          "workflowFile": "release.md"
+          "target": "skill",
+          "skillDir": "release"
         },
         "gemini": {
-          "workflowFile": "release.md",
+          "target": "command",
           "commandFile": "release.toml"
         }
       }
@@ -2043,22 +2146,23 @@
       ],
       "artifacts": {
         "codex": {
-          "workflowFile": "review.md",
-          "compatibilityAlias": "$workflow-review"
+          "target": "skill",
+          "skillDir": "review"
         },
         "copilot": {
-          "workflowFile": "review.md",
-          "promptFile": "workflow-review.prompt.md"
+          "target": "prompt",
+          "promptFile": "review.prompt.md"
         },
         "antigravity": {
-          "workflowFile": "review.md",
+          "target": "command",
           "commandFile": "review.toml"
         },
         "claude": {
-          "workflowFile": "review.md"
+          "target": "skill",
+          "skillDir": "review"
         },
         "gemini": {
-          "workflowFile": "review.md",
+          "target": "command",
           "commandFile": "review.toml"
         }
       }
@@ -2098,22 +2202,23 @@
       ],
       "artifacts": {
         "codex": {
-          "workflowFile": "security.md",
-          "compatibilityAlias": "$workflow-security"
+          "target": "skill",
+          "skillDir": "security"
         },
         "copilot": {
-          "workflowFile": "security.md",
-          "promptFile": "workflow-security.prompt.md"
+          "target": "prompt",
+          "promptFile": "security.prompt.md"
         },
         "antigravity": {
-          "workflowFile": "security.md",
+          "target": "command",
           "commandFile": "security.toml"
         },
         "claude": {
-          "workflowFile": "security.md"
+          "target": "skill",
+          "skillDir": "security"
         },
         "gemini": {
-          "workflowFile": "security.md",
+          "target": "command",
           "commandFile": "security.toml"
         }
       }
@@ -2154,22 +2259,23 @@
       ],
       "artifacts": {
         "codex": {
-          "workflowFile": "spec.md",
-          "compatibilityAlias": "$workflow-spec"
+          "target": "skill",
+          "skillDir": "spec"
         },
         "copilot": {
-          "workflowFile": "spec.md",
-          "promptFile": "workflow-spec.prompt.md"
+          "target": "prompt",
+          "promptFile": "spec.prompt.md"
         },
         "antigravity": {
-          "workflowFile": "spec.md",
+          "target": "command",
           "commandFile": "spec.toml"
         },
         "claude": {
-          "workflowFile": "spec.md"
+          "target": "skill",
+          "skillDir": "spec"
         },
         "gemini": {
-          "workflowFile": "spec.md",
+          "target": "command",
           "commandFile": "spec.toml"
         }
       }
@@ -2211,22 +2317,23 @@
       ],
       "artifacts": {
         "codex": {
-          "workflowFile": "test.md",
-          "compatibilityAlias": "$workflow-test"
+          "target": "skill",
+          "skillDir": "test"
         },
         "copilot": {
-          "workflowFile": "test.md",
-          "promptFile": "workflow-test.prompt.md"
+          "target": "prompt",
+          "promptFile": "test.prompt.md"
         },
         "antigravity": {
-          "workflowFile": "test.md",
+          "target": "command",
           "commandFile": "test.toml"
         },
         "claude": {
-          "workflowFile": "test.md"
+          "target": "skill",
+          "skillDir": "test"
         },
         "gemini": {
-          "workflowFile": "test.md",
+          "target": "command",
           "commandFile": "test.toml"
         }
       }
@@ -2264,22 +2371,23 @@
       ],
       "artifacts": {
         "codex": {
-          "workflowFile": "vercel.md",
-          "compatibilityAlias": "$workflow-vercel"
+          "target": "skill",
+          "skillDir": "vercel"
         },
         "copilot": {
-          "workflowFile": "vercel.md",
-          "promptFile": "workflow-vercel.prompt.md"
+          "target": "prompt",
+          "promptFile": "vercel.prompt.md"
         },
         "antigravity": {
-          "workflowFile": "vercel.md",
+          "target": "command",
           "commandFile": "vercel.toml"
         },
         "claude": {
-          "workflowFile": "vercel.md"
+          "target": "skill",
+          "skillDir": "vercel"
         },
         "gemini": {
-          "workflowFile": "vercel.md",
+          "target": "command",
           "commandFile": "vercel.toml"
         }
       }

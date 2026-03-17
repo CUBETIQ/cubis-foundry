@@ -2,7 +2,6 @@
 
 ## Platform Paths
 
-- Workflows: `.github/copilot/workflows`
 - Agents: `.github/agents`
 - Skills: `.github/skills`
 - Rules file: `copilot-instructions.md`
@@ -13,7 +12,7 @@
 ## Platform-Specific Routing
 
 1. **Explicit workflow prompt or `@agent`** — highest priority route.
-2. Copilot prompt files (`.github/prompts/*.prompt.md`) provide structured entry points.
+2. `/workflow` routes compile into prompt files (`.github/prompts/*.prompt.md`).
 3. Standard workflow/agent routing from shared steering.
 
 ## Agent Handoffs

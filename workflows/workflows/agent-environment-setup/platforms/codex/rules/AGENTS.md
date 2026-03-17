@@ -18,18 +18,18 @@ Every response must satisfy three silent checks before output:
 
 If any check fails, restart your reasoning.
 
-> **Codex note:** All specialist references are **postures within the current session** — not isolated agents. Codex does not spawn external processes. `@specialist` means: adopt that specialist's domain, reasoning style, and scope constraints internally.
+> **Codex note:** Foundry installs native Codex subagents in `.codex/agents/*.toml`. Use `@specialist` routes as real subagent handoffs when appropriate; use in-session posture only when explicit delegation is unavailable.
 
 ---
 
 ## 1) Platform Paths
 
-| Asset      | Location            |
-| ---------- | ------------------- |
-| Workflows  | `.agents/workflows` |
-| Agents     | `.agents/agents`    |
-| Skills     | `.agents/skills`    |
-| Rules file | `AGENTS.md`         |
+| Asset           | Location                          |
+| --------------- | --------------------------------- |
+| Workflow skills | `.agents/skills/<workflow>/SKILL.md` |
+| Skills          | `.agents/skills/<skill>/SKILL.md` |
+| Native agents   | `.codex/agents/*.toml`           |
+| Rules file      | `AGENTS.md`                      |
 
 ---
 
@@ -66,7 +66,7 @@ Execute this tree top-to-bottom. Stop at the **first match**. Never skip levels.
 - If the user names an exact skill ID, run `skill_validate` on that ID before `route_resolve`.
 - Never invoke a specialist posture when direct execution suffices.
 - Never chain more than one `skill_search` per request.
-- Codex compatibility aliases (`$workflow-*`, `$agent-*`) are accepted as hints only — not primary route surfaces.
+- Native `/workflow` and `@agent` routes are the primary surfaces. Do not generate or rely on compatibility wrappers.
 - Treat this file as **durable project memory** — not a per-task playbook.
 - Assume network access may be restricted. Prefer local inspection over external fetches.
 
@@ -74,15 +74,15 @@ Execute this tree top-to-bottom. Stop at the **first match**. Never skip levels.
 
 ## 3) Layer Reference
 
-| Layer                  | What it is                   | When to invoke                        | How                                |
-| ---------------------- | ---------------------------- | ------------------------------------- | ---------------------------------- |
-| **Direct**             | Zero routing                 | Trivial, single-step, obvious tasks   | Just do it                         |
-| **Workflow**           | Structured multi-step recipe | Known pattern, repeatable process     | `/plan`, `/create`, `/debug`, etc. |
-| **Specialist posture** | Domain expertise in-session  | Domain depth needed, no agent spawn   | `@specialist` reference internally |
-| **Skill (MCP)**        | Focused knowledge module     | Domain context after route is set     | `skill_validate` → `skill_get`     |
-| **skill_search**       | Fuzzy skill discovery        | Domain unclear after route_resolve    | One narrow call only               |
-| **route_resolve**      | Intent → route mapping       | Free-text intent doesn't match        | MCP tool call                      |
-| **Orchestrator**       | Multi-specialist coordinator | Work crosses 2+ domains with handoffs | `/orchestrate`                     |
+| Layer              | What it is                   | When to invoke                        | How                                |
+| ------------------ | ---------------------------- | ------------------------------------- | ---------------------------------- |
+| **Direct**         | Zero routing                 | Trivial, single-step, obvious tasks   | Just do it                         |
+| **Workflow skill** | Structured multi-step recipe | Known pattern, repeatable process     | `/plan`, `/create`, `/debug`, etc. |
+| **Native subagent**| Codex specialist handoff     | Domain depth or multi-step delegation | `@specialist` via `.codex/agents/*.toml` |
+| **Skill (MCP)**    | Focused knowledge module     | Domain context after route is set     | `skill_validate` → `skill_get`     |
+| **skill_search**   | Fuzzy skill discovery        | Domain unclear after route_resolve    | One narrow call only               |
+| **route_resolve**  | Intent → route mapping       | Free-text intent doesn't match        | MCP tool call                      |
+| **Orchestrator**   | Multi-specialist coordinator | Work crosses 2+ domains with handoffs | `/orchestrate`                     |
 
 ---
 
@@ -100,9 +100,9 @@ Execute this tree top-to-bottom. Stop at the **first match**. Never skip levels.
 
 ---
 
-## 5) Specialist Postures & Reasoning Contracts
+## 5) Specialist Agents & Reasoning Contracts
 
-In Codex, these are **internal postures** — not separate agents. When invoking one, fully adopt its domain, reasoning style, and scope limits.
+In Codex, specialists are implemented as **native subagents** via `.codex/agents/*.toml` files. Each TOML can specify `model` and `model_reasoning_effort` for cost/quality optimization. The orchestrator delegates to them using Codex's built-in subagent system. When native delegation is unavailable, adopt the specialist's domain, reasoning style, and scope limits as an inline posture.
 
 ### `@backend-specialist`
 

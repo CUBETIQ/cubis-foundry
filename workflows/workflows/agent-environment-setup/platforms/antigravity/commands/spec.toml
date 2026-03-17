@@ -1,19 +1,86 @@
 description = "Create or refresh a Git-tracked spec pack for non-trivial work, including acceptance criteria, traceability, architecture impact, and next-route handoff."
 prompt = '''
-Follow the /spec workflow from .agent/workflows/spec.md.
+Execute the native projection of the /spec workflow.
+
+Create or refresh a Git-tracked spec pack for non-trivial work, including acceptance criteria, traceability, architecture impact, and next-route handoff.
 
 Execution contract:
 1. Treat route selection as already resolved by this command; do not begin with skill discovery.
 2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.
 Attached skills:
 - Load these exact skill IDs first: `spec-driven-delivery`, `sadd`, `system-design`, `architecture-doc`, `deep-research`, `api-design`, `database-design`, `tech-doc`.
-- Local skill file hints if installed: `.agent/skills/spec-driven-delivery/SKILL.md`, `.agent/skills/sadd/SKILL.md`, `.agent/skills/system-design/SKILL.md`, `.agent/skills/architecture-doc/SKILL.md`, `.agent/skills/deep-research/SKILL.md`, `.agent/skills/api-design/SKILL.md`, `.agent/skills/database-design/SKILL.md`, `.agent/skills/tech-doc/SKILL.md`.
+- Local skill file hints if installed: `.agents/skills/spec-driven-delivery/SKILL.md`, `.agents/skills/sadd/SKILL.md`, `.agents/skills/system-design/SKILL.md`, `.agents/skills/architecture-doc/SKILL.md`, `.agents/skills/deep-research/SKILL.md`, `.agents/skills/api-design/SKILL.md`, `.agents/skills/database-design/SKILL.md`, `.agents/skills/tech-doc/SKILL.md`.
 - Treat the skill bundle as already resolved for this workflow. Do not start with route discovery.
-3. Confirm the request fits the workflow's "When to use" section.
+3. Confirm the request fits the workflow's "When to use" section before acting.
 4. Execute according to "Workflow steps" and apply "Context notes".
 5. Complete "Verification" checks and report concrete evidence.
-6. If freshness, public comparison, or explicit research needs appear, pause implementation and load `deep-research` or hand off to `@researcher` first.
+6. If freshness, public comparison, or explicit research needs appear, pause implementation and load `deep-research` or route to research first.
 7. For outside evidence: repo first, official docs next, Reddit/community only as labeled secondary evidence.
+
+Workflow source:
+# Spec Workflow
+
+## When to use
+
+Use this for non-trivial work that needs durable planning in Git before implementation: medium or large features, multi-step changes, cross-session work, migrations, risky refactors, or any request that needs explicit acceptance and traceability.
+
+## Routing
+
+- Primary coordinator: `@project-planner`
+- Traceability and requirements support: `@researcher`
+- Cross-domain coordination: `@orchestrator`
+- Documentation and structure support: `@documentation-writer`
+
+## Skill Routing
+
+- Primary skills: `spec-driven-delivery`, `sadd`
+- Supporting skills (optional): `system-design`, `architecture-doc`, `deep-research`, `api-design`, `database-design`, `tech-doc`
+- Start with `spec-driven-delivery` for the pack structure and handoff contract. Add `sadd` when mining requirements into testable assertions, `system-design` or `architecture-doc` when the spec changes structure, and `deep-research` only when repo-local evidence is insufficient.
+
+## Workflow steps
+
+1. Determine whether the task is non-trivial enough to justify a spec pack.
+2. Find an existing `docs/specs/<spec-id>/` pack or create a new stable `spec_id`.
+3. Write or refresh the spec pack with brief, acceptance, tasks, traceability, and handoff files.
+4. Record `architecture_impact`, `doc_impact`, and any required updates to `docs/foundation/PRODUCT.md`, `docs/foundation/ARCHITECTURE.md`, `ENGINEERING_RULES.md`, or `docs/foundation/TECH.md`. If the change adds new terms, update the `## Domain Glossary` in `docs/foundation/PRODUCT.md`. If the change introduces new crosscutting patterns or tech debt, flag updates needed in `docs/foundation/ARCHITECTURE.md`.
+5. Identify the next execution route and hand off without replanning the same work.
+
+## Context notes
+
+- Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist because they define the accepted product direction, architecture contract, and current state.
+- Prefer repo evidence first; escalate to `deep-research` only when freshness, public comparison, or explicit research requests require it.
+- Keep spec packs lean. Trivial one-step tasks should stay on the lightweight path with no new spec directory.
+
+## Verification
+
+- `spec_id` and `spec_root` are stable and explicit.
+- Acceptance criteria are testable and traceable.
+- Task dependencies form a valid execution order.
+- `architecture_impact`, `doc_impact`, and `traceability_status` are present.
+
+## Output Contract
+
+```yaml
+SPEC_WORKFLOW_RESULT:
+  primary_agent: project-planner
+  supporting_agents: [researcher?, orchestrator?, documentation-writer?]
+  primary_skills: [spec-driven-delivery, sadd]
+  supporting_skills: [system-design?, architecture-doc?, deep-research?, api-design?, database-design?, tech-doc?]
+  spec_id: <string>
+  spec_root: docs/specs/<spec-id>
+  architecture_impact:
+    summary: <string>
+    affects_structure: true | false
+    affects_design_system: true | false
+    affects_testing_strategy: true | false
+  doc_impact: none | tech | rules | both
+  traceability_status: complete | partial | blocked
+  documents:
+    created: [<path>] | []
+    updated: [<path>] | []
+  next_route: </create | /implement-track | /orchestrate | /architecture | direct>
+  gaps: [<string>] | []
+```
 
 If command arguments are provided, treat them as additional user context.
 '''

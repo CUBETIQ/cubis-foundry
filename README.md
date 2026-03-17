@@ -183,32 +183,47 @@ Behavior:
 
 Codex:
 
+- Project agents: `<workspace>/.codex/agents`
+- Global agents: `~/.codex/agents`
+- Project skills: `<workspace>/.agents/skills`
 - Global skills: `~/.agents/skills`
-- Project workflows: `<workspace>/.agents/workflows`
 - Project rules: `<workspace>/AGENTS.md`
 - Global rules: `~/.codex/AGENTS.md`
 
 Antigravity:
 
+- Project rules: `<workspace>/.agents/rules/GEMINI.md`
+- Project skills: `<workspace>/.agents/skills`
 - Global skills: `~/.gemini/antigravity/skills`
-- Project workflows: `<workspace>/.agent/workflows`
-- Project rules: `<workspace>/.agent/rules/GEMINI.md`
+- Project commands: `<workspace>/.gemini/commands`
 - Global rules: `~/.gemini/GEMINI.md`
 
 Copilot:
 
+- Project agents: `<workspace>/.github/agents`
+- Global agents: `~/.copilot/agents`
 - Global skills: `~/.copilot/skills`
-- Project workflows: `<workspace>/.github/copilot/workflows`
+- Project skills: `<workspace>/.github/skills`
+- Project prompts: `<workspace>/.github/prompts`
 - Project rules: `<workspace>/AGENTS.md` and `<workspace>/.github/copilot-instructions.md`
 - Global rules: `~/.copilot/copilot-instructions.md`
 
 Gemini CLI:
 
-- Global skills: `~/.gemini/skills`
-- Project workflows: `<workspace>/.gemini/workflows`
 - Project commands: `<workspace>/.gemini/commands`
 - Project rules: `<workspace>/.gemini/GEMINI.md`
 - Global rules: `~/.gemini/GEMINI.md`
+
+Claude:
+
+- Project agents: `<workspace>/.claude/agents`
+- Global agents: `~/.claude/agents`
+- Project skills: `<workspace>/.claude/skills`
+- Global skills: `~/.claude/skills`
+- Project hooks: `<workspace>/.claude/hooks`
+- Global hooks: `~/.claude/hooks`
+- Project rules: `<workspace>/CLAUDE.md`
+- Global rules: `~/.claude/CLAUDE.md`
 
 ## Credential Model (Metadata + Machine Vault)
 
@@ -629,7 +644,7 @@ cbx workflows remove-all --scope all --platform all --yes
 
 What it removes (by scope/platform selection):
 
-- Generated workflows/agents/skills wrappers.
+- Generated native agents, skills, prompt files, commands, and platform-owned workflow projections.
 - Managed rule blocks and generated engineering docs (`AGENTS.md`, `ENGINEERING_RULES.md`, `TECH.md`) where applicable.
 - Managed runtime target entries plus any legacy direct Postman/Stitch MCP definition files.
 - Project/global `.cbx` metadata artifacts created by installer flows.
@@ -639,12 +654,13 @@ To keep generated artifacts out of git in app repositories, add these ignore ent
 
 ```gitignore
 .cbx/
-.agent/
 .agents/
+.codex/
+.claude/
+.gemini/
 .github/agents/
 .github/skills/
 .github/prompts/
-.github/copilot/
 AGENTS.md
 ENGINEERING_RULES.md
 TECH.md

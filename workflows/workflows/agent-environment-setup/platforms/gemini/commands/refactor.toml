@@ -1,19 +1,82 @@
 description = "Improve maintainability while preserving behavior through incremental safe refactoring."
 prompt = '''
-Follow the /refactor workflow from .gemini/workflows/refactor.md.
+Execute the native projection of the /refactor workflow.
+
+Improve maintainability while preserving behavior through incremental safe refactoring.
 
 Execution contract:
 1. Treat route selection as already resolved by this command; do not begin with skill discovery.
 2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.
 Attached skills:
 - Load these exact skill IDs first: `code-review`, `system-design`, `unit-testing`, `typescript-best-practices`, `javascript-best-practices`, `python-best-practices`, `golang-best-practices`.
-- Local skill file hints if installed: `.gemini/skills/code-review/SKILL.md`, `.gemini/skills/system-design/SKILL.md`, `.gemini/skills/unit-testing/SKILL.md`, `.gemini/skills/typescript-best-practices/SKILL.md`, `.gemini/skills/javascript-best-practices/SKILL.md`, `.gemini/skills/python-best-practices/SKILL.md`, `.gemini/skills/golang-best-practices/SKILL.md`.
+- Local skill file hints if installed: `.agents/skills/code-review/SKILL.md`, `.agents/skills/system-design/SKILL.md`, `.agents/skills/unit-testing/SKILL.md`, `.agents/skills/typescript-best-practices/SKILL.md`, `.agents/skills/javascript-best-practices/SKILL.md`, `.agents/skills/python-best-practices/SKILL.md`, `.agents/skills/golang-best-practices/SKILL.md`.
 - Treat the skill bundle as already resolved for this workflow. Do not start with route discovery.
-3. Confirm the request fits the workflow's "When to use" section.
+3. Confirm the request fits the workflow's "When to use" section before acting.
 4. Execute according to "Workflow steps" and apply "Context notes".
 5. Complete "Verification" checks and report concrete evidence.
-6. If freshness, public comparison, or explicit research needs appear, pause implementation and load `deep-research` or route to the researcher posture first.
+6. If freshness, public comparison, or explicit research needs appear, pause implementation and load `deep-research` or route to research first.
 7. For outside evidence: repo first, official docs next, Reddit/community only as labeled secondary evidence.
+
+Workflow source:
+# Refactor Workflow
+
+## When to use
+
+Use this when improving code structure, reducing tech debt, or modularizing without changing behavior.
+
+## Routing
+
+- Primary specialist: `@code-archaeologist`
+- Domain support: `@backend-specialist`, `@frontend-specialist`
+- Verification support: `@test-engineer`, `@validator`
+
+## Context notes
+
+- This workflow file, active platform rules, and selected agents or skills guide execution.
+- Attach the target code, pain points, and any constraints on what can change.
+- Read `ENGINEERING_RULES.md` and `docs/foundation/TECH.md` first so behavior-preserving structure changes do not drift from the accepted architecture contract. Check `docs/foundation/ARCHITECTURE.md` for `## Dependency Rules` and `## Crosscutting Concerns` before restructuring.
+
+## Skill Routing
+
+- Primary skills: `static-analysis`, `legacy-modernizer`
+- Supporting skills (optional): `testing-patterns`, `system-design`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`
+- Start with `static-analysis` for automated code quality assessment. Add `legacy-modernizer` for modernization patterns. Add `testing-patterns` when refactoring needs test coverage to proceed safely.
+
+## Workflow steps
+
+1. Map the current structure and identify refactoring targets.
+2. Ensure adequate test coverage before modifying (add tests if needed).
+3. Apply one refactoring at a time with behavior preservation.
+4. Verify behavior unchanged after each step.
+5. Document the improved structure and any conventions established.
+6. Set `doc_impact` when the refactor changes project structure, module boundaries, or design-system conventions.
+
+## Verification
+
+- All existing tests pass after each refactoring step.
+- No behavioral changes introduced (unless explicitly intended).
+- Code quality metrics improved (complexity, coupling, cohesion).
+- New tests added for any gaps discovered during refactoring.
+
+## Output Contract
+
+```yaml
+REFACTOR_WORKFLOW_RESULT:
+  primary_agent: code-archaeologist
+  supporting_agents: [backend-specialist?, frontend-specialist?, test-engineer?, validator?]
+  primary_skills: [static-analysis, legacy-modernizer]
+  supporting_skills: [testing-patterns?, system-design?]
+  refactoring_summary:
+    targets: [<string>]
+    changes_applied: [<string>]
+    behavior_preserved: true | false
+  quality_improvement:
+    complexity_before: <string>
+    complexity_after: <string>
+  doc_impact: none | tech | rules | both
+  tests_added: [<test-file-path>] | []
+  follow_up_items: [<string>] | []
+```
 
 If command arguments are provided, treat them as additional user context.
 '''

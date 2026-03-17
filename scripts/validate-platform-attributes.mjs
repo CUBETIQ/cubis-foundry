@@ -69,34 +69,45 @@ const WORKFLOW_REQUIRED_SECTIONS = [
 
 const platforms = {
   antigravity: {
-    workflowDir: "workflows",
-    agentDir: "agents",
+    workflowDir: null,
+    agentDir: null,
+    generatedSkillsDir: null,
     commandsDir: "commands",
     rulesFile: "rules/GEMINI.md",
+    expectsGeneratedAgents: false,
   },
   codex: {
-    workflowDir: "workflows",
+    workflowDir: null,
     agentDir: "agents",
+    agentFormat: "toml",
+    generatedSkillsDir: "generated-skills",
     rulesFile: "rules/AGENTS.md",
   },
   copilot: {
-    workflowDir: "workflows",
+    workflowDir: null,
     agentDir: "agents",
+    generatedSkillsDir: null,
     promptsDir: "prompts",
     rulesFile: "rules/AGENTS.md",
   },
   claude: {
-    workflowDir: "workflows",
+    workflowDir: null,
     agentDir: "agents",
+    generatedSkillsDir: "generated-skills",
     rulesFile: "rules/CLAUDE.md",
   },
   gemini: {
-    workflowDir: "workflows",
+    workflowDir: null,
+    generatedSkillsDir: null,
     commandsDir: "commands",
     rulesFile: "rules/GEMINI.md",
     expectsGeneratedAgents: false,
   },
 };
+
+function normalizeMarkdownId(fileName) {
+  return path.basename(fileName, ".md");
+}
 
 function parseFrontmatter(markdown) {
   const match = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
@@ -614,6 +625,23 @@ async function validateAgentFile({
   }
 }
 
+async function validateCodexAgentToml(filePath, errors) {
+  const raw = await readUtf8(filePath);
+  if (!/^\s*name\s*=\s*"/m.test(raw)) {
+    error(errors, filePath, "missing required TOML field 'name'");
+  }
+  if (!/^\s*description\s*=\s*"/m.test(raw)) {
+    error(errors, filePath, "missing required TOML field 'description'");
+  }
+  if (!/^\s*developer_instructions\s*=\s*"""/m.test(raw)) {
+    error(
+      errors,
+      filePath,
+      "missing required TOML field 'developer_instructions'",
+    );
+  }
+}
+
 async function buildCanonicalSubSkillSet(canonicalMap) {
   const ids = new Set();
   for (const { id: topLevelId, root } of canonicalMap.values()) {
@@ -751,6 +779,17 @@ async function validateSharedSourceAndGeneratedParity({
 
   const sharedAgents = await listMarkdownFiles(SHARED_AGENTS_DIR);
   const sharedWorkflows = await listMarkdownFiles(SHARED_WORKFLOWS_DIR);
+  const workflowIds = sharedWorkflows.map((fileName) =>
+    normalizeMarkdownId(fileName),
+  );
+  const workflowCommandFiles = workflowIds.map((id) => `${id}.toml`);
+  const claudePromptFiles = workflowIds.map((id) => `${id}.prompt.md`);
+  const codexAgentFiles = sharedAgents.map(
+    (fileName) => `${normalizeMarkdownId(fileName)}.toml`,
+  );
+  const agentCommandFiles = sharedAgents.map(
+    (fileName) => `agent-${normalizeMarkdownId(fileName)}.toml`,
+  );
 
   if (sharedAgents.length === 0) {
     error(errors, SHARED_AGENTS_DIR, "no shared agent markdown files found");
@@ -787,12 +826,23 @@ async function validateSharedSourceAndGeneratedParity({
     const platformRoot = path.join(BUNDLE_ROOT, "platforms", platformId);
     const workflowFiles = Array.isArray(spec.workflows) ? spec.workflows : [];
     const agentFiles = Array.isArray(spec.agents) ? spec.agents : [];
+    const generatedSkills = Array.isArray(spec.generatedSkills)
+      ? spec.generatedSkills
+      : [];
     const expectsGeneratedAgents =
       platforms[platformId].expectsGeneratedAgents !== false;
+    const expectedAgentFiles =
+      platformId === "codex"
+        ? codexAgentFiles
+        : expectsGeneratedAgents
+          ? sharedAgents
+          : [];
+    const expectedGeneratedSkills =
+      platformId === "codex" || platformId === "claude" ? workflowIds : [];
 
     assertFileSetParity({
       label: `${platformId} workflow list`,
-      expected: sharedWorkflows,
+      expected: [],
       actual: workflowFiles,
       errors,
       contextPath: MANIFEST_PATH,
@@ -800,24 +850,34 @@ async function validateSharedSourceAndGeneratedParity({
 
     assertFileSetParity({
       label: `${platformId} agent list`,
-      expected: expectsGeneratedAgents ? sharedAgents : [],
+      expected: expectedAgentFiles,
       actual: agentFiles,
       errors,
       contextPath: MANIFEST_PATH,
     });
 
-    for (const fileName of sharedWorkflows) {
-      const platformWorkflow = path.join(
+    assertFileSetParity({
+      label: `${platformId} generated skill list`,
+      expected: expectedGeneratedSkills,
+      actual: generatedSkills,
+      errors,
+      contextPath: MANIFEST_PATH,
+    });
+
+    for (const skillId of expectedGeneratedSkills) {
+      const generatedSkillFile = path.join(
         platformRoot,
-        platforms[platformId].workflowDir,
-        fileName,
+        platforms[platformId].generatedSkillsDir,
+        skillId,
+        "SKILL.md",
       );
-      if (!(await pathExists(platformWorkflow))) {
-        error(errors, platformWorkflow, "generated workflow missing");
+      if (!(await pathExists(generatedSkillFile))) {
+        error(errors, generatedSkillFile, "generated workflow skill missing");
       }
     }
 
-    for (const fileName of expectsGeneratedAgents ? sharedAgents : []) {
+    for (const fileName of expectedAgentFiles) {
+      if (!platforms[platformId].agentDir) continue;
       const platformAgent = path.join(
         platformRoot,
         platforms[platformId].agentDir,
@@ -833,11 +893,11 @@ async function validateSharedSourceAndGeneratedParity({
   const antCommands = Array.isArray(antigravitySpec.commands)
     ? antigravitySpec.commands
     : [];
-  if (antCommands.length !== sharedWorkflows.length) {
+  if (antCommands.length !== workflowCommandFiles.length + agentCommandFiles.length) {
     error(
       errors,
       MANIFEST_PATH,
-      `antigravity commands count mismatch: expected ${sharedWorkflows.length}, found ${antCommands.length}`,
+      `antigravity commands count mismatch: expected ${workflowCommandFiles.length + agentCommandFiles.length}, found ${antCommands.length}`,
     );
   }
   for (const commandFile of antCommands) {
@@ -861,11 +921,11 @@ async function validateSharedSourceAndGeneratedParity({
   const geminiCommands = Array.isArray(geminiSpec.commands)
     ? geminiSpec.commands
     : [];
-  if (geminiCommands.length !== sharedWorkflows.length) {
+  if (geminiCommands.length !== workflowCommandFiles.length + agentCommandFiles.length) {
     error(
       errors,
       MANIFEST_PATH,
-      `gemini commands count mismatch: expected ${sharedWorkflows.length}, found ${geminiCommands.length}`,
+      `gemini commands count mismatch: expected ${workflowCommandFiles.length + agentCommandFiles.length}, found ${geminiCommands.length}`,
     );
   }
   for (const commandFile of geminiCommands) {
@@ -889,11 +949,11 @@ async function validateSharedSourceAndGeneratedParity({
   const copilotPrompts = Array.isArray(copilotSpec.prompts)
     ? copilotSpec.prompts
     : [];
-  if (copilotPrompts.length !== sharedWorkflows.length) {
+  if (copilotPrompts.length !== workflowIds.length) {
     error(
       errors,
       MANIFEST_PATH,
-      `copilot prompts count mismatch: expected ${sharedWorkflows.length}, found ${copilotPrompts.length}`,
+      `copilot prompts count mismatch: expected ${workflowIds.length}, found ${copilotPrompts.length}`,
     );
   }
   for (const promptFile of copilotPrompts) {
@@ -1002,9 +1062,20 @@ async function main() {
     const platformRoot = path.join(BUNDLE_ROOT, "platforms", platformId);
     const workflowFiles = Array.isArray(spec.workflows) ? spec.workflows : [];
     const agentFiles = Array.isArray(spec.agents) ? spec.agents : [];
+    const generatedSkills = Array.isArray(spec.generatedSkills)
+      ? spec.generatedSkills
+      : [];
     const skills = Array.isArray(spec.skills) ? spec.skills : [];
 
     for (const rel of workflowFiles) {
+      if (!platformCfg.workflowDir) {
+        error(
+          errors,
+          MANIFEST_PATH,
+          `platform '${platformId}' defines workflows but has no workflowDir mapping`,
+        );
+        break;
+      }
       const filePath = path.join(platformRoot, platformCfg.workflowDir, rel);
       if (!(await pathExists(filePath))) {
         error(errors, filePath, "workflow file listed in manifest is missing");
@@ -1030,13 +1101,49 @@ async function main() {
         error(errors, filePath, "agent file listed in manifest is missing");
         continue;
       }
-      await validateAgentFile({
+      if (platformCfg.agentFormat === "toml") {
+        await validateCodexAgentToml(filePath, errors);
+      } else {
+        await validateAgentFile({
+          filePath,
+          platform: platformId,
+          skillSet: indexedSkillSet,
+          subSkillSet: canonicalSubSkillSet,
+          errors,
+          notes,
+        });
+      }
+    }
+
+    for (const rel of generatedSkills) {
+      if (!platformCfg.generatedSkillsDir) {
+        error(
+          errors,
+          MANIFEST_PATH,
+          `platform '${platformId}' defines generatedSkills but has no generatedSkillsDir mapping`,
+        );
+        break;
+      }
+      const filePath = path.join(
+        platformRoot,
+        platformCfg.generatedSkillsDir,
+        rel,
+        "SKILL.md",
+      );
+      if (!(await pathExists(filePath))) {
+        error(
+          errors,
+          filePath,
+          "generated skill listed in manifest is missing",
+        );
+        continue;
+      }
+      await validateSkillFile({
         filePath,
         platform: platformId,
-        skillSet: indexedSkillSet,
-        subSkillSet: canonicalSubSkillSet,
         errors,
         notes,
+        canonicalMap,
       });
     }
 

@@ -24,7 +24,6 @@ If any check fails, restart your reasoning.
 
 | Asset                    | Location                                 |
 | ------------------------ | ---------------------------------------- |
-| Workflows                | `.github/copilot/workflows`              |
 | Agents                   | `.github/agents`                         |
 | Skills                   | `.github/skills`                         |
 | Prompt files             | `.github/prompts`                        |

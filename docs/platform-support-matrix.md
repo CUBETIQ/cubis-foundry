@@ -7,27 +7,29 @@
 
 | Platform | Rule File | Output Directory | Execution Model |
 | --- | --- | --- | --- |
-| **Antigravity** | `GEMINI.md` (`trigger: always_on`) | `.agent/` | Parallel agent-manager workflow with Gemini-family commands |
-| **Gemini CLI** | `GEMINI.md` | `.gemini/` | Inline postures plus TOML commands, no standalone agent files |
-| **Claude Code** | `CLAUDE.md` | `.claude/` | Workflow and agent markdown with Claude-native rules |
-| **Codex** | `AGENTS.md` | `.agents/` | In-session postures plus compatibility wrapper skills |
-| **GitHub Copilot** | `copilot-instructions.md` | `.github/` | Workflow markdown, agent markdown, and generated prompt files |
+| **Antigravity** | `GEMINI.md` | `.agents/` + `.gemini/commands/` | Rules + open-standard skills + generated command routes |
+| **Gemini CLI** | `GEMINI.md` | `.gemini/commands/` | Native TOML commands for workflows and specialist routes |
+| **Claude Code** | `CLAUDE.md` | `.claude/` | Native agents plus workflow skills |
+| **Codex** | `AGENTS.md` | `.codex/agents/` + `.agents/skills/` | Native subagents plus workflow skills |
+| **GitHub Copilot** | `copilot-instructions.md` | `.github/` | Native agents, skills, and generated prompt files |
 
 ## Bundle Artifacts
 
 | Artifact | Antigravity | Gemini CLI | Claude | Codex | Copilot |
 | --- | --- | --- | --- | --- | --- |
-| Agent files | 22 `.md` | none | 22 `.md` | 22 `.md` | 22 `.md` with sanitized frontmatter |
-| Workflow files | 20 `.md` | 20 `.md` | 20 `.md` | 20 `.md` | 20 `.md` |
-| Commands or prompts | 20 `.toml` | 20 `.toml` | none | none | 20 `.prompt.md` |
-| Skill mirrors | 70 skill dirs | 70 skill dirs | 70 skill dirs | 70 skill dirs | 70 skill dirs |
+| Agent files | none | none | 22 `.md` | 22 `.toml` | 22 `.md` with sanitized frontmatter |
+| Workflow route files | none | none | none | none | none |
+| Commands or prompts | 42 `.toml` | 42 `.toml` | none | none | 20 `.prompt.md` |
+| Generated workflow skills | none | none | 20 skill dirs | 20 skill dirs | none |
+| Canonical skill mirrors | 70 skill dirs | none | 70 skill dirs | 70 skill dirs | 70 skill dirs |
 | Hook templates | none | none | 3 template files | none | none |
-| Compatibility aliases | none | none | none | `$agent-*`, `$workflow-*` | none |
+| Compatibility aliases | none | none | none | none | none |
 
 ## Notes
 
 - Canonical authoring stays in `workflows/skills` and `workflows/workflows/agent-environment-setup/shared`.
 - Platform outputs under `workflows/workflows/agent-environment-setup/platforms/*` are generated artifacts.
-- Codex installs workflow markdown plus compatibility wrapper skills at runtime; the generated platform bundle still includes agent adapter files.
-- Gemini CLI is a first-class install target, but specialist personas are embedded into workflows and `GEMINI.md` guidance rather than shipped as standalone agent files.
-- Antigravity remains separate from Gemini CLI because its project layout and agent execution model differ.
+- Codex uses native `.codex/agents/*.toml` custom agents and `.agents/skills/<workflow-id>/SKILL.md` workflow skills.
+- Claude uses native agents plus workflow skills; custom commands remain supported upstream but are no longer the generated default here.
+- Antigravity and Gemini both route workflows through native command files. Antigravity additionally installs `.agents/rules` and open-standard skills under `.agents/skills`.
+- Single-project installs are designed to coexist: shared skill surfaces are intentional, platform-owned files live in separate directories, and no platform writes another platform's native agent surface.

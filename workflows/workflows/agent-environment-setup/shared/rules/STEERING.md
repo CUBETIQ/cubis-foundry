@@ -37,7 +37,7 @@ Follow this decision tree for EVERY user request:
 
 > **Rule:** Inspect the repo and task locally BEFORE choosing a route or loading any skill.
 > **Rule:** If the user already chose the route, do not re-route it unless the named workflow, agent, or skill is invalid.
-> **Rule:** For non-trivial work, read `PRODUCT.md`, `ENGINEERING_RULES.md`, `ARCHITECTURE.md`, and `TECH.md` in that order when they exist before planning or implementing.
+> **Rule:** For non-trivial work, read `docs/foundation/MEMORY.md` first when it exists. Then load `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, `docs/foundation/TECH.md`, `docs/foundation/memory/*.md`, and ADRs only as needed. Use the MEMORY load map to decide which deeper docs the active workflow, agent, or skill should consult.
 
 ---
 

@@ -2,16 +2,17 @@
 
 ## Platform Paths
 
-- Workflows: `.agents/workflows`
-- Agents: `.agents/agents`
-- Skills: `.agents/skills`
+- Workflow skills: `.agents/skills/<workflow-id>/SKILL.md`
+- Skills: `.agents/skills/<skill-id>/SKILL.md`
+- Native subagents: `.codex/agents/*.toml`
 - Rules file: `AGENTS.md`
 
 ## Platform-Specific Routing
 
 1. **Explicit `/workflow` or `@agent`** — highest priority route.
-2. Compatibility aliases (`$workflow-*`, `$agent-*`) may be accepted as hints but are never the primary route surface.
-3. Standard workflow/agent routing from shared steering.
+2. `/workflow` resolves to a native workflow skill in `.agents/skills/<workflow-id>/SKILL.md`.
+3. `@agent` resolves to a native Codex subagent in `.codex/agents/*.toml`.
+4. Standard workflow/agent routing from shared steering.
 
 ## Sandbox Constraints
 
@@ -25,5 +26,5 @@
 
 - Codex supports three autonomy levels: `suggest` (propose only), `auto-edit` (edit with confirmation), `full-auto` (autonomous execution).
 - Codex operates in a sandboxed environment — destructive operations are inherently limited.
-- Orchestration in Codex is capability-based: use native delegation when available, otherwise coordinate specialist postures sequentially.
+- Orchestration in Codex is native-subagent-first: delegate through `.codex/agents/*.toml` when the task benefits from a specialist handoff.
 - Keep workflow instructions self-contained since network access for external docs may be restricted.

@@ -76,12 +76,21 @@ const TECH_ARCHITECTURE_BLOCK_START_RE =
   /<!--\s*cbx:architecture:tech:start[^>]*-->/g;
 const TECH_ARCHITECTURE_BLOCK_END_RE =
   /<!--\s*cbx:architecture:tech:end\s*-->/g;
+const MEMORY_FOUNDATION_BLOCK_START_RE =
+  /<!--\s*cbx:memory:index:start[^>]*-->/g;
+const MEMORY_FOUNDATION_BLOCK_END_RE =
+  /<!--\s*cbx:memory:index:end\s*-->/g;
+const MEMORY_TOPIC_BLOCK_START_RE =
+  /<!--\s*cbx:memory:topic:start[^>]*-->/g;
+const MEMORY_TOPIC_BLOCK_END_RE =
+  /<!--\s*cbx:memory:topic:end\s*-->/g;
 const ROADMAP_FOUNDATION_BLOCK_START_RE =
   /<!--\s*cbx:roadmap:foundation:start[^>]*-->/g;
 const ROADMAP_FOUNDATION_BLOCK_END_RE =
   /<!--\s*cbx:roadmap:foundation:end\s*-->/g;
 const FOUNDATION_DOCS_DIR = path.join("docs", "foundation");
 const FOUNDATION_ADR_DIR = path.join(FOUNDATION_DOCS_DIR, "adr");
+const FOUNDATION_MEMORY_DIR = path.join(FOUNDATION_DOCS_DIR, "memory");
 const COPILOT_ALLOWED_SKILL_FRONTMATTER_KEYS = new Set([
   "compatibility",
   "description",
@@ -106,57 +115,59 @@ const WORKFLOW_PROFILES = {
   antigravity: {
     id: "antigravity",
     label: "Antigravity",
-    installsCustomAgents: true,
+    installsCustomAgents: false,
     project: {
-      workflowDirs: [".agent/workflows"],
-      agentDirs: [".agent/agents"],
-      skillDirs: [".agent/skills"],
+      workflowDirs: [],
+      agentDirs: [],
+      skillDirs: [".agents/skills"],
       commandDirs: [".gemini/commands"],
-      ruleFilesByPriority: [".agent/rules/GEMINI.md"],
+      ruleFilesByPriority: [".agents/rules/GEMINI.md"],
     },
     global: {
-      workflowDirs: [
-        "~/.gemini/antigravity/workflows",
-        "~/.gemini/antigravity/global_workflows",
-      ],
-      agentDirs: [
-        "~/.gemini/antigravity/agents",
-        "~/.gemini/antigravity/global_agents",
-      ],
+      workflowDirs: [],
+      agentDirs: [],
       skillDirs: [
         "~/.gemini/antigravity/skills",
-        "~/.gemini/antigravity/global_skills",
       ],
       commandDirs: ["~/.gemini/commands"],
       ruleFilesByPriority: ["~/.gemini/GEMINI.md"],
     },
-    detectorPaths: [".agent", ".agent/workflows", ".agent/rules/GEMINI.md"],
-    legacyDetectorPaths: [],
+    detectorPaths: [
+      ".agents/skills",
+      ".agents/rules/GEMINI.md",
+      ".gemini/commands",
+    ],
+    legacyDetectorPaths: [
+      ".agent",
+      ".agent/workflows",
+      ".agent/agents",
+      ".agent/skills",
+      ".agent/rules/GEMINI.md",
+    ],
     ruleHintName: "GEMINI.md",
   },
   codex: {
     id: "codex",
     label: "Codex",
-    installsCustomAgents: false,
+    installsCustomAgents: true,
     project: {
-      workflowDirs: [".agents/workflows"],
-      agentDirs: [".agents/agents"],
+      workflowDirs: [],
+      agentDirs: [".codex/agents"],
       skillDirs: [".agents/skills"],
       ruleFilesByPriority: ["AGENTS.md"],
     },
     global: {
-      workflowDirs: ["~/.agents/workflows"],
-      agentDirs: ["~/.agents/agents"],
+      workflowDirs: [],
+      agentDirs: ["~/.codex/agents"],
       skillDirs: ["~/.agents/skills"],
       ruleFilesByPriority: ["~/.codex/AGENTS.md"],
     },
     detectorPaths: [
-      ".agents",
-      ".agents/workflows",
+      ".codex/agents",
       ".agents/skills",
       "AGENTS.md",
     ],
-    legacyDetectorPaths: [".codex/skills"],
+    legacyDetectorPaths: [".agents/workflows", ".agents/agents", ".codex/skills"],
     ruleHintName: "AGENTS.md",
   },
   copilot: {
@@ -164,14 +175,14 @@ const WORKFLOW_PROFILES = {
     label: "GitHub Copilot",
     installsCustomAgents: true,
     project: {
-      workflowDirs: [".github/copilot/workflows"],
+      workflowDirs: [],
       agentDirs: [".github/agents"],
       skillDirs: [".github/skills"],
       promptDirs: [".github/prompts"],
       ruleFilesByPriority: [".github/copilot-instructions.md"],
     },
     global: {
-      workflowDirs: ["~/.copilot/workflows"],
+      workflowDirs: [],
       agentDirs: ["~/.copilot/agents"],
       skillDirs: ["~/.copilot/skills"],
       promptDirs: ["~/.copilot/prompts"],
@@ -193,14 +204,14 @@ const WORKFLOW_PROFILES = {
     label: "Claude Code",
     installsCustomAgents: true,
     project: {
-      workflowDirs: [".claude/workflows"],
+      workflowDirs: [],
       agentDirs: [".claude/agents"],
       skillDirs: [".claude/skills"],
       hookDirs: [".claude/hooks"],
       ruleFilesByPriority: ["CLAUDE.md"],
     },
     global: {
-      workflowDirs: ["~/.claude/workflows"],
+      workflowDirs: [],
       agentDirs: ["~/.claude/agents"],
       skillDirs: ["~/.claude/skills"],
       hookDirs: ["~/.claude/hooks"],
@@ -213,7 +224,7 @@ const WORKFLOW_PROFILES = {
       ".claude/rules",
       ".claude/settings.json",
     ],
-    legacyDetectorPaths: [],
+    legacyDetectorPaths: [".claude/workflows"],
     ruleHintName: "CLAUDE.md",
   },
   gemini: {
@@ -221,32 +232,29 @@ const WORKFLOW_PROFILES = {
     label: "Gemini CLI",
     installsCustomAgents: false,
     project: {
-      workflowDirs: [".gemini/workflows"],
-      skillDirs: [".gemini/skills"],
+      workflowDirs: [],
+      skillDirs: [],
       commandDirs: [".gemini/commands"],
       ruleFilesByPriority: [".gemini/GEMINI.md", "GEMINI.md"],
     },
     global: {
-      workflowDirs: ["~/.gemini/workflows"],
-      skillDirs: ["~/.gemini/skills"],
+      workflowDirs: [],
+      skillDirs: [],
       commandDirs: ["~/.gemini/commands"],
       ruleFilesByPriority: ["~/.gemini/GEMINI.md"],
     },
     detectorPaths: [
       ".gemini",
-      ".gemini/workflows",
       ".gemini/commands",
       ".gemini/GEMINI.md",
       "GEMINI.md",
     ],
-    legacyDetectorPaths: [],
+    legacyDetectorPaths: [".gemini/workflows", ".gemini/skills"],
     ruleHintName: "GEMINI.md",
   },
 };
 
 const PLATFORM_IDS = Object.keys(WORKFLOW_PROFILES);
-const CODEX_WORKFLOW_SKILL_PREFIX = "workflow-";
-const CODEX_AGENT_SKILL_PREFIX = "agent-";
 const TERMINAL_VERIFIER_PROVIDERS = ["codex", "gemini"];
 const DEFAULT_TERMINAL_VERIFIER = "codex";
 const POSTMAN_API_KEY_ENV_VAR = "POSTMAN_API_KEY_DEFAULT";
@@ -282,6 +290,7 @@ const RESERVED_CREDENTIAL_PROFILE_NAMES = new Set(["all"]);
 const CREDENTIAL_SERVICES = new Set(["postman", "stitch"]);
 const MCP_RUNTIMES = new Set(["docker", "local"]);
 const ARCHITECTURE_BUILD_PLATFORMS = new Set([
+  "antigravity",
   "codex",
   "claude",
   "gemini",
@@ -838,10 +847,12 @@ function toPosixPath(value) {
 }
 
 function getAntigravityTerminalIntegrationDir(profilePaths) {
-  return path.join(
-    path.dirname(profilePaths.workflowsDir),
-    "terminal-integration",
-  );
+  const baseDir =
+    profilePaths.rulesDir ||
+    profilePaths.skillsDir ||
+    profilePaths.commandsDir ||
+    profilePaths.rootDir;
+  return path.join(path.dirname(baseDir), "terminal-integration");
 }
 
 function buildTerminalVerifierDefaultPrompt() {
@@ -1333,7 +1344,7 @@ function buildEngineeringArchitectureSection(snapshot) {
     ...profile.testingStrategy.map((rule) => `  - ${rule}`),
     "- Doc refresh policy:",
     "  - Update these managed sections when architecture, scale, boundaries, design-system rules, or testing strategy changes.",
-    `  - For non-trivial work, read ${FOUNDATION_DOCS_DIR}/PRODUCT.md, ENGINEERING_RULES.md, ${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md, and ${FOUNDATION_DOCS_DIR}/TECH.md in that order when they exist.`,
+    `  - For non-trivial work, read ${FOUNDATION_DOCS_DIR}/MEMORY.md first. Then load ${FOUNDATION_DOCS_DIR}/PRODUCT.md, ENGINEERING_RULES.md, ${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md, ${FOUNDATION_DOCS_DIR}/TECH.md, ${FOUNDATION_MEMORY_DIR}/*, and ADRs only when the active task needs that deeper context.`,
     "<!-- cbx:architecture:rules:end -->",
     "",
   ].join("\n");
@@ -1460,7 +1471,7 @@ function buildRoadmapFoundationSection(snapshot, specRoots = []) {
     "- Use this section for medium-term scaling themes, major migrations, or cross-team architecture investments.",
     "",
     "### Backbone Maintenance",
-    `- Keep ${FOUNDATION_DOCS_DIR}/PRODUCT.md, ${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md, ENGINEERING_RULES.md, and ${FOUNDATION_DOCS_DIR}/TECH.md aligned when direction or structure changes.`,
+    `- Keep ${FOUNDATION_DOCS_DIR}/MEMORY.md, ${FOUNDATION_DOCS_DIR}/PRODUCT.md, ${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md, ENGINEERING_RULES.md, and ${FOUNDATION_DOCS_DIR}/TECH.md aligned when direction or structure changes.`,
     "- Link major roadmap themes back to specs and ADRs instead of burying them in chat-only planning.",
     "<!-- cbx:roadmap:foundation:end -->",
     "",
@@ -1545,15 +1556,17 @@ function buildEngineeringRulesTemplate() {
     "- skill-name, workflow-name, or agent-name",
     "- or: none",
     "",
-    "## 9) Keep TECH.md Fresh",
+    "## 9) Keep Foundation Docs Fresh",
     "",
-    "- `TECH.md` is generated from current codebase reality.",
-    "- Re-run `cbx rules tech-md --overwrite` after major stack or architecture changes.",
+    "- `docs/foundation/MEMORY.md` is the AI entrypoint for non-trivial work.",
+    "- Read `docs/foundation/MEMORY.md` first, then load deeper foundation docs only when the active task needs them.",
+    "- Re-run `cbx build architecture --platform <antigravity|codex|claude|gemini|copilot>` after major product, architecture, runtime, or tooling changes.",
+    "- Re-run `cbx rules tech-md --overwrite` only when you specifically need the legacy root-level `TECH.md` snapshot refreshed.",
     "",
     "<!-- cbx:architecture:rules:start version=1 profile=bootstrap -->",
     "## 10) Architecture Contract (auto-managed)",
     "",
-    "- Declared style: bootstrap placeholder. Re-run `cbx build architecture --platform <codex|claude|gemini|copilot>` to refresh this contract from the repo.",
+    "- Declared style: bootstrap placeholder. Re-run `cbx build architecture --platform <antigravity|codex|claude|gemini|copilot>` to refresh this contract from the repo.",
     "- Design-system source of truth: bootstrap placeholder.",
     "- Dependency direction rules:",
     "  - Replace this placeholder with the managed architecture block when architecture generation runs.",
@@ -1609,7 +1622,7 @@ function buildProductBuildSkeleton() {
     "This file is managed by `cbx build architecture`.",
     "",
     "<!-- cbx:product:foundation:start version=1 profile=uninitialized -->",
-    "Replace this managed section by running `cbx build architecture --platform <codex|claude|gemini|copilot>`.",
+    "Replace this managed section by running `cbx build architecture --platform <antigravity|codex|claude|gemini|copilot>`.",
     "<!-- cbx:product:foundation:end -->",
     "",
   ].join("\n");
@@ -1622,7 +1635,7 @@ function buildArchitectureBuildSkeleton() {
     "This file is managed by `cbx build architecture`.",
     "",
     "<!-- cbx:architecture:doc:start version=1 profile=uninitialized -->",
-    "Replace this managed section by running `cbx build architecture --platform <codex|claude|gemini|copilot>`.",
+    "Replace this managed section by running `cbx build architecture --platform <antigravity|codex|claude|gemini|copilot>`.",
     "<!-- cbx:architecture:doc:end -->",
     "",
   ].join("\n");
@@ -1635,8 +1648,34 @@ function buildTechBuildSkeleton() {
     "This file is managed by `cbx build architecture`.",
     "",
     "<!-- cbx:architecture:tech:start version=1 snapshot=uninitialized -->",
-    "Replace this managed section by running `cbx build architecture --platform <codex|claude|gemini|copilot>`.",
+    "Replace this managed section by running `cbx build architecture --platform <antigravity|codex|claude|gemini|copilot>`.",
     "<!-- cbx:architecture:tech:end -->",
+    "",
+  ].join("\n");
+}
+
+function buildMemoryBuildSkeleton() {
+  return [
+    "# Memory",
+    "",
+    "This file is managed by `cbx build architecture` as the durable AI entrypoint for the project.",
+    "",
+    "<!-- cbx:memory:index:start version=1 profile=uninitialized -->",
+    "Replace this managed section by running `cbx build architecture --platform <antigravity|codex|claude|gemini|copilot>`.",
+    "<!-- cbx:memory:index:end -->",
+    "",
+  ].join("\n");
+}
+
+function buildMemoryTopicSkeleton(title, topicId) {
+  return [
+    `# ${title}`,
+    "",
+    "This file is managed by `cbx build architecture`.",
+    "",
+    `<!-- cbx:memory:topic:start version=1 topic=${topicId} profile=uninitialized -->`,
+    "Replace this managed section by running `cbx build architecture`.",
+    "<!-- cbx:memory:topic:end -->",
     "",
   ].join("\n");
 }
@@ -1695,6 +1734,7 @@ function buildAdrTemplate() {
 
 function buildEngineeringRulesManagedBlock({
   platform,
+  memoryFilePath,
   productFilePath,
   architectureFilePath,
   engineeringRulesFilePath,
@@ -1702,6 +1742,7 @@ function buildEngineeringRulesManagedBlock({
   roadmapFilePath,
   ruleFilePath,
 }) {
+  const memoryRef = toPosixPath(path.resolve(memoryFilePath));
   const productRef = toPosixPath(path.resolve(productFilePath));
   const architectureRef = toPosixPath(path.resolve(architectureFilePath));
   const engineeringRef = toPosixPath(path.resolve(engineeringRulesFilePath));
@@ -1711,6 +1752,9 @@ function buildEngineeringRulesManagedBlock({
 
   const supportsAtImport = platform === "claude" || platform === "gemini";
   const ruleFileDir = path.dirname(path.resolve(ruleFilePath));
+  const relMemory = toPosixPath(
+    path.relative(ruleFileDir, path.resolve(memoryFilePath)),
+  );
   const relProduct = toPosixPath(
     path.relative(ruleFileDir, path.resolve(productFilePath)),
   );
@@ -1724,10 +1768,12 @@ function buildEngineeringRulesManagedBlock({
   const importLines = supportsAtImport
     ? [
         "",
-        "Foundation docs (auto-imported into context):",
-        `@${relProduct}`,
-        `@${relArchitecture}`,
-        `@${relTech}`,
+        "Foundation memory index (auto-imported into context):",
+        `@${relMemory}`,
+        "Load deeper docs from MEMORY.md only when needed:",
+        `- ${relProduct}`,
+        `- ${relArchitecture}`,
+        `- ${relTech}`,
       ]
     : [];
 
@@ -1736,6 +1782,7 @@ function buildEngineeringRulesManagedBlock({
     "## Engineering Guardrails (auto-managed)",
     "Apply these before planning, coding, review, and release:",
     "",
+    `- Shared memory index: \`${memoryRef}\``,
     `- Product backbone: \`${productRef}\``,
     `- Accepted architecture: \`${architectureRef}\``,
     `- Required baseline: \`${engineeringRef}\``,
@@ -1749,11 +1796,12 @@ function buildEngineeringRulesManagedBlock({
     "2. Keep architecture simple (KISS) and avoid speculative work (YAGNI).",
     "3. Apply SOLID pragmatically to reduce change risk, not add ceremony.",
     "4. Use clear naming with focused responsibilities and explicit boundaries.",
-    `5. For non-trivial work, read ${FOUNDATION_DOCS_DIR}/PRODUCT.md, ENGINEERING_RULES.md, ${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md, and ${FOUNDATION_DOCS_DIR}/TECH.md in that order when they exist before planning or implementation. Check ${FOUNDATION_DOCS_DIR}/PRODUCT.md for domain glossary and ${FOUNDATION_DOCS_DIR}/TECH.md for build/validation commands.`,
-    "6. Require validation evidence (lint/types/tests) before merge.",
-    "7. Use Decision Log response style.",
-    "8. Every Decision Log must include a `Skills Used` section listing skill, workflow, or agent names.",
-    "9. If no skill loaded, `Skills Used: none` is mandatory.",
+    `5. For non-trivial work, read ${FOUNDATION_DOCS_DIR}/MEMORY.md first. Then load ${FOUNDATION_DOCS_DIR}/PRODUCT.md, ${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md, ${FOUNDATION_DOCS_DIR}/TECH.md, ${FOUNDATION_MEMORY_DIR}/*, and ADRs only when the active task needs that deeper context. Check ${FOUNDATION_DOCS_DIR}/PRODUCT.md for domain glossary and ${FOUNDATION_DOCS_DIR}/TECH.md for build/validation commands.`,
+    "6. Use MEMORY.md's load map and consumer notes to decide which deeper docs the active workflow, agent, or skill should consult.",
+    "7. Require validation evidence (lint/types/tests) before merge.",
+    "8. Use Decision Log response style.",
+    "9. Every Decision Log must include a `Skills Used` section listing skill, workflow, or agent names.",
+    "10. If no skill loaded, `Skills Used: none` is mandatory.",
     "",
     "<!-- cbx:engineering:auto:end -->",
   ].join("\n");
@@ -1874,6 +1922,7 @@ async function upsertEngineeringRulesFile({
 async function upsertEngineeringRulesBlock({
   ruleFilePath,
   platform,
+  memoryFilePath,
   productFilePath,
   architectureFilePath,
   engineeringRulesFilePath,
@@ -1883,6 +1932,7 @@ async function upsertEngineeringRulesBlock({
 }) {
   const block = buildEngineeringRulesManagedBlock({
     platform,
+    memoryFilePath,
     productFilePath,
     architectureFilePath,
     engineeringRulesFilePath,
@@ -2140,6 +2190,12 @@ async function ensureArchitectureBuildScaffold({
   const productPath = path.join(foundationRoot, "PRODUCT.md");
   const architectureDocPath = path.join(foundationRoot, "ARCHITECTURE.md");
   const techMdPath = path.join(foundationRoot, "TECH.md");
+  const memoryPath = path.join(foundationRoot, "MEMORY.md");
+  const memoryDir = path.join(workspaceRoot, FOUNDATION_MEMORY_DIR);
+  const domainMemoryPath = path.join(memoryDir, "domain.md");
+  const runtimeMemoryPath = path.join(memoryDir, "runtime.md");
+  const integrationsMemoryPath = path.join(memoryDir, "integrations.md");
+  const debuggingMemoryPath = path.join(memoryDir, "debugging.md");
   const adrDir = path.join(workspaceRoot, FOUNDATION_ADR_DIR);
   const adrReadmePath = path.join(adrDir, "README.md");
   const adrTemplatePath = path.join(adrDir, "0000-template.md");
@@ -2149,7 +2205,7 @@ async function ensureArchitectureBuildScaffold({
     initialContent: `${buildProductBuildSkeleton()}\n`,
     block: [
       "<!-- cbx:product:foundation:start version=1 profile=uninitialized -->",
-      "Replace this managed section by running `cbx build architecture --platform <codex|claude|gemini|copilot>`.",
+      "Replace this managed section by running `cbx build architecture --platform <antigravity|codex|claude|gemini|copilot>`.",
       "<!-- cbx:product:foundation:end -->",
       "",
     ].join("\n"),
@@ -2163,7 +2219,7 @@ async function ensureArchitectureBuildScaffold({
     initialContent: `${buildArchitectureBuildSkeleton()}\n`,
     block: [
       "<!-- cbx:architecture:doc:start version=1 profile=uninitialized -->",
-      "Replace this managed section by running `cbx build architecture --platform <codex|claude|gemini|copilot>`.",
+      "Replace this managed section by running `cbx build architecture --platform <antigravity|codex|claude|gemini|copilot>`.",
       "<!-- cbx:architecture:doc:end -->",
       "",
     ].join("\n"),
@@ -2177,12 +2233,82 @@ async function ensureArchitectureBuildScaffold({
     initialContent: `${buildTechBuildSkeleton()}\n`,
     block: [
       "<!-- cbx:architecture:tech:start version=1 snapshot=uninitialized -->",
-      "Replace this managed section by running `cbx build architecture --platform <codex|claude|gemini|copilot>`.",
+      "Replace this managed section by running `cbx build architecture --platform <antigravity|codex|claude|gemini|copilot>`.",
       "<!-- cbx:architecture:tech:end -->",
       "",
     ].join("\n"),
     startPattern: TECH_ARCHITECTURE_BLOCK_START_RE,
     endPattern: TECH_ARCHITECTURE_BLOCK_END_RE,
+    dryRun,
+  });
+
+  const memoryResult = await upsertTaggedSectionInFile({
+    targetPath: memoryPath,
+    initialContent: `${buildMemoryBuildSkeleton()}\n`,
+    block: [
+      "<!-- cbx:memory:index:start version=1 profile=uninitialized -->",
+      "Replace this managed section by running `cbx build architecture --platform <antigravity|codex|claude|gemini|copilot>`.",
+      "<!-- cbx:memory:index:end -->",
+      "",
+    ].join("\n"),
+    startPattern: MEMORY_FOUNDATION_BLOCK_START_RE,
+    endPattern: MEMORY_FOUNDATION_BLOCK_END_RE,
+    dryRun,
+  });
+
+  const domainMemoryResult = await upsertTaggedSectionInFile({
+    targetPath: domainMemoryPath,
+    initialContent: `${buildMemoryTopicSkeleton("Domain Memory", "domain")}\n`,
+    block: [
+      "<!-- cbx:memory:topic:start version=1 topic=domain profile=uninitialized -->",
+      "Replace this managed section by running `cbx build architecture`.",
+      "<!-- cbx:memory:topic:end -->",
+      "",
+    ].join("\n"),
+    startPattern: MEMORY_TOPIC_BLOCK_START_RE,
+    endPattern: MEMORY_TOPIC_BLOCK_END_RE,
+    dryRun,
+  });
+
+  const runtimeMemoryResult = await upsertTaggedSectionInFile({
+    targetPath: runtimeMemoryPath,
+    initialContent: `${buildMemoryTopicSkeleton("Runtime Memory", "runtime")}\n`,
+    block: [
+      "<!-- cbx:memory:topic:start version=1 topic=runtime profile=uninitialized -->",
+      "Replace this managed section by running `cbx build architecture`.",
+      "<!-- cbx:memory:topic:end -->",
+      "",
+    ].join("\n"),
+    startPattern: MEMORY_TOPIC_BLOCK_START_RE,
+    endPattern: MEMORY_TOPIC_BLOCK_END_RE,
+    dryRun,
+  });
+
+  const integrationsMemoryResult = await upsertTaggedSectionInFile({
+    targetPath: integrationsMemoryPath,
+    initialContent: `${buildMemoryTopicSkeleton("Integrations Memory", "integrations")}\n`,
+    block: [
+      "<!-- cbx:memory:topic:start version=1 topic=integrations profile=uninitialized -->",
+      "Replace this managed section by running `cbx build architecture`.",
+      "<!-- cbx:memory:topic:end -->",
+      "",
+    ].join("\n"),
+    startPattern: MEMORY_TOPIC_BLOCK_START_RE,
+    endPattern: MEMORY_TOPIC_BLOCK_END_RE,
+    dryRun,
+  });
+
+  const debuggingMemoryResult = await upsertTaggedSectionInFile({
+    targetPath: debuggingMemoryPath,
+    initialContent: `${buildMemoryTopicSkeleton("Debugging Memory", "debugging")}\n`,
+    block: [
+      "<!-- cbx:memory:topic:start version=1 topic=debugging profile=uninitialized -->",
+      "Replace this managed section by running `cbx build architecture`.",
+      "<!-- cbx:memory:topic:end -->",
+      "",
+    ].join("\n"),
+    startPattern: MEMORY_TOPIC_BLOCK_START_RE,
+    endPattern: MEMORY_TOPIC_BLOCK_END_RE,
     dryRun,
   });
 
@@ -2203,11 +2329,21 @@ async function ensureArchitectureBuildScaffold({
     productPath,
     architectureDocPath,
     techMdPath,
+    memoryPath,
+    domainMemoryPath,
+    runtimeMemoryPath,
+    integrationsMemoryPath,
+    debuggingMemoryPath,
     adrReadmePath,
     adrTemplatePath,
     productResult,
     architectureDocResult,
     techResult,
+    memoryResult,
+    domainMemoryResult,
+    runtimeMemoryResult,
+    integrationsMemoryResult,
+    debuggingMemoryResult,
     adrReadmeResult,
     adrTemplateResult,
   };
@@ -3797,9 +3933,9 @@ async function resolveProfilePaths(profileId, scope, cwd = process.cwd()) {
     workflowsDir: await resolvePreferredDir(workflowDirs),
     agentsDir: await resolvePreferredDir(agentDirs),
     skillsDir: await resolvePreferredDir(skillDirs),
-    commandsDir: commandDirs[0] ? expandPath(commandDirs[0], cwd) : null,
-    promptsDir: promptDirs[0] ? expandPath(promptDirs[0], cwd) : null,
-    hooksDir: hookDirs[0] ? expandPath(hookDirs[0], cwd) : null,
+    commandsDir: await resolvePreferredDir(commandDirs),
+    promptsDir: await resolvePreferredDir(promptDirs),
+    hooksDir: await resolvePreferredDir(hookDirs),
     ruleFilesByPriority: cfg.ruleFilesByPriority.map((filePath) =>
       expandPath(filePath, cwd),
     ),
@@ -4430,51 +4566,8 @@ function normalizeMarkdownId(fileName) {
     .replace(/^-|-$/g, "");
 }
 
-function yamlSingleQuoted(value) {
-  return `'${String(value || "").replace(/'/g, "''")}'`;
-}
-
 function escapeRegExp(value) {
   return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-function rewriteCodexWorkflowAgentReferences(sourceBody, agentIds) {
-  if (!sourceBody || !Array.isArray(agentIds) || agentIds.length === 0)
-    return normalizeCodexWrapperMentions(sourceBody);
-
-  let rewritten = sourceBody;
-  const sortedAgentIds = unique(agentIds.filter(Boolean)).sort(
-    (a, b) => b.length - a.length,
-  );
-
-  for (const agentId of sortedAgentIds) {
-    const agentPattern = new RegExp(
-      `(^|[^A-Za-z0-9_-])@${escapeRegExp(agentId)}(?=$|[^A-Za-z0-9_-])`,
-      "g",
-    );
-    rewritten = rewritten.replace(
-      agentPattern,
-      (_match, prefix) => `${prefix}$${CODEX_AGENT_SKILL_PREFIX}${agentId}`,
-    );
-  }
-
-  return normalizeCodexWrapperMentions(rewritten);
-}
-
-function rewriteCodexAgentSkillReferences(sourceBody) {
-  if (!sourceBody) return sourceBody;
-  // Agent source files live under platforms/*/agents, but wrapper skills live
-  // under .agents/skills/agent-*. Rebase ../skills/<id> links accordingly.
-  const rebased = sourceBody.replace(/\(\.\.\/skills\//g, "(../");
-  return normalizeCodexWrapperMentions(rebased);
-}
-
-function normalizeCodexWrapperMentions(sourceBody) {
-  if (!sourceBody) return sourceBody;
-  return sourceBody.replace(
-    /`\$(workflow|agent)-([A-Za-z0-9_-]+|\*)`/g,
-    (_match, kind, id) => `$${kind}-${id}`,
-  );
 }
 
 async function parseWorkflowMetadata(filePath) {
@@ -4521,217 +4614,6 @@ async function parseAgentMetadata(filePath) {
   };
 }
 
-function buildCodexWorkflowWrapperSkillMarkdown(wrapperSkillId, workflow) {
-  const description = `Callable Codex wrapper for ${workflow.command}: ${workflow.description}`;
-  const sourceBody =
-    workflow.body?.trim() || "No source workflow content found.";
-
-  return [
-    "---",
-    `name: ${wrapperSkillId}`,
-    `description: ${yamlSingleQuoted(description)}`,
-    "metadata:",
-    "  source: cubis-foundry",
-    "  wrapper: workflow",
-    "  platform: codex",
-    `  workflow-id: ${yamlSingleQuoted(workflow.id)}`,
-    `  workflow-command: ${yamlSingleQuoted(workflow.command)}`,
-    "---",
-    "",
-    `# Workflow Compatibility Alias: ${workflow.command}`,
-    "",
-    `Compatibility alias for \`${workflow.command}\` in Codex. Prefer the direct workflow route first and use this wrapper only when older installs or prompts mention $${wrapperSkillId}.`,
-    "",
-    "## Invocation Contract",
-    "1. Resolve the workflow route first; do not use this alias as a substitute for skill discovery.",
-    "2. Follow the sequence and guardrails in the source instructions below.",
-    "3. Produce actionable output and call out assumptions before edits.",
-    "",
-    "## Source Workflow Instructions",
-    "",
-    sourceBody,
-    "",
-  ].join("\n");
-}
-
-function buildCodexAgentWrapperSkillMarkdown(wrapperSkillId, agent) {
-  const description = `Callable Codex wrapper for @${agent.id}: ${agent.description}`;
-  const sourceBody = agent.body?.trim() || "No source agent content found.";
-  const relatedSkillsLine =
-    agent.skills.length > 0
-      ? `Related skills from source agent: ${agent.skills.join(", ")}`
-      : "Related skills from source agent: (none listed)";
-
-  return [
-    "---",
-    `name: ${wrapperSkillId}`,
-    `description: ${yamlSingleQuoted(description)}`,
-    "metadata:",
-    "  source: cubis-foundry",
-    "  wrapper: agent",
-    "  platform: codex",
-    `  agent-id: ${yamlSingleQuoted(agent.id)}`,
-    "---",
-    "",
-    `# Agent Compatibility Alias: @${agent.id}`,
-    "",
-    `Compatibility alias for @${agent.id} in Codex. Prefer the direct @agent route first and use this wrapper only when older installs or prompts mention $${wrapperSkillId}.`,
-    "",
-    "## Invocation Contract",
-    "1. Resolve the agent route first; do not use this alias as a substitute for skill discovery.",
-    "2. Adopt the role and constraints defined in the source agent content.",
-    "3. Apply domain heuristics and escalation rules before coding.",
-    "4. Ask clarifying questions when requirements are ambiguous.",
-    "",
-    `- Source agent name: ${agent.name}`,
-    `- Source agent description: ${agent.description}`,
-    `- ${relatedSkillsLine}`,
-    "",
-    "## Source Agent Instructions",
-    "",
-    sourceBody,
-    "",
-  ].join("\n");
-}
-
-async function writeGeneratedSkillArtifact({
-  destinationDir,
-  content,
-  overwrite,
-  dryRun = false,
-}) {
-  const exists = await pathExists(destinationDir);
-  if (exists && !overwrite) {
-    return { action: dryRun ? "would-skip" : "skipped", path: destinationDir };
-  }
-
-  if (!dryRun && exists && overwrite) {
-    await rm(destinationDir, { recursive: true, force: true });
-  }
-
-  if (!dryRun) {
-    await mkdir(destinationDir, { recursive: true });
-    await writeFile(path.join(destinationDir, "SKILL.md"), content, "utf8");
-  }
-
-  if (dryRun) {
-    return {
-      action: exists ? "would-replace" : "would-install",
-      path: destinationDir,
-    };
-  }
-
-  return { action: exists ? "replaced" : "installed", path: destinationDir };
-}
-
-function buildCodexWrapperSkillIds(platformSpec) {
-  const workflowIds = (platformSpec.workflows || []).map((fileName) => {
-    const id = normalizeMarkdownId(path.basename(fileName));
-    return `${CODEX_WORKFLOW_SKILL_PREFIX}${id}`;
-  });
-
-  const agentIds = (platformSpec.agents || []).map((fileName) => {
-    const id = normalizeMarkdownId(path.basename(fileName));
-    return `${CODEX_AGENT_SKILL_PREFIX}${id}`;
-  });
-
-  return unique([...workflowIds, ...agentIds]);
-}
-
-async function generateCodexWrapperSkills({
-  platformRoot,
-  platformSpec,
-  skillsDir,
-  overwrite,
-  dryRun = false,
-}) {
-  const installed = [];
-  const skipped = [];
-  const artifacts = [];
-  const generated = [];
-  const codexAgentIds = (platformSpec.agents || []).map((fileName) =>
-    normalizeMarkdownId(path.basename(fileName)),
-  );
-
-  for (const workflowFile of platformSpec.workflows || []) {
-    const source = path.join(platformRoot, "workflows", workflowFile);
-    if (!(await pathExists(source))) {
-      throw new Error(
-        `Missing workflow source file for wrapper generation: ${source}`,
-      );
-    }
-
-    const metadata = await parseWorkflowMetadata(source);
-    const raw = await readFile(source, "utf8");
-    const sourceBody = extractFrontmatter(raw).body.trim();
-    const rewrittenBody = rewriteCodexWorkflowAgentReferences(
-      sourceBody,
-      codexAgentIds,
-    );
-    const wrapperSkillId = `${CODEX_WORKFLOW_SKILL_PREFIX}${metadata.id}`;
-    const destinationDir = path.join(skillsDir, wrapperSkillId);
-    const content = buildCodexWorkflowWrapperSkillMarkdown(wrapperSkillId, {
-      ...metadata,
-      body: rewrittenBody,
-    });
-
-    const result = await writeGeneratedSkillArtifact({
-      destinationDir,
-      content,
-      overwrite,
-      dryRun,
-    });
-
-    artifacts.push(destinationDir);
-    generated.push({
-      kind: "workflow",
-      id: metadata.id,
-      skillId: wrapperSkillId,
-    });
-    if (result.action === "skipped" || result.action === "would-skip")
-      skipped.push(destinationDir);
-    else installed.push(destinationDir);
-  }
-
-  for (const agentFile of platformSpec.agents || []) {
-    const source = path.join(platformRoot, "agents", agentFile);
-    if (!(await pathExists(source))) {
-      throw new Error(
-        `Missing agent source file for wrapper generation: ${source}`,
-      );
-    }
-
-    const metadata = await parseAgentMetadata(source);
-    const rewrittenBody = rewriteCodexAgentSkillReferences(metadata.body);
-    const wrapperSkillId = `${CODEX_AGENT_SKILL_PREFIX}${metadata.id}`;
-    const destinationDir = path.join(skillsDir, wrapperSkillId);
-    const content = buildCodexAgentWrapperSkillMarkdown(wrapperSkillId, {
-      ...metadata,
-      body: rewrittenBody,
-    });
-
-    const result = await writeGeneratedSkillArtifact({
-      destinationDir,
-      content,
-      overwrite,
-      dryRun,
-    });
-
-    artifacts.push(destinationDir);
-    generated.push({ kind: "agent", id: metadata.id, skillId: wrapperSkillId });
-    if (result.action === "skipped" || result.action === "would-skip")
-      skipped.push(destinationDir);
-    else installed.push(destinationDir);
-  }
-
-  return {
-    installed,
-    skipped,
-    artifacts,
-    generated,
-  };
-}
-
 async function resolvePlatformAgentSkillDependencies({
   platformRoot,
   platformSpec,
@@ -4753,15 +4635,51 @@ async function collectInstalledWorkflows(
   scope,
   cwd = process.cwd(),
 ) {
-  // Global install mode keeps workflows/agents in workspace paths.
-  // Index using artifact-aware paths so sync-rules reflects installed workflows.
+  const workflows = [];
+  const state = await readState(scope, cwd);
+  const key = targetStateKey(profileId, scope);
+  const bundleEntries = Object.entries(state.targets?.[key]?.bundles || {});
+  const seen = new Set();
+
+  for (const [bundleId] of bundleEntries) {
+    const sharedWorkflowsDir = path.join(
+      agentAssetsRoot(),
+      "workflows",
+      bundleId,
+      "shared",
+      "workflows",
+    );
+    if (!(await pathExists(sharedWorkflowsDir))) continue;
+    const entries = await readdir(sharedWorkflowsDir, {
+      withFileTypes: true,
+    });
+    for (const entry of entries) {
+      if (
+        !entry.isFile() ||
+        !entry.name.endsWith(".md") ||
+        entry.name.startsWith(".")
+      ) {
+        continue;
+      }
+      const filePath = path.join(sharedWorkflowsDir, entry.name);
+      const metadata = await parseWorkflowMetadata(filePath);
+      if (seen.has(metadata.id)) continue;
+      seen.add(metadata.id);
+      workflows.push(metadata);
+    }
+  }
+
+  if (workflows.length > 0) {
+    return workflows.sort((a, b) => a.command.localeCompare(b.command));
+  }
+
   const profilePaths = await resolveArtifactProfilePaths(profileId, scope, cwd);
-  if (!(await pathExists(profilePaths.workflowsDir))) return [];
+  if (!profilePaths.workflowsDir || !(await pathExists(profilePaths.workflowsDir)))
+    return [];
 
   const entries = await readdir(profilePaths.workflowsDir, {
     withFileTypes: true,
   });
-  const workflows = [];
 
   for (const entry of entries) {
     if (
@@ -4838,9 +4756,8 @@ function buildManagedWorkflowBlock(platformId, workflows) {
     lines.push("Prefer direct route identifiers first:");
     lines.push("- Workflows: `/workflow-name`");
     lines.push("- Agents: `@agent-name`");
-    lines.push(
-      "- Compatibility aliases remain available: `$workflow-*`, `$agent-*`",
-    );
+    lines.push("- Native agents: `.codex/agents/*.toml`");
+    lines.push("- Native workflow skills: `.agents/skills/<workflow-id>/SKILL.md`");
     lines.push("");
 
     if (workflows.length === 0) {
@@ -4861,9 +4778,7 @@ function buildManagedWorkflowBlock(platformId, workflows) {
       "1. If the user names `/workflow` or `@agent`, use that route directly.",
     );
     lines.push("2. Else map intent to one primary workflow.");
-    lines.push(
-      "3. Treat `$workflow-*` / `$agent-*` as compatibility aliases only.",
-    );
+    lines.push("3. Load supporting skills only after route selection.");
     lines.push("");
     lines.push("<!-- cbx:workflows:auto:end -->");
     return lines.join("\n");
@@ -4871,46 +4786,31 @@ function buildManagedWorkflowBlock(platformId, workflows) {
 
   if (platformId === "copilot") {
     lines.push("Prefer native Copilot route surfaces first:");
-    lines.push("- Workflow prompts: `.github/prompts/workflow-*.prompt.md`");
-    lines.push("- Workflow files: `.github/copilot/workflows/*.md`");
+    lines.push("- Workflow prompts: `.github/prompts/*.prompt.md`");
+    lines.push("- Agents: `.github/agents/*.md`");
+    lines.push("- Skills: `.github/skills/<skill>/SKILL.md`");
     lines.push("- Agents: `@agent-name`");
     lines.push("- Workspace-first MCP: `.vscode/mcp.json`");
-    lines.push(
-      "- Do not use `$workflow-*` / `$agent-*` as the primary route surface here; those are Codex compatibility aliases.",
-    );
-    lines.push(
-      "- `.github/skills` is installed by default, but route through workflows and agents before loading skills.",
-    );
     lines.push("");
   } else if (platformId === "antigravity") {
     lines.push("Prefer native Antigravity route surfaces first:");
     lines.push("- Commands: `.gemini/commands/*.toml`");
-    lines.push("- Workflow files: `.agent/workflows/*.md`");
-    lines.push("- Agents: `@agent-name`");
-    lines.push(
-      "- Do not use `$workflow-*` / `$agent-*` as the primary route surface here; those are Codex compatibility aliases.",
-    );
+    lines.push("- Rules: `.agents/rules/GEMINI.md`");
+    lines.push("- Skills: `.agents/skills/<skill>/SKILL.md`");
+    lines.push("- Agent routes compile to native command/rule flows here.");
     lines.push("");
   } else if (platformId === "claude") {
     lines.push("Prefer native Claude Code route surfaces first:");
     lines.push("- Rules: `.claude/rules/*.md`");
-    lines.push("- Workflow files: `.claude/workflows/*.md`");
+    lines.push("- Skills: `.claude/skills/<skill>/SKILL.md`");
+    lines.push("- Agents: `.claude/agents/*.md`");
     lines.push("- Memory: `CLAUDE.md`");
-    lines.push(
-      "- Do not use `$workflow-*` / `$agent-*` as the primary route surface here; those are Codex compatibility aliases.",
-    );
     lines.push("");
   } else if (platformId === "gemini") {
     lines.push("Prefer native Gemini route surfaces first:");
     lines.push("- Commands: `.gemini/commands/*.toml`");
-    lines.push("- Workflow files: `.gemini/workflows/*.md`");
     lines.push("- Rules: `.gemini/GEMINI.md`");
-    lines.push(
-      "- Specialists are inline postures here, not standalone agent files.",
-    );
-    lines.push(
-      "- Do not use `$workflow-*` / `$agent-*` as the primary route surface here; those are Codex compatibility aliases.",
-    );
+    lines.push("- Route specialists through commands and rule guidance.");
     lines.push("");
   }
 
@@ -4937,39 +4837,21 @@ function buildManagedWorkflowBlock(platformId, workflows) {
   lines.push("");
   lines.push("Selection policy:");
   if (platformId === "copilot") {
-    lines.push(
-      "1. Match explicit workflow prompt, workflow, or `@agent` first.",
-    );
-    lines.push(
-      "2. Else match user intent to one primary workflow and reuse the matching prompt file when available.",
-    );
-    lines.push(
-      "3. Treat `$workflow-*` / `$agent-*` as Codex compatibility aliases, not as the primary route surface here.",
-    );
+    lines.push("1. Match explicit workflow prompt or `@agent` first.");
+    lines.push("2. Else match user intent to one primary workflow and reuse the matching prompt file.");
+    lines.push("3. Use skill_search only when the best workflow or agent route is unclear.");
   } else if (platformId === "antigravity") {
-    lines.push(
-      "1. Match explicit Gemini command, workflow, or `@agent` first.",
-    );
-    lines.push(
-      "2. Else match user intent to one primary workflow and use the matching command file when available.",
-    );
-    lines.push(
-      "3. Treat `$workflow-*` / `$agent-*` as Codex compatibility aliases, not as the primary route surface here.",
-    );
+    lines.push("1. Match explicit Gemini command first.");
+    lines.push("2. Else match user intent to one primary workflow and use the matching command file.");
+    lines.push("3. Use skill_search only when workflow intent is unclear.");
   } else if (platformId === "claude") {
-    lines.push("1. Match explicit workflow or scoped rule first.");
+    lines.push("1. Match explicit workflow skill or `@agent` first.");
     lines.push("2. Else match user intent to one primary workflow.");
-    lines.push(
-      "3. Treat `$workflow-*` / `$agent-*` as Codex compatibility aliases, not as the primary route surface here.",
-    );
+    lines.push("3. Use skill_search only when workflow intent is unclear.");
   } else if (platformId === "gemini") {
-    lines.push("1. Match explicit Gemini command or workflow first.");
-    lines.push(
-      "2. Else match user intent to one primary workflow and use the matching command file when available.",
-    );
-    lines.push(
-      "3. Treat specialists as inline postures defined by GEMINI.md, not separate agent files.",
-    );
+    lines.push("1. Match explicit Gemini command first.");
+    lines.push("2. Else match user intent to one primary workflow and use the matching command file.");
+    lines.push("3. Keep specialists inside the command plan; there are no standalone agent files.");
   } else {
     lines.push("1. Match explicit slash command first.");
     lines.push(
@@ -5196,7 +5078,24 @@ async function syncRulesForPlatform({
   if (!ruleFilePath)
     throw new Error(`No rule file configured for platform '${platform}'.`);
 
-  const workflows = await collectInstalledWorkflows(platform, scope, cwd);
+  let workflows = await collectInstalledWorkflows(platform, scope, cwd);
+  if (scope === "global") {
+    const workspaceRuleFile = await resolveWorkspaceRuleFileForGlobalScope(
+      platform,
+      cwd,
+    );
+    const profile = WORKFLOW_PROFILES[platform];
+    const globalRuleFile = profile
+      ? expandPath(profile.global.ruleFilesByPriority[0], cwd)
+      : null;
+    if (
+      workspaceRuleFile &&
+      globalRuleFile &&
+      path.resolve(workspaceRuleFile) !== path.resolve(globalRuleFile)
+    ) {
+      workflows = await collectInstalledWorkflows(platform, "project", cwd);
+    }
+  }
   const patchResult = await upsertManagedRuleBlock(
     ruleFilePath,
     platform,
@@ -7638,34 +7537,66 @@ async function installBundleArtifacts({
   }
 
   const shouldInstallPlatformSkills = true;
+  const workflowFiles = Array.isArray(platformSpec.workflows)
+    ? platformSpec.workflows
+    : [];
+  const generatedSkillDirs = Array.isArray(platformSpec.generatedSkills)
+    ? platformSpec.generatedSkills
+    : [];
+  const agentFiles = platformInstallsCustomAgents(platform)
+    ? Array.isArray(platformSpec.agents)
+      ? platformSpec.agents
+      : []
+    : [];
+  const commandFiles = Array.isArray(platformSpec.commands)
+    ? platformSpec.commands
+    : [];
+  const promptFiles = Array.isArray(platformSpec.prompts)
+    ? platformSpec.prompts
+    : [];
+  const hookFiles = Array.isArray(platformSpec.hooks)
+    ? platformSpec.hooks
+        .map((entry) =>
+          typeof entry === "string"
+            ? entry
+            : typeof entry?.file === "string"
+              ? entry.file
+              : null,
+        )
+        .filter(Boolean)
+    : [];
 
   if (!dryRun) {
-    await mkdir(profilePaths.workflowsDir, { recursive: true });
-    if (shouldInstallPlatformSkills) {
+    if (workflowFiles.length > 0) {
+      if (!profilePaths.workflowsDir) {
+        throw new Error(
+          `Platform '${platform}' does not define a workflow install directory.`,
+        );
+      }
+      await mkdir(profilePaths.workflowsDir, { recursive: true });
+    }
+    if (
+      shouldInstallPlatformSkills &&
+      profilePaths.skillsDir &&
+      (generatedSkillDirs.length > 0 || Array.isArray(platformSpec.skills))
+    ) {
       await mkdir(profilePaths.skillsDir, { recursive: true });
     }
-    if (platformInstallsCustomAgents(platform)) {
+    if (agentFiles.length > 0) {
+      if (!profilePaths.agentsDir) {
+        throw new Error(
+          `Platform '${platform}' does not define an agent install directory.`,
+        );
+      }
       await mkdir(profilePaths.agentsDir, { recursive: true });
     }
-    if (
-      profilePaths.commandsDir &&
-      Array.isArray(platformSpec.commands) &&
-      platformSpec.commands.length > 0
-    ) {
+    if (profilePaths.commandsDir && commandFiles.length > 0) {
       await mkdir(profilePaths.commandsDir, { recursive: true });
     }
-    if (
-      profilePaths.promptsDir &&
-      Array.isArray(platformSpec.prompts) &&
-      platformSpec.prompts.length > 0
-    ) {
+    if (profilePaths.promptsDir && promptFiles.length > 0) {
       await mkdir(profilePaths.promptsDir, { recursive: true });
     }
-    if (
-      profilePaths.hooksDir &&
-      Array.isArray(platformSpec.hooks) &&
-      platformSpec.hooks.some((entry) => typeof entry?.file === "string")
-    ) {
+    if (profilePaths.hooksDir && hookFiles.length > 0) {
       await mkdir(profilePaths.hooksDir, { recursive: true });
     }
   }
@@ -7687,10 +7618,8 @@ async function installBundleArtifacts({
   // Bind useSymlinks into copyArtifact so every call site inherits it
   const copyArt = (args) => copyArtifact({ ...args, useSymlinks });
 
-  const workflowFiles = Array.isArray(platformSpec.workflows)
-    ? platformSpec.workflows
-    : [];
   for (const workflowFile of workflowFiles) {
+    if (!profilePaths.workflowsDir) continue;
     const source = path.join(platformRoot, "workflows", workflowFile);
     const destination = path.join(
       profilePaths.workflowsDir,
@@ -7713,12 +7642,8 @@ async function installBundleArtifacts({
     else installed.push(destination);
   }
 
-  const agentFiles = platformInstallsCustomAgents(platform)
-    ? Array.isArray(platformSpec.agents)
-      ? platformSpec.agents
-      : []
-    : [];
   for (const agentFile of agentFiles) {
+    if (!profilePaths.agentsDir) continue;
     const source = path.join(platformRoot, "agents", agentFile);
     const destination = path.join(
       profilePaths.agentsDir,
@@ -7741,9 +7666,6 @@ async function installBundleArtifacts({
     else installed.push(destination);
   }
 
-  const commandFiles = Array.isArray(platformSpec.commands)
-    ? platformSpec.commands
-    : [];
   for (const commandFile of commandFiles) {
     if (!profilePaths.commandsDir) continue;
     const source = path.join(platformRoot, "commands", commandFile);
@@ -7768,9 +7690,6 @@ async function installBundleArtifacts({
     else installed.push(destination);
   }
 
-  const promptFiles = Array.isArray(platformSpec.prompts)
-    ? platformSpec.prompts
-    : [];
   for (const promptFile of promptFiles) {
     if (!profilePaths.promptsDir) continue;
     const source = path.join(platformRoot, "prompts", promptFile);
@@ -7794,17 +7713,6 @@ async function installBundleArtifacts({
       skipped.push(destination);
     else installed.push(destination);
   }
-  const hookFiles = Array.isArray(platformSpec.hooks)
-    ? platformSpec.hooks
-        .map((entry) =>
-          typeof entry === "string"
-            ? entry
-            : typeof entry?.file === "string"
-              ? entry.file
-              : null,
-        )
-        .filter(Boolean)
-    : [];
   for (const hookFile of hookFiles) {
     if (!profilePaths.hooksDir) continue;
     const source = path.join(platformRoot, "hooks", hookFile);
@@ -7828,7 +7736,7 @@ async function installBundleArtifacts({
       skipped.push(destination);
     else installed.push(destination);
   }
-  if (shouldInstallPlatformSkills) {
+  if (shouldInstallPlatformSkills && profilePaths.skillsDir) {
     const agentSkillDependencies = await resolvePlatformAgentSkillDependencies({
       platformRoot,
       platformSpec,
@@ -7885,21 +7793,33 @@ async function installBundleArtifacts({
         skipped.push(skillsIndexDest);
       else installed.push(skillsIndexDest);
     }
-  }
 
-  let generatedWrapperSkills = [];
-  if (platform === "codex") {
-    const wrapperResult = await generateCodexWrapperSkills({
-      platformRoot,
-      platformSpec,
-      skillsDir: profilePaths.skillsDir,
-      overwrite,
-      dryRun,
-    });
-    installed.push(...wrapperResult.installed);
-    skipped.push(...wrapperResult.skipped);
-    artifacts.skills.push(...wrapperResult.artifacts);
-    generatedWrapperSkills = wrapperResult.generated;
+    for (const generatedSkillDir of generatedSkillDirs) {
+      const source = path.join(
+        platformRoot,
+        "generated-skills",
+        generatedSkillDir,
+      );
+      const destination = path.join(
+        profilePaths.skillsDir,
+        path.basename(generatedSkillDir),
+      );
+
+      if (!(await pathExists(source))) {
+        throw new Error(`Missing generated skill source directory: ${source}`);
+      }
+
+      const result = await copyArt({
+        source,
+        destination,
+        overwrite,
+        dryRun,
+      });
+      artifacts.skills.push(destination);
+      if (result.action === "skipped" || result.action === "would-skip")
+        skipped.push(destination);
+      else installed.push(destination);
+    }
   }
 
   let terminalIntegration = null;
@@ -7912,11 +7832,13 @@ async function installBundleArtifacts({
     installed.push(...terminalIntegration.installedPaths);
   }
 
-  const duplicateSkillCleanup = await cleanupNestedDuplicateSkills({
-    skillsRootDir: profilePaths.skillsDir,
-    installedSkillDirs: artifacts.skills,
-    dryRun,
-  });
+  const duplicateSkillCleanup = profilePaths.skillsDir
+    ? await cleanupNestedDuplicateSkills({
+        skillsRootDir: profilePaths.skillsDir,
+        installedSkillDirs: artifacts.skills,
+        dryRun,
+      })
+    : [];
 
   const sanitizedSkills = await sanitizeInstalledSkillsForPlatform({
     platform,
@@ -7935,62 +7857,10 @@ async function installBundleArtifacts({
     skipped,
     artifacts,
     terminalIntegration,
-    generatedWrapperSkills,
     duplicateSkillCleanup,
     sanitizedSkills,
     sanitizedAgents,
   };
-}
-
-async function installCodexProjectWorkflowTemplates({
-  bundleId,
-  manifest,
-  overwrite,
-  dryRun = false,
-  cwd = process.cwd(),
-}) {
-  const platform = "codex";
-  const platformSpec = manifest.platforms?.[platform];
-  if (!platformSpec) return { installed: [], skipped: [] };
-
-  const workflowFiles = Array.isArray(platformSpec.workflows)
-    ? platformSpec.workflows
-    : [];
-  if (workflowFiles.length === 0) return { installed: [], skipped: [] };
-
-  const profilePaths = await resolveProfilePaths(platform, "project", cwd);
-  if (!dryRun) {
-    await mkdir(profilePaths.workflowsDir, { recursive: true });
-  }
-
-  const bundleRoot = path.join(agentAssetsRoot(), "workflows", bundleId);
-  const platformRoot = path.join(bundleRoot, "platforms", platform);
-  const installed = [];
-  const skipped = [];
-
-  for (const workflowFile of workflowFiles) {
-    const source = path.join(platformRoot, "workflows", workflowFile);
-    const destination = path.join(
-      profilePaths.workflowsDir,
-      path.basename(workflowFile),
-    );
-
-    if (!(await pathExists(source))) {
-      throw new Error(`Missing workflow source file: ${source}`);
-    }
-
-    const result = await copyArtifact({
-      source,
-      destination,
-      overwrite,
-      dryRun,
-    });
-    if (result.action === "skipped" || result.action === "would-skip")
-      skipped.push(destination);
-    else installed.push(destination);
-  }
-
-  return { installed, skipped };
 }
 
 async function seedRuleFileFromTemplateIfMissing({
@@ -8042,6 +7912,7 @@ function commandToFilename(command) {
 }
 
 async function findWorkflowFileByTarget(workflowsDir, target) {
+  if (!workflowsDir) return null;
   const direct = target.endsWith(".md") ? target : `${target}.md`;
   const directPath = path.join(workflowsDir, direct);
   if (await pathExists(directPath)) return directPath;
@@ -8090,8 +7961,12 @@ async function removeBundleArtifacts({
     );
 
   const removed = [];
+  const generatedSkillDirs = Array.isArray(platformSpec.generatedSkills)
+    ? platformSpec.generatedSkills
+    : [];
 
   for (const workflowFile of platformSpec.workflows || []) {
+    if (!profilePaths.workflowsDir) continue;
     const destination = path.join(
       profilePaths.workflowsDir,
       path.basename(workflowFile),
@@ -8100,6 +7975,7 @@ async function removeBundleArtifacts({
   }
 
   for (const agentFile of platformSpec.agents || []) {
+    if (!profilePaths.agentsDir) continue;
     const destination = path.join(
       profilePaths.agentsDir,
       path.basename(agentFile),
@@ -8146,63 +8022,83 @@ async function removeBundleArtifacts({
     extraSkillIds: [],
   });
   for (const skillId of skillIds) {
+    if (!profilePaths.skillsDir) continue;
     const destination = path.join(profilePaths.skillsDir, skillId);
     if (await safeRemove(destination, dryRun)) removed.push(destination);
   }
 
-  if (platform === "codex") {
-    const wrapperSkillIds = buildCodexWrapperSkillIds(platformSpec);
-    for (const skillId of wrapperSkillIds) {
-      const destination = path.join(profilePaths.skillsDir, skillId);
-      if (await safeRemove(destination, dryRun)) removed.push(destination);
-    }
+  for (const generatedSkillDir of generatedSkillDirs) {
+    if (!profilePaths.skillsDir) continue;
+    const destination = path.join(
+      profilePaths.skillsDir,
+      path.basename(generatedSkillDir),
+    );
+    if (await safeRemove(destination, dryRun)) removed.push(destination);
   }
 
   return { removed, profilePaths };
 }
 
 function printPlatforms() {
+  const formatPathList = (paths, disabledLabel = "(not used)") =>
+    Array.isArray(paths) && paths.length > 0 ? paths.join(" | ") : disabledLabel;
   console.log("Workflow platforms:");
   for (const profileId of PLATFORM_IDS) {
     const profile = WORKFLOW_PROFILES[profileId];
     const agentsEnabled = platformInstallsCustomAgents(profileId);
     console.log(`- ${profile.id} (${profile.label})`);
-    console.log(`  project workflows: ${profile.project.workflowDirs[0]}`);
     console.log(
-      `  project agents:    ${agentsEnabled ? profile.project.agentDirs[0] : "(disabled for this platform)"}`,
+      `  project workflows: ${formatPathList(profile.project.workflowDirs)}`,
     );
-    console.log(`  project skills:    ${profile.project.skillDirs[0]}`);
+    console.log(
+      `  project agents:    ${agentsEnabled ? formatPathList(profile.project.agentDirs, "(not used)") : "(disabled for this platform)"}`,
+    );
+    console.log(
+      `  project skills:    ${formatPathList(profile.project.skillDirs)}`,
+    );
     if (
       Array.isArray(profile.project.commandDirs) &&
       profile.project.commandDirs.length > 0
     ) {
-      console.log(`  project commands:  ${profile.project.commandDirs[0]}`);
+      console.log(
+        `  project commands:  ${formatPathList(profile.project.commandDirs)}`,
+      );
     }
     if (
       Array.isArray(profile.project.promptDirs) &&
       profile.project.promptDirs.length > 0
     ) {
-      console.log(`  project prompts:   ${profile.project.promptDirs[0]}`);
+      console.log(
+        `  project prompts:   ${formatPathList(profile.project.promptDirs)}`,
+      );
     }
     console.log(
       `  project rules:     ${profile.project.ruleFilesByPriority.join(" | ")}`,
     );
-    console.log(`  global workflows:  ${profile.global.workflowDirs[0]}`);
     console.log(
-      `  global agents:     ${agentsEnabled ? profile.global.agentDirs[0] : "(disabled for this platform)"}`,
+      `  global workflows:  ${formatPathList(profile.global.workflowDirs)}`,
     );
-    console.log(`  global skills:     ${profile.global.skillDirs[0]}`);
+    console.log(
+      `  global agents:     ${agentsEnabled ? formatPathList(profile.global.agentDirs, "(not used)") : "(disabled for this platform)"}`,
+    );
+    console.log(
+      `  global skills:     ${formatPathList(profile.global.skillDirs)}`,
+    );
     if (
       Array.isArray(profile.global.commandDirs) &&
       profile.global.commandDirs.length > 0
     ) {
-      console.log(`  global commands:   ${profile.global.commandDirs[0]}`);
+      console.log(
+        `  global commands:   ${formatPathList(profile.global.commandDirs)}`,
+      );
     }
     if (
       Array.isArray(profile.global.promptDirs) &&
       profile.global.promptDirs.length > 0
     ) {
-      console.log(`  global prompts:    ${profile.global.promptDirs[0]}`);
+      console.log(
+        `  global prompts:    ${formatPathList(profile.global.promptDirs)}`,
+      );
     }
     console.log(
       `  global rules:      ${profile.global.ruleFilesByPriority.join(" | ")}`,
@@ -8246,7 +8142,6 @@ function printInstallSummary({
   bundleId,
   installed,
   skipped,
-  generatedWrapperSkills = [],
   duplicateSkillCleanup = [],
   sanitizedSkills = [],
   sanitizedAgents = [],
@@ -8281,21 +8176,6 @@ function printInstallSummary({
 
   if (installed.length === 0 && skipped.length === 0) {
     console.log("\nNo changes made.");
-  }
-
-  if (generatedWrapperSkills.length > 0) {
-    const workflowCount = generatedWrapperSkills.filter(
-      (item) => item.kind === "workflow",
-    ).length;
-    const agentCount = generatedWrapperSkills.filter(
-      (item) => item.kind === "agent",
-    ).length;
-    console.log(
-      `\nCodex callable wrapper skills: ${generatedWrapperSkills.length} (workflow=${workflowCount}, agent=${agentCount})`,
-    );
-    console.log(
-      "These remain compatibility aliases. Prefer direct /workflow and @agent routing in Codex when available.",
-    );
   }
 
   if (terminalIntegration) {
@@ -8676,14 +8556,19 @@ async function createDoctorReport({ platform, scope, cwd = process.cwd() }) {
       const lines = gitignore.split(/\r?\n/).map((line) => line.trim());
       const hasAgentIgnore = lines.some(
         (line) =>
-          line === ".agent" || line === ".agent/" || line === "/.agent/",
+          line === ".agent" ||
+          line === ".agent/" ||
+          line === "/.agent/" ||
+          line === ".agents" ||
+          line === ".agents/" ||
+          line === "/.agents/",
       );
       if (hasAgentIgnore) {
         warnings.push(
-          ".agent/ is ignored in .gitignore; this can hide team workflow/rule updates.",
+          ".agents/ or legacy .agent/ is ignored in .gitignore; this can hide team workflow/rule updates.",
         );
         recommendations.push(
-          "Prefer tracking .agent/ in git. For local-only excludes, use '.git/info/exclude' instead of .gitignore.",
+          "Prefer tracking .agents/ in git. For local-only excludes, use '.git/info/exclude' instead of .gitignore.",
         );
       }
     }
@@ -9194,13 +9079,13 @@ async function cleanupAntigravityTerminalIntegration({
 }) {
   const profilePaths = await resolveArtifactProfilePaths(
     "antigravity",
-    scope,
+    "project",
     cwd,
   );
   const integrationDir = getAntigravityTerminalIntegrationDir(profilePaths);
   const dirRemoved = await safeRemove(integrationDir, dryRun);
 
-  const primaryRuleFile = await resolveRuleFilePath("antigravity", scope, cwd);
+  const primaryRuleFile = await resolveRuleFilePath("antigravity", "project", cwd);
   const primaryRule = primaryRuleFile
     ? await removeTerminalVerificationBlock(primaryRuleFile, dryRun)
     : { action: "missing-rule-file", filePath: null };
@@ -9315,28 +9200,6 @@ async function performWorkflowInstall(
     cwd,
   });
 
-  if (platform === "codex" && scope === "global") {
-    const codexProjectPaths = await resolveProfilePaths(
-      "codex",
-      "project",
-      cwd,
-    );
-    if (
-      path.resolve(artifactProfilePaths.workflowsDir) !==
-      path.resolve(codexProjectPaths.workflowsDir)
-    ) {
-      const codexProjectWorkflows = await installCodexProjectWorkflowTemplates({
-        bundleId,
-        manifest,
-        overwrite: Boolean(options.overwrite),
-        dryRun,
-        cwd,
-      });
-      installResult.installed.push(...codexProjectWorkflows.installed);
-      installResult.skipped.push(...codexProjectWorkflows.skipped);
-    }
-  }
-
   await seedRuleFileFromTemplateIfMissing({
     bundleId,
     manifest,
@@ -9418,7 +9281,6 @@ async function runWorkflowInstall(options) {
       bundleId: result.bundleId,
       installed: result.installResult.installed,
       skipped: result.installResult.skipped,
-      generatedWrapperSkills: result.installResult.generatedWrapperSkills,
       duplicateSkillCleanup: result.installResult.duplicateSkillCleanup,
       sanitizedSkills: result.installResult.sanitizedSkills,
       sanitizedAgents: result.installResult.sanitizedAgents,
@@ -9680,6 +9542,11 @@ async function runWorkflowRemove(target, options) {
         }
       }
     } else {
+      if (!artifactProfilePaths.workflowsDir) {
+        throw new Error(
+          `Platform '${platform}' does not install standalone workflow files. Remove the bundle instead, or remove the native command/prompt/skill artifact directly.`,
+        );
+      }
       const workflowFile = await findWorkflowFileByTarget(
         artifactProfilePaths.workflowsDir,
         target,
@@ -9707,22 +9574,23 @@ async function runWorkflowRemove(target, options) {
       }
     }
 
+    if (!dryRun && removedType === "bundle") {
+      const ruleFilePath = await resolveRuleFilePath(platform, ruleScope, cwd);
+      await recordBundleRemovalState({
+        scope: ruleScope,
+        platform,
+        bundleId: target,
+        ruleFilePath,
+        cwd,
+      });
+    }
+
     const syncResult = await syncRulesForPlatform({
       platform,
       scope: ruleScope,
       dryRun,
       cwd,
     });
-
-    if (!dryRun && removedType === "bundle") {
-      await recordBundleRemovalState({
-        scope,
-        platform,
-        bundleId: target,
-        ruleFilePath: syncResult.filePath,
-        cwd,
-      });
-    }
 
     printRemoveSummary({
       platform,
@@ -10167,14 +10035,15 @@ async function runWorkflowRemoveAll(options) {
           const promptFiles = (platformSpec.prompts || []).map((entry) =>
             path.basename(entry),
           );
+          const generatedSkillIds = (platformSpec.generatedSkills || []).map(
+            (entry) => path.basename(entry),
+          );
           const skillIds = await resolveInstallSkillIds({
             platformSpec,
             extraSkillIds: [],
           });
-          const wrapperSkillIds =
-            platform === "codex" ? buildCodexWrapperSkillIds(platformSpec) : [];
           const bundleSkillIds = [
-            ...new Set([...skillIds, ...wrapperSkillIds]),
+            ...new Set([...skillIds, ...generatedSkillIds]),
           ];
 
           for (const workflowsDir of alternateWorkflowsDirs) {
@@ -12891,7 +12760,7 @@ function printInstallDocumentationNotice() {
   console.log("\nProject backbone docs:");
   console.log("- Install only wires the rule references and workflow assets.");
   console.log(
-    `- Use \`cbx rules init\` to scaffold ENGINEERING_RULES.md and TECH.md, or \`cbx build architecture --platform <codex|claude|gemini|copilot>\` to generate ${FOUNDATION_DOCS_DIR}/PRODUCT.md, ${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md, ${FOUNDATION_DOCS_DIR}/TECH.md, and ADR scaffolds.`,
+    `- Use \`cbx rules init\` to scaffold ENGINEERING_RULES.md and TECH.md, or \`cbx build architecture --platform <antigravity|codex|claude|gemini|copilot>\` to generate ${FOUNDATION_DOCS_DIR}/MEMORY.md, ${FOUNDATION_DOCS_DIR}/PRODUCT.md, ${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md, ${FOUNDATION_DOCS_DIR}/TECH.md, topic memory docs, and ADR scaffolds.`,
   );
 }
 
@@ -12940,6 +12809,7 @@ async function upsertEngineeringArtifacts({
     const blockResult = await upsertEngineeringRulesBlock({
       ruleFilePath: target.ruleFilePath,
       platform,
+      memoryFilePath: path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "MEMORY.md"),
       productFilePath: scaffold.productPath,
       architectureFilePath: scaffold.architectureDocPath,
       engineeringRulesFilePath: scaffold.engineeringRulesPath,
@@ -13050,7 +12920,7 @@ function normalizeArchitectureBuildPlatform(value) {
   const normalized = normalizePlatform(value);
   if (!normalized || !ARCHITECTURE_BUILD_PLATFORMS.has(normalized)) {
     throw new Error(
-      "Architecture build platform must be one of: codex, claude, gemini, copilot.",
+      "Architecture build platform must be one of: antigravity, codex, claude, gemini, copilot.",
     );
   }
   return normalized;
@@ -13213,9 +13083,14 @@ function buildArchitecturePrompt({
   conditionalSkills,
   skillPathHints,
 }) {
+  const memoryPath = `${FOUNDATION_DOCS_DIR}/MEMORY.md`;
   const productPath = `${FOUNDATION_DOCS_DIR}/PRODUCT.md`;
   const architecturePath = `${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md`;
   const techPath = `${FOUNDATION_DOCS_DIR}/TECH.md`;
+  const domainMemoryPath = `${FOUNDATION_MEMORY_DIR}/domain.md`;
+  const runtimeMemoryPath = `${FOUNDATION_MEMORY_DIR}/runtime.md`;
+  const integrationsMemoryPath = `${FOUNDATION_MEMORY_DIR}/integrations.md`;
+  const debuggingMemoryPath = `${FOUNDATION_MEMORY_DIR}/debugging.md`;
   const adrReadmePath = `${FOUNDATION_ADR_DIR}/README.md`;
   const adrTemplatePath = `${FOUNDATION_ADR_DIR}/0000-template.md`;
   const architectureSignals = snapshot.architectureByApp
@@ -13226,6 +13101,8 @@ function buildArchitecturePrompt({
     });
 
   const platformCapabilities = {
+    antigravity:
+      "You are generating repo-shared foundation docs for Antigravity. Use the Gemini-family CLI surface available in this environment and optimize the docs for `.agents/rules/GEMINI.md` plus command-driven workflows.",
     codex:
       "You can read, write, and execute shell commands. Use `codex exec` mode.",
     claude:
@@ -13241,7 +13118,7 @@ function buildArchitecturePrompt({
     platformCapabilities[platform] || "",
     "",
     "Objective:",
-    `- Inspect the repository at ${toPosixPath(workspaceRoot)} and author or refresh the core foundation docs in ${productPath}, ${architecturePath}, ${techPath}, ${adrReadmePath}, and ${adrTemplatePath}.`,
+    `- Inspect the repository at ${toPosixPath(workspaceRoot)} and author or refresh the core foundation docs in ${memoryPath}, ${productPath}, ${architecturePath}, ${techPath}, ${domainMemoryPath}, ${runtimeMemoryPath}, ${integrationsMemoryPath}, ${debuggingMemoryPath}, ${adrReadmePath}, and ${adrTemplatePath}.`,
     "- The content should be primarily AI-authored from repository inspection, not copied from placeholder scaffolding.",
     "- Preserve manual content outside the managed `cbx:*` markers.",
     "- The output docs must be immediately useful to any AI agent (Copilot, Claude, Gemini, Codex) inspecting this repo for the first time, reducing search and exploration time.",
@@ -13274,6 +13151,17 @@ function buildArchitecturePrompt({
     }`,
     `- Inspection anchors: ${inspectionAnchors.length > 0 ? inspectionAnchors.join(", ") : "no concrete anchors detected; inspect the repo root, main source trees, and manifest files manually"}`,
     "",
+    "Foundation doc usage contract:",
+    `- ${memoryPath} is the durable AI entrypoint and first-stop index. Keep it concise, keep it under roughly 120 lines when possible, and route readers to deeper docs instead of duplicating every deep detail.`,
+    `- ${productPath} is for planning, scoping, specs, product intent, business rules, and domain vocabulary.`,
+    `- ${architecturePath} is for structure, boundaries, dependency rules, ADR-worthy decisions, refactors, and design-system governance.`,
+    `- ${techPath} is for build, test, run, debug, CI/CD, tooling, runtime operations, and exact commands.`,
+    `- ${domainMemoryPath}, ${runtimeMemoryPath}, ${integrationsMemoryPath}, and ${debuggingMemoryPath} are load-on-demand drill-down docs for their named topics.`,
+    `- ${adrReadmePath} and ${adrTemplatePath} exist for durable architecture decisions; they are not a replacement for the backbone docs.`,
+    "- `.cbx/architecture-build.json` is build metadata for automation and drift checks, not a primary context document for agents.",
+    "- These docs are downstream inputs to `ENGINEERING_RULES.md` and platform rule files such as `AGENTS.md`, `CLAUDE.md`, `.agents/rules/GEMINI.md`, `.gemini/GEMINI.md`, and `.github/copilot-instructions.md`.",
+    "- Each doc should make it easy for future rules, workflows, agents, and skills to decide whether they need to open it.",
+    "",
     "Markdown formatting rules (apply to all generated docs):",
     "- Start each file with a single `# Title` heading. Never use more than one H1 per file.",
     "- Use `## Heading` for major sections, `### Heading` for subsections. Never skip heading levels (e.g., do not jump from `##` to `####`).",
@@ -13296,11 +13184,20 @@ function buildArchitecturePrompt({
     "1. Inspect the repository first before writing any backbone doc content. Derive structure, product surfaces, runtime boundaries, and technical constraints from the actual codebase.",
     "2. Complete a real inspection pass before drafting. At minimum, inspect the concrete anchors listed above, plus any adjacent directories needed to understand the main execution paths, data boundaries, and integration surfaces.",
     "3. Do not infer architecture from filenames alone when you can open representative files. Read enough source to validate the main app boundaries, runtime flows, and persistence/integration patterns.",
-    `4. Then read ${productPath}, ${architecturePath}, and ${techPath} in that order when they exist so you can preserve useful manual context and update existing managed sections cleanly.`,
-    `5. Replace or update only the content between the existing managed markers in ${productPath}, ${architecturePath}, and ${techPath}. Do not append a second marker block.`,
+    `4. Then read ${memoryPath}, ${productPath}, ${architecturePath}, ${techPath}, ${domainMemoryPath}, ${runtimeMemoryPath}, ${integrationsMemoryPath}, and ${debuggingMemoryPath} in that order when they exist so you can preserve useful manual context and update existing managed sections cleanly.`,
+    `5. Replace or update only the content between the existing managed markers in ${memoryPath}, ${productPath}, ${architecturePath}, ${techPath}, ${domainMemoryPath}, ${runtimeMemoryPath}, ${integrationsMemoryPath}, and ${debuggingMemoryPath}. Do not append a second marker block.`,
     "",
-    `6. In ${productPath}, write a concrete product foundation:`,
+    `6. In ${memoryPath}, write the durable AI memory index:`,
+    "   - A terse project summary that a fresh agent can absorb in under a minute.",
+    "   - A task-based map telling rules, workflows, agents, and skills when to load PRODUCT, ARCHITECTURE, TECH, each topic memory doc, and ADRs.",
+    "   - Durable facts and invariants that are expensive to rediscover.",
+    "   - Active watchpoints: areas likely to break, drift, or require re-validation after changes.",
+    "   - Keep MEMORY.md as an index, not a dump: no long command catalogs, no repeated architecture prose, no copied API contracts, and no verbose troubleshooting playbooks when those belong in deeper docs.",
+    "   - If a section needs more than a short paragraph or 5-7 bullets, move the detail into PRODUCT, ARCHITECTURE, TECH, a topic memory doc, or an ADR and link to it from MEMORY.md.",
+    "",
+    `7. In ${productPath}, write a concrete product foundation:`,
     "   - Product purpose with a one-sentence elevator pitch an AI agent can use as context.",
+    "   - A short consumer note explaining that PRODUCT is the doc for planning, scoping, specs, UX, and domain-language questions.",
     "   - Primary users/operators with their key goals.",
     "   - Main journeys as numbered sequences an agent can follow to understand the happy path.",
     "   - Business capabilities that matter, linked to repo paths that implement them.",
@@ -13308,8 +13205,9 @@ function buildArchitecturePrompt({
     "   - What future contributors must preserve (invariants, contracts, compatibility guarantees).",
     "   - A domain glossary defining project-specific terms, abbreviations, and bounded-context language so AI agents use consistent vocabulary.",
     "",
-    `7. In ${architecturePath}, write a lean but detailed architecture backbone in a pragmatic arc42/C4 style:`,
+    `8. In ${architecturePath}, write a lean but detailed architecture backbone in a pragmatic arc42/C4 style:`,
     "   - Architecture classification (monolith, modular monolith, microservices, serverless, hybrid) with evidence.",
+    "   - A short consumer note explaining that ARCHITECTURE is the doc for refactors, boundary decisions, ADR work, and design-system governance.",
     "   - System purpose, constraints, and architectural drivers.",
     "   - Bounded contexts with ownership boundaries mapped to directories.",
     "   - Major building blocks as a table or Mermaid C4 diagram with responsibilities.",
@@ -13323,8 +13221,9 @@ function buildArchitecturePrompt({
     "   - Testing/debugging strategy with concrete test commands and coverage tooling.",
     "   - A dedicated folder-structure guide listing every important directory, what it owns, and contributor rules.",
     "",
-    `8. In ${techPath}, write the developer-facing technical map that an AI agent can use to start working immediately:`,
+    `9. In ${techPath}, write the developer-facing technical map that an AI agent can use to start working immediately:`,
     "   - Stack snapshot as a table (runtime, language, framework, version if discoverable).",
+    "   - A short consumer note explaining that TECH is the doc for build, run, test, debug, CI/CD, and tooling execution.",
     "   - Repository layout: directory tree with one-line purpose per directory.",
     "   - Entrypoints: the exact files that bootstrap each app/service/CLI.",
     "   - Key commands: the exact shell commands for bootstrap, build, test, lint, format, run, and deploy. Validate that these commands actually exist in the project manifests. Document required order and preconditions.",
@@ -13339,37 +13238,69 @@ function buildArchitecturePrompt({
     "   - Change hotspots: files/directories that change most often or have the most coupling, so agents know where to look first.",
     "   - Practical editing notes: conventions for naming, imports, test file placement, and PR hygiene.",
     "",
-    `9. ${techPath} should complement ${architecturePath}; do not repeat the same structure prose unless it helps a developer act faster.`,
+    `10. In ${domainMemoryPath}, write the domain memory topic doc:`,
+    "   - Core entities, bounded contexts, business terminology, and invariants.",
+    "   - A short consumer note explaining that this topic doc is for domain modeling and product-language alignment.",
+    "   - Which files or modules embody each important concept.",
+    "   - Ambiguous terminology or overloaded names that agents should avoid misusing.",
     "",
-    `10. Use exact required headings in ${productPath}: \`## Product Scope\`, \`## Product Purpose\`, \`## Primary Users And Operators\`, \`## Main Journeys\`, \`## Business Capabilities That Matter\`, \`## Operational Constraints\`, \`## Preservation Rules For Future Contributors\`, \`## Domain Glossary\`.`,
-    `11. Use exact required headings in ${architecturePath}: \`## Architecture Type\`, \`## System Purpose\`, \`## Constraints And Architectural Drivers\`, \`## Repository Structure Guide\`, \`## Bounded Contexts\`, \`## Major Building Blocks\`, \`## Dependency Rules\`, \`## Data Boundaries\`, \`## Integration Boundaries\`, \`## Runtime Flows\`, \`## Crosscutting Concerns\`, \`## Quality Requirements\`, \`## Risks And Tech Debt\`, \`## Deployment And Operability\`, \`## Testing And Debugging Strategy\`, \`## Architectural Guidance\`.`,
-    `12. Use exact required headings in ${techPath}: \`## Stack Snapshot\`, \`## Repository Layout\`, \`## Entrypoints\`, \`## Key Commands\`, \`## Build And Validation\`, \`## CI CD Pipeline\`, \`## Runtime Data Stores\`, \`## External Services And Integration Surfaces\`, \`## Environment And Config Surfaces\`, \`## Generated Artifacts To Respect\`, \`## Error Patterns And Debugging\`, \`## Change Hotspots\`, \`## Practical Editing Notes\`.`,
+    `11. In ${runtimeMemoryPath}, write the runtime memory topic doc:`,
+    "   - Runtime topology, entrypoints, queues/jobs, background workers, schedules, and deployment-time assumptions.",
+    "   - A short consumer note explaining that this topic doc is for request flow, process lifecycle, workers, and deployment reasoning.",
+    "   - The shortest path to understand request flow and process lifecycle.",
     "",
-    "13. Every major claim should be grounded in repository evidence. Mention concrete repo paths in the docs when a structural claim would otherwise be ambiguous.",
-    "14. Avoid placeholder filler, generic checklists, and duplicated content across files. Each doc should have a clear job.",
-    "15. Do not create ROADMAP.md, ENGINEERING_RULES.md, or other extra docs unless the prompt explicitly asks for them.",
+    `12. In ${integrationsMemoryPath}, write the integrations memory topic doc:`,
+    "   - External services, APIs, auth boundaries, data contracts, webhook/event flows, and migration-sensitive integration notes.",
+    "   - A short consumer note explaining that this topic doc is for external-service, API, auth-boundary, and contract-sensitive work.",
+    "",
+    `13. In ${debuggingMemoryPath}, write the debugging memory topic doc:`,
+    "   - Common failures, hot logs, exact investigation commands, smoke checks, and repo-specific diagnostic shortcuts.",
+    "   - A short consumer note explaining that this topic doc is for triage, incident response, and debugging workflows.",
+    "",
+    "Consumer guidance contract:",
+    "- Near the top of each foundation doc, include a short 'when to consult this doc' cue so future rules, workflows, agents, and skills can decide quickly whether they need that document.",
+    "- In MEMORY.md, name the likely downstream consumers of each deeper doc using concrete route families such as planning/spec, architecture/refactor, build/test/debug, runtime/integration, and ADR work.",
+    "- Keep MEMORY.md lean enough to be imported frequently. Prefer short bullets, compact tables only when necessary, and links outward instead of repeated explanations.",
+    "",
+    `14. ${techPath} should complement ${architecturePath}; do not repeat the same structure prose unless it helps a developer act faster.`,
+    "",
+    `15. Use exact required headings in ${memoryPath}: \`## Project Summary\`, \`## Load These Docs By Task\`, \`## Durable Facts\`, \`## Active Watchpoints\`.`,
+    `16. Use exact required headings in ${productPath}: \`## Product Scope\`, \`## Product Purpose\`, \`## Primary Users And Operators\`, \`## Main Journeys\`, \`## Business Capabilities That Matter\`, \`## Operational Constraints\`, \`## Preservation Rules For Future Contributors\`, \`## Domain Glossary\`.`,
+    `17. Use exact required headings in ${architecturePath}: \`## Architecture Type\`, \`## System Purpose\`, \`## Constraints And Architectural Drivers\`, \`## Repository Structure Guide\`, \`## Bounded Contexts\`, \`## Major Building Blocks\`, \`## Dependency Rules\`, \`## Data Boundaries\`, \`## Integration Boundaries\`, \`## Runtime Flows\`, \`## Crosscutting Concerns\`, \`## Quality Requirements\`, \`## Risks And Tech Debt\`, \`## Deployment And Operability\`, \`## Testing And Debugging Strategy\`, \`## Architectural Guidance\`.`,
+    `18. Use exact required headings in ${techPath}: \`## Stack Snapshot\`, \`## Repository Layout\`, \`## Entrypoints\`, \`## Key Commands\`, \`## Build And Validation\`, \`## CI CD Pipeline\`, \`## Runtime Data Stores\`, \`## External Services And Integration Surfaces\`, \`## Environment And Config Surfaces\`, \`## Generated Artifacts To Respect\`, \`## Error Patterns And Debugging\`, \`## Change Hotspots\`, \`## Practical Editing Notes\`.`,
+    `19. Use exact required headings in ${domainMemoryPath}: \`## Core Concepts\`, \`## Bounded Context Vocabulary\`, \`## Invariants To Preserve\`, \`## File Ownership Map\`.`,
+    `20. Use exact required headings in ${runtimeMemoryPath}: \`## Runtime Topology\`, \`## Entrypoint Paths\`, \`## Background Work\`, \`## Deployment Assumptions\`.`,
+    `21. Use exact required headings in ${integrationsMemoryPath}: \`## External Services\`, \`## Contracts And Schemas\`, \`## Auth And Trust Boundaries\`, \`## Change Risks\`.`,
+    `22. Use exact required headings in ${debuggingMemoryPath}: \`## Fast Triage Paths\`, \`## Logs And Signals\`, \`## Known Failure Modes\`, \`## Verification Shortcuts\`.`,
+    "",
+    "23. Every major claim should be grounded in repository evidence. Mention concrete repo paths in the docs when a structural claim would otherwise be ambiguous.",
+    "24. Avoid placeholder filler, generic checklists, and duplicated content across files. Each doc should have a clear job.",
+    "25. Do not create ROADMAP.md, ENGINEERING_RULES.md, or other extra docs unless the prompt explicitly asks for them.",
     researchMode === "never"
-      ? "16. Stay repo-only. Do not use outside research."
-      : "16. Use repo evidence first. Use official docs when needed. Treat Reddit or community sources only as labeled secondary evidence.",
+      ? "26. Stay repo-only. Do not use outside research."
+      : "26. Use repo evidence first. Use official docs when needed. Treat Reddit or community sources only as labeled secondary evidence.",
     researchMode === "always"
-      ? `17. Include an external research evidence subsection in ${techPath} with clearly labeled primary and secondary evidence.`
-      : "17. Include external research notes only if they materially informed the architecture update.",
-    `18. If the project clearly follows Clean Architecture, feature-first modules, DDD, modular monolith, or another stable structure, make that explicit in ${architecturePath} with evidence from the repo.`,
-    `19. Ensure ${adrReadmePath} and ${adrTemplatePath} exist as ADR entrypoints, but keep them lean.`,
-    "20. In all docs, when referencing other foundation docs, use relative markdown links: `[ARCHITECTURE.md](docs/foundation/ARCHITECTURE.md)`. This lets AI agents and humans navigate between docs.",
-    "21. Validate all Mermaid diagram syntax before writing. Each diagram must render without errors. Use simple node IDs (alphanumeric, no special characters) and quote labels containing spaces.",
-    "22. For each key command documented, note the expected exit code (0 for success) and any common failure modes. This helps AI agents validate their own changes.",
+      ? `27. Include an external research evidence subsection in ${techPath} with clearly labeled primary and secondary evidence.`
+      : "27. Include external research notes only if they materially informed the architecture update.",
+    `28. If the project clearly follows Clean Architecture, feature-first modules, DDD, modular monolith, or another stable structure, make that explicit in ${architecturePath} with evidence from the repo.`,
+    `29. Ensure ${adrReadmePath} and ${adrTemplatePath} exist as ADR entrypoints, but keep them lean.`,
+    "30. In all docs, when referencing other foundation docs, use relative markdown links: `[ARCHITECTURE.md](docs/foundation/ARCHITECTURE.md)`. This lets AI agents and humans navigate between docs.",
+    "31. Validate all Mermaid diagram syntax before writing. Each diagram must render without errors. Use simple node IDs (alphanumeric, no special characters) and quote labels containing spaces.",
+    "32. For each key command documented, note the expected exit code (0 for success) and any common failure modes. This helps AI agents validate their own changes.",
     "",
     "Platform context-loading awareness (these docs will be @imported into agent rule files):",
     "- Claude loads CLAUDE.md at session start via @file imports; each imported doc should be concise and self-contained.",
     "- Gemini loads GEMINI.md hierarchically with JIT context; structure docs with clear H2 headings so sections are independently useful.",
+    "- Antigravity benefits from the same hierarchical structure because `.agents/rules/GEMINI.md` should point to a small durable memory index, not dump every deep reference by default.",
     "- Codex concatenates AGENTS.md files root-to-CWD with a default 32 KiB combined limit; keep total foundation doc prose lean.",
     "- Copilot loads copilot-instructions.md automatically; headings and inline code markers aid discoverability.",
+    "- `ENGINEERING_RULES.md` and platform rule files should treat MEMORY.md as the first-stop shared memory index and load deeper docs only on demand.",
     "- Target each individual foundation doc under 300 lines so it stays effective when imported into any platform's context window.",
+    "- Treat MEMORY.md as the tightest budget document in the set. It should remain substantially shorter than PRODUCT.md, ARCHITECTURE.md, or TECH.md.",
     "- Front-load the most actionable information (commands, paths, constraints) in each doc; put supplementary detail later.",
     "",
     "Return one JSON object on the last line with this shape:",
-    `{"files_written":["${productPath}","${architecturePath}","${techPath}","${adrReadmePath}","${adrTemplatePath}"],"research_used":false,"gaps":[],"next_actions":[]}`,
+    `{"files_written":["${memoryPath}","${productPath}","${architecturePath}","${techPath}","${domainMemoryPath}","${runtimeMemoryPath}","${integrationsMemoryPath}","${debuggingMemoryPath}","${adrReadmePath}","${adrTemplatePath}"],"research_used":false,"gaps":[],"next_actions":[]}`,
     "",
     "Do not emit placeholder TODOs in the managed sections.",
   ].join("\n");
@@ -13618,7 +13549,7 @@ function explainArchitectureBuildFailure(platform, execution) {
   );
   const notes = [];
 
-  if (platform === "gemini") {
+  if (platform === "gemini" || platform === "antigravity") {
     if (
       combined.includes("Error during discovery for MCP server") ||
       combined.includes("[MCP error]")
@@ -13698,7 +13629,7 @@ async function probeArchitectureAdapter(platform, cwd) {
     };
   }
 
-  if (platform === "gemini") {
+  if (platform === "gemini" || platform === "antigravity") {
     const help = await execFileCapture("gemini", ["--help"], { cwd });
     const helpText = `${help.stdout}\n${help.stderr}`.trim();
     const promptFlag = helpText.includes("--prompt")
@@ -13863,6 +13794,11 @@ async function collapseDuplicateTaggedBlocks({
 
 async function normalizeArchitectureBuildOutputs(scaffold) {
   await collapseDuplicateTaggedBlocks({
+    targetPath: scaffold.memoryPath,
+    startPattern: MEMORY_FOUNDATION_BLOCK_START_RE,
+    endPattern: MEMORY_FOUNDATION_BLOCK_END_RE,
+  });
+  await collapseDuplicateTaggedBlocks({
     targetPath: scaffold.productPath,
     startPattern: PRODUCT_FOUNDATION_BLOCK_START_RE,
     endPattern: PRODUCT_FOUNDATION_BLOCK_END_RE,
@@ -13877,9 +13813,22 @@ async function normalizeArchitectureBuildOutputs(scaffold) {
     startPattern: TECH_ARCHITECTURE_BLOCK_START_RE,
     endPattern: TECH_ARCHITECTURE_BLOCK_END_RE,
   });
+  for (const targetPath of [
+    scaffold.domainMemoryPath,
+    scaffold.runtimeMemoryPath,
+    scaffold.integrationsMemoryPath,
+    scaffold.debuggingMemoryPath,
+  ]) {
+    await collapseDuplicateTaggedBlocks({
+      targetPath,
+      startPattern: MEMORY_TOPIC_BLOCK_START_RE,
+      endPattern: MEMORY_TOPIC_BLOCK_END_RE,
+    });
+  }
 }
 
 async function readArchitectureDriftStatus(workspaceRoot, snapshot) {
+  const memoryPath = path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "MEMORY.md");
   const productPath = path.join(
     workspaceRoot,
     FOUNDATION_DOCS_DIR,
@@ -13891,6 +13840,10 @@ async function readArchitectureDriftStatus(workspaceRoot, snapshot) {
     "ARCHITECTURE.md",
   );
   const techPath = path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "TECH.md");
+  const domainMemoryPath = path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "domain.md");
+  const runtimeMemoryPath = path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "runtime.md");
+  const integrationsMemoryPath = path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "integrations.md");
+  const debuggingMemoryPath = path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "debugging.md");
   const adrReadmePath = path.join(
     workspaceRoot,
     FOUNDATION_ADR_DIR,
@@ -13901,12 +13854,35 @@ async function readArchitectureDriftStatus(workspaceRoot, snapshot) {
     ".cbx",
     ARCHITECTURE_BUILD_METADATA_FILENAME,
   );
+  const memoryExists = await pathExists(memoryPath);
   const productExists = await pathExists(productPath);
   const architectureExists = await pathExists(architecturePath);
   const techExists = await pathExists(techPath);
+  const topicPaths = [
+    domainMemoryPath,
+    runtimeMemoryPath,
+    integrationsMemoryPath,
+    debuggingMemoryPath,
+  ];
   const adrReadmeExists = await pathExists(adrReadmePath);
 
   const findings = [];
+  if (!memoryExists) {
+    findings.push(`${FOUNDATION_DOCS_DIR}/MEMORY.md is missing.`);
+  } else {
+    const content = await readFile(memoryPath, "utf8");
+    if (
+      !extractTaggedMarkerAttribute(
+        content,
+        MEMORY_FOUNDATION_BLOCK_START_RE,
+        "profile",
+      )
+    ) {
+      findings.push(
+        `${FOUNDATION_DOCS_DIR}/MEMORY.md is missing the managed memory block.`,
+      );
+    }
+  }
   let actualProductHash = null;
   let actualArchitectureHash = null;
   let actualTechHash = null;
@@ -13962,6 +13938,24 @@ async function readArchitectureDriftStatus(workspaceRoot, snapshot) {
   if (!adrReadmeExists) {
     findings.push(`${FOUNDATION_ADR_DIR}/README.md is missing.`);
   }
+  for (const topicPath of topicPaths) {
+    const exists = await pathExists(topicPath);
+    const relativePath = toPosixPath(path.relative(workspaceRoot, topicPath));
+    if (!exists) {
+      findings.push(`${relativePath} is missing.`);
+      continue;
+    }
+    const content = await readFile(topicPath, "utf8");
+    if (
+      !extractTaggedMarkerAttribute(
+        content,
+        MEMORY_TOPIC_BLOCK_START_RE,
+        "profile",
+      )
+    ) {
+      findings.push(`${relativePath} is missing the managed memory topic block.`);
+    }
+  }
 
   const metadata = await readJsonFileIfExists(metadataPath);
   if (!metadata.exists) {
@@ -13971,6 +13965,7 @@ async function readArchitectureDriftStatus(workspaceRoot, snapshot) {
   return {
     stale: findings.length > 0,
     findings,
+    memoryPath,
     productPath,
     architecturePath,
     techPath,
@@ -14004,7 +13999,7 @@ async function runBuildArchitecture(options) {
         console.log(`Workspace: ${toPosixPath(workspaceRoot)}`);
         console.log(`Status: ${drift.stale ? "stale" : "fresh"}`);
         console.log(
-          `Backbone docs: ${FOUNDATION_DOCS_DIR}/PRODUCT.md, ${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md, ${FOUNDATION_DOCS_DIR}/TECH.md, ${FOUNDATION_ADR_DIR}/README.md`,
+          `Backbone docs: ${FOUNDATION_DOCS_DIR}/MEMORY.md, ${FOUNDATION_DOCS_DIR}/PRODUCT.md, ${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md, ${FOUNDATION_DOCS_DIR}/TECH.md, ${FOUNDATION_MEMORY_DIR}/*.md, ${FOUNDATION_ADR_DIR}/README.md`,
         );
         if (drift.findings.length > 0) {
           console.log("Findings:");
@@ -14018,9 +14013,14 @@ async function runBuildArchitecture(options) {
     }
 
     const managedFilePaths = [
+      path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "MEMORY.md"),
       path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "PRODUCT.md"),
       path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "ARCHITECTURE.md"),
       path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "TECH.md"),
+      path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "domain.md"),
+      path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "runtime.md"),
+      path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "integrations.md"),
+      path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "debugging.md"),
       path.join(workspaceRoot, FOUNDATION_ADR_DIR, "README.md"),
       path.join(workspaceRoot, FOUNDATION_ADR_DIR, "0000-template.md"),
     ];
@@ -14060,9 +14060,14 @@ async function runBuildArchitecture(options) {
     const adapter = await probeArchitectureAdapter(platform, workspaceRoot);
     const args = adapter.buildInvocation(prompt);
     const managedTargets = [
+      path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "MEMORY.md"),
       path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "PRODUCT.md"),
       path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "ARCHITECTURE.md"),
       path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "TECH.md"),
+      path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "domain.md"),
+      path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "runtime.md"),
+      path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "integrations.md"),
+      path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "debugging.md"),
       path.join(workspaceRoot, FOUNDATION_ADR_DIR, "README.md"),
       path.join(workspaceRoot, FOUNDATION_ADR_DIR, "0000-template.md"),
     ].map((filePath) => toPosixPath(filePath));
@@ -14136,9 +14141,14 @@ async function runBuildArchitecture(options) {
       platform,
       researchMode,
       managedDocs: [
+        `${FOUNDATION_DOCS_DIR}/MEMORY.md`,
         `${FOUNDATION_DOCS_DIR}/PRODUCT.md`,
         `${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md`,
         `${FOUNDATION_DOCS_DIR}/TECH.md`,
+        `${FOUNDATION_MEMORY_DIR}/domain.md`,
+        `${FOUNDATION_MEMORY_DIR}/runtime.md`,
+        `${FOUNDATION_MEMORY_DIR}/integrations.md`,
+        `${FOUNDATION_MEMORY_DIR}/debugging.md`,
         `${FOUNDATION_ADR_DIR}/README.md`,
         `${FOUNDATION_ADR_DIR}/0000-template.md`,
       ],
@@ -14177,7 +14187,7 @@ async function runBuildArchitecture(options) {
     console.log(`Adapter: ${adapter.binary}`);
     console.log(`Workspace: ${toPosixPath(workspaceRoot)}`);
     console.log(
-      `Managed docs: ${FOUNDATION_DOCS_DIR}/PRODUCT.md, ${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md, ${FOUNDATION_DOCS_DIR}/TECH.md`,
+      `Managed docs: ${FOUNDATION_DOCS_DIR}/MEMORY.md, ${FOUNDATION_DOCS_DIR}/PRODUCT.md, ${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md, ${FOUNDATION_DOCS_DIR}/TECH.md, ${FOUNDATION_MEMORY_DIR}/*.md`,
     );
     console.log(
       `ADR scaffold: ${FOUNDATION_ADR_DIR}/README.md, ${FOUNDATION_ADR_DIR}/0000-template.md`,
@@ -14442,8 +14452,6 @@ async function runInitWizard(options) {
           bundleId: installOutcome.bundleId,
           installed: installOutcome.installResult.installed,
           skipped: installOutcome.installResult.skipped,
-          generatedWrapperSkills:
-            installOutcome.installResult.generatedWrapperSkills,
           duplicateSkillCleanup:
             installOutcome.installResult.duplicateSkillCleanup,
           sanitizedSkills: installOutcome.installResult.sanitizedSkills,

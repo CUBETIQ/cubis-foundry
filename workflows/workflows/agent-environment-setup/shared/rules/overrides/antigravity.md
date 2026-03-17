@@ -2,9 +2,8 @@
 
 ## Platform Paths
 
-- Workflows: `.agent/workflows`
-- Agents: `.agent/agents`
-- Skills: `.agent/skills`
+- Rules: `.agents/rules/GEMINI.md`
+- Skills: `.agents/skills/<skill-id>/SKILL.md`
 - Gemini commands: `.gemini/commands/*.toml`
 - Rules file: `GEMINI.md`
 
@@ -13,7 +12,7 @@
 Gemini recognizes these additional entry points:
 
 1. **Explicit Gemini command** (`.gemini/commands/*.toml`) — highest priority route.
-2. **Agent Manager** for multi-agent coordination — Gemini's orchestration surface.
+2. Foundry compiles `/workflow` and `@agent` routes into command entry points instead of installing undocumented workspace workflow or agent folders.
 3. Standard workflow/agent routing from shared steering.
 
 ## Gemini Commands
@@ -25,7 +24,7 @@ Gemini recognizes these additional entry points:
 ## Agent Manager
 
 - Gemini's Agent Manager handles multi-specialist coordination (equivalent to `@orchestrator`).
-- Agent Manager delegates to specialist agents defined in `.agent/agents/`.
+- In Foundry, specialist routes are exposed through generated command files rather than project-local agent markdown.
 - Use Agent Manager when work crosses 2+ domains with explicit handoff needs.
 
 ## Platform Notes

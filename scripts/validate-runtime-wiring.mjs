@@ -104,14 +104,15 @@ function error(errors, filePath, message) {
   errors.push(`${filePath}: ${message}`);
 }
 
-async function validateWorkflowFile(
+async function validateWorkflowSkill(
   filePath,
+  expectedId,
   expectedCommand,
   expectedDescription,
   errors,
 ) {
   if (!(await exists(filePath))) {
-    error(errors, filePath, "generated workflow missing");
+    error(errors, filePath, "generated workflow skill missing");
     return;
   }
 
@@ -123,12 +124,20 @@ async function validateWorkflowFile(
 
   const parsed = parseFrontmatter(raw);
   if (!parsed) {
-    error(errors, filePath, "generated workflow missing frontmatter");
+    error(errors, filePath, "generated workflow skill missing frontmatter");
     return;
   }
 
+  const name = getScalar(parsed.raw, "name");
   const command = getScalar(parsed.raw, "command");
   const description = getScalar(parsed.raw, "description");
+  if (name !== expectedId) {
+    error(
+      errors,
+      filePath,
+      `workflow skill name mismatch (expected '${expectedId}', found '${name || "missing"}')`,
+    );
+  }
   if (command !== expectedCommand) {
     error(
       errors,
@@ -146,6 +155,35 @@ async function validateWorkflowFile(
     if (!new RegExp(`^##\\s+${section}$`, "m").test(parsed.body)) {
       error(errors, filePath, `missing section '## ${section}'`);
     }
+  }
+}
+
+async function validateCodexAgentToml(filePath, route, errors) {
+  if (!(await exists(filePath))) {
+    error(errors, filePath, "generated Codex agent missing");
+    return;
+  }
+
+  const raw = await readUtf8(filePath);
+  if (raw.trim().length < 80) {
+    error(errors, filePath, "generated Codex agent is unexpectedly short");
+    return;
+  }
+
+  const nameMatch = raw.match(/^\s*name\s*=\s*"([^"]+)"/m);
+  const descriptionMatch = raw.match(/^\s*description\s*=\s*"([^"]+)"/m);
+  if (!nameMatch) error(errors, filePath, "Codex agent missing name");
+  if (!descriptionMatch)
+    error(errors, filePath, "Codex agent missing description");
+  if (!/^\s*developer_instructions\s*=\s*"""/m.test(raw)) {
+    error(errors, filePath, "Codex agent missing developer_instructions");
+  }
+  if (route?.id && nameMatch?.[1] !== route.id) {
+    error(
+      errors,
+      filePath,
+      `Codex agent name mismatch (expected '${route.id}', found '${nameMatch?.[1] || "missing"}')`,
+    );
   }
 }
 
@@ -195,7 +233,7 @@ async function validateAgentFile(
 
 async function validateCopilotPrompt(
   filePath,
-  workflowFileName,
+  routeId,
   command,
   primarySkills,
   errors,
@@ -209,11 +247,11 @@ async function validateCopilotPrompt(
   if (raw.trim().length < 80) {
     error(errors, filePath, "copilot prompt is unexpectedly short");
   }
-  if (!raw.includes(workflowFileName)) {
+  if (!raw.includes("Workflow source:")) {
     error(
       errors,
       filePath,
-      `copilot prompt does not reference workflow file '${workflowFileName}'`,
+      "copilot prompt missing embedded workflow source",
     );
   }
   if (!raw.includes("route selection as already resolved")) {
@@ -246,8 +284,7 @@ async function validateCopilotPrompt(
 
 async function validateAntigravityCommand(
   filePath,
-  workflowFileName,
-  command,
+  routeLabel,
   primarySkills,
   errors,
 ) {
@@ -260,11 +297,11 @@ async function validateAntigravityCommand(
   if (raw.trim().length < 80) {
     error(errors, filePath, "antigravity command is unexpectedly short");
   }
-  if (!raw.includes(workflowFileName)) {
+  if (!raw.includes(routeLabel)) {
     error(
       errors,
       filePath,
-      `antigravity command does not reference workflow file '${workflowFileName}'`,
+      `command does not reference route label '${routeLabel}'`,
     );
   }
   if (!raw.includes("route selection as already resolved")) {
@@ -295,13 +332,6 @@ async function validateAntigravityCommand(
       errors,
       filePath,
       `command missing primary attached skill '${primarySkills[0]}'`,
-    );
-  }
-  if (command && !raw.includes(command)) {
-    error(
-      errors,
-      filePath,
-      `antigravity command missing workflow command '${command}'`,
     );
   }
 }
@@ -491,59 +521,28 @@ async function main() {
     }
 
     if (route.kind === "workflow") {
-      const codexWorkflow = path.join(
+      const codexWorkflowSkill = path.join(
         PLATFORM_ROOTS.codex,
-        "workflows",
-        route.artifacts?.codex?.workflowFile || "",
+        "generated-skills",
+        route.artifacts?.codex?.skillDir || "",
+        "SKILL.md",
       );
-      const copilotWorkflow = path.join(
-        PLATFORM_ROOTS.copilot,
-        "workflows",
-        route.artifacts?.copilot?.workflowFile || "",
-      );
-      const antigravityWorkflow = path.join(
-        PLATFORM_ROOTS.antigravity,
-        "workflows",
-        route.artifacts?.antigravity?.workflowFile || "",
-      );
-
-      await validateWorkflowFile(
-        codexWorkflow,
+      await validateWorkflowSkill(
+        codexWorkflowSkill,
+        route.id,
         route.command,
         route.description,
         errors,
       );
-      await validateWorkflowFile(
-        copilotWorkflow,
-        route.command,
-        route.description,
-        errors,
-      );
-      await validateWorkflowFile(
-        antigravityWorkflow,
-        route.command,
-        route.description,
-        errors,
-      );
-
-      const claudeWorkflow = path.join(
+      const claudeWorkflowSkill = path.join(
         PLATFORM_ROOTS.claude,
-        "workflows",
-        route.artifacts?.claude?.workflowFile || "",
+        "generated-skills",
+        route.artifacts?.claude?.skillDir || "",
+        "SKILL.md",
       );
-      await validateWorkflowFile(
-        claudeWorkflow,
-        route.command,
-        route.description,
-        errors,
-      );
-      const geminiWorkflow = path.join(
-        PLATFORM_ROOTS.gemini,
-        "workflows",
-        route.artifacts?.gemini?.workflowFile || "",
-      );
-      await validateWorkflowFile(
-        geminiWorkflow,
+      await validateWorkflowSkill(
+        claudeWorkflowSkill,
+        route.id,
         route.command,
         route.description,
         errors,
@@ -555,7 +554,7 @@ async function main() {
           "prompts",
           route.artifacts?.copilot?.promptFile || "",
         ),
-        route.artifacts?.copilot?.workflowFile || "",
+        route.id,
         route.command,
         route.primarySkills || [],
         errors,
@@ -567,7 +566,6 @@ async function main() {
           "commands",
           route.artifacts?.antigravity?.commandFile || "",
         ),
-        route.artifacts?.antigravity?.workflowFile || "",
         route.command,
         route.primarySkills || [],
         errors,
@@ -578,7 +576,6 @@ async function main() {
           "commands",
           route.artifacts?.gemini?.commandFile || "",
         ),
-        route.artifacts?.gemini?.workflowFile || "",
         route.command,
         route.primarySkills || [],
         errors,
@@ -586,24 +583,13 @@ async function main() {
       continue;
     }
 
-    await validateAgentFile(
+    await validateCodexAgentToml(
       path.join(
         PLATFORM_ROOTS.codex,
         "agents",
         route.artifacts?.codex?.agentFile || "",
       ),
       route,
-      true,
-      errors,
-    );
-    await validateAgentFile(
-      path.join(
-        PLATFORM_ROOTS.antigravity,
-        "agents",
-        route.artifacts?.antigravity?.agentFile || "",
-      ),
-      route,
-      true,
       errors,
     );
     await validateAgentFile(
@@ -626,13 +612,26 @@ async function main() {
       true,
       errors,
     );
-    if (route.artifacts?.gemini?.posture !== route.id) {
-      error(
-        errors,
-        ROUTE_MANIFEST_PATH,
-        `route '${route.id}' has gemini posture drift (expected '${route.id}', found '${route.artifacts?.gemini?.posture || "missing"}')`,
-      );
-    }
+    await validateAntigravityCommand(
+      path.join(
+        PLATFORM_ROOTS.antigravity,
+        "commands",
+        route.artifacts?.antigravity?.commandFile || "",
+      ),
+      `@${route.id}`,
+      route.primarySkills || [],
+      errors,
+    );
+    await validateAntigravityCommand(
+      path.join(
+        PLATFORM_ROOTS.gemini,
+        "commands",
+        route.artifacts?.gemini?.commandFile || "",
+      ),
+      `@${route.id}`,
+      route.primarySkills || [],
+      errors,
+    );
   }
 
   if (errors.length > 0) {

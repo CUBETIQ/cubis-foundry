@@ -77,8 +77,12 @@ Load only what the current task requires.
 
 ## Gemini Platform Notes
 
-- Use `activate_skill` to invoke skills by name from Gemini CLI or Gemini Code Assist.
-- Skill files are stored under `.gemini/skills/` in the project root.
-- Gemini does not support `context: fork` — all skill execution is inline.
+- Workflow and agent routes are compiled into `.gemini/commands/*.toml` TOML command files.
+- Commands use `{{args}}` for user input, `!{shell command}` for shell output, `@{file}` for file content.
+- Specialists are internal postures (modes of reasoning), not spawned subagent processes.
+- Gemini does not support `context: fork` — all skill execution is inline within the current session.
+- Skills are loaded via MCP when the Cubis Foundry MCP server is configured. Local `.agents/skills/` paths serve as hints.
 - User arguments are passed as natural language in the activation prompt.
-- Reference files are loaded relative to the skill directory under `.gemini/skills/<skill-id>/`.
+- Rules file: `.gemini/GEMINI.md`.
+- Reference files are loaded relative to the skill directory under `.agents/skills/<skill-id>/`.
+- MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available when MCP is connected.
