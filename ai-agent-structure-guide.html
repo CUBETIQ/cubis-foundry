@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Agent Coding: Folder Structure & Rule Files</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;600;700;800&display=swap');
+
+  :root {
+    --bg: #0a0b0f;
+    --bg2: #111318;
+    --bg3: #181b24;
+    --border: #1e2330;
+    --border2: #252c3d;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --muted2: #94a3b8;
+    --green: #00e5a0;
+    --green2: #00b87d;
+    --blue: #4da6ff;
+    --blue2: #2563eb;
+    --purple: #a78bfa;
+    --orange: #fb923c;
+    --yellow: #fbbf24;
+    --red: #f87171;
+    --cyan: #22d3ee;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 60px 40px 40px;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,229,160,0.08) 0%, transparent 70%);
+  }
+  .hero-badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: rgba(0,229,160,0.1);
+    border: 1px solid rgba(0,229,160,0.3);
+    color: var(--green);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    letter-spacing: 0.1em;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #fff 30%, var(--green) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 14px;
+  }
+  .hero p {
+    font-size: 16px;
+    color: var(--muted2);
+    max-width: 640px;
+    margin: 0 auto 30px;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+  .tool-pills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid;
+  }
+  .pill-green  { color: var(--green);  border-color: rgba(0,229,160,0.3);  background: rgba(0,229,160,0.06); }
+  .pill-blue   { color: var(--blue);   border-color: rgba(77,166,255,0.3);  background: rgba(77,166,255,0.06); }
+  .pill-purple { color: var(--purple); border-color: rgba(167,139,250,0.3); background: rgba(167,139,250,0.06); }
+  .pill-orange { color: var(--orange); border-color: rgba(251,146,60,0.3);  background: rgba(251,146,60,0.06); }
+  .pill-yellow { color: var(--yellow); border-color: rgba(251,191,36,0.3);  background: rgba(251,191,36,0.06); }
+  .pill-cyan   { color: var(--cyan);   border-color: rgba(34,211,238,0.3);  background: rgba(34,211,238,0.06); }
+  .pill-red    { color: var(--red);    border-color: rgba(248,113,113,0.3); background: rgba(248,113,113,0.06); }
+
+  /* NAV TABS */
+  .tabs {
+    display: flex;
+    gap: 2px;
+    padding: 16px 40px;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    background: var(--bg2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .tab-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 8px 16px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    background: transparent;
+    color: var(--muted);
+    white-space: nowrap;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+  .tab-btn:hover { color: var(--text); border-color: var(--border2); }
+  .tab-btn.active {
+    color: var(--green);
+    border-color: rgba(0,229,160,0.3);
+    background: rgba(0,229,160,0.07);
+  }
+
+  /* MAIN */
+  .main { max-width: 1100px; margin: 0 auto; padding: 40px; }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 20px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--border2); }
+  .card-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title span { font-size: 16px; }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media (max-width: 800px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+  /* SECTION HEADING */
+  .section-title {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+  .section-sub {
+    color: var(--muted2);
+    font-size: 14px;
+    margin-bottom: 28px;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+
+  /* CODE BLOCK */
+  .code-block {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    overflow-x: auto;
+    line-height: 1.8;
+    white-space: pre;
+  }
+
+  /* TREE */
+  .tree { font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 2; }
+  .tree .dir  { color: var(--blue); font-weight: 500; }
+  .tree .file { color: var(--text); }
+  .tree .green { color: var(--green); font-weight: 600; }
+  .tree .orange { color: var(--orange); }
+  .tree .purple { color: var(--purple); }
+  .tree .yellow { color: var(--yellow); }
+  .tree .cyan { color: var(--cyan); }
+  .tree .muted { color: var(--muted); font-size: 11px; }
+
+  /* LIST */
+  .check-list { list-style: none; }
+  .check-list li {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 400;
+    color: var(--muted2);
+  }
+  .check-list li:last-child { border-bottom: none; }
+  .check-list li .ico { flex-shrink: 0; margin-top: 1px; }
+  .check-list li strong { color: var(--text); }
+
+  /* TOOL MATRIX */
+  table.matrix {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .matrix th {
+    background: var(--bg3);
+    padding: 10px 14px;
+    text-align: left;
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+  .matrix td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted2);
+    vertical-align: top;
+  }
+  .matrix tr:hover td { background: rgba(255,255,255,0.02); }
+  .matrix .yes { color: var(--green); }
+  .matrix .no { color: var(--red); }
+  .matrix .partial { color: var(--yellow); }
+  .matrix .toolname { color: var(--text); font-weight: 500; }
+  .matrix .file-col { color: var(--green); }
+
+  /* RULE PREVIEW */
+  .rule-preview {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .rule-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 14px;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .rule-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .rule-body { padding: 16px; line-height: 1.9; white-space: pre; overflow-x: auto; }
+
+  /* FLOW DIAGRAM */
+  .flow { display: flex; align-items: stretch; gap: 0; overflow-x: auto; padding: 4px 0; }
+  .flow-step {
+    flex: 1; min-width: 120px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-right: none;
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+    position: relative;
+  }
+  .flow-step:last-child { border-right: 1px solid var(--border); border-radius: 0 8px 8px 0; }
+  .flow-step:first-child { border-radius: 8px 0 0 8px; }
+  .flow-step .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    background: var(--bg2);
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--border2);
+  }
+  .flow-step .ico2 { font-size: 20px; }
+  .flow-step .label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .flow-step .desc { font-size: 11px; color: var(--muted); line-height: 1.4; font-weight: 400; }
+  .flow-arrow {
+    display: flex; align-items: center; color: var(--green);
+    font-size: 14px; padding: 0 4px; flex-shrink: 0;
+  }
+
+  /* WARNING / TIP */
+  .callout {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 16px 18px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+  .callout-warn { background: rgba(251,191,36,0.06); border: 1px solid rgba(251,191,36,0.2); }
+  .callout-tip  { background: rgba(0,229,160,0.05); border: 1px solid rgba(0,229,160,0.18); }
+  .callout-info { background: rgba(77,166,255,0.05); border: 1px solid rgba(77,166,255,0.18); }
+  .callout-red  { background: rgba(248,113,113,0.05); border: 1px solid rgba(248,113,113,0.18); }
+  .callout .ico3 { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .callout-warn .ico3 { color: var(--yellow); }
+  .callout-tip  .ico3 { color: var(--green); }
+  .callout-info .ico3 { color: var(--blue); }
+  .callout-red  .ico3 { color: var(--red); }
+  .callout p { color: var(--muted2); }
+  .callout strong { color: var(--text); }
+
+  /* STAT */
+  .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 24px; }
+  @media (max-width: 700px) { .stats { grid-template-columns: repeat(2,1fr); } }
+  .stat {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+  }
+  .stat .val {
+    font-size: 28px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--green), var(--blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .stat .lbl { font-size: 11px; color: var(--muted); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+
+  /* TAG */
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+  .tag-green { background: rgba(0,229,160,0.1); color: var(--green); }
+  .tag-blue  { background: rgba(77,166,255,0.1); color: var(--blue); }
+  .tag-red   { background: rgba(248,113,113,0.1); color: var(--red); }
+  .tag-orange { background: rgba(251,146,60,0.1); color: var(--orange); }
+
+  /* EXAMPLE SECTION */
+  .example-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .example-col { padding: 0; }
+  .example-col:first-child { border-right: 1px solid var(--border); }
+  .example-col-head {
+    padding: 10px 16px;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .bad-head { background: rgba(248,113,113,0.06); color: var(--red); }
+  .good-head { background: rgba(0,229,160,0.06); color: var(--green); }
+  .example-body { padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.8; white-space: pre; overflow-x: auto; color: var(--muted2); background: var(--bg3); }
+
+  h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+    margin-top: 4px;
+  }
+
+  /* COLLAPSIBLE */
+  details { margin-bottom: 12px; }
+  summary {
+    cursor: pointer;
+    padding: 12px 16px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    list-style: none;
+    transition: border-color 0.2s;
+  }
+  summary:hover { border-color: var(--border2); }
+  details[open] summary { border-radius: 8px 8px 0 0; border-color: rgba(0,229,160,0.3); color: var(--green); }
+  details[open] { }
+  .details-body {
+    border: 1px solid rgba(0,229,160,0.15);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    padding: 18px 20px;
+    background: rgba(0,229,160,0.02);
+  }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+  /* Inline code */
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--green);
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">// DEEP RESEARCH GUIDE · MARCH 2026</div>
+  <h1>AI Agent Coding:<br>Folder Structure & Rule Files</h1>
+  <p>A complete reference for AGENTS.md, CLAUDE.md, GEMINI.md, project layout patterns, workflow design, and AI-readable documentation — synthesized from the latest standards and research.</p>
+  <div class="tool-pills">
+    <span class="pill pill-green">AGENTS.md</span>
+    <span class="pill pill-blue">CLAUDE.md</span>
+    <span class="pill pill-purple">GEMINI.md</span>
+    <span class="pill pill-orange">.cursorrules</span>
+    <span class="pill pill-yellow">copilot-instructions</span>
+    <span class="pill pill-cyan">Claude Code</span>
+    <span class="pill pill-red">Linux Foundation AAIF</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('overview')">📊 Overview</button>
+  <button class="tab-btn" onclick="showTab('structure')">📁 Folder Structure</button>
+  <button class="tab-btn" onclick="showTab('rulefiles')">📄 Rule Files</button>
+  <button class="tab-btn" onclick="showTab('template')">✍️ Templates</button>
+  <button class="tab-btn" onclick="showTab('workflow')">⚡ Workflow</button>
+  <button class="tab-btn" onclick="showTab('docs')">📚 AI Docs</button>
+  <button class="tab-btn" onclick="showTab('mistakes')">🚫 Avoid</button>
+</div>
+
+<div class="main">
+
+<!-- ─────────────────── OVERVIEW ─────────────────── -->
+<div id="tab-overview" class="section active">
+  <div class="section-title">The State of AI Agent Rule Files</div>
+  <div class="section-sub">As of March 2026, every major AI coding tool reads a config/rule file from your project. AGENTS.md has emerged as the open standard, now under Linux Foundation governance. Understanding the ecosystem is essential before choosing your setup.</div>
+
+  <div class="stats">
+    <div class="stat"><div class="val">60K+</div><div class="lbl">repos using AGENTS.md</div></div>
+    <div class="stat"><div class="val">35–55%</div><div class="lbl">fewer agent-gen'd bugs</div></div>
+    <div class="stat"><div class="val">150–200</div><div class="lbl">max reliable instructions per session</div></div>
+    <div class="stat"><div class="val">&lt;300</div><div class="lbl">target lines for your rule file</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>🌐</span> Ecosystem Map: Which Tool Reads What</div>
+    <table class="matrix">
+      <thead>
+        <tr>
+          <th>Tool</th>
+          <th>Primary File</th>
+          <th>Reads AGENTS.md</th>
+          <th>Hierarchy</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="toolname">Claude Code (Anthropic)</td><td class="file-col">CLAUDE.md</td><td class="partial">⚠ Not yet</td><td class="yes">✓ Bottom-up</td><td>3,000+ upvote issue pending; symlink workaround</td></tr>
+        <tr><td class="toolname">OpenAI Codex CLI</td><td class="file-col">AGENTS.md</td><td class="yes">✓ Native</td><td class="yes">✓ Nearest wins</td><td>Origin spec creator (Aug 2025)</td></tr>
+        <tr><td class="toolname">Cursor</td><td class="file-col">.cursorrules / AGENTS.md</td><td class="yes">✓ Native</td><td class="yes">✓ Glob pattern</td><td>Supports per-file-type scoped rules</td></tr>
+        <tr><td class="toolname">GitHub Copilot</td><td class="file-col">.github/copilot-instructions.md</td><td class="yes">✓ Native</td><td class="yes">✓ Scoped glob</td><td>Also reads *.instructions.md files</td></tr>
+        <tr><td class="toolname">Gemini CLI (Google)</td><td class="file-col">GEMINI.md / AGENTS.md</td><td class="yes">✓ Native</td><td class="yes">✓ Nearest wins</td><td>GEMINI.md for Google-specific features</td></tr>
+        <tr><td class="toolname">Windsurf</td><td class="file-col">.windsurfrules / AGENTS.md</td><td class="yes">✓ Native</td><td class="yes">✓ Always On / Manual</td><td>6K char/rule, 12K total limit</td></tr>
+        <tr><td class="toolname">Aider</td><td class="file-col">AGENTS.md</td><td class="yes">✓ Native</td><td class="yes">✓</td><td>Open source CLI agent</td></tr>
+        <tr><td class="toolname">Zed Editor</td><td class="file-col">AGENTS.md</td><td class="yes">✓ Native</td><td class="yes">✓</td><td>Built-in AI assistant</td></tr>
+        <tr><td class="toolname">Warp Terminal</td><td class="file-col">AGENTS.md</td><td class="yes">✓ Native</td><td class="yes">✓</td><td>AI-native terminal</td></tr>
+        <tr><td class="toolname">Google Jules</td><td class="file-col">AGENTS.md</td><td class="yes">✓ Native</td><td class="yes">✓</td><td>Async coding agent</td></tr>
+        <tr><td class="toolname">Devin (Cognition)</td><td class="file-col">AGENTS.md</td><td class="yes">✓ Native</td><td class="yes">✓</td><td>Autonomous SWE agent</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span>📅</span> Key Dates</div>
+      <ul class="check-list">
+        <li><div class="ico">🔵</div><div><strong>Aug 2025</strong> — OpenAI releases AGENTS.md spec with Codex CLI</div></li>
+        <li><div class="ico">🟣</div><div><strong>Dec 2025</strong> — Linux Foundation creates Agentic AI Foundation (AAIF); AGENTS.md, MCP, and goose are founding projects</div></li>
+        <li><div class="ico">🟡</div><div><strong>Mar 2026</strong> — 60,000+ repos on GitHub now include AGENTS.md</div></li>
+        <li><div class="ico">🟢</div><div><strong>Apr 2026</strong> — MCP Dev Summit North America (NYC) — governance updates expected</div></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>🏛</span> AAIF Platinum Members</div>
+      <ul class="check-list">
+        <li><div class="ico">🔶</div><div><strong>AWS</strong></div></li>
+        <li><div class="ico">🔷</div><div><strong>Anthropic</strong></div></li>
+        <li><div class="ico">🔷</div><div><strong>Google</strong></div></li>
+        <li><div class="ico">⬛</div><div><strong>Microsoft</strong></div></li>
+        <li><div class="ico">🔲</div><div><strong>OpenAI</strong></div></li>
+      </ul>
+      <p style="font-size:12px;color:var(--muted);margin-top:12px;">Strong incentive for all new tools to adopt the standard rather than invent their own format.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-info">
+    <div class="ico3">🔬</div>
+    <p><strong>ETH Zurich Research (Feb 2026):</strong> An AGENTbench study of 138 real Python tasks found that LLM-generated AGENTS.md files can <em>hurt</em> performance. Recommendation: omit auto-generated files entirely and limit human-written instructions to <strong>non-inferable details</strong> — specific tooling, custom build commands, and project-specific gotchas only.</p>
+  </div>
+</div>
+
+<!-- ─────────────────── FOLDER STRUCTURE ─────────────────── -->
+<div id="tab-structure" class="section">
+  <div class="section-title">Folder Structure Patterns</div>
+  <div class="section-sub">From the two reference images and best practices research: a minimal single-repo, a monorepo with per-package overrides, and an advanced ACS (Agent Context System) layout.</div>
+
+  <div class="card">
+    <div class="card-title"><span>✅</span> Pattern 1 — Unified Rule File (Recommended: From Image 1)</div>
+    <div class="callout callout-tip" style="margin-bottom:16px;">
+      <div class="ico3">💡</div>
+      <p>The "Now" pattern from Image 1: replace per-tool scattered files with ONE <strong>AGENTS.md</strong> at root. Other tool files (CLAUDE.md, GEMINI.md) simply <strong>point to it</strong> — one source of truth, all agents covered.</p>
+    </div>
+    <div class="code-block tree">
+<span class="dir">root/</span>
+├── <span class="green">AGENTS.md</span>            <span class="muted">← Universal rule file (all tools)</span>
+├── <span class="blue">CLAUDE.md</span>            <span class="muted">← "Strictly follow rules in ./AGENTS.md" (or symlink)</span>
+├── <span class="purple">GEMINI.md</span>           <span class="muted">← "Strictly follow rules in ./AGENTS.md" (or symlink)</span>
+├── <span class="orange">README.md</span>           <span class="muted">← For humans: setup, overview, contributing</span>
+├── <span class="cyan">src/</span>
+│   └── ...
+├── <span class="cyan">docs/</span>               <span class="muted">← AI-readable extended docs (linked from AGENTS.md)</span>
+│   ├── <span class="file">ARCHITECTURE.md</span>
+│   ├── <span class="file">API_CONVENTIONS.md</span>
+│   └── <span class="file">patterns/</span>       <span class="muted">← Code pattern library for agents</span>
+└── <span class="cyan">.github/</span>
+    └── <span class="file">copilot-instructions.md</span>  <span class="muted">← Points to AGENTS.md</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>📦</span> Pattern 2 — Monorepo with Hierarchical AGENTS.md</div>
+    <div class="callout callout-info" style="margin-bottom:16px;">
+      <div class="ico3">ℹ️</div>
+      <p>The OpenAI repo uses <strong>88 AGENTS.md files</strong> across its monorepo. Each package overrides root defaults. The agent reads the <strong>nearest file up the tree</strong> — closest wins, outer provides defaults.</p>
+    </div>
+    <div class="code-block tree">
+<span class="dir">monorepo/</span>
+├── <span class="green">AGENTS.md</span>            <span class="muted">← Root defaults: stack, pnpm, shared conventions</span>
+├── <span class="blue">CLAUDE.md</span>            <span class="muted">← Points to ./AGENTS.md</span>
+├── <span class="orange">README.md</span>
+├── <span class="cyan">packages/</span>
+│   ├── <span class="dir">api/</span>
+│   │   ├── <span class="green">AGENTS.md</span>    <span class="muted">← API-specific: GraphQL, Prisma, REST conventions</span>
+│   │   └── <span class="file">src/</span>
+│   ├── <span class="dir">web/</span>
+│   │   ├── <span class="green">AGENTS.md</span>    <span class="muted">← Frontend: React, Tailwind, component patterns</span>
+│   │   └── <span class="file">src/</span>
+│   ├── <span class="dir">worker/</span>
+│   │   ├── <span class="green">AGENTS.md</span>    <span class="muted">← Worker-specific: queue, retry, idempotency rules</span>
+│   │   └── <span class="file">src/</span>
+│   └── <span class="dir">shared/</span>
+│       ├── <span class="green">AGENTS.md</span>    <span class="muted">← Shared lib conventions</span>
+│       └── <span class="file">src/</span>
+└── <span class="cyan">docs/</span>
+    ├── <span class="file">ARCHITECTURE.md</span>
+    └── <span class="file">patterns/</span>        <span class="muted">← AI pattern library, referenced from AGENTS.md</span></div>
+    <div class="callout callout-warn" style="margin-top:16px;margin-bottom:0">
+      <div class="ico3">⚠️</div>
+      <p><strong>Don't overload any level.</strong> Root AGENTS.md = global defaults only. Package AGENTS.md = what's unique to that subproject. Agents see all merged files in context — keep each focused.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>🤖</span> Pattern 3 — Advanced ACS (Agent Context System) Layout</div>
+    <p style="font-size:13px;color:var(--muted2);margin-bottom:16px;font-weight:400;">For larger projects with multiple specialized subagents, a dedicated <code>.agents/</code> folder uses 3-tier progressive disclosure to keep context windows lean.</p>
+    <div class="code-block tree">
+<span class="dir">project/</span>
+├── <span class="green">AGENTS.md</span>            <span class="muted">← Entry point, references .agents/ for depth</span>
+├── <span class="blue">CLAUDE.md</span>
+├── <span class="cyan">.agents/</span>             <span class="muted">← ACS root</span>
+│   ├── <span class="yellow">acs.yaml</span>         <span class="muted">← Manifest: what skills/agents are available</span>
+│   ├── <span class="dir">context/</span>         <span class="muted">← What agents need to KNOW (loaded on demand)</span>
+│   │   ├── <span class="file">stack.md</span>
+│   │   ├── <span class="file">architecture.md</span>
+│   │   └── <span class="file">data-model.md</span>
+│   ├── <span class="dir">skills/</span>          <span class="muted">← What agents can DO (activated by task match)</span>
+│   │   ├── <span class="file">deploy.md</span>
+│   │   ├── <span class="file">migrate-db.md</span>
+│   │   └── <span class="file">review-pr.md</span>
+│   ├── <span class="dir">agents/</span>          <span class="muted">← Named subagents with their own system prompts</span>
+│   │   ├── <span class="file">backend-agent.md</span>
+│   │   ├── <span class="file">frontend-agent.md</span>
+│   │   └── <span class="file">test-agent.md</span>
+│   └── <span class="dir">permissions/</span>     <span class="muted">← What agents can/cannot touch</span>
+│       └── <span class="file">boundaries.md</span>
+└── <span class="cyan">src/</span></div>
+    <h3 style="margin-top:18px;">3-Tier Loading Strategy</h3>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="num">1</div>
+        <div class="ico2">🏷️</div>
+        <div class="label">Always Loaded</div>
+        <div class="desc">Skill names + descriptions only (~50 tokens). Agent knows what exists.</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="num">2</div>
+        <div class="ico2">⚡</div>
+        <div class="label">On Activation</div>
+        <div class="desc">Task matches a skill → full SKILL.md body loads into context.</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="num">3</div>
+        <div class="ico2">📂</div>
+        <div class="label">On Demand</div>
+        <div class="desc">Supporting files (refs, scripts, assets) load only when the skill references them.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>🧪</span> Pattern 4 — Generative AI Python Project (From Image 2)</div>
+    <div class="code-block tree">
+<span class="dir">generative_ai_project/</span>
+├── <span class="green">AGENTS.md</span>            <span class="muted">← Agent rules: build cmds, test cmds, conventions</span>
+├── <span class="orange">README.md</span>           <span class="muted">← Human docs</span>
+├── <span class="yellow">requirements.txt</span>
+├── <span class="cyan">config/</span>              <span class="muted">← YAML config: separate from code</span>
+│   ├── <span class="file">model_config.yaml</span>
+│   ├── <span class="file">prompt_templates.yaml</span>
+│   └── <span class="file">logging_config.yaml</span>
+├── <span class="cyan">src/</span>
+│   ├── <span class="dir">llm/</span>             <span class="muted">← Separate client per provider</span>
+│   │   ├── <span class="file">claude_client.py</span>
+│   │   ├── <span class="file">gpt_client.py</span>
+│   │   └── <span class="file">base.py</span>
+│   ├── <span class="dir">prompt_engineering/</span>
+│   ├── <span class="dir">utils/</span>           <span class="muted">← rate_limiter, token_counter, cache</span>
+│   └── <span class="dir">handlers/</span>
+├── <span class="cyan">data/</span>
+│   ├── <span class="dir">cache/</span>
+│   ├── <span class="dir">prompts/</span>
+│   ├── <span class="dir">outputs/</span>
+│   └── <span class="dir">embeddings/</span>
+├── <span class="cyan">docs/</span>               <span class="muted">← AI-readable pattern docs</span>
+├── <span class="cyan">examples/</span>
+└── <span class="cyan">notebooks/</span>          <span class="muted">← Experimentation, not production</span></div>
+  </div>
+</div>
+
+<!-- ─────────────────── RULE FILES ─────────────────── -->
+<div id="tab-rulefiles" class="section">
+  <div class="section-title">Rule File Deep Dive</div>
+  <div class="section-sub">Each AI tool has its own format, hierarchy, and loading behavior. Here's everything you need to know about each one — and how they relate.</div>
+
+  <details open>
+    <summary>🟢 AGENTS.md — The Open Standard</summary>
+    <div class="details-body">
+      <div class="grid-2">
+        <div>
+          <h3>What it is</h3>
+          <p style="font-size:13.5px;color:var(--muted2);line-height:1.7;font-weight:400;margin-bottom:14px;">Created by OpenAI in August 2025. Donated to Linux Foundation AAIF in December 2025. Simple Markdown, no special schema, no YAML frontmatter required. Supported by 20+ tools as of March 2026.</p>
+          <h3>Hierarchy rules</h3>
+          <ul class="check-list">
+            <li><div class="ico">📍</div><div>Place one at <strong>repo root</strong> for global defaults</div></li>
+            <li><div class="ico">📦</div><div>Place one inside each <strong>subpackage</strong> to override</div></li>
+            <li><div class="ico">🔼</div><div><strong>Nearest file up the tree wins</strong> — closest to the file being edited takes precedence</div></li>
+            <li><div class="ico">✍️</div><div><strong>User prompt always overrides</strong> file instructions</div></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Sections to include</h3>
+          <ul class="check-list">
+            <li><div class="ico">📋</div><div><strong>Project overview</strong> — stack, language, key frameworks</div></li>
+            <li><div class="ico">⚙️</div><div><strong>Commands</strong> — exact shell commands (build, test, lint, migrate)</div></li>
+            <li><div class="ico">🎨</div><div><strong>Code style</strong> — only non-inferable conventions</div></li>
+            <li><div class="ico">🧪</div><div><strong>Testing requirements</strong> — what to run, how to run it</div></li>
+            <li><div class="ico">🚫</div><div><strong>Boundaries</strong> — never do X, always ask before Y</div></li>
+            <li><div class="ico">📎</div><div><strong>Pointers</strong> — link to extended docs in docs/</div></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary>🔵 CLAUDE.md — Claude Code Specific</summary>
+    <div class="details-body">
+      <div class="grid-2">
+        <div>
+          <h3>Hierarchy (bottom-up)</h3>
+          <ul class="check-list">
+            <li><div class="ico">🏢</div><div><strong>Enterprise policy</strong> — loads first (broadest)</div></li>
+            <li><div class="ico">👤</div><div><strong>~/.claude/CLAUDE.md</strong> — your personal preferences</div></li>
+            <li><div class="ico">📁</div><div><strong>Project root CLAUDE.md</strong> — project-level</div></li>
+            <li><div class="ico">📂</div><div><strong>Subdirectory CLAUDE.md</strong> — overrides for that folder</div></li>
+          </ul>
+          <p style="font-size:12px;color:var(--muted);margin-top:12px;font-weight:400;">More specific instructions override broader ones. Each level adds, not replaces.</p>
+        </div>
+        <div>
+          <h3>Claude Code extras</h3>
+          <ul class="check-list">
+            <li><div class="ico">📥</div><div><strong>@imports</strong> — compose instructions from multiple files: <code>@docs/patterns.md</code></div></li>
+            <li><div class="ico">🔪</div><div><strong>Slash commands</strong> — stored in <code>.claude/commands/</code></div></li>
+            <li><div class="ico">🧠</div><div><strong>Skills</strong> — stored in <code>.claude/skills/</code> (SKILL.md files)</div></li>
+            <li><div class="ico">🤖</div><div><strong>Subagents</strong> — defined with own system prompts and tool access</div></li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout callout-warn" style="margin-top:16px;margin-bottom:0;">
+        <div class="ico3">⚠️</div>
+        <p>Claude Code injects CLAUDE.md with a system reminder: <em>"this context may or may not be relevant to your tasks."</em> This means Claude <strong>will ignore instructions</strong> it deems irrelevant. Implication: keep the file universally applicable and under 300 lines.</p>
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary>🟣 GEMINI.md — Google Gemini CLI</summary>
+    <div class="details-body">
+      <p style="font-size:13.5px;color:var(--muted2);line-height:1.7;font-weight:400;margin-bottom:14px;">Google's Gemini CLI reads <code>GEMINI.md</code> first, falls back to <code>AGENTS.md</code>. Same hierarchical nearest-file logic. Use GEMINI.md for Gemini-specific settings (model selection, grounding options, tool permissions). Point the bulk of your rules to AGENTS.md.</p>
+      <div class="rule-preview">
+        <div class="rule-header">
+          <div class="rule-dot" style="background:#9333ea"></div>
+          <span>GEMINI.md</span>
+        </div>
+        <div class="rule-body"><span style="color:var(--muted)"># GEMINI.md
+# This file is Gemini CLI-specific.
+# All project conventions are in AGENTS.md.</span>
+
+<span style="color:var(--purple)">## Gemini-Specific Settings</span>
+- Model: gemini-2.5-pro
+- Ground responses using Google Search for API docs
+- Do NOT use code execution tool for DB migrations
+
+<span style="color:var(--purple)">## Shared Rules</span>
+See ./AGENTS.md for all project-level conventions.</div>
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary>🟠 .cursorrules & Cursor Instructions</summary>
+    <div class="details-body">
+      <p style="font-size:13.5px;color:var(--muted2);line-height:1.7;font-weight:400;margin-bottom:14px;">Cursor evolved from a single <code>.cursorrules</code> to scoped <code>.cursor/rules/*.mdc</code> files. Each rule can be <strong>Always On</strong>, <strong>Manual</strong> (via @mention), or <strong>Auto</strong> (model decides). Limits: 6,000 chars per rule, 12,000 chars total.</p>
+      <h3>Scoped rules (glob frontmatter)</h3>
+      <div class="code-block" style="margin-bottom:14px;">---
+description: TypeScript React rules
+globs: ["**/*.tsx", "**/*.ts"]
+alwaysApply: false
+---
+Use functional components with TypeScript interfaces.
+Always use server components unless client interactivity is required.</div>
+      <div class="callout callout-tip" style="margin-bottom:0">
+        <div class="ico3">💡</div>
+        <p>Use Cursor-scoped rules for <strong>file-type specific</strong> instructions. Put all universal project rules in AGENTS.md so they're available to every tool.</p>
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary>🟡 GitHub Copilot Instructions</summary>
+    <div class="details-body">
+      <p style="font-size:13.5px;color:var(--muted2);line-height:1.7;font-weight:400;margin-bottom:14px;">Copilot reads <code>.github/copilot-instructions.md</code>. Since July 2025 it also supports <code>.github/instructions/*.instructions.md</code> with glob-pattern frontmatter — same scoped approach as Cursor. Also natively reads AGENTS.md.</p>
+      <div class="code-block"><!-- .github/instructions/frontend.instructions.md -->
+---
+applyTo: "**/*.tsx"
+---
+Use functional components with TypeScript interfaces.
+Always use server components unless client interactivity is required.</div>
+    </div>
+  </details>
+
+  <hr class="divider">
+
+  <div class="card">
+    <div class="card-title"><span>🔗</span> The Multi-Tool Strategy: One Source of Truth</div>
+    <div class="rule-preview">
+      <div class="rule-header">
+        <div class="rule-dot" style="background:#2563eb"></div>
+        <span>CLAUDE.md</span>
+        <span style="margin-left:auto">Points to AGENTS.md</span>
+      </div>
+      <div class="rule-body"># CLAUDE.md
+Strictly follow the rules in ./AGENTS.md
+
+<span style="color:var(--muted)"># Claude Code-specific extras below only:</span>
+@docs/patterns/components.md  <span style="color:var(--muted)"># import component patterns</span>
+
+<span style="color:var(--muted)">## Claude-Specific Preferences
+- Use Task tool for multi-step operations
+- Prefer Bash tool over Write for file creation
+- Always run tests via Bash after code changes</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────── TEMPLATES ─────────────────── -->
+<div id="tab-template" class="section">
+  <div class="section-title">AGENTS.md Template Library</div>
+  <div class="section-sub">Production-ready templates for different project types. Copy, adapt, and keep under 150–300 lines.</div>
+
+  <div class="callout callout-warn">
+    <div class="ico3">⚠️</div>
+    <p><strong>Instruction Budget:</strong> Frontier thinking LLMs follow ~150–200 instructions reliably. Claude Code's system prompt already uses ~50. Your AGENTS.md should use as few as needed — every line competes for attention with actual work.</p>
+  </div>
+
+  <details open>
+    <summary>⚡ Minimal Starter Template (All Projects)</summary>
+    <div class="details-body">
+      <div class="rule-preview">
+        <div class="rule-header">
+          <div class="rule-dot" style="background:#00e5a0"></div>
+          <span>AGENTS.md</span>
+          <span style="margin-left:auto;font-size:10px">~40 lines · universally applicable</span>
+        </div>
+        <div class="rule-body"><span style="color:var(--green)"># AGENTS.md</span>
+
+<span style="color:var(--purple)">## Project</span>
+- <span style="color:var(--blue)">Stack:</span> Next.js 15, TypeScript 5.4, Tailwind CSS 4, PostgreSQL 16
+- <span style="color:var(--blue)">Package manager:</span> pnpm (do NOT use npm or yarn)
+- <span style="color:var(--blue)">Node:</span> 22.x (see .nvmrc)
+- <span style="color:var(--blue)">Monorepo:</span> No
+
+<span style="color:var(--purple)">## Commands</span>
+- `pnpm install`       Install all dependencies
+- `pnpm dev`           Dev server on :3000
+- `pnpm build`         Production build (must pass before any PR)
+- `pnpm test`          Run Vitest unit tests
+- `pnpm test:e2e`      Playwright end-to-end tests
+- `pnpm lint`          ESLint + Prettier check
+- `pnpm lint:fix`      Auto-fix lint issues
+- `pnpm db:migrate`    Run pending migrations
+- `pnpm db:seed`       Seed development database
+
+<span style="color:var(--purple)">## Code Style</span>
+- Functional components only, no class components
+- Named exports (never default exports)
+- `const` only — no `let` unless mutation required, never `var`
+- Colocate types in same file unless shared across 3+ files
+- Prefer server components; add `'use client'` only when needed
+
+<span style="color:var(--purple)">## Testing</span>
+- Every new feature needs at least one test
+- Run full suite before marking a task complete
+- Fix any type errors until `pnpm build` is clean
+
+<span style="color:var(--purple)">## Boundaries</span>
+- Never commit .env files
+- Never use `any` type — use `unknown` + narrowing
+- Never modify migration files after they've been applied
+- Ask before touching payment or auth modules
+
+<span style="color:var(--purple)">## Docs</span>
+See docs/ARCHITECTURE.md for system design.
+See docs/patterns/ for component and API patterns.</div>
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary>🐍 Python / Generative AI Project Template</summary>
+    <div class="details-body">
+      <div class="rule-preview">
+        <div class="rule-header">
+          <div class="rule-dot" style="background:#fbbf24"></div>
+          <span>AGENTS.md</span>
+          <span style="margin-left:auto;font-size:10px">Python / ML project</span>
+        </div>
+        <div class="rule-body"><span style="color:var(--green)"># AGENTS.md</span>
+
+<span style="color:var(--purple)">## Project</span>
+- <span style="color:var(--blue)">Stack:</span> Python 3.11, FastAPI, SQLAlchemy, Redis
+- <span style="color:var(--blue)">AI Models:</span> Claude (Anthropic SDK), GPT-4o (OpenAI SDK)
+- <span style="color:var(--blue)">Package manager:</span> uv (do NOT use pip directly)
+- <span style="color:var(--blue)">Config:</span> All settings in config/*.yaml — never hardcode
+
+<span style="color:var(--purple)">## Commands</span>
+- `uv run python -m pytest`           Run all tests
+- `uv run python -m pytest -k "name"` Run specific test
+- `uv run python -m app.main`         Start dev server
+- `uv run ruff check . --fix`         Lint and auto-fix
+- `uv run mypy src/`                  Type checking
+- `alembic upgrade head`              Apply migrations
+
+<span style="color:var(--purple)">## LLM Client Rules</span>
+- Always use the client in src/llm/ — never instantiate directly
+- Rate limiting is handled by src/utils/rate_limiter.py — use it
+- Cache results via src/utils/cache.py for repeated calls
+- Log every LLM call with token counts via logger.py
+- Handle RateLimitError and APIConnectionError in all callers
+
+<span style="color:var(--purple)">## Testing</span>
+- Mock all LLM calls in tests — never hit real APIs
+- Use fixtures in tests/conftest.py for shared state
+- All tests must pass before any PR: `uv run pytest`
+
+<span style="color:var(--purple)">## Boundaries</span>
+- Never store API keys in code — use environment variables
+- Never call LLMs in notebooks for production logic
+- Notebooks in notebooks/ are for experimentation only
+
+<span style="color:var(--purple)">## Docs</span>
+See docs/ARCHITECTURE.md and docs/LLM_CONVENTIONS.md.</div>
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary>📦 Monorepo Root AGENTS.md Template</summary>
+    <div class="details-body">
+      <div class="rule-preview">
+        <div class="rule-header">
+          <div class="rule-dot" style="background:#4da6ff"></div>
+          <span>AGENTS.md (root)</span>
+          <span style="margin-left:auto;font-size:10px">monorepo global defaults</span>
+        </div>
+        <div class="rule-body"><span style="color:var(--green)"># AGENTS.md — Monorepo Root</span>
+<span style="color:var(--muted)">This monorepo contains: web app, API service, worker, shared libraries.
+Each package has its own AGENTS.md with package-specific details.
+Nearest file takes precedence.</span>
+
+<span style="color:var(--purple)">## Workspace</span>
+- Package manager: pnpm workspaces
+- Install: `pnpm install --filter <package>` to add to a package
+- New package: `pnpm create vite@latest <name> -- --template react-ts`
+- Check package name in package.json before running commands
+
+<span style="color:var(--purple)">## Global Commands</span>
+- `pnpm -r build`     Build all packages
+- `pnpm -r test`      Test all packages
+- `pnpm -r lint`      Lint all packages
+- `pnpm --filter web dev`  Dev server for web package
+
+<span style="color:var(--purple)">## Global Conventions</span>
+- TypeScript strict mode everywhere
+- Named exports only
+- Never use `any` — use `unknown` with narrowing
+- Commit messages: conventional commits (feat, fix, chore, docs)
+- PRs must pass all tests: `pnpm -r test`
+
+<span style="color:var(--purple)">## Package-Specific Rules</span>
+See packages/api/AGENTS.md for API conventions.
+See packages/web/AGENTS.md for frontend conventions.
+See packages/worker/AGENTS.md for queue/job conventions.</div>
+      </div>
+    </div>
+  </details>
+
+  <div class="callout callout-tip" style="margin-top:20px;">
+    <div class="ico3">💡</div>
+    <p><strong>Progressive Disclosure Prompt:</strong> Ask your coding agent: <em>"Refactor my AGENTS.md to follow progressive disclosure principles. Find contradictions, identify instructions only relevant to specific tasks, and suggest what should be moved to docs/ instead."</em></p>
+  </div>
+</div>
+
+<!-- ─────────────────── WORKFLOW ─────────────────── -->
+<div id="tab-workflow" class="section">
+  <div class="section-title">AI Agent Workflow Design</div>
+  <div class="section-sub">How to structure the development workflow around AI agents — session startup, subagent orchestration, parallel workstreams, and CI integration.</div>
+
+  <div class="card">
+    <div class="card-title"><span>🔄</span> Agent Session Lifecycle</div>
+    <div class="flow" style="margin-bottom:0">
+      <div class="flow-step">
+        <div class="num">1</div>
+        <div class="ico2">📂</div>
+        <div class="label">Load Context</div>
+        <div class="desc">Agent reads AGENTS.md + CLAUDE.md hierarchy. Your rule file bootstraps the session.</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="num">2</div>
+        <div class="ico2">🔍</div>
+        <div class="label">Explore Code</div>
+        <div class="desc">Agent searches codebase. Existing patterns in code > instructions in rule file.</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="num">3</div>
+        <div class="ico2">⚙️</div>
+        <div class="label">Execute Task</div>
+        <div class="desc">Writes code, runs tests (bash), fixes type errors, iterates.</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="num">4</div>
+        <div class="ico2">✅</div>
+        <div class="label">Validate</div>
+        <div class="desc">Runs full test suite + lint. Must pass before task is "done".</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="num">5</div>
+        <div class="ico2">📝</div>
+        <div class="label">Update Docs</div>
+        <div class="desc">Update AGENTS.md if conventions changed. Commit in same PR.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span>🤝</span> Subagent Orchestration Pattern</div>
+      <p style="font-size:13px;color:var(--muted2);margin-bottom:14px;font-weight:400;">For large projects, route tasks to specialized agents — each gets a smaller, focused context. Claude Code supports defining subagents with their own system prompts and tool access.</p>
+      <div class="code-block tree" style="font-size:11.5px;">
+<span class="dir">.agents/agents/</span>
+├── <span class="green">orchestrator.md</span>    <span class="muted">← Routes tasks to subagents</span>
+├── <span class="blue">backend-agent.md</span>   <span class="muted">← DB, API, auth logic</span>
+├── <span class="purple">frontend-agent.md</span>  <span class="muted">← React, UI, accessibility</span>
+├── <span class="yellow">test-agent.md</span>      <span class="muted">← Write & run tests only</span>
+└── <span class="orange">review-agent.md</span>    <span class="muted">← Code review & security</span></div>
+      <div class="callout callout-warn" style="margin-top:12px;margin-bottom:0;">
+        <div class="ico3">⚠️</div>
+        <p style="font-size:12px;">Start with 2–3 parallel agents max. Ensure tasks are <strong>truly independent</strong> — never two agents writing to the same file at once.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>📋</span> Spec-Driven Workflow</div>
+      <p style="font-size:13px;color:var(--muted2);margin-bottom:14px;font-weight:400;">Addy Osmani's spec-driven approach for complex features.</p>
+      <ul class="check-list" style="font-size:13px;">
+        <li><div class="ico">1️⃣</div><div>Write <code>SPEC_feature.md</code> with requirements, success criteria, test cases</div></li>
+        <li><div class="ico">2️⃣</div><div>Tell agent: <em>"Implement per SPEC_feature.md"</em></div></li>
+        <li><div class="ico">3️⃣</div><div>Agent implements; test-agent validates against spec</div></li>
+        <li><div class="ico">4️⃣</div><div>Use git branches per agent workstream</div></li>
+        <li><div class="ico">5️⃣</div><div>Merge to main only when all tests green</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>🪝</span> Claude Code Hooks & Automation</div>
+    <div class="grid-2">
+      <div>
+        <h3>Stop Hooks (post-task)</h3>
+        <ul class="check-list" style="font-size:13px;">
+          <li><div class="ico">🎨</div><div>Run formatter (Biome, Prettier) on changed files</div></li>
+          <li><div class="ico">🔍</div><div>Run linter and surface errors back to Claude</div></li>
+          <li><div class="ico">🧪</div><div>Run affected tests automatically</div></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Slash Commands (reusable prompts)</h3>
+        <ul class="check-list" style="font-size:13px;">
+          <li><div class="ico">📰</div><div><code>/review</code> — Analyze git diff for issues</div></li>
+          <li><div class="ico">🔒</div><div><code>/security</code> — Scan for vulnerabilities</div></li>
+          <li><div class="ico">📖</div><div><code>/docs</code> — Generate/update documentation</div></li>
+          <li><div class="ico">🗄️</div><div><code>/migrate</code> — Database migration workflow</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>🔀</span> Version Control Integration</div>
+    <ul class="check-list">
+      <li><div class="ico">📌</div><div>Update AGENTS.md <strong>in the same PR</strong> as the code change that necessitated the update. Reviewers should check rule file quality.</div></li>
+      <li><div class="ico">🌿</div><div>Create a Git branch per parallel agent workstream to avoid conflicts</div></li>
+      <li><div class="ico">🤖</div><div>Use PR-level code review agents (GitHub Copilot review, Claude Code review) to catch inter-package issues</div></li>
+      <li><div class="ico">📊</div><div>Track AGENTS.md size/complexity in your team's code review checklist — file rot is real</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ─────────────────── DOCS ─────────────────── -->
+<div id="tab-docs" class="section">
+  <div class="section-title">AI-Readable Documentation System</div>
+  <div class="section-sub">AGENTS.md is just the entry point. A well-designed docs/ system gives agents the deep context they need without clogging the rule file. Reference from AGENTS.md; load on demand.</div>
+
+  <div class="callout callout-info">
+    <div class="ico3">ℹ️</div>
+    <p><strong>LLMs are in-context learners.</strong> If your code follows a consistent pattern, a few examples (or a well-written pattern doc) teach the agent faster than listing rules. Reference real files in the repo as concrete examples — agents can read them.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>📚</span> Recommended docs/ Structure</div>
+    <div class="code-block tree">
+<span class="dir">docs/</span>
+├── <span class="green">ARCHITECTURE.md</span>      <span class="muted">← System design, data flow, service boundaries</span>
+├── <span class="blue">API_CONVENTIONS.md</span>   <span class="muted">← REST/GraphQL patterns, error formats, versioning</span>
+├── <span class="purple">LLM_CONVENTIONS.md</span>   <span class="muted">← Prompt patterns, caching rules, token budgets</span>
+├── <span class="orange">SECURITY.md</span>          <span class="muted">← Auth flows, data handling, what agents must NOT do</span>
+├── <span class="yellow">TESTING.md</span>           <span class="muted">← Test strategy, mocking approach, fixture usage</span>
+└── <span class="dir">patterns/</span>            <span class="muted">← Code pattern library (anti-patterns + correct examples)</span>
+    ├── <span class="file">components-button.md</span>
+    ├── <span class="file">components-form.md</span>
+    ├── <span class="file">server-functions.md</span>
+    ├── <span class="file">error-handling.md</span>
+    ├── <span class="file">database-queries.md</span>
+    └── <span class="file">CONTRIBUTE.md</span>       <span class="muted">← How to add patterns</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>📋</span> Pattern File Structure (Each file in docs/patterns/)</div>
+    <div class="example-grid">
+      <div class="example-col">
+        <div class="example-col-head bad-head">❌ Anti-pattern</div>
+        <div class="example-body"><span style="color:var(--muted)">## Button Anti-patterns</span>
+
+<span style="color:var(--red)">// Wrong: class component</span>
+class Button extends React.Component {
+  render() {
+    return &lt;button&gt;Click&lt;/button&gt;
+  }
+}
+
+<span style="color:var(--red)">// Wrong: default export</span>
+export default Button
+
+<span style="color:var(--red)">// Wrong: inline styles</span>
+&lt;button style={{color: 'red'}}&gt;</div>
+      </div>
+      <div class="example-col">
+        <div class="example-col-head good-head">✅ Correct pattern</div>
+        <div class="example-body"><span style="color:var(--muted)">## Button Patterns</span>
+
+<span style="color:var(--green)">// Correct: functional + named export</span>
+interface ButtonProps {
+  label: string
+  onClick: () => void
+  variant?: 'primary' | 'ghost'
+}
+
+<span style="color:var(--green)">export const Button = ({</span>
+  label, onClick, variant = 'primary'
+}: ButtonProps) =&gt; (
+  &lt;button className={cn(styles[variant])}&gt;
+    {label}
+  &lt;/button&gt;
+)
+
+<span style="color:var(--muted)">// See: src/components/ui/Button.tsx</span></div>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:12px;font-weight:400;">Key pattern file elements: <strong>structural trees</strong> showing component composition, <strong>Wrong vs Correct</strong> comparisons, <strong>references</strong> to real files in the repo as concrete examples.</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span>🤖</span> Claude Code @import Pattern</div>
+      <p style="font-size:13px;color:var(--muted2);margin-bottom:12px;font-weight:400;">Use <code>@imports</code> in CLAUDE.md to compose context from multiple docs files on demand:</p>
+      <div class="code-block" style="font-size:12px;"># CLAUDE.md
+
+Strictly follow ./AGENTS.md
+
+<span style="color:var(--muted)"># Pull in deeper context:</span>
+@docs/ARCHITECTURE.md
+@docs/patterns/server-functions.md
+
+<span style="color:var(--muted)"># For DB tasks, agent auto-reads:</span>
+@docs/patterns/database-queries.md</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>🧠</span> Auto-Memory Best Practices</div>
+      <ul class="check-list" style="font-size:13px;">
+        <li><div class="ico">🔄</div><div>When Claude makes a repeated wrong assumption, add it to AGENTS.md — don't just correct once</div></li>
+        <li><div class="ico">📝</div><div>Review auto-generated memory notes periodically — agent-written notes vary in quality</div></li>
+        <li><div class="ico">🗑️</div><div>Delete entries that are now obvious from code (package.json shows framework; don't repeat it)</div></li>
+        <li><div class="ico">📎</div><div>Link to real source files rather than duplicating content</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>📐</span> SPEC_feature.md Template for Complex Tasks</div>
+    <div class="rule-preview">
+      <div class="rule-header">
+        <div class="rule-dot" style="background:#a78bfa"></div>
+        <span>SPEC_user-auth.md</span>
+        <span style="margin-left:auto;font-size:10px">task-specific — lives in docs/specs/ or project root temporarily</span>
+      </div>
+      <div class="rule-body"><span style="color:var(--green)"># SPEC: User Authentication</span>
+
+<span style="color:var(--purple)">## Goal</span>
+Add email + OAuth (GitHub) authentication to the web app.
+Use NextAuth.js v5 with Prisma adapter.
+
+<span style="color:var(--purple)">## Scope</span>
+- In: Login page, session management, protected routes
+- Out: 2FA, social logins beyond GitHub, admin roles
+
+<span style="color:var(--purple)">## Success Criteria</span>
+- [ ] User can sign up with email + password
+- [ ] User can sign in with GitHub OAuth
+- [ ] Protected pages redirect to /login if unauthenticated
+- [ ] Session expires after 7 days
+- [ ] All tests pass: `pnpm test --filter auth`
+
+<span style="color:var(--purple)">## Constraints</span>
+- Passwords hashed with bcrypt (min 12 rounds)
+- Never log passwords or tokens
+- Follow docs/SECURITY.md token storage rules
+
+<span style="color:var(--purple)">## Test Cases</span>
+- Email signup with valid credentials → session created
+- Email signup with duplicate email → 409 error
+- OAuth with new GitHub account → account created
+- Accessing /dashboard without auth → redirect to /login
+
+<span style="color:var(--purple)">## References</span>
+- docs/ARCHITECTURE.md (auth section)
+- docs/API_CONVENTIONS.md (error format)
+- src/lib/auth.ts (existing session helpers)</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────── MISTAKES ─────────────────── -->
+<div id="tab-mistakes" class="section">
+  <div class="section-title">What NOT To Do</div>
+  <div class="section-sub">The most common mistakes that hurt agent performance — backed by the ETH Zurich AGENTbench research and practitioner experience.</div>
+
+  <div class="grid-2">
+    <div>
+      <div class="callout callout-red">
+        <div class="ico3">🚫</div>
+        <p><strong>Never auto-generate AGENTS.md.</strong> LLM-generated files are comprehensive but not focused. The ETH Zurich study found they can <em>hurt</em> performance vs no file at all. Write yours by hand — every line must earn its place.</p>
+      </div>
+      <div class="callout callout-red">
+        <div class="ico3">🚫</div>
+        <p><strong>Never duplicate across tool files.</strong> Don't copy-paste the same rules into CLAUDE.md, .cursorrules, and copilot-instructions.md. Maintain AGENTS.md as the single source of truth; have tool-specific files reference it.</p>
+      </div>
+      <div class="callout callout-red">
+        <div class="ico3">🚫</div>
+        <p><strong>Never put things a linter handles.</strong> "Use 2-space indentation" or "always add trailing commas" are Prettier's job, not your instruction budget's. Same for TypeScript — if the type system enforces it, don't repeat it in AGENTS.md.</p>
+      </div>
+      <div class="callout callout-red">
+        <div class="ico3">🚫</div>
+        <p><strong>Never include task-specific instructions in AGENTS.md.</strong> "When building the payment module, make sure to..." belongs in your prompt or a SPEC file, not a persistent config that loads in every session.</p>
+      </div>
+    </div>
+    <div>
+      <div class="callout callout-red">
+        <div class="ico3">🚫</div>
+        <p><strong>Never let the file go stale.</strong> A wrong instruction is worse than no instruction. When your stack changes, update AGENTS.md in the same PR. Add AGENTS.md review to your PR checklist.</p>
+      </div>
+      <div class="callout callout-red">
+        <div class="ico3">🚫</div>
+        <p><strong>Never include obvious things.</strong> "This project uses JavaScript", "Write clean code", "Follow best practices" — agents can infer these from package.json and the codebase. Every obvious line crowds out actually useful instructions.</p>
+      </div>
+      <div class="callout callout-red">
+        <div class="ico3">🚫</div>
+        <p><strong>Never paste full API docs.</strong> Link to them instead. Use a <code>docs/</code> directory for supplementary context that agents can pull in when needed, rather than embedding it all in AGENTS.md.</div>
+      </div>
+      <div class="callout callout-red">
+        <div class="ico3">🚫</div>
+        <p><strong>Never run multiple agents on the same file.</strong> Last-write-wins conflicts are painful. Ensure parallel agent workstreams are truly independent — separate branches, separate file domains.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="card">
+    <div class="card-title"><span>✅</span> Quick Self-Check Before Publishing Your AGENTS.md</div>
+    <ul class="check-list">
+      <li><div class="ico tag tag-green">✓</div><div>Is every instruction <strong>universally applicable</strong> to all tasks in this project? (If not, move to a SPEC or prompt)</div></li>
+      <li><div class="ico tag tag-green">✓</div><div>Are all commands wrapped in backticks and <strong>copy-paste runnable</strong>? (Exact commands, not descriptions)</div></li>
+      <li><div class="ico tag tag-green">✓</div><div>Is the file under <strong>300 lines</strong>? Under 150 is better.</div></li>
+      <li><div class="ico tag tag-green">✓</div><div>Have you removed anything that a <strong>linter, formatter, or type system</strong> already enforces?</div></li>
+      <li><div class="ico tag tag-green">✓</div><div>Have you removed anything <strong>inferable from the codebase</strong> itself?</div></li>
+      <li><div class="ico tag tag-green">✓</div><div>Do tool-specific files (CLAUDE.md, GEMINI.md) <strong>point to AGENTS.md</strong> rather than duplicate it?</div></li>
+      <li><div class="ico tag tag-green">✓</div><div>Is the file <strong>tracked in version control</strong> and reviewed in PRs?</div></li>
+      <li><div class="ico tag tag-green">✓</div><div>Does the file have a <strong>Boundaries/Don't</strong> section with hard limits?</div></li>
+      <li><div class="ico tag tag-green">✓</div><div>Does it <strong>link to docs/</strong> for deeper context rather than embedding it all?</div></li>
+      <li><div class="ico tag tag-green">✓</div><div>Was it <strong>written by a human</strong>, not generated by an LLM?</div></li>
+    </ul>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+function showTab(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

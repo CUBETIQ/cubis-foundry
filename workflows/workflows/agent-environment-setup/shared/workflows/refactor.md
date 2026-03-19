@@ -59,3 +59,4 @@ WORKFLOW_RESULT:
   behavioral_regressions: <number>
   follow_up_items: [<string>] | []
 ```
+  
