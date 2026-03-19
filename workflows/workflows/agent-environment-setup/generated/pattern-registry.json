@@ -1,5 +1,5 @@
 {
-  "$schema": "cubis-foundry-pattern-registry-v1",
+  "$schema": "./cubis-foundry-pattern-registry-v1.schema.json",
   "generatedAt": "1970-01-01T00:00:00.000Z",
   "auditedReferences": [
     {

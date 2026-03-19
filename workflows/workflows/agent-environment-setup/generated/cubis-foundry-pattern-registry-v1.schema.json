@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Cubis Foundry Pattern Registry",
+  "description": "Generated pattern registry for cross-platform routing.",
+  "type": "object",
+  "required": [
+    "$schema",
+    "generatedAt",
+    "auditedReferences",
+    "patterns"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "auditedReferences": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "orchestrationSubtypes": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "patterns": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": false
+}

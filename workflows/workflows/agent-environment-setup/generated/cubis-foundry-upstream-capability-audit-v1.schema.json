@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Cubis Foundry Upstream Capability Audit",
+  "description": "Generated audit ledger for upstream capability references used in parity mapping.",
+  "type": "object",
+  "required": [
+    "$schema",
+    "generatedAt",
+    "audits"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "audits": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": false
+}

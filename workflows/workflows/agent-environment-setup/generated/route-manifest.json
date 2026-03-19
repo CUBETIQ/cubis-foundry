@@ -1,5 +1,5 @@
 {
-  "$schema": "cubis-foundry-route-manifest-v2",
+  "$schema": "./cubis-foundry-route-manifest-v2.schema.json",
   "generatedAt": "1970-01-01T00:00:00.000Z",
   "contentHash": "69e2b5ac03b593f3",
   "summary": {

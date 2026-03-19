@@ -38,9 +38,16 @@ const SHARED_AGENTS_DIR = path.join(SHARED_ROOT, "agents");
 const SHARED_WORKFLOWS_DIR = path.join(SHARED_ROOT, "workflows");
 const GENERATED_DIR = path.join(BUNDLE_ROOT, "generated");
 const ROUTE_MANIFEST_FILE = "route-manifest.json";
+const ROUTE_MANIFEST_SCHEMA_FILE = "cubis-foundry-route-manifest-v2.schema.json";
 const BUNDLE_MANIFEST_FILE = "manifest.json";
 const CANONICAL_SKILLS_DIR = path.join(ROOT, "workflows", "skills");
 const DOCS_DIR = path.join(ROOT, "docs");
+const PATTERN_REGISTRY_SCHEMA_FILE =
+  "cubis-foundry-pattern-registry-v1.schema.json";
+const PLATFORM_CAPABILITIES_SCHEMA_FILE =
+  "cubis-foundry-platform-capabilities-v1.schema.json";
+const UPSTREAM_CAPABILITY_AUDIT_SCHEMA_FILE =
+  "cubis-foundry-upstream-capability-audit-v1.schema.json";
 
 const PLATFORM_DIRS = {
   codex: path.join(BUNDLE_ROOT, "platforms", "codex"),
@@ -99,6 +106,10 @@ function unique(values) {
 
 function normalizeMarkdownId(fileName) {
   return path.basename(fileName, ".md").trim();
+}
+
+function localJsonSchemaRef(fileName) {
+  return `./${fileName}`;
 }
 
 function getScalar(frontmatter, key) {
@@ -422,7 +433,7 @@ function buildRouteManifest({ sharedAgents, sharedWorkflows }) {
   return (
     JSON.stringify(
       {
-        $schema: "cubis-foundry-route-manifest-v2",
+        $schema: localJsonSchemaRef(ROUTE_MANIFEST_SCHEMA_FILE),
         generatedAt: new Date(0).toISOString(),
         contentHash,
         summary: {
@@ -436,6 +447,180 @@ function buildRouteManifest({ sharedAgents, sharedWorkflows }) {
       2,
     ) + "\n"
   );
+}
+
+function buildRouteManifestSchema() {
+  return `${JSON.stringify(
+    {
+      $schema: "http://json-schema.org/draft-07/schema#",
+      title: "Cubis Foundry Route Manifest",
+      description:
+        "Generated routing manifest for shared workflows and agents.",
+      type: "object",
+      required: [
+        "$schema",
+        "generatedAt",
+        "contentHash",
+        "summary",
+        "routes",
+      ],
+      properties: {
+        $schema: { type: "string" },
+        generatedAt: { type: "string", format: "date-time" },
+        contentHash: { type: "string" },
+        summary: {
+          type: "object",
+          required: ["totalRoutes", "workflows", "agents"],
+          properties: {
+            totalRoutes: { type: "integer", minimum: 0 },
+            workflows: { type: "integer", minimum: 0 },
+            agents: { type: "integer", minimum: 0 },
+          },
+          additionalProperties: false,
+        },
+        routes: {
+          type: "array",
+          items: {
+            type: "object",
+            required: [
+              "kind",
+              "id",
+              "command",
+              "displayName",
+              "description",
+              "triggers",
+              "primaryAgent",
+              "supportingAgents",
+              "primarySkills",
+              "supportingSkills",
+              "artifacts",
+            ],
+            properties: {
+              kind: { enum: ["workflow", "agent"] },
+              id: { type: "string" },
+              command: { type: ["string", "null"] },
+              displayName: { type: "string" },
+              description: { type: "string" },
+              triggers: { type: "array", items: { type: "string" } },
+              primaryAgent: { type: "string" },
+              supportingAgents: {
+                type: "array",
+                items: { type: "string" },
+              },
+              primarySkills: {
+                type: "array",
+                items: { type: "string" },
+              },
+              supportingSkills: {
+                type: "array",
+                items: { type: "string" },
+              },
+              artifacts: {
+                type: "object",
+                properties: {
+                  codex: { $ref: "#/definitions/platformArtifacts" },
+                  copilot: { $ref: "#/definitions/platformArtifacts" },
+                  antigravity: { $ref: "#/definitions/platformArtifacts" },
+                  claude: { $ref: "#/definitions/platformArtifacts" },
+                  gemini: { $ref: "#/definitions/platformArtifacts" },
+                },
+                additionalProperties: false,
+              },
+            },
+            additionalProperties: false,
+          },
+        },
+      },
+      definitions: {
+        platformArtifacts: {
+          type: "object",
+          properties: {
+            skillDir: { type: "string" },
+            workflowFile: { type: "string" },
+            promptFile: { type: "string" },
+            commandFile: { type: "string" },
+            agentFile: { type: "string" },
+            compatibilityAlias: { type: "string" },
+            target: { type: "string" },
+          },
+          additionalProperties: false,
+        },
+      },
+      additionalProperties: false,
+    },
+    null,
+    2,
+  )}\n`;
+}
+
+function buildPatternRegistrySchema() {
+  return `${JSON.stringify(
+    {
+      $schema: "http://json-schema.org/draft-07/schema#",
+      title: "Cubis Foundry Pattern Registry",
+      description: "Generated pattern registry for cross-platform routing.",
+      type: "object",
+      required: ["$schema", "generatedAt", "auditedReferences", "patterns"],
+      properties: {
+        $schema: { type: "string" },
+        generatedAt: { type: "string", format: "date-time" },
+        auditedReferences: { type: "array", items: { type: "object" } },
+        orchestrationSubtypes: {
+          type: "array",
+          items: { type: "object" },
+        },
+        patterns: { type: "array", items: { type: "object" } },
+      },
+      additionalProperties: false,
+    },
+    null,
+    2,
+  )}\n`;
+}
+
+function buildPlatformCapabilitiesSchema() {
+  return `${JSON.stringify(
+    {
+      $schema: "http://json-schema.org/draft-07/schema#",
+      title: "Cubis Foundry Platform Capabilities",
+      description:
+        "Generated platform capability contracts for supported runtimes.",
+      type: "object",
+      required: ["$schema", "generatedAt", "platforms"],
+      properties: {
+        $schema: { type: "string" },
+        generatedAt: { type: "string", format: "date-time" },
+        platforms: {
+          type: "object",
+          additionalProperties: { type: "object" },
+        },
+      },
+      additionalProperties: false,
+    },
+    null,
+    2,
+  )}\n`;
+}
+
+function buildUpstreamCapabilityAuditSchema() {
+  return `${JSON.stringify(
+    {
+      $schema: "http://json-schema.org/draft-07/schema#",
+      title: "Cubis Foundry Upstream Capability Audit",
+      description:
+        "Generated audit ledger for upstream capability references used in parity mapping.",
+      type: "object",
+      required: ["$schema", "generatedAt", "audits"],
+      properties: {
+        $schema: { type: "string" },
+        generatedAt: { type: "string", format: "date-time" },
+        audits: { type: "array", items: { type: "object" } },
+      },
+      additionalProperties: false,
+    },
+    null,
+    2,
+  )}\n`;
 }
 
 async function listTopLevelCanonicalSkillIds() {
@@ -1148,11 +1333,21 @@ async function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
     ROUTE_MANIFEST_FILE,
     buildRouteManifest({ sharedAgents, sharedWorkflows }),
   );
+  generated.set(ROUTE_MANIFEST_SCHEMA_FILE, buildRouteManifestSchema());
+  generated.set(PATTERN_REGISTRY_SCHEMA_FILE, buildPatternRegistrySchema());
+  generated.set(
+    PLATFORM_CAPABILITIES_SCHEMA_FILE,
+    buildPlatformCapabilitiesSchema(),
+  );
+  generated.set(
+    UPSTREAM_CAPABILITY_AUDIT_SCHEMA_FILE,
+    buildUpstreamCapabilityAuditSchema(),
+  );
   generated.set(
     PATTERN_REGISTRY_FILE,
     `${JSON.stringify(
       {
-        $schema: "cubis-foundry-pattern-registry-v1",
+        $schema: localJsonSchemaRef(PATTERN_REGISTRY_SCHEMA_FILE),
         generatedAt: new Date(0).toISOString(),
         auditedReferences: AUDITED_REFERENCES,
         orchestrationSubtypes: ORCHESTRATION_SUBTYPES,
@@ -1166,7 +1361,7 @@ async function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
     PLATFORM_CAPABILITIES_FILE,
     `${JSON.stringify(
       {
-        $schema: "cubis-foundry-platform-capabilities-v1",
+        $schema: localJsonSchemaRef(PLATFORM_CAPABILITIES_SCHEMA_FILE),
         generatedAt: new Date(0).toISOString(),
         platforms: platformCapabilityContracts,
       },
@@ -1176,7 +1371,14 @@ async function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
   );
   generated.set(
     UPSTREAM_CAPABILITY_AUDIT_FILE,
-    `${JSON.stringify(upstreamCapabilityAudit, null, 2)}\n`,
+    `${JSON.stringify(
+      {
+        ...upstreamCapabilityAudit,
+        $schema: localJsonSchemaRef(UPSTREAM_CAPABILITY_AUDIT_SCHEMA_FILE),
+      },
+      null,
+      2,
+    )}\n`,
   );
   generated.set(
     BUNDLE_MANIFEST_FILE,
@@ -1343,16 +1545,24 @@ function buildTargets(maps) {
         [...maps.generated.entries()].filter(
           ([name]) =>
             name === ROUTE_MANIFEST_FILE ||
+            name === ROUTE_MANIFEST_SCHEMA_FILE ||
             name === PATTERN_REGISTRY_FILE ||
+            name === PATTERN_REGISTRY_SCHEMA_FILE ||
             name === PLATFORM_CAPABILITIES_FILE ||
-            name === UPSTREAM_CAPABILITY_AUDIT_FILE,
+            name === PLATFORM_CAPABILITIES_SCHEMA_FILE ||
+            name === UPSTREAM_CAPABILITY_AUDIT_FILE ||
+            name === UPSTREAM_CAPABILITY_AUDIT_SCHEMA_FILE,
         ),
       ),
       filter: (name) =>
         name === ROUTE_MANIFEST_FILE ||
+        name === ROUTE_MANIFEST_SCHEMA_FILE ||
         name === PATTERN_REGISTRY_FILE ||
+        name === PATTERN_REGISTRY_SCHEMA_FILE ||
         name === PLATFORM_CAPABILITIES_FILE ||
-        name === UPSTREAM_CAPABILITY_AUDIT_FILE,
+        name === PLATFORM_CAPABILITIES_SCHEMA_FILE ||
+        name === UPSTREAM_CAPABILITY_AUDIT_FILE ||
+        name === UPSTREAM_CAPABILITY_AUDIT_SCHEMA_FILE,
     },
     {
       label: "bundle manifest",
@@ -1548,9 +1758,13 @@ export async function run({ checkOnly = false } = {}) {
         [...maps.generated.entries()].filter(
           ([name]) =>
             name === ROUTE_MANIFEST_FILE ||
+            name === ROUTE_MANIFEST_SCHEMA_FILE ||
             name === PATTERN_REGISTRY_FILE ||
+            name === PATTERN_REGISTRY_SCHEMA_FILE ||
             name === PLATFORM_CAPABILITIES_FILE ||
-            name === UPSTREAM_CAPABILITY_AUDIT_FILE,
+            name === PLATFORM_CAPABILITIES_SCHEMA_FILE ||
+            name === UPSTREAM_CAPABILITY_AUDIT_FILE ||
+            name === UPSTREAM_CAPABILITY_AUDIT_SCHEMA_FILE,
         ),
       ),
     })),

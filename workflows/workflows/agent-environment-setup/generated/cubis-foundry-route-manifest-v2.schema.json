@@ -1,0 +1,169 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Cubis Foundry Route Manifest",
+  "description": "Generated routing manifest for shared workflows and agents.",
+  "type": "object",
+  "required": [
+    "$schema",
+    "generatedAt",
+    "contentHash",
+    "summary",
+    "routes"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "contentHash": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "totalRoutes",
+        "workflows",
+        "agents"
+      ],
+      "properties": {
+        "totalRoutes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "workflows": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agents": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "kind",
+          "id",
+          "command",
+          "displayName",
+          "description",
+          "triggers",
+          "primaryAgent",
+          "supportingAgents",
+          "primarySkills",
+          "supportingSkills",
+          "artifacts"
+        ],
+        "properties": {
+          "kind": {
+            "enum": [
+              "workflow",
+              "agent"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "command": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "triggers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "primaryAgent": {
+            "type": "string"
+          },
+          "supportingAgents": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "primarySkills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "supportingSkills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "artifacts": {
+            "type": "object",
+            "properties": {
+              "codex": {
+                "$ref": "#/definitions/platformArtifacts"
+              },
+              "copilot": {
+                "$ref": "#/definitions/platformArtifacts"
+              },
+              "antigravity": {
+                "$ref": "#/definitions/platformArtifacts"
+              },
+              "claude": {
+                "$ref": "#/definitions/platformArtifacts"
+              },
+              "gemini": {
+                "$ref": "#/definitions/platformArtifacts"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "definitions": {
+    "platformArtifacts": {
+      "type": "object",
+      "properties": {
+        "skillDir": {
+          "type": "string"
+        },
+        "workflowFile": {
+          "type": "string"
+        },
+        "promptFile": {
+          "type": "string"
+        },
+        "commandFile": {
+          "type": "string"
+        },
+        "agentFile": {
+          "type": "string"
+        },
+        "compatibilityAlias": {
+          "type": "string"
+        },
+        "target": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -3,6 +3,7 @@
  */
 
 export interface RoutePlatformArtifacts {
+  skillDir?: string;
   workflowFile?: string;
   promptFile?: string;
   commandFile?: string;
