@@ -10,9 +10,7 @@ metadata:
   command: "/document"
 compatibility: Codex
 ---
-# document Workflow
 # Document Workflow
-
 ## When to use
 
 Use for generating READMEs, API documentation, architecture decision records, changelogs, developer guides, or any documentation task.

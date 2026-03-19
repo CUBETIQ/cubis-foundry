@@ -10,9 +10,7 @@ metadata:
   command: "/test"
 compatibility: Claude Code
 ---
-# test Workflow
 # Test Workflow
-
 ## When to use
 
 Use when adding tests, fixing test failures, or improving test coverage for existing code.

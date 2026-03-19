@@ -10,9 +10,7 @@ metadata:
   command: "/refactor"
 compatibility: Claude Code
 ---
-# refactor Workflow
 # Refactor Workflow
-
 ## When to use
 
 Use for large-scale refactoring, framework migrations, code modernization, or structural changes that affect multiple files.

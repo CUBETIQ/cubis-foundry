@@ -646,6 +646,20 @@ function buildSkillMarkdown({
     .join("\n");
 }
 
+function stripLeadingMarkdownTitle(markdown) {
+  return String(markdown || "")
+    .trimStart()
+    .replace(/^#\s+.+\r?\n(?:\r?\n)?/, "")
+    .trim();
+}
+
+function extractLeadingMarkdownTitle(markdown) {
+  const match = String(markdown || "")
+    .trimStart()
+    .match(/^#\s+(.+)\r?\n/);
+  return match ? match[1].trim() : null;
+}
+
 // Codex agent-specific model routing, reasoning effort, and sandbox mode.
 // Models: gpt-5.4 (deep reasoning) and gpt-5.4-mini (fast scanning).
 // Sandbox: read-only for agents without Write/Edit tools, workspace-write otherwise.
@@ -716,13 +730,10 @@ function buildCodexAgentToml(agent) {
 }
 
 function buildGeneratedWorkflowSkill(workflow, platformLabel) {
-  const normalizedBody = String(workflow.body || "").replace(
-    /^#\s+.+\r?\n\r?\n?/,
-    "",
-  );
+  const normalizedBody = stripLeadingMarkdownTitle(workflow.body);
   return buildSkillMarkdown({
     id: workflow.id,
-    title: `${workflow.id} Workflow`,
+    title: extractLeadingMarkdownTitle(workflow.body) || `${workflow.id} Workflow`,
     description: workflow.description,
     body: normalizedBody,
     platformLabel,

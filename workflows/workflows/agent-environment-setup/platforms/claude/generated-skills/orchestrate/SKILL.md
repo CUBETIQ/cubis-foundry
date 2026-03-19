@@ -10,9 +10,7 @@ metadata:
   command: "/orchestrate"
 compatibility: Claude Code
 ---
-# orchestrate Workflow
 # Orchestrate Workflow
-
 ## When to use
 
 Use when a task spans multiple domains (backend + frontend, database + API, security + deployment) and requires coordinated specialist work with validation between steps.

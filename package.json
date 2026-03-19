@@ -11,6 +11,8 @@
   "files": [
     "bin",
     "workflows",
+    "!workflows/workflows/agent-environment-setup/platforms/*/skills/**/evals",
+    "!workflows/workflows/agent-environment-setup/platforms/*/skills/**/evals/**",
     "mcp/dist",
     "mcp/generated",
     "mcp/config.json",

@@ -10,9 +10,7 @@ metadata:
   command: "/deploy"
 compatibility: Claude Code
 ---
-# deploy Workflow
 # Deploy Workflow
-
 ## When to use
 
 Use for CI/CD pipeline setup, Docker configuration, Kubernetes manifests, deployment automation, or infrastructure changes.

@@ -10,9 +10,7 @@ metadata:
   command: "/debug"
 compatibility: Codex
 ---
-# debug Workflow
 # Debug Workflow
-
 ## When to use
 
 Use for bug reports, error investigations, test failures, and any issue where the root cause is not immediately obvious.

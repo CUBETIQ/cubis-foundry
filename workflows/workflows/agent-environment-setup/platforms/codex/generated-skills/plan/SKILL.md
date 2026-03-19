@@ -10,9 +10,7 @@ metadata:
   command: "/plan"
 compatibility: Codex
 ---
-# plan Workflow
 # Plan Workflow
-
 ## When to use
 
 Use when you need to understand a codebase area and create an actionable implementation plan before writing code. Best for architecture decisions, feature scoping, and implementation planning.

@@ -83,6 +83,12 @@ async function readUtf8(filePath) {
   return fs.readFile(filePath, "utf8");
 }
 
+async function listVisibleEntries(dirPath) {
+  if (!(await exists(dirPath))) return [];
+  const entries = await fs.readdir(dirPath, { withFileTypes: true });
+  return entries.filter((entry) => !entry.name.startsWith("."));
+}
+
 function parseFrontmatter(markdown) {
   const match = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
   if (!match) return null;
@@ -102,6 +108,10 @@ function getScalar(frontmatter, key) {
 
 function error(errors, filePath, message) {
   errors.push(`${filePath}: ${message}`);
+}
+
+function countTopLevelHeadings(markdownBody) {
+  return (String(markdownBody || "").match(/^#\s+/gm) || []).length;
 }
 
 async function validateWorkflowSkill(
@@ -149,6 +159,20 @@ async function validateWorkflowSkill(
     error(errors, filePath, "workflow description missing");
   } else if (expectedDescription && description !== expectedDescription) {
     error(errors, filePath, "workflow description drifted from route manifest");
+  }
+  if (countTopLevelHeadings(parsed.body) !== 1) {
+    error(
+      errors,
+      filePath,
+      "workflow skill must contain exactly one top-level heading",
+    );
+  }
+  if (!/^#\s+.+$/m.test(parsed.body)) {
+    error(
+      errors,
+      filePath,
+      "workflow skill title missing",
+    );
   }
 
   for (const section of REQUIRED_WORKFLOW_SECTIONS) {
@@ -235,6 +259,7 @@ async function validateCopilotPrompt(
   filePath,
   routeId,
   command,
+  description,
   primarySkills,
   errors,
 ) {
@@ -273,6 +298,9 @@ async function validateCopilotPrompt(
       `copilot prompt missing primary attached skill '${primarySkills[0]}'`,
     );
   }
+  if (!raw.startsWith(`# Workflow Prompt: ${command}`)) {
+    error(errors, filePath, "copilot prompt missing workflow-title heading");
+  }
   if (command && !raw.includes(command)) {
     error(
       errors,
@@ -280,11 +308,15 @@ async function validateCopilotPrompt(
       `copilot prompt missing workflow command '${command}'`,
     );
   }
+  if (description && !raw.includes(description)) {
+    error(errors, filePath, "copilot prompt missing workflow description");
+  }
 }
 
 async function validateAntigravityCommand(
   filePath,
   routeLabel,
+  description,
   primarySkills,
   errors,
 ) {
@@ -326,6 +358,18 @@ async function validateAntigravityCommand(
   }
   if (!raw.includes("Load these exact skill IDs first")) {
     error(errors, filePath, "command missing direct skill attachment guidance");
+  }
+  if (!/^\s*description\s*=\s*"/m.test(raw)) {
+    error(errors, filePath, "command missing description field");
+  }
+  if (!/^\s*prompt\s*=\s*'''/m.test(raw)) {
+    error(errors, filePath, "command missing prompt block");
+  }
+  if (!raw.includes("Workflow source:") && routeLabel.startsWith("/")) {
+    error(errors, filePath, "workflow command missing embedded workflow source");
+  }
+  if (description && !raw.includes(description)) {
+    error(errors, filePath, "command missing route description");
   }
   if (primarySkills[0] && !raw.includes(primarySkills[0])) {
     error(
@@ -464,6 +508,8 @@ async function main() {
   const agentIds = new Set(
     routes.filter((route) => route.kind === "agent").map((route) => route.id),
   );
+  const workflowRoutes = routes.filter((route) => route.kind === "workflow");
+  const agentRoutes = routes.filter((route) => route.kind === "agent");
 
   await validateRuleFile(
     path.join(PLATFORM_ROOTS.codex, "rules", "AGENTS.md"),
@@ -556,6 +602,7 @@ async function main() {
         ),
         route.id,
         route.command,
+        route.description,
         route.primarySkills || [],
         errors,
       );
@@ -567,6 +614,7 @@ async function main() {
           route.artifacts?.antigravity?.commandFile || "",
         ),
         route.command,
+        route.description,
         route.primarySkills || [],
         errors,
       );
@@ -577,6 +625,7 @@ async function main() {
           route.artifacts?.gemini?.commandFile || "",
         ),
         route.command,
+        route.description,
         route.primarySkills || [],
         errors,
       );
@@ -619,6 +668,7 @@ async function main() {
         route.artifacts?.antigravity?.commandFile || "",
       ),
       `@${route.id}`,
+      route.description,
       route.primarySkills || [],
       errors,
     );
@@ -629,9 +679,48 @@ async function main() {
         route.artifacts?.gemini?.commandFile || "",
       ),
       `@${route.id}`,
+      route.description,
       route.primarySkills || [],
       errors,
     );
+  }
+
+  const projectionExpectations = [
+    {
+      label: "Codex generated workflow skills",
+      actual: (await listVisibleEntries(path.join(PLATFORM_ROOTS.codex, "generated-skills"))).filter((entry) => entry.isDirectory()),
+      expectedCount: workflowRoutes.length,
+    },
+    {
+      label: "Claude generated workflow skills",
+      actual: (await listVisibleEntries(path.join(PLATFORM_ROOTS.claude, "generated-skills"))).filter((entry) => entry.isDirectory()),
+      expectedCount: workflowRoutes.length,
+    },
+    {
+      label: "Copilot workflow prompts",
+      actual: (await listVisibleEntries(path.join(PLATFORM_ROOTS.copilot, "prompts"))).filter((entry) => entry.isFile() && entry.name.endsWith(".prompt.md")),
+      expectedCount: workflowRoutes.length,
+    },
+    {
+      label: "Antigravity commands",
+      actual: (await listVisibleEntries(path.join(PLATFORM_ROOTS.antigravity, "commands"))).filter((entry) => entry.isFile() && entry.name.endsWith(".toml")),
+      expectedCount: workflowRoutes.length + agentRoutes.length,
+    },
+    {
+      label: "Gemini commands",
+      actual: (await listVisibleEntries(path.join(PLATFORM_ROOTS.gemini, "commands"))).filter((entry) => entry.isFile() && entry.name.endsWith(".toml")),
+      expectedCount: workflowRoutes.length + agentRoutes.length,
+    },
+  ];
+
+  for (const projection of projectionExpectations) {
+    if (projection.actual.length !== projection.expectedCount) {
+      error(
+        errors,
+        ROUTE_MANIFEST_PATH,
+        `${projection.label} count mismatch (expected ${projection.expectedCount}, found ${projection.actual.length})`,
+      );
+    }
   }
 
   if (errors.length > 0) {

@@ -10,9 +10,7 @@ metadata:
   command: "/review"
 compatibility: Claude Code
 ---
-# review Workflow
 # Review Workflow
-
 ## When to use
 
 Use for code review, pull request review, quality audits, or pre-merge verification.

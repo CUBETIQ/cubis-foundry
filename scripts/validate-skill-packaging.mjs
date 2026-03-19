@@ -375,6 +375,29 @@ function validateUniversalHeadings(skillFile, body, errors, warnings) {
   }
 }
 
+function summarizeWarnings(warnings) {
+  const optionalHeadingCounts = new Map();
+  const otherWarnings = [];
+
+  for (const warning of warnings) {
+    const match = warning.match(/optional heading '([^']+)' not found$/);
+    if (!match) {
+      otherWarnings.push(warning);
+      continue;
+    }
+    const heading = match[1];
+    optionalHeadingCounts.set(
+      heading,
+      (optionalHeadingCounts.get(heading) || 0) + 1,
+    );
+  }
+
+  return {
+    optionalHeadingCounts,
+    otherWarnings,
+  };
+}
+
 async function validateCanonicalSkillReferences(errors, warnings) {
   const legacySystemRoot = path.join(CANONICAL_SKILLS_ROOT, ".system");
   if (await exists(legacySystemRoot)) {
@@ -544,11 +567,19 @@ async function main() {
   await validatePlatformBundles(errors);
 
   if (warnings.length > 0) {
-    console.warn("Skill packaging warnings:");
-    for (const item of warnings) {
-      console.warn(`  ⚠ ${item}`);
+    const { optionalHeadingCounts, otherWarnings } = summarizeWarnings(warnings);
+    console.log("Skill packaging warnings:");
+    for (const [heading, count] of [...optionalHeadingCounts.entries()].sort(
+      (a, b) => a[0].localeCompare(b[0]),
+    )) {
+      console.log(
+        `  ⚠ optional heading '${heading}' not found in ${count} skill(s)`,
+      );
     }
-    console.warn("");
+    for (const item of otherWarnings) {
+      console.log(`  ⚠ ${item}`);
+    }
+    console.log("");
   }
 
   if (errors.length > 0) {

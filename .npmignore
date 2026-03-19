@@ -3,3 +3,5 @@ mcp/.vite
 mcp/coverage
 mcp/*.tsbuildinfo
 **/.DS_Store
+workflows/workflows/agent-environment-setup/platforms/*/skills/**/evals/
+workflows/workflows/agent-environment-setup/platforms/*/skills/**/evals/**

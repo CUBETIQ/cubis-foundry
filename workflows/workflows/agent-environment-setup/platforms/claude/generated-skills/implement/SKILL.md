@@ -10,9 +10,7 @@ metadata:
   command: "/implement"
 compatibility: Claude Code
 ---
-# implement Workflow
 # Implement Workflow
-
 ## When to use
 
 Use for building new features or making code changes that need the full lifecycle: planning, implementation, testing, and review.

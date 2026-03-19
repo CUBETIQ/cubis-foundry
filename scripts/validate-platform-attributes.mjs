@@ -77,6 +77,25 @@ const COPILOT_ALLOWED_SKILL_KEYS = new Set([
   "user-invocable",
 ]);
 
+const CLAUDE_ALLOWED_SKILL_KEYS = new Set([
+  "name",
+  "description",
+  "keywords",
+  "displayName",
+  "triggers",
+  "compatibility",
+  "license",
+  "metadata",
+  "allowed-tools",
+  "author",
+  "version",
+  "priority",
+  "context",
+  "agent",
+  "user-invocable",
+  "argument-hint",
+]);
+
 const COPILOT_ALLOWED_AGENT_KEYS = new Set([
   "agents",
   "name",
@@ -975,6 +994,20 @@ async function validateSkillFile({
         notes,
         filePath,
         `canonical skill has Copilot-unsupported keys (${unsupported.join(", ")}); installer sanitization remains fallback`,
+      );
+    }
+    return;
+  }
+
+  if (platform === "claude") {
+    const unexpected = keys.filter(
+      (key) => !CLAUDE_ALLOWED_SKILL_KEYS.has(key),
+    );
+    if (unexpected.length > 0) {
+      note(
+        notes,
+        filePath,
+        `unexpected Claude skill keys present: ${unexpected.join(", ")}`,
       );
     }
     return;

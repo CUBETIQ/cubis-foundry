@@ -10,9 +10,7 @@ metadata:
   command: "/onboard"
 compatibility: Codex
 ---
-# onboard Workflow
 # Onboard Workflow
-
 ## When to use
 
 Use when working with an unfamiliar codebase for the first time. Produces a comprehensive understanding and developer documentation.
