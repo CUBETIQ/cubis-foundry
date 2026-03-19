@@ -3,88 +3,24 @@
 import crypto from "node:crypto";
 import path from "node:path";
 import process from "node:process";
-import { fileURLToPath } from "node:url";
 import { promises as fs } from "node:fs";
 import {
-  deriveDescriptor,
-  sortDescriptors,
-} from "./lib/skill-catalog.mjs";
+  ROOT,
+  SKILLS_ROOT,
+  SKILLS_GENERATED_ROOT,
+  collectCanonicalDescriptors,
+  pathExists,
+} from "./lib/skill-inventory.mjs";
+import { sortDescriptors } from "./lib/skill-catalog.mjs";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.resolve(__dirname, "..");
-const SKILLS_ROOT = path.join(ROOT, "workflows", "skills");
-const GENERATED_ROOT = path.join(SKILLS_ROOT, "generated");
-const CATALOG_OUT_FILE = path.join(GENERATED_ROOT, "skill-catalog.json");
-const AUDIT_OUT_FILE = path.join(GENERATED_ROOT, "skill-audit.json");
-const PROFILE_FILES = {
-  core: path.join(SKILLS_ROOT, "catalogs", "core.json"),
-  "web-backend": path.join(SKILLS_ROOT, "catalogs", "web-backend.json"),
-};
-const EXCLUDED_DIRS = new Set(["catalogs", "generated"]);
+const CATALOG_OUT_FILE = path.join(SKILLS_GENERATED_ROOT, "skill-catalog.json");
+const AUDIT_OUT_FILE = path.join(SKILLS_GENERATED_ROOT, "skill-audit.json");
 
 function parseArgs(argv) {
   const args = new Set(argv.slice(2));
   return {
     dryRun: args.has("--dry-run"),
     check: args.has("--check"),
-  };
-}
-
-async function pathExists(target) {
-  try {
-    await fs.stat(target);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-async function readJson(filePath) {
-  return JSON.parse(await fs.readFile(filePath, "utf8"));
-}
-
-async function listTopLevelSkillDirs() {
-  const entries = await fs.readdir(SKILLS_ROOT, { withFileTypes: true });
-  return entries
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name)
-    .filter((name) => !name.startsWith(".") && !EXCLUDED_DIRS.has(name))
-    .sort((a, b) => a.localeCompare(b));
-}
-
-async function collectSkillFiles(skillRoot) {
-  const files = [];
-  const queue = [skillRoot];
-  while (queue.length > 0) {
-    const current = queue.pop();
-    if (!current || !(await pathExists(current))) continue;
-    const entries = await fs.readdir(current, { withFileTypes: true });
-    for (const entry of entries) {
-      if (entry.name.startsWith(".")) continue;
-      const fullPath = path.join(current, entry.name);
-      if (entry.isDirectory()) {
-        queue.push(fullPath);
-        continue;
-      }
-      if (entry.isFile() && entry.name === "SKILL.md") {
-        const skillDir = path.dirname(fullPath);
-        files.push({
-          skillDir,
-          filePath: fullPath,
-          rawContent: await fs.readFile(fullPath, "utf8"),
-        });
-      }
-    }
-  }
-  return files.sort((a, b) => a.filePath.localeCompare(b.filePath));
-}
-
-async function readProfiles() {
-  const core = await readJson(PROFILE_FILES.core);
-  const webBackend = await readJson(PROFILE_FILES["web-backend"]);
-  return {
-    coreIds: new Set((core.skills || []).map((item) => String(item))),
-    webBackendIds: new Set((webBackend.skills || []).map((item) => String(item))),
   };
 }
 
@@ -230,23 +166,7 @@ async function writeCheckedJson({ filePath, payload, check, dryRun }) {
 
 async function main() {
   const { dryRun, check } = parseArgs(process.argv);
-  const { coreIds, webBackendIds } = await readProfiles();
-  const descriptors = [];
-
-  for (const skillId of await listTopLevelSkillDirs()) {
-    const skillRoot = path.join(SKILLS_ROOT, skillId);
-    const files = await collectSkillFiles(skillRoot);
-    for (const file of files) {
-      descriptors.push(
-        deriveDescriptor({
-          skillFile: file,
-          skillsRoot: SKILLS_ROOT,
-          coreProfileIds: coreIds,
-          webBackendProfileIds: webBackendIds,
-        }),
-      );
-    }
-  }
+  const descriptors = await collectCanonicalDescriptors();
 
   const canonicalById = new Map();
   for (const item of descriptors.filter((entry) => entry.kind === "skill")) {

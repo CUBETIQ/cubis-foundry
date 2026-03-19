@@ -7,6 +7,9 @@ CLI="$ROOT_DIR/bin/cubis.js"
 EXPECTED_WORKFLOW_COUNT="$(find "$ROOT_DIR/workflows/workflows/agent-environment-setup/shared/workflows" -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')"
 EXPECTED_AGENT_COUNT="$(find "$ROOT_DIR/workflows/workflows/agent-environment-setup/shared/agents" -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')"
 EXPECTED_ROUTE_COMMAND_COUNT="$((EXPECTED_WORKFLOW_COUNT + EXPECTED_AGENT_COUNT))"
+REP_WORKFLOW="implement"
+REP_AGENT="implementer"
+REP_SECURITY_AGENT="security-reviewer"
 export EXPECTED_WORKFLOW_COUNT EXPECTED_AGENT_COUNT EXPECTED_ROUTE_COMMAND_COUNT
 
 if [ ! -f "$CLI" ]; then
@@ -186,12 +189,12 @@ node "$CLI" workflows install --platform antigravity --bundle agent-environment-
 [ ! -d .agent ]
 [ ! -d .agents/workflows ]
 [ ! -d .agents/agents ]
-[ -f .gemini/commands/backend.toml ]
+[ -f .gemini/commands/implement.toml ]
 [ -f .gemini/commands/review.toml ]
-[ -f .gemini/commands/vercel.toml ]
-[ -f .gemini/commands/agent-backend-specialist.toml ]
+[ -f .gemini/commands/deploy.toml ]
+[ -f .gemini/commands/agent-implementer.toml ]
 [ -f .gemini/commands/agent-orchestrator.toml ]
-[ -f .gemini/commands/agent-security-auditor.toml ]
+[ -f .gemini/commands/agent-security-reviewer.toml ]
 if [ "$(find .gemini/commands -maxdepth 1 -type f -name '*.toml' | wc -l | tr -d ' ')" -ne "$EXPECTED_ROUTE_COMMAND_COUNT" ]; then
   echo "[FAIL] Antigravity expected exactly $EXPECTED_ROUTE_COMMAND_COUNT Gemini command files" >&2
   exit 1
@@ -203,15 +206,15 @@ fi
 [ -f .agents/terminal-integration/verify-task.sh ]
 rg -n '"provider": "codex"' .agents/terminal-integration/config.json >/dev/null
 rg -n '^<!-- cbx:terminal:verification:start provider=codex version=1 -->' .agents/rules/GEMINI.md >/dev/null
-assert_file_contains_literal .gemini/commands/backend.toml "official docs next" "Antigravity Gemini command"
-assert_file_contains_literal .gemini/commands/backend.toml "secondary evidence" "Antigravity Gemini command"
+assert_file_contains_literal .gemini/commands/implement.toml "official docs next" "Antigravity Gemini command"
+assert_file_contains_literal .gemini/commands/implement.toml "secondary evidence" "Antigravity Gemini command"
 log_ok "Antigravity files installed"
 
-log_step "A2.1 /backend wiring check"
-assert_file_contains_literal .gemini/commands/backend.toml "Execute the native projection of the /backend workflow." "Antigravity backend command"
-assert_file_contains_literal .gemini/commands/agent-backend-specialist.toml "Execute the native projection of the @backend-specialist specialist route." "Antigravity backend specialist command"
-assert_file_contains_literal .gemini/commands/backend.toml ".agents/skills/api-design/SKILL.md" "Antigravity backend command skill hint"
-log_ok "Command routes for /backend and @backend-specialist are installed"
+log_step "A2.1 /implement wiring check"
+assert_file_contains_literal .gemini/commands/implement.toml "Execute the native projection of the /implement workflow." "Antigravity implement command"
+assert_file_contains_literal .gemini/commands/agent-implementer.toml "Execute the native projection of the @implementer specialist route." "Antigravity implementer command"
+assert_file_contains_literal .gemini/commands/implement.toml ".agents/skills/api-design/SKILL.md" "Antigravity implement command skill hint"
+log_ok "Command routes for /implement and @implementer are installed"
 
 log_step "A2.2 Antigravity global precedence sync"
 node - <<'NODE'
@@ -250,17 +253,17 @@ log_ok "Dry-run sync did not change rule file"
 
 log_step "A4 Antigravity remove dry-run"
 node "$CLI" workflows remove agent-environment-setup --platform antigravity --scope global --dry-run >/tmp/cbx-a4.log
-[ -f .gemini/commands/backend.toml ]
+[ -f .gemini/commands/implement.toml ]
 [ -d .agents/terminal-integration ]
 log_ok "Dry-run remove did not delete files"
 
 log_step "A5 Antigravity remove apply"
 node "$CLI" workflows remove agent-environment-setup --platform antigravity --scope global --yes >/tmp/cbx-a5.log
-[ ! -f .gemini/commands/backend.toml ]
-[ ! -f .gemini/commands/agent-backend-specialist.toml ]
+[ ! -f .gemini/commands/implement.toml ]
+[ ! -f .gemini/commands/agent-implementer.toml ]
 [ -f .agents/rules/GEMINI.md ]
 [ ! -d .agents/terminal-integration ]
-[ ! -f .gemini/commands/backend.toml ]
+[ ! -f .gemini/commands/implement.toml ]
 rg -n 'No installed workflows found yet\.' .agents/rules/GEMINI.md >/dev/null
 if rg -n '^<!-- cbx:terminal:verification:start' .agents/rules/GEMINI.md >/dev/null; then
   echo "[FAIL] Antigravity terminal verification block was not removed" >&2
@@ -280,22 +283,23 @@ node "$CLI" workflows install --platform codex --bundle agent-environment-setup 
 [ -d .codex/agents ]
 [ ! -d .agents/workflows ]
 [ ! -d .agents/agents ]
-[ -f .codex/agents/backend-specialist.toml ]
+[ -f .codex/agents/implementer.toml ]
 [ -f .codex/agents/orchestrator.toml ]
-[ -f .codex/agents/security-auditor.toml ]
+[ -f .codex/agents/security-reviewer.toml ]
 if [ "$(find .codex/agents -maxdepth 1 -type f -name '*.toml' | wc -l | tr -d ' ')" -ne "$EXPECTED_AGENT_COUNT" ]; then
   echo "[FAIL] Codex expected exactly $EXPECTED_AGENT_COUNT agent files" >&2
   exit 1
 fi
-[ -f "$CODEX_INSTALLED_SKILLS/backend/SKILL.md" ]
+[ -f "$CODEX_INSTALLED_SKILLS/implement/SKILL.md" ]
 [ -f "$CODEX_INSTALLED_SKILLS/plan/SKILL.md" ]
 [ -f "$CODEX_INSTALLED_SKILLS/owasp-security-review/SKILL.md" ]
 [ -f "$CODEX_INSTALLED_SKILLS/nextjs/SKILL.md" ]
 [ -f "$CODEX_INSTALLED_SKILLS/performance-testing/SKILL.md" ]
 [ -f "$CODEX_INSTALLED_SKILLS/api-design/SKILL.md" ]
+[ ! -d "$CODEX_INSTALLED_SKILLS/backend" ]
 [ ! -d "$CODEX_INSTALLED_SKILLS/vercel-functions" ]
 [ ! -d "$CODEX_INSTALLED_SKILLS/vercel-deployments" ]
-rg -n '^name:\s*backend$' "$CODEX_INSTALLED_SKILLS/backend/SKILL.md" >/dev/null
+rg -n '^name:\s*implement$' "$CODEX_INSTALLED_SKILLS/implement/SKILL.md" >/dev/null
 if [ -d "$CODEX_INSTALLED_SKILLS/workflow-backend" ] || [ -d "$CODEX_INSTALLED_SKILLS/agent-backend-specialist" ]; then
   echo "[FAIL] Codex compatibility wrapper skill directories should no longer be installed" >&2
   exit 1
@@ -338,11 +342,11 @@ node "$CLI" workflows doctor codex --json >/tmp/cbx-c2-doctor.json
 rg -n 'Legacy path ./.codex/skills detected' /tmp/cbx-c2-doctor.json >/dev/null
 log_ok "Codex install complete and legacy warning detected"
 
-log_step "C2.1 /backend wiring check (Codex files)"
-assert_file_contains_literal .codex/agents/backend-specialist.toml 'name = "backend-specialist"' "Codex backend specialist agent"
-assert_file_contains_literal "$CODEX_INSTALLED_SKILLS/backend/SKILL.md" '# backend Workflow' "Codex backend workflow skill"
-assert_file_contains_literal "$CODEX_INSTALLED_SKILLS/backend/SKILL.md" '@backend-specialist' "Codex backend workflow skill routing"
-if rg -n 'Compatibility Alias' "$CODEX_INSTALLED_SKILLS/backend/SKILL.md" >/dev/null; then
+log_step "C2.1 /implement wiring check (Codex files)"
+assert_file_contains_literal .codex/agents/implementer.toml 'name = "implementer"' "Codex implementer agent"
+assert_file_contains_literal "$CODEX_INSTALLED_SKILLS/implement/SKILL.md" '# Implement Workflow' "Codex implement workflow skill"
+assert_file_contains_literal "$CODEX_INSTALLED_SKILLS/implement/SKILL.md" '@implementer' "Codex implement workflow skill routing"
+if rg -n 'Compatibility Alias' "$CODEX_INSTALLED_SKILLS/implement/SKILL.md" >/dev/null; then
   echo "[FAIL] Codex generated workflow skill still contains compatibility alias text" >&2
   exit 1
 fi
@@ -638,14 +642,14 @@ log_step "P2 Copilot apply + doctor"
 node "$CLI" workflows install --platform copilot --bundle agent-environment-setup --overwrite --yes >/tmp/cbx-p2.log
 [ -f .github/copilot-instructions.md ]
 [ ! -d .github/copilot/workflows ]
-[ -f .github/agents/backend-specialist.md ]
-[ -f .github/agents/security-auditor.md ]
-[ -f .github/agents/devops-engineer.md ]
+[ -f .github/agents/implementer.md ]
+[ -f .github/agents/security-reviewer.md ]
+[ -f .github/agents/devops.md ]
 [ -f .github/agents/orchestrator.md ]
-[ -f .github/agents/test-engineer.md ]
-[ -f .github/prompts/backend.prompt.md ]
+[ -f .github/agents/tester.md ]
+[ -f .github/prompts/implement.prompt.md ]
 [ -f .github/prompts/review.prompt.md ]
-[ -f .github/prompts/vercel.prompt.md ]
+[ -f .github/prompts/deploy.prompt.md ]
 if [ "$(find .github/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "$EXPECTED_AGENT_COUNT" ]; then
   echo "[FAIL] Copilot expected exactly $EXPECTED_AGENT_COUNT agent files" >&2
   exit 1
@@ -666,11 +670,11 @@ if rg -n '^priority:' "$COPILOT_INSTALLED_SKILLS/owasp-security-review/SKILL.md"
   exit 1
 fi
 rg -n 'Platform MCP target \(.+[\\/]\.vscode[\\/]mcp\.json\): (installed|replaced|patched)' /tmp/cbx-p2.log >/dev/null
-if rg -n '^skills:' .github/agents/backend-specialist.md >/dev/null; then
+if rg -n '^skills:' .github/agents/implementer.md >/dev/null; then
   echo "[FAIL] Copilot agent file still contains unsupported skills attribute" >&2
   exit 1
 fi
-assert_file_contains_literal .github/prompts/backend.prompt.md "official docs as primary evidence" "Copilot workflow prompt"
+assert_file_contains_literal .github/prompts/implement.prompt.md "official docs as primary evidence" "Copilot workflow prompt"
 node - <<'NODE'
 const fs = require('fs');
 const path = require('path');
@@ -723,10 +727,10 @@ if rg -n 'Unsupported top-level Copilot agent attributes detected' /tmp/cbx-p2-d
 fi
 log_ok "Copilot install complete and doctor output generated"
 
-log_step "P2.1 /backend wiring check (Copilot files)"
-assert_file_contains_literal .github/prompts/backend.prompt.md "# Workflow Prompt: /backend" "Copilot backend prompt"
-assert_file_contains_literal .github/prompts/backend.prompt.md "@backend-specialist" "Copilot backend prompt"
-log_ok "Copilot prompt declares /backend and routes to @backend-specialist"
+log_step "P2.1 /implement wiring check (Copilot files)"
+assert_file_contains_literal .github/prompts/implement.prompt.md "# Workflow Prompt: /implement" "Copilot implement prompt"
+assert_file_contains_literal .github/prompts/implement.prompt.md "@implementer" "Copilot implement prompt"
+log_ok "Copilot prompt declares /implement and routes to @implementer"
 
 log_step "P2.2 Copilot global precedence sync"
 node - <<'NODE'
@@ -765,8 +769,8 @@ log_ok "Copilot second sync is idempotent"
 
 log_step "P4 Remove apply"
 node "$CLI" workflows remove agent-environment-setup --platform copilot --scope project --yes >/tmp/cbx-p4.log
-[ ! -f .github/agents/backend-specialist.md ]
-[ ! -f .github/prompts/backend.prompt.md ]
+[ ! -f .github/agents/implementer.md ]
+[ ! -f .github/prompts/implement.prompt.md ]
 [ ! -d "$COPILOT_INSTALLED_SKILLS/api-design" ]
 [ -f .github/copilot-instructions.md ]
 rg -n 'No installed workflows found yet\.' .github/copilot-instructions.md >/dev/null
@@ -775,8 +779,8 @@ log_ok "Copilot bundle removed and managed block kept"
 log_step "Q1 Claude apply + hook templates"
 node "$CLI" workflows install --platform claude --bundle agent-environment-setup --overwrite --yes >/tmp/cbx-q1.log
 [ -f CLAUDE.md ]
-[ -f .claude/skills/backend/SKILL.md ]
-[ -f .claude/agents/researcher.md ]
+[ -f .claude/skills/implement/SKILL.md ]
+[ -f .claude/agents/explorer.md ]
 [ ! -d .claude/workflows ]
 [ -f .claude/hooks/README.md ]
 [ -f .claude/hooks/settings.snippet.json ]
@@ -790,15 +794,15 @@ log_step "G1 Gemini apply"
 node "$CLI" workflows install --platform gemini --bundle agent-environment-setup --overwrite --yes >/tmp/cbx-g1.log
 [ -f .gemini/GEMINI.md ]
 [ -d .gemini/commands ]
-[ -f .gemini/commands/backend.toml ]
-[ -f .gemini/commands/agent-backend-specialist.toml ]
+[ -f .gemini/commands/implement.toml ]
+[ -f .gemini/commands/agent-implementer.toml ]
 [ ! -d .gemini/workflows ]
 [ ! -d .gemini/skills ]
 if [ "$(find .gemini/commands -maxdepth 1 -type f -name '*.toml' | wc -l | tr -d ' ')" -ne "$EXPECTED_ROUTE_COMMAND_COUNT" ]; then
   echo "[FAIL] Gemini expected exactly $EXPECTED_ROUTE_COMMAND_COUNT command files" >&2
   exit 1
 fi
-assert_file_contains_literal .gemini/commands/backend.toml ".agents/skills/api-design/SKILL.md" "Gemini backend command skill hint"
+assert_file_contains_literal .gemini/commands/implement.toml ".agents/skills/api-design/SKILL.md" "Gemini implement command skill hint"
 log_ok "Gemini install uses commands only"
 
 log_step "X1 Single-project all-platform install"
@@ -812,19 +816,19 @@ mkdir -p all-platforms
   node "$CLI" workflows install --platform gemini --bundle agent-environment-setup --yes >/tmp/cbx-x1-gemini.log
 )
 [ -f all-platforms/AGENTS.md ]
-[ -f all-platforms/.codex/agents/backend-specialist.toml ]
+[ -f all-platforms/.codex/agents/implementer.toml ]
 [ -f all-platforms/.agents/rules/GEMINI.md ]
 [ -f all-platforms/.agents/skills/api-design/SKILL.md ]
-[ -f all-platforms/.github/agents/backend-specialist.md ]
-[ -f all-platforms/.github/prompts/backend.prompt.md ]
+[ -f all-platforms/.github/agents/implementer.md ]
+[ -f all-platforms/.github/prompts/implement.prompt.md ]
 [ -f all-platforms/CLAUDE.md ]
-[ -f all-platforms/.claude/agents/backend-specialist.md ]
-[ -f all-platforms/.claude/skills/backend/SKILL.md ]
+[ -f all-platforms/.claude/agents/implementer.md ]
+[ -f all-platforms/.claude/skills/implement/SKILL.md ]
 [ -f all-platforms/.gemini/GEMINI.md ]
-[ -f all-platforms/.gemini/commands/backend.toml ]
-assert_file_contains_literal all-platforms/.gemini/commands/backend.toml ".agents/skills/api-design/SKILL.md" "Shared Gemini/Antigravity backend command"
-if ! diff -q all-platforms/.gemini/commands/backend.toml "$ROOT_DIR/workflows/workflows/agent-environment-setup/platforms/gemini/commands/backend.toml" >/dev/null; then
-  echo "[FAIL] Shared .gemini/commands backend.toml drifted from the canonical generated command" >&2
+[ -f all-platforms/.gemini/commands/implement.toml ]
+assert_file_contains_literal all-platforms/.gemini/commands/implement.toml ".agents/skills/api-design/SKILL.md" "Shared Gemini/Antigravity implement command"
+if ! diff -q all-platforms/.gemini/commands/implement.toml "$ROOT_DIR/workflows/workflows/agent-environment-setup/platforms/gemini/commands/implement.toml" >/dev/null; then
+  echo "[FAIL] Shared .gemini/commands implement.toml drifted from the canonical generated command" >&2
   exit 1
 fi
 log_ok "All supported platforms install into one project without clobbering shared native surfaces"

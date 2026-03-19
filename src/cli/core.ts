@@ -37,6 +37,28 @@ import {
   renderInitWelcome,
 } from "./init/index.js";
 import {
+  FOUNDATION_ADR_DIR,
+  FOUNDATION_DOCS_DIR,
+  FOUNDATION_MEMORY_DIR,
+  ARCHITECTURE_BUILD_PLATFORM_CAPABILITIES,
+  buildAdrReadme,
+  buildAdrTemplate,
+  buildArchitectureBuildSkeleton,
+  buildMemoryBuildSkeleton,
+  buildMemoryTopicSkeleton,
+  buildProductBuildSkeleton,
+  buildTechBuildSkeleton,
+} from "./build/foundation.js";
+import {
+  expandUniquePaths,
+  PLATFORM_IDS,
+  WORKFLOW_PROFILES,
+  resolveArtifactProfilePaths,
+  resolveLegacySkillDirsForCleanup,
+  resolveProfilePathCandidates,
+  resolveProfilePaths,
+} from "./config/index.js";
+import {
   agentAssetsRoot,
   expandPath,
   findWorkspaceRoot,
@@ -88,9 +110,6 @@ const ROADMAP_FOUNDATION_BLOCK_START_RE =
   /<!--\s*cbx:roadmap:foundation:start[^>]*-->/g;
 const ROADMAP_FOUNDATION_BLOCK_END_RE =
   /<!--\s*cbx:roadmap:foundation:end\s*-->/g;
-const FOUNDATION_DOCS_DIR = path.join("docs", "foundation");
-const FOUNDATION_ADR_DIR = path.join(FOUNDATION_DOCS_DIR, "adr");
-const FOUNDATION_MEMORY_DIR = path.join(FOUNDATION_DOCS_DIR, "memory");
 const COPILOT_ALLOWED_SKILL_FRONTMATTER_KEYS = new Set([
   "compatibility",
   "description",
@@ -110,151 +129,6 @@ const COPILOT_ALLOWED_AGENT_FRONTMATTER_KEYS = new Set([
   "handoffs",
   "argument-hint",
 ]);
-
-const WORKFLOW_PROFILES = {
-  antigravity: {
-    id: "antigravity",
-    label: "Antigravity",
-    installsCustomAgents: false,
-    project: {
-      workflowDirs: [],
-      agentDirs: [],
-      skillDirs: [".agents/skills"],
-      commandDirs: [".gemini/commands"],
-      ruleFilesByPriority: [".agents/rules/GEMINI.md"],
-    },
-    global: {
-      workflowDirs: [],
-      agentDirs: [],
-      skillDirs: [
-        "~/.gemini/antigravity/skills",
-      ],
-      commandDirs: ["~/.gemini/commands"],
-      ruleFilesByPriority: ["~/.gemini/GEMINI.md"],
-    },
-    detectorPaths: [
-      ".agents/skills",
-      ".agents/rules/GEMINI.md",
-      ".gemini/commands",
-    ],
-    legacyDetectorPaths: [
-      ".agent",
-      ".agent/workflows",
-      ".agent/agents",
-      ".agent/skills",
-      ".agent/rules/GEMINI.md",
-    ],
-    ruleHintName: "GEMINI.md",
-  },
-  codex: {
-    id: "codex",
-    label: "Codex",
-    installsCustomAgents: true,
-    project: {
-      workflowDirs: [],
-      agentDirs: [".codex/agents"],
-      skillDirs: [".agents/skills"],
-      ruleFilesByPriority: ["AGENTS.md"],
-    },
-    global: {
-      workflowDirs: [],
-      agentDirs: ["~/.codex/agents"],
-      skillDirs: ["~/.agents/skills"],
-      ruleFilesByPriority: ["~/.codex/AGENTS.md"],
-    },
-    detectorPaths: [
-      ".codex/agents",
-      ".agents/skills",
-      "AGENTS.md",
-    ],
-    legacyDetectorPaths: [".agents/workflows", ".agents/agents", ".codex/skills"],
-    ruleHintName: "AGENTS.md",
-  },
-  copilot: {
-    id: "copilot",
-    label: "GitHub Copilot",
-    installsCustomAgents: true,
-    project: {
-      workflowDirs: [],
-      agentDirs: [".github/agents"],
-      skillDirs: [".github/skills"],
-      promptDirs: [".github/prompts"],
-      ruleFilesByPriority: [".github/copilot-instructions.md"],
-    },
-    global: {
-      workflowDirs: [],
-      agentDirs: ["~/.copilot/agents"],
-      skillDirs: ["~/.copilot/skills"],
-      promptDirs: ["~/.copilot/prompts"],
-      ruleFilesByPriority: ["~/.copilot/copilot-instructions.md"],
-    },
-    detectorPaths: [
-      ".github/agents",
-      ".github/prompts",
-      ".vscode/mcp.json",
-      ".github/copilot-instructions.md",
-      ".github/instructions",
-      "AGENTS.md",
-    ],
-    legacyDetectorPaths: [],
-    ruleHintName: "AGENTS.md or .github/copilot-instructions.md",
-  },
-  claude: {
-    id: "claude",
-    label: "Claude Code",
-    installsCustomAgents: true,
-    project: {
-      workflowDirs: [],
-      agentDirs: [".claude/agents"],
-      skillDirs: [".claude/skills"],
-      hookDirs: [".claude/hooks"],
-      ruleFilesByPriority: ["CLAUDE.md"],
-    },
-    global: {
-      workflowDirs: [],
-      agentDirs: ["~/.claude/agents"],
-      skillDirs: ["~/.claude/skills"],
-      hookDirs: ["~/.claude/hooks"],
-      ruleFilesByPriority: ["~/.claude/CLAUDE.md"],
-    },
-    detectorPaths: [
-      "CLAUDE.md",
-      ".claude",
-      ".claude/hooks",
-      ".claude/rules",
-      ".claude/settings.json",
-    ],
-    legacyDetectorPaths: [".claude/workflows"],
-    ruleHintName: "CLAUDE.md",
-  },
-  gemini: {
-    id: "gemini",
-    label: "Gemini CLI",
-    installsCustomAgents: false,
-    project: {
-      workflowDirs: [],
-      skillDirs: [],
-      commandDirs: [".gemini/commands"],
-      ruleFilesByPriority: [".gemini/GEMINI.md", "GEMINI.md"],
-    },
-    global: {
-      workflowDirs: [],
-      skillDirs: [],
-      commandDirs: ["~/.gemini/commands"],
-      ruleFilesByPriority: ["~/.gemini/GEMINI.md"],
-    },
-    detectorPaths: [
-      ".gemini",
-      ".gemini/commands",
-      ".gemini/GEMINI.md",
-      "GEMINI.md",
-    ],
-    legacyDetectorPaths: [".gemini/workflows", ".gemini/skills"],
-    ruleHintName: "GEMINI.md",
-  },
-};
-
-const PLATFORM_IDS = Object.keys(WORKFLOW_PROFILES);
 const TERMINAL_VERIFIER_PROVIDERS = ["codex", "gemini"];
 const DEFAULT_TERMINAL_VERIFIER = "codex";
 const POSTMAN_API_KEY_ENV_VAR = "POSTMAN_API_KEY_DEFAULT";
@@ -1611,123 +1485,6 @@ function buildRoadmapTemplate(snapshot, specRoots = []) {
     "This file captures the living delivery backbone for medium-term product and architecture work.",
     "",
     buildRoadmapFoundationSection(snapshot, specRoots).trimEnd(),
-    "",
-  ].join("\n");
-}
-
-function buildProductBuildSkeleton() {
-  return [
-    "# Product",
-    "",
-    "This file is managed by `cbx build architecture`.",
-    "",
-    "<!-- cbx:product:foundation:start version=1 profile=uninitialized -->",
-    "Replace this managed section by running `cbx build architecture --platform <antigravity|codex|claude|gemini|copilot>`.",
-    "<!-- cbx:product:foundation:end -->",
-    "",
-  ].join("\n");
-}
-
-function buildArchitectureBuildSkeleton() {
-  return [
-    "# Architecture",
-    "",
-    "This file is managed by `cbx build architecture`.",
-    "",
-    "<!-- cbx:architecture:doc:start version=1 profile=uninitialized -->",
-    "Replace this managed section by running `cbx build architecture --platform <antigravity|codex|claude|gemini|copilot>`.",
-    "<!-- cbx:architecture:doc:end -->",
-    "",
-  ].join("\n");
-}
-
-function buildTechBuildSkeleton() {
-  return [
-    "# TECH.md",
-    "",
-    "This file is managed by `cbx build architecture`.",
-    "",
-    "<!-- cbx:architecture:tech:start version=1 snapshot=uninitialized -->",
-    "Replace this managed section by running `cbx build architecture --platform <antigravity|codex|claude|gemini|copilot>`.",
-    "<!-- cbx:architecture:tech:end -->",
-    "",
-  ].join("\n");
-}
-
-function buildMemoryBuildSkeleton() {
-  return [
-    "# Memory",
-    "",
-    "This file is managed by `cbx build architecture` as the durable AI entrypoint for the project.",
-    "",
-    "<!-- cbx:memory:index:start version=1 profile=uninitialized -->",
-    "Replace this managed section by running `cbx build architecture --platform <antigravity|codex|claude|gemini|copilot>`.",
-    "<!-- cbx:memory:index:end -->",
-    "",
-  ].join("\n");
-}
-
-function buildMemoryTopicSkeleton(title, topicId) {
-  return [
-    `# ${title}`,
-    "",
-    "This file is managed by `cbx build architecture`.",
-    "",
-    `<!-- cbx:memory:topic:start version=1 topic=${topicId} profile=uninitialized -->`,
-    "Replace this managed section by running `cbx build architecture`.",
-    "<!-- cbx:memory:topic:end -->",
-    "",
-  ].join("\n");
-}
-
-function buildAdrReadme() {
-  return [
-    "# Architecture Decision Records",
-    "",
-    "Use this directory for durable decisions that future contributors and agents need to preserve.",
-    "",
-    "## When to add an ADR",
-    "",
-    "- Architecture style or boundary changes",
-    "- Data model or persistence strategy changes",
-    "- Deployment or scaling model changes",
-    "- Design-system ownership or shared UX pattern changes",
-    "",
-    "## Suggested format",
-    "",
-    "1. Context",
-    "2. Decision",
-    "3. Consequences",
-    "4. Validation",
-    "",
-    "Start with `0000-template.md` and create numbered follow-up ADRs for accepted decisions.",
-    "",
-  ].join("\n");
-}
-
-function buildAdrTemplate() {
-  return [
-    "# ADR 0000: Title",
-    "",
-    "## Status",
-    "",
-    "Proposed",
-    "",
-    "## Context",
-    "",
-    "- What problem or pressure led to this decision?",
-    "",
-    "## Decision",
-    "",
-    "- What is the chosen direction?",
-    "",
-    "## Consequences",
-    "",
-    "- What tradeoffs, benefits, or costs follow from this choice?",
-    "",
-    "## Validation",
-    "",
-    "- How will the team know this decision is working?",
     "",
   ].join("\n");
 }
@@ -3907,102 +3664,6 @@ async function recordBundleRemovalState({
   }
   state.lastSelected = { platform, scope };
   await writeState(scope, state, cwd);
-}
-
-async function resolveProfilePaths(profileId, scope, cwd = process.cwd()) {
-  const profile = WORKFLOW_PROFILES[profileId];
-  if (!profile) throw new Error(`Unknown platform '${profileId}'.`);
-  const cfg = profile[scope];
-  const workflowDirs = Array.isArray(cfg.workflowDirs) ? cfg.workflowDirs : [];
-  const agentDirs = Array.isArray(cfg.agentDirs) ? cfg.agentDirs : [];
-  const skillDirs = Array.isArray(cfg.skillDirs) ? cfg.skillDirs : [];
-  const commandDirs = Array.isArray(cfg.commandDirs) ? cfg.commandDirs : [];
-  const promptDirs = Array.isArray(cfg.promptDirs) ? cfg.promptDirs : [];
-  const hookDirs = Array.isArray(cfg.hookDirs) ? cfg.hookDirs : [];
-
-  const resolvePreferredDir = async (dirs) => {
-    if (dirs.length === 0) return null;
-    const expanded = dirs.map((dirPath) => expandPath(dirPath, cwd));
-    for (const candidate of expanded) {
-      if (await pathExists(candidate)) return candidate;
-    }
-    return expanded[0];
-  };
-
-  return {
-    workflowsDir: await resolvePreferredDir(workflowDirs),
-    agentsDir: await resolvePreferredDir(agentDirs),
-    skillsDir: await resolvePreferredDir(skillDirs),
-    commandsDir: await resolvePreferredDir(commandDirs),
-    promptsDir: await resolvePreferredDir(promptDirs),
-    hooksDir: await resolvePreferredDir(hookDirs),
-    ruleFilesByPriority: cfg.ruleFilesByPriority.map((filePath) =>
-      expandPath(filePath, cwd),
-    ),
-  };
-}
-
-function expandUniquePaths(pathList, cwd = process.cwd()) {
-  const seen = new Set();
-  const output = [];
-  for (const value of pathList || []) {
-    const normalized = String(value || "").trim();
-    if (!normalized) continue;
-    const expanded = expandPath(normalized, cwd);
-    const key = path.resolve(expanded);
-    if (seen.has(key)) continue;
-    seen.add(key);
-    output.push(expanded);
-  }
-  return output;
-}
-
-function resolveProfilePathCandidates(profileId, scope, cwd = process.cwd()) {
-  const profile = WORKFLOW_PROFILES[profileId];
-  if (!profile) throw new Error(`Unknown platform '${profileId}'.`);
-  const cfg = profile[scope];
-  return {
-    workflowsDirs: expandUniquePaths(cfg.workflowDirs, cwd),
-    agentsDirs: expandUniquePaths(cfg.agentDirs, cwd),
-    skillsDirs: expandUniquePaths(cfg.skillDirs, cwd),
-    commandsDirs: expandUniquePaths(cfg.commandDirs, cwd),
-    promptsDirs: expandUniquePaths(cfg.promptDirs, cwd),
-    hooksDirs: expandUniquePaths(cfg.hookDirs, cwd),
-    ruleFilesByPriority: expandUniquePaths(cfg.ruleFilesByPriority, cwd),
-  };
-}
-
-function resolveLegacySkillDirsForCleanup(
-  platform,
-  scope,
-  cwd = process.cwd(),
-) {
-  if (platform !== "codex") return [];
-  if (scope === "global") {
-    return [path.join(os.homedir(), ".codex", "skills")];
-  }
-  const workspaceRoot = findWorkspaceRoot(cwd);
-  return [path.join(workspaceRoot, ".codex", "skills")];
-}
-
-async function resolveArtifactProfilePaths(
-  profileId,
-  scope,
-  cwd = process.cwd(),
-) {
-  const scopedPaths = await resolveProfilePaths(profileId, scope, cwd);
-  if (scope !== "global") return scopedPaths;
-
-  // Global install mode is skills-only. Keep workflows/agents in workspace scope.
-  const workspacePaths = await resolveProfilePaths(profileId, "project", cwd);
-  return {
-    ...scopedPaths,
-    workflowsDir: workspacePaths.workflowsDir,
-    agentsDir: workspacePaths.agentsDir,
-    commandsDir: workspacePaths.commandsDir ?? scopedPaths.commandsDir,
-    promptsDir: workspacePaths.promptsDir ?? scopedPaths.promptsDir,
-    hooksDir: scopedPaths.hooksDir,
-  };
 }
 
 async function listBundleIds() {
@@ -13100,22 +12761,9 @@ function buildArchitecturePrompt({
       return `${label}: ${item.architectureSignals.join(", ")}`;
     });
 
-  const platformCapabilities = {
-    antigravity:
-      "You are generating repo-shared foundation docs for Antigravity. Use the Gemini-family CLI surface available in this environment and optimize the docs for `.agents/rules/GEMINI.md` plus command-driven workflows.",
-    codex:
-      "You can read, write, and execute shell commands. Use `codex exec` mode.",
-    claude:
-      "You can read, write files, and run bash commands. Use non-interactive mode.",
-    gemini:
-      "You can read, write files, and run commands within your sandbox. Follow Gemini CLI conventions.",
-    copilot:
-      "You can read, write files, and use terminal commands. Follow Copilot agent conventions.",
-  };
-
   return [
     `You are running inside ${platform}.`,
-    platformCapabilities[platform] || "",
+    ARCHITECTURE_BUILD_PLATFORM_CAPABILITIES[platform] || "",
     "",
     "Objective:",
     `- Inspect the repository at ${toPosixPath(workspaceRoot)} and author or refresh the core foundation docs in ${memoryPath}, ${productPath}, ${architecturePath}, ${techPath}, ${domainMemoryPath}, ${runtimeMemoryPath}, ${integrationsMemoryPath}, ${debuggingMemoryPath}, ${adrReadmePath}, and ${adrTemplatePath}.`,

@@ -176,7 +176,6 @@ function shouldValidateLink(target) {
     return false;
   if (target.startsWith("mailto:") || target.startsWith("#")) return false;
   if (target.startsWith("/") || target.startsWith("~/")) return false;
-  if (target.includes("*")) return false;
   if (target.includes("{") || target.includes("}")) return false;
   if (target.includes("<") || target.includes(">")) return false;
   // Skip well-known generated or platform-external files
@@ -184,15 +183,6 @@ function shouldValidateLink(target) {
     target === "AGENTS.md" ||
     target === "CLAUDE.md" ||
     target === "GEMINI.md"
-  ) {
-    return false;
-  }
-  // Skip install-time workspace paths referenced by platform notes in mirrored skills.
-  if (
-    target.startsWith(".agents/") ||
-    target.startsWith(".claude/") ||
-    target.startsWith(".gemini/") ||
-    target.startsWith(".github/")
   ) {
     return false;
   }

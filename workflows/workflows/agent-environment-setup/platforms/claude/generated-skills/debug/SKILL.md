@@ -1,6 +1,6 @@
 ---
 name: debug
-description: "Isolate root cause quickly, apply the smallest safe remediation, and leave behind regression evidence."
+description: "Systematic bug investigation: explore the codebase, isolate the root cause, fix the bug, test the fix, and review the change."
 license: MIT
 metadata:
   author: cubis-foundry
@@ -15,54 +15,52 @@ compatibility: Claude Code
 
 ## When to use
 
-Use this when behavior is failing, inconsistent, flaky, or only reproducible under certain conditions.
+Use for bug reports, error investigations, test failures, and any issue where the root cause is not immediately obvious.
+
+## Agent Chain
+
+`explorer` → `debugger` → `tester` → `reviewer`
 
 ## Routing
 
-- Primary specialist: `@debugger`
-- Domain implementation support: `@backend-specialist`, `@frontend-specialist`
-- Verification support: `@test-engineer`
-
-## Context notes
-
-- This workflow file, active platform rules, and selected agents or skills guide execution.
-- Attach stack traces, request IDs, traces, repro steps, recent diffs, and environment notes when context is incomplete.
+1. **Explore**: `@explorer` gathers context — reads error logs, traces code paths, identifies the affected area.
+2. **Debug**: `@debugger` uses the 5-step protocol (capture, reproduce, isolate, fix, verify) to find and fix the root cause.
+3. **Test**: `@tester` verifies the fix and checks for regressions.
+4. **Review**: `@reviewer` evaluates the fix for correctness and side effects.
 
 ## Skill Routing
 
-- Primary skills: `debugging-strategies`, `error-ux-observability`
-- Supporting skills (optional): `testing-patterns`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`, `java-pro`, `csharp-pro`, `kotlin-pro`, `rust-pro`, `webapp-testing`, `playwright-e2e`, `skill-creator`
-- Start with `debugging-strategies` for reproduce, isolate, instrument, and verify flow. Add `error-ux-observability` when the failure involves error states, logging, or tracing gaps. Add the dominant language skill for exact code-path analysis, `webapp-testing` or `playwright-e2e` when the failure lives in browser or release verification.
+- Primary skills: `systematic-debugging`, `deep-research`
+- Supporting skills (optional): `unit-testing`, `code-review`
+
+## Context notes
+
+- Provide the error message, stack trace, reproduction steps, and expected vs. actual behavior.
+- Debugger follows the 5-step protocol: capture, reproduce, isolate, fix, verify.
 
 ## Workflow steps
 
-1. Reproduce the issue and record expected versus actual behavior.
-2. Narrow the fault domain with the smallest useful evidence.
-3. Fix the confirmed cause with the lowest regression risk.
-4. Add or update the regression proof.
-5. Document any remaining uncertainty or environment-specific gaps.
+1. Explorer reads the bug report / error and maps the affected code paths.
+2. Debugger reproduces the issue, traces to root cause, and implements a minimal fix.
+3. Tester runs the previously failing test plus regression tests.
+4. Reviewer checks the fix is correct, minimal, and introduces no new issues.
+5. If the fix is insufficient, debugger iterates with new evidence.
 
 ## Verification
 
-- Re-run the failing scenario first.
-- Run focused regression checks on adjacent high-risk paths.
-- Call out any remaining gaps if the full environment could not be reproduced.
+- Root cause identified and documented.
+- Fix is minimal and targeted (no unrelated changes).
+- Previously failing test passes and no regressions introduced.
 
 ## Output Contract
 
 ```yaml
-DEBUG_WORKFLOW_RESULT:
+WORKFLOW_RESULT:
   primary_agent: debugger
-  supporting_agents: [backend-specialist?, frontend-specialist?, test-engineer?]
-  primary_skills: [debugging-strategies, error-ux-observability]
-  supporting_skills: [testing-patterns?, <language-skill>?, webapp-testing?, playwright-e2e?]
-  reproduction:
-    steps: [<string>]
-    expected_vs_actual: <string>
+  supporting_agents: [explorer, tester, reviewer]
   root_cause: <string>
-  remediation:
-    summary: <string>
-    changed_artifacts: [<path-or-artifact>]
+  fix_summary: <string>
+  changed_artifacts: [<path>]
   regression_checks: [<command or test>]
   follow_up_items: [<string>] | []
 ```

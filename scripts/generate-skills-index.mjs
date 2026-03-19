@@ -2,16 +2,12 @@
 
 import path from "node:path";
 import process from "node:process";
-import { fileURLToPath } from "node:url";
 import { promises as fs } from "node:fs";
 import {
-  deriveDescriptor,
-  getMetadataBlock,
-  parseFrontmatter,
-} from "./lib/skill-catalog.mjs";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.resolve(__dirname, "..");
+  ROOT,
+  buildSkillsIndexRows,
+  pathExists,
+} from "./lib/skill-inventory.mjs";
 
 const DEFAULT_TARGETS = {
   canonical: {
@@ -79,129 +75,6 @@ function parseArgs(argv) {
   return { target, dryRun, check };
 }
 
-async function pathExists(target) {
-  try {
-    await fs.stat(target);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-async function listSkillFiles(root) {
-  const files = [];
-  const queue = [root];
-  while (queue.length > 0) {
-    const current = queue.pop();
-    if (!current || !(await pathExists(current))) continue;
-    const entries = await fs.readdir(current, { withFileTypes: true });
-    for (const entry of entries) {
-      if (entry.name.startsWith(".")) continue;
-      const fullPath = path.join(current, entry.name);
-      if (entry.isDirectory()) {
-        queue.push(fullPath);
-        continue;
-      }
-      if (entry.isFile() && entry.name === "SKILL.md") {
-        files.push(fullPath);
-      }
-    }
-  }
-  return files.sort((a, b) => a.localeCompare(b));
-}
-
-function normalizeLower(value) {
-  return String(value || "")
-    .trim()
-    .toLowerCase();
-}
-
-function isCodexWrapperSkill(id, metadata) {
-  const lowerId = normalizeLower(id);
-  if (lowerId.startsWith("workflow-") || lowerId.startsWith("agent-")) {
-    return true;
-  }
-
-  const wrapperKind = normalizeLower(metadata.wrapper);
-  return wrapperKind === "workflow" || wrapperKind === "agent";
-}
-
-async function collectSkillsIndexEntries(roots, indexPathPrefix) {
-  const rowById = new Map();
-  const coreProfile = JSON.parse(
-    await fs.readFile(path.join(ROOT, "workflows", "skills", "catalogs", "core.json"), "utf8"),
-  );
-  const webBackendProfile = JSON.parse(
-    await fs.readFile(
-      path.join(ROOT, "workflows", "skills", "catalogs", "web-backend.json"),
-      "utf8",
-    ),
-  );
-  const coreProfileIds = new Set((coreProfile.skills || []).map((item) => String(item)));
-  const webBackendProfileIds = new Set(
-    (webBackendProfile.skills || []).map((item) => String(item)),
-  );
-
-  for (const skillsRoot of roots) {
-    if (!(await pathExists(skillsRoot))) continue;
-
-    for (const skillFile of await listSkillFiles(skillsRoot)) {
-      const skillDir = path.dirname(skillFile);
-      const skillId = path.basename(skillDir);
-      const raw = await fs.readFile(skillFile, "utf8");
-      const fm = parseFrontmatter(raw);
-      const metadata = getMetadataBlock(fm.raw);
-
-      if (isCodexWrapperSkill(skillId, metadata)) {
-        continue;
-      }
-
-      const descriptor = deriveDescriptor({
-        skillFile: {
-          skillDir,
-          filePath: skillFile,
-          rawContent: raw,
-        },
-        skillsRoot,
-        coreProfileIds,
-        webBackendProfileIds,
-      });
-      const id = skillId;
-
-      // Later roots override earlier roots for same id (MCP canonical preferred).
-      rowById.set(String(id).toLowerCase(), {
-        id,
-        package_id: descriptor.package_id,
-        catalog_id: descriptor.catalog_id,
-        kind: descriptor.kind,
-        name: descriptor.name,
-        canonical: descriptor.canonical,
-        canonical_id: descriptor.canonical_id,
-        deprecated: descriptor.deprecated,
-        replaced_by: descriptor.replaced_by,
-        aliases: descriptor.aliases,
-        category: descriptor.category,
-        layer: descriptor.layer,
-        maturity: descriptor.maturity,
-        tier: descriptor.tier,
-        tags: descriptor.tags,
-        path: `${indexPathPrefix}/${path.relative(skillsRoot, skillFile).replaceAll(path.sep, "/")}`,
-        description: descriptor.description,
-        triggers: descriptor.triggers,
-      });
-    }
-  }
-
-  const rows = [...rowById.values()];
-  rows.sort((a, b) => {
-    const nameCmp = a.name.localeCompare(b.name);
-    if (nameCmp !== 0) return nameCmp;
-    return a.path.localeCompare(b.path);
-  });
-
-  return rows;
-}
-
 function ensureUniqueNames(rows, label) {
   const seen = new Map();
   for (const row of rows) {
@@ -213,9 +86,7 @@ function ensureUniqueNames(rows, label) {
     }
     const count = seen.get(key) + 1;
     seen.set(key, count);
-    throw new Error(
-      `Duplicate skill name '${row.name}' found in target '${label}'`,
-    );
+    throw new Error(`Duplicate skill name '${row.name}' found in target '${label}'`);
   }
 }
 
@@ -240,7 +111,7 @@ async function writeIndex({
   dryRun,
   check,
 }) {
-  const rows = await collectSkillsIndexEntries(roots, indexPathPrefix);
+  const rows = await buildSkillsIndexRows({ roots, indexPathPrefix });
   ensureUniqueNames(rows, label);
   ensureUniqueIds(rows, label);
 

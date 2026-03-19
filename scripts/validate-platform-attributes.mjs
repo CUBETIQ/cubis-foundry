@@ -11,6 +11,16 @@ import {
   PATTERN_REGISTRY,
   buildPlatformCapabilityContracts,
 } from "./lib/platform-parity.mjs";
+import {
+  EXPECTED_PARITY_PLATFORM_IDS,
+  EXPECTED_PARITY_PATTERN_IDS,
+  MANAGED_PARITY_DOC_FILES,
+  PATTERN_REGISTRY_FILE,
+  PLATFORM_CAPABILITIES_FILE,
+  UPSTREAM_CAPABILITY_AUDIT_FILE,
+  buildBlockingSummary,
+  buildParityArtifactPointers,
+} from "./lib/parity-contract.mjs";
 
 const ROOT = process.cwd();
 const ASSETS_ROOT = path.join(ROOT, "workflows");
@@ -26,17 +36,17 @@ const MANIFEST_PATH = path.join(BUNDLE_ROOT, "manifest.json");
 const GENERATED_PATTERN_REGISTRY_PATH = path.join(
   BUNDLE_ROOT,
   "generated",
-  "pattern-registry.json",
+  PATTERN_REGISTRY_FILE,
 );
 const GENERATED_PLATFORM_CAPABILITIES_PATH = path.join(
   BUNDLE_ROOT,
   "generated",
-  "platform-capabilities.json",
+  PLATFORM_CAPABILITIES_FILE,
 );
 const GENERATED_UPSTREAM_AUDIT_PATH = path.join(
   BUNDLE_ROOT,
   "generated",
-  "upstream-capability-audit.json",
+  UPSTREAM_CAPABILITY_AUDIT_FILE,
 );
 const GENERATE_PLATFORM_ASSETS_SCRIPT = path.join(
   ROOT,
@@ -278,12 +288,9 @@ async function validateParityManifest(manifest, errors) {
 
   const artifacts =
     parity.artifacts && typeof parity.artifacts === "object" ? parity.artifacts : {};
-  const expectedArtifacts = {
-    patternRegistry: "generated/pattern-registry.json",
-    platformCapabilities: "generated/platform-capabilities.json",
-    upstreamCapabilityAudit: "generated/upstream-capability-audit.json",
-  };
+  const expectedArtifacts = buildParityArtifactPointers();
   for (const [key, expectedValue] of Object.entries(expectedArtifacts)) {
+    if (key === "docs") continue;
     if (artifacts[key] !== expectedValue) {
       error(
         errors,
@@ -293,11 +300,9 @@ async function validateParityManifest(manifest, errors) {
     }
   }
 
-  const expectedDocArtifacts = [
-    "docs/platform-support-matrix.md",
-    "docs/cross-platform-pattern-catalog.md",
-    "docs/platform-capability-details.md",
-  ];
+  const expectedDocArtifacts = MANAGED_PARITY_DOC_FILES.map(
+    (fileName) => `docs/${fileName}`,
+  );
   const actualDocArtifacts = Array.isArray(artifacts.docs) ? artifacts.docs : [];
   if (actualDocArtifacts.length !== expectedDocArtifacts.length) {
     error(
@@ -317,7 +322,6 @@ async function validateParityManifest(manifest, errors) {
   }
 
   const summary = parity.summary && typeof parity.summary === "object" ? parity.summary : {};
-  const expectedPlatformIds = ["codex", "antigravity", "copilot", "claude", "gemini"];
   if (summary.totalPatterns !== PATTERN_REGISTRY.length) {
     error(
       errors,
@@ -325,30 +329,17 @@ async function validateParityManifest(manifest, errors) {
       `parity.summary.totalPatterns mismatch: expected ${PATTERN_REGISTRY.length}, found ${summary.totalPatterns}`,
     );
   }
-  if (summary.totalPlatforms !== expectedPlatformIds.length) {
+  if (summary.totalPlatforms !== EXPECTED_PARITY_PLATFORM_IDS.length) {
     error(
       errors,
       MANIFEST_PATH,
-      `parity.summary.totalPlatforms mismatch: expected ${expectedPlatformIds.length}, found ${summary.totalPlatforms}`,
+      `parity.summary.totalPlatforms mismatch: expected ${EXPECTED_PARITY_PLATFORM_IDS.length}, found ${summary.totalPlatforms}`,
     );
   }
 
   const expectedContracts = buildPlatformCapabilityContracts();
-  const expectedBlockingSummary = Object.fromEntries(
-    Object.entries(expectedContracts).map(([platformId, contract]) => [
-      platformId,
-      {
-        native: contract.pattern_support.filter((item) => item.support_level === "native")
-          .length,
-        degraded: contract.pattern_support.filter(
-          (item) => item.support_level === "degraded",
-        ).length,
-        blocked: contract.pattern_support.filter((item) => item.support_level === "blocked")
-          .length,
-      },
-    ]),
-  );
-  for (const platformId of expectedPlatformIds) {
+  const expectedBlockingSummary = buildBlockingSummary(expectedContracts);
+  for (const platformId of EXPECTED_PARITY_PLATFORM_IDS) {
     const actualCounts = summary.blockingSummary?.[platformId];
     const expectedCounts = expectedBlockingSummary[platformId];
     if (
@@ -426,7 +417,7 @@ async function validateParityManifest(manifest, errors) {
     "docs_contract",
     "test_contract",
   ];
-  const expectedPatternIds = new Set(PATTERN_REGISTRY.map((item) => item.pattern_id));
+  const expectedPatternIds = new Set(EXPECTED_PARITY_PATTERN_IDS);
 
   for (const item of patternRegistry) {
     if (!item || typeof item !== "object") {
@@ -482,7 +473,7 @@ async function validateParityManifest(manifest, errors) {
     typeof generatedPlatformCapabilities.platforms === "object"
       ? generatedPlatformCapabilities.platforms
       : {};
-  for (const platformId of expectedPlatformIds) {
+  for (const platformId of EXPECTED_PARITY_PLATFORM_IDS) {
     const contract = platformContracts?.[platformId];
     if (!contract || typeof contract !== "object") {
       error(

@@ -1,195 +1,46 @@
 {
   "$schema": "cubis-foundry-route-manifest-v2",
   "generatedAt": "1970-01-01T00:00:00.000Z",
-  "contentHash": "75374abae89a8fc1",
+  "contentHash": "69e2b5ac03b593f3",
   "summary": {
-    "totalRoutes": 42,
-    "workflows": 20,
-    "agents": 22
+    "totalRoutes": 22,
+    "workflows": 10,
+    "agents": 12
   },
   "routes": [
     {
       "kind": "agent",
-      "id": "backend-specialist",
+      "id": "database-specialist",
       "command": null,
-      "displayName": "backend-specialist",
-      "description": "Backend specialist for API contracts, service logic, schema-aware backend changes, auth-sensitive implementation, payment integrations, and serverless architecture. Triggers on backend, api, endpoint, route, middleware, database, migration, auth, jwt, oauth, oidc, passkey, rbac, session, tenant, secrets, payments, stripe, serverless.",
-      "triggers": [
-        "backend",
-        "api",
-        "endpoint",
-        "route",
-        "middleware",
-        "database",
-        "migration",
-        "auth",
-        "jwt",
-        "oauth",
-        "oidc",
-        "passkey",
-        "rbac",
-        "session",
-        "tenant",
-        "secrets",
-        "payments",
-        "stripe",
-        "serverless"
-      ],
-      "primaryAgent": "backend-specialist",
+      "displayName": "database-specialist",
+      "description": "Database design and optimization agent. Handles schema design, query optimization, migrations, indexing strategies, and ORM patterns.",
+      "triggers": [],
+      "primaryAgent": "database-specialist",
       "supportingAgents": [],
       "primarySkills": [
-        "api-design",
-        "system-design"
-      ],
-      "supportingSkills": [
-        "owasp-security-review",
-        "database-design",
-        "drizzle-orm",
-        "microservices-design",
-        "javascript-best-practices",
-        "nestjs",
-        "fastapi",
-        "stripe-integration",
-        "ci-cd-pipeline",
-        "frontend-design",
-        "typescript-best-practices",
-        "python-best-practices",
-        "golang-best-practices",
-        "java-best-practices",
-        "csharp-best-practices",
-        "kotlin-best-practices",
-        "rust-best-practices",
-        "php-best-practices"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "agent",
-          "agentFile": "backend-specialist.toml"
-        },
-        "copilot": {
-          "target": "agent",
-          "agentFile": "backend-specialist.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "agent-backend-specialist.toml"
-        },
-        "claude": {
-          "target": "agent",
-          "agentFile": "backend-specialist.md"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "agent-backend-specialist.toml"
-        }
-      }
-    },
-    {
-      "kind": "agent",
-      "id": "code-archaeologist",
-      "command": null,
-      "displayName": "code-archaeologist",
-      "description": "Expert in legacy code, refactoring, and understanding undocumented systems. Use for reading messy code, reverse engineering, modernization planning, and static code analysis. Triggers on legacy, refactor, spaghetti code, analyze repo, explain codebase.",
-      "triggers": [
-        "legacy",
-        "refactor",
-        "spaghetti code",
-        "analyze repo",
-        "explain codebase",
-        "audit",
-        "map repo",
-        "explore codebase",
-        "legacy analysis",
-        "undocumented behavior",
-        "feasibility"
-      ],
-      "primaryAgent": "code-archaeologist",
-      "supportingAgents": [],
-      "primarySkills": [
-        "skill-creator",
-        "sadd"
-      ],
-      "supportingSkills": [
-        "system-design",
-        "code-review",
-        "typescript-best-practices",
-        "javascript-best-practices",
-        "python-best-practices"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "agent",
-          "agentFile": "code-archaeologist.toml"
-        },
-        "copilot": {
-          "target": "agent",
-          "agentFile": "code-archaeologist.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "agent-code-archaeologist.toml"
-        },
-        "claude": {
-          "target": "agent",
-          "agentFile": "code-archaeologist.md"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "agent-code-archaeologist.toml"
-        }
-      }
-    },
-    {
-      "kind": "agent",
-      "id": "database-architect",
-      "command": null,
-      "displayName": "database-architect",
-      "description": "Expert database architect for schema design, query optimization, migrations, and modern serverless databases. Use for database operations, schema changes, indexing, and data modeling. Triggers on database, sql, schema, migration, query, postgres, index, table.",
-      "triggers": [
-        "database",
-        "sql",
-        "schema",
-        "migration",
-        "query",
-        "postgres",
-        "index",
-        "table"
-      ],
-      "primaryAgent": "database-architect",
-      "supportingAgents": [],
-      "primarySkills": [
-        "system-design",
         "database-design"
       ],
-      "supportingSkills": [
-        "drizzle-orm",
-        "typescript-best-practices",
-        "javascript-best-practices",
-        "python-best-practices",
-        "golang-best-practices",
-        "java-best-practices",
-        "php-best-practices"
-      ],
+      "supportingSkills": [],
       "artifacts": {
         "codex": {
           "target": "agent",
-          "agentFile": "database-architect.toml"
+          "agentFile": "database-specialist.toml"
         },
         "copilot": {
           "target": "agent",
-          "agentFile": "database-architect.md"
+          "agentFile": "database-specialist.md"
         },
         "antigravity": {
           "target": "command",
-          "commandFile": "agent-database-architect.toml"
+          "commandFile": "agent-database-specialist.toml"
         },
         "claude": {
           "target": "agent",
-          "agentFile": "database-architect.md"
+          "agentFile": "database-specialist.md"
         },
         "gemini": {
           "target": "command",
-          "commandFile": "agent-database-architect.toml"
+          "commandFile": "agent-database-specialist.toml"
         }
       }
     },
@@ -198,27 +49,14 @@
       "id": "debugger",
       "command": null,
       "displayName": "debugger",
-      "description": "Expert in evidence-first debugging, root-cause isolation, regression triage, flaky failure investigation, and structured error observability across browser, backend, and data paths.",
+      "description": "Root cause analysis and bug fixing agent. Systematically isolates failures, identifies root causes, implements minimal fixes, and verifies corrections.",
       "triggers": [],
       "primaryAgent": "debugger",
       "supportingAgents": [],
       "primarySkills": [
-        "systematic-debugging",
-        "observability"
+        "systematic-debugging"
       ],
-      "supportingSkills": [
-        "unit-testing",
-        "integration-testing",
-        "playwright-interactive",
-        "typescript-best-practices",
-        "javascript-best-practices",
-        "python-best-practices",
-        "golang-best-practices",
-        "java-best-practices",
-        "csharp-best-practices",
-        "kotlin-best-practices",
-        "rust-best-practices"
-      ],
+      "supportingSkills": [],
       "artifacts": {
         "codex": {
           "target": "agent",
@@ -244,104 +82,109 @@
     },
     {
       "kind": "agent",
-      "id": "devops-engineer",
+      "id": "devops",
       "command": null,
-      "displayName": "devops-engineer",
-      "description": "Expert in deployment, server management, CI/CD, production operations, infrastructure-as-code, and serverless architecture. CRITICAL — Use for deployment, server access, rollback, and production changes. HIGH RISK operations. Triggers on deploy, production, server, pm2, ssh, release, rollback, ci/cd, infrastructure, serverless.",
-      "triggers": [
-        "deploy",
-        "production",
-        "server",
-        "pm2",
-        "ssh",
-        "release",
-        "rollback",
-        "ci/cd",
-        "infrastructure",
-        "serverless"
-      ],
-      "primaryAgent": "devops-engineer",
+      "displayName": "devops",
+      "description": "DevOps and infrastructure agent. Builds CI/CD pipelines, Docker configurations, Kubernetes manifests, monitoring setup, and deployment automation.",
+      "triggers": [],
+      "primaryAgent": "devops",
       "supportingAgents": [],
       "primarySkills": [
-        "ci-cd-pipeline",
-        "observability"
+        "ci-cd-pipeline"
       ],
-      "supportingSkills": [
-        "kubernetes-deploy",
-        "git-workflow",
-        "systematic-debugging",
-        "javascript-best-practices",
-        "typescript-best-practices",
-        "python-best-practices",
-        "golang-best-practices"
-      ],
+      "supportingSkills": [],
       "artifacts": {
         "codex": {
           "target": "agent",
-          "agentFile": "devops-engineer.toml"
+          "agentFile": "devops.toml"
         },
         "copilot": {
           "target": "agent",
-          "agentFile": "devops-engineer.md"
+          "agentFile": "devops.md"
         },
         "antigravity": {
           "target": "command",
-          "commandFile": "agent-devops-engineer.toml"
+          "commandFile": "agent-devops.toml"
         },
         "claude": {
           "target": "agent",
-          "agentFile": "devops-engineer.md"
+          "agentFile": "devops.md"
         },
         "gemini": {
           "target": "command",
-          "commandFile": "agent-devops-engineer.toml"
+          "commandFile": "agent-devops.toml"
         }
       }
     },
     {
       "kind": "agent",
-      "id": "documentation-writer",
+      "id": "docs-writer",
       "command": null,
-      "displayName": "documentation-writer",
-      "description": "Expert in technical documentation. Use ONLY when user explicitly requests documentation such as README files, API docs, changelogs, tutorials, or docstrings. DO NOT auto-invoke during normal development. Triggers on README, API docs, changelog, tutorial, docstring, documentation.",
-      "triggers": [
-        "README",
-        "API docs",
-        "changelog",
-        "tutorial",
-        "docstring",
-        "documentation"
-      ],
-      "primaryAgent": "documentation-writer",
+      "displayName": "docs-writer",
+      "description": "Documentation generation agent. Writes READMEs, API docs, architecture decision records, changelogs, and developer guides from codebase analysis.",
+      "triggers": [],
+      "primaryAgent": "docs-writer",
       "supportingAgents": [],
       "primarySkills": [
-        "tech-doc",
-        "typescript-best-practices"
+        "tech-doc"
       ],
-      "supportingSkills": [
-        "javascript-best-practices",
-        "python-best-practices"
-      ],
+      "supportingSkills": [],
       "artifacts": {
         "codex": {
           "target": "agent",
-          "agentFile": "documentation-writer.toml"
+          "agentFile": "docs-writer.toml"
         },
         "copilot": {
           "target": "agent",
-          "agentFile": "documentation-writer.md"
+          "agentFile": "docs-writer.md"
         },
         "antigravity": {
           "target": "command",
-          "commandFile": "agent-documentation-writer.toml"
+          "commandFile": "agent-docs-writer.toml"
         },
         "claude": {
           "target": "agent",
-          "agentFile": "documentation-writer.md"
+          "agentFile": "docs-writer.md"
         },
         "gemini": {
           "target": "command",
-          "commandFile": "agent-documentation-writer.toml"
+          "commandFile": "agent-docs-writer.toml"
+        }
+      }
+    },
+    {
+      "kind": "agent",
+      "id": "explorer",
+      "command": null,
+      "displayName": "explorer",
+      "description": "Fast, read-only codebase exploration agent. Use proactively for file discovery, code search, architecture analysis, and understanding unfamiliar code. Cannot modify files.",
+      "triggers": [],
+      "primaryAgent": "explorer",
+      "supportingAgents": [],
+      "primarySkills": [
+        "deep-research"
+      ],
+      "supportingSkills": [],
+      "artifacts": {
+        "codex": {
+          "target": "agent",
+          "agentFile": "explorer.toml"
+        },
+        "copilot": {
+          "target": "agent",
+          "agentFile": "explorer.md"
+        },
+        "antigravity": {
+          "target": "command",
+          "commandFile": "agent-explorer.toml"
+        },
+        "claude": {
+          "target": "agent",
+          "agentFile": "explorer.md"
+        },
+        "gemini": {
+          "target": "command",
+          "commandFile": "agent-explorer.toml"
         }
       }
     },
@@ -350,39 +193,14 @@
       "id": "frontend-specialist",
       "command": null,
       "displayName": "frontend-specialist",
-      "description": "Senior frontend specialist for React, Next.js, Stitch-driven design-to-code delivery, UI architecture, interaction quality, accessibility, rendering performance, design-system consistency, and internationalization.",
-      "triggers": [
-        "component",
-        "react",
-        "next",
-        "stitch",
-        "design-to-code",
-        "screen-to-code",
-        "ui diff",
-        "ui",
-        "ux",
-        "css",
-        "tailwind",
-        "responsive",
-        "app router",
-        "accessibility",
-        "frontend review"
-      ],
+      "description": "Frontend implementation agent. Builds UI components, manages state, implements responsive layouts, and ensures accessibility. Specializes in React, Next.js, and modern CSS.",
+      "triggers": [],
       "primaryAgent": "frontend-specialist",
       "supportingAgents": [],
       "primarySkills": [
-        "stitch",
-        "react"
+        "frontend-design"
       ],
-      "supportingSkills": [
-        "nextjs",
-        "frontend-design",
-        "performance-testing",
-        "code-review",
-        "observability",
-        "typescript-best-practices",
-        "javascript-best-practices"
-      ],
+      "supportingSkills": [],
       "artifacts": {
         "codex": {
           "target": "agent",
@@ -408,107 +226,37 @@
     },
     {
       "kind": "agent",
-      "id": "game-developer",
+      "id": "implementer",
       "command": null,
-      "displayName": "game-developer",
-      "description": "Game development across all platforms (PC, Web, Mobile, VR/AR). Use when building games with Unity, Godot, Unreal, Phaser, Three.js, or similar engines. Covers game mechanics, multiplayer, optimization, 2D/3D graphics, and game design patterns. Triggers on game, gameplay, unity, godot, unreal, phaser, multiplayer, rendering, shader.",
-      "triggers": [
-        "game",
-        "gameplay",
-        "unity",
-        "godot",
-        "unreal",
-        "phaser",
-        "multiplayer",
-        "rendering",
-        "shader"
-      ],
-      "primaryAgent": "game-developer",
+      "displayName": "implementer",
+      "description": "Full code implementation agent. Builds features, refactors code, performs migrations, and applies fixes. Follows existing codebase patterns.",
+      "triggers": [],
+      "primaryAgent": "implementer",
       "supportingAgents": [],
       "primarySkills": [
-        "frontend-design",
-        "typescript-best-practices"
+        "api-design"
       ],
-      "supportingSkills": [
-        "javascript-best-practices",
-        "rust-best-practices",
-        "csharp-best-practices"
-      ],
+      "supportingSkills": [],
       "artifacts": {
         "codex": {
           "target": "agent",
-          "agentFile": "game-developer.toml"
+          "agentFile": "implementer.toml"
         },
         "copilot": {
           "target": "agent",
-          "agentFile": "game-developer.md"
+          "agentFile": "implementer.md"
         },
         "antigravity": {
           "target": "command",
-          "commandFile": "agent-game-developer.toml"
+          "commandFile": "agent-implementer.toml"
         },
         "claude": {
           "target": "agent",
-          "agentFile": "game-developer.md"
+          "agentFile": "implementer.md"
         },
         "gemini": {
           "target": "command",
-          "commandFile": "agent-game-developer.toml"
-        }
-      }
-    },
-    {
-      "kind": "agent",
-      "id": "mobile-developer",
-      "command": null,
-      "displayName": "mobile-developer",
-      "description": "Expert in Flutter delivery and mobile product design for cross-platform apps. Use for Flutter architecture, Stitch-driven mobile handoff, native integrations, mobile UX, platform behavior, and release readiness. Triggers on mobile, flutter, ios, android, app store, play store, touch UX.",
-      "triggers": [
-        "mobile",
-        "flutter",
-        "ios",
-        "android",
-        "app store",
-        "play store",
-        "touch UX"
-      ],
-      "primaryAgent": "mobile-developer",
-      "supportingAgents": [],
-      "primarySkills": [
-        "stitch",
-        "react-native"
-      ],
-      "supportingSkills": [
-        "frontend-design",
-        "expo-app",
-        "swift-best-practices",
-        "kotlin-best-practices",
-        "react",
-        "systematic-debugging",
-        "integration-testing",
-        "typescript-best-practices",
-        "javascript-best-practices"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "agent",
-          "agentFile": "mobile-developer.toml"
-        },
-        "copilot": {
-          "target": "agent",
-          "agentFile": "mobile-developer.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "agent-mobile-developer.toml"
-        },
-        "claude": {
-          "target": "agent",
-          "agentFile": "mobile-developer.md"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "agent-mobile-developer.toml"
+          "commandFile": "agent-implementer.toml"
         }
       }
     },
@@ -517,32 +265,14 @@
       "id": "orchestrator",
       "command": null,
       "displayName": "orchestrator",
-      "description": "Pure orchestration agent using Repeat-Until-Good (RUG) pattern. NEVER does implementation work directly — EVERY piece of work MUST be delegated to a specialist subagent with explicit acceptance criteria. Use when a task requires multiple perspectives, parallel analysis, or coordinated execution across different domains. Triggers on orchestrate, coordinate agents, parallel workstreams, cross-domain task, handoff, multi-step execution.",
-      "triggers": [
-        "orchestrate",
-        "coordinate agents",
-        "parallel workstreams",
-        "cross-domain task",
-        "handoff",
-        "multi-step execution"
-      ],
+      "description": "Central coordinator that decomposes complex tasks and delegates to specialist agents. Use for any multi-domain or ambiguous request that requires routing, planning, or cross-cutting coordination.",
+      "triggers": [],
       "primaryAgent": "orchestrator",
       "supportingAgents": [],
       "primarySkills": [
-        "system-design",
-        "api-design"
+        "system-design"
       ],
-      "supportingSkills": [
-        "database-design",
-        "deep-research",
-        "mcp-server-builder",
-        "tech-doc",
-        "prompt-engineering",
-        "skill-creator",
-        "typescript-best-practices",
-        "javascript-best-practices",
-        "python-best-practices"
-      ],
+      "supportingSkills": [],
       "artifacts": {
         "codex": {
           "target": "agent",
@@ -568,983 +298,145 @@
     },
     {
       "kind": "agent",
-      "id": "penetration-tester",
+      "id": "planner",
       "command": null,
-      "displayName": "penetration-tester",
-      "description": "Offensive security specialist for attack-surface mapping, exploitation validation, DAST/SAST analysis, vulnerability scanning, and red-team exercises. Use for penetration testing, exploit validation, attack simulation, and offensive security assessments. Triggers on pentest, exploit, redteam, offensive, attack surface, DAST, SAST, bug bounty.",
-      "triggers": [
-        "pentest",
-        "exploit",
-        "redteam",
-        "red team",
-        "offensive",
-        "attack surface",
-        "DAST",
-        "SAST",
-        "bug bounty",
-        "exploitation",
-        "payload",
-        "fuzzing",
-        "lateral movement",
-        "privilege escalation",
-        "exfiltration"
-      ],
-      "primaryAgent": "penetration-tester",
+      "displayName": "planner",
+      "description": "Implementation planning and specification agent. Produces structured plans, design docs, and specifications. Cannot modify code files — only plans.",
+      "triggers": [],
+      "primaryAgent": "planner",
       "supportingAgents": [],
       "primarySkills": [
-        "owasp-security-review",
-        "api-design"
+        "spec-driven-delivery"
       ],
-      "supportingSkills": [
-        "typescript-best-practices",
-        "javascript-best-practices",
-        "python-best-practices",
-        "golang-best-practices",
-        "rust-best-practices"
-      ],
+      "supportingSkills": [],
       "artifacts": {
         "codex": {
           "target": "agent",
-          "agentFile": "penetration-tester.toml"
+          "agentFile": "planner.toml"
         },
         "copilot": {
           "target": "agent",
-          "agentFile": "penetration-tester.md"
+          "agentFile": "planner.md"
         },
         "antigravity": {
           "target": "command",
-          "commandFile": "agent-penetration-tester.toml"
+          "commandFile": "agent-planner.toml"
         },
         "claude": {
           "target": "agent",
-          "agentFile": "penetration-tester.md"
+          "agentFile": "planner.md"
         },
         "gemini": {
           "target": "command",
-          "commandFile": "agent-penetration-tester.toml"
+          "commandFile": "agent-planner.toml"
         }
       }
     },
     {
       "kind": "agent",
-      "id": "performance-optimizer",
+      "id": "reviewer",
       "command": null,
-      "displayName": "performance-optimizer",
-      "description": "Expert in performance optimization, profiling, Core Web Vitals, bundle optimization, and static analysis. Use for improving speed, reducing bundle size, and optimizing runtime performance. Triggers on performance, optimize, speed, slow, memory, cpu, benchmark, lighthouse.",
-      "triggers": [
-        "performance",
-        "optimize",
-        "speed",
-        "slow",
-        "memory",
-        "cpu",
-        "benchmark",
-        "lighthouse"
-      ],
-      "primaryAgent": "performance-optimizer",
+      "displayName": "reviewer",
+      "description": "Code review agent. Performs quality, pattern, and maintainability reviews. Read-only — identifies issues but does not fix them. Returns actionable feedback.",
+      "triggers": [],
+      "primaryAgent": "reviewer",
       "supportingAgents": [],
       "primarySkills": [
-        "performance-testing",
         "code-review"
       ],
-      "supportingSkills": [
-        "typescript-best-practices",
-        "javascript-best-practices",
-        "python-best-practices",
-        "golang-best-practices",
-        "rust-best-practices"
-      ],
+      "supportingSkills": [],
       "artifacts": {
         "codex": {
           "target": "agent",
-          "agentFile": "performance-optimizer.toml"
+          "agentFile": "reviewer.toml"
         },
         "copilot": {
           "target": "agent",
-          "agentFile": "performance-optimizer.md"
+          "agentFile": "reviewer.md"
         },
         "antigravity": {
           "target": "command",
-          "commandFile": "agent-performance-optimizer.toml"
+          "commandFile": "agent-reviewer.toml"
         },
         "claude": {
           "target": "agent",
-          "agentFile": "performance-optimizer.md"
+          "agentFile": "reviewer.md"
         },
         "gemini": {
           "target": "command",
-          "commandFile": "agent-performance-optimizer.toml"
+          "commandFile": "agent-reviewer.toml"
         }
       }
     },
     {
       "kind": "agent",
-      "id": "product-manager",
+      "id": "security-reviewer",
       "command": null,
-      "displayName": "product-manager",
-      "description": "Expert in product requirements, user stories, and acceptance criteria. Use for defining features, clarifying ambiguity, writing PRDs, and turning requests into testable outcomes. Triggers on requirements, user story, acceptance criteria, PRD, feature definition, scope clarification.",
-      "triggers": [
-        "requirements",
-        "user story",
-        "acceptance criteria",
-        "prd",
-        "feature definition",
-        "scope clarification",
-        "backlog",
-        "roadmap",
-        "prioritization",
-        "mvp scope",
-        "stakeholder alignment",
-        "release planning"
-      ],
-      "primaryAgent": "product-manager",
+      "displayName": "security-reviewer",
+      "description": "Security-focused analysis agent. Performs OWASP security audits, secret scanning, auth/authz review, and hardening recommendations. Read-only — does not fix, only reports.",
+      "triggers": [],
+      "primaryAgent": "security-reviewer",
       "supportingAgents": [],
       "primarySkills": [
-        "system-design",
-        "api-design"
+        "owasp-security-review"
       ],
-      "supportingSkills": [
-        "skill-creator",
-        "typescript-best-practices",
-        "javascript-best-practices"
-      ],
+      "supportingSkills": [],
       "artifacts": {
         "codex": {
           "target": "agent",
-          "agentFile": "product-manager.toml"
+          "agentFile": "security-reviewer.toml"
         },
         "copilot": {
           "target": "agent",
-          "agentFile": "product-manager.md"
+          "agentFile": "security-reviewer.md"
         },
         "antigravity": {
           "target": "command",
-          "commandFile": "agent-product-manager.toml"
+          "commandFile": "agent-security-reviewer.toml"
         },
         "claude": {
           "target": "agent",
-          "agentFile": "product-manager.md"
+          "agentFile": "security-reviewer.md"
         },
         "gemini": {
           "target": "command",
-          "commandFile": "agent-product-manager.toml"
+          "commandFile": "agent-security-reviewer.toml"
         }
       }
     },
     {
       "kind": "agent",
-      "id": "project-planner",
+      "id": "tester",
       "command": null,
-      "displayName": "project-planner",
-      "description": "Smart project planning agent. Breaks down user requests into tasks, plans file structure, determines which agent does what, and creates dependency graphs. Use when starting new projects or planning major features. Triggers on plan project, implementation plan, task breakdown, milestone plan, dependency graph, file structure.",
-      "triggers": [
-        "plan project",
-        "implementation plan",
-        "task breakdown",
-        "milestone plan",
-        "dependency graph",
-        "file structure"
-      ],
-      "primaryAgent": "project-planner",
+      "displayName": "tester",
+      "description": "Test authoring and execution agent. Writes unit, integration, and end-to-end tests. Runs test suites, analyzes coverage, and verifies implementations.",
+      "triggers": [],
+      "primaryAgent": "tester",
       "supportingAgents": [],
       "primarySkills": [
-        "system-design",
-        "api-design"
-      ],
-      "supportingSkills": [
-        "database-design",
-        "deep-research",
-        "mcp-server-builder",
-        "tech-doc",
-        "prompt-engineering",
-        "skill-creator",
-        "typescript-best-practices",
-        "javascript-best-practices",
-        "python-best-practices"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "agent",
-          "agentFile": "project-planner.toml"
-        },
-        "copilot": {
-          "target": "agent",
-          "agentFile": "project-planner.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "agent-project-planner.toml"
-        },
-        "claude": {
-          "target": "agent",
-          "agentFile": "project-planner.md"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "agent-project-planner.toml"
-        }
-      }
-    },
-    {
-      "kind": "agent",
-      "id": "qa-automation-engineer",
-      "command": null,
-      "displayName": "qa-automation-engineer",
-      "description": "QA automation specialist for test strategy, regression suite design, test matrix planning, continuous quality pipelines, and structured testing patterns. Use for test automation architecture, regression prevention, quality pipeline design, and test data management. Triggers on QA, automation, regression, smoke test, test plan, test matrix, quality pipeline.",
-      "triggers": [
-        "qa automation",
-        "test automation",
-        "regression suite",
-        "smoke test",
-        "test plan",
-        "test matrix",
-        "quality pipeline",
-        "test data",
-        "test infrastructure",
-        "flaky tests",
-        "test coverage",
-        "continuous testing"
-      ],
-      "primaryAgent": "qa-automation-engineer",
-      "supportingAgents": [],
-      "primarySkills": [
-        "integration-testing",
-        "playwright-interactive"
-      ],
-      "supportingSkills": [
-        "unit-testing",
-        "code-review",
-        "llm-eval",
-        "systematic-debugging",
-        "typescript-best-practices",
-        "javascript-best-practices",
-        "python-best-practices"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "agent",
-          "agentFile": "qa-automation-engineer.toml"
-        },
-        "copilot": {
-          "target": "agent",
-          "agentFile": "qa-automation-engineer.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "agent-qa-automation-engineer.toml"
-        },
-        "claude": {
-          "target": "agent",
-          "agentFile": "qa-automation-engineer.md"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "agent-qa-automation-engineer.toml"
-        }
-      }
-    },
-    {
-      "kind": "agent",
-      "id": "researcher",
-      "command": null,
-      "displayName": "researcher",
-      "description": "Deep research and codebase exploration agent. Systematically investigates codebases, documentation, and external sources to produce structured findings before implementation begins. Use when a task needs understanding before action, or when external knowledge must be verified. Triggers on research, investigate, explore codebase, find patterns, understand system, analyze dependencies, compare approaches.",
-      "triggers": [
-        "research",
-        "investigate",
-        "explore",
-        "survey",
-        "analyze",
-        "understand",
-        "discover",
-        "find patterns",
-        "compare approaches",
-        "deep dive"
-      ],
-      "primaryAgent": "researcher",
-      "supportingAgents": [],
-      "primarySkills": [
-        "deep-research",
-        "system-design"
-      ],
-      "supportingSkills": [
-        "database-design",
-        "tech-doc",
-        "prompt-engineering"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "agent",
-          "agentFile": "researcher.toml"
-        },
-        "copilot": {
-          "target": "agent",
-          "agentFile": "researcher.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "agent-researcher.toml"
-        },
-        "claude": {
-          "target": "agent",
-          "agentFile": "researcher.md"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "agent-researcher.toml"
-        }
-      }
-    },
-    {
-      "kind": "agent",
-      "id": "security-auditor",
-      "command": null,
-      "displayName": "security-auditor",
-      "description": "Security auditor for exploitability-first review, auth and policy design, secret handling, code-path hardening, vulnerability scanning, and static analysis. Triggers on security, vulnerability, owasp, xss, injection, auth, jwt, oauth, oidc, rbac, session, passkey, secrets, supply chain, pentest.",
-      "triggers": [
-        "security",
-        "vulnerability",
-        "owasp",
-        "xss",
-        "injection",
-        "auth",
-        "jwt",
-        "oauth",
-        "oidc",
-        "rbac",
-        "abac",
-        "session",
-        "passkey",
-        "secret",
-        "secrets",
-        "encrypt",
-        "supply chain",
-        "pentest",
-        "exploit",
-        "attack",
-        "breach",
-        "redteam",
-        "offensive"
-      ],
-      "primaryAgent": "security-auditor",
-      "supportingAgents": [],
-      "primarySkills": [
-        "owasp-security-review",
-        "code-review"
-      ],
-      "supportingSkills": [
-        "api-design",
-        "javascript-best-practices",
-        "nestjs",
-        "fastapi",
-        "typescript-best-practices",
-        "python-best-practices",
-        "golang-best-practices",
-        "rust-best-practices"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "agent",
-          "agentFile": "security-auditor.toml"
-        },
-        "copilot": {
-          "target": "agent",
-          "agentFile": "security-auditor.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "agent-security-auditor.toml"
-        },
-        "claude": {
-          "target": "agent",
-          "agentFile": "security-auditor.md"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "agent-security-auditor.toml"
-        }
-      }
-    },
-    {
-      "kind": "agent",
-      "id": "seo-specialist",
-      "command": null,
-      "displayName": "seo-specialist",
-      "description": "SEO and GEO (Generative Engine Optimization) expert. Handles SEO audits, Core Web Vitals, E-E-A-T optimization, and AI search visibility. Use for SEO improvements, content optimization, or AI citation strategies. Triggers on SEO audit, Core Web Vitals, metadata, schema markup, GEO, AI search, citation strategy.",
-      "triggers": [
-        "SEO audit",
-        "Core Web Vitals",
-        "metadata",
-        "schema markup",
-        "GEO",
-        "AI search",
-        "citation strategy"
-      ],
-      "primaryAgent": "seo-specialist",
-      "supportingAgents": [],
-      "primarySkills": [
-        "tech-doc",
-        "typescript-best-practices"
-      ],
-      "supportingSkills": [
-        "javascript-best-practices",
-        "python-best-practices"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "agent",
-          "agentFile": "seo-specialist.toml"
-        },
-        "copilot": {
-          "target": "agent",
-          "agentFile": "seo-specialist.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "agent-seo-specialist.toml"
-        },
-        "claude": {
-          "target": "agent",
-          "agentFile": "seo-specialist.md"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "agent-seo-specialist.toml"
-        }
-      }
-    },
-    {
-      "kind": "agent",
-      "id": "sre-engineer",
-      "command": null,
-      "displayName": "sre-engineer",
-      "description": "Site reliability engineer for SLO-driven operations, incident management, toil reduction, production reliability, and structured error observability. Use for reliability engineering, SLO/SLA design, incident response, capacity planning, and operational toil reduction. Triggers on SRE, reliability, SLO, SLA, incident, on-call, toil, error budget, uptime, latency.",
-      "triggers": [
-        "sre",
-        "reliability",
-        "slo",
-        "sla",
-        "incident",
-        "on-call",
-        "toil",
-        "error budget",
-        "uptime",
-        "latency",
-        "availability",
-        "capacity",
-        "chaos",
-        "runbook",
-        "postmortem",
-        "observability"
-      ],
-      "primaryAgent": "sre-engineer",
-      "supportingAgents": [],
-      "primarySkills": [
-        "observability",
-        "ci-cd-pipeline"
-      ],
-      "supportingSkills": [
-        "kubernetes-deploy",
-        "systematic-debugging",
-        "python-best-practices",
-        "golang-best-practices",
-        "typescript-best-practices"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "agent",
-          "agentFile": "sre-engineer.toml"
-        },
-        "copilot": {
-          "target": "agent",
-          "agentFile": "sre-engineer.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "agent-sre-engineer.toml"
-        },
-        "claude": {
-          "target": "agent",
-          "agentFile": "sre-engineer.md"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "agent-sre-engineer.toml"
-        }
-      }
-    },
-    {
-      "kind": "agent",
-      "id": "test-engineer",
-      "command": null,
-      "displayName": "test-engineer",
-      "description": "Expert in test strategy, browser verification, coverage triage, regression-proof automation, and structured testing patterns. Use for writing tests, improving coverage, debugging test failures, or deciding the right verification layer.",
-      "triggers": [
-        "test",
-        "spec",
-        "coverage",
-        "jest",
-        "pytest",
-        "playwright",
-        "e2e",
-        "unit test",
-        "automation",
-        "pipeline",
-        "regression",
-        "qa"
-      ],
-      "primaryAgent": "test-engineer",
-      "supportingAgents": [],
-      "primarySkills": [
-        "integration-testing",
-        "playwright-interactive"
-      ],
-      "supportingSkills": [
-        "unit-testing",
-        "observability",
-        "systematic-debugging",
-        "code-review",
-        "typescript-best-practices",
-        "javascript-best-practices",
-        "python-best-practices",
-        "golang-best-practices",
-        "java-best-practices"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "agent",
-          "agentFile": "test-engineer.toml"
-        },
-        "copilot": {
-          "target": "agent",
-          "agentFile": "test-engineer.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "agent-test-engineer.toml"
-        },
-        "claude": {
-          "target": "agent",
-          "agentFile": "test-engineer.md"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "agent-test-engineer.toml"
-        }
-      }
-    },
-    {
-      "kind": "agent",
-      "id": "validator",
-      "command": null,
-      "displayName": "validator",
-      "description": "Independent validation agent that reviews work output against acceptance criteria. Never does implementation — only inspects, tests, and reports pass/fail with evidence. Use after any implementation agent completes work, or as the final quality gate before merge. Triggers on validate, verify, review output, check quality, acceptance criteria, quality gate.",
-      "triggers": [
-        "validate",
-        "verify",
-        "review output",
-        "quality gate",
-        "check quality",
-        "acceptance criteria",
-        "qa",
-        "audit output"
-      ],
-      "primaryAgent": "validator",
-      "supportingAgents": [],
-      "primarySkills": [
-        "systematic-debugging",
         "unit-testing"
       ],
-      "supportingSkills": [
-        "code-review",
-        "integration-testing",
-        "playwright-interactive",
-        "llm-eval",
-        "typescript-best-practices",
-        "javascript-best-practices",
-        "python-best-practices"
-      ],
+      "supportingSkills": [],
       "artifacts": {
         "codex": {
           "target": "agent",
-          "agentFile": "validator.toml"
+          "agentFile": "tester.toml"
         },
         "copilot": {
           "target": "agent",
-          "agentFile": "validator.md"
+          "agentFile": "tester.md"
         },
         "antigravity": {
           "target": "command",
-          "commandFile": "agent-validator.toml"
+          "commandFile": "agent-tester.toml"
         },
         "claude": {
           "target": "agent",
-          "agentFile": "validator.md"
+          "agentFile": "tester.md"
         },
         "gemini": {
           "target": "command",
-          "commandFile": "agent-validator.toml"
-        }
-      }
-    },
-    {
-      "kind": "agent",
-      "id": "vercel-expert",
-      "command": null,
-      "displayName": "vercel-expert",
-      "description": "Expert in Vercel platform delivery, runtime behavior, security controls, observability, and automation. Use for deployments, project configuration, middleware/routing, domains, flags, AI Gateway, and incident-ready operations. Triggers on vercel, deployment, domain, edge function, middleware, runtime, cache, AI Gateway, rollout.",
-      "triggers": [
-        "vercel",
-        "deployment",
-        "domain",
-        "edge function",
-        "middleware",
-        "runtime",
-        "cache",
-        "AI Gateway",
-        "rollout"
-      ],
-      "primaryAgent": "vercel-expert",
-      "supportingAgents": [],
-      "primarySkills": [
-        "nextjs",
-        "react"
-      ],
-      "supportingSkills": [
-        "frontend-design",
-        "performance-testing",
-        "ci-cd-pipeline",
-        "javascript-best-practices",
-        "typescript-best-practices"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "agent",
-          "agentFile": "vercel-expert.toml"
-        },
-        "copilot": {
-          "target": "agent",
-          "agentFile": "vercel-expert.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "agent-vercel-expert.toml"
-        },
-        "claude": {
-          "target": "agent",
-          "agentFile": "vercel-expert.md"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "agent-vercel-expert.toml"
-        }
-      }
-    },
-    {
-      "kind": "workflow",
-      "id": "accessibility",
-      "command": "/accessibility",
-      "displayName": "accessibility",
-      "description": "Run a structured accessibility audit on web UI code with WCAG 2.2 AA compliance checks, ARIA validation, keyboard navigation testing, and screen reader verification.",
-      "triggers": [
-        "accessibility",
-        "a11y",
-        "wcag",
-        "aria",
-        "screen reader",
-        "keyboard navigation"
-      ],
-      "primaryAgent": "frontend-specialist",
-      "supportingAgents": [
-        "test-engineer",
-        "validator"
-      ],
-      "primarySkills": [
-        "code-review",
-        "frontend-design"
-      ],
-      "supportingSkills": [
-        "frontend-design",
-        "performance-testing",
-        "react",
-        "nextjs",
-        "playwright-interactive",
-        "typescript-best-practices",
-        "javascript-best-practices"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "skill",
-          "skillDir": "accessibility"
-        },
-        "copilot": {
-          "target": "prompt",
-          "promptFile": "accessibility.prompt.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "accessibility.toml"
-        },
-        "claude": {
-          "target": "skill",
-          "skillDir": "accessibility"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "accessibility.toml"
-        }
-      }
-    },
-    {
-      "kind": "workflow",
-      "id": "architecture",
-      "command": "/architecture",
-      "displayName": "architecture",
-      "description": "Refresh the core project foundation docs in docs/foundation/MEMORY.md, docs/foundation/PRODUCT.md, docs/foundation/ARCHITECTURE.md, docs/foundation/TECH.md, docs/foundation/memory/*.md, and ADR scaffolds with explicit structure, product context, testing, and flow guidance.",
-      "triggers": [
-        "architecture",
-        "design system",
-        "adr",
-        "clean architecture",
-        "system map",
-        "app structure",
-        "technical governance",
-        "flow diagram"
-      ],
-      "primaryAgent": "project-planner",
-      "supportingAgents": [
-        "documentation-writer",
-        "researcher",
-        "backend-specialist",
-        "frontend-specialist",
-        "database-architect"
-      ],
-      "primarySkills": [
-        "architecture-doc",
-        "system-design",
-        "tech-doc",
-        "frontend-design"
-      ],
-      "supportingSkills": [
-        "api-design",
-        "database-design",
-        "sadd",
-        "deep-research"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "skill",
-          "skillDir": "architecture"
-        },
-        "copilot": {
-          "target": "prompt",
-          "promptFile": "architecture.prompt.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "architecture.toml"
-        },
-        "claude": {
-          "target": "skill",
-          "skillDir": "architecture"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "architecture.toml"
-        }
-      }
-    },
-    {
-      "kind": "workflow",
-      "id": "backend",
-      "command": "/backend",
-      "displayName": "backend",
-      "description": "Drive backend architecture, API operations, and Postman-oriented execution with API, data, and reliability focus.",
-      "triggers": [
-        "backend",
-        "api",
-        "service",
-        "database",
-        "performance",
-        "postman",
-        "collection",
-        "workspace",
-        "environment",
-        "runcollection",
-        "monitor",
-        "mock",
-        "api test"
-      ],
-      "primaryAgent": "backend-specialist",
-      "supportingAgents": [
-        "database-architect",
-        "security-auditor",
-        "test-engineer"
-      ],
-      "primarySkills": [
-        "api-design",
-        "javascript-best-practices"
-      ],
-      "supportingSkills": [
-        "owasp-security-review",
-        "database-design",
-        "nestjs",
-        "fastapi",
-        "api-design",
-        "microservices-design",
-        "drizzle-orm",
-        "stripe-integration",
-        "ci-cd-pipeline",
-        "frontend-design",
-        "typescript-best-practices",
-        "javascript-best-practices",
-        "python-best-practices",
-        "golang-best-practices"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "skill",
-          "skillDir": "backend"
-        },
-        "copilot": {
-          "target": "prompt",
-          "promptFile": "backend.prompt.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "backend.toml"
-        },
-        "claude": {
-          "target": "skill",
-          "skillDir": "backend"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "backend.toml"
-        }
-      }
-    },
-    {
-      "kind": "workflow",
-      "id": "create",
-      "command": "/create",
-      "displayName": "create",
-      "description": "Implement feature work with minimal blast radius and clear verification checkpoints.",
-      "triggers": [
-        "create",
-        "build",
-        "implement",
-        "feature",
-        "develop"
-      ],
-      "primaryAgent": "orchestrator",
-      "supportingAgents": [
-        "backend-specialist",
-        "frontend-specialist",
-        "mobile-developer",
-        "test-engineer"
-      ],
-      "primarySkills": [
-        "typescript-best-practices",
-        "javascript-best-practices",
-        "python-best-practices",
-        "golang-best-practices",
-        "java-best-practices",
-        "csharp-best-practices",
-        "kotlin-best-practices",
-        "rust-best-practices",
-        "php-best-practices",
-        "expo-app",
-        "swift-best-practices"
-      ],
-      "supportingSkills": [
-        "api-design",
-        "javascript-best-practices",
-        "nestjs",
-        "fastapi",
-        "drizzle-orm",
-        "database-design",
-        "mcp-server-builder",
-        "stitch",
-        "react",
-        "nextjs",
-        "frontend-design",
-        "performance-testing",
-        "skill-creator",
-        "stripe-integration",
-        "ci-cd-pipeline"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "skill",
-          "skillDir": "create"
-        },
-        "copilot": {
-          "target": "prompt",
-          "promptFile": "create.prompt.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "create.toml"
-        },
-        "claude": {
-          "target": "skill",
-          "skillDir": "create"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "create.toml"
-        }
-      }
-    },
-    {
-      "kind": "workflow",
-      "id": "database",
-      "command": "/database",
-      "displayName": "database",
-      "description": "Design or review schema, queries, and migrations with performance and integrity controls.",
-      "triggers": [
-        "database",
-        "sql",
-        "schema",
-        "migration",
-        "index"
-      ],
-      "primaryAgent": "database-architect",
-      "supportingAgents": [
-        "backend-specialist",
-        "test-engineer"
-      ],
-      "primarySkills": [
-        "database-design"
-      ],
-      "supportingSkills": [
-        "drizzle-orm",
-        "database-design",
-        "typescript-best-practices",
-        "javascript-best-practices",
-        "python-best-practices"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "skill",
-          "skillDir": "database"
-        },
-        "copilot": {
-          "target": "prompt",
-          "promptFile": "database.prompt.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "database.toml"
-        },
-        "claude": {
-          "target": "skill",
-          "skillDir": "database"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "database.toml"
+          "commandFile": "agent-tester.toml"
         }
       }
     },
@@ -1553,37 +445,28 @@
       "id": "debug",
       "command": "/debug",
       "displayName": "debug",
-      "description": "Isolate root cause quickly, apply the smallest safe remediation, and leave behind regression evidence.",
+      "description": "Systematic bug investigation: explore the codebase, isolate the root cause, fix the bug, test the fix, and review the change.",
       "triggers": [
         "debug",
+        "fix",
         "bug",
         "error",
-        "incident",
-        "stack trace"
+        "investigate",
+        "broken"
       ],
-      "primaryAgent": "debugger",
+      "primaryAgent": "explorer",
       "supportingAgents": [
-        "backend-specialist",
-        "frontend-specialist",
-        "test-engineer"
+        "debugger",
+        "tester",
+        "reviewer"
       ],
       "primarySkills": [
         "systematic-debugging",
-        "observability"
+        "deep-research"
       ],
       "supportingSkills": [
         "unit-testing",
-        "typescript-best-practices",
-        "javascript-best-practices",
-        "python-best-practices",
-        "golang-best-practices",
-        "java-best-practices",
-        "csharp-best-practices",
-        "kotlin-best-practices",
-        "rust-best-practices",
-        "integration-testing",
-        "playwright-interactive",
-        "skill-creator"
+        "code-review"
       ],
       "artifacts": {
         "codex": {
@@ -1610,223 +493,157 @@
     },
     {
       "kind": "workflow",
-      "id": "devops",
-      "command": "/devops",
-      "displayName": "devops",
-      "description": "Plan and execute deployment, CI/CD, incident response, and operational safety changes with rollback controls.",
+      "id": "deploy",
+      "command": "/deploy",
+      "displayName": "deploy",
+      "description": "CI/CD and deployment setup: configure pipelines, Docker, infrastructure, test the pipeline, and review the configuration.",
       "triggers": [
-        "devops",
         "deploy",
         "ci",
         "cd",
-        "rollback",
-        "infra",
-        "incident",
-        "outage",
-        "sev",
-        "degraded",
-        "hotfix",
-        "recovery"
+        "pipeline",
+        "docker",
+        "kubernetes",
+        "infra"
       ],
-      "primaryAgent": "devops-engineer",
+      "primaryAgent": "devops",
       "supportingAgents": [
-        "sre-engineer",
-        "validator"
+        "tester",
+        "reviewer"
       ],
       "primarySkills": [
         "ci-cd-pipeline",
-        "kubernetes-deploy"
+        "docker-compose-dev"
       ],
       "supportingSkills": [
-        "observability",
-        "ci-cd-pipeline",
-        "git-workflow",
-        "systematic-debugging",
-        "typescript-best-practices",
-        "javascript-best-practices",
-        "python-best-practices",
-        "golang-best-practices"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "skill",
-          "skillDir": "devops"
-        },
-        "copilot": {
-          "target": "prompt",
-          "promptFile": "devops.prompt.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "devops.toml"
-        },
-        "claude": {
-          "target": "skill",
-          "skillDir": "devops"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "devops.toml"
-        }
-      }
-    },
-    {
-      "kind": "workflow",
-      "id": "implement-track",
-      "command": "/implement-track",
-      "displayName": "implement-track",
-      "description": "Execute large work in milestones with explicit quality gates and status updates.",
-      "triggers": [
-        "track",
-        "milestone",
-        "delivery",
-        "progress",
-        "execution"
-      ],
-      "primaryAgent": "orchestrator",
-      "supportingAgents": [
-        "validator"
-      ],
-      "primarySkills": [
-        "system-design",
-        "api-design"
-      ],
-      "supportingSkills": [
-        "database-design",
-        "typescript-best-practices",
-        "javascript-best-practices",
-        "python-best-practices",
-        "golang-best-practices",
-        "react",
-        "nextjs"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "skill",
-          "skillDir": "implement-track"
-        },
-        "copilot": {
-          "target": "prompt",
-          "promptFile": "implement-track.prompt.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "implement-track.toml"
-        },
-        "claude": {
-          "target": "skill",
-          "skillDir": "implement-track"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "implement-track.toml"
-        }
-      }
-    },
-    {
-      "kind": "workflow",
-      "id": "migrate",
-      "command": "/migrate",
-      "displayName": "migrate",
-      "description": "Plan and execute technology migrations, framework upgrades, and dependency updates with rollback safety, incremental verification, and zero-downtime transition.",
-      "triggers": [
-        "migrate",
-        "upgrade",
-        "update dependency",
-        "framework upgrade",
-        "version bump",
-        "major update"
-      ],
-      "primaryAgent": "code-archaeologist",
-      "supportingAgents": [
-        "backend-specialist",
-        "frontend-specialist",
-        "test-engineer",
-        "validator"
-      ],
-      "primarySkills": [
-        "system-design"
-      ],
-      "supportingSkills": [
+        "kubernetes-deploy",
+        "integration-testing",
         "code-review",
-        "unit-testing",
-        "typescript-best-practices",
-        "javascript-best-practices",
-        "python-best-practices",
-        "golang-best-practices"
+        "owasp-security-review"
       ],
       "artifacts": {
         "codex": {
           "target": "skill",
-          "skillDir": "migrate"
+          "skillDir": "deploy"
         },
         "copilot": {
           "target": "prompt",
-          "promptFile": "migrate.prompt.md"
+          "promptFile": "deploy.prompt.md"
         },
         "antigravity": {
           "target": "command",
-          "commandFile": "migrate.toml"
+          "commandFile": "deploy.toml"
         },
         "claude": {
           "target": "skill",
-          "skillDir": "migrate"
+          "skillDir": "deploy"
         },
         "gemini": {
           "target": "command",
-          "commandFile": "migrate.toml"
+          "commandFile": "deploy.toml"
         }
       }
     },
     {
       "kind": "workflow",
-      "id": "mobile",
-      "command": "/mobile",
-      "displayName": "mobile",
-      "description": "Drive mobile implementation decisions for Flutter/cross-platform behavior and reliability.",
+      "id": "document",
+      "command": "/document",
+      "displayName": "document",
+      "description": "Documentation workflow: explore the codebase, generate accurate documentation, and review it for quality.",
       "triggers": [
-        "mobile",
-        "flutter",
-        "ios",
-        "android",
-        "navigation"
+        "document",
+        "docs",
+        "readme",
+        "adr",
+        "changelog",
+        "api-docs"
       ],
-      "primaryAgent": "mobile-developer",
+      "primaryAgent": "explorer",
       "supportingAgents": [
-        "frontend-specialist",
-        "test-engineer"
+        "docs-writer",
+        "reviewer"
       ],
       "primarySkills": [
-        "expo-app",
-        "react-native"
+        "tech-doc",
+        "architecture-doc"
       ],
       "supportingSkills": [
-        "stitch",
-        "frontend-design",
-        "expo-app",
-        "swift-best-practices",
-        "kotlin-best-practices"
+        "deep-research",
+        "code-review"
       ],
       "artifacts": {
         "codex": {
           "target": "skill",
-          "skillDir": "mobile"
+          "skillDir": "document"
         },
         "copilot": {
           "target": "prompt",
-          "promptFile": "mobile.prompt.md"
+          "promptFile": "document.prompt.md"
         },
         "antigravity": {
           "target": "command",
-          "commandFile": "mobile.toml"
+          "commandFile": "document.toml"
         },
         "claude": {
           "target": "skill",
-          "skillDir": "mobile"
+          "skillDir": "document"
         },
         "gemini": {
           "target": "command",
-          "commandFile": "mobile.toml"
+          "commandFile": "document.toml"
+        }
+      }
+    },
+    {
+      "kind": "workflow",
+      "id": "implement",
+      "command": "/implement",
+      "displayName": "implement",
+      "description": "End-to-end feature implementation: plan the approach, write the code, test it, and review it. Full lifecycle from idea to reviewed code.",
+      "triggers": [
+        "implement",
+        "build",
+        "feature",
+        "create",
+        "develop"
+      ],
+      "primaryAgent": "planner",
+      "supportingAgents": [
+        "implementer",
+        "tester",
+        "reviewer"
+      ],
+      "primarySkills": [
+        "api-design",
+        "typescript-best-practices"
+      ],
+      "supportingSkills": [
+        "spec-driven-delivery",
+        "system-design",
+        "unit-testing",
+        "integration-testing",
+        "code-review"
+      ],
+      "artifacts": {
+        "codex": {
+          "target": "skill",
+          "skillDir": "implement"
+        },
+        "copilot": {
+          "target": "prompt",
+          "promptFile": "implement.prompt.md"
+        },
+        "antigravity": {
+          "target": "command",
+          "commandFile": "implement.toml"
+        },
+        "claude": {
+          "target": "skill",
+          "skillDir": "implement"
+        },
+        "gemini": {
+          "target": "command",
+          "commandFile": "implement.toml"
         }
       }
     },
@@ -1835,30 +652,26 @@
       "id": "onboard",
       "command": "/onboard",
       "displayName": "onboard",
-      "description": "Survey an unfamiliar codebase, map its architecture, identify patterns and conventions, and produce a structured orientation report for new contributors.",
+      "description": "Codebase onboarding workflow: explore and understand an unfamiliar codebase, create a plan for working in it, and generate developer documentation.",
       "triggers": [
         "onboard",
-        "explore codebase",
-        "understand project",
-        "new to this repo",
-        "codebase survey"
+        "understand",
+        "explore-codebase",
+        "new-project",
+        "walkthrough"
       ],
-      "primaryAgent": "researcher",
+      "primaryAgent": "explorer",
       "supportingAgents": [
-        "code-archaeologist",
-        "backend-specialist",
-        "frontend-specialist"
+        "planner",
+        "docs-writer"
       ],
       "primarySkills": [
         "deep-research",
         "system-design"
       ],
       "supportingSkills": [
-        "system-design",
-        "database-design",
-        "typescript-best-practices",
-        "javascript-best-practices",
-        "python-best-practices"
+        "tech-doc",
+        "architecture-doc"
       ],
       "artifacts": {
         "codex": {
@@ -1888,36 +701,36 @@
       "id": "orchestrate",
       "command": "/orchestrate",
       "displayName": "orchestrate",
-      "description": "Coordinate multiple specialists to solve cross-cutting tasks with explicit ownership, validation gates, and repeat-until-good iteration.",
+      "description": "Coordinate multiple specialist agents to solve complex, cross-domain tasks. The orchestrator decomposes work, delegates to specialists, validates deliverables, and integrates results.",
       "triggers": [
         "orchestrate",
         "coordinate",
         "multi-area",
         "cross-team",
-        "handoff"
+        "complex"
       ],
       "primaryAgent": "orchestrator",
       "supportingAgents": [
-        "backend-specialist",
-        "frontend-specialist",
-        "database-architect",
-        "security-auditor",
-        "devops-engineer",
-        "test-engineer",
-        "mobile-developer",
-        "validator"
+        "explorer",
+        "planner",
+        "implementer",
+        "reviewer",
+        "debugger",
+        "tester",
+        "security-reviewer",
+        "docs-writer",
+        "devops",
+        "database-specialist",
+        "frontend-specialist"
       ],
       "primarySkills": [
         "system-design",
-        "api-design"
+        "prompt-engineering"
       ],
       "supportingSkills": [
+        "api-design",
         "database-design",
-        "deep-research",
-        "mcp-server-builder",
-        "tech-doc",
-        "prompt-engineering",
-        "skill-creator"
+        "deep-research"
       ],
       "artifacts": {
         "codex": {
@@ -1947,36 +760,26 @@
       "id": "plan",
       "command": "/plan",
       "displayName": "plan",
-      "description": "Build a decision-complete implementation plan with interfaces, failure modes, and acceptance criteria.",
+      "description": "Research a codebase and produce a structured implementation plan. Explores first, then designs, following the 'understand before building' principle.",
       "triggers": [
         "plan",
         "design",
-        "roadmap",
-        "acceptance",
-        "brainstorm",
-        "idea",
-        "options",
-        "tradeoff",
-        "approach"
+        "architect",
+        "scope",
+        "spec",
+        "rfc"
       ],
-      "primaryAgent": "project-planner",
+      "primaryAgent": "explorer",
       "supportingAgents": [
-        "orchestrator",
-        "backend-specialist",
-        "frontend-specialist",
-        "database-architect"
+        "planner",
+        "orchestrator"
       ],
       "primarySkills": [
-        "system-design",
-        "api-design"
+        "spec-driven-delivery",
+        "system-design"
       ],
       "supportingSkills": [
-        "database-design",
-        "deep-research",
-        "mcp-server-builder",
-        "tech-doc",
-        "prompt-engineering",
-        "skill-creator"
+        "deep-research"
       ],
       "artifacts": {
         "codex": {
@@ -2006,32 +809,32 @@
       "id": "refactor",
       "command": "/refactor",
       "displayName": "refactor",
-      "description": "Improve maintainability while preserving behavior through incremental safe refactoring.",
+      "description": "Large-scale refactoring workflow: explore the current state, plan the migration, implement changes, test thoroughly, and review.",
       "triggers": [
         "refactor",
-        "cleanup",
-        "maintainability",
-        "debt",
-        "modularize"
+        "migrate",
+        "modernize",
+        "restructure",
+        "rewrite"
       ],
-      "primaryAgent": "code-archaeologist",
+      "primaryAgent": "explorer",
       "supportingAgents": [
-        "backend-specialist",
-        "frontend-specialist",
-        "test-engineer",
-        "validator"
+        "planner",
+        "implementer",
+        "tester",
+        "reviewer"
       ],
       "primarySkills": [
-        "code-review",
-        "system-design"
+        "api-design",
+        "typescript-best-practices"
       ],
       "supportingSkills": [
-        "unit-testing",
+        "deep-research",
+        "spec-driven-delivery",
         "system-design",
-        "typescript-best-practices",
-        "javascript-best-practices",
-        "python-best-practices",
-        "golang-best-practices"
+        "unit-testing",
+        "integration-testing",
+        "code-review"
       ],
       "artifacts": {
         "codex": {
@@ -2058,91 +861,31 @@
     },
     {
       "kind": "workflow",
-      "id": "release",
-      "command": "/release",
-      "displayName": "release",
-      "description": "Prepare and execute release with rollout guardrails, verification, and rollback plan.",
-      "triggers": [
-        "release",
-        "deploy",
-        "rollout",
-        "ship",
-        "go-live"
-      ],
-      "primaryAgent": "devops-engineer",
-      "supportingAgents": [
-        "test-engineer",
-        "validator",
-        "documentation-writer"
-      ],
-      "primarySkills": [
-        "ci-cd-pipeline",
-        "git-workflow"
-      ],
-      "supportingSkills": [
-        "tech-doc",
-        "ci-cd-pipeline",
-        "observability",
-        "kubernetes-deploy",
-        "typescript-best-practices",
-        "javascript-best-practices"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "skill",
-          "skillDir": "release"
-        },
-        "copilot": {
-          "target": "prompt",
-          "promptFile": "release.prompt.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "release.toml"
-        },
-        "claude": {
-          "target": "skill",
-          "skillDir": "release"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "release.toml"
-        }
-      }
-    },
-    {
-      "kind": "workflow",
       "id": "review",
       "command": "/review",
       "displayName": "review",
-      "description": "Run a strict review for bugs, regressions, accessibility issues, security risk, and code quality with prioritized findings.",
+      "description": "Comprehensive code review combining quality review and security audit. Runs reviewers in parallel for thorough analysis.",
       "triggers": [
         "review",
-        "audit",
         "pr",
+        "audit",
         "quality",
-        "security review"
+        "check"
       ],
-      "primaryAgent": "frontend-specialist",
+      "primaryAgent": "reviewer",
       "supportingAgents": [
-        "backend-specialist",
-        "security-auditor",
-        "validator",
-        "test-engineer"
+        "security-reviewer",
+        "implementer"
       ],
       "primarySkills": [
         "code-review",
-        "unit-testing"
+        "owasp-security-review"
       ],
       "supportingSkills": [
-        "owasp-security-review",
-        "performance-testing",
-        "react",
-        "nextjs",
-        "typescript-best-practices",
-        "javascript-best-practices",
-        "python-best-practices",
-        "golang-best-practices"
+        "secret-management",
+        "pentest-skill",
+        "api-design",
+        "typescript-best-practices"
       ],
       "artifacts": {
         "codex": {
@@ -2169,151 +912,30 @@
     },
     {
       "kind": "workflow",
-      "id": "security",
-      "command": "/security",
-      "displayName": "security",
-      "description": "Run security-focused analysis and remediation planning with exploitability-first triage.",
-      "triggers": [
-        "security",
-        "vulnerability",
-        "owasp",
-        "auth",
-        "hardening"
-      ],
-      "primaryAgent": "security-auditor",
-      "supportingAgents": [
-        "penetration-tester",
-        "backend-specialist",
-        "frontend-specialist",
-        "validator"
-      ],
-      "primarySkills": [
-        "owasp-security-review"
-      ],
-      "supportingSkills": [
-        "owasp-security-review",
-        "code-review",
-        "api-design",
-        "typescript-best-practices",
-        "javascript-best-practices",
-        "python-best-practices",
-        "golang-best-practices",
-        "rust-best-practices"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "skill",
-          "skillDir": "security"
-        },
-        "copilot": {
-          "target": "prompt",
-          "promptFile": "security.prompt.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "security.toml"
-        },
-        "claude": {
-          "target": "skill",
-          "skillDir": "security"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "security.toml"
-        }
-      }
-    },
-    {
-      "kind": "workflow",
-      "id": "spec",
-      "command": "/spec",
-      "displayName": "spec",
-      "description": "Create or refresh a Git-tracked spec pack for non-trivial work, including acceptance criteria, traceability, architecture impact, and next-route handoff.",
-      "triggers": [
-        "spec",
-        "sdd",
-        "source of truth",
-        "traceability",
-        "acceptance criteria",
-        "openspec",
-        "requirements",
-        "architecture impact"
-      ],
-      "primaryAgent": "project-planner",
-      "supportingAgents": [
-        "researcher",
-        "orchestrator",
-        "documentation-writer"
-      ],
-      "primarySkills": [
-        "spec-driven-delivery",
-        "sadd"
-      ],
-      "supportingSkills": [
-        "system-design",
-        "architecture-doc",
-        "deep-research",
-        "api-design",
-        "database-design",
-        "tech-doc"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "skill",
-          "skillDir": "spec"
-        },
-        "copilot": {
-          "target": "prompt",
-          "promptFile": "spec.prompt.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "spec.toml"
-        },
-        "claude": {
-          "target": "skill",
-          "skillDir": "spec"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "spec.toml"
-        }
-      }
-    },
-    {
-      "kind": "workflow",
       "id": "test",
       "command": "/test",
       "displayName": "test",
-      "description": "Design and execute verification strategy aligned to user risk, release confidence, and regression evidence.",
+      "description": "Test authoring and coverage improvement: explore the code, write comprehensive tests, and review test quality.",
       "triggers": [
         "test",
-        "verify",
         "coverage",
-        "qa",
-        "regression"
+        "spec",
+        "unit-test",
+        "e2e"
       ],
-      "primaryAgent": "test-engineer",
+      "primaryAgent": "explorer",
       "supportingAgents": [
-        "qa-automation-engineer",
-        "backend-specialist",
-        "frontend-specialist",
-        "validator"
+        "tester",
+        "reviewer"
       ],
       "primarySkills": [
         "unit-testing",
         "integration-testing"
       ],
       "supportingSkills": [
+        "deep-research",
         "playwright-interactive",
-        "observability",
-        "systematic-debugging",
-        "code-review",
-        "typescript-best-practices",
-        "javascript-best-practices",
-        "python-best-practices",
-        "golang-best-practices",
-        "java-best-practices"
+        "code-review"
       ],
       "artifacts": {
         "codex": {
@@ -2335,60 +957,6 @@
         "gemini": {
           "target": "command",
           "commandFile": "test.toml"
-        }
-      }
-    },
-    {
-      "kind": "workflow",
-      "id": "vercel",
-      "command": "/vercel",
-      "displayName": "vercel",
-      "description": "Drive Vercel implementation and operations via vercel-expert with deployment, runtime, security, and observability guardrails.",
-      "triggers": [
-        "vercel",
-        "deployment",
-        "preview",
-        "edge",
-        "functions",
-        "domains",
-        "vercel cli"
-      ],
-      "primaryAgent": "vercel-expert",
-      "supportingAgents": [
-        "devops-engineer",
-        "test-engineer"
-      ],
-      "primarySkills": [
-        "nextjs",
-        "ci-cd-pipeline"
-      ],
-      "supportingSkills": [
-        "performance-testing",
-        "react",
-        "frontend-design",
-        "javascript-best-practices",
-        "typescript-best-practices"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "skill",
-          "skillDir": "vercel"
-        },
-        "copilot": {
-          "target": "prompt",
-          "promptFile": "vercel.prompt.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "vercel.toml"
-        },
-        "claude": {
-          "target": "skill",
-          "skillDir": "vercel"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "vercel.toml"
         }
       }
     }

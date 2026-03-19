@@ -1,15 +1,15 @@
-description = "Build a decision-complete implementation plan with interfaces, failure modes, and acceptance criteria."
+description = "Research a codebase and produce a structured implementation plan. Explores first, then designs, following the 'understand before building' principle."
 prompt = '''
 Execute the native projection of the /plan workflow.
 
-Build a decision-complete implementation plan with interfaces, failure modes, and acceptance criteria.
+Research a codebase and produce a structured implementation plan. Explores first, then designs, following the 'understand before building' principle.
 
 Execution contract:
 1. Treat route selection as already resolved by this command; do not begin with skill discovery.
 2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.
 Attached skills:
-- Load these exact skill IDs first: `system-design`, `api-design`, `database-design`, `deep-research`, `mcp-server-builder`, `tech-doc`, `prompt-engineering`, `skill-creator`.
-- Local skill file hints if installed: `.agents/skills/system-design/SKILL.md`, `.agents/skills/api-design/SKILL.md`, `.agents/skills/database-design/SKILL.md`, `.agents/skills/deep-research/SKILL.md`, `.agents/skills/mcp-server-builder/SKILL.md`, `.agents/skills/tech-doc/SKILL.md`, `.agents/skills/prompt-engineering/SKILL.md`, `.agents/skills/skill-creator/SKILL.md`.
+- Load these exact skill IDs first: `spec-driven-delivery`, `system-design`, `deep-research`.
+- Local skill file hints if installed: `.agents/skills/spec-driven-delivery/SKILL.md`, `.agents/skills/system-design/SKILL.md`, `.agents/skills/deep-research/SKILL.md`.
 - Treat the skill bundle as already resolved for this workflow. Do not start with route discovery.
 3. Confirm the request fits the workflow's "When to use" section before acting.
 4. Execute according to "Workflow steps" and apply "Context notes".
@@ -22,71 +22,48 @@ Workflow source:
 
 ## When to use
 
-Use this when starting a new feature, project, or significant change that needs a structured implementation plan before coding begins.
+Use when you need to understand a codebase area and create an actionable implementation plan before writing code. Best for architecture decisions, feature scoping, and implementation planning.
+
+## Agent Chain
+
+`explorer` → `planner` → `orchestrator`
 
 ## Routing
 
-- Primary coordinator: `@project-planner`
-- Architecture support: `@orchestrator`
-- Domain validation: `@backend-specialist`, `@frontend-specialist`, `@database-architect`
-
-## Context notes
-
-- This workflow file, active platform rules, and selected agents or skills guide execution.
-- Attach the feature request, problem statement, constraints, and any existing design documents.
-- Read `ENGINEERING_RULES.md` first and `docs/foundation/TECH.md` next when they exist before finalizing a non-trivial plan. Also check `docs/foundation/PRODUCT.md` for domain glossary and `docs/foundation/ARCHITECTURE.md` for crosscutting concerns and dependency rules.
-- Reuse an existing `docs/specs/<spec-id>/` pack when the change already has one instead of creating a parallel planning track.
+1. **Explore**: `@explorer` surveys the relevant codebase area — maps files, reads key modules, identifies patterns and constraints.
+2. **Plan**: `@planner` takes exploration findings and produces a structured implementation plan with steps, testing criteria, and risks.
+3. **Return**: `@orchestrator` receives the plan for delegation or approval.
 
 ## Skill Routing
 
-- Primary skills: `system-design`, `api-design`
-- Supporting skills (optional): `database-design`, `deep-research`, `mcp-server-builder`, `openai-docs`, `prompt-engineering`, `skill-creator`
-- Start with `system-design` for system design and `api-design` for API contracts. Add `database-design` when data modeling is central, `deep-research` when fresh external knowledge or public comparison is needed.
+- Primary skills: `spec-driven-delivery`, `system-design`
+- Supporting skills (optional): `deep-research`
+
+## Context notes
+
+- Provide the task requirements, constraints, and any relevant background.
+- The planner will record project-level observations to memory for future reference.
 
 ## Workflow steps
 
-1. Clarify scope, success criteria, and constraints.
-2. Research existing patterns and dependencies, starting in-repo and escalating to `deep-research` only when outside evidence is required.
-3. Decompose into tasks with ownership and dependencies.
-4. Define interfaces, contracts, and failure modes.
-5. Produce acceptance criteria for each milestone.
-6. Record `architecture_impact`, `doc_impact`, and `traceability_status` when the work is non-trivial.
-7. Identify risks, unknowns, and mitigation strategies.
+1. Explorer reads the task requirements and identifies relevant codebase areas.
+2. Explorer produces a structured findings report (key files, architecture, observations).
+3. Planner takes findings and produces an implementation plan (goal, steps, tests, risks).
+4. Orchestrator reviews the plan and routes to implementation or requests revisions.
 
 ## Verification
 
-- Every task has an owner, acceptance criteria, and verification approach.
-- Dependencies form a valid DAG with no cycles.
-- Risk assessment covers top 3 failure scenarios.
-- Plan reviewed against existing codebase conventions.
+- Plan references actual file paths and patterns from the codebase.
+- Implementation steps are specific enough to execute without ambiguity.
+- Testing criteria and risks are identified.
 
 ## Output Contract
 
 ```yaml
-PLAN_WORKFLOW_RESULT:
-  primary_agent: project-planner
-  supporting_agents: [orchestrator?, backend-specialist?, frontend-specialist?, database-architect?]
-  primary_skills: [system-design, api-design]
-  supporting_skills: [database-design?, deep-research?, mcp-server-builder?]
-  spec_id: <string> | null
-  spec_root: docs/specs/<spec-id> | null
-  plan:
-    scope_summary: <string>
-    tasks:
-      - id: <task-id>
-        description: <string>
-        owner: <agent-name>
-        dependencies: [<task-id>]
-        acceptance_criteria: [<string>]
-    interfaces: [<string>]
-    risks: [<string>]
-    milestones: [<string>]
-  architecture_impact:
-    summary: <string>
-    affects_structure: true | false
-    affects_design_system: true | false
-  doc_impact: none | tech | rules | both
-  traceability_status: complete | partial | blocked
+WORKFLOW_RESULT:
+  primary_agent: planner
+  supporting_agents: [explorer]
+  plan_sections: [goal, context, design_decisions, implementation_steps, testing_criteria, risks]
   follow_up_items: [<string>] | []
 ```
 

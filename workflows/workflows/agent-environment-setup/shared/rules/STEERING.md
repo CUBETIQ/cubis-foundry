@@ -43,18 +43,18 @@ Follow this decision tree for EVERY user request:
 
 ## 2) Layer Reference
 
-| Layer                | What it is                            | When to use it                                        | How to invoke                              | Example                                     |
-| -------------------- | ------------------------------------- | ----------------------------------------------------- | ------------------------------------------ | ------------------------------------------- |
-| **Direct execution** | No routing needed                     | Small, clear, single-step tasks                       | Just do it                                 | "rename this variable"                      |
-| **Workflow**         | Multi-step recipe with verification   | Structured task with known pattern                    | `/plan`, `/create`, `/debug`, `/test`      | "plan the auth system"                      |
-| **Agent**            | Specialist persona with domain skills | Domain expertise needed for execution                 | `@backend-specialist`, `@security-auditor` | "design the API schema"                     |
-| **Named skill**      | Exact skill selected by the user      | User already named the skill and it validates cleanly | `skill_validate` → `skill_get`             | "use stitch for this screen"                |
-| **Skill (MCP)**      | Supporting domain knowledge           | Domain context that a workflow or agent doesn't cover | `skill_get` after `skill_validate`         | loading `typescript-pro` for TS conventions |
-| **skill_search**     | Fuzzy discovery tool                  | Domain unclear, no skill ID known yet                 | One narrow search AFTER route_resolve      | "what skill covers Prisma?"                 |
-| **route_resolve**    | Intent → route mapper                 | Free-text request doesn't match any known route       | MCP tool call with task description        | "I need to optimize my database"            |
-| **Orchestrator**     | Multi-specialist coordinator          | Work genuinely spans 2+ domains                       | `/orchestrate` or `@orchestrator`          | "build full-stack feature with auth"        |
-| **Spec workflow**    | Git-tracked spec pack                 | Non-trivial work needs durable scope, acceptance, and traceability | `/spec`                           | "turn this feature into an implementation spec" |
-| **Architecture workflow** | Architecture and design-system memory | Need to refresh structure, flows, ADRs, or design-system rules | `/architecture`                 | "update the clean architecture contract" |
+| Layer                     | What it is                            | When to use it                                                     | How to invoke                            | Example                                         |
+| ------------------------- | ------------------------------------- | ------------------------------------------------------------------ | ---------------------------------------- | ----------------------------------------------- |
+| **Direct execution**      | No routing needed                     | Small, clear, single-step tasks                                    | Just do it                               | "rename this variable"                          |
+| **Workflow**              | Multi-step recipe with verification   | Structured task with known pattern                                 | `/plan`, `/implement`, `/debug`, `/test` | "plan the auth system"                          |
+| **Agent**                 | Specialist persona with domain skills | Domain expertise needed for execution                              | `@implementer`, `@security-reviewer`     | "design the API schema"                         |
+| **Named skill**           | Exact skill selected by the user      | User already named the skill and it validates cleanly              | `skill_validate` → `skill_get`           | "use stitch for this screen"                    |
+| **Skill (MCP)**           | Supporting domain knowledge           | Domain context that a workflow or agent doesn't cover              | `skill_get` after `skill_validate`       | loading `typescript-pro` for TS conventions     |
+| **skill_search**          | Fuzzy discovery tool                  | Domain unclear, no skill ID known yet                              | One narrow search AFTER route_resolve    | "what skill covers Prisma?"                     |
+| **route_resolve**         | Intent → route mapper                 | Free-text request doesn't match any known route                    | MCP tool call with task description      | "I need to optimize my database"                |
+| **Orchestrator**          | Multi-specialist coordinator          | Work genuinely spans 2+ domains                                    | `/orchestrate` or `@orchestrator`        | "build full-stack feature with auth"            |
+| **Spec workflow**         | Git-tracked spec pack                 | Non-trivial work needs durable scope, acceptance, and traceability | `/spec`                                  | "turn this feature into an implementation spec" |
+| **Architecture workflow** | Architecture and design-system memory | Need to refresh structure, flows, ADRs, or design-system rules     | `/architecture`                          | "update the clean architecture contract"        |
 
 ---
 
@@ -105,26 +105,25 @@ When the research result shows a change to product direction, project structure,
 
 Use the best specialist first:
 
-| Domain                  | Primary Specialist                           | Supporting               |
-| ----------------------- | -------------------------------------------- | ------------------------ |
-| Backend / API / Data    | `@backend-specialist`, `@database-architect` | `@security-auditor`      |
-| Frontend / UI           | `@frontend-specialist`                       | `@performance-optimizer` |
-| Mobile                  | `@mobile-developer`                          | `@frontend-specialist`   |
-| Security                | `@security-auditor`, `@penetration-tester`   | `@backend-specialist`    |
-| DevOps / Release        | `@devops-engineer`                           | `@sre-engineer`          |
-| Testing / QA            | `@test-engineer`, `@qa-automation-engineer`  | `@debugger`              |
-| Debugging / Performance | `@debugger`, `@performance-optimizer`        | `@test-engineer`         |
-| Research / Exploration  | `@researcher`                                | any specialist           |
-| Validation / Quality    | `@validator`                                 | any specialist           |
-| Cross-domain            | `@orchestrator`                              | delegates to others      |
-| Documentation           | `@documentation-writer`                      | domain specialist        |
-| SEO                     | `@seo-specialist`                            | `@frontend-specialist`   |
-| Game Development        | `@game-developer`                            | varies by engine         |
+| Domain                  | Primary Specialist     | Supporting             |
+| ----------------------- | ---------------------- | ---------------------- |
+| Backend / API           | `@implementer`         | `@database-specialist` |
+| Frontend / UI           | `@frontend-specialist` | `@implementer`         |
+| Database                | `@database-specialist` | `@implementer`         |
+| Security                | `@security-reviewer`   | `@reviewer`            |
+| DevOps / CI/CD          | `@devops`              | `@tester`              |
+| Testing / QA            | `@tester`              | `@debugger`            |
+| Debugging               | `@debugger`            | `@tester`              |
+| Research / Exploration  | `@explorer`            | any specialist         |
+| Planning / Architecture | `@planner`             | `@explorer`            |
+| Code Review / Quality   | `@reviewer`            | `@security-reviewer`   |
+| Documentation           | `@docs-writer`         | `@explorer`            |
+| Cross-domain            | `@orchestrator`        | delegates to others    |
 
 ### Orchestrator Rules
 
 - `@orchestrator` uses the **RUG (Repeat-Until-Good)** pattern: it NEVER implements directly — only delegates to specialists with acceptance criteria and validates output independently.
-- After each specialist delivers, route through `@validator` for independent quality gate before accepting.
+- After each specialist delivers, route through `@reviewer` for independent quality gate before accepting.
 - If validation fails, re-delegate with specific feedback (max 3 iterations).
 - Max 3 re-delegation iterations per specialist per milestone. If limit hit, surface to user.
 
@@ -138,7 +137,7 @@ Use the best specialist first:
 
 ### Handoff Patterns
 
-- Agents may suggest the next logical agent via handoff chains (e.g., `@debugger` → `@test-engineer`).
+- Agents may suggest the next logical agent via handoff chains (e.g., `@debugger` → `@tester` → `@reviewer`).
 - Handoffs are suggestions, not mandates — the user decides when to follow them.
 - Every handoff preserves the output contract: `milestones`, `gate_status`, `next_handoff`.
 
@@ -146,44 +145,35 @@ Use the best specialist first:
 
 ## 5) Memory & Cross-Session Learning
 
-- Key agents (orchestrator, debugger, test-engineer, researcher, project-planner, code-archaeologist) support project memory.
-- Project memory persists debugging patterns, architecture decisions, test strategies, and codebase insights across sessions.
+- Key agents (orchestrator, planner, reviewer) support project or user memory.
+- Project memory persists architecture decisions, codebase patterns, and implementation context across sessions.
+- User memory (reviewer) persists recurring quality patterns and preferences.
 - Skills loaded into agent context accumulate domain knowledge — do not reload what is already in context.
 
 ---
 
 ## 6) Long-Running and Handoff Work
 
-1. Use `/implement-track` for milestone-based work, resumable execution, or progress checkpoints.
-2. Use `/orchestrate` when multiple specialties need explicit ownership or handoff.
-3. Keep workflow output contracts intact when handing work between specialists — especially `milestones`, `gate_status`, and `next_handoff`.
+1. Use `/orchestrate` when multiple specialties need explicit ownership or handoff.
+2. Use `/refactor` for large-scale migrations requiring phased execution with test verification.
+3. Keep workflow output contracts intact when handing work between specialists.
 
 ---
 
 ## 7) Workflow Quick Reference
 
-| Intent Pattern                          | Workflow           | Primary Agent          |
-| --------------------------------------- | ------------------ | ---------------------- |
-| Build a spec pack with traceability     | `/spec`            | `@project-planner`     |
-| Plan a feature, design, or architecture | `/plan`            | `@project-planner`     |
-| Refresh architecture or design-system docs | `/architecture` | `@project-planner`     |
-| Implement a feature with quality gates  | `/create`          | varies by domain       |
-| Debug a complex issue                   | `/debug`           | `@debugger`            |
-| Write or verify tests                   | `/test`            | `@test-engineer`       |
-| Review code for bugs, security, quality | `/review`          | `@validator`           |
-| Refactor without changing behavior      | `/refactor`        | domain specialist      |
-| Deploy, CI/CD, infrastructure           | `/devops`          | `@devops-engineer`     |
-| Database schema, queries, migrations    | `/database`        | `@database-architect`  |
-| Backend API, services, auth             | `/backend`         | `@backend-specialist`  |
-| Mobile features                         | `/mobile`          | `@mobile-developer`    |
-| Security audit or hardening             | `/security`        | `@security-auditor`    |
-| Multi-milestone tracked work            | `/implement-track` | `@orchestrator`        |
-| Cross-domain coordination               | `/orchestrate`     | `@orchestrator`        |
-| Release preparation                     | `/release`         | `@devops-engineer`     |
-| Accessibility audit                     | `/accessibility`   | `@frontend-specialist` |
-| Framework migration                     | `/migrate`         | domain specialist      |
-| Codebase onboarding                     | `/onboard`         | `@researcher`          |
-| Vercel deployment                       | `/vercel`          | `@vercel-expert`       |
+| Intent Pattern                       | Workflow       | Primary Agent                      |
+| ------------------------------------ | -------------- | ---------------------------------- |
+| Cross-domain coordination            | `/orchestrate` | `@orchestrator`                    |
+| Plan a feature or architecture       | `/plan`        | `@explorer` → `@planner`           |
+| Build a feature end-to-end           | `/implement`   | `@implementer`                     |
+| Debug a complex issue                | `/debug`       | `@debugger`                        |
+| Write or improve tests               | `/test`        | `@tester`                          |
+| Code review + security audit         | `/review`      | `@reviewer` + `@security-reviewer` |
+| Large-scale refactoring or migration | `/refactor`    | `@implementer`                     |
+| Deploy, CI/CD, infrastructure        | `/deploy`      | `@devops`                          |
+| Generate documentation               | `/document`    | `@docs-writer`                     |
+| Codebase onboarding                  | `/onboard`     | `@explorer` → `@docs-writer`       |
 
 ---
 

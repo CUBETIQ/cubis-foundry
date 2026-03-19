@@ -6,11 +6,15 @@ import process from "node:process";
 import { fileURLToPath } from "node:url";
 import { promises as fs } from "node:fs";
 import { rewriteLegacySkillIds } from "./lib/legacy-skill-map.mjs";
+import {
+  buildCanonicalSkillSourceMap,
+  listSkillDirs,
+  pathExists,
+} from "./lib/skill-inventory.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 
-const CANONICAL_ROOTS = [path.join(ROOT, "workflows", "skills")];
 const PLATFORM_ATTRS_PATH = path.join(
   ROOT,
   "workflows",
@@ -94,43 +98,6 @@ function parseArgs(argv) {
     deleteMissing: !args.has("--no-delete"),
     only,
   };
-}
-
-async function pathExists(target) {
-  try {
-    await fs.stat(target);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-async function listSkillDirs(rootDir) {
-  if (!(await pathExists(rootDir))) return [];
-  const entries = await fs.readdir(rootDir, { withFileTypes: true });
-  return entries
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name)
-    .filter((name) => !name.startsWith("."))
-    .sort((a, b) => a.localeCompare(b));
-}
-
-async function buildCanonicalSkillSourceMap() {
-  const sourceById = new Map();
-
-  for (const root of CANONICAL_ROOTS) {
-    if (!(await pathExists(root))) continue;
-    const ids = await listSkillDirs(root);
-    for (const skillId of ids) {
-      const source = path.join(root, skillId);
-      const skillFile = path.join(source, "SKILL.md");
-      if (!(await pathExists(skillFile))) continue;
-      // Later roots override earlier roots (mcp canonical preferred).
-      sourceById.set(skillId.toLowerCase(), { id: skillId, source });
-    }
-  }
-
-  return sourceById;
 }
 
 function extractFrontmatter(markdown) {

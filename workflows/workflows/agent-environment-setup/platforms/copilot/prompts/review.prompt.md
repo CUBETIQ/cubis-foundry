@@ -1,13 +1,13 @@
 # Workflow Prompt: /review
 
-Run a strict review for bugs, regressions, accessibility issues, security risk, and code quality with prioritized findings.
+Comprehensive code review combining quality review and security audit. Runs reviewers in parallel for thorough analysis.
 
 Execution contract:
 1. Treat route selection as already resolved by this command; do not begin with skill discovery.
 2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.
 Attached skills:
-- Load these exact skill IDs first: `code-review`, `unit-testing`, `owasp-security-review`, `performance-testing`, `react`, `nextjs`, `typescript-best-practices`, `javascript-best-practices`, `python-best-practices`, `golang-best-practices`.
-- Local skill file hints if installed: `.github/skills/code-review/SKILL.md`, `.github/skills/unit-testing/SKILL.md`, `.github/skills/owasp-security-review/SKILL.md`, `.github/skills/performance-testing/SKILL.md`, `.github/skills/react/SKILL.md`, `.github/skills/nextjs/SKILL.md`, `.github/skills/typescript-best-practices/SKILL.md`, `.github/skills/javascript-best-practices/SKILL.md`.
+- Load these exact skill IDs first: `code-review`, `owasp-security-review`, `secret-management`, `pentest-skill`, `api-design`, `typescript-best-practices`.
+- Local skill file hints if installed: `.github/skills/code-review/SKILL.md`, `.github/skills/owasp-security-review/SKILL.md`, `.github/skills/secret-management/SKILL.md`, `.github/skills/pentest-skill/SKILL.md`, `.github/skills/api-design/SKILL.md`, `.github/skills/typescript-best-practices/SKILL.md`.
 - Treat the skill bundle as already resolved for this workflow. Do not start with route discovery.
 3. Apply workflow sections in order: When to use, Workflow steps, Context notes, Verification.
 4. Route to the workflow's primary specialist and only add supporting specialists when needed.
@@ -19,57 +19,52 @@ Workflow source:
 
 ## When to use
 
-Use this for code review, PR review, or quality audit of existing code changes.
+Use for code review, pull request review, quality audits, or pre-merge verification.
+
+## Agent Chain
+
+`reviewer` + `security-reviewer` (parallel) → `implementer` (if fixes needed)
 
 ## Routing
 
-- Primary specialist: `@frontend-specialist` (for frontend code) or `@backend-specialist` (for backend code)
-- Security review: `@security-auditor`
-- Quality validation: `@validator`
-- Verification support: `@test-engineer`
-
-## Context notes
-
-- This workflow file, active platform rules, and selected agents or skills guide execution.
-- Attach the PR diff, changed files, or specific code paths to review.
+1. **Review (parallel)**:
+   - `@reviewer` performs quality, pattern, and maintainability review.
+   - `@security-reviewer` performs OWASP security audit.
+2. **Fix (if needed)**: `@implementer` addresses any critical or high-severity findings.
 
 ## Skill Routing
 
-- Primary skills: `frontend-code-review`, `static-analysis`, `testing-patterns`
-- Supporting skills (optional): `security-engineer`, `vulnerability-scanner`, `web-perf`, `react-expert`, `nextjs-developer`, `typescript-pro`, `javascript-pro`, `python-pro`, `golang-pro`
-- Start with `frontend-code-review` for UI code or `static-analysis` for backend code. Add `testing-patterns` when evaluating test quality. Add `security-engineer` for security-sensitive changes.
+- Primary skills: `code-review`, `owasp-security-review`
+- Supporting skills (optional): `secret-management`, `pentest-skill`, `api-design`, `typescript-best-practices`
+
+## Context notes
+
+- Provide the files or diff to review, and any specific concerns or focus areas.
+- Quality reviewer and security reviewer run in parallel for comprehensive coverage.
 
 ## Workflow steps
 
-1. Understand the intent and scope of the changes.
-2. Review for correctness — logic bugs, edge cases, and regressions.
-3. Review for security — input validation, auth, secrets exposure.
-4. Review for accessibility — WCAG compliance, keyboard navigation, screen readers.
-5. Review for performance — unnecessary re-renders, N+1 queries, bundle impact.
-6. Prioritize findings by severity and provide actionable feedback.
+1. Reviewer and security-reviewer analyze the code in parallel.
+2. Findings are merged and de-duplicated.
+3. If no critical/high issues: APPROVE.
+4. If fixes are needed: implementer addresses the findings.
+5. After fixes: re-review to verify resolutions.
 
 ## Verification
 
-- Each finding has severity, location, and suggested fix.
-- Findings prioritized: critical > high > medium > low.
-- Positive observations noted alongside issues.
-- Reviewed against codebase conventions.
+- All critical and high-severity findings addressed.
+- Security audit complete with no unresolved vulnerabilities.
+- Final review status is APPROVE.
 
 ## Output Contract
 
 ```yaml
-REVIEW_WORKFLOW_RESULT:
-  primary_agent: <frontend-specialist | backend-specialist>
-  supporting_agents: [security-auditor?, validator?, test-engineer?]
-  primary_skills: [frontend-code-review?, static-analysis?, testing-patterns?]
-  supporting_skills: [security-engineer?, vulnerability-scanner?, web-perf?]
-  findings:
-    - severity: critical | high | medium | low
-      category: correctness | security | accessibility | performance | style
-      location: <file:line>
-      description: <string>
-      suggestion: <string>
-  overall_assessment: approve | request_changes | reject
-  positive_observations: [<string>] | []
+WORKFLOW_RESULT:
+  primary_agent: reviewer
+  supporting_agents: [security-reviewer, implementer?]
+  review_status: <approve|request_changes>
+  critical_findings: <number>
+  high_findings: <number>
+  security_findings: <number>
   follow_up_items: [<string>] | []
 ```

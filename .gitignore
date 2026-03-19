@@ -2,6 +2,8 @@
 **/.DS_Store
 node_modules/
 **/node_modules/
+mcp/node_modules/
+mcp/node_modules/.package-lock.json
 *.tgz
 **/*.tgz
 cbx_config.json
@@ -18,3 +20,4 @@ ENGINEERING_RULES.md
 TECH.md
 TECH_SCANNER_TEST_RESULTS.md
 dist/
+mcp/coverage/

@@ -1,71 +1,58 @@
 ---
 command: "/orchestrate"
-description: "Coordinate multiple specialists to solve cross-cutting tasks with explicit ownership, validation gates, and repeat-until-good iteration."
-triggers: ["orchestrate", "coordinate", "multi-area", "cross-team", "handoff"]
+description: "Coordinate multiple specialist agents to solve complex, cross-domain tasks. The orchestrator decomposes work, delegates to specialists, validates deliverables, and integrates results."
+triggers: ["orchestrate", "coordinate", "multi-area", "cross-team", "complex"]
 ---
 
 # Orchestrate Workflow
 
 ## When to use
 
-Use this when a task spans multiple domains (backend + frontend, security + infrastructure, etc.) and requires coordinated specialist work with validation between steps.
+Use when a task spans multiple domains (backend + frontend, database + API, security + deployment) and requires coordinated specialist work with validation between steps.
+
+## Agent Chain
+
+`orchestrator` → delegates to specialists as needed
 
 ## Routing
 
-- Primary coordinator: `@orchestrator`
-- Specialist routing determined by task decomposition — delegates to `@backend-specialist`, `@frontend-specialist`, `@database-architect`, `@security-auditor`, `@devops-engineer`, `@test-engineer`, `@mobile-developer`, or other specialist agents as needed.
-- Validation support: `@validator`
+- **Coordinator**: `@orchestrator`
+- Specialist routing determined by task decomposition
+- Orchestrator selects agents from: `@explorer`, `@planner`, `@implementer`, `@reviewer`, `@debugger`, `@tester`, `@security-reviewer`, `@docs-writer`, `@devops`, `@database-specialist`, `@frontend-specialist`
+
+## Skill Routing
+
+- Primary skills: `system-design`, `prompt-engineering`
+- Supporting skills (optional): `api-design`, `database-design`, `deep-research`
 
 ## Context notes
 
 - This workflow file, active platform rules, and selected agents or skills guide execution.
 - Attach the full task description, constraints, acceptance criteria, and relevant context when starting.
-- Read `ENGINEERING_RULES.md` and `docs/foundation/TECH.md` before decomposing non-trivial work. Check `docs/foundation/TECH.md` for build/validation commands and `docs/foundation/PRODUCT.md` for domain glossary. Then reuse any existing `docs/specs/<spec-id>/` pack as the handoff source of truth.
-
-## Skill Routing
-
-- Primary skills: `system-design`, `api-design`
-- Supporting skills (optional): `database-design`, `deep-research`, `mcp-server-builder`, `openai-docs`, `prompt-engineering`, `skill-creator`
-- Start with `system-design` for system design coordination and `api-design` for integration contracts. Add `deep-research` before implementation when the coordination challenge depends on fresh external facts or public comparison.
 
 ## Workflow steps
 
-1. Decompose the task into discrete work items with acceptance criteria.
-2. Identify dependencies and determine execution order (DAG).
-3. Delegate each task to the best specialist agent with full context.
-4. Validate each deliverable against acceptance criteria via independent validation.
-5. Iterate on failed validations with specific feedback (max 3 iterations).
-6. Surface `doc_impact` when the coordinated work changes architecture, boundaries, scale, or the design system.
-7. Integrate outputs, verify cross-task consistency, and report results.
+1. Analyze the task and identify domains involved.
+2. Decompose into discrete work items with acceptance criteria.
+3. Identify dependencies and determine execution order.
+4. Delegate each item to the best specialist with full context.
+5. Validate each deliverable against acceptance criteria.
+6. Iterate on failures with specific feedback (max 3 rounds).
+7. Integrate outputs, verify cross-task consistency, and report.
 
 ## Verification
 
-- Each task validated independently against its acceptance criteria.
-- Cross-task consistency check after integration.
-- Run any applicable automated tests or checks.
-- Final validation pass on combined result.
+- All sub-tasks completed and validated against acceptance criteria.
+- Cross-domain consistency verified.
+- No unresolved blockers or failed validations.
 
 ## Output Contract
 
 ```yaml
-ORCHESTRATE_WORKFLOW_RESULT:
+WORKFLOW_RESULT:
   primary_agent: orchestrator
-  supporting_agents: [<specialist-agents-used>]
-  primary_skills: [system-design, api-design]
-  supporting_skills: [<supporting-skills-used>]
-  spec_id: <string> | null
-  spec_root: docs/specs/<spec-id> | null
-  task_count: <number>
-  completed: <number>
-  failed: <number>
-  tasks:
-    - id: <task-id>
-      agent: <agent-name>
-      status: completed | failed | skipped
-      iterations: <number>
-      validation_evidence: <string>
-  integration_status: clean | conflicts_resolved | issues_remaining
-  doc_impact: none | tech | rules | both
-  remaining_risks: [<string>] | []
-  follow_up_actions: [<string>] | []
+  sub_tasks_completed: [<string>]
+  sub_tasks_failed: [<string>] | []
+  cross_domain_consistency: <pass|fail>
+  follow_up_items: [<string>] | []
 ```

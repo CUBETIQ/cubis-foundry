@@ -24,10 +24,20 @@ import process from "node:process";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import { promises as fs } from "node:fs";
+import {
+  getMetadataBlock,
+  getScalar,
+  normalizeNullableString,
+  parseFrontmatter,
+} from "./lib/skill-catalog.mjs";
+import {
+  ROOT,
+  SKILLS_ROOT,
+  listTopLevelSkillDirs,
+  pathExists,
+} from "./lib/skill-inventory.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.resolve(__dirname, "..");
-const SKILLS_ROOT = path.join(ROOT, "workflows", "skills");
 const OUT_DIR = path.join(ROOT, "mcp", "generated");
 const OUT_FILE = path.join(OUT_DIR, "mcp-manifest.json");
 
@@ -42,34 +52,8 @@ function parseArgs(argv) {
   };
 }
 
-// ─── Frontmatter parsing (shared with generate-skills-index.mjs) ───
-
-function parseFrontmatter(markdown) {
-  const match = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
-  if (!match) return { raw: "", body: markdown };
-  return { raw: match[1], body: markdown.slice(match[0].length) };
-}
-
 function normalizeLineEndings(text) {
   return String(text || "").replace(/\r\n/g, "\n");
-}
-
-function getScalar(frontmatterRaw, key) {
-  const match = frontmatterRaw.match(
-    new RegExp(`^\\s*${key}\\s*:\\s*(.+)$`, "m"),
-  );
-  if (!match) return null;
-  return match[1].trim().replace(/^['\"]|['\"]$/g, "");
-}
-
-function normalizeNullableString(value) {
-  if (value == null) return null;
-  const normalized = String(value)
-    .trim()
-    .replace(/^['"]|['"]$/g, "");
-  const lower = normalized.toLowerCase();
-  if (!normalized || lower === "null" || lower === "~") return null;
-  return normalized;
 }
 
 function parseInlineList(text) {
@@ -138,58 +122,6 @@ function getListField(frontmatterRaw, key) {
   return [...new Set(values.filter(Boolean))];
 }
 
-function getMetadataBlock(frontmatterRaw) {
-  const lines = frontmatterRaw.split(/\r?\n/);
-  const metadata = {};
-  let inMetadata = false;
-
-  for (let i = 0; i < lines.length; i += 1) {
-    const line = lines[i];
-    if (!inMetadata) {
-      if (/^metadata\s*:\s*$/.test(line)) {
-        inMetadata = true;
-      }
-      continue;
-    }
-
-    if (!line.trim()) continue;
-    if (!/^\s+/.test(line)) break;
-
-    const keyMatch = line.match(/^\s+([A-Za-z0-9_-]+)\s*:\s*(.*)$/);
-    if (!keyMatch) continue;
-
-    const key = keyMatch[1];
-    const rest = keyMatch[2];
-    if (rest.trim()) {
-      metadata[key] = parseValue(rest);
-      continue;
-    }
-
-    const values = [];
-    for (let j = i + 1; j < lines.length; j += 1) {
-      const next = lines[j];
-      if (!next.trim()) continue;
-      if (!/^\s+/.test(next) || /^\s+[A-Za-z0-9_-]+\s*:/.test(next)) {
-        i = j - 1;
-        break;
-      }
-
-      const bullet = next.match(/^\s+-\s*(.+)$/);
-      if (bullet) {
-        values.push(parseValue(bullet[1]));
-      }
-
-      if (j === lines.length - 1) {
-        i = j;
-      }
-    }
-
-    if (values.length > 0) {
-      metadata[key] = values;
-    }
-  }
-  return metadata;
-}
 
 function getMetadataAliases(frontmatterRaw) {
   const lines = frontmatterRaw.split(/\r?\n/);
@@ -560,15 +492,6 @@ const BUILTIN_TOOLS = [
 
 // ─── Scan and generate ──────────────────────────────────────
 
-async function pathExists(target) {
-  try {
-    await fs.stat(target);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 async function scanSkills(verbose) {
   const skills = [];
   const errors = [];
@@ -578,11 +501,7 @@ async function scanSkills(verbose) {
     throw new Error(`Skills root not found: ${SKILLS_ROOT}`);
   }
 
-  const entries = await fs.readdir(SKILLS_ROOT, { withFileTypes: true });
-
-  for (const entry of entries) {
-    if (!entry.isDirectory() || entry.name.startsWith(".")) continue;
-    const skillId = entry.name;
+  for (const skillId of await listTopLevelSkillDirs()) {
     const skillFile = path.join(SKILLS_ROOT, skillId, "SKILL.md");
 
     if (!(await pathExists(skillFile))) {

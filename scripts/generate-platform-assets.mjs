@@ -17,6 +17,14 @@ import {
   buildPlatformCapabilityContracts,
   buildUpstreamCapabilityAudit,
 } from "./lib/platform-parity.mjs";
+import {
+  MANAGED_PARITY_DOC_FILES,
+  PATTERN_REGISTRY_FILE,
+  PLATFORM_CAPABILITIES_FILE,
+  UPSTREAM_CAPABILITY_AUDIT_FILE,
+  buildBlockingSummary,
+  buildParityArtifactPointers,
+} from "./lib/parity-contract.mjs";
 
 const ROOT = process.cwd();
 const BUNDLE_ROOT = path.join(
@@ -30,25 +38,9 @@ const SHARED_AGENTS_DIR = path.join(SHARED_ROOT, "agents");
 const SHARED_WORKFLOWS_DIR = path.join(SHARED_ROOT, "workflows");
 const GENERATED_DIR = path.join(BUNDLE_ROOT, "generated");
 const ROUTE_MANIFEST_FILE = "route-manifest.json";
-const PATTERN_REGISTRY_FILE = "pattern-registry.json";
-const PLATFORM_CAPABILITIES_FILE = "platform-capabilities.json";
-const UPSTREAM_CAPABILITY_AUDIT_FILE = "upstream-capability-audit.json";
 const BUNDLE_MANIFEST_FILE = "manifest.json";
 const CANONICAL_SKILLS_DIR = path.join(ROOT, "workflows", "skills");
 const DOCS_DIR = path.join(ROOT, "docs");
-const MANAGED_PARITY_DOC_FILES = new Set([
-  "platform-support-matrix.md",
-  "cross-platform-pattern-catalog.md",
-  "platform-capability-details.md",
-  "platform-parity-matrix.md",
-  "degraded-projection-matrix.md",
-  "safety-matrix.md",
-  "instruction-config-profile-matrix.md",
-  "session-headless-matrix.md",
-  "orchestration-pattern-matrix.md",
-  "mcp-browser-matrix.md",
-  "blocked-pattern-report.md",
-]);
 
 const PLATFORM_DIRS = {
   codex: path.join(BUNDLE_ROOT, "platforms", "codex"),
@@ -131,10 +123,13 @@ function getArray(frontmatter, key) {
 }
 
 function normalizeSkillsFrontmatter(frontmatter) {
-  return frontmatter.replace(/^(skills\s*:\s*)(.+)$/m, (match, prefix, value) => {
-    const normalized = normalizeSkillIds(parseInlineArray(value));
-    return `${prefix}${normalized.join(", ")}`;
-  });
+  return frontmatter.replace(
+    /^(skills\s*:\s*)(.+)$/m,
+    (match, prefix, value) => {
+      const normalized = normalizeSkillIds(parseInlineArray(value));
+      return `${prefix}${normalized.join(", ")}`;
+    },
+  );
 }
 
 function normalizeMarkdownSkillReferences(markdown) {
@@ -252,7 +247,9 @@ function parseWorkflowSkillRouting(body) {
   );
 
   return {
-    primarySkills: normalizeSkillIds(parseInlineCodeList(primaryMatch?.[1] || "")),
+    primarySkills: normalizeSkillIds(
+      parseInlineCodeList(primaryMatch?.[1] || ""),
+    ),
     supportingSkills: normalizeSkillIds(
       parseInlineCodeList(supportingMatch?.[1] || ""),
     ),
@@ -442,7 +439,9 @@ function buildRouteManifest({ sharedAgents, sharedWorkflows }) {
 }
 
 async function listTopLevelCanonicalSkillIds() {
-  const entries = await fs.readdir(CANONICAL_SKILLS_DIR, { withFileTypes: true });
+  const entries = await fs.readdir(CANONICAL_SKILLS_DIR, {
+    withFileTypes: true,
+  });
   const skillIds = [];
   for (const entry of entries) {
     if (!entry.isDirectory() || entry.name.startsWith("_")) continue;
@@ -458,7 +457,6 @@ function buildBundleManifest({
   sharedWorkflows,
   topLevelSkillIds,
   platformCapabilityContracts,
-  parityDocFiles,
 }) {
   const workflowSkillDirs = sharedWorkflows
     .map((workflow) => workflow.id)
@@ -493,8 +491,7 @@ function buildBundleManifest({
       event: "UserPromptSubmit",
       file: "README.md",
       optional: true,
-      description:
-        "Usage guide for the Claude route/research hook templates.",
+      description: "Usage guide for the Claude route/research hook templates.",
     },
     {
       type: "template",
@@ -513,22 +510,7 @@ function buildBundleManifest({
         "Hook script template that reinforces explicit-route honoring and research escalation.",
     },
   ];
-  const blockingSummary = Object.fromEntries(
-    Object.entries(platformCapabilityContracts).map(([platformId, contract]) => [
-      platformId,
-      {
-        native: contract.pattern_support.filter(
-          (item) => item.support_level === "native",
-        ).length,
-        degraded: contract.pattern_support.filter(
-          (item) => item.support_level === "degraded",
-        ).length,
-        blocked: contract.pattern_support.filter(
-          (item) => item.support_level === "blocked",
-        ).length,
-      },
-    ]),
-  );
+  const blockingSummary = buildBlockingSummary(platformCapabilityContracts);
 
   return (
     JSON.stringify(
@@ -540,12 +522,7 @@ function buildBundleManifest({
         parity: {
           auditedReferences: AUDITED_REFERENCES,
           orchestrationSubtypes: ORCHESTRATION_SUBTYPES,
-          artifacts: {
-            patternRegistry: `generated/${PATTERN_REGISTRY_FILE}`,
-            platformCapabilities: `generated/${PLATFORM_CAPABILITIES_FILE}`,
-            upstreamCapabilityAudit: `generated/${UPSTREAM_CAPABILITY_AUDIT_FILE}`,
-            docs: parityDocFiles.map((file) => `docs/${file}`),
-          },
+          artifacts: buildParityArtifactPointers(),
           summary: {
             totalPatterns: PATTERN_REGISTRY.length,
             totalPlatforms: Object.keys(platformCapabilityContracts).length,
@@ -669,6 +646,44 @@ function buildSkillMarkdown({
     .join("\n");
 }
 
+// Codex agent-specific model routing, reasoning effort, and sandbox mode.
+// Models: gpt-5.4 (deep reasoning) and gpt-5.4-mini (fast scanning).
+// Sandbox: read-only for agents without Write/Edit tools, workspace-write otherwise.
+const CODEX_AGENT_CONFIG = {
+  orchestrator: {
+    model: "gpt-5.4",
+    effort: "high",
+    sandbox: "workspace-write",
+  },
+  explorer: { model: "gpt-5.4-mini", effort: "medium", sandbox: "read-only" },
+  planner: { model: "gpt-5.4", effort: "high", sandbox: "read-only" },
+  implementer: { model: "gpt-5.4", effort: "high", sandbox: "workspace-write" },
+  reviewer: { model: "gpt-5.4", effort: "medium", sandbox: "read-only" },
+  debugger: { model: "gpt-5.4", effort: "high", sandbox: "workspace-write" },
+  tester: { model: "gpt-5.4", effort: "medium", sandbox: "workspace-write" },
+  "security-reviewer": {
+    model: "gpt-5.4",
+    effort: "high",
+    sandbox: "read-only",
+  },
+  "docs-writer": {
+    model: "gpt-5.4-mini",
+    effort: "medium",
+    sandbox: "workspace-write",
+  },
+  devops: { model: "gpt-5.4", effort: "medium", sandbox: "workspace-write" },
+  "database-specialist": {
+    model: "gpt-5.4",
+    effort: "high",
+    sandbox: "workspace-write",
+  },
+  "frontend-specialist": {
+    model: "gpt-5.4",
+    effort: "medium",
+    sandbox: "workspace-write",
+  },
+};
+
 function buildCodexAgentToml(agent) {
   const parsed = parseFrontmatter(normalizeMarkdownSkillReferences(agent.raw));
   if (!parsed) {
@@ -677,13 +692,21 @@ function buildCodexAgentToml(agent) {
 
   const name = getScalar(parsed.raw, "name") || agent.id;
   const description = getScalar(parsed.raw, "description") || "";
-  const model = getScalar(parsed.raw, "model");
+  const codexCfg = CODEX_AGENT_CONFIG[agent.id];
   const lines = [
     `name = "${escapeTomlBasicString(name)}"`,
     `description = "${escapeTomlBasicString(description)}"`,
   ];
-  if (model && model !== "inherit") {
-    lines.push(`model = "${escapeTomlBasicString(model)}"`);
+  if (codexCfg) {
+    lines.push(`model = "${codexCfg.model}"`);
+    lines.push(`model_reasoning_effort = "${codexCfg.effort}"`);
+    lines.push(`sandbox_mode = "${codexCfg.sandbox}"`);
+  } else {
+    // Fallback: use shared model if no explicit Codex config
+    const model = getScalar(parsed.raw, "model");
+    if (model && model !== "inherit") {
+      lines.push(`model = "${escapeTomlBasicString(model)}"`);
+    }
   }
   lines.push('developer_instructions = """');
   lines.push(parsed.body.trim());
@@ -693,11 +716,15 @@ function buildCodexAgentToml(agent) {
 }
 
 function buildGeneratedWorkflowSkill(workflow, platformLabel) {
+  const normalizedBody = String(workflow.body || "").replace(
+    /^#\s+.+\r?\n\r?\n?/,
+    "",
+  );
   return buildSkillMarkdown({
     id: workflow.id,
     title: `${workflow.id} Workflow`,
     description: workflow.description,
-    body: workflow.body,
+    body: normalizedBody,
     platformLabel,
     command: workflow.command,
   });
@@ -788,7 +815,10 @@ function buildGeminiCommandToml(route) {
 
 function buildCopilotPromptMarkdown(workflow) {
   const { command, description } = workflow;
-  const attachedSkills = buildWorkflowAttachedSkillsSection(workflow, "copilot");
+  const attachedSkills = buildWorkflowAttachedSkillsSection(
+    workflow,
+    "copilot",
+  );
   const docReadLine =
     workflow.id === "architecture"
       ? "2. Read `docs/foundation/PRODUCT.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution."
@@ -877,19 +907,19 @@ function buildClaudeHookScript() {
     "const normalized = prompt.toLowerCase();",
     "const reminders = [];",
     "",
-    'if (/(^|\\s)(\\/[-a-z0-9]+|@[a-z0-9_-]+)/i.test(prompt)) {',
+    "if (/(^|\\s)(\\/[-a-z0-9]+|@[a-z0-9_-]+)/i.test(prompt)) {",
     "  reminders.push(",
-    '    "Explicit route detected. Honor the named workflow or agent directly unless it is invalid."', 
+    '    "Explicit route detected. Honor the named workflow or agent directly unless it is invalid."',
     "  );",
     "}",
     "",
-    'if (/(^|[^a-z0-9-])(deep-research|stitch|skill-creator|frontend-design|api-design|database-design)([^a-z0-9-]|$)/i.test(normalized)) {',
+    "if (/(^|[^a-z0-9-])(deep-research|stitch|skill-creator|frontend-design|api-design|database-design)([^a-z0-9-]|$)/i.test(normalized)) {",
     "  reminders.push(",
     '    "Named skill detected. Run skill_validate on the exact skill ID first and skip route_resolve when it validates."',
     "  );",
     "}",
     "",
-    'if (/(research|latest|compare|comparison|verify|official docs|reddit|community)/i.test(normalized)) {',
+    "if (/(research|latest|compare|comparison|verify|official docs|reddit|community)/i.test(normalized)) {",
     "  reminders.push(",
     '    "Research trigger detected. Inspect the repo first, use official docs as primary evidence, and treat Reddit/community sources as labeled secondary evidence."',
     "  );",
@@ -1041,7 +1071,10 @@ async function readFileMap(dir, filter = null, relativeDir = "") {
     }
     if (!entry.isFile()) continue;
     if (filter && !filter(relativePath)) continue;
-    const content = (await fs.readFile(fullPath, "utf8")).replace(/\r\n/g, "\n");
+    const content = (await fs.readFile(fullPath, "utf8")).replace(
+      /\r\n/g,
+      "\n",
+    );
     map.set(relativePath, content);
   }
   return map;
@@ -1141,7 +1174,6 @@ async function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
       sharedWorkflows,
       topLevelSkillIds,
       platformCapabilityContracts,
-      parityDocFiles: [...parityDocs.keys()],
     }),
   );
   for (const [name, content] of parityDocs.entries()) {
