@@ -1,10 +1,10 @@
 {
   "$schema": "./cubis-foundry-route-manifest-v2.schema.json",
   "generatedAt": "1970-01-01T00:00:00.000Z",
-  "contentHash": "69e2b5ac03b593f3",
+  "contentHash": "5c146f91ad627f26",
   "summary": {
-    "totalRoutes": 22,
-    "workflows": 10,
+    "totalRoutes": 23,
+    "workflows": 11,
     "agents": 12
   },
   "routes": [
@@ -907,6 +907,57 @@
         "gemini": {
           "target": "command",
           "commandFile": "review.toml"
+        }
+      }
+    },
+    {
+      "kind": "workflow",
+      "id": "spec",
+      "command": "/spec",
+      "displayName": "spec",
+      "description": "Create or refresh a Git-tracked spec pack for non-trivial work. Capture requirements, acceptance criteria, architecture impact, and execution scope before implementation continues.",
+      "triggers": [
+        "spec",
+        "requirements",
+        "acceptance",
+        "prd",
+        "rfc",
+        "traceability"
+      ],
+      "primaryAgent": "planner",
+      "supportingAgents": [
+        "explorer",
+        "docs-writer",
+        "orchestrator"
+      ],
+      "primarySkills": [
+        "spec-driven-delivery",
+        "system-design"
+      ],
+      "supportingSkills": [
+        "deep-research",
+        "architecture-doc"
+      ],
+      "artifacts": {
+        "codex": {
+          "target": "skill",
+          "skillDir": "spec"
+        },
+        "copilot": {
+          "target": "prompt",
+          "promptFile": "spec.prompt.md"
+        },
+        "antigravity": {
+          "target": "command",
+          "commandFile": "spec.toml"
+        },
+        "claude": {
+          "target": "skill",
+          "skillDir": "spec"
+        },
+        "gemini": {
+          "target": "command",
+          "commandFile": "spec.toml"
         }
       }
     },

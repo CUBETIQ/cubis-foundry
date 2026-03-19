@@ -185,6 +185,7 @@
         "plan.toml",
         "refactor.toml",
         "review.toml",
+        "spec.toml",
         "test.toml",
         "agent-database-specialist.toml",
         "agent-debugger.toml",
@@ -298,6 +299,7 @@
         "plan",
         "refactor",
         "review",
+        "spec",
         "test"
       ],
       "rulesTemplate": "platforms/codex/rules/AGENTS.md",
@@ -416,6 +418,7 @@
         "plan.prompt.md",
         "refactor.prompt.md",
         "review.prompt.md",
+        "spec.prompt.md",
         "test.prompt.md"
       ]
     },
@@ -517,6 +520,7 @@
         "plan",
         "refactor",
         "review",
+        "spec",
         "test"
       ],
       "rulesTemplate": "platforms/claude/rules/CLAUDE.md",
@@ -572,6 +576,7 @@
         "plan.toml",
         "refactor.toml",
         "review.toml",
+        "spec.toml",
         "test.toml",
         "agent-database-specialist.toml",
         "agent-debugger.toml",

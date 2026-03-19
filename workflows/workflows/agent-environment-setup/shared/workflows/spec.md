@@ -1,0 +1,61 @@
+---
+command: "/spec"
+description: "Create or refresh a Git-tracked spec pack for non-trivial work. Capture requirements, acceptance criteria, architecture impact, and execution scope before implementation continues."
+triggers: ["spec", "requirements", "acceptance", "prd", "rfc", "traceability"]
+---
+
+# Spec Workflow
+
+## When to use
+
+Use when work is non-trivial and needs durable scope, acceptance criteria, architecture notes, or traceability before implementation. This is the route for turning a request into an explicit spec pack under `docs/specs/<spec-id>/`.
+
+## Agent Chain
+
+`explorer` → `planner` → `docs-writer` → `orchestrator`
+
+## Routing
+
+1. **Primary coordinator**: `@planner` owns the spec structure and delivery plan.
+2. **Explore**: `@explorer` inspects the repo, existing specs, and foundation docs to gather constraints and reuse opportunities.
+3. **Document**: `@docs-writer` helps normalize the spec pack so it is readable, durable, and ready for follow-on implementation.
+4. **Return**: `@orchestrator` can hand the approved spec pack off to `/plan`, `/implement`, or `/refactor`.
+
+## Skill Routing
+
+- Primary skills: `spec-driven-delivery`, `system-design`
+- Supporting skills (optional): `deep-research`, `architecture-doc`
+
+## Context notes
+
+- Reuse an existing spec pack when the request extends active work; do not fork duplicate specs unless scope truly changed.
+- Read `docs/foundation/MEMORY.md` first when it exists, then pull deeper foundation docs only as needed.
+- Record architecture impact, assumptions, open questions, and validation expectations before code changes continue.
+
+## Workflow steps
+
+1. Inspect the repo, existing `docs/specs/` entries, and relevant foundation docs.
+2. Choose or create the spec identifier and define the scope of the pack.
+3. Capture goals, non-goals, acceptance criteria, constraints, and architecture impact in the spec pack.
+4. Map affected code areas, rollout or migration concerns, and required verification.
+5. Surface open questions, blocked decisions, and follow-up work needed before implementation.
+6. If implementation is already in progress, update the spec pack first so code and requirements stay aligned.
+
+## Verification
+
+- A concrete spec pack path is identified or created under `docs/specs/<spec-id>/`.
+- Acceptance criteria are testable and specific enough to guide implementation.
+- Architecture impact, assumptions, risks, and open questions are documented.
+- The next route (`/plan`, `/implement`, `/refactor`, or direct approval) is clear.
+
+## Output Contract
+
+```yaml
+WORKFLOW_RESULT:
+  primary_agent: planner
+  supporting_agents: [explorer, docs-writer]
+  spec_root: docs/specs/<spec-id>
+  spec_status: <created|updated|reused>
+  acceptance_criteria_count: <number>
+  follow_up_items: [<string>] | []
+```

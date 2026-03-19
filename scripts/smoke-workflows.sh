@@ -190,6 +190,7 @@ node "$CLI" workflows install --platform antigravity --bundle agent-environment-
 [ ! -d .agents/workflows ]
 [ ! -d .agents/agents ]
 [ -f .gemini/commands/implement.toml ]
+[ -f .gemini/commands/spec.toml ]
 [ -f .gemini/commands/review.toml ]
 [ -f .gemini/commands/deploy.toml ]
 [ -f .gemini/commands/agent-implementer.toml ]
@@ -214,7 +215,9 @@ log_step "A2.1 /implement wiring check"
 assert_file_contains_literal .gemini/commands/implement.toml "Execute the native projection of the /implement workflow." "Antigravity implement command"
 assert_file_contains_literal .gemini/commands/agent-implementer.toml "Execute the native projection of the @implementer specialist route." "Antigravity implementer command"
 assert_file_contains_literal .gemini/commands/implement.toml ".agents/skills/api-design/SKILL.md" "Antigravity implement command skill hint"
-log_ok "Command routes for /implement and @implementer are installed"
+assert_file_contains_literal .gemini/commands/spec.toml "Execute the native projection of the /spec workflow." "Antigravity spec command"
+assert_file_contains_literal .gemini/commands/spec.toml ".agents/skills/spec-driven-delivery/SKILL.md" "Antigravity spec command skill hint"
+log_ok "Command routes for /implement, /spec, and @implementer are installed"
 
 log_step "A2.2 Antigravity global precedence sync"
 node - <<'NODE'
@@ -291,6 +294,7 @@ if [ "$(find .codex/agents -maxdepth 1 -type f -name '*.toml' | wc -l | tr -d ' 
   exit 1
 fi
 [ -f "$CODEX_INSTALLED_SKILLS/implement/SKILL.md" ]
+[ -f "$CODEX_INSTALLED_SKILLS/spec/SKILL.md" ]
 [ -f "$CODEX_INSTALLED_SKILLS/plan/SKILL.md" ]
 [ -f "$CODEX_INSTALLED_SKILLS/owasp-security-review/SKILL.md" ]
 [ -f "$CODEX_INSTALLED_SKILLS/nextjs/SKILL.md" ]
@@ -346,11 +350,13 @@ log_step "C2.1 /implement wiring check (Codex files)"
 assert_file_contains_literal .codex/agents/implementer.toml 'name = "implementer"' "Codex implementer agent"
 assert_file_contains_literal "$CODEX_INSTALLED_SKILLS/implement/SKILL.md" '# Implement Workflow' "Codex implement workflow skill"
 assert_file_contains_literal "$CODEX_INSTALLED_SKILLS/implement/SKILL.md" '@implementer' "Codex implement workflow skill routing"
+assert_file_contains_literal "$CODEX_INSTALLED_SKILLS/spec/SKILL.md" '# Spec Workflow' "Codex spec workflow skill"
+assert_file_contains_literal "$CODEX_INSTALLED_SKILLS/spec/SKILL.md" 'spec-driven-delivery' "Codex spec workflow skill routing"
 if rg -n 'Compatibility Alias' "$CODEX_INSTALLED_SKILLS/implement/SKILL.md" >/dev/null; then
   echo "[FAIL] Codex generated workflow skill still contains compatibility alias text" >&2
   exit 1
 fi
-log_ok "Codex uses native subagents plus generated workflow skills"
+log_ok "Codex uses native subagents plus generated workflow skills for implement and spec"
 
 log_step "C2.2 Codex global precedence warning"
 node - <<'NODE'
@@ -648,6 +654,7 @@ node "$CLI" workflows install --platform copilot --bundle agent-environment-setu
 [ -f .github/agents/orchestrator.md ]
 [ -f .github/agents/tester.md ]
 [ -f .github/prompts/implement.prompt.md ]
+[ -f .github/prompts/spec.prompt.md ]
 [ -f .github/prompts/review.prompt.md ]
 [ -f .github/prompts/deploy.prompt.md ]
 if [ "$(find .github/agents -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')" -ne "$EXPECTED_AGENT_COUNT" ]; then
@@ -730,7 +737,9 @@ log_ok "Copilot install complete and doctor output generated"
 log_step "P2.1 /implement wiring check (Copilot files)"
 assert_file_contains_literal .github/prompts/implement.prompt.md "# Workflow Prompt: /implement" "Copilot implement prompt"
 assert_file_contains_literal .github/prompts/implement.prompt.md "@implementer" "Copilot implement prompt"
-log_ok "Copilot prompt declares /implement and routes to @implementer"
+assert_file_contains_literal .github/prompts/spec.prompt.md "# Workflow Prompt: /spec" "Copilot spec prompt"
+assert_file_contains_literal .github/prompts/spec.prompt.md "spec-driven-delivery" "Copilot spec prompt"
+log_ok "Copilot prompts declare /implement and /spec with the expected routing"
 
 log_step "P2.2 Copilot global precedence sync"
 node - <<'NODE'
@@ -780,6 +789,7 @@ log_step "Q1 Claude apply + hook templates"
 node "$CLI" workflows install --platform claude --bundle agent-environment-setup --overwrite --yes >/tmp/cbx-q1.log
 [ -f CLAUDE.md ]
 [ -f .claude/skills/implement/SKILL.md ]
+[ -f .claude/skills/spec/SKILL.md ]
 [ -f .claude/agents/explorer.md ]
 [ ! -d .claude/workflows ]
 [ -f .claude/hooks/README.md ]
@@ -788,13 +798,15 @@ node "$CLI" workflows install --platform claude --bundle agent-environment-setup
 assert_file_contains_literal .claude/hooks/settings.snippet.json "UserPromptSubmit" "Claude hook settings snippet"
 assert_file_contains_literal .claude/hooks/route-research-guard.mjs "skill_validate" "Claude hook script"
 assert_file_contains_literal .claude/hooks/route-research-guard.mjs "official docs as primary evidence" "Claude hook script"
-log_ok "Claude install includes route/research hook templates"
+assert_file_contains_literal .claude/skills/spec/SKILL.md "# Spec Workflow" "Claude spec workflow skill"
+log_ok "Claude install includes route/research hook templates and the spec workflow skill"
 
 log_step "G1 Gemini apply"
 node "$CLI" workflows install --platform gemini --bundle agent-environment-setup --overwrite --yes >/tmp/cbx-g1.log
 [ -f .gemini/GEMINI.md ]
 [ -d .gemini/commands ]
 [ -f .gemini/commands/implement.toml ]
+[ -f .gemini/commands/spec.toml ]
 [ -f .gemini/commands/agent-implementer.toml ]
 [ ! -d .gemini/workflows ]
 [ ! -d .gemini/skills ]
@@ -803,7 +815,8 @@ if [ "$(find .gemini/commands -maxdepth 1 -type f -name '*.toml' | wc -l | tr -d
   exit 1
 fi
 assert_file_contains_literal .gemini/commands/implement.toml ".agents/skills/api-design/SKILL.md" "Gemini implement command skill hint"
-log_ok "Gemini install uses commands only"
+assert_file_contains_literal .gemini/commands/spec.toml ".agents/skills/spec-driven-delivery/SKILL.md" "Gemini spec command skill hint"
+log_ok "Gemini install uses commands only, including the spec workflow"
 
 log_step "X1 Single-project all-platform install"
 mkdir -p all-platforms
@@ -817,15 +830,23 @@ mkdir -p all-platforms
 )
 [ -f all-platforms/AGENTS.md ]
 [ -f all-platforms/.codex/agents/implementer.toml ]
+[ -f all-platforms/.agents/skills/spec-driven-delivery/SKILL.md ]
+[ -f all-platforms/.agents/skills/spec/SKILL.md ]
 [ -f all-platforms/.agents/rules/GEMINI.md ]
 [ -f all-platforms/.agents/skills/api-design/SKILL.md ]
 [ -f all-platforms/.github/agents/implementer.md ]
 [ -f all-platforms/.github/prompts/implement.prompt.md ]
+[ -f all-platforms/.github/prompts/spec.prompt.md ]
 [ -f all-platforms/CLAUDE.md ]
 [ -f all-platforms/.claude/agents/implementer.md ]
 [ -f all-platforms/.claude/skills/implement/SKILL.md ]
+[ -f all-platforms/.claude/skills/spec/SKILL.md ]
 [ -f all-platforms/.gemini/GEMINI.md ]
 [ -f all-platforms/.gemini/commands/implement.toml ]
+[ -f all-platforms/.gemini/commands/spec.toml ]
+assert_file_contains_literal all-platforms/.gemini/commands/spec.toml ".agents/skills/spec-driven-delivery/SKILL.md" "Shared Gemini/Antigravity spec command"
+assert_file_contains_literal all-platforms/.claude/skills/spec/SKILL.md "# Spec Workflow" "Shared Claude spec workflow skill"
+assert_file_contains_literal all-platforms/.github/prompts/spec.prompt.md "# Workflow Prompt: /spec" "Shared Copilot spec prompt"
 assert_file_contains_literal all-platforms/.gemini/commands/implement.toml ".agents/skills/api-design/SKILL.md" "Shared Gemini/Antigravity implement command"
 if ! diff -q all-platforms/.gemini/commands/implement.toml "$ROOT_DIR/workflows/workflows/agent-environment-setup/platforms/gemini/commands/implement.toml" >/dev/null; then
   echo "[FAIL] Shared .gemini/commands implement.toml drifted from the canonical generated command" >&2
