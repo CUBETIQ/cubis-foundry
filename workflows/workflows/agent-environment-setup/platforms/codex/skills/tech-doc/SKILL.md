@@ -1,6 +1,6 @@
 ---
 name: tech-doc
-description: "Use when writing technical documentation including API references, operational runbooks, onboarding guides, decision logs, and changelog standards."
+description: "Use when writing technical documentation including API references, operational runbooks, onboarding guides, decision logs, and changelog standards. Anthropic compatibility aliases: doc coauthoring, doc-coauthoring."
 ---
 # Technical Documentation
 
@@ -71,6 +71,11 @@ Load on demand. Do not preload all reference files.
 | `references/api-documentation-patterns.md` | Writing or reviewing API documentation, choosing OpenAPI/AsyncAPI structure, or setting up API doc tooling. |
 | `references/writing-style-guide.md` | Establishing writing conventions, tone guidelines, or reviewing documentation for consistency and clarity. |
 | `references/documentation-tooling.md` | Choosing documentation platforms, setting up CI/CD validation, or configuring linting and link checking. |
+
+## Compatibility Aliases
+
+Anthropic upstream compatibility names for this skill: `doc coauthoring`, `doc-coauthoring`.
+Treat requests that use those names as equivalent to this canonical Foundry skill.
 
 ## Codex Platform Notes
 

@@ -81,6 +81,11 @@ Deliver:
 | `agents/visual-reviewer.md` | Delegating screenshot comparison and visual regression tasks |
 | `agents/accessibility-auditor.md` | Delegating accessibility scans and report generation |
 
+## Compatibility Aliases
+
+Anthropic upstream compatibility names for this skill: `webapp testing`, `webapp-testing`.
+Treat requests that use those names as equivalent to this canonical Foundry skill.
+
 ## Copilot Platform Notes
 
 - Custom agents live under `../../agents/` relative to the mirrored skill directory and use YAML frontmatter such as `name`, `description`, `tools`, `model`, and `handoffs`.

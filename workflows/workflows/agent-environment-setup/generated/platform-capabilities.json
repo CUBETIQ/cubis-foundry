@@ -25,7 +25,7 @@
       "agent_capabilities": {
         "native_agent_surface": ".codex/agents/*.toml",
         "skill_surface": ".agents/skills/<id>/SKILL.md",
-        "workflow_entry_surface": "generated workflow skills",
+        "workflow_entry_surface": ".agents/skills/<workflow-id>/SKILL.md",
         "multi_agent": "native",
         "batch_fanout": "native or tool-assisted"
       },
@@ -137,8 +137,8 @@
         {
           "pattern_id": "workflow-entrypoint",
           "support_level": "native",
-          "projection_surface": "generated workflow skills",
-          "behavior_notes": "Codex has native workflow-entrypoint support via generated workflow skills.",
+          "projection_surface": ".agents/skills/<workflow-id>/SKILL.md",
+          "behavior_notes": "Codex has native workflow-entrypoint support via .agents/skills/<workflow-id>/SKILL.md.",
           "hard_limits": [
             "Native runtime limits still apply for workflow-entrypoint."
           ],
@@ -302,8 +302,8 @@
         {
           "pattern_id": "orchestration-chain",
           "support_level": "native",
-          "projection_surface": "generated workflow skills",
-          "behavior_notes": "Codex has native orchestration-chain support via generated workflow skills.",
+          "projection_surface": ".agents/skills/<workflow-id>/SKILL.md",
+          "behavior_notes": "Codex has native orchestration-chain support via .agents/skills/<workflow-id>/SKILL.md.",
           "hard_limits": [
             "Native runtime limits still apply for orchestration-chain."
           ],
@@ -317,8 +317,8 @@
         {
           "pattern_id": "review-and-validation",
           "support_level": "native",
-          "projection_surface": "generated workflow skills",
-          "behavior_notes": "Codex has native review-and-validation support via generated workflow skills.",
+          "projection_surface": ".agents/skills/<workflow-id>/SKILL.md",
+          "behavior_notes": "Codex has native review-and-validation support via .agents/skills/<workflow-id>/SKILL.md.",
           "hard_limits": [
             "Native runtime limits still apply for review-and-validation."
           ],
@@ -332,8 +332,8 @@
         {
           "pattern_id": "research-escalation",
           "support_level": "native",
-          "projection_surface": "generated workflow skills",
-          "behavior_notes": "Codex has native research-escalation support via generated workflow skills.",
+          "projection_surface": ".agents/skills/<workflow-id>/SKILL.md",
+          "behavior_notes": "Codex has native research-escalation support via .agents/skills/<workflow-id>/SKILL.md.",
           "hard_limits": [
             "Native runtime limits still apply for research-escalation."
           ],
@@ -377,7 +377,7 @@
         {
           "pattern_id": "hook-support",
           "support_level": "degraded",
-          "projection_surface": "generated workflow skills",
+          "projection_surface": ".agents/skills/<workflow-id>/SKILL.md",
           "behavior_notes": "Codex parity uses generated steering and skill/routing contracts instead of a first-class hook system.",
           "hard_limits": [
             "Degraded projection for hook-support is semantic, not exact UI parity.",
@@ -528,8 +528,8 @@
         {
           "pattern_id": "worktree-isolation",
           "support_level": "native",
-          "projection_surface": "generated workflow skills",
-          "behavior_notes": "Codex has native worktree-isolation support via generated workflow skills.",
+          "projection_surface": ".agents/skills/<workflow-id>/SKILL.md",
+          "behavior_notes": "Codex has native worktree-isolation support via .agents/skills/<workflow-id>/SKILL.md.",
           "hard_limits": [
             "Native runtime limits still apply for worktree-isolation."
           ],
@@ -543,7 +543,7 @@
         {
           "pattern_id": "scheduled-task",
           "support_level": "degraded",
-          "projection_surface": "generated workflow skills",
+          "projection_surface": ".agents/skills/<workflow-id>/SKILL.md",
           "behavior_notes": "Recurring work is projected into external automation or future Foundry automation, not native in-session scheduling.",
           "hard_limits": [
             "Degraded projection for scheduled-task is semantic, not exact UI parity.",
@@ -596,7 +596,7 @@
       "agent_capabilities": {
         "native_agent_surface": ".claude/agents/*.md",
         "skill_surface": ".claude/skills/<id>/SKILL.md",
-        "workflow_entry_surface": "workflow skills and native commands",
+        "workflow_entry_surface": ".claude/skills/<workflow-id>/SKILL.md",
         "multi_agent": "native or experimental",
         "batch_fanout": "degraded via orchestrator-managed fanout"
       },
@@ -710,8 +710,8 @@
         {
           "pattern_id": "workflow-entrypoint",
           "support_level": "native",
-          "projection_surface": "workflow skills and native commands",
-          "behavior_notes": "Claude Code has native workflow-entrypoint support via workflow skills and native commands.",
+          "projection_surface": ".claude/skills/<workflow-id>/SKILL.md",
+          "behavior_notes": "Claude Code has native workflow-entrypoint support via .claude/skills/<workflow-id>/SKILL.md.",
           "hard_limits": [
             "Native runtime limits still apply for workflow-entrypoint."
           ],
@@ -877,8 +877,8 @@
         {
           "pattern_id": "orchestration-chain",
           "support_level": "native",
-          "projection_surface": "workflow skills and native commands",
-          "behavior_notes": "Claude Code has native orchestration-chain support via workflow skills and native commands.",
+          "projection_surface": ".claude/skills/<workflow-id>/SKILL.md",
+          "behavior_notes": "Claude Code has native orchestration-chain support via .claude/skills/<workflow-id>/SKILL.md.",
           "hard_limits": [
             "Native runtime limits still apply for orchestration-chain."
           ],
@@ -892,8 +892,8 @@
         {
           "pattern_id": "review-and-validation",
           "support_level": "native",
-          "projection_surface": "workflow skills and native commands",
-          "behavior_notes": "Claude Code has native review-and-validation support via workflow skills and native commands.",
+          "projection_surface": ".claude/skills/<workflow-id>/SKILL.md",
+          "behavior_notes": "Claude Code has native review-and-validation support via .claude/skills/<workflow-id>/SKILL.md.",
           "hard_limits": [
             "Native runtime limits still apply for review-and-validation."
           ],
@@ -907,8 +907,8 @@
         {
           "pattern_id": "research-escalation",
           "support_level": "native",
-          "projection_surface": "workflow skills and native commands",
-          "behavior_notes": "Claude Code has native research-escalation support via workflow skills and native commands.",
+          "projection_surface": ".claude/skills/<workflow-id>/SKILL.md",
+          "behavior_notes": "Claude Code has native research-escalation support via .claude/skills/<workflow-id>/SKILL.md.",
           "hard_limits": [
             "Native runtime limits still apply for research-escalation."
           ],
@@ -952,8 +952,8 @@
         {
           "pattern_id": "hook-support",
           "support_level": "native",
-          "projection_surface": "workflow skills and native commands",
-          "behavior_notes": "Claude Code has native hook-support support via workflow skills and native commands.",
+          "projection_surface": ".claude/skills/<workflow-id>/SKILL.md",
+          "behavior_notes": "Claude Code has native hook-support support via .claude/skills/<workflow-id>/SKILL.md.",
           "hard_limits": [
             "Native runtime limits still apply for hook-support."
           ],
@@ -1103,8 +1103,8 @@
         {
           "pattern_id": "worktree-isolation",
           "support_level": "native",
-          "projection_surface": "workflow skills and native commands",
-          "behavior_notes": "Claude Code has native worktree-isolation support via workflow skills and native commands.",
+          "projection_surface": ".claude/skills/<workflow-id>/SKILL.md",
+          "behavior_notes": "Claude Code has native worktree-isolation support via .claude/skills/<workflow-id>/SKILL.md.",
           "hard_limits": [
             "Native runtime limits still apply for worktree-isolation."
           ],
@@ -1118,8 +1118,8 @@
         {
           "pattern_id": "scheduled-task",
           "support_level": "native",
-          "projection_surface": "workflow skills and native commands",
-          "behavior_notes": "Claude Code has native scheduled-task support via workflow skills and native commands.",
+          "projection_surface": ".claude/skills/<workflow-id>/SKILL.md",
+          "behavior_notes": "Claude Code has native scheduled-task support via .claude/skills/<workflow-id>/SKILL.md.",
           "hard_limits": [
             "Native runtime limits still apply for scheduled-task."
           ],
@@ -1168,7 +1168,7 @@
         "profiles": "degraded via Foundry presets"
       },
       "agent_capabilities": {
-        "native_agent_surface": ".github/agents/*.md",
+        "native_agent_surface": ".github/agents/*.agent.md",
         "skill_surface": ".github/skills/<id>/SKILL.md",
         "workflow_entry_surface": ".github/prompts/*.prompt.md",
         "multi_agent": "degraded",
@@ -1380,8 +1380,8 @@
         {
           "pattern_id": "agent-registration",
           "support_level": "native",
-          "projection_surface": ".github/agents/*.md",
-          "behavior_notes": "GitHub Copilot has native agent-registration support via .github/agents/*.md.",
+          "projection_surface": ".github/agents/*.agent.md",
+          "behavior_notes": "GitHub Copilot has native agent-registration support via .github/agents/*.agent.md.",
           "hard_limits": [
             "Native runtime limits still apply for agent-registration."
           ],
@@ -1395,8 +1395,8 @@
         {
           "pattern_id": "specialist-agent",
           "support_level": "native",
-          "projection_surface": ".github/agents/*.md",
-          "behavior_notes": "GitHub Copilot has native specialist-agent support via .github/agents/*.md.",
+          "projection_surface": ".github/agents/*.agent.md",
+          "behavior_notes": "GitHub Copilot has native specialist-agent support via .github/agents/*.agent.md.",
           "hard_limits": [
             "Native runtime limits still apply for specialist-agent."
           ],
@@ -1410,8 +1410,8 @@
         {
           "pattern_id": "agent-preloaded-skill",
           "support_level": "degraded",
-          "projection_surface": ".github/agents/*.md",
-          "behavior_notes": "GitHub Copilot projects agent-preloaded-skill in degraded form via .github/agents/*.md and explicit Foundry control-plane guidance.",
+          "projection_surface": ".github/agents/*.agent.md",
+          "behavior_notes": "GitHub Copilot projects agent-preloaded-skill in degraded form via .github/agents/*.agent.md and explicit Foundry control-plane guidance.",
           "hard_limits": [
             "Degraded projection for agent-preloaded-skill is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1426,8 +1426,8 @@
         {
           "pattern_id": "multi-agent-orchestration",
           "support_level": "degraded",
-          "projection_surface": ".github/agents/*.md",
-          "behavior_notes": "GitHub Copilot projects multi-agent-orchestration in degraded form via .github/agents/*.md and explicit Foundry control-plane guidance.",
+          "projection_surface": ".github/agents/*.agent.md",
+          "behavior_notes": "GitHub Copilot projects multi-agent-orchestration in degraded form via .github/agents/*.agent.md and explicit Foundry control-plane guidance.",
           "hard_limits": [
             "Degraded projection for multi-agent-orchestration is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1442,8 +1442,8 @@
         {
           "pattern_id": "batch-agent-fanout",
           "support_level": "degraded",
-          "projection_surface": ".github/agents/*.md",
-          "behavior_notes": "GitHub Copilot projects batch-agent-fanout in degraded form via .github/agents/*.md and explicit Foundry control-plane guidance.",
+          "projection_surface": ".github/agents/*.agent.md",
+          "behavior_notes": "GitHub Copilot projects batch-agent-fanout in degraded form via .github/agents/*.agent.md and explicit Foundry control-plane guidance.",
           "hard_limits": [
             "Degraded projection for batch-agent-fanout is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1536,17 +1536,16 @@
         },
         {
           "pattern_id": "hook-support",
-          "support_level": "degraded",
-          "projection_surface": ".github/prompts/*.prompt.md",
-          "behavior_notes": "GitHub Copilot projects hook-support in degraded form via .github/prompts/*.prompt.md and explicit Foundry control-plane guidance.",
+          "support_level": "native",
+          "projection_surface": ".github/hooks/*.json + .github/hooks/*.mjs",
+          "behavior_notes": "GitHub Copilot has native repository hook support. Foundry emits security-focused preToolUse hooks there, while route and research guidance stays in instructions and prompts because Copilot hooks are not a prompt-rewrite surface.",
           "hard_limits": [
-            "Degraded projection for hook-support is semantic, not exact UI parity.",
-            "Operator-visible docs must be treated as part of the contract."
+            "Native runtime limits still apply for hook-support."
           ],
           "installable": true,
           "verification_steps": [
-            "Verify degraded hook-support projection is present in the generated manifest.",
-            "Verify degraded docs for hook-support are emitted and linked from the parity set.",
+            "Verify native hook-support projection is present in the generated manifest.",
+            "Verify native docs for hook-support are emitted and linked from the parity set.",
             "Ensure install metadata does not silently omit hook-support."
           ]
         },
@@ -2130,17 +2129,16 @@
         },
         {
           "pattern_id": "hook-support",
-          "support_level": "degraded",
-          "projection_surface": ".gemini/commands/*.toml",
-          "behavior_notes": "Gemini CLI projects hook-support in degraded form via .gemini/commands/*.toml and explicit Foundry control-plane guidance.",
+          "support_level": "native",
+          "projection_surface": ".gemini/settings.json hooks + .gemini/hooks/*",
+          "behavior_notes": "Gemini CLI has native hook support. Foundry emits BeforeAgent and BeforeTool hook templates for route/research context injection and shell-security enforcement.",
           "hard_limits": [
-            "Degraded projection for hook-support is semantic, not exact UI parity.",
-            "Operator-visible docs must be treated as part of the contract."
+            "Native runtime limits still apply for hook-support."
           ],
           "installable": true,
           "verification_steps": [
-            "Verify degraded hook-support projection is present in the generated manifest.",
-            "Verify degraded docs for hook-support are emitted and linked from the parity set.",
+            "Verify native hook-support projection is present in the generated manifest.",
+            "Verify native docs for hook-support are emitted and linked from the parity set.",
             "Ensure install metadata does not silently omit hook-support."
           ]
         },

@@ -23,7 +23,7 @@ Create and maintain a lightweight source of truth for non-trivial work. This ski
 2. **Look for an existing spec pack before creating a new one** because duplicate specs create drift. Reuse the closest matching spec directory when the current request extends an active initiative.
 3. **Create a stable `spec_id` and spec root** because the same identifier should survive planning, execution, review, and follow-up changes.
 4. **Write the minimum viable pack** because the goal is durable coordination, not bureaucracy. Keep the brief, acceptance, tasks, traceability, and handoff documents concise and testable.
-5. **Use `sadd` when turning requirements into assertions** because spec quality depends on extracting testable behavior instead of leaving requirements vague.
+5. **Turn requirements into testable assertions** because spec quality depends on concrete behavior, acceptance checks, and traceability rather than vague intent.
 6. **Record architecture impact explicitly** because implementation must stay aligned with the project architecture contract and current-state tech map. Mark whether the change affects architecture style, module boundaries, dependency rules, design system, deployment shape, or testing strategy.
 7. **Update the spec before implementation changes behavior** because traceability breaks when code changes first and docs lag behind.
 8. **Keep the task graph execution-ready** because `/implement-track` and `/orchestrate` should be able to act on the spec without replanning. Every task should have ownership, dependencies, acceptance criteria, and a verification path.
@@ -46,16 +46,8 @@ Deliver:
 
 | File | Load when |
 | --- | --- |
-| `../sadd/SKILL.md` | Need requirement mining, GIVEN-WHEN-THEN specs, or traceability patterns. |
 | `../architecture-doc/SKILL.md` | Need ADRs, system boundaries, or architecture-document structure. |
 | `../deep-research/SKILL.md` | Need repo-first research escalation or evidence labeling rules. |
-
-## Examples
-
-| File | Use when |
-| --- | --- |
-| `../sadd/references/spec-mining.md` | Turning loose requirements into testable spec entries. |
-| `../sadd/references/coverage-mapping.md` | Building a traceability matrix that links specs, tests, and code. |
 
 ## Claude Platform Notes
 
@@ -65,7 +57,7 @@ Deliver:
 - Custom subagents live under `../../agents/` relative to the mirrored skill directory and support YAML frontmatter: `name`, `description`, `tools`, `model`, `maxTurns`, `memory`, `handoffs`.
 - Use `model` field in agent frontmatter to select model per subagent (e.g., `model: opus` for complex analysis).
 - Set `maxTurns` to prevent runaway iterations (default: 25, orchestrator: 30).
-- Key agents support `memory: project` for cross-session learning (orchestrator, debugger, researcher, project-planner).
+- Current project-memory agents are `orchestrator` and `planner`; use them for durable project context.
 - Hook templates in `.claude/hooks/` provide lifecycle event integration at `UserPromptSubmit` and other events.
 - Path-scoped rules live under `../../rules/` with `paths:` frontmatter for targeted guidance.
 - MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.

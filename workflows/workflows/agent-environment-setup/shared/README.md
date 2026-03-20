@@ -1,6 +1,6 @@
-# Shared Agent/Workflow Source
+# Shared Specialist-Route Source
 
-This directory is the canonical source for custom agents and workflows.
+This directory is the canonical source for shared specialist routes and workflows.
 
 Canonical skills are authored separately under `workflows/skills/<id>`.
 Platform skill folders under `platforms/*/skills` are generated mirrors, not source.
@@ -18,8 +18,8 @@ Any `platforms/cursor/skills` or `platforms/windsurf/skills` directories should 
 
 Generated targets:
 
-- `platforms/codex/{agents,workflows}`
-- `platforms/antigravity/{agents,workflows,commands}`
-- `platforms/copilot/{agents,workflows,prompts}`
-- `platforms/copilot/skills`
-- `platforms/claude/{agents,workflows,skills}`
+- `platforms/codex/{agents,generated-skills,rules}`
+- `platforms/antigravity/{commands,rules,skills}`
+- `platforms/copilot/{agents,hooks,prompts,rules,skills}`
+- `platforms/claude/{agents,generated-skills,hooks,skills}`
+- `platforms/gemini/{commands,hooks,rules,skills}`

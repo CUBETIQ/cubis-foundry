@@ -12,6 +12,12 @@ import {
   pathExists,
 } from "./lib/skill-inventory.mjs";
 import { sortDescriptors } from "./lib/skill-catalog.mjs";
+import {
+  ANTHROPIC_SKILL_INTAKE_OUTPUT,
+  applyAnthropicAliasesToDescriptors,
+  buildAnthropicSkillIntakeReport,
+  readAnthropicSkillIntake,
+} from "./lib/external-skill-intake.mjs";
 
 const CATALOG_OUT_FILE = path.join(SKILLS_GENERATED_ROOT, "skill-catalog.json");
 const AUDIT_OUT_FILE = path.join(SKILLS_GENERATED_ROOT, "skill-audit.json");
@@ -167,6 +173,8 @@ async function writeCheckedJson({ filePath, payload, check, dryRun }) {
 async function main() {
   const { dryRun, check } = parseArgs(process.argv);
   const descriptors = await collectCanonicalDescriptors();
+  const anthropicIntake = await readAnthropicSkillIntake();
+  applyAnthropicAliasesToDescriptors(descriptors, anthropicIntake);
 
   const canonicalById = new Map();
   for (const item of descriptors.filter((entry) => entry.kind === "skill")) {
@@ -182,6 +190,12 @@ async function main() {
 
   const catalog = buildCatalog(descriptors);
   const audit = buildAudit(descriptors);
+  const anthropicReport = buildAnthropicSkillIntakeReport({
+    intakeManifest: anthropicIntake,
+    canonicalSkillIds: descriptors
+      .filter((item) => item.kind === "skill")
+      .map((item) => item.package_id),
+  });
 
   await writeCheckedJson({
     filePath: CATALOG_OUT_FILE,
@@ -195,6 +209,12 @@ async function main() {
     check,
     dryRun,
   });
+  await writeCheckedJson({
+    filePath: ANTHROPIC_SKILL_INTAKE_OUTPUT,
+    payload: anthropicReport,
+    check,
+    dryRun,
+  });
 
   const prefix = check ? "[check] " : dryRun ? "[dry-run] " : "";
   console.log(
@@ -202,6 +222,9 @@ async function main() {
   );
   console.log(
     `${prefix}generated skill audit (${audit.summary.keep} keep, ${audit.summary.review} review, ${audit.summary["alias-only"]} alias-only): ${AUDIT_OUT_FILE}`,
+  );
+  console.log(
+    `${prefix}generated Anthropic skill intake (${anthropicReport.summary.total} entries, ${anthropicReport.summary.adoptedAliases} adopted aliases): ${ANTHROPIC_SKILL_INTAKE_OUTPUT}`,
   );
 }
 

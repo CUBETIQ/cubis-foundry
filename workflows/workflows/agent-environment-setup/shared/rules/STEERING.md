@@ -1,4 +1,4 @@
-# Cubis Foundry — Shared Steering Protocol
+# Cubis Foundry - Shared Steering Protocol
 
 This is the canonical steering source for routing policy and managed MCP block language.
 Keep platform rule files aligned with this template plus per-platform overrides, and do not duplicate the managed block into agent or workflow markdown.
@@ -9,7 +9,7 @@ Managed-block sync: `npm run inject:mcp-rules:all` (or `cbx workflows sync-rules
 
 ## 1) Route Resolution
 
-Follow this decision tree for EVERY user request:
+Follow this decision tree for every user request:
 
 ```
 ┌─ User request arrives
@@ -19,64 +19,74 @@ Follow this decision tree for EVERY user request:
 │   └─ Honor that route first. Stop.
 ├─ Did user explicitly name an exact skill ID?
 │   └─ Run skill_validate on that exact ID.
-│       ├─ Valid? → Load it and proceed. Stop.
-│       └─ Invalid/unavailable? → Fall through. Do not guess.
+│       ├─ Valid? -> Load it and proceed. Stop.
+│       └─ Invalid/unavailable? -> Fall through. Do not guess.
+├─ Is it explicit Stitch UI generation, screen editing, or "use Stitch" work?
+│   └─ Prefer /implement with a Stitch UI scope. Load `frontend-design` first, then the Stitch skill sequence. Stop.
 ├─ Is it non-trivial work with requirements, traceability, or spec language?
-│   └─ Prefer /spec unless the user already chose another valid route. Stop.
-├─ Is it architecture, design-system, ADR, or structure-governance work?
-│   └─ Prefer /architecture unless the user already chose another valid route. Stop.
-├─ Is it multi-step work in ONE domain?
-│   └─ Pick the best-fit workflow. Load it. Stop.
+│   └─ Prefer /plan unless the user already chose another valid route. Stop.
+├─ Is it bug, error, or failing test investigation?
+│   └─ Prefer /debug. Stop.
+├─ Is it test, coverage, or verification work?
+│   └─ Prefer /test. Stop.
+├─ Is it review or security audit work?
+│   └─ Prefer /review. Stop.
+├─ Is it deployment, CI/CD, Docker, or infra work?
+│   └─ Prefer /deploy. Stop.
+├─ Is it bounded iterative work that needs a hard stop condition?
+│   └─ Prefer /loop. Stop.
+├─ Is it multi-step work in one domain?
+│   └─ Pick the best-fit workflow and load it. Stop.
 ├─ Is it cross-domain work spanning 2+ specialties?
-│   └─ Use /orchestrate or @orchestrator. Stop.
+│   └─ Use @orchestrator. Stop.
+├─ Is it documentation-only or a repo knowledge refresh?
+│   └─ Use /implement with a docs-focused scope, or /plan if only scoping is needed. Stop.
 ├─ None of the above?
-│   └─ Use route_resolve MCP tool → follow its recommendation.
-│       └─ Still unclear? → ONE narrow skill_search. Stop.
-└─ If every route fails → ask the user to clarify.
+│   └─ Use route_resolve MCP tool, then follow its recommendation.
+│       └─ Still unclear? -> ONE narrow skill_search. Stop.
+└─ If every route fails -> ask the user to clarify.
 ```
 
-> **Rule:** Inspect the repo and task locally BEFORE choosing a route or loading any skill.
-> **Rule:** If the user already chose the route, do not re-route it unless the named workflow, agent, or skill is invalid.
-> **Rule:** For non-trivial work, read `docs/foundation/MEMORY.md` first when it exists. Then load `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, `docs/foundation/TECH.md`, `docs/foundation/memory/*.md`, and ADRs only as needed. Use the MEMORY load map to decide which deeper docs the active workflow, agent, or skill should consult.
+> **Rule:** Inspect the repo and task locally before choosing a route or loading any skill.
+> **Rule:** If the user already chose the route, do not reroute it unless the named workflow, agent, or skill is invalid.
+> **Rule:** For non-trivial work, read `docs/foundation/MEMORY.md` first when it exists. Then load `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, `docs/foundation/TECH.md`, `docs/foundation/memory/*.md`, and ADRs only as needed.
 
 ---
 
 ## 2) Layer Reference
 
-| Layer                     | What it is                            | When to use it                                                     | How to invoke                            | Example                                         |
-| ------------------------- | ------------------------------------- | ------------------------------------------------------------------ | ---------------------------------------- | ----------------------------------------------- |
-| **Direct execution**      | No routing needed                     | Small, clear, single-step tasks                                    | Just do it                               | "rename this variable"                          |
-| **Workflow**              | Multi-step recipe with verification   | Structured task with known pattern                                 | `/plan`, `/implement`, `/debug`, `/test` | "plan the auth system"                          |
-| **Agent**                 | Specialist persona with domain skills | Domain expertise needed for execution                              | `@implementer`, `@security-reviewer`     | "design the API schema"                         |
-| **Named skill**           | Exact skill selected by the user      | User already named the skill and it validates cleanly              | `skill_validate` → `skill_get`           | "use stitch for this screen"                    |
-| **Skill (MCP)**           | Supporting domain knowledge           | Domain context that a workflow or agent doesn't cover              | `skill_get` after `skill_validate`       | loading `typescript-pro` for TS conventions     |
-| **skill_search**          | Fuzzy discovery tool                  | Domain unclear, no skill ID known yet                              | One narrow search AFTER route_resolve    | "what skill covers Prisma?"                     |
-| **route_resolve**         | Intent → route mapper                 | Free-text request doesn't match any known route                    | MCP tool call with task description      | "I need to optimize my database"                |
-| **Orchestrator**          | Multi-specialist coordinator          | Work genuinely spans 2+ domains                                    | `/orchestrate` or `@orchestrator`        | "build full-stack feature with auth"            |
-| **Spec workflow**         | Git-tracked spec pack                 | Non-trivial work needs durable scope, acceptance, and traceability | `/spec`                                  | "turn this feature into an implementation spec" |
-| **Architecture workflow** | Architecture and design-system memory | Need to refresh structure, flows, ADRs, or design-system rules     | `/architecture`                          | "update the clean architecture contract"        |
+| Layer | What it is | When to use it | How to invoke | Example |
+| --- | --- | --- | --- | --- |
+| Direct execution | No routing needed | Small, clear, single-step tasks | Just do it | "rename this variable" |
+| Workflow | Multi-step recipe with verification | Structured task with known pattern | `/plan`, `/implement`, `/debug`, `/test`, `/review`, `/deploy`, `/loop` | "plan the auth system" |
+| Agent | Specialist persona with domain skills | Domain expertise needed for execution | `@implementer`, `@reviewer` | "design the API schema" |
+| Named skill | Exact skill selected by the user | User already named the skill and it validates cleanly | `skill_validate` -> `skill_get` | "use stitch for this screen" |
+| Skill (MCP) | Supporting domain knowledge | Domain context that a workflow or agent does not cover | `skill_get` after `skill_validate` | loading `typescript-best-practices` |
+| skill_search | Fuzzy discovery tool | Domain unclear, no skill ID known yet | One narrow search after route resolution | "what skill covers Prisma?" |
+| route_resolve | Intent to route mapper | Free-text request does not match any known route | MCP tool call with task description | "I need to optimize my database" |
+| Orchestrator | Multi-specialist coordinator | Work genuinely spans 2+ domains | `@orchestrator` | "build full-stack feature with auth" |
 
 ---
 
 ## 3) Skill Loading Protocol
 
-Skills are **supporting context** unless the user explicitly named the exact skill. In that case validate the named skill first, then proceed without route discovery.
+Skills are supporting context unless the user explicitly named the exact skill. In that case validate the named skill first, then proceed without route discovery.
 
-1. **Never begin with `skill_search`.** Inspect the repo/task locally first.
-2. If the user explicitly named an exact skill ID, run `skill_validate` on that ID before any `route_resolve` call.
-3. Resolve the route (workflow, agent, or direct execution) before loading any non-explicit skills.
-4. **After routing: if `route_resolve` returned `primarySkillHint` or `primarySkills`, load the first via `skill_validate` → `skill_get` before executing. Not optional for non-trivial tasks.**
-5. If `detectedLanguageSkill` is returned and matches the project, load it too (if not already loaded this session).
-6. Domain still unclear after routing? → ONE narrow `skill_search`. Not two.
+1. Never begin with `skill_search`. Inspect the repo and task locally first.
+2. If the user explicitly named an exact skill ID, run `skill_validate` on that ID before any route discovery.
+3. Resolve the route before loading any non-explicit skills.
+4. After routing, if `route_resolve` returned `primarySkillHint` or `primarySkills`, load the first via `skill_validate` -> `skill_get` before executing.
+5. If `detectedLanguageSkill` is returned and matches the project, load it too if not already loaded this session.
+6. Domain still unclear after routing? Use one narrow `skill_search`. Not two.
 7. Call `skill_get` with `includeReferences: false` by default.
-8. Load reference files one at a time with `skill_get_reference` — only when a specific reference is needed.
+8. Load reference files one at a time with `skill_get_reference` only when a specific reference is needed.
 9. Do not auto-prime every specialist. Only load what `primarySkills` recommends or the task clearly needs.
 10. Never pass workflow IDs or agent IDs to skill tools.
-11. For `/architecture` and strict subprocess architecture generation, treat the skill bundle as already resolved. Attach the named skills directly instead of discovering them lazily.
+11. For Stitch UI work, use this order: `frontend-design` -> `stitch-prompt-enhancement` -> `stitch-design-system` when missing/stale/multi-screen -> `stitch-design-orchestrator` -> `stitch-implementation-handoff`.
 
 ---
 
-## 4A) Research Escalation
+## 4) Research Escalation
 
 Use external research only when one of these is true:
 
@@ -86,110 +96,72 @@ Use external research only when one of these is true:
 
 Research source ladder:
 
-1. **Repo/local evidence first** — inspect code, config, docs, tests, and installed artifacts before going outside the workspace.
-2. **Official docs next** — vendor docs, upstream repos, standards, or maintainer documentation are primary evidence.
-3. **Community evidence last** — Reddit, blog posts, issue threads, and forum posts are allowed only as labeled secondary evidence.
+1. Repo/local evidence first.
+2. Official docs next.
+3. Community evidence last, and label it as secondary evidence.
 
 Research output contract:
 
-- **Verified facts** — claims backed by primary sources or local repo evidence.
-- **Secondary/community evidence** — useful but lower-trust signals, clearly labeled.
-- **Gaps / unknowns** — what could not be verified.
-- **Recommended next route** — workflow, agent, or skill to use after research.
+- Verified facts.
+- Secondary/community evidence.
+- Gaps or unknowns.
+- Recommended next route.
 
-When the research result shows a change to product direction, project structure, boundaries, design system, or testing strategy, surface `doc_impact` and recommend `/architecture` or a managed-doc refresh before or after implementation.
+When the research result changes product direction, project structure, boundaries, design system, or testing strategy, surface the impact and recommend the right workflow or a managed-doc refresh.
 
 ---
 
-## 4) Specialists
+## 5) Specialist Map
 
-Use the best specialist first:
+Use the smallest specialist set needed:
 
-| Domain                  | Primary Specialist     | Supporting             |
-| ----------------------- | ---------------------- | ---------------------- |
-| Backend / API           | `@implementer`         | `@database-specialist` |
-| Frontend / UI           | `@frontend-specialist` | `@implementer`         |
-| Database                | `@database-specialist` | `@implementer`         |
-| Security                | `@security-reviewer`   | `@reviewer`            |
-| DevOps / CI/CD          | `@devops`              | `@tester`              |
-| Testing / QA            | `@tester`              | `@debugger`            |
-| Debugging               | `@debugger`            | `@tester`              |
-| Research / Exploration  | `@explorer`            | any specialist         |
-| Planning / Architecture | `@planner`             | `@explorer`            |
-| Code Review / Quality   | `@reviewer`            | `@security-reviewer`   |
-| Documentation           | `@docs-writer`         | `@explorer`            |
-| Cross-domain            | `@orchestrator`        | delegates to others    |
+| Domain | Primary Specialist | Supporting |
+| --- | --- | --- |
+| Planning / architecture | `@planner` | `@explorer` |
+| Exploration | `@explorer` | `@planner` |
+| Implementation | `@implementer` | `@tester`, `@reviewer` |
+| Debugging | `@debugger` | `@tester` |
+| Testing / QA | `@tester` | `@reviewer` |
+| Code review / security | `@reviewer` | `@implementer` |
+| Cross-domain | `@orchestrator` | delegates as needed |
 
 ### Orchestrator Rules
 
-- `@orchestrator` uses the **RUG (Repeat-Until-Good)** pattern: it NEVER implements directly — only delegates to specialists with acceptance criteria and validates output independently.
-- After each specialist delivers, route through `@reviewer` for independent quality gate before accepting.
-- If validation fails, re-delegate with specific feedback (max 3 iterations).
-- Max 3 re-delegation iterations per specialist per milestone. If limit hit, surface to user.
-
-### Subagent Delegation
-
-- Delegate to subagents only when work genuinely requires domain specialization or parallel execution.
-- Each delegation must include: **goal**, **acceptance criteria**, **output contract**, **scope boundary**.
-- Use background/parallel agents only for independent workstreams with no shared mutable state.
-- Sequential work stays sequential — do not parallelize work that writes to the same files or resources.
-- Set iteration limits (`maxTurns`) to prevent runaway loops.
-
-### Handoff Patterns
-
-- Agents may suggest the next logical agent via handoff chains (e.g., `@debugger` → `@tester` → `@reviewer`).
-- Handoffs are suggestions, not mandates — the user decides when to follow them.
-- Every handoff preserves the output contract: `milestones`, `gate_status`, `next_handoff`.
+- `@orchestrator` uses a repeat-until-good pattern. It delegates, verifies output, and iterates until the acceptance criteria are met.
+- Each delegation must include goal, acceptance criteria, output contract, and scope boundary.
+- Keep iteration caps explicit. Do not run open-ended loops.
+- Sequential work stays sequential. Do not parallelize work that writes to the same files or resources.
 
 ---
 
-## 5) Memory & Cross-Session Learning
+## 6) Workflow Quick Reference
 
-- Key agents (orchestrator, planner, reviewer) support project or user memory.
-- Project memory persists architecture decisions, codebase patterns, and implementation context across sessions.
-- User memory (reviewer) persists recurring quality patterns and preferences.
-- Skills loaded into agent context accumulate domain knowledge — do not reload what is already in context.
-
----
-
-## 6) Long-Running and Handoff Work
-
-1. Use `/orchestrate` when multiple specialties need explicit ownership or handoff.
-2. Use `/refactor` for large-scale migrations requiring phased execution with test verification.
-3. Keep workflow output contracts intact when handing work between specialists.
+| Intent Pattern | Workflow | Primary Agent |
+| --- | --- | --- |
+| Plan a feature or architecture | `/plan` | `@explorer` -> `@planner` |
+| Build a feature end-to-end | `/implement` | `@implementer` |
+| Debug a complex issue | `/debug` | `@debugger` |
+| Write or improve tests | `/test` | `@tester` |
+| Code review + security audit | `/review` | `@reviewer` |
+| Deploy, CI/CD, infrastructure | `/deploy` | `@planner` -> `@implementer` |
+| Bounded autonomous iteration | `/loop` | `@orchestrator` |
+| Cross-domain coordination | `@orchestrator` | delegates to others |
 
 ---
 
-## 7) Workflow Quick Reference
-
-| Intent Pattern                       | Workflow       | Primary Agent                      |
-| ------------------------------------ | -------------- | ---------------------------------- |
-| Cross-domain coordination            | `/orchestrate` | `@orchestrator`                    |
-| Plan a feature or architecture       | `/plan`        | `@explorer` → `@planner`           |
-| Build a feature end-to-end           | `/implement`   | `@implementer`                     |
-| Debug a complex issue                | `/debug`       | `@debugger`                        |
-| Write or improve tests               | `/test`        | `@tester`                          |
-| Code review + security audit         | `/review`      | `@reviewer` + `@security-reviewer` |
-| Large-scale refactoring or migration | `/refactor`    | `@implementer`                     |
-| Deploy, CI/CD, infrastructure        | `/deploy`      | `@devops`                          |
-| Generate documentation               | `/document`    | `@docs-writer`                     |
-| Codebase onboarding                  | `/onboard`     | `@explorer` → `@docs-writer`       |
-
----
-
-## 8) Safety and Verification
+## 7) Safety And Verification
 
 1. Do not run destructive actions without explicit user confirmation.
 2. Keep diffs small and reversible when possible.
 3. Verify with focused checks before finalizing.
-4. State what was NOT validated.
+4. State what was not validated.
 5. Use web search only when information may be stale, public comparison matters, or the user explicitly asks.
-6. Prefer official docs first. Treat Reddit/community sources as secondary evidence and label them that way.
-7. If the task changes product direction, project structure, scaling assumptions, or design-system rules, update or flag `PRODUCT.md`, `ARCHITECTURE.md`, `ENGINEERING_RULES.md`, `TECH.md`, and `ROADMAP.md` as needed.
+6. Prefer official docs first. Treat Reddit/community sources as secondary evidence and label them accordingly.
+7. If the task changes product direction, project structure, scaling assumptions, or design-system rules, update or flag the relevant foundation docs as needed.
 
 ---
 
-## 9) Maintenance
+## 8) Maintenance
 
 - Refresh installed rules: `cbx workflows sync-rules --platform {{PLATFORM}} --scope project`
 - Diagnose setup issues: `cbx workflows doctor {{PLATFORM}} --scope project`

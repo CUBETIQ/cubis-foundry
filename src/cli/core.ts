@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { confirm, input, select } from "@inquirer/prompts";
+import { checkbox, confirm, input, select } from "@inquirer/prompts";
 import { parse as parseJsonc } from "jsonc-parser";
 import { existsSync } from "node:fs";
 import {
@@ -9,6 +9,7 @@ import {
   mkdir,
   readdir,
   readFile,
+  rename,
   rm,
   stat,
   symlink,
@@ -65,6 +66,31 @@ import {
   packageRoot,
   workflowSkillsRoot,
 } from "./pathing.js";
+import {
+  AUDIT_RUNTIME_DIR,
+  DEFAULT_HOOK_PROFILE,
+  DEFAULT_LEARNING_MODE,
+  LOOP_RUNTIME_DIR,
+  MEMORY_APPLIED_DIR,
+  MEMORY_INBOX_DIR,
+  MEMORY_REJECTED_DIR,
+  STACK_IDS,
+  WORKSPACE_MANIFEST_FILE,
+  WORKSPACE_SUMMARY_FILE,
+  buildWorkspaceManifest,
+  collectFoundationDocState,
+  detectRecommendedPlatforms,
+  detectWorkspaceStack,
+  ensureWorkspaceRuntimeDirs,
+  normalizeAuthoringAi,
+  normalizeCapabilityPacks,
+  normalizeHookProfile,
+  normalizeWorkspaceProfile,
+  readWorkspaceManifest,
+  runWorkspaceHarnessAudit,
+  writeWorkspaceManifest,
+  writeWorkspaceSummary,
+} from "./foundry/state.js";
 
 const require = createRequire(import.meta.url);
 const { version: CLI_VERSION } = require("../../package.json");
@@ -154,6 +180,8 @@ const PLAYWRIGHT_SKILL_ID = "playwright";
 const PLAYWRIGHT_MCP_SERVER_ID = "PlaywrightMCP";
 const PLAYWRIGHT_DEFAULT_PORT = 8931;
 const PLAYWRIGHT_MCP_URL = `http://localhost:${PLAYWRIGHT_DEFAULT_PORT}/mcp`;
+const ANDROID_MCP_SERVER_ID = "android";
+const ANDROID_MCP_PACKAGE_SPEC = "android-mcp-server@1.3.0";
 const POSTMAN_WORKSPACE_MANUAL_CHOICE = "__postman_workspace_manual__";
 const CBX_CONFIG_FILENAME = "cbx_config.json";
 const CBX_CREDENTIALS_ENV_FILENAME = "credentials.env";
@@ -271,7 +299,7 @@ const TECH_RUST_FRAMEWORK_SIGNALS = [
   ["rocket", "Rocket"],
   ["tokio", "Tokio"],
 ];
-const SKILL_PROFILES = new Set(["core", "web-backend", "full"]);
+const SKILL_PROFILES = new Set(["core", "web-backend", "mobile-qa", "full"]);
 const REMOVE_ALL_SCOPES = new Set(["project", "global", "all"]);
 const CATALOG_FILES = Object.freeze({
   core: path.join("catalogs", "core.json"),
@@ -341,7 +369,7 @@ function normalizeSkillProfile(value) {
     .toLowerCase();
   if (!SKILL_PROFILES.has(normalized)) {
     throw new Error(
-      `Unknown skill profile '${value}'. Use core|web-backend|full.`,
+      `Unknown skill profile '${value}'. Use core|web-backend|mobile-qa|full.`,
     );
   }
   return normalized;
@@ -3010,55 +3038,46 @@ function appendTechPackageSection(lines, heading, packages) {
 function inferRecommendedSkills(snapshot) {
   const recommended = new Set();
   const hasFramework = (name) => snapshot.frameworks.includes(name);
-  const hasJsPkg = (name) => snapshot.packageSignals.javascript.includes(name);
 
   if (hasFramework("Next.js")) {
-    recommended.add("nextjs-developer");
-    recommended.add("react-expert");
-    recommended.add("typescript-pro");
+    recommended.add("nextjs");
+    recommended.add("react");
+    recommended.add("typescript-best-practices");
   }
   if (hasFramework("React")) {
-    recommended.add("react-expert");
+    recommended.add("react");
   }
   if (hasFramework("NestJS")) {
-    recommended.add("nestjs-expert");
-    recommended.add("nodejs-best-practices");
+    recommended.add("nestjs");
+    recommended.add("typescript-best-practices");
   }
   if (hasFramework("FastAPI")) {
-    recommended.add("fastapi-expert");
-    recommended.add("python-pro");
+    recommended.add("fastapi");
+    recommended.add("python-best-practices");
   }
   if (hasFramework("Go Modules")) {
-    recommended.add("golang-pro");
+    recommended.add("golang-best-practices");
   }
   if (hasFramework("Rust Cargo")) {
-    recommended.add("rust-pro");
+    recommended.add("rust-best-practices");
   }
   if (hasFramework("Flutter")) {
-    recommended.add("flutter-expert");
-    recommended.add("mobile-design");
+    recommended.add("flutter-mobile-qa");
+    recommended.add("integration-testing");
   }
 
   // Language-level signals when no framework match already added the skill
   const hasLanguage = (lang) => snapshot.languages.some(([l]) => l === lang);
-  if (hasLanguage("TypeScript") && !recommended.has("typescript-pro")) {
-    recommended.add("typescript-pro");
+  if (hasLanguage("TypeScript") && !recommended.has("typescript-best-practices")) {
+    recommended.add("typescript-best-practices");
   }
-  if (
-    (hasLanguage("JavaScript") || hasLanguage("TypeScript")) &&
-    !recommended.has("nodejs-best-practices") &&
-    !recommended.has("nextjs-developer") &&
-    !recommended.has("nestjs-expert")
-  ) {
-    recommended.add("nodejs-best-practices");
-  }
-  if (hasLanguage("Python") && !recommended.has("python-pro")) {
-    recommended.add("python-pro");
+  if (hasLanguage("Python") && !recommended.has("python-best-practices")) {
+    recommended.add("python-best-practices");
   }
 
   // MCP server detection
   if (snapshot.isMcpServer) {
-    recommended.add("api-patterns");
+    recommended.add("mcp-server-builder");
   }
 
   // Docker / DevOps signals
@@ -3066,15 +3085,15 @@ function inferRecommendedSkills(snapshot) {
     snapshot.cicdSignals.length > 0 ||
     snapshot.entryPoints.some((ep) => ep.startsWith("docker:"))
   ) {
-    recommended.add("devops-engineer");
+    recommended.add("ci-cd-pipeline");
   }
 
   // Testing signals
   if (hasFramework("Playwright")) {
-    recommended.add("playwright-expert");
+    recommended.add("playwright-interactive");
   }
   if (hasFramework("Vitest") || hasFramework("Jest")) {
-    recommended.add("test-master");
+    recommended.add("unit-testing");
   }
 
   // Database signals
@@ -3087,10 +3106,16 @@ function inferRecommendedSkills(snapshot) {
   ) {
     recommended.add("database-design");
   }
+  if (hasFramework("Prisma")) {
+    recommended.add("prisma");
+  }
+  if (hasFramework("SQLAlchemy")) {
+    recommended.add("sqlalchemy");
+  }
 
   if (recommended.size === 0) {
-    recommended.add("clean-code");
-    recommended.add("plan-writing");
+    recommended.add("system-design");
+    recommended.add("spec-driven-delivery");
   }
 
   return [...recommended].sort((a, b) => a.localeCompare(b));
@@ -3105,12 +3130,13 @@ function inferContextBudget(snapshot) {
     "Go Modules",
     "Rust Cargo",
   ]);
+  const mobileDetected = snapshot.frameworks.includes("Flutter");
   const webBackendDetected = snapshot.frameworks.some((framework) =>
     webBackendSignals.has(framework),
   );
   const hasMcp = snapshot.isMcpServer || snapshot.mcpSignals.length > 0;
   const suggestedProfile =
-    webBackendDetected || hasMcp ? "web-backend" : "core";
+    mobileDetected ? "mobile-qa" : webBackendDetected || hasMcp ? "web-backend" : "core";
   return {
     suggestedProfile,
   };
@@ -4448,7 +4474,7 @@ function buildManagedWorkflowBlock(platformId, workflows) {
   if (platformId === "copilot") {
     lines.push("Prefer native Copilot route surfaces first:");
     lines.push("- Workflow prompts: `.github/prompts/*.prompt.md`");
-    lines.push("- Agents: `.github/agents/*.md`");
+    lines.push("- Custom agents: `.github/agents/*.agent.md`");
     lines.push("- Skills: `.github/skills/<skill>/SKILL.md`");
     lines.push("- Agents: `@agent-name`");
     lines.push("- Workspace-first MCP: `.vscode/mcp.json`");
@@ -5311,6 +5337,19 @@ function buildVsCodePlaywrightServer({ mcpUrl = PLAYWRIGHT_MCP_URL } = {}) {
   };
 }
 
+function buildAndroidMcpCommandArgs() {
+  return ["-y", ANDROID_MCP_PACKAGE_SPEC];
+}
+
+function buildVsCodeAndroidServer() {
+  return {
+    type: "stdio",
+    command: "npx",
+    args: buildAndroidMcpCommandArgs(),
+    env: {},
+  };
+}
+
 function buildCopilotCliPlaywrightServer({ mcpUrl = PLAYWRIGHT_MCP_URL } = {}) {
   return {
     type: "http",
@@ -5320,10 +5359,28 @@ function buildCopilotCliPlaywrightServer({ mcpUrl = PLAYWRIGHT_MCP_URL } = {}) {
   };
 }
 
+function buildCopilotCliAndroidServer() {
+  return {
+    type: "stdio",
+    command: "npx",
+    args: buildAndroidMcpCommandArgs(),
+    env: {},
+    tools: ["*"],
+  };
+}
+
 function buildGeminiPlaywrightServer({ mcpUrl = PLAYWRIGHT_MCP_URL } = {}) {
   return {
     httpUrl: mcpUrl,
     headers: {},
+  };
+}
+
+function buildGeminiAndroidServer() {
+  return {
+    command: "npx",
+    args: buildAndroidMcpCommandArgs(),
+    env: {},
   };
 }
 
@@ -5815,6 +5872,7 @@ async function applyPostmanMcpForPlatform({
   includeStitchMcp = false,
   includeFoundryMcp = true,
   includePlaywrightMcp = false,
+  includeAndroidMcp = false,
   foundryRuntime = "local",
   dryRun = false,
   cwd = process.cwd(),
@@ -5842,6 +5900,11 @@ async function applyPostmanMcpForPlatform({
         `Foundry MCP is configured for Docker runtime at ${buildFoundryDockerUrl({ port: foundryDockerPort })}. Start it with 'cbx mcp runtime up --scope ${mcpScope}'.`,
       );
     }
+  }
+  if (includeAndroidMcp) {
+    warnings.push(
+      `Android MCP uses '${ANDROID_MCP_PACKAGE_SPEC}' over stdio. Ensure Android SDK platform-tools are installed and ANDROID_HOME is available when SDK auto-discovery is unavailable.`,
+    );
   }
 
   if (platform === "antigravity" || platform === "gemini") {
@@ -5871,6 +5934,9 @@ async function applyPostmanMcpForPlatform({
         }
         if (includePlaywrightMcp) {
           mcpServers[PLAYWRIGHT_MCP_SERVER_ID] = buildGeminiPlaywrightServer();
+        }
+        if (includeAndroidMcp) {
+          mcpServers[ANDROID_MCP_SERVER_ID] = buildGeminiAndroidServer();
         }
         next.mcpServers = mcpServers;
         return next;
@@ -5912,13 +5978,16 @@ async function applyPostmanMcpForPlatform({
           } else {
             delete mcpServers[FOUNDRY_MCP_SERVER_ID];
           }
-          if (includePlaywrightMcp) {
-            mcpServers[PLAYWRIGHT_MCP_SERVER_ID] =
-              buildCopilotCliPlaywrightServer();
-          }
-          next.mcpServers = mcpServers;
-          return next;
+        if (includePlaywrightMcp) {
+          mcpServers[PLAYWRIGHT_MCP_SERVER_ID] =
+            buildCopilotCliPlaywrightServer();
         }
+        if (includeAndroidMcp) {
+          mcpServers[ANDROID_MCP_SERVER_ID] = buildCopilotCliAndroidServer();
+        }
+        next.mcpServers = mcpServers;
+        return next;
+      }
 
         const servers =
           next.servers &&
@@ -5938,6 +6007,9 @@ async function applyPostmanMcpForPlatform({
         }
         if (includePlaywrightMcp) {
           servers[PLAYWRIGHT_MCP_SERVER_ID] = buildVsCodePlaywrightServer();
+        }
+        if (includeAndroidMcp) {
+          servers[ANDROID_MCP_SERVER_ID] = buildVsCodeAndroidServer();
         }
         next.servers = servers;
         return next;
@@ -5987,6 +6059,9 @@ async function applyPostmanMcpForPlatform({
           if (includePlaywrightMcp) {
             servers[PLAYWRIGHT_MCP_SERVER_ID] = buildVsCodePlaywrightServer();
           }
+          if (includeAndroidMcp) {
+            servers[ANDROID_MCP_SERVER_ID] = buildVsCodeAndroidServer();
+          }
           next.servers = servers;
           return next;
         },
@@ -6031,6 +6106,13 @@ async function applyPostmanMcpForPlatform({
     }
     try {
       await execFile("codex", ["mcp", "remove", PLAYWRIGHT_MCP_SERVER_ID], {
+        cwd,
+      });
+    } catch {
+      // Best effort. Add will still run and becomes source of truth.
+    }
+    try {
+      await execFile("codex", ["mcp", "remove", ANDROID_MCP_SERVER_ID], {
         cwd,
       });
     } catch {
@@ -6084,6 +6166,26 @@ async function applyPostmanMcpForPlatform({
         );
       }
     }
+    if (includeAndroidMcp) {
+      try {
+        await execFile(
+          "codex",
+          [
+            "mcp",
+            "add",
+            ANDROID_MCP_SERVER_ID,
+            "--",
+            "npx",
+            ...buildAndroidMcpCommandArgs(),
+          ],
+          { cwd },
+        );
+      } catch (error) {
+        warnings.push(
+          `Failed to register ${ANDROID_MCP_SERVER_ID} MCP via Codex CLI. Ensure 'codex', 'npx', and Android SDK platform-tools are installed and rerun. (${error.message})`,
+        );
+      }
+    }
 
     return {
       kind: "codex-cli",
@@ -6130,6 +6232,13 @@ async function applyPostmanMcpForPlatform({
           mcpServers[PLAYWRIGHT_MCP_SERVER_ID] = {
             type: "url",
             url: PLAYWRIGHT_MCP_URL,
+          };
+        }
+        if (includeAndroidMcp) {
+          mcpServers[ANDROID_MCP_SERVER_ID] = {
+            type: "stdio",
+            command: "npx",
+            args: buildAndroidMcpCommandArgs(),
           };
         }
         next.mcpServers = mcpServers;
@@ -6201,6 +6310,7 @@ async function resolvePostmanInstallSelection({
 
   const stitchRequested = Boolean(options.stitch);
   const playwrightRequested = Boolean(options.playwright);
+  const androidRequested = Boolean(options.android);
   const postmanRequested =
     Boolean(options.postman) ||
     hasWorkspaceOption ||
@@ -6221,6 +6331,7 @@ async function resolvePostmanInstallSelection({
     postmanRequested ||
     stitchRequested ||
     playwrightRequested ||
+    androidRequested ||
     foundryOnlyRequested;
   if (!enabled) return { enabled: false };
   const requestedPostmanMode = postmanRequested
@@ -6376,7 +6487,9 @@ async function resolvePostmanInstallSelection({
           ? FOUNDRY_MCP_SERVER_ID
           : playwrightRequested
             ? PLAYWRIGHT_MCP_SERVER_ID
-            : FOUNDRY_MCP_SERVER_ID,
+            : androidRequested
+              ? ANDROID_MCP_SERVER_ID
+              : FOUNDRY_MCP_SERVER_ID,
       platform,
       runtime: requestedRuntime,
       fallback: requestedFallback,
@@ -6426,6 +6539,17 @@ async function resolvePostmanInstallSelection({
       mcpUrl: PLAYWRIGHT_MCP_URL,
     };
   }
+  if (androidRequested) {
+    cbxConfig.android = {
+      enabled: true,
+      server: ANDROID_MCP_SERVER_ID,
+      package: ANDROID_MCP_PACKAGE_SPEC,
+      transport: "stdio",
+    };
+    warnings.push(
+      "Android ADB MCP uses the external android-mcp-server package. Ensure Android SDK platform-tools are installed and ANDROID_HOME is set when auto-discovery is unavailable.",
+    );
+  }
 
   return {
     enabled: true,
@@ -6433,6 +6557,7 @@ async function resolvePostmanInstallSelection({
     apiKeySource,
     stitchEnabled,
     playwrightEnabled: playwrightRequested,
+    androidEnabled: androidRequested,
     stitchApiKeySource,
     mcpRuntime: requestedRuntime,
     effectiveMcpRuntime: runtimeSkipped ? null : effectiveRuntime,
@@ -6678,6 +6803,7 @@ async function configurePostmanInstallArtifacts({
         includeStitchMcp: shouldInstallStitch,
         includeFoundryMcp: postmanSelection.foundryMcpEnabled,
         includePlaywrightMcp: postmanSelection.playwrightEnabled ?? false,
+        includeAndroidMcp: postmanSelection.androidEnabled ?? false,
         foundryRuntime: postmanSelection.effectiveMcpRuntime || "local",
         dryRun,
         cwd,
@@ -6760,6 +6886,7 @@ async function configurePostmanInstallArtifacts({
     foundryMcpEnabled: postmanSelection.foundryMcpEnabled,
     postmanEnabled: shouldInstallPostman,
     playwrightEnabled: Boolean(postmanSelection.playwrightEnabled),
+    androidEnabled: Boolean(postmanSelection.androidEnabled),
     postmanMode:
       shouldInstallPostman && effectiveMcpUrl
         ? resolvePostmanModeFromUrl(
@@ -6770,6 +6897,9 @@ async function configurePostmanInstallArtifacts({
     postmanMcpUrl: shouldInstallPostman ? effectiveMcpUrl : null,
     playwrightMcpUrl: postmanSelection.playwrightEnabled
       ? PLAYWRIGHT_MCP_URL
+      : null,
+    androidMcpPackage: postmanSelection.androidEnabled
+      ? ANDROID_MCP_PACKAGE_SPEC
       : null,
     apiKeySource: effectiveApiKeySource,
     stitchApiKeySource: effectiveStitchApiKeySource,
@@ -6835,6 +6965,13 @@ async function applyPostmanConfigArtifacts({
   const playwrightMcpUrl =
     String(playwrightConfig?.mcpUrl || PLAYWRIGHT_MCP_URL).trim() ||
     PLAYWRIGHT_MCP_URL;
+  const androidConfig =
+    configValue?.android &&
+    typeof configValue.android === "object" &&
+    !Array.isArray(configValue.android)
+      ? configValue.android
+      : null;
+  const androidEnabled = Boolean(androidConfig?.enabled ?? configValue?.android);
   const stitchApiKeyEnvVar =
     normalizePostmanApiKey(stitchState?.apiKeyEnvVar) || STITCH_API_KEY_ENV_VAR;
   const stitchMcpUrl = stitchState?.mcpUrl || STITCH_MCP_URL;
@@ -6886,6 +7023,7 @@ async function applyPostmanConfigArtifacts({
       includeStitchMcp: stitchEnabled,
       includeFoundryMcp: true,
       includePlaywrightMcp: playwrightEnabled ?? false,
+      includeAndroidMcp: androidEnabled ?? false,
       foundryRuntime,
       dryRun,
       cwd,
@@ -6896,6 +7034,7 @@ async function applyPostmanConfigArtifacts({
   return {
     postmanEnabled,
     playwrightEnabled,
+    androidEnabled,
     playwrightMcpUrl: playwrightEnabled ? playwrightMcpUrl : null,
     legacyDefinitionCleanupResults,
     mcpRuntimeResult,
@@ -7919,6 +8058,11 @@ function printPostmanSetupSummary({ postmanSetup }) {
       `- Playwright MCP: enabled (${postmanSetup.playwrightMcpUrl || PLAYWRIGHT_MCP_URL})`,
     );
   }
+  if (postmanSetup.androidEnabled) {
+    console.log(
+      `- Android ADB MCP: enabled (${postmanSetup.androidMcpPackage || ANDROID_MCP_PACKAGE_SPEC})`,
+    );
+  }
   if (postmanSetup.postmanEnabled && postmanSetup.postmanMode) {
     console.log(`- Postman mode: ${postmanSetup.postmanMode}`);
   }
@@ -8446,6 +8590,10 @@ function withInstallOptions(command) {
     )
     .option("--playwright", "optional: include Playwright MCP server wiring")
     .option(
+      "--android",
+      `optional: include Android ADB MCP wiring via ${ANDROID_MCP_PACKAGE_SPEC}`,
+    )
+    .option(
       "--postman-api-key <key>",
       "deprecated: inline key mode is disabled. Use env vars + profiles.",
     )
@@ -8459,7 +8607,7 @@ function withInstallOptions(command) {
     )
     .option(
       "--mcp-scope <scope>",
-      "optional: MCP config scope for --postman (workspace/project only; global is coerced to project)",
+      "optional: MCP config scope for --postman/--stitch/--android (workspace/project only; global is coerced to project)",
     )
     .option(
       "--mcp-runtime <runtime>",
@@ -13625,204 +13773,211 @@ async function readArchitectureDriftStatus(workspaceRoot, snapshot) {
   };
 }
 
+async function executeContextGeneration(options) {
+  const opts = resolveActionOptions(options);
+  const platform = normalizeArchitectureBuildPlatform(opts.platform);
+  const researchMode = normalizeArchitectureResearchMode(opts.research);
+  const overwrite = Boolean(opts.overwrite);
+  const dryRun = Boolean(opts.dryRun);
+  const checkOnly = Boolean(opts.check);
+  const quiet = Boolean(opts.quiet);
+  const emitJson = Boolean(opts.json);
+  const cwd = opts.target ? path.resolve(opts.target) : process.cwd();
+  const workspaceRoot = findWorkspaceRoot(cwd);
+  const snapshot = await collectTechSnapshot(workspaceRoot);
+  const specRoots = await listSpecPackRoots(workspaceRoot);
+
+  if (checkOnly) {
+    const drift = await readArchitectureDriftStatus(workspaceRoot, snapshot);
+    return {
+      mode: "check",
+      platform,
+      researchMode,
+      workspaceRoot: toPosixPath(workspaceRoot),
+      drift,
+    };
+  }
+
+  const managedFilePaths = [
+    path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "MEMORY.md"),
+    path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "PRODUCT.md"),
+    path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "ARCHITECTURE.md"),
+    path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "TECH.md"),
+    path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "domain.md"),
+    path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "runtime.md"),
+    path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "integrations.md"),
+    path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "debugging.md"),
+    path.join(workspaceRoot, FOUNDATION_ADR_DIR, "README.md"),
+    path.join(workspaceRoot, FOUNDATION_ADR_DIR, "0000-template.md"),
+  ];
+  const coreSkills = [
+    "architecture-doc",
+    "system-design",
+    "tech-doc",
+    "frontend-design",
+  ];
+  const conditionalSkills = resolveArchitectureConditionalSkills(
+    snapshot,
+    specRoots,
+    researchMode,
+  );
+  const skillBundle = [...coreSkills, ...conditionalSkills];
+  const skillPathHints = await resolveArchitectureSkillPathHints(
+    platform,
+    cwd,
+    skillBundle,
+  );
+  const inspectionAnchors = await resolveArchitectureInspectionAnchors(
+    workspaceRoot,
+    snapshot,
+    specRoots,
+  );
+  const prompt = buildArchitecturePrompt({
+    platform,
+    workspaceRoot,
+    snapshot,
+    specRoots,
+    inspectionAnchors,
+    researchMode,
+    coreSkills,
+    conditionalSkills,
+    skillPathHints,
+  });
+  const adapter = await probeArchitectureAdapter(platform, workspaceRoot);
+  const args = adapter.buildInvocation(prompt);
+  const managedTargets = managedFilePaths.map((filePath) => toPosixPath(filePath));
+
+  if (dryRun) {
+    return {
+      mode: "dry-run",
+      platform,
+      researchMode,
+      workspaceRoot: toPosixPath(workspaceRoot),
+      adapter: adapter.binary,
+      invocation: [adapter.binary, ...args],
+      managedTargets,
+      skillBundle,
+    };
+  }
+
+  const filesBefore = await captureFileContents(managedFilePaths);
+  const scaffold = await ensureArchitectureBuildScaffold({
+    workspaceRoot,
+    dryRun,
+  });
+
+  if (!quiet && !emitJson) {
+    console.log(`Streaming ${adapter.binary} output...`);
+  }
+
+  const execution = await spawnCapture(adapter.binary, args, {
+    cwd: workspaceRoot,
+    env: process.env,
+    streamOutput: !quiet && !emitJson,
+  });
+  if (!execution.ok) {
+    throw new Error(explainArchitectureBuildFailure(platform, execution));
+  }
+
+  await normalizeArchitectureBuildOutputs(scaffold);
+
+  const filesAfter = await captureFileContents(managedFilePaths);
+  const changedFiles = managedFilePaths
+    .filter((filePath) => filesBefore[filePath] !== filesAfter[filePath])
+    .map((filePath) => toPosixPath(path.relative(workspaceRoot, filePath)));
+
+  const metadataPath = path.join(
+    workspaceRoot,
+    ".cbx",
+    ARCHITECTURE_BUILD_METADATA_FILENAME,
+  );
+  const metadata = buildArchitectureBuildMetadata({
+    platform,
+    researchMode,
+    managedDocs: [
+      `${FOUNDATION_DOCS_DIR}/MEMORY.md`,
+      `${FOUNDATION_DOCS_DIR}/PRODUCT.md`,
+      `${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md`,
+      `${FOUNDATION_DOCS_DIR}/TECH.md`,
+      `${FOUNDATION_MEMORY_DIR}/domain.md`,
+      `${FOUNDATION_MEMORY_DIR}/runtime.md`,
+      `${FOUNDATION_MEMORY_DIR}/integrations.md`,
+      `${FOUNDATION_MEMORY_DIR}/debugging.md`,
+      `${FOUNDATION_ADR_DIR}/README.md`,
+      `${FOUNDATION_ADR_DIR}/0000-template.md`,
+    ],
+  });
+  await mkdir(path.dirname(metadataPath), { recursive: true });
+  await writeFile(metadataPath, `${JSON.stringify(metadata, null, 2)}\n`, "utf8");
+
+  const result = normalizeArchitectureResult({
+    stdout: execution.stdout,
+    workspaceRoot: toPosixPath(workspaceRoot),
+    researchMode,
+    changedFiles: [...new Set(changedFiles)],
+  });
+
+  return {
+    mode: "generate",
+    platform,
+    researchMode,
+    workspaceRoot: toPosixPath(workspaceRoot),
+    adapter: adapter.binary,
+    skillBundle,
+    managedTargets,
+    result,
+  };
+}
+
 async function runBuildArchitecture(options) {
   try {
-    const platform = normalizeArchitectureBuildPlatform(options.platform);
-    const researchMode = normalizeArchitectureResearchMode(options.research);
-    const overwrite = Boolean(options.overwrite);
-    const dryRun = Boolean(options.dryRun);
-    const emitJson = Boolean(options.json);
-    const checkOnly = Boolean(options.check);
-    const cwd = process.cwd();
-    const workspaceRoot = findWorkspaceRoot(cwd);
-    const snapshot = await collectTechSnapshot(workspaceRoot);
-    const specRoots = await listSpecPackRoots(workspaceRoot);
+    const emitJson = Boolean(resolveActionOptions(options).json);
+    const outcome = await executeContextGeneration(options);
 
-    if (checkOnly) {
-      const drift = await readArchitectureDriftStatus(workspaceRoot, snapshot);
+    if (outcome.mode === "check") {
       if (emitJson) {
-        console.log(JSON.stringify(drift, null, 2));
+        console.log(JSON.stringify(outcome.drift, null, 2));
       } else {
-        console.log(`Platform: ${platform}`);
-        console.log(`Workspace: ${toPosixPath(workspaceRoot)}`);
-        console.log(`Status: ${drift.stale ? "stale" : "fresh"}`);
+        console.log(`Platform: ${outcome.platform}`);
+        console.log(`Workspace: ${outcome.workspaceRoot}`);
+        console.log(`Status: ${outcome.drift.stale ? "stale" : "fresh"}`);
         console.log(
           `Backbone docs: ${FOUNDATION_DOCS_DIR}/MEMORY.md, ${FOUNDATION_DOCS_DIR}/PRODUCT.md, ${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md, ${FOUNDATION_DOCS_DIR}/TECH.md, ${FOUNDATION_MEMORY_DIR}/*.md, ${FOUNDATION_ADR_DIR}/README.md`,
         );
-        if (drift.findings.length > 0) {
+        if (outcome.drift.findings.length > 0) {
           console.log("Findings:");
-          for (const finding of drift.findings) {
+          for (const finding of outcome.drift.findings) {
             console.log(`- ${finding}`);
           }
         }
       }
-      if (drift.stale) process.exit(1);
+      if (outcome.drift.stale) process.exit(1);
       return;
     }
 
-    const managedFilePaths = [
-      path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "MEMORY.md"),
-      path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "PRODUCT.md"),
-      path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "ARCHITECTURE.md"),
-      path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "TECH.md"),
-      path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "domain.md"),
-      path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "runtime.md"),
-      path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "integrations.md"),
-      path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "debugging.md"),
-      path.join(workspaceRoot, FOUNDATION_ADR_DIR, "README.md"),
-      path.join(workspaceRoot, FOUNDATION_ADR_DIR, "0000-template.md"),
-    ];
-    const coreSkills = [
-      "architecture-doc",
-      "system-design",
-      "tech-doc",
-      "frontend-design",
-    ];
-    const conditionalSkills = resolveArchitectureConditionalSkills(
-      snapshot,
-      specRoots,
-      researchMode,
-    );
-    const skillBundle = [...coreSkills, ...conditionalSkills];
-    const skillPathHints = await resolveArchitectureSkillPathHints(
-      platform,
-      cwd,
-      skillBundle,
-    );
-    const inspectionAnchors = await resolveArchitectureInspectionAnchors(
-      workspaceRoot,
-      snapshot,
-      specRoots,
-    );
-    const prompt = buildArchitecturePrompt({
-      platform,
-      workspaceRoot,
-      snapshot,
-      specRoots,
-      inspectionAnchors,
-      researchMode,
-      coreSkills,
-      conditionalSkills,
-      skillPathHints,
-    });
-    const adapter = await probeArchitectureAdapter(platform, workspaceRoot);
-    const args = adapter.buildInvocation(prompt);
-    const managedTargets = [
-      path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "MEMORY.md"),
-      path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "PRODUCT.md"),
-      path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "ARCHITECTURE.md"),
-      path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "TECH.md"),
-      path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "domain.md"),
-      path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "runtime.md"),
-      path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "integrations.md"),
-      path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "debugging.md"),
-      path.join(workspaceRoot, FOUNDATION_ADR_DIR, "README.md"),
-      path.join(workspaceRoot, FOUNDATION_ADR_DIR, "0000-template.md"),
-    ].map((filePath) => toPosixPath(filePath));
-
-    if (dryRun) {
-      const summary = {
-        platform,
-        workspaceRoot: toPosixPath(workspaceRoot),
-        adapter: adapter.binary,
-        invocation: [adapter.binary, ...args],
-        researchMode,
-        managedTargets,
-        skillBundle,
-      };
+    if (outcome.mode === "dry-run") {
       if (emitJson) {
-        console.log(JSON.stringify(summary, null, 2));
+        console.log(JSON.stringify(outcome, null, 2));
       } else {
-        console.log(`Platform: ${platform}`);
-        console.log(`Workspace: ${toPosixPath(workspaceRoot)}`);
-        console.log(`Adapter: ${adapter.binary}`);
-        console.log(`Research mode: ${researchMode}`);
-        console.log(`Managed targets: ${summary.managedTargets.join(", ")}`);
-        console.log(`Skill bundle: ${skillBundle.join(", ")}`);
-        console.log(`Invocation: ${[adapter.binary, ...args].join(" ")}`);
+        console.log(`Platform: ${outcome.platform}`);
+        console.log(`Workspace: ${outcome.workspaceRoot}`);
+        console.log(`Adapter: ${outcome.adapter}`);
+        console.log(`Research mode: ${outcome.researchMode}`);
+        console.log(`Managed targets: ${outcome.managedTargets.join(", ")}`);
+        console.log(`Skill bundle: ${outcome.skillBundle.join(", ")}`);
+        console.log(`Invocation: ${outcome.invocation.join(" ")}`);
       }
       return;
     }
-
-    const filesBefore = await captureFileContents(managedFilePaths);
-    const scaffold = await ensureArchitectureBuildScaffold({
-      workspaceRoot,
-      dryRun,
-    });
-
-    if (!emitJson) {
-      console.log(`Streaming ${adapter.binary} output...`);
-    }
-
-    const execution = await spawnCapture(adapter.binary, args, {
-      cwd: workspaceRoot,
-      env: process.env,
-      streamOutput: !emitJson,
-    });
-    if (!execution.ok) {
-      throw new Error(explainArchitectureBuildFailure(platform, execution));
-    }
-
-    await normalizeArchitectureBuildOutputs(scaffold);
-
-    const filesAfter = await captureFileContents(managedFilePaths);
-    const changedFiles = managedFilePaths
-      .filter((filePath) => filesBefore[filePath] !== filesAfter[filePath])
-      .map((filePath) => toPosixPath(path.relative(workspaceRoot, filePath)));
-
-    const techContent =
-      filesAfter[scaffold.techMdPath] ??
-      (await readFile(scaffold.techMdPath, "utf8"));
-    const productContent =
-      filesAfter[scaffold.productPath] ??
-      (await readFile(scaffold.productPath, "utf8"));
-    const architectureContent =
-      filesAfter[scaffold.architectureDocPath] ??
-      (await readFile(scaffold.architectureDocPath, "utf8"));
-
-    const metadataPath = path.join(
-      workspaceRoot,
-      ".cbx",
-      ARCHITECTURE_BUILD_METADATA_FILENAME,
-    );
-    const metadata = buildArchitectureBuildMetadata({
-      platform,
-      researchMode,
-      managedDocs: [
-        `${FOUNDATION_DOCS_DIR}/MEMORY.md`,
-        `${FOUNDATION_DOCS_DIR}/PRODUCT.md`,
-        `${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md`,
-        `${FOUNDATION_DOCS_DIR}/TECH.md`,
-        `${FOUNDATION_MEMORY_DIR}/domain.md`,
-        `${FOUNDATION_MEMORY_DIR}/runtime.md`,
-        `${FOUNDATION_MEMORY_DIR}/integrations.md`,
-        `${FOUNDATION_MEMORY_DIR}/debugging.md`,
-        `${FOUNDATION_ADR_DIR}/README.md`,
-        `${FOUNDATION_ADR_DIR}/0000-template.md`,
-      ],
-    });
-    await mkdir(path.dirname(metadataPath), { recursive: true });
-    await writeFile(
-      metadataPath,
-      `${JSON.stringify(metadata, null, 2)}\n`,
-      "utf8",
-    );
-
-    const result = normalizeArchitectureResult({
-      stdout: execution.stdout,
-      workspaceRoot: toPosixPath(workspaceRoot),
-      researchMode,
-      changedFiles: [...new Set(changedFiles)],
-    });
 
     if (emitJson) {
       console.log(
         JSON.stringify(
           {
-            platform,
-            adapter: adapter.binary,
-            skillBundle,
-            result,
+            platform: outcome.platform,
+            adapter: outcome.adapter,
+            skillBundle: outcome.skillBundle,
+            result: outcome.result,
           },
           null,
           2,
@@ -13831,25 +13986,25 @@ async function runBuildArchitecture(options) {
       return;
     }
 
-    console.log(`Platform: ${platform}`);
-    console.log(`Adapter: ${adapter.binary}`);
-    console.log(`Workspace: ${toPosixPath(workspaceRoot)}`);
+    console.log(`Platform: ${outcome.platform}`);
+    console.log(`Adapter: ${outcome.adapter}`);
+    console.log(`Workspace: ${outcome.workspaceRoot}`);
     console.log(
       `Managed docs: ${FOUNDATION_DOCS_DIR}/MEMORY.md, ${FOUNDATION_DOCS_DIR}/PRODUCT.md, ${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md, ${FOUNDATION_DOCS_DIR}/TECH.md, ${FOUNDATION_MEMORY_DIR}/*.md`,
     );
     console.log(
       `ADR scaffold: ${FOUNDATION_ADR_DIR}/README.md, ${FOUNDATION_ADR_DIR}/0000-template.md`,
     );
-    console.log(`Skill bundle: ${skillBundle.join(", ")}`);
+    console.log(`Skill bundle: ${outcome.skillBundle.join(", ")}`);
     console.log(
-      `Files written: ${(result.filesWritten || []).join(", ") || "(none reported)"}`,
+      `Files written: ${(outcome.result.filesWritten || []).join(", ") || "(none reported)"}`,
     );
-    console.log(`Research used: ${result.researchUsed ? "yes" : "no"}`);
-    if (result.gaps.length > 0) {
-      console.log(`Gaps: ${result.gaps.join("; ")}`);
+    console.log(`Research used: ${outcome.result.researchUsed ? "yes" : "no"}`);
+    if (outcome.result.gaps.length > 0) {
+      console.log(`Gaps: ${outcome.result.gaps.join("; ")}`);
     }
-    if (result.nextActions.length > 0) {
-      console.log(`Next actions: ${result.nextActions.join("; ")}`);
+    if (outcome.result.nextActions.length > 0) {
+      console.log(`Next actions: ${outcome.result.nextActions.join("; ")}`);
     }
   } catch (error) {
     console.error(`\nError: ${error.message}`);
@@ -13864,6 +14019,157 @@ function parseCsvOption(value) {
     .filter(Boolean);
 }
 
+async function promptInitWorkspaceProfile(defaultProfile) {
+  return select({
+    message: "Select workspace profile:",
+    default: defaultProfile,
+    choices: [
+      { name: "core", value: "core" },
+      { name: "developer", value: "developer" },
+      { name: "security", value: "security" },
+      { name: "research", value: "research" },
+      { name: "full", value: "full" },
+    ],
+  });
+}
+
+async function promptInitAuthoringAi(defaultAuthoringAi) {
+  return select({
+    message: "Select the AI that should author context docs:",
+    default: defaultAuthoringAi,
+    choices: [
+      { name: "Codex", value: "codex" },
+      { name: "Claude Code", value: "claude" },
+      { name: "Gemini CLI", value: "gemini" },
+      { name: "GitHub Copilot", value: "copilot" },
+    ],
+  });
+}
+
+async function promptInitCapabilityPacks(defaultPacks) {
+  return checkbox({
+    message: "Select optional capability packs:",
+    choices: [
+      { name: "frontend", value: "frontend", checked: defaultPacks.includes("frontend") },
+      { name: "backend", value: "backend", checked: defaultPacks.includes("backend") },
+      { name: "database", value: "database", checked: defaultPacks.includes("database") },
+      { name: "devops", value: "devops", checked: defaultPacks.includes("devops") },
+      { name: "security", value: "security", checked: defaultPacks.includes("security") },
+      { name: "playwright", value: "playwright", checked: defaultPacks.includes("playwright") },
+      { name: "research", value: "research", checked: defaultPacks.includes("research") },
+      { name: "agentic", value: "agentic", checked: defaultPacks.includes("agentic") },
+    ],
+  });
+}
+
+async function resolveWorkspaceParitySummary(bundleId = "agent-environment-setup") {
+  try {
+    const manifest = await readBundleManifest(bundleId);
+    return manifest?.parity?.summary?.blockingSummary || {};
+  } catch {
+    return {};
+  }
+}
+
+function collectInstalledAssetsFromResults(results, existingAssets = {}) {
+  const installedAssets = { ...existingAssets };
+  for (const result of results || []) {
+    if (!result || !result.installResult) continue;
+    const platformKey = String(result.platform || "").trim();
+    if (!platformKey) continue;
+    installedAssets[platformKey] = {
+      workflows: result.installResult.artifacts?.workflows || [],
+      agents: result.installResult.artifacts?.agents || [],
+      skills: result.installResult.artifacts?.skills || [],
+      commands: result.installResult.artifacts?.commands || [],
+      prompts: result.installResult.artifacts?.prompts || [],
+      hooks: result.installResult.artifacts?.hooks || [],
+      ruleFile: result.syncResult?.filePath || null,
+      updatedAt: new Date().toISOString(),
+    };
+  }
+  return installedAssets;
+}
+
+async function refreshWorkspaceControlPlane({
+  cwd,
+  profile,
+  stackOverride = null,
+  authoringAi,
+  platforms,
+  capabilityPacks = [],
+  selectedMcps = [],
+  hookProfile = DEFAULT_HOOK_PROFILE,
+  learningMode = DEFAULT_LEARNING_MODE,
+  bundleId = "agent-environment-setup",
+  installResults = [],
+  generatedDocs = [],
+  dryRun = false,
+}) {
+  const existingManifest = await readWorkspaceManifest(cwd);
+  const stackDetection = await detectWorkspaceStack(cwd, stackOverride);
+  const parityStates = await resolveWorkspaceParitySummary(bundleId);
+  const installedAssets = collectInstalledAssetsFromResults(
+    installResults,
+    existingManifest.installedAssets || {},
+  );
+  const docState = await collectFoundationDocState(cwd);
+  const manifest = await buildWorkspaceManifest({
+    cwd,
+    profile: normalizeWorkspaceProfile(profile),
+    stackDetection,
+    authoringAi: normalizeAuthoringAi(authoringAi),
+    platforms,
+    packs: [stackDetection.stack, ...capabilityPacks],
+    mcpServers: selectedMcps,
+    hookProfile: normalizeHookProfile(hookProfile),
+    learningMode,
+    parityStates,
+    installedAssets,
+    generatedDocs:
+      generatedDocs.length > 0 ? generatedDocs : docState.docs,
+  });
+  manifest.foundryVersion = CLI_VERSION;
+
+  await ensureWorkspaceRuntimeDirs(cwd, { dryRun });
+  await writeWorkspaceManifest(cwd, manifest, { dryRun });
+  await writeWorkspaceSummary(cwd, manifest, { dryRun });
+  return manifest;
+}
+
+async function printWorkspaceStateSummary(cwd) {
+  const manifest = await readWorkspaceManifest(cwd);
+  if (!manifest || Object.keys(manifest).length === 0) return;
+  console.log("\nWorkspace control plane:");
+  console.log(`- Manifest: ${WORKSPACE_MANIFEST_FILE}`);
+  console.log(`- Summary: ${WORKSPACE_SUMMARY_FILE}`);
+  console.log(`- Profile: ${manifest.profile || "unknown"}`);
+  console.log(`- Stack: ${manifest.detectedStack || "unknown"}`);
+  console.log(
+    `- Platforms: ${Array.isArray(manifest.installedPlatforms) ? manifest.installedPlatforms.join(", ") : "(none)"}`,
+  );
+  console.log(`- Authoring AI: ${manifest.selectedAuthoringAI || "unset"}`);
+  console.log(`- Hook profile: ${manifest.hookProfile || DEFAULT_HOOK_PROFILE}`);
+  console.log(`- Learning mode: ${manifest.learningMode || DEFAULT_LEARNING_MODE}`);
+}
+
+function resolveSkillProfileFromWorkspaceProfile(profile) {
+  switch (normalizeWorkspaceProfile(profile)) {
+    case "core":
+      return "core";
+    case "full":
+      return "full";
+    case "mobile-qa":
+      return "mobile-qa";
+    case "research":
+      return "core";
+    case "developer":
+    case "security":
+    default:
+      return "web-backend";
+  }
+}
+
 function normalizeInitPlatforms(value) {
   const items = Array.isArray(value) ? value : parseCsvOption(value);
   const normalized = [];
@@ -13876,7 +14182,13 @@ function normalizeInitPlatforms(value) {
 }
 
 function normalizeInitMcpSelections(value) {
-  const allowed = new Set(["cubis-foundry", "postman", "stitch", "playwright"]);
+  const allowed = new Set([
+    "cubis-foundry",
+    "postman",
+    "stitch",
+    "playwright",
+    "android",
+  ]);
   const items = Array.isArray(value) ? value : parseCsvOption(value);
   const normalized = [];
   for (const item of items) {
@@ -13933,8 +14245,21 @@ async function runInitWizard(options) {
         ? "agent-environment-setup"
         : bundleIds[0];
 
+    const detectedStack = await detectWorkspaceStack(cwd, options.stack);
+    const detectedPlatforms = await detectRecommendedPlatforms(cwd);
+    const defaultProfile = normalizeWorkspaceProfile(options.profile);
+    const defaultCapabilityPacks = normalizeCapabilityPacks(
+      options.capabilityPacks,
+    );
+    const defaultAuthoringAi = normalizeAuthoringAi(options.authoringAi);
+    const skipContext = Boolean(options.skipContext);
+
+    const inferredSkillProfile =
+      detectedStack.stack === "mobile"
+        ? "mobile-qa"
+        : resolveSkillProfileFromWorkspaceProfile(defaultProfile);
     const defaultSkillProfile = normalizeSkillProfile(
-      options.skillProfile,
+      options.skillProfile || inferredSkillProfile,
       DEFAULT_SKILL_PROFILE,
     );
     const requestedSkillsScope = coerceWorkspaceOnlyInstallScope(
@@ -13952,6 +14277,12 @@ async function runInitWizard(options) {
         ? normalizePostmanWorkspaceId(options.postmanWorkspaceId)
         : null;
     const defaultMcpSelections = normalizeInitMcpSelections(options.mcps);
+    if (
+      defaultMcpSelections.length === 0 &&
+      detectedStack.stack === "mobile"
+    ) {
+      defaultMcpSelections.push("android");
+    }
     const defaultPlatforms = normalizeInitPlatforms(options.platforms);
     const defaultMcpRuntime = normalizeMcpRuntime(
       options.mcpRuntime,
@@ -13964,25 +14295,46 @@ async function runInitWizard(options) {
     const defaultMcpBuildLocal = Boolean(options.mcpBuildLocal);
 
     const selections = {
+      stack: isInteractive
+        ? await select({
+            message: "Select workspace stack:",
+            default: detectedStack.stack,
+            choices: STACK_IDS.map((stackId) => ({
+              name: stackId,
+              value: stackId,
+            })),
+          })
+        : detectedStack.stack,
       bundleId: isInteractive
         ? await promptInitBundle({ bundleIds, defaultBundle })
         : defaultBundle,
       platforms: isInteractive
         ? await promptInitPlatforms({
             defaultPlatforms:
-              defaultPlatforms.length > 0 ? defaultPlatforms : ["codex"],
+              defaultPlatforms.length > 0 ? defaultPlatforms : detectedPlatforms,
           })
         : defaultPlatforms.length > 0
           ? defaultPlatforms
-          : ["codex"],
+          : detectedPlatforms,
+      profile: isInteractive
+        ? await promptInitWorkspaceProfile(defaultProfile)
+        : defaultProfile,
       skillProfile: isInteractive
         ? await promptInitSkillProfile(defaultSkillProfile)
         : defaultSkillProfile,
+      authoringAi: isInteractive
+        ? await promptInitAuthoringAi(defaultAuthoringAi)
+        : defaultAuthoringAi,
+      capabilityPacks: isInteractive
+        ? await promptInitCapabilityPacks(defaultCapabilityPacks)
+        : defaultCapabilityPacks,
       selectedMcps: isInteractive
         ? await promptInitMcpSelection(defaultMcpSelections)
         : defaultMcpSelections.length > 0
           ? defaultMcpSelections
-          : ["cubis-foundry"],
+          : detectedStack.stack === "mobile"
+            ? ["android"]
+            : ["cubis-foundry"],
       skillsScope: defaultSkillsScope,
       mcpScope: defaultMcpScope,
       mcpRuntime: defaultMcpRuntime,
@@ -13994,6 +14346,8 @@ async function runInitWizard(options) {
       postmanWorkspaceId: defaultPostmanWorkspaceId,
       postmanApiKey: null,
       stitchApiKey: null,
+      skipContext,
+      template: String(options.template || "").trim() || null,
     };
     const initWarnings = [
       requestedSkillsScope.warning,
@@ -14005,7 +14359,8 @@ async function runInitWizard(options) {
     }
 
     const runtimeSelectableMcp = selections.selectedMcps.some(
-      (item) => item !== "playwright",
+      (item) =>
+        item === "cubis-foundry" || item === "postman" || item === "stitch",
     );
 
     if (runtimeSelectableMcp && isInteractive) {
@@ -14067,7 +14422,16 @@ async function runInitWizard(options) {
       target: options.target,
     });
 
-    const initSummary = formatInitSummary(selections);
+    const initSummary = [
+      formatInitSummary(selections),
+      "",
+      `Workspace profile: ${selections.profile}`,
+      `Detected stack: ${selections.stack} (${detectedStack.confidence})`,
+      `Stack evidence: ${detectedStack.evidence.join(", ") || "(none)"}`,
+      `Authoring AI: ${selections.authoringAi}`,
+      `Capability packs: ${selections.capabilityPacks.join(", ") || "(none)"}`,
+      `Context generation: ${selections.skipContext ? "skip" : "generate"}`,
+    ].join("\n");
     if (initWarnings.length > 0) {
       console.log("\nInit warnings:");
       for (const warning of initWarnings) {
@@ -14125,6 +14489,8 @@ async function runInitWizard(options) {
           platform: item.platform,
           status: "success",
           warnings: item.warnings,
+          installResult: installOutcome.installResult,
+          syncResult: installOutcome.syncResult,
         });
       } catch (error) {
         const failure = {
@@ -14141,6 +14507,28 @@ async function runInitWizard(options) {
           console.log(JSON.stringify({ dryRun, results }, null, 2));
         }
         process.exit(1);
+      }
+    }
+
+    let contextResult = null;
+    if (!selections.skipContext) {
+      contextResult = await executeContextGeneration({
+        platform: selections.authoringAi,
+        research: "auto",
+        overwrite,
+        dryRun,
+        quiet: true,
+        target: cwd,
+      });
+      if (!emitJson) {
+        console.log("\nContext generation:");
+        console.log(`- Platform: ${contextResult.platform}`);
+        console.log(`- Mode: ${contextResult.mode}`);
+        if (contextResult.mode === "generate") {
+          console.log(
+            `- Files written: ${(contextResult.result.filesWritten || []).join(", ") || "(none reported)"}`,
+          );
+        }
       }
     }
 
@@ -14172,6 +14560,27 @@ async function runInitWizard(options) {
       }
     }
 
+    const workspaceManifest = await refreshWorkspaceControlPlane({
+      cwd,
+      profile: selections.profile,
+      stackOverride: selections.stack,
+      authoringAi: selections.authoringAi,
+      platforms: selections.platforms,
+      capabilityPacks: selections.capabilityPacks,
+      selectedMcps: selections.selectedMcps,
+      hookProfile: DEFAULT_HOOK_PROFILE,
+      learningMode: DEFAULT_LEARNING_MODE,
+      bundleId: selections.bundleId,
+      installResults: results,
+      generatedDocs:
+        contextResult && contextResult.mode === "generate"
+          ? contextResult.result.filesWritten || []
+          : [],
+      dryRun,
+    });
+
+    await printWorkspaceStateSummary(cwd);
+
     if (emitJson) {
       const sanitizedSelections = {
         ...selections,
@@ -14185,6 +14594,7 @@ async function runInitWizard(options) {
             selections: sanitizedSelections,
             results,
             persistedCredentials,
+            workspaceManifest,
           },
           null,
           2,
@@ -14205,6 +14615,1056 @@ async function runInitWizard(options) {
     console.error(`\nError: ${error.message}`);
     process.exit(1);
   }
+}
+
+function uniqueStrings(values) {
+  return [...new Set((values || []).filter(Boolean))];
+}
+
+function normalizePlatformList(values) {
+  return uniqueStrings(
+    (values || [])
+      .map((value) => normalizePlatform(value))
+      .filter((value) => value && WORKFLOW_PROFILES[value]),
+  );
+}
+
+function actionRepresentsChange(action) {
+  const normalized = String(action || "")
+    .trim()
+    .toLowerCase();
+  if (!normalized) return false;
+  return ![
+    "unchanged",
+    "exists",
+    "none",
+    "skipped",
+    "would-skip",
+    "missing-rule-file",
+  ].includes(normalized);
+}
+
+async function resolveWorkspaceControlState(cwd, overrides = {}) {
+  const existingManifest = await readWorkspaceManifest(cwd);
+  const detectedPlatforms = await detectRecommendedPlatforms(cwd);
+  const requestedPlatforms = normalizePlatformList(
+    Array.isArray(overrides.platforms)
+      ? overrides.platforms
+      : [overrides.platform].filter(Boolean),
+  );
+  const manifestPlatforms = normalizePlatformList(
+    existingManifest.installedPlatforms || [],
+  );
+  const platforms =
+    requestedPlatforms.length > 0
+      ? requestedPlatforms
+      : manifestPlatforms.length > 0
+        ? manifestPlatforms
+        : detectedPlatforms;
+
+  return {
+    existingManifest,
+    profile: normalizeWorkspaceProfile(
+      overrides.profile ?? existingManifest.profile,
+    ),
+    authoringAi: normalizeAuthoringAi(
+      overrides.authoringAi ?? existingManifest.selectedAuthoringAI,
+    ),
+    platforms,
+    capabilityPacks: normalizeCapabilityPacks(
+      overrides.capabilityPacks ?? existingManifest.installedPacks ?? [],
+    ),
+    selectedMcps: uniqueStrings(
+      Array.isArray(overrides.selectedMcps)
+        ? overrides.selectedMcps
+        : existingManifest.mcpServers || [],
+    ),
+    hookProfile: normalizeHookProfile(
+      overrides.hookProfile ?? existingManifest.hookProfile,
+    ),
+    learningMode:
+      String(
+        overrides.learningMode ||
+          existingManifest.learningMode ||
+          DEFAULT_LEARNING_MODE,
+      ).trim() || DEFAULT_LEARNING_MODE,
+    stackOverride: overrides.stackOverride ?? existingManifest.detectedStack,
+  };
+}
+
+function buildRequiredContextDocs(manifest = {}) {
+  const required = [
+    path.join(FOUNDATION_DOCS_DIR, "ARCHITECTURE.md"),
+    path.join(FOUNDATION_DOCS_DIR, "TECH.md"),
+    path.join(FOUNDATION_DOCS_DIR, "MEMORY.md"),
+    path.join(FOUNDATION_DOCS_DIR, "PRODUCT.md"),
+    WORKSPACE_SUMMARY_FILE,
+  ].map((item) => toPosixPath(item));
+  const authoringAi = normalizeAuthoringAi(manifest.selectedAuthoringAI);
+  if (authoringAi === "claude") {
+    required.push("CLAUDE.md");
+  } else if (authoringAi === "gemini") {
+    required.push("GEMINI.md");
+  } else {
+    required.push("AGENTS.md");
+  }
+  return uniqueStrings(required);
+}
+
+async function buildContextFreshnessReport(cwd) {
+  const workspaceRoot = findWorkspaceRoot(cwd);
+  const manifest = await readWorkspaceManifest(cwd);
+  const docState = await collectFoundationDocState(cwd);
+  const requiredDocs = buildRequiredContextDocs(manifest);
+  const presentSet = new Set(docState.docs);
+  const missingDocs = requiredDocs.filter((doc) => !presentSet.has(doc));
+  const docHashChanged = Boolean(manifest.docHash && manifest.docHash !== docState.hash);
+
+  let architectureDrift = null;
+  const memoryDocPath = path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "MEMORY.md");
+  if (await pathExists(memoryDocPath)) {
+    const snapshot = await collectTechSnapshot(workspaceRoot);
+    architectureDrift = await readArchitectureDriftStatus(workspaceRoot, snapshot);
+  }
+
+  return {
+    workspaceRoot: toPosixPath(workspaceRoot),
+    manifestExists: Object.keys(manifest || {}).length > 0,
+    manifest,
+    docsPresent: docState.docs,
+    currentDocHash: docState.hash,
+    manifestDocHash: manifest.docHash || null,
+    requiredDocs,
+    missingDocs,
+    docHashChanged,
+    architectureDrift,
+    stale:
+      missingDocs.length > 0 ||
+      docHashChanged ||
+      Boolean(architectureDrift?.stale),
+  };
+}
+
+async function executeWorkspaceSync(platformArg, rawOptions = {}) {
+  const opts = resolveActionOptions(rawOptions);
+  const dryRun = Boolean(opts.dryRun);
+  const checkOnly = Boolean(opts.check);
+  const overwrite =
+    opts.overwrite === undefined ? true : Boolean(opts.overwrite);
+  const cwd = opts.target ? path.resolve(opts.target) : process.cwd();
+  await loadManagedCredentialsEnv();
+
+  const requestedPlatform = normalizePlatform(platformArg || opts.platform);
+  if (requestedPlatform && !WORKFLOW_PROFILES[requestedPlatform]) {
+    throw new Error(
+      `Unknown platform '${platformArg || opts.platform}'. Use codex|antigravity|copilot|claude|gemini.`,
+    );
+  }
+
+  const state = await resolveWorkspaceControlState(cwd);
+  const touchedPlatforms = requestedPlatform ? [requestedPlatform] : state.platforms;
+  if (touchedPlatforms.length === 0) {
+    throw new Error("No installed platforms detected for workspace sync.");
+  }
+
+  const results = [];
+  for (const platform of touchedPlatforms) {
+    const installOutcome = await performWorkflowInstall({
+      platform,
+      scope: "project",
+      bundle: opts.bundle || "agent-environment-setup",
+      overwrite,
+      dryRun: dryRun || checkOnly,
+      yes: true,
+      target: cwd,
+      skillProfile: resolveSkillProfileFromWorkspaceProfile(state.profile),
+      initWizardMode: true,
+    });
+    const installChanges = installOutcome.installResult.installed.length;
+    const ruleAction = installOutcome.syncResult?.action || "unknown";
+    const platformDrift =
+      installChanges > 0 || actionRepresentsChange(ruleAction);
+    results.push({
+      platform,
+      installOutcome,
+      installChanges,
+      ruleAction,
+      platformDrift,
+    });
+  }
+
+  const contextReport = await buildContextFreshnessReport(cwd);
+  const hasDrift =
+    results.some((item) => item.platformDrift) || contextReport.stale;
+
+  let workspaceManifest = null;
+  if (!dryRun && !checkOnly) {
+    workspaceManifest = await refreshWorkspaceControlPlane({
+      cwd,
+      profile: state.profile,
+      stackOverride: state.stackOverride,
+      authoringAi: state.authoringAi,
+      platforms: state.platforms,
+      capabilityPacks: state.capabilityPacks,
+      selectedMcps: state.selectedMcps,
+      hookProfile: state.hookProfile,
+      learningMode: state.learningMode,
+      bundleId: opts.bundle || "agent-environment-setup",
+      installResults: results.map((item) => ({
+        platform: item.platform,
+        installResult: item.installOutcome.installResult,
+        syncResult: item.installOutcome.syncResult,
+      })),
+      generatedDocs: contextReport.docsPresent,
+      dryRun,
+    });
+  }
+
+  return {
+    cwd,
+    mode: checkOnly ? "check" : dryRun ? "dry-run" : "apply",
+    touchedPlatforms,
+    workspacePlatforms: state.platforms,
+    results,
+    contextReport,
+    hasDrift,
+    workspaceManifest,
+  };
+}
+
+function printWorkspaceSyncSummary(summary, { label = "Sync" } = {}) {
+  console.log(`${label} root: ${summary.cwd}`);
+  console.log(`Platforms: ${summary.touchedPlatforms.join(", ")}`);
+  for (const item of summary.results) {
+    console.log(
+      `- ${item.platform}: ${item.installChanges} managed path(s) ${summary.mode === "apply" ? "updated" : "would change"}, rules=${item.ruleAction}`,
+    );
+  }
+  console.log(
+    `Context docs: ${summary.contextReport.stale ? "stale" : "fresh"}`,
+  );
+  if (summary.contextReport.missingDocs.length > 0) {
+    console.log(
+      `- Missing docs: ${summary.contextReport.missingDocs.join(", ")}`,
+    );
+  }
+  if (summary.contextReport.docHashChanged) {
+    console.log("- Context doc hash drift detected.");
+  }
+  if (summary.contextReport.architectureDrift?.findings?.length > 0) {
+    console.log("- Architecture drift findings:");
+    for (const finding of summary.contextReport.architectureDrift.findings) {
+      console.log(`  - ${finding}`);
+    }
+  }
+}
+
+async function runWorkspaceAdd(platformArg, options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const platform = normalizePlatform(platformArg);
+    if (!platform || !WORKFLOW_PROFILES[platform]) {
+      throw new Error(
+        `Unknown platform '${platformArg}'. Use codex|antigravity|copilot|claude|gemini.`,
+      );
+    }
+    const cwd = opts.target ? path.resolve(opts.target) : process.cwd();
+    const dryRun = Boolean(opts.dryRun);
+    const state = await resolveWorkspaceControlState(cwd, {
+      platforms: uniqueStrings([
+        ...((await readWorkspaceManifest(cwd)).installedPlatforms || []),
+        platform,
+      ]),
+    });
+    const result = await performWorkflowInstall({
+      platform,
+      scope: "project",
+      bundle: opts.bundle || "agent-environment-setup",
+      overwrite: Boolean(opts.overwrite),
+      dryRun,
+      yes: Boolean(opts.yes),
+      target: cwd,
+      skillProfile: resolveSkillProfileFromWorkspaceProfile(state.profile),
+      initWizardMode: true,
+    });
+    if (result.cancelled) {
+      console.log("Cancelled.");
+      process.exit(0);
+    }
+
+    printInstallSummary({
+      platform: result.platform,
+      scope: result.scope,
+      bundleId: result.bundleId,
+      installed: result.installResult.installed,
+      skipped: result.installResult.skipped,
+      duplicateSkillCleanup: result.installResult.duplicateSkillCleanup,
+      sanitizedSkills: result.installResult.sanitizedSkills,
+      sanitizedAgents: result.installResult.sanitizedAgents,
+      terminalIntegration: result.installResult.terminalIntegration,
+      terminalIntegrationRules: result.terminalVerificationRuleResult,
+      warnings: result.warnings,
+      dryRun: result.dryRun,
+    });
+    printRuleSyncResult(result.syncResult);
+
+    const workspaceManifest = await refreshWorkspaceControlPlane({
+      cwd,
+      profile: state.profile,
+      stackOverride: state.stackOverride,
+      authoringAi: state.authoringAi,
+      platforms: uniqueStrings([...state.platforms, platform]),
+      capabilityPacks: state.capabilityPacks,
+      selectedMcps: state.selectedMcps,
+      hookProfile: state.hookProfile,
+      learningMode: state.learningMode,
+      bundleId: opts.bundle || "agent-environment-setup",
+      installResults: [
+        {
+          platform,
+          installResult: result.installResult,
+          syncResult: result.syncResult,
+        },
+      ],
+      generatedDocs: [],
+      dryRun,
+    });
+
+    if (!dryRun) {
+      await printWorkspaceStateSummary(cwd);
+    }
+    if (opts.json) {
+      console.log(
+        JSON.stringify(
+          {
+            platform,
+            dryRun,
+            workspaceManifest,
+          },
+          null,
+          2,
+        ),
+      );
+    }
+  } catch (error) {
+    if (error?.name === "ExitPromptError") {
+      console.error("\nCancelled.");
+      process.exit(130);
+    }
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+async function runWorkspaceSync(platformArg, options) {
+  try {
+    const summary = await executeWorkspaceSync(platformArg, options);
+    const opts = resolveActionOptions(options);
+    if (opts.json) {
+      console.log(JSON.stringify(summary, null, 2));
+    } else {
+      printWorkspaceSyncSummary(summary);
+      if (summary.mode === "apply") {
+        await printWorkspaceStateSummary(summary.cwd);
+      }
+    }
+    if (summary.mode === "check" && summary.hasDrift) {
+      process.exit(1);
+    }
+  } catch (error) {
+    if (error?.name === "ExitPromptError") {
+      console.error("\nCancelled.");
+      process.exit(130);
+    }
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+async function runContextGenerate(options) {
+  try {
+    const opts = resolveActionOptions(options);
+    if (opts.watch) {
+      console.log(
+        "Watch mode is reserved for a follow-up pass. Running a one-shot generation now.",
+      );
+    }
+    const outcome = await executeContextGeneration(opts);
+    const cwd = opts.target ? path.resolve(opts.target) : process.cwd();
+    const state = await resolveWorkspaceControlState(cwd, {
+      authoringAi: opts.platform,
+    });
+
+    let workspaceManifest = null;
+    if (!opts.dryRun && outcome.mode === "generate") {
+      workspaceManifest = await refreshWorkspaceControlPlane({
+        cwd,
+        profile: state.profile,
+        stackOverride: state.stackOverride,
+        authoringAi: outcome.platform,
+        platforms: state.platforms,
+        capabilityPacks: state.capabilityPacks,
+        selectedMcps: state.selectedMcps,
+        hookProfile: state.hookProfile,
+        learningMode: state.learningMode,
+        bundleId: "agent-environment-setup",
+        installResults: [],
+        generatedDocs: outcome.result.filesWritten || [],
+        dryRun: false,
+      });
+    }
+
+    if (opts.json) {
+      console.log(JSON.stringify({ outcome, workspaceManifest }, null, 2));
+      return;
+    }
+
+    if (outcome.mode === "dry-run") {
+      console.log(`Platform: ${outcome.platform}`);
+      console.log(`Workspace: ${outcome.workspaceRoot}`);
+      console.log(`Adapter: ${outcome.adapter}`);
+      console.log(`Managed targets: ${outcome.managedTargets.join(", ")}`);
+      console.log(`Skill bundle: ${outcome.skillBundle.join(", ")}`);
+      console.log(`Invocation: ${outcome.invocation.join(" ")}`);
+      return;
+    }
+
+    console.log(`Platform: ${outcome.platform}`);
+    console.log(`Workspace: ${outcome.workspaceRoot}`);
+    console.log(`Adapter: ${outcome.adapter}`);
+    console.log(
+      `Files written: ${(outcome.result.filesWritten || []).join(", ") || "(none reported)"}`,
+    );
+    if (outcome.result.gaps.length > 0) {
+      console.log(`Gaps: ${outcome.result.gaps.join("; ")}`);
+    }
+    if (outcome.result.nextActions.length > 0) {
+      console.log(`Next actions: ${outcome.result.nextActions.join("; ")}`);
+    }
+    if (workspaceManifest) {
+      await printWorkspaceStateSummary(cwd);
+    }
+  } catch (error) {
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+async function runContextDiff(options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const cwd = opts.target ? path.resolve(opts.target) : process.cwd();
+    const report = await buildContextFreshnessReport(cwd);
+    if (opts.json) {
+      console.log(JSON.stringify(report, null, 2));
+      return;
+    }
+    console.log(`Workspace: ${report.workspaceRoot}`);
+    console.log(`Manifest: ${report.manifestExists ? "present" : "missing"}`);
+    console.log(`Status: ${report.stale ? "stale" : "fresh"}`);
+    console.log(
+      `Required docs: ${report.requiredDocs.length > 0 ? report.requiredDocs.join(", ") : "(none)"}`,
+    );
+    console.log(
+      `Docs present: ${report.docsPresent.length > 0 ? report.docsPresent.join(", ") : "(none)"}`,
+    );
+    if (report.missingDocs.length > 0) {
+      console.log(`Missing docs: ${report.missingDocs.join(", ")}`);
+    }
+    if (report.docHashChanged) {
+      console.log("Doc hash drift: manifest hash differs from current docs.");
+    }
+    if (report.architectureDrift?.findings?.length > 0) {
+      console.log("Architecture drift findings:");
+      for (const finding of report.architectureDrift.findings) {
+        console.log(`- ${finding}`);
+      }
+    }
+  } catch (error) {
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+async function runContextValidate(options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const cwd = opts.target ? path.resolve(opts.target) : process.cwd();
+    const report = await buildContextFreshnessReport(cwd);
+    if (opts.json) {
+      console.log(JSON.stringify(report, null, 2));
+    } else {
+      console.log(`Workspace: ${report.workspaceRoot}`);
+      console.log(`Status: ${report.stale ? "invalid" : "valid"}`);
+      if (report.missingDocs.length > 0) {
+        console.log(`Missing docs: ${report.missingDocs.join(", ")}`);
+      }
+      if (report.docHashChanged) {
+        console.log("Doc hash drift detected.");
+      }
+      if (report.architectureDrift?.findings?.length > 0) {
+        console.log("Architecture drift findings:");
+        for (const finding of report.architectureDrift.findings) {
+          console.log(`- ${finding}`);
+        }
+      }
+    }
+    if (report.stale) process.exit(1);
+  } catch (error) {
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+async function runHarnessAudit(options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const cwd = opts.target ? path.resolve(opts.target) : process.cwd();
+    await ensureWorkspaceRuntimeDirs(cwd);
+    const report = await runWorkspaceHarnessAudit({
+      cwd,
+      scope: String(opts.scope || "repo"),
+    });
+    const auditRoot = path.join(cwd, AUDIT_RUNTIME_DIR);
+    await mkdir(auditRoot, { recursive: true });
+    await writeFile(
+      path.join(auditRoot, "latest.json"),
+      `${JSON.stringify(report, null, 2)}\n`,
+      "utf8",
+    );
+    if (String(opts.format || "text").toLowerCase() === "json") {
+      console.log(JSON.stringify(report, null, 2));
+    } else {
+      console.log(`Scope: ${report.scope}`);
+      console.log(`Overall: ${report.overall}`);
+      console.log(`Findings: ${report.findings.length}`);
+      for (const finding of report.findings) {
+        console.log(
+          `- [${finding.severity}] ${finding.title} (${finding.file})`,
+        );
+        console.log(`  ${finding.detail}`);
+      }
+      console.log(`Audit report: ${path.join(auditRoot, "latest.json")}`);
+    }
+    if (report.overall === "fail") process.exit(1);
+  } catch (error) {
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+function buildLoopRunId() {
+  return `loop-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+async function resolveLoopRunDir(cwd, id) {
+  return path.join(cwd, LOOP_RUNTIME_DIR, id);
+}
+
+async function readLoopStatusFile(statusPath) {
+  const status = await readJsonFileIfExists(statusPath);
+  return status.exists ? status.value : null;
+}
+
+async function runLoopStart(options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const cwd = opts.target ? path.resolve(opts.target) : process.cwd();
+    const maxIterations = Number.parseInt(String(opts.maxIterations || "20"), 10);
+    if (!Number.isInteger(maxIterations) || maxIterations < 1 || maxIterations > 100) {
+      throw new Error("--max-iterations must be an integer between 1 and 100.");
+    }
+    const state = await resolveWorkspaceControlState(cwd, {
+      authoringAi: opts.platform,
+    });
+    const platform =
+      normalizePlatform(opts.platform) ||
+      state.authoringAi ||
+      state.platforms[0] ||
+      "codex";
+    const id = buildLoopRunId();
+    const loopDir = await resolveLoopRunDir(cwd, id);
+    const taskPath = path.join(loopDir, "task.md");
+    const handoffPath = path.join(loopDir, "handoff.md");
+    const statusPath = path.join(loopDir, "status.json");
+    const resultPath = path.join(loopDir, "result.json");
+    const now = new Date().toISOString();
+    const statusPayload = {
+      id,
+      status: "active",
+      platform,
+      task: String(opts.task),
+      completionCriteria: String(opts.completionCriteria),
+      validateCommand: opts.validateCommand || null,
+      maxIterations,
+      currentIteration: 0,
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    if (!opts.dryRun) {
+      await mkdir(loopDir, { recursive: true });
+      await writeFile(
+        taskPath,
+        [
+          `# ${id}`,
+          "",
+          `- Platform: ${platform}`,
+          `- Max iterations: ${maxIterations}`,
+          `- Created: ${now}`,
+          "",
+          "## Task",
+          String(opts.task),
+          "",
+          "## Completion Criteria",
+          String(opts.completionCriteria),
+          "",
+          "## Validation Command",
+          opts.validateCommand || "(none)",
+          "",
+        ].join("\n"),
+        "utf8",
+      );
+      await writeFile(
+        handoffPath,
+        "# Handoff\n\nUse this file to capture iteration checkpoints and delegation notes.\n",
+        "utf8",
+      );
+      await writeFile(statusPath, `${JSON.stringify(statusPayload, null, 2)}\n`, "utf8");
+      await writeFile(
+        resultPath,
+        `${JSON.stringify({ id, status: "pending", createdAt: now }, null, 2)}\n`,
+        "utf8",
+      );
+    }
+
+    console.log(`Loop run: ${id}`);
+    console.log(`Platform: ${platform}`);
+    console.log(`Task: ${opts.task}`);
+    console.log(`Completion criteria: ${opts.completionCriteria}`);
+    console.log(`Max iterations: ${maxIterations}`);
+    console.log(`Runtime dir: ${loopDir}`);
+  } catch (error) {
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+async function runLoopStatus(options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const cwd = opts.target ? path.resolve(opts.target) : process.cwd();
+    const loopRoot = path.join(cwd, LOOP_RUNTIME_DIR);
+    if (!(await pathExists(loopRoot))) {
+      const empty = { loops: [] };
+      if (opts.json) {
+        console.log(JSON.stringify(empty, null, 2));
+      } else {
+        console.log("No loop runs found.");
+      }
+      return;
+    }
+    const entries = await readdir(loopRoot, { withFileTypes: true });
+    const loops = [];
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue;
+      if (opts.id && entry.name !== String(opts.id)) continue;
+      const status = await readLoopStatusFile(
+        path.join(loopRoot, entry.name, "status.json"),
+      );
+      if (status) loops.push(status);
+    }
+    if (opts.json) {
+      console.log(JSON.stringify({ loops }, null, 2));
+      return;
+    }
+    if (loops.length === 0) {
+      console.log("No matching loop runs found.");
+      return;
+    }
+    for (const loop of loops) {
+      console.log(`${loop.id}: ${loop.status}`);
+      console.log(`- Platform: ${loop.platform}`);
+      console.log(`- Iterations: ${loop.currentIteration}/${loop.maxIterations}`);
+      console.log(`- Updated: ${loop.updatedAt || loop.createdAt}`);
+      console.log(`- Task: ${loop.task}`);
+    }
+  } catch (error) {
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+async function runLoopStop(options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const cwd = opts.target ? path.resolve(opts.target) : process.cwd();
+    const loopDir = await resolveLoopRunDir(cwd, String(opts.id));
+    const statusPath = path.join(loopDir, "status.json");
+    const resultPath = path.join(loopDir, "result.json");
+    const current = await readLoopStatusFile(statusPath);
+    if (!current) {
+      throw new Error(`Loop run '${opts.id}' was not found.`);
+    }
+    const now = new Date().toISOString();
+    const next = {
+      ...current,
+      status: "stopped",
+      stopReason: String(opts.reason || "stopped by operator"),
+      stoppedAt: now,
+      updatedAt: now,
+    };
+    await writeFile(statusPath, `${JSON.stringify(next, null, 2)}\n`, "utf8");
+    await writeFile(
+      resultPath,
+      `${JSON.stringify(
+        {
+          id: current.id,
+          status: "stopped",
+          reason: next.stopReason,
+          stoppedAt: now,
+        },
+        null,
+        2,
+      )}\n`,
+      "utf8",
+    );
+    console.log(`Stopped loop run '${current.id}'.`);
+  } catch (error) {
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+async function listMemoryCandidates(cwd) {
+  const inboxRoot = path.join(cwd, MEMORY_INBOX_DIR);
+  if (!(await pathExists(inboxRoot))) return [];
+  const entries = await readdir(inboxRoot, { withFileTypes: true });
+  const candidates = [];
+  for (const entry of entries) {
+    if (!entry.isFile()) continue;
+    const filePath = path.join(inboxRoot, entry.name);
+    const raw = await readFile(filePath, "utf8");
+    let parsed = null;
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      parsed = null;
+    }
+    const stats = await stat(filePath);
+    candidates.push({
+      id: entry.name,
+      filePath,
+      title: parsed?.title || parsed?.summary || entry.name,
+      source: parsed?.source || parsed?.provenance || "unknown",
+      confidence: parsed?.confidence ?? null,
+      trustLevel: parsed?.trustLevel || parsed?.trust || null,
+      content:
+        parsed?.content ||
+        parsed?.summary ||
+        raw.trim().slice(0, 500),
+      updatedAt: stats.mtime.toISOString(),
+    });
+  }
+  return candidates.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+}
+
+async function resolveMemoryCandidate(cwd, id) {
+  const candidates = await listMemoryCandidates(cwd);
+  const exact = candidates.find((candidate) => candidate.id === id);
+  if (exact) return exact;
+  const byStem = candidates.filter((candidate) =>
+    candidate.id.replace(/\.[^.]+$/, "") === id,
+  );
+  if (byStem.length === 1) return byStem[0];
+  if (byStem.length > 1) {
+    throw new Error(`Multiple memory candidates match '${id}'. Use the full file name.`);
+  }
+  return null;
+}
+
+async function moveMemoryCandidateFile(candidate, destinationDir) {
+  await mkdir(destinationDir, { recursive: true });
+  const destinationPath = path.join(destinationDir, path.basename(candidate.filePath));
+  if (await pathExists(destinationPath)) {
+    await rm(destinationPath, { recursive: true, force: true });
+  }
+  await rename(candidate.filePath, destinationPath);
+  return destinationPath;
+}
+
+async function runMemoryReview(options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const cwd = process.cwd();
+    const candidates = await listMemoryCandidates(cwd);
+    if (opts.json) {
+      console.log(JSON.stringify({ candidates }, null, 2));
+      return;
+    }
+    if (candidates.length === 0) {
+      console.log("No staged memory candidates.");
+      return;
+    }
+    console.log(`Staged memory candidates: ${candidates.length}`);
+    for (const candidate of candidates) {
+      console.log(`- ${candidate.id}: ${candidate.title}`);
+      console.log(
+        `  source=${candidate.source} confidence=${candidate.confidence ?? "n/a"} trust=${candidate.trustLevel || "n/a"} updated=${candidate.updatedAt}`,
+      );
+    }
+  } catch (error) {
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+async function runMemoryApply(options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const cwd = process.cwd();
+    const candidate = await resolveMemoryCandidate(cwd, String(opts.id));
+    if (!candidate) {
+      throw new Error(`Memory candidate '${opts.id}' was not found.`);
+    }
+    const target = String(opts.target || "memory").trim().toLowerCase();
+    const memoryPath = path.join(cwd, FOUNDATION_DOCS_DIR, "MEMORY.md");
+    const appliedRoot = path.join(cwd, MEMORY_APPLIED_DIR);
+    await mkdir(appliedRoot, { recursive: true });
+
+    if (target === "memory") {
+      const exists = await pathExists(memoryPath);
+      const heading = `## Learned ${new Date().toISOString()}\n`;
+      const block = [
+        heading,
+        `- Source: ${candidate.source}`,
+        `- Confidence: ${candidate.confidence ?? "n/a"}`,
+        `- Trust: ${candidate.trustLevel || "n/a"}`,
+        "",
+        String(candidate.content || "").trim(),
+        "",
+      ].join("\n");
+      const next = exists ? await readFile(memoryPath, "utf8") : "# Memory\n\n";
+      await mkdir(path.dirname(memoryPath), { recursive: true });
+      await writeFile(memoryPath, `${next.trimEnd()}\n\n${block}`, "utf8");
+    }
+
+    const appliedMetadataPath = path.join(
+      appliedRoot,
+      `${candidate.id.replace(/\.[^.]+$/, "")}.${target}.json`,
+    );
+    await writeFile(
+      appliedMetadataPath,
+      `${JSON.stringify(
+        {
+          id: candidate.id,
+          title: candidate.title,
+          source: candidate.source,
+          confidence: candidate.confidence,
+          trustLevel: candidate.trustLevel,
+          appliedTarget: target,
+          appliedAt: new Date().toISOString(),
+        },
+        null,
+        2,
+      )}\n`,
+      "utf8",
+    );
+    await moveMemoryCandidateFile(candidate, appliedRoot);
+    console.log(`Applied memory candidate '${candidate.id}' to ${target}.`);
+    if (target === "memory") {
+      const state = await resolveWorkspaceControlState(cwd);
+      await refreshWorkspaceControlPlane({
+        cwd,
+        profile: state.profile,
+        stackOverride: state.stackOverride,
+        authoringAi: state.authoringAi,
+        platforms: state.platforms,
+        capabilityPacks: state.capabilityPacks,
+        selectedMcps: state.selectedMcps,
+        hookProfile: state.hookProfile,
+        learningMode: state.learningMode,
+        bundleId: "agent-environment-setup",
+        installResults: [],
+        generatedDocs: [],
+      });
+    }
+  } catch (error) {
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+async function runMemoryPrune(options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const cwd = process.cwd();
+    const candidates = await listMemoryCandidates(cwd);
+    let toPrune = [];
+    if (opts.all) {
+      toPrune = candidates;
+    } else if (opts.id) {
+      const candidate = await resolveMemoryCandidate(cwd, String(opts.id));
+      if (!candidate) {
+        throw new Error(`Memory candidate '${opts.id}' was not found.`);
+      }
+      toPrune = [candidate];
+    } else {
+      const cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
+      toPrune = candidates.filter(
+        (candidate) => new Date(candidate.updatedAt).getTime() < cutoff,
+      );
+    }
+    if (toPrune.length === 0) {
+      console.log("No memory candidates selected for pruning.");
+      return;
+    }
+    const rejectedRoot = path.join(cwd, MEMORY_REJECTED_DIR);
+    for (const candidate of toPrune) {
+      await moveMemoryCandidateFile(candidate, rejectedRoot);
+    }
+    console.log(`Pruned ${toPrune.length} memory candidate(s).`);
+  } catch (error) {
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+async function runProfileSet(profileArg, options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const hookProfile = normalizeHookProfile(profileArg);
+    const cwd = opts.target ? path.resolve(opts.target) : process.cwd();
+    const state = await resolveWorkspaceControlState(cwd);
+    if (
+      hookProfile === "autonomous" &&
+      state.platforms.some((platform) => platform === "copilot")
+    ) {
+      throw new Error(
+        "Profile 'autonomous' is blocked while Copilot is installed because current Copilot hook parity is security-focused and does not yet provide full autonomous loop controls.",
+      );
+    }
+    const manifest = await refreshWorkspaceControlPlane({
+      cwd,
+      profile: state.profile,
+      stackOverride: state.stackOverride,
+      authoringAi: state.authoringAi,
+      platforms: state.platforms,
+      capabilityPacks: state.capabilityPacks,
+      selectedMcps: state.selectedMcps,
+      hookProfile,
+      learningMode: state.learningMode,
+      bundleId: "agent-environment-setup",
+      installResults: [],
+      generatedDocs: [],
+    });
+    console.log(`Hook profile set to '${hookProfile}'.`);
+    if (opts.json) {
+      console.log(JSON.stringify(manifest, null, 2));
+      return;
+    }
+    await printWorkspaceStateSummary(cwd);
+  } catch (error) {
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+async function runWorkspaceUpgrade(options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const summary = await executeWorkspaceSync(opts.platform, {
+      ...opts,
+      overwrite: true,
+    });
+    if (opts.json) {
+      console.log(JSON.stringify(summary, null, 2));
+      if (summary.mode === "check" && summary.hasDrift) process.exit(1);
+      return;
+    }
+    printWorkspaceSyncSummary(summary, { label: "Upgrade" });
+    if (opts.changelog) {
+      console.log("Managed changelog:");
+      for (const item of summary.results) {
+        const changed = item.installOutcome.installResult.installed;
+        console.log(
+          `- ${item.platform}: ${changed.length > 0 ? changed.join(", ") : "(no file deltas detected)"}`,
+        );
+      }
+    }
+    if (summary.mode === "apply") {
+      await printWorkspaceStateSummary(summary.cwd);
+    }
+    if (summary.mode === "check" && summary.hasDrift) {
+      process.exit(1);
+    }
+  } catch (error) {
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+async function runMcpStatus(options) {
+  await runMcpRuntimeStatus(options);
+}
+
+async function runMcpTest(toolArg, options) {
+  try {
+    const opts = resolveActionOptions(options);
+    const cwd = process.cwd();
+    const scope = normalizeMcpScope(opts.scope, "global");
+    const query = String(toolArg || "").trim().toLowerCase();
+    if (!query) {
+      throw new Error("Missing <tool> name.");
+    }
+    const matches = [];
+    for (const service of ["postman", "stitch"]) {
+      const catalogPath = resolveMcpCatalogPath({ service, scope, cwd });
+      const catalog = await readJsonFileIfExists(catalogPath);
+      if (!catalog.exists || !catalog.value) continue;
+      const tools = Array.isArray(catalog.value.tools) ? catalog.value.tools : [];
+      for (const tool of tools) {
+        const name = String(tool?.name || "").trim();
+        if (!name) continue;
+        const normalizedName = name.toLowerCase();
+        if (normalizedName === query || normalizedName.includes(query)) {
+          matches.push({
+            service,
+            catalogPath,
+            generatedAt: catalog.value.generatedAt || null,
+            tool,
+          });
+        }
+      }
+    }
+    if (matches.length === 0) {
+      throw new Error(
+        `Tool '${toolArg}' was not found in local MCP catalogs. Run 'cbx mcp tools sync --service all --scope ${scope}' first.`,
+      );
+    }
+    console.log(`Tool query: ${toolArg}`);
+    for (const match of matches) {
+      console.log(`- Service: ${match.service}`);
+      console.log(`  Catalog: ${match.catalogPath}`);
+      console.log(`  Name: ${match.tool.name}`);
+      console.log(
+        `  Description: ${match.tool.description || "(no description cached)"}`,
+      );
+      console.log(`  Generated: ${match.generatedAt || "(unknown)"}`);
+    }
+  } catch (error) {
+    console.error(`\nError: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+async function runMcpProxy(options) {
+  const opts = resolveActionOptions(options);
+  await runMcpServe({
+    ...opts,
+    transport: "http",
+    scope: opts.scope || "auto",
+  });
 }
 
 export function buildCliProgram() {
@@ -14233,6 +15693,23 @@ export function buildCliProgram() {
     runRulesInit,
     runRulesTechMd,
     runBuildArchitecture,
+    runWorkspaceAdd,
+    runWorkspaceSync,
+    runContextGenerate,
+    runContextDiff,
+    runContextValidate,
+    runHarnessAudit,
+    runLoopStart,
+    runLoopStatus,
+    runLoopStop,
+    runMemoryReview,
+    runMemoryApply,
+    runMemoryPrune,
+    runProfileSet,
+    runWorkspaceUpgrade,
+    runMcpStatus,
+    runMcpTest,
+    runMcpProxy,
   });
 }
 

@@ -86,6 +86,11 @@ Guide the design and implementation of production-grade Model Context Protocol (
 - "Add a resource provider that serves database schema documentation to connected agents."
 - "Test an MCP server's tool registration and error handling with a mock client."
 
+## Compatibility Aliases
+
+Anthropic upstream compatibility names for this skill: `mcp builder`, `mcp-builder`.
+Treat requests that use those names as equivalent to this canonical Foundry skill.
+
 ## Copilot Platform Notes
 
 - Custom agents live under `../../agents/` relative to the mirrored skill directory and use YAML frontmatter such as `name`, `description`, `tools`, `model`, and `handoffs`.

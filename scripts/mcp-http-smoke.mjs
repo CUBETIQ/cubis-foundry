@@ -286,7 +286,7 @@ async function main() {
   const stitchValidatePayload = parseToolTextPayload(stitchValidateResult);
   if (
     stitchValidatePayload.exists !== true ||
-    stitchValidatePayload.canonicalId !== "stitch"
+    stitchValidatePayload.canonicalId !== "stitch-design-orchestrator"
   ) {
     throw new Error("skill_validate failed for explicit named skill stitch");
   }

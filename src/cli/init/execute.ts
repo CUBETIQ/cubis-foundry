@@ -31,11 +31,16 @@ export function buildInitExecutionPlan({
     selections.selectedMcps,
     "playwright",
   );
+  const wantsAndroid = hasMcpSelection(selections.selectedMcps, "android");
 
   for (const platform of selections.platforms) {
     const stitchEnabled = wantsStitch;
     const hasAnyMcp =
-      wantsPostman || stitchEnabled || wantsFoundry || wantsPlaywright;
+      wantsPostman ||
+      stitchEnabled ||
+      wantsFoundry ||
+      wantsPlaywright ||
+      wantsAndroid;
     const warnings: string[] = [];
 
     const installOptions: Record<string, unknown> = {
@@ -51,6 +56,7 @@ export function buildInitExecutionPlan({
       postman: wantsPostman,
       stitch: stitchEnabled,
       playwright: wantsPlaywright,
+      android: wantsAndroid,
       stitchDefaultForAntigravity: false,
       mcpScope: selections.mcpScope,
       mcpToolSync: wantsPostman || stitchEnabled,

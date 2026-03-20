@@ -1,55 +1,19 @@
 {
   "$schema": "./cubis-foundry-route-manifest-v2.schema.json",
   "generatedAt": "1970-01-01T00:00:00.000Z",
-  "contentHash": "5c146f91ad627f26",
+  "contentHash": "1b95532726e6cce1",
   "summary": {
-    "totalRoutes": 23,
-    "workflows": 11,
-    "agents": 12
+    "totalRoutes": 14,
+    "workflows": 7,
+    "agents": 7
   },
   "routes": [
-    {
-      "kind": "agent",
-      "id": "database-specialist",
-      "command": null,
-      "displayName": "database-specialist",
-      "description": "Database design and optimization agent. Handles schema design, query optimization, migrations, indexing strategies, and ORM patterns.",
-      "triggers": [],
-      "primaryAgent": "database-specialist",
-      "supportingAgents": [],
-      "primarySkills": [
-        "database-design"
-      ],
-      "supportingSkills": [],
-      "artifacts": {
-        "codex": {
-          "target": "agent",
-          "agentFile": "database-specialist.toml"
-        },
-        "copilot": {
-          "target": "agent",
-          "agentFile": "database-specialist.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "agent-database-specialist.toml"
-        },
-        "claude": {
-          "target": "agent",
-          "agentFile": "database-specialist.md"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "agent-database-specialist.toml"
-        }
-      }
-    },
     {
       "kind": "agent",
       "id": "debugger",
       "command": null,
       "displayName": "debugger",
-      "description": "Root cause analysis and bug fixing agent. Systematically isolates failures, identifies root causes, implements minimal fixes, and verifies corrections.",
+      "description": "Root cause analysis and bug fixing agent. Isolates failures, identifies root causes, and verifies corrections.",
       "triggers": [],
       "primaryAgent": "debugger",
       "supportingAgents": [],
@@ -59,96 +23,24 @@
       "supportingSkills": [],
       "artifacts": {
         "codex": {
-          "target": "agent",
+          "target": "subagent",
           "agentFile": "debugger.toml"
         },
         "copilot": {
-          "target": "agent",
-          "agentFile": "debugger.md"
+          "target": "custom-agent",
+          "agentFile": "debugger.agent.md"
         },
         "antigravity": {
           "target": "command",
           "commandFile": "agent-debugger.toml"
         },
         "claude": {
-          "target": "agent",
+          "target": "subagent",
           "agentFile": "debugger.md"
         },
         "gemini": {
           "target": "command",
           "commandFile": "agent-debugger.toml"
-        }
-      }
-    },
-    {
-      "kind": "agent",
-      "id": "devops",
-      "command": null,
-      "displayName": "devops",
-      "description": "DevOps and infrastructure agent. Builds CI/CD pipelines, Docker configurations, Kubernetes manifests, monitoring setup, and deployment automation.",
-      "triggers": [],
-      "primaryAgent": "devops",
-      "supportingAgents": [],
-      "primarySkills": [
-        "ci-cd-pipeline"
-      ],
-      "supportingSkills": [],
-      "artifacts": {
-        "codex": {
-          "target": "agent",
-          "agentFile": "devops.toml"
-        },
-        "copilot": {
-          "target": "agent",
-          "agentFile": "devops.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "agent-devops.toml"
-        },
-        "claude": {
-          "target": "agent",
-          "agentFile": "devops.md"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "agent-devops.toml"
-        }
-      }
-    },
-    {
-      "kind": "agent",
-      "id": "docs-writer",
-      "command": null,
-      "displayName": "docs-writer",
-      "description": "Documentation generation agent. Writes READMEs, API docs, architecture decision records, changelogs, and developer guides from codebase analysis.",
-      "triggers": [],
-      "primaryAgent": "docs-writer",
-      "supportingAgents": [],
-      "primarySkills": [
-        "tech-doc"
-      ],
-      "supportingSkills": [],
-      "artifacts": {
-        "codex": {
-          "target": "agent",
-          "agentFile": "docs-writer.toml"
-        },
-        "copilot": {
-          "target": "agent",
-          "agentFile": "docs-writer.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "agent-docs-writer.toml"
-        },
-        "claude": {
-          "target": "agent",
-          "agentFile": "docs-writer.md"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "agent-docs-writer.toml"
         }
       }
     },
@@ -157,7 +49,7 @@
       "id": "explorer",
       "command": null,
       "displayName": "explorer",
-      "description": "Fast, read-only codebase exploration agent. Use proactively for file discovery, code search, architecture analysis, and understanding unfamiliar code. Cannot modify files.",
+      "description": "Fast, read-only codebase exploration agent. Use for file discovery, code search, and architecture analysis.",
       "triggers": [],
       "primaryAgent": "explorer",
       "supportingAgents": [],
@@ -167,60 +59,24 @@
       "supportingSkills": [],
       "artifacts": {
         "codex": {
-          "target": "agent",
+          "target": "subagent",
           "agentFile": "explorer.toml"
         },
         "copilot": {
-          "target": "agent",
-          "agentFile": "explorer.md"
+          "target": "custom-agent",
+          "agentFile": "explorer.agent.md"
         },
         "antigravity": {
           "target": "command",
           "commandFile": "agent-explorer.toml"
         },
         "claude": {
-          "target": "agent",
+          "target": "subagent",
           "agentFile": "explorer.md"
         },
         "gemini": {
           "target": "command",
           "commandFile": "agent-explorer.toml"
-        }
-      }
-    },
-    {
-      "kind": "agent",
-      "id": "frontend-specialist",
-      "command": null,
-      "displayName": "frontend-specialist",
-      "description": "Frontend implementation agent. Builds UI components, manages state, implements responsive layouts, and ensures accessibility. Specializes in React, Next.js, and modern CSS.",
-      "triggers": [],
-      "primaryAgent": "frontend-specialist",
-      "supportingAgents": [],
-      "primarySkills": [
-        "frontend-design"
-      ],
-      "supportingSkills": [],
-      "artifacts": {
-        "codex": {
-          "target": "agent",
-          "agentFile": "frontend-specialist.toml"
-        },
-        "copilot": {
-          "target": "agent",
-          "agentFile": "frontend-specialist.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "agent-frontend-specialist.toml"
-        },
-        "claude": {
-          "target": "agent",
-          "agentFile": "frontend-specialist.md"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "agent-frontend-specialist.toml"
         }
       }
     },
@@ -229,7 +85,7 @@
       "id": "implementer",
       "command": null,
       "displayName": "implementer",
-      "description": "Full code implementation agent. Builds features, refactors code, performs migrations, and applies fixes. Follows existing codebase patterns.",
+      "description": "Full code implementation agent. Builds features, applies fixes, and follows existing codebase patterns.",
       "triggers": [],
       "primaryAgent": "implementer",
       "supportingAgents": [],
@@ -239,19 +95,19 @@
       "supportingSkills": [],
       "artifacts": {
         "codex": {
-          "target": "agent",
+          "target": "subagent",
           "agentFile": "implementer.toml"
         },
         "copilot": {
-          "target": "agent",
-          "agentFile": "implementer.md"
+          "target": "custom-agent",
+          "agentFile": "implementer.agent.md"
         },
         "antigravity": {
           "target": "command",
           "commandFile": "agent-implementer.toml"
         },
         "claude": {
-          "target": "agent",
+          "target": "subagent",
           "agentFile": "implementer.md"
         },
         "gemini": {
@@ -265,7 +121,7 @@
       "id": "orchestrator",
       "command": null,
       "displayName": "orchestrator",
-      "description": "Central coordinator that decomposes complex tasks and delegates to specialist agents. Use for any multi-domain or ambiguous request that requires routing, planning, or cross-cutting coordination.",
+      "description": "Central coordinator that decomposes complex tasks, delegates to specialists, and verifies completion.",
       "triggers": [],
       "primaryAgent": "orchestrator",
       "supportingAgents": [],
@@ -275,19 +131,19 @@
       "supportingSkills": [],
       "artifacts": {
         "codex": {
-          "target": "agent",
+          "target": "subagent",
           "agentFile": "orchestrator.toml"
         },
         "copilot": {
-          "target": "agent",
-          "agentFile": "orchestrator.md"
+          "target": "custom-agent",
+          "agentFile": "orchestrator.agent.md"
         },
         "antigravity": {
           "target": "command",
           "commandFile": "agent-orchestrator.toml"
         },
         "claude": {
-          "target": "agent",
+          "target": "subagent",
           "agentFile": "orchestrator.md"
         },
         "gemini": {
@@ -301,7 +157,7 @@
       "id": "planner",
       "command": null,
       "displayName": "planner",
-      "description": "Implementation planning and specification agent. Produces structured plans, design docs, and specifications. Cannot modify code files — only plans.",
+      "description": "Planning and specification agent. Produces structured plans, design notes, and execution steps. Read-only.",
       "triggers": [],
       "primaryAgent": "planner",
       "supportingAgents": [],
@@ -311,19 +167,19 @@
       "supportingSkills": [],
       "artifacts": {
         "codex": {
-          "target": "agent",
+          "target": "subagent",
           "agentFile": "planner.toml"
         },
         "copilot": {
-          "target": "agent",
-          "agentFile": "planner.md"
+          "target": "custom-agent",
+          "agentFile": "planner.agent.md"
         },
         "antigravity": {
           "target": "command",
           "commandFile": "agent-planner.toml"
         },
         "claude": {
-          "target": "agent",
+          "target": "subagent",
           "agentFile": "planner.md"
         },
         "gemini": {
@@ -337,7 +193,7 @@
       "id": "reviewer",
       "command": null,
       "displayName": "reviewer",
-      "description": "Code review agent. Performs quality, pattern, and maintainability reviews. Read-only — identifies issues but does not fix them. Returns actionable feedback.",
+      "description": "Code review agent. Performs quality, maintainability, and security review. Read-only.",
       "triggers": [],
       "primaryAgent": "reviewer",
       "supportingAgents": [],
@@ -347,60 +203,24 @@
       "supportingSkills": [],
       "artifacts": {
         "codex": {
-          "target": "agent",
+          "target": "subagent",
           "agentFile": "reviewer.toml"
         },
         "copilot": {
-          "target": "agent",
-          "agentFile": "reviewer.md"
+          "target": "custom-agent",
+          "agentFile": "reviewer.agent.md"
         },
         "antigravity": {
           "target": "command",
           "commandFile": "agent-reviewer.toml"
         },
         "claude": {
-          "target": "agent",
+          "target": "subagent",
           "agentFile": "reviewer.md"
         },
         "gemini": {
           "target": "command",
           "commandFile": "agent-reviewer.toml"
-        }
-      }
-    },
-    {
-      "kind": "agent",
-      "id": "security-reviewer",
-      "command": null,
-      "displayName": "security-reviewer",
-      "description": "Security-focused analysis agent. Performs OWASP security audits, secret scanning, auth/authz review, and hardening recommendations. Read-only — does not fix, only reports.",
-      "triggers": [],
-      "primaryAgent": "security-reviewer",
-      "supportingAgents": [],
-      "primarySkills": [
-        "owasp-security-review"
-      ],
-      "supportingSkills": [],
-      "artifacts": {
-        "codex": {
-          "target": "agent",
-          "agentFile": "security-reviewer.toml"
-        },
-        "copilot": {
-          "target": "agent",
-          "agentFile": "security-reviewer.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "agent-security-reviewer.toml"
-        },
-        "claude": {
-          "target": "agent",
-          "agentFile": "security-reviewer.md"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "agent-security-reviewer.toml"
         }
       }
     },
@@ -409,7 +229,7 @@
       "id": "tester",
       "command": null,
       "displayName": "tester",
-      "description": "Test authoring and execution agent. Writes unit, integration, and end-to-end tests. Runs test suites, analyzes coverage, and verifies implementations.",
+      "description": "Test authoring and execution agent. Writes unit, integration, and end-to-end tests, then verifies results.",
       "triggers": [],
       "primaryAgent": "tester",
       "supportingAgents": [],
@@ -419,19 +239,19 @@
       "supportingSkills": [],
       "artifacts": {
         "codex": {
-          "target": "agent",
+          "target": "subagent",
           "agentFile": "tester.toml"
         },
         "copilot": {
-          "target": "agent",
-          "agentFile": "tester.md"
+          "target": "custom-agent",
+          "agentFile": "tester.agent.md"
         },
         "antigravity": {
           "target": "command",
           "commandFile": "agent-tester.toml"
         },
         "claude": {
-          "target": "agent",
+          "target": "subagent",
           "agentFile": "tester.md"
         },
         "gemini": {
@@ -445,7 +265,7 @@
       "id": "debug",
       "command": "/debug",
       "displayName": "debug",
-      "description": "Systematic bug investigation: explore the codebase, isolate the root cause, fix the bug, test the fix, and review the change.",
+      "description": "Systematic bug investigation: explore, isolate the root cause, fix the bug, test the fix, and review the change.",
       "triggers": [
         "debug",
         "fix",
@@ -466,6 +286,7 @@
       ],
       "supportingSkills": [
         "unit-testing",
+        "flutter-mobile-qa",
         "code-review"
       ],
       "artifacts": {
@@ -506,8 +327,9 @@
         "kubernetes",
         "infra"
       ],
-      "primaryAgent": "devops",
+      "primaryAgent": "planner",
       "supportingAgents": [
+        "implementer",
         "tester",
         "reviewer"
       ],
@@ -546,69 +368,24 @@
     },
     {
       "kind": "workflow",
-      "id": "document",
-      "command": "/document",
-      "displayName": "document",
-      "description": "Documentation workflow: explore the codebase, generate accurate documentation, and review it for quality.",
-      "triggers": [
-        "document",
-        "docs",
-        "readme",
-        "adr",
-        "changelog",
-        "api-docs"
-      ],
-      "primaryAgent": "explorer",
-      "supportingAgents": [
-        "docs-writer",
-        "reviewer"
-      ],
-      "primarySkills": [
-        "tech-doc",
-        "architecture-doc"
-      ],
-      "supportingSkills": [
-        "deep-research",
-        "code-review"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "skill",
-          "skillDir": "document"
-        },
-        "copilot": {
-          "target": "prompt",
-          "promptFile": "document.prompt.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "document.toml"
-        },
-        "claude": {
-          "target": "skill",
-          "skillDir": "document"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "document.toml"
-        }
-      }
-    },
-    {
-      "kind": "workflow",
       "id": "implement",
       "command": "/implement",
       "displayName": "implement",
-      "description": "End-to-end feature implementation: plan the approach, write the code, test it, and review it. Full lifecycle from idea to reviewed code.",
+      "description": "End-to-end feature implementation: explore, plan, implement, test, review, and optionally run the Stitch UI sequence for design-first screen generation.",
       "triggers": [
         "implement",
         "build",
         "feature",
         "create",
-        "develop"
+        "develop",
+        "refactor",
+        "document",
+        "onboard",
+        "redesign"
       ],
-      "primaryAgent": "planner",
+      "primaryAgent": "explorer",
       "supportingAgents": [
+        "planner",
         "implementer",
         "tester",
         "reviewer"
@@ -622,7 +399,14 @@
         "system-design",
         "unit-testing",
         "integration-testing",
-        "code-review"
+        "playwright-interactive",
+        "code-review",
+        "owasp-security-review",
+        "frontend-design",
+        "stitch-prompt-enhancement",
+        "stitch-design-orchestrator",
+        "stitch-design-system",
+        "stitch-implementation-handoff"
       ],
       "artifacts": {
         "codex": {
@@ -649,109 +433,55 @@
     },
     {
       "kind": "workflow",
-      "id": "onboard",
-      "command": "/onboard",
-      "displayName": "onboard",
-      "description": "Codebase onboarding workflow: explore and understand an unfamiliar codebase, create a plan for working in it, and generate developer documentation.",
+      "id": "loop",
+      "command": "/loop",
+      "displayName": "loop",
+      "description": "Bounded autonomous iteration: run a task loop with explicit completion criteria, validation gates, and a hard iteration cap.",
       "triggers": [
-        "onboard",
-        "understand",
-        "explore-codebase",
-        "new-project",
-        "walkthrough"
-      ],
-      "primaryAgent": "explorer",
-      "supportingAgents": [
-        "planner",
-        "docs-writer"
-      ],
-      "primarySkills": [
-        "deep-research",
-        "system-design"
-      ],
-      "supportingSkills": [
-        "tech-doc",
-        "architecture-doc"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "skill",
-          "skillDir": "onboard"
-        },
-        "copilot": {
-          "target": "prompt",
-          "promptFile": "onboard.prompt.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "onboard.toml"
-        },
-        "claude": {
-          "target": "skill",
-          "skillDir": "onboard"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "onboard.toml"
-        }
-      }
-    },
-    {
-      "kind": "workflow",
-      "id": "orchestrate",
-      "command": "/orchestrate",
-      "displayName": "orchestrate",
-      "description": "Coordinate multiple specialist agents to solve complex, cross-domain tasks. The orchestrator decomposes work, delegates to specialists, validates deliverables, and integrates results.",
-      "triggers": [
-        "orchestrate",
-        "coordinate",
-        "multi-area",
-        "cross-team",
-        "complex"
+        "loop",
+        "iterate",
+        "autonomous",
+        "persist",
+        "repeat",
+        "rug"
       ],
       "primaryAgent": "orchestrator",
       "supportingAgents": [
-        "explorer",
         "planner",
         "implementer",
-        "reviewer",
-        "debugger",
         "tester",
-        "security-reviewer",
-        "docs-writer",
-        "devops",
-        "database-specialist",
-        "frontend-specialist"
+        "reviewer"
       ],
       "primarySkills": [
-        "system-design",
-        "prompt-engineering"
+        "kaizen-iteration",
+        "system-design"
       ],
       "supportingSkills": [
-        "api-design",
-        "database-design",
-        "deep-research"
+        "prompt-engineering",
+        "unit-testing",
+        "code-review",
+        "systematic-debugging"
       ],
       "artifacts": {
         "codex": {
           "target": "skill",
-          "skillDir": "orchestrate"
+          "skillDir": "loop"
         },
         "copilot": {
           "target": "prompt",
-          "promptFile": "orchestrate.prompt.md"
+          "promptFile": "loop.prompt.md"
         },
         "antigravity": {
           "target": "command",
-          "commandFile": "orchestrate.toml"
+          "commandFile": "loop.toml"
         },
         "claude": {
           "target": "skill",
-          "skillDir": "orchestrate"
+          "skillDir": "loop"
         },
         "gemini": {
           "target": "command",
-          "commandFile": "orchestrate.toml"
+          "commandFile": "loop.toml"
         }
       }
     },
@@ -760,7 +490,7 @@
       "id": "plan",
       "command": "/plan",
       "displayName": "plan",
-      "description": "Research a codebase and produce a structured implementation plan. Explores first, then designs, following the 'understand before building' principle.",
+      "description": "Research a codebase and produce a structured implementation plan. Explore first, then design.",
       "triggers": [
         "plan",
         "design",
@@ -806,65 +536,10 @@
     },
     {
       "kind": "workflow",
-      "id": "refactor",
-      "command": "/refactor",
-      "displayName": "refactor",
-      "description": "Large-scale refactoring workflow: explore the current state, plan the migration, implement changes, test thoroughly, and review.",
-      "triggers": [
-        "refactor",
-        "migrate",
-        "modernize",
-        "restructure",
-        "rewrite"
-      ],
-      "primaryAgent": "explorer",
-      "supportingAgents": [
-        "planner",
-        "implementer",
-        "tester",
-        "reviewer"
-      ],
-      "primarySkills": [
-        "api-design",
-        "typescript-best-practices"
-      ],
-      "supportingSkills": [
-        "deep-research",
-        "spec-driven-delivery",
-        "system-design",
-        "unit-testing",
-        "integration-testing",
-        "code-review"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "skill",
-          "skillDir": "refactor"
-        },
-        "copilot": {
-          "target": "prompt",
-          "promptFile": "refactor.prompt.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "refactor.toml"
-        },
-        "claude": {
-          "target": "skill",
-          "skillDir": "refactor"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "refactor.toml"
-        }
-      }
-    },
-    {
-      "kind": "workflow",
       "id": "review",
       "command": "/review",
       "displayName": "review",
-      "description": "Comprehensive code review combining quality review and security audit. Runs reviewers in parallel for thorough analysis.",
+      "description": "Comprehensive code review combining quality review and security audit.",
       "triggers": [
         "review",
         "pr",
@@ -874,7 +549,6 @@
       ],
       "primaryAgent": "reviewer",
       "supportingAgents": [
-        "security-reviewer",
         "implementer"
       ],
       "primarySkills": [
@@ -912,67 +586,22 @@
     },
     {
       "kind": "workflow",
-      "id": "spec",
-      "command": "/spec",
-      "displayName": "spec",
-      "description": "Create or refresh a Git-tracked spec pack for non-trivial work. Capture requirements, acceptance criteria, architecture impact, and execution scope before implementation continues.",
-      "triggers": [
-        "spec",
-        "requirements",
-        "acceptance",
-        "prd",
-        "rfc",
-        "traceability"
-      ],
-      "primaryAgent": "planner",
-      "supportingAgents": [
-        "explorer",
-        "docs-writer",
-        "orchestrator"
-      ],
-      "primarySkills": [
-        "spec-driven-delivery",
-        "system-design"
-      ],
-      "supportingSkills": [
-        "deep-research",
-        "architecture-doc"
-      ],
-      "artifacts": {
-        "codex": {
-          "target": "skill",
-          "skillDir": "spec"
-        },
-        "copilot": {
-          "target": "prompt",
-          "promptFile": "spec.prompt.md"
-        },
-        "antigravity": {
-          "target": "command",
-          "commandFile": "spec.toml"
-        },
-        "claude": {
-          "target": "skill",
-          "skillDir": "spec"
-        },
-        "gemini": {
-          "target": "command",
-          "commandFile": "spec.toml"
-        }
-      }
-    },
-    {
-      "kind": "workflow",
       "id": "test",
       "command": "/test",
       "displayName": "test",
-      "description": "Test authoring and coverage improvement: explore the code, write comprehensive tests, and review test quality.",
+      "description": "Test authoring and coverage improvement: explore the code, write tests, and review test quality.",
       "triggers": [
         "test",
         "coverage",
         "spec",
         "unit-test",
-        "e2e"
+        "e2e",
+        "qa",
+        "mobile",
+        "flutter",
+        "android",
+        "emulator",
+        "adb"
       ],
       "primaryAgent": "explorer",
       "supportingAgents": [
@@ -986,6 +615,7 @@
       "supportingSkills": [
         "deep-research",
         "playwright-interactive",
+        "flutter-mobile-qa",
         "code-review"
       ],
       "artifacts": {

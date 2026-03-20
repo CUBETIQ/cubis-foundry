@@ -126,6 +126,14 @@ const LEGACY_AGENT_ALIASES: Record<string, string> = {
   "explorer-agent": "code-archaeologist",
 };
 
+const STITCH_REQUIRED_SIGNALS = ["stitch"];
+const STITCH_UI_SUPPORTING_SKILLS = [
+  "stitch-prompt-enhancement",
+  "stitch-design-orchestrator",
+  "stitch-design-system",
+  "stitch-implementation-handoff",
+];
+
 function normalize(value: string): string {
   return value.toLowerCase().replace(/[^a-z0-9@/$+-]+/g, " ").trim();
 }
@@ -163,6 +171,11 @@ function isSkillCreatorIntent(intent: string): boolean {
   if (!hasObjectSignal) return false;
 
   return includesAnyPhrase(normalizedIntent, SKILL_CREATOR_ACTION_SIGNALS);
+}
+
+function isStitchUiIntent(intent: string): boolean {
+  const normalizedIntent = normalize(intent);
+  return includesAnyPhrase(normalizedIntent, STITCH_REQUIRED_SIGNALS);
 }
 
 function chooseSkillCreatorRoute(
@@ -313,10 +326,21 @@ function buildResolvedPayload(
   route: RouteEntry,
   matchedBy: string,
   detectedLanguageSkill: string | null,
+  overrides: Partial<{
+    primarySkillHint: string | null;
+    primarySkills: string[];
+    supportingSkills: string[];
+    explanation: string;
+  }> = {},
 ) {
-  const primarySkillHint = isSkillCreatorIntent(input)
-    ? "skill-creator"
-    : route.primarySkills[0] || null;
+  const primarySkills = overrides.primarySkills || route.primarySkills;
+  const supportingSkills = overrides.supportingSkills || route.supportingSkills;
+  const primarySkillHint =
+    overrides.primarySkillHint !== undefined
+      ? overrides.primarySkillHint
+      : isSkillCreatorIntent(input)
+        ? "skill-creator"
+        : primarySkills[0] || null;
   return {
     input,
     resolved: true,
@@ -325,12 +349,13 @@ function buildResolvedPayload(
     command: route.command,
     agent: route.primaryAgent,
     primarySkillHint,
-    primarySkills: route.primarySkills,
-    supportingSkills: route.supportingSkills,
+    primarySkills,
+    supportingSkills,
     detectedLanguageSkill,
     fallbackSkillSearchRecommended: false,
     matchedBy,
     explanation:
+      overrides.explanation ||
       matchedBy === "explicit-workflow-command"
         ? `Matched explicit workflow command ${route.command}.`
         : matchedBy === "explicit-agent"
@@ -346,6 +371,16 @@ function buildResolvedPayload(
               : `Matched ${route.kind} '${route.id}' from installed route metadata.`,
     artifacts: route.artifacts,
   };
+}
+
+function chooseStitchUiRoute(manifest: RouteManifest): RouteEntry | null {
+  return (
+    manifest.routes.find(
+      (entry) =>
+        entry.kind === "workflow" &&
+        (entry.id === "implement" || entry.command === "/implement"),
+    ) || null
+  );
 }
 
 async function fileExists(target: string) {
@@ -416,6 +451,32 @@ export async function handleRouteResolve(
       content: [{ type: "text" as const, text: JSON.stringify(payload, null, 2) }],
       structuredContent: payload,
     };
+  }
+
+  if (isStitchUiIntent(intent)) {
+    const stitchRoute = chooseStitchUiRoute(routeManifest);
+    if (stitchRoute) {
+      const payload = buildResolvedPayload(
+        intent,
+        stitchRoute,
+        "stitch-ui-intent",
+        detectedLanguageSkill,
+        {
+          primarySkillHint: "frontend-design",
+          primarySkills: [
+            "frontend-design",
+            ...STITCH_UI_SUPPORTING_SKILLS,
+          ],
+          supportingSkills: stitchRoute.supportingSkills,
+          explanation:
+            "Matched Stitch UI intent and routed to /implement with the Stitch UI sequence: frontend-design, prompt enhancement, Stitch orchestration, design-system sync when needed, then implementation handoff.",
+        },
+      );
+      return {
+        content: [{ type: "text" as const, text: JSON.stringify(payload, null, 2) }],
+        structuredContent: payload,
+      };
+    }
   }
 
   const inferred = resolveByIntent(intent, routeManifest);

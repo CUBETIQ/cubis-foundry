@@ -45,6 +45,135 @@ const ORCHESTRATION_SUBTYPES = [
   },
 ];
 
+const HARNESS_PARITY_CAPABILITIES = [
+  {
+    id: "packaging-model",
+    vendor_native_support: {
+      claude:
+        "`native` via `CLAUDE.md`, `.claude/agents/*.md`, `.claude/skills/*`, `.claude/settings.json`",
+      codex:
+        "`native` via `AGENTS.md`, `.codex/agents/*.toml`, `.agents/skills/*`, `.codex/config.toml`",
+      copilot:
+        "`native` via `AGENTS.md`, `.github/copilot-instructions.md`, `.github/agents/*.agent.md`, `.github/skills/*`, `.github/hooks/*.json`, `.vscode/mcp.json`",
+      gemini:
+        "`native` via `.gemini/GEMINI.md`, `.gemini/commands/**/*.toml`, `.gemini/agents/*.md`, `.gemini/skills/*`, `.gemini/settings.json`",
+      antigravity:
+        "`degraded` and `inferred` via `.agents/rules/GEMINI.md`, `.gemini/commands/*.toml`, `.agents/skills/*`",
+    },
+    ship_rules: {
+      claude: "ship `native`",
+      codex: "ship `native`",
+      copilot: "ship `native`",
+      gemini: "ship `native`",
+      antigravity: "ship as a compatibility target only and label it `inferred`",
+    },
+  },
+  {
+    id: "harness-model",
+    vendor_native_support: {
+      claude: "`native`",
+      codex:
+        "`degraded`; instructions, skills, subagents, and MCP are native, and Codex 0.116.0 adds an experimental `userpromptsubmit` hook, but the stable project hook schema is not yet documented for Foundry installs",
+      copilot: "`native`, but split across GitHub, IDE, and CLI surfaces",
+      gemini: "`native`",
+      antigravity: "`degraded` and `inferred`",
+    },
+    ship_rules: {
+      claude: "ship full harness parity",
+      codex: "ship limited harness parity with no hook-dependent claims",
+      copilot:
+        "ship full harness parity only on surfaces where the capability is actually available",
+      gemini: "ship full harness parity",
+      antigravity: "ship limited harness parity only",
+    },
+  },
+  {
+    id: "loop-model",
+    vendor_native_support: {
+      claude: "`native` via subagents plus hooks",
+      codex:
+        "`degraded`; agent and subagent orchestration is native, and Codex 0.116.0 adds an experimental `userpromptsubmit` hook, but there is still no documented stop-hook or full loop-control contract",
+      copilot:
+        "`degraded` because hooks and autonomy exist, but there is not one shared repo-local loop primitive across all Copilot surfaces",
+      gemini: "`native` via commands, hooks, and subagents",
+      antigravity: "`degraded` and `inferred`; current projection is command-driven",
+    },
+    ship_rules: {
+      claude: "ship hook-backed native loop flow",
+      codex: "ship bounded degraded loop flow only",
+      copilot:
+        "ship bounded degraded loop flow unless the selected Copilot surface supports the needed primitives",
+      gemini: "ship command-plus-hook loop flow",
+      antigravity: "ship command-only loop flow; do not claim hook-backed parity",
+    },
+  },
+  {
+    id: "hook-profile-idea",
+    vendor_native_support: {
+      claude:
+        "`native`; named profiles are a Foundry layer mapped onto native hooks",
+      codex:
+        "`degraded`; Codex 0.116.0 ships an experimental `userpromptsubmit` hook, but Foundry should not treat hook profiles as stable until the project hook config/schema is documented",
+      copilot:
+        "`native`; hook surface exists, but profile naming remains a Foundry abstraction",
+      gemini:
+        "`native`; hook surface exists, but profile naming remains a Foundry abstraction",
+      antigravity:
+        "`unsupported`; do not treat as vendor-native until a public spec exists",
+    },
+    ship_rules: {
+      claude: "ship `native`",
+      codex:
+        "ship only behind an explicit experimental flag after the hook config/schema is verified",
+      copilot:
+        "ship `native` only when the adapter emits real hook artifacts",
+      gemini:
+        "ship `native` only when the adapter emits real hook artifacts",
+      antigravity: "`do-not-ship`",
+    },
+  },
+  {
+    id: "security-posture",
+    vendor_native_support: {
+      claude:
+        "`native`; rules, hooks, MCP, and permission controls all exist",
+      codex:
+        "`native`; rules, config, MCP, and approval controls exist, but hook-based enforcement is weaker",
+      copilot:
+        "`native`; rules, hooks, MCP, and runtime policy surfaces exist",
+      gemini:
+        "`native`; rules, hooks, policy settings, and MCP exist",
+      antigravity:
+        "`degraded` and `inferred`; rules and command guidance are available, but hard enforcement is not verified",
+    },
+    ship_rules: {
+      claude: "ship hard enforcement plus rule guidance",
+      codex: "ship hard policy guidance without hook assumptions",
+      copilot:
+        "ship hard enforcement where hooks exist and policy guidance elsewhere",
+      gemini: "ship hard enforcement plus policy guidance",
+      antigravity:
+        "ship policy guidance only and label enforcement limits clearly",
+    },
+  },
+];
+
+const HARNESS_PARITY_CURRENT_STATUS = [
+  "Claude is the current reference implementation for full harness parity. Native hook artifacts exist under `workflows/workflows/agent-environment-setup/platforms/claude/hooks/`.",
+  "Codex should be treated as a full packaging and security target. OpenAI's 0.116.0 release notes add an experimental `userpromptsubmit` hook, and local CLI inspection shows a `codex_hooks` feature flag marked under development. Foundry should treat that as experimental-only until the project hook config/schema is verified.",
+  "Gemini and Copilot both have vendor-native hook surfaces, and Foundry now emits baseline hook artifacts for both. Gemini receives route/research plus shell-security templates; Copilot receives repo-native security guard hooks, while prompt-routing guidance remains in instructions and prompts.",
+  "Antigravity currently remains a Gemini-family compatibility target. Foundry projects loop support through `workflows/workflows/agent-environment-setup/platforms/antigravity/commands/loop.toml` and rules through `workflows/workflows/agent-environment-setup/platforms/antigravity/rules/GEMINI.md`.",
+  "Security posture should be treated as universal Foundry policy, but hard enforcement strength depends on the platform's native hook or policy surfaces.",
+];
+
+const HARNESS_PARITY_SOURCE_NOTES = [
+  "Claude: official memory, hooks, and sub-agent docs support native harness and loop behavior.",
+  "Codex: official `AGENTS.md`, skills, and subagents docs support native packaging and harness layers. OpenAI's GitHub release 0.116.0 on 2026-03-19 adds an experimental `userpromptsubmit` hook, and local CLI inspection on 2026-03-20 shows a `codex_hooks` feature flag marked under development.",
+  "Gemini: official `GEMINI.md`, skills, commands, hooks, subagents, and MCP docs support a native harness model.",
+  "Copilot: official repository instructions, custom agents, hooks, agent skills, MCP, and CLI autonomy docs support a native but fragmented harness model.",
+  "Antigravity is an inference from Foundry's local adapter shape and Gemini-family positioning, not a verified public vendor spec.",
+];
+
 function pattern(
   id,
   category,
@@ -507,7 +636,7 @@ const PLATFORM_SPECS = {
     agent_capabilities: {
       native_agent_surface: ".codex/agents/*.toml",
       skill_surface: ".agents/skills/<id>/SKILL.md",
-      workflow_entry_surface: "generated workflow skills",
+      workflow_entry_surface: ".agents/skills/<workflow-id>/SKILL.md",
       multi_agent: "native",
       batch_fanout: "native or tool-assisted",
     },
@@ -607,7 +736,7 @@ const PLATFORM_SPECS = {
     agent_capabilities: {
       native_agent_surface: ".claude/agents/*.md",
       skill_surface: ".claude/skills/<id>/SKILL.md",
-      workflow_entry_surface: "workflow skills and native commands",
+      workflow_entry_surface: ".claude/skills/<workflow-id>/SKILL.md",
       multi_agent: "native or experimental",
       batch_fanout: "degraded via orchestrator-managed fanout",
     },
@@ -718,7 +847,7 @@ const PLATFORM_SPECS = {
       profiles: "degraded via Foundry presets",
     },
     agent_capabilities: {
-      native_agent_surface: ".github/agents/*.md",
+      native_agent_surface: ".github/agents/*.agent.md",
       skill_surface: ".github/skills/<id>/SKILL.md",
       workflow_entry_surface: ".github/prompts/*.prompt.md",
       multi_agent: "degraded",
@@ -760,10 +889,18 @@ const PLATFORM_SPECS = {
       "agent-registration",
       "specialist-agent",
       "project-vs-global-scope",
+      "hook-support",
       "mcp-integration",
       "browser-verification",
       "upstream-capability-audit",
     ]),
+    pattern_overrides: {
+      "hook-support": {
+        projection_surface: ".github/hooks/*.json + .github/hooks/*.mjs",
+        behavior_notes:
+          "GitHub Copilot has native repository hook support. Foundry emits security-focused preToolUse hooks there, while route and research guidance stays in instructions and prompts because Copilot hooks are not a prompt-rewrite surface.",
+      },
+    },
   },
   gemini: {
     label: "Gemini CLI",
@@ -825,10 +962,18 @@ const PLATFORM_SPECS = {
       "review-and-validation",
       "research-escalation",
       "project-vs-global-scope",
+      "hook-support",
       "mcp-integration",
       "browser-verification",
       "upstream-capability-audit",
     ]),
+    pattern_overrides: {
+      "hook-support": {
+        projection_surface: ".gemini/settings.json hooks + .gemini/hooks/*",
+        behavior_notes:
+          "Gemini CLI has native hook support. Foundry emits BeforeAgent and BeforeTool hook templates for route/research context injection and shell-security enforcement.",
+      },
+    },
   },
   antigravity: {
     label: "Antigravity",
@@ -896,6 +1041,319 @@ const PLATFORM_SPECS = {
       "browser-verification",
       "upstream-capability-audit",
     ]),
+  },
+};
+
+const PLATFORM_SURFACE_SPEC = {
+  codex: {
+    label: "Codex",
+    hookSupport: "experimental",
+    workflowSurfaceKind: "generated-skill",
+    specialistRouteRenderer: "subagent",
+    rules: {
+      vendorSupport: "native",
+      foundryStatus: "native",
+      projectPath: "AGENTS.md",
+      globalPath: "~/.codex/AGENTS.md",
+      format: "Markdown",
+      nativeOrProjected: "native",
+      notes:
+        "Primary repository instruction surface. Foundry does not ship a separate project workflow directory for Codex.",
+    },
+    skills: {
+      vendorSupport: "native",
+      foundryStatus: "native",
+      projectPath: ".agents/skills/<skill-id>/SKILL.md",
+      globalPath: "~/.agents/skills/<skill-id>/SKILL.md",
+      format: "Markdown",
+      nativeOrProjected: "native",
+      notes: "Shared skill vault used for direct skill installs.",
+    },
+    workflows: {
+      vendorSupport: "native via workflow skills",
+      foundryStatus: "native",
+      projectPath: ".agents/skills/<workflow-id>/SKILL.md",
+      globalPath: "~/.agents/skills/<workflow-id>/SKILL.md",
+      format: "Markdown",
+      nativeOrProjected: "projected workflow skill",
+      notes:
+        "Foundry installs workflows as generated workflow skills. `.codex/workflows` is not a shipped install surface.",
+    },
+    customAgents: {
+      vendorSupport: "unsupported",
+      foundryStatus: "do-not-ship",
+      projectPath: null,
+      globalPath: null,
+      format: "n/a",
+      nativeOrProjected: "do-not-ship",
+      notes: "Use native Codex subagents instead.",
+    },
+    subagents: {
+      vendorSupport: "native",
+      foundryStatus: "native",
+      projectPath: ".codex/agents/*.toml",
+      globalPath: "~/.codex/agents/*.toml",
+      format: "TOML",
+      nativeOrProjected: "native subagent",
+      notes: "This is the only native specialist file surface Foundry ships for Codex.",
+    },
+    hooks: {
+      vendorSupport: "experimental",
+      foundryStatus: "experimental",
+      projectPath: null,
+      globalPath: null,
+      format: "unverified",
+      nativeOrProjected: "do-not-install",
+      notes:
+        "Codex 0.116.0 exposes an experimental `userpromptsubmit` hook signal, but the project hook config/schema is not verified, so Foundry emits no hook artifacts by default.",
+    },
+  },
+  claude: {
+    label: "Claude Code",
+    hookSupport: "native",
+    workflowSurfaceKind: "generated-skill",
+    specialistRouteRenderer: "subagent",
+    rules: {
+      vendorSupport: "native",
+      foundryStatus: "native",
+      projectPath: "CLAUDE.md",
+      globalPath: "~/.claude/CLAUDE.md",
+      format: "Markdown",
+      nativeOrProjected: "native",
+      notes:
+        "Primary rules file, with optional scoped rules in `.claude/rules/*.md` and local settings in `.claude/settings.json`.",
+    },
+    skills: {
+      vendorSupport: "native",
+      foundryStatus: "native",
+      projectPath: ".claude/skills/<skill-id>/SKILL.md",
+      globalPath: "~/.claude/skills/<skill-id>/SKILL.md",
+      format: "Markdown",
+      nativeOrProjected: "native",
+      notes: "Primary Claude skill install surface.",
+    },
+    workflows: {
+      vendorSupport: "native via workflow skills",
+      foundryStatus: "native",
+      projectPath: ".claude/skills/<workflow-id>/SKILL.md",
+      globalPath: "~/.claude/skills/<workflow-id>/SKILL.md",
+      format: "Markdown",
+      nativeOrProjected: "projected workflow skill",
+      notes:
+        "Foundry installs workflows as generated skills under `.claude/skills`; `.claude/workflows` is legacy cleanup only.",
+    },
+    customAgents: {
+      vendorSupport: "unsupported",
+      foundryStatus: "do-not-ship",
+      projectPath: null,
+      globalPath: null,
+      format: "n/a",
+      nativeOrProjected: "do-not-ship",
+      notes: "Claude uses subagents rather than a separate custom-agent file class.",
+    },
+    subagents: {
+      vendorSupport: "native",
+      foundryStatus: "native",
+      projectPath: ".claude/agents/*.md",
+      globalPath: "~/.claude/agents/*.md",
+      format: "Markdown with YAML frontmatter",
+      nativeOrProjected: "native subagent",
+      notes: "Specialist routes ship as native Claude subagents.",
+    },
+    hooks: {
+      vendorSupport: "native",
+      foundryStatus: "native",
+      projectPath: ".claude/hooks/* + .claude/settings.json",
+      globalPath: "~/.claude/hooks/* + ~/.claude/settings.json",
+      format: "JSON + JavaScript",
+      nativeOrProjected: "native hook templates",
+      notes: "Foundry ships project hook templates and settings snippets for safe native hook wiring.",
+    },
+  },
+  copilot: {
+    label: "GitHub Copilot",
+    hookSupport: "native",
+    workflowSurfaceKind: "prompt",
+    specialistRouteRenderer: "custom-agent",
+    rules: {
+      vendorSupport: "native",
+      foundryStatus: "native",
+      projectPath:
+        ".github/copilot-instructions.md (optionally alongside AGENTS.md and .github/instructions/*.instructions.md)",
+      globalPath: "~/.copilot/copilot-instructions.md",
+      format: "Markdown",
+      nativeOrProjected: "native",
+      notes:
+        "Foundry treats `.github/copilot-instructions.md` as the primary rules file and may also generate compatible companion instruction surfaces.",
+    },
+    skills: {
+      vendorSupport: "native",
+      foundryStatus: "native",
+      projectPath: ".github/skills/<skill-id>/SKILL.md",
+      globalPath: "~/.copilot/skills/<skill-id>/SKILL.md",
+      format: "Markdown",
+      nativeOrProjected: "native",
+      notes: "Primary Copilot skill surface.",
+    },
+    workflows: {
+      vendorSupport: "native prompt files",
+      foundryStatus: "native",
+      projectPath: ".github/prompts/<workflow-id>.prompt.md",
+      globalPath: "~/.copilot/prompts/<workflow-id>.prompt.md",
+      format: "Markdown prompt file",
+      nativeOrProjected: "native workflow prompt",
+      notes: "Foundry ships workflows as prompt files, not a project workflow directory.",
+    },
+    customAgents: {
+      vendorSupport: "native",
+      foundryStatus: "native",
+      projectPath: ".github/agents/*.agent.md",
+      globalPath: "~/.copilot/agents/*.agent.md",
+      format: "Markdown with frontmatter",
+      nativeOrProjected: "native custom agent",
+      notes: "Foundry should emit `.agent.md` files for Copilot custom agents.",
+    },
+    subagents: {
+      vendorSupport: "unsupported",
+      foundryStatus: "do-not-ship",
+      projectPath: null,
+      globalPath: null,
+      format: "n/a",
+      nativeOrProjected: "do-not-ship",
+      notes: "Copilot specialist routes use custom agents, not subagents.",
+    },
+    hooks: {
+      vendorSupport: "native",
+      foundryStatus: "native",
+      projectPath: ".github/hooks/*.json + .github/hooks/*.mjs",
+      globalPath: null,
+      format: "JSON + JavaScript",
+      nativeOrProjected: "native hook templates",
+      notes:
+        "Foundry keeps Copilot hooks security-focused and repo-native. MCP stays in `.vscode/mcp.json`.",
+    },
+  },
+  gemini: {
+    label: "Gemini CLI",
+    hookSupport: "native",
+    workflowSurfaceKind: "command",
+    specialistRouteRenderer: "agent-route-command",
+    rules: {
+      vendorSupport: "native",
+      foundryStatus: "native",
+      projectPath: ".gemini/GEMINI.md",
+      globalPath: "~/.gemini/GEMINI.md",
+      format: "Markdown",
+      nativeOrProjected: "native",
+      notes:
+        "Foundry treats `.gemini/GEMINI.md` as primary. Root `GEMINI.md` is compatibility/read guidance only.",
+    },
+    skills: {
+      vendorSupport: "native MCP guidance, no required project skill dir",
+      foundryStatus: "degraded",
+      projectPath: null,
+      globalPath: null,
+      format: "n/a by default",
+      nativeOrProjected: "MCP-loaded guidance with optional hint-only Markdown",
+      notes:
+        "Foundry does not ship `.gemini/skills`. Optional `.agents/skills/<id>/SKILL.md` hints may exist only when explicitly enabled.",
+    },
+    workflows: {
+      vendorSupport: "native command files",
+      foundryStatus: "native",
+      projectPath: ".gemini/commands/<workflow-id>.toml",
+      globalPath: "~/.gemini/commands/<workflow-id>.toml",
+      format: "TOML",
+      nativeOrProjected: "native/projected command route",
+      notes: "This is the canonical shipped workflow surface for Gemini.",
+    },
+    customAgents: {
+      vendorSupport: "unsupported in current Foundry ship model",
+      foundryStatus: "do-not-ship",
+      projectPath: null,
+      globalPath: null,
+      format: "n/a",
+      nativeOrProjected: "do-not-ship",
+      notes: "Foundry does not currently ship a Gemini custom-agent file surface.",
+    },
+    subagents: {
+      vendorSupport: "not shipped in current Foundry adapter",
+      foundryStatus: "do-not-ship",
+      projectPath: null,
+      globalPath: null,
+      format: "n/a",
+      nativeOrProjected: "do-not-ship",
+      notes: "Specialist routes are rendered as command files until a verified native agent surface is adopted.",
+    },
+    hooks: {
+      vendorSupport: "native",
+      foundryStatus: "native",
+      projectPath: ".gemini/hooks/* + .gemini/settings.json",
+      globalPath: "~/.gemini/settings.json",
+      format: "JSON + JavaScript",
+      nativeOrProjected: "native hook templates",
+      notes: "Foundry ships route/research and shell-security hook templates.",
+    },
+  },
+  antigravity: {
+    label: "Antigravity",
+    hookSupport: "do-not-ship",
+    workflowSurfaceKind: "command",
+    specialistRouteRenderer: "agent-route-command",
+    rules: {
+      vendorSupport: "degraded and inferred",
+      foundryStatus: "native",
+      projectPath: ".agents/rules/GEMINI.md",
+      globalPath: "~/.gemini/GEMINI.md",
+      format: "Markdown",
+      nativeOrProjected: "projected rules surface",
+      notes: "Foundry treats this as a Gemini-family compatibility rules surface.",
+    },
+    skills: {
+      vendorSupport: "degraded and inferred",
+      foundryStatus: "native",
+      projectPath: ".agents/skills/<skill-id>/SKILL.md",
+      globalPath: "~/.gemini/antigravity/skills/<skill-id>/SKILL.md",
+      format: "Markdown",
+      nativeOrProjected: "projected skill surface",
+      notes: "Primary shipped skill surface for Antigravity compatibility installs.",
+    },
+    workflows: {
+      vendorSupport: "degraded command projection",
+      foundryStatus: "native",
+      projectPath: ".gemini/commands/<workflow-id>.toml",
+      globalPath: "~/.gemini/commands/<workflow-id>.toml",
+      format: "TOML",
+      nativeOrProjected: "projected command route",
+      notes: "Foundry ships workflows as Gemini-family command routes.",
+    },
+    customAgents: {
+      vendorSupport: "unsupported",
+      foundryStatus: "do-not-ship",
+      projectPath: null,
+      globalPath: null,
+      format: "n/a",
+      nativeOrProjected: "do-not-ship",
+      notes: "Foundry does not claim a native Antigravity custom-agent file surface.",
+    },
+    subagents: {
+      vendorSupport: "unsupported",
+      foundryStatus: "do-not-ship",
+      projectPath: null,
+      globalPath: null,
+      format: "n/a",
+      nativeOrProjected: "do-not-ship",
+      notes: "Specialist behavior is projected through command routes, not subagent files.",
+    },
+    hooks: {
+      vendorSupport: "unsupported and unverified",
+      foundryStatus: "do-not-ship",
+      projectPath: null,
+      globalPath: null,
+      format: "n/a",
+      nativeOrProjected: "do-not-ship",
+      notes: "No verified native hook surface is claimed for Antigravity in Foundry.",
+    },
   },
 };
 
@@ -1002,6 +1460,27 @@ function buildPatternSupport(platformId, platform, pattern) {
   };
 }
 
+export function buildPlatformSurfaceSpec() {
+  return Object.fromEntries(
+    Object.entries(PLATFORM_SURFACE_SPEC).map(([platformId, spec]) => [
+      platformId,
+      {
+        platformId,
+        label: spec.label,
+        hookSupport: spec.hookSupport,
+        workflowSurfaceKind: spec.workflowSurfaceKind,
+        specialistRouteRenderer: spec.specialistRouteRenderer,
+        rules: spec.rules,
+        skills: spec.skills,
+        workflows: spec.workflows,
+        customAgents: spec.customAgents,
+        subagents: spec.subagents,
+        hooks: spec.hooks,
+      },
+    ]),
+  );
+}
+
 export function buildPlatformCapabilityContracts() {
   const contracts = {};
   for (const [platformId, platform] of Object.entries(PLATFORM_SPECS)) {
@@ -1071,6 +1550,112 @@ function renderPatternCatalog() {
       rows,
     ),
     "",
+  ].join("\n");
+}
+
+function renderHarnessParitySection() {
+  const platformIds = ["claude", "codex", "copilot", "gemini", "antigravity"];
+  const vendorRows = HARNESS_PARITY_CAPABILITIES.map((capability) => [
+    `\`${capability.id}\``,
+    ...platformIds.map((platformId) => capability.vendor_native_support[platformId]),
+  ]);
+  const shipRows = HARNESS_PARITY_CAPABILITIES.map((capability) => [
+    `\`${capability.id}\``,
+    ...platformIds.map((platformId) => capability.ship_rules[platformId]),
+  ]);
+  const currentStatus = HARNESS_PARITY_CURRENT_STATUS.map((line) => `- ${line}`).join("\n");
+  const sourceNotes = HARNESS_PARITY_SOURCE_NOTES.map((line) => `- ${line}`).join("\n");
+
+  return [
+    "## Foundry Harness Parity Spec (Verified 2026-03-20)",
+    "",
+    "This section is the strict decision table for the ECC-inspired runtime layers: packaging, harness, loop control, hook profiles, and security posture. When this section conflicts with older broad pattern tables below, this section wins for Foundry product and adapter decisions.",
+    "",
+    "Support levels:",
+    "",
+    "- `native`: vendor-documented first-class surface exists",
+    "- `degraded`: supported through a nearby native surface or explicit Foundry projection",
+    "- `unsupported`: no documented safe native surface",
+    "- `do-not-ship`: Foundry must not claim or generate the behavior for that platform",
+    "",
+    "### Vendor-Native Support",
+    "",
+    markdownTable(
+      ["Capability", "Claude", "Codex", "Copilot", "Gemini", "Antigravity"],
+      vendorRows,
+    ),
+    "",
+    "### Foundry Ship Rules",
+    "",
+    markdownTable(
+      ["Capability", "Claude", "Codex", "Copilot", "Gemini", "Antigravity"],
+      shipRows,
+    ),
+    "",
+    "### Current Foundry Adapter Status",
+    "",
+    currentStatus,
+    "",
+    "### Source Notes",
+    "",
+    sourceNotes,
+    "",
+  ].join("\n");
+}
+
+function renderPlatformSurfaceSpecSection(surfaceSpec) {
+  const surfaceOrder = [
+    "rules",
+    "skills",
+    "workflows",
+    "customAgents",
+    "subagents",
+    "hooks",
+  ];
+
+  return [
+    "## Canonical Installed Surfaces",
+    "",
+    "This section is the authoritative Foundry install contract for each platform. It distinguishes vendor support from what Foundry actually ships and the exact path/format of the installed surface.",
+    "",
+    ...Object.values(surfaceSpec).flatMap((platform) => {
+      const rows = surfaceOrder.map((surfaceKey) => {
+        const surface = platform[surfaceKey];
+        return [
+          `\`${surfaceKey}\``,
+          surface.vendorSupport,
+          `\`${surface.foundryStatus}\``,
+          surface.projectPath || "n/a",
+          surface.globalPath || "n/a",
+          surface.format,
+          surface.nativeOrProjected,
+          surface.notes,
+        ];
+      });
+
+      return [
+        `### ${platform.label}`,
+        "",
+        `- Hook support flag: \`${platform.hookSupport}\``,
+        `- Workflow surface kind: \`${platform.workflowSurfaceKind}\``,
+        `- Specialist route renderer: \`${platform.specialistRouteRenderer}\``,
+        "",
+        markdownTable(
+          [
+            "Surface",
+            "Vendor Support",
+            "Foundry Status",
+            "Project Path",
+            "Global Path",
+            "Format",
+            "Native/Projected",
+            "Notes",
+          ],
+          rows,
+        ),
+        "",
+      ];
+    }),
   ].join("\n");
 }
 
@@ -1279,10 +1864,15 @@ function renderPlatformSupportSummary(contracts) {
 }
 
 function renderPlatformCapabilityDetails(contracts) {
+  const surfaceSpec = buildPlatformSurfaceSpec();
   return [
     "# Platform Capability Details",
     "",
     "This document consolidates the detailed parity views. Full machine-readable detail lives in the generated parity JSON files.",
+    "",
+    renderHarnessParitySection(),
+    "",
+    renderPlatformSurfaceSpecSection(surfaceSpec),
     "",
     "## Pattern Support Matrix",
     "",

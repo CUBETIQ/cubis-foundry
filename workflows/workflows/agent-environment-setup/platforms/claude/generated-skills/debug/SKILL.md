@@ -1,6 +1,6 @@
 ---
 name: debug
-description: "Systematic bug investigation: explore the codebase, isolate the root cause, fix the bug, test the fix, and review the change."
+description: "Systematic bug investigation: explore, isolate the root cause, fix the bug, test the fix, and review the change."
 license: MIT
 metadata:
   author: cubis-foundry
@@ -17,19 +17,19 @@ Use for bug reports, error investigations, test failures, and any issue where th
 
 ## Agent Chain
 
-`explorer` → `debugger` → `tester` → `reviewer`
+`explorer` -> `debugger` -> `tester` -> `reviewer`
 
 ## Routing
 
-1. **Explore**: `@explorer` gathers context — reads error logs, traces code paths, identifies the affected area.
-2. **Debug**: `@debugger` uses the 5-step protocol (capture, reproduce, isolate, fix, verify) to find and fix the root cause.
+1. **Explore**: `@explorer` gathers context - reads error logs, traces code paths, identifies the affected area.
+2. **Debug**: `@debugger` uses the 5-step protocol to find and fix the root cause.
 3. **Test**: `@tester` verifies the fix and checks for regressions.
 4. **Review**: `@reviewer` evaluates the fix for correctness and side effects.
 
 ## Skill Routing
 
 - Primary skills: `systematic-debugging`, `deep-research`
-- Supporting skills (optional): `unit-testing`, `code-review`
+- Supporting skills (optional): `unit-testing`, `flutter-mobile-qa`, `code-review`
 
 ## Context notes
 
@@ -38,7 +38,7 @@ Use for bug reports, error investigations, test failures, and any issue where th
 
 ## Workflow steps
 
-1. Explorer reads the bug report / error and maps the affected code paths.
+1. Explorer reads the bug report and maps the affected code paths.
 2. Debugger reproduces the issue, traces to root cause, and implements a minimal fix.
 3. Tester runs the previously failing test plus regression tests.
 4. Reviewer checks the fix is correct, minimal, and introduces no new issues.

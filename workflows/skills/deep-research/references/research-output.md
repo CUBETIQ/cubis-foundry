@@ -47,7 +47,7 @@ Research should end with one clear recommendation:
 
 - direct execution
 - a specific workflow like `/plan` or `/create`
-- a specialist like `@researcher` or `@frontend-specialist`
+- a concrete next route such as `@explorer`, `@planner`, or `@implementer`
 - an exact skill like `stitch` or `deep-research`
 
 Keep this recommendation concrete enough that the next step does not need another routing pass.

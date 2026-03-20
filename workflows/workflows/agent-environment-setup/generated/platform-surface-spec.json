@@ -1,0 +1,311 @@
+{
+  "$schema": "./cubis-foundry-platform-surface-spec-v1.schema.json",
+  "generatedAt": "1970-01-01T00:00:00.000Z",
+  "platforms": {
+    "codex": {
+      "platformId": "codex",
+      "label": "Codex",
+      "hookSupport": "experimental",
+      "workflowSurfaceKind": "generated-skill",
+      "specialistRouteRenderer": "subagent",
+      "rules": {
+        "vendorSupport": "native",
+        "foundryStatus": "native",
+        "projectPath": "AGENTS.md",
+        "globalPath": "~/.codex/AGENTS.md",
+        "format": "Markdown",
+        "nativeOrProjected": "native",
+        "notes": "Primary repository instruction surface. Foundry does not ship a separate project workflow directory for Codex."
+      },
+      "skills": {
+        "vendorSupport": "native",
+        "foundryStatus": "native",
+        "projectPath": ".agents/skills/<skill-id>/SKILL.md",
+        "globalPath": "~/.agents/skills/<skill-id>/SKILL.md",
+        "format": "Markdown",
+        "nativeOrProjected": "native",
+        "notes": "Shared skill vault used for direct skill installs."
+      },
+      "workflows": {
+        "vendorSupport": "native via workflow skills",
+        "foundryStatus": "native",
+        "projectPath": ".agents/skills/<workflow-id>/SKILL.md",
+        "globalPath": "~/.agents/skills/<workflow-id>/SKILL.md",
+        "format": "Markdown",
+        "nativeOrProjected": "projected workflow skill",
+        "notes": "Foundry installs workflows as generated workflow skills. `.codex/workflows` is not a shipped install surface."
+      },
+      "customAgents": {
+        "vendorSupport": "unsupported",
+        "foundryStatus": "do-not-ship",
+        "projectPath": null,
+        "globalPath": null,
+        "format": "n/a",
+        "nativeOrProjected": "do-not-ship",
+        "notes": "Use native Codex subagents instead."
+      },
+      "subagents": {
+        "vendorSupport": "native",
+        "foundryStatus": "native",
+        "projectPath": ".codex/agents/*.toml",
+        "globalPath": "~/.codex/agents/*.toml",
+        "format": "TOML",
+        "nativeOrProjected": "native subagent",
+        "notes": "This is the only native specialist file surface Foundry ships for Codex."
+      },
+      "hooks": {
+        "vendorSupport": "experimental",
+        "foundryStatus": "experimental",
+        "projectPath": null,
+        "globalPath": null,
+        "format": "unverified",
+        "nativeOrProjected": "do-not-install",
+        "notes": "Codex 0.116.0 exposes an experimental `userpromptsubmit` hook signal, but the project hook config/schema is not verified, so Foundry emits no hook artifacts by default."
+      }
+    },
+    "claude": {
+      "platformId": "claude",
+      "label": "Claude Code",
+      "hookSupport": "native",
+      "workflowSurfaceKind": "generated-skill",
+      "specialistRouteRenderer": "subagent",
+      "rules": {
+        "vendorSupport": "native",
+        "foundryStatus": "native",
+        "projectPath": "CLAUDE.md",
+        "globalPath": "~/.claude/CLAUDE.md",
+        "format": "Markdown",
+        "nativeOrProjected": "native",
+        "notes": "Primary rules file, with optional scoped rules in `.claude/rules/*.md` and local settings in `.claude/settings.json`."
+      },
+      "skills": {
+        "vendorSupport": "native",
+        "foundryStatus": "native",
+        "projectPath": ".claude/skills/<skill-id>/SKILL.md",
+        "globalPath": "~/.claude/skills/<skill-id>/SKILL.md",
+        "format": "Markdown",
+        "nativeOrProjected": "native",
+        "notes": "Primary Claude skill install surface."
+      },
+      "workflows": {
+        "vendorSupport": "native via workflow skills",
+        "foundryStatus": "native",
+        "projectPath": ".claude/skills/<workflow-id>/SKILL.md",
+        "globalPath": "~/.claude/skills/<workflow-id>/SKILL.md",
+        "format": "Markdown",
+        "nativeOrProjected": "projected workflow skill",
+        "notes": "Foundry installs workflows as generated skills under `.claude/skills`; `.claude/workflows` is legacy cleanup only."
+      },
+      "customAgents": {
+        "vendorSupport": "unsupported",
+        "foundryStatus": "do-not-ship",
+        "projectPath": null,
+        "globalPath": null,
+        "format": "n/a",
+        "nativeOrProjected": "do-not-ship",
+        "notes": "Claude uses subagents rather than a separate custom-agent file class."
+      },
+      "subagents": {
+        "vendorSupport": "native",
+        "foundryStatus": "native",
+        "projectPath": ".claude/agents/*.md",
+        "globalPath": "~/.claude/agents/*.md",
+        "format": "Markdown with YAML frontmatter",
+        "nativeOrProjected": "native subagent",
+        "notes": "Specialist routes ship as native Claude subagents."
+      },
+      "hooks": {
+        "vendorSupport": "native",
+        "foundryStatus": "native",
+        "projectPath": ".claude/hooks/* + .claude/settings.json",
+        "globalPath": "~/.claude/hooks/* + ~/.claude/settings.json",
+        "format": "JSON + JavaScript",
+        "nativeOrProjected": "native hook templates",
+        "notes": "Foundry ships project hook templates and settings snippets for safe native hook wiring."
+      }
+    },
+    "copilot": {
+      "platformId": "copilot",
+      "label": "GitHub Copilot",
+      "hookSupport": "native",
+      "workflowSurfaceKind": "prompt",
+      "specialistRouteRenderer": "custom-agent",
+      "rules": {
+        "vendorSupport": "native",
+        "foundryStatus": "native",
+        "projectPath": ".github/copilot-instructions.md (optionally alongside AGENTS.md and .github/instructions/*.instructions.md)",
+        "globalPath": "~/.copilot/copilot-instructions.md",
+        "format": "Markdown",
+        "nativeOrProjected": "native",
+        "notes": "Foundry treats `.github/copilot-instructions.md` as the primary rules file and may also generate compatible companion instruction surfaces."
+      },
+      "skills": {
+        "vendorSupport": "native",
+        "foundryStatus": "native",
+        "projectPath": ".github/skills/<skill-id>/SKILL.md",
+        "globalPath": "~/.copilot/skills/<skill-id>/SKILL.md",
+        "format": "Markdown",
+        "nativeOrProjected": "native",
+        "notes": "Primary Copilot skill surface."
+      },
+      "workflows": {
+        "vendorSupport": "native prompt files",
+        "foundryStatus": "native",
+        "projectPath": ".github/prompts/<workflow-id>.prompt.md",
+        "globalPath": "~/.copilot/prompts/<workflow-id>.prompt.md",
+        "format": "Markdown prompt file",
+        "nativeOrProjected": "native workflow prompt",
+        "notes": "Foundry ships workflows as prompt files, not a project workflow directory."
+      },
+      "customAgents": {
+        "vendorSupport": "native",
+        "foundryStatus": "native",
+        "projectPath": ".github/agents/*.agent.md",
+        "globalPath": "~/.copilot/agents/*.agent.md",
+        "format": "Markdown with frontmatter",
+        "nativeOrProjected": "native custom agent",
+        "notes": "Foundry should emit `.agent.md` files for Copilot custom agents."
+      },
+      "subagents": {
+        "vendorSupport": "unsupported",
+        "foundryStatus": "do-not-ship",
+        "projectPath": null,
+        "globalPath": null,
+        "format": "n/a",
+        "nativeOrProjected": "do-not-ship",
+        "notes": "Copilot specialist routes use custom agents, not subagents."
+      },
+      "hooks": {
+        "vendorSupport": "native",
+        "foundryStatus": "native",
+        "projectPath": ".github/hooks/*.json + .github/hooks/*.mjs",
+        "globalPath": null,
+        "format": "JSON + JavaScript",
+        "nativeOrProjected": "native hook templates",
+        "notes": "Foundry keeps Copilot hooks security-focused and repo-native. MCP stays in `.vscode/mcp.json`."
+      }
+    },
+    "gemini": {
+      "platformId": "gemini",
+      "label": "Gemini CLI",
+      "hookSupport": "native",
+      "workflowSurfaceKind": "command",
+      "specialistRouteRenderer": "agent-route-command",
+      "rules": {
+        "vendorSupport": "native",
+        "foundryStatus": "native",
+        "projectPath": ".gemini/GEMINI.md",
+        "globalPath": "~/.gemini/GEMINI.md",
+        "format": "Markdown",
+        "nativeOrProjected": "native",
+        "notes": "Foundry treats `.gemini/GEMINI.md` as primary. Root `GEMINI.md` is compatibility/read guidance only."
+      },
+      "skills": {
+        "vendorSupport": "native MCP guidance, no required project skill dir",
+        "foundryStatus": "degraded",
+        "projectPath": null,
+        "globalPath": null,
+        "format": "n/a by default",
+        "nativeOrProjected": "MCP-loaded guidance with optional hint-only Markdown",
+        "notes": "Foundry does not ship `.gemini/skills`. Optional `.agents/skills/<id>/SKILL.md` hints may exist only when explicitly enabled."
+      },
+      "workflows": {
+        "vendorSupport": "native command files",
+        "foundryStatus": "native",
+        "projectPath": ".gemini/commands/<workflow-id>.toml",
+        "globalPath": "~/.gemini/commands/<workflow-id>.toml",
+        "format": "TOML",
+        "nativeOrProjected": "native/projected command route",
+        "notes": "This is the canonical shipped workflow surface for Gemini."
+      },
+      "customAgents": {
+        "vendorSupport": "unsupported in current Foundry ship model",
+        "foundryStatus": "do-not-ship",
+        "projectPath": null,
+        "globalPath": null,
+        "format": "n/a",
+        "nativeOrProjected": "do-not-ship",
+        "notes": "Foundry does not currently ship a Gemini custom-agent file surface."
+      },
+      "subagents": {
+        "vendorSupport": "not shipped in current Foundry adapter",
+        "foundryStatus": "do-not-ship",
+        "projectPath": null,
+        "globalPath": null,
+        "format": "n/a",
+        "nativeOrProjected": "do-not-ship",
+        "notes": "Specialist routes are rendered as command files until a verified native agent surface is adopted."
+      },
+      "hooks": {
+        "vendorSupport": "native",
+        "foundryStatus": "native",
+        "projectPath": ".gemini/hooks/* + .gemini/settings.json",
+        "globalPath": "~/.gemini/settings.json",
+        "format": "JSON + JavaScript",
+        "nativeOrProjected": "native hook templates",
+        "notes": "Foundry ships route/research and shell-security hook templates."
+      }
+    },
+    "antigravity": {
+      "platformId": "antigravity",
+      "label": "Antigravity",
+      "hookSupport": "do-not-ship",
+      "workflowSurfaceKind": "command",
+      "specialistRouteRenderer": "agent-route-command",
+      "rules": {
+        "vendorSupport": "degraded and inferred",
+        "foundryStatus": "native",
+        "projectPath": ".agents/rules/GEMINI.md",
+        "globalPath": "~/.gemini/GEMINI.md",
+        "format": "Markdown",
+        "nativeOrProjected": "projected rules surface",
+        "notes": "Foundry treats this as a Gemini-family compatibility rules surface."
+      },
+      "skills": {
+        "vendorSupport": "degraded and inferred",
+        "foundryStatus": "native",
+        "projectPath": ".agents/skills/<skill-id>/SKILL.md",
+        "globalPath": "~/.gemini/antigravity/skills/<skill-id>/SKILL.md",
+        "format": "Markdown",
+        "nativeOrProjected": "projected skill surface",
+        "notes": "Primary shipped skill surface for Antigravity compatibility installs."
+      },
+      "workflows": {
+        "vendorSupport": "degraded command projection",
+        "foundryStatus": "native",
+        "projectPath": ".gemini/commands/<workflow-id>.toml",
+        "globalPath": "~/.gemini/commands/<workflow-id>.toml",
+        "format": "TOML",
+        "nativeOrProjected": "projected command route",
+        "notes": "Foundry ships workflows as Gemini-family command routes."
+      },
+      "customAgents": {
+        "vendorSupport": "unsupported",
+        "foundryStatus": "do-not-ship",
+        "projectPath": null,
+        "globalPath": null,
+        "format": "n/a",
+        "nativeOrProjected": "do-not-ship",
+        "notes": "Foundry does not claim a native Antigravity custom-agent file surface."
+      },
+      "subagents": {
+        "vendorSupport": "unsupported",
+        "foundryStatus": "do-not-ship",
+        "projectPath": null,
+        "globalPath": null,
+        "format": "n/a",
+        "nativeOrProjected": "do-not-ship",
+        "notes": "Specialist behavior is projected through command routes, not subagent files."
+      },
+      "hooks": {
+        "vendorSupport": "unsupported and unverified",
+        "foundryStatus": "do-not-ship",
+        "projectPath": null,
+        "globalPath": null,
+        "format": "n/a",
+        "nativeOrProjected": "do-not-ship",
+        "notes": "No verified native hook surface is claimed for Antigravity in Foundry."
+      }
+    }
+  }
+}

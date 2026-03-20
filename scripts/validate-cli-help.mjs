@@ -76,6 +76,11 @@ assertIncludes(
 );
 assertIncludes(
   normalizedInstallHelp,
+  "--android",
+  "workflows install help",
+);
+assertIncludes(
+  normalizedInstallHelp,
   'skill install profile: core|web-backend|full (default: "full")',
   "workflows install help",
 );
@@ -97,7 +102,7 @@ assertIncludes(
 );
 assertIncludes(
   normalizedInitHelp,
-  "cubis-foundry,postman,stitch,playwright",
+  "cubis-foundry,postman,stitch,playwright,android",
   "init help",
 );
 assertIncludes(

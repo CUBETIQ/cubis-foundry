@@ -19,6 +19,7 @@ Provide systematic guidance for building distinctive, production-grade frontend 
 - Reviewing animation and motion patterns for usability and performance
 - Establishing frontend coding standards for a team or project
 - Beautifying an existing UI that feels flat, generic, or inconsistent
+- Preparing a design brief before Google Stitch generates or edits UI screens
 
 ## Instructions
 
@@ -58,6 +59,8 @@ Provide systematic guidance for building distinctive, production-grade frontend 
 
 18. **Test visual regressions alongside functional behavior** — Combine unit tests for logic, integration tests for composition, and visual regression snapshots for appearance so that refactors cannot silently break the user experience.
 
+19. **For Stitch-driven UI work, load only the refs needed for generation quality** — Start with `references/visual-direction.md` and `references/design-tokens.md` before prompting Stitch. Add `references/component-architecture.md` only when you are converting Stitch output into real components. Add `references/accessibility.md`, `references/responsive-patterns.md`, and `references/animation.md` only when the request explicitly needs those concerns. If the task spans multiple screens or iterative Stitch work, pair this skill with `stitch-design-system` so the design language persists across runs.
+
 ## Output Format
 
 Deliver:
@@ -81,6 +84,8 @@ Load only what the current task requires.
 | `references/accessibility.md` | Task involves ARIA, keyboard navigation, screen readers, or WCAG compliance. |
 | `references/responsive-patterns.md` | Task involves responsive layout, container queries, fluid grids, or adaptive design. |
 | `references/animation.md` | Task involves transitions, micro-interactions, easing curves, or motion accessibility. |
+
+For Stitch workflows, always start with `references/visual-direction.md` and `references/design-tokens.md`. Add `component-architecture`, `accessibility`, `responsive-patterns`, or `animation` only when the current screen actually needs them.
 
 ## Codex Platform Notes
 

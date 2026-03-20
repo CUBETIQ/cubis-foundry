@@ -1,6 +1,6 @@
 ---
 name: mcp-server-builder
-description: "Use when building MCP servers with spec-compliant tools, structured outputs, resource providers, transport configuration, and server testing."
+description: "Use when building MCP servers with spec-compliant tools, structured outputs, resource providers, transport configuration, and server testing. Anthropic compatibility aliases: mcp builder, mcp-builder."
 ---
 # MCP Server Builder
 
@@ -80,6 +80,11 @@ Guide the design and implementation of production-grade Model Context Protocol (
 - "Build an MCP server that exposes file system tools with read, write, and search capabilities."
 - "Add a resource provider that serves database schema documentation to connected agents."
 - "Test an MCP server's tool registration and error handling with a mock client."
+
+## Compatibility Aliases
+
+Anthropic upstream compatibility names for this skill: `mcp builder`, `mcp-builder`.
+Treat requests that use those names as equivalent to this canonical Foundry skill.
 
 ## Codex Platform Notes
 

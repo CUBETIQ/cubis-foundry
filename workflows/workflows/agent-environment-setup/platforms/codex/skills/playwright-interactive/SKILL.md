@@ -1,6 +1,6 @@
 ---
 name: playwright-interactive
-description: "Use when building interactive Playwright suites for browser automation, visual regression, accessibility audits, network interception, and collaborative test workflows."
+description: "Use when building interactive Playwright suites for browser automation, visual regression, accessibility audits, network interception, and collaborative test workflows. Anthropic compatibility aliases: webapp testing, webapp-testing."
 ---
 # Playwright Interactive
 
@@ -75,6 +75,11 @@ Deliver:
 | `agents/test-author.md` | Delegating interactive flow test authoring |
 | `agents/visual-reviewer.md` | Delegating screenshot comparison and visual regression tasks |
 | `agents/accessibility-auditor.md` | Delegating accessibility scans and report generation |
+
+## Compatibility Aliases
+
+Anthropic upstream compatibility names for this skill: `webapp testing`, `webapp-testing`.
+Treat requests that use those names as equivalent to this canonical Foundry skill.
 
 ## Codex Platform Notes
 

@@ -76,8 +76,8 @@
     "aliases": [],
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
+    "maturity": "stable",
+    "tier": "curated",
     "tags": [
       "cd",
       "ci",
@@ -111,7 +111,7 @@
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
     "maturity": "stable",
-    "tier": "curated",
+    "tier": "system",
     "tags": [
       "code",
       "code review",
@@ -143,7 +143,7 @@
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
     "maturity": "stable",
-    "tier": "system",
+    "tier": "curated",
     "tags": [
       "csharp",
       "csharp best practices",
@@ -206,8 +206,8 @@
     "aliases": [],
     "category": "core-operating",
     "layer": "core-operating",
-    "maturity": "incubating",
-    "tier": "experimental",
+    "maturity": "stable",
+    "tier": "system",
     "tags": [
       "core-operating",
       "deep",
@@ -238,8 +238,8 @@
     "aliases": [],
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
+    "maturity": "stable",
+    "tier": "curated",
     "tags": [
       "django",
       "django drf",
@@ -270,8 +270,8 @@
     "aliases": [],
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
+    "maturity": "stable",
+    "tier": "curated",
     "tags": [
       "compose",
       "dev",
@@ -292,70 +292,6 @@
     ]
   },
   {
-    "id": "drizzle-orm",
-    "package_id": "drizzle-orm",
-    "catalog_id": "drizzle-orm",
-    "kind": "skill",
-    "name": "drizzle-orm",
-    "canonical": true,
-    "canonical_id": "drizzle-orm",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "stable",
-    "tier": "curated",
-    "tags": [
-      "drizzle",
-      "drizzle orm",
-      "drizzle-orm",
-      "orm",
-      "workflow-specialists"
-    ],
-    "path": ".claude/skills/drizzle-orm/SKILL.md",
-    "description": "Use when building or refactoring TypeScript data layers with Drizzle ORM: schema-as-code, relational queries, type-safe SQL, drizzle-kit migrations, and edge/serverless deployment patterns.",
-    "triggers": [
-      "drizzle-orm",
-      "drizzle orm",
-      "drizzle",
-      "orm",
-      "workflow-specialists"
-    ]
-  },
-  {
-    "id": "electron-qa",
-    "package_id": "electron-qa",
-    "catalog_id": "electron-qa",
-    "kind": "skill",
-    "name": "electron-qa",
-    "canonical": true,
-    "canonical_id": "electron-qa",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
-    "tags": [
-      "electron",
-      "electron qa",
-      "electron-qa",
-      "qa",
-      "workflow-specialists"
-    ],
-    "path": ".claude/skills/electron-qa/SKILL.md",
-    "description": "Use when testing Electron apps with Playwright, validating IPC between main and renderer, checking native modules, verifying packaging, or setting up Electron CI.",
-    "triggers": [
-      "electron-qa",
-      "electron qa",
-      "electron",
-      "qa",
-      "workflow-specialists"
-    ]
-  },
-  {
     "id": "expo-app",
     "package_id": "expo-app",
     "catalog_id": "expo-app",
@@ -369,7 +305,7 @@
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
     "maturity": "stable",
-    "tier": "system",
+    "tier": "curated",
     "tags": [
       "app",
       "expo",
@@ -384,38 +320,6 @@
       "expo app",
       "expo",
       "app",
-      "workflow-specialists"
-    ]
-  },
-  {
-    "id": "express-nodejs",
-    "package_id": "express-nodejs",
-    "catalog_id": "express-nodejs",
-    "kind": "skill",
-    "name": "express-nodejs",
-    "canonical": true,
-    "canonical_id": "express-nodejs",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
-    "tags": [
-      "express",
-      "express nodejs",
-      "express-nodejs",
-      "nodejs",
-      "workflow-specialists"
-    ],
-    "path": ".claude/skills/express-nodejs/SKILL.md",
-    "description": "Use when building Express.js services on modern Node.js, including Express 5 routing, async middleware, TypeScript integration, security headers, error handling, and production hardening.",
-    "triggers": [
-      "express-nodejs",
-      "express nodejs",
-      "express",
-      "nodejs",
       "workflow-specialists"
     ]
   },
@@ -446,6 +350,40 @@
     ]
   },
   {
+    "id": "flutter-mobile-qa",
+    "package_id": "flutter-mobile-qa",
+    "catalog_id": "flutter-mobile-qa",
+    "kind": "skill",
+    "name": "flutter-mobile-qa",
+    "canonical": true,
+    "canonical_id": "flutter-mobile-qa",
+    "deprecated": false,
+    "replaced_by": null,
+    "aliases": [],
+    "category": "workflow-specialists",
+    "layer": "workflow-specialists",
+    "maturity": "incubating",
+    "tier": "experimental",
+    "tags": [
+      "flutter",
+      "flutter mobile qa",
+      "flutter-mobile-qa",
+      "mobile",
+      "qa",
+      "workflow-specialists"
+    ],
+    "path": ".claude/skills/flutter-mobile-qa/SKILL.md",
+    "description": "Use when planning or running Flutter mobile QA with an Android emulator, ADB-backed MCP tooling, screenshot/UI-tree evidence, logcat triage, and structured test reporting.",
+    "triggers": [
+      "flutter-mobile-qa",
+      "flutter mobile qa",
+      "flutter",
+      "mobile",
+      "qa",
+      "workflow-specialists"
+    ]
+  },
+  {
     "id": "frontend-design",
     "package_id": "frontend-design",
     "catalog_id": "frontend-design",
@@ -459,7 +397,7 @@
     "category": "frameworks-runtimes",
     "layer": "frameworks-runtimes",
     "maturity": "stable",
-    "tier": "curated",
+    "tier": "system",
     "tags": [
       "design",
       "frameworks-runtimes",
@@ -478,38 +416,6 @@
     ]
   },
   {
-    "id": "gin-golang",
-    "package_id": "gin-golang",
-    "catalog_id": "gin-golang",
-    "kind": "skill",
-    "name": "gin-golang",
-    "canonical": true,
-    "canonical_id": "gin-golang",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
-    "tags": [
-      "gin",
-      "gin golang",
-      "gin-golang",
-      "golang",
-      "workflow-specialists"
-    ],
-    "path": ".claude/skills/gin-golang/SKILL.md",
-    "description": "Use when building Gin-based Go services, including routing, middleware chains, request validation, structured errors, context propagation, and deployment hardening.",
-    "triggers": [
-      "gin-golang",
-      "gin golang",
-      "gin",
-      "golang",
-      "workflow-specialists"
-    ]
-  },
-  {
     "id": "git-workflow",
     "package_id": "git-workflow",
     "catalog_id": "git-workflow",
@@ -522,8 +428,8 @@
     "aliases": [],
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
+    "maturity": "stable",
+    "tier": "system",
     "tags": [
       "git",
       "git workflow",
@@ -542,38 +448,6 @@
     ]
   },
   {
-    "id": "go-fiber",
-    "package_id": "go-fiber",
-    "catalog_id": "go-fiber",
-    "kind": "skill",
-    "name": "go-fiber",
-    "canonical": true,
-    "canonical_id": "go-fiber",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
-    "tags": [
-      "fiber",
-      "go",
-      "go fiber",
-      "go-fiber",
-      "workflow-specialists"
-    ],
-    "path": ".claude/skills/go-fiber/SKILL.md",
-    "description": "Use when building Go Fiber services, including routing, middleware, WebSockets, request validation, structured errors, and performance tuning.",
-    "triggers": [
-      "go-fiber",
-      "go fiber",
-      "go",
-      "fiber",
-      "workflow-specialists"
-    ]
-  },
-  {
     "id": "golang-best-practices",
     "package_id": "golang-best-practices",
     "catalog_id": "golang-best-practices",
@@ -587,7 +461,7 @@
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
     "maturity": "stable",
-    "tier": "system",
+    "tier": "curated",
     "tags": [
       "golang",
       "golang best practices",
@@ -606,70 +480,6 @@
     ]
   },
   {
-    "id": "google-workspace",
-    "package_id": "google-workspace",
-    "catalog_id": "google-workspace",
-    "kind": "skill",
-    "name": "google-workspace",
-    "canonical": true,
-    "canonical_id": "google-workspace",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
-    "tags": [
-      "google",
-      "google workspace",
-      "google-workspace",
-      "workflow-specialists",
-      "workspace"
-    ],
-    "path": ".claude/skills/google-workspace/SKILL.md",
-    "description": "Use when integrating Google Workspace APIs: Gmail sending and search, Drive file management and sharing, Calendar event operations, Sheets data reading and writing, OAuth2 and service account authentication, and batch request optimization.",
-    "triggers": [
-      "google-workspace",
-      "google workspace",
-      "google",
-      "workspace",
-      "workflow-specialists"
-    ]
-  },
-  {
-    "id": "huggingface-ml",
-    "package_id": "huggingface-ml",
-    "catalog_id": "huggingface-ml",
-    "kind": "skill",
-    "name": "huggingface-ml",
-    "canonical": true,
-    "canonical_id": "huggingface-ml",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
-    "tags": [
-      "huggingface",
-      "huggingface ml",
-      "huggingface-ml",
-      "ml",
-      "workflow-specialists"
-    ],
-    "path": ".claude/skills/huggingface-ml/SKILL.md",
-    "description": "Use when building ML workflows with Hugging Face, including model loading, inference APIs, fine-tuning with Trainer or PEFT, Hub versioning, and Spaces demos.",
-    "triggers": [
-      "huggingface-ml",
-      "huggingface ml",
-      "huggingface",
-      "ml",
-      "workflow-specialists"
-    ]
-  },
-  {
     "id": "integration-testing",
     "package_id": "integration-testing",
     "catalog_id": "integration-testing",
@@ -683,7 +493,7 @@
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
     "maturity": "stable",
-    "tier": "curated",
+    "tier": "system",
     "tags": [
       "integration",
       "integration testing",
@@ -715,7 +525,7 @@
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
     "maturity": "stable",
-    "tier": "system",
+    "tier": "curated",
     "tags": [
       "java",
       "java best practices",
@@ -734,38 +544,6 @@
     ]
   },
   {
-    "id": "javascript-best-practices",
-    "package_id": "javascript-best-practices",
-    "catalog_id": "javascript-best-practices",
-    "kind": "skill",
-    "name": "javascript-best-practices",
-    "canonical": true,
-    "canonical_id": "javascript-best-practices",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "stable",
-    "tier": "system",
-    "tags": [
-      "javascript",
-      "javascript best practices",
-      "javascript-best-practices",
-      "practices",
-      "workflow-specialists"
-    ],
-    "path": ".claude/skills/javascript-best-practices/SKILL.md",
-    "description": "Use when writing, refactoring, or reviewing modern JavaScript across Node.js, Bun, Deno, and browsers, including modules, async orchestration, compatibility, bundling, and testing.",
-    "triggers": [
-      "javascript-best-practices",
-      "javascript best practices",
-      "javascript",
-      "practices",
-      "workflow-specialists"
-    ]
-  },
-  {
     "id": "kaizen-iteration",
     "package_id": "kaizen-iteration",
     "catalog_id": "kaizen-iteration",
@@ -778,8 +556,8 @@
     "aliases": [],
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
+    "maturity": "stable",
+    "tier": "system",
     "tags": [
       "iteration",
       "kaizen",
@@ -811,7 +589,7 @@
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
     "maturity": "stable",
-    "tier": "system",
+    "tier": "curated",
     "tags": [
       "kotlin",
       "kotlin best practices",
@@ -842,8 +620,8 @@
     "aliases": [],
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
+    "maturity": "stable",
+    "tier": "curated",
     "tags": [
       "deploy",
       "kubernetes",
@@ -862,64 +640,6 @@
     ]
   },
   {
-    "id": "laravel",
-    "package_id": "laravel",
-    "catalog_id": "laravel",
-    "kind": "skill",
-    "name": "laravel",
-    "canonical": true,
-    "canonical_id": "laravel",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
-    "tags": [
-      "laravel",
-      "workflow-specialists"
-    ],
-    "path": ".claude/skills/laravel/SKILL.md",
-    "description": "Use when building Laravel 11+ applications with Eloquent ORM, middleware pipelines, queue-driven jobs, event broadcasting, and API resources for JSON:API-style responses.",
-    "triggers": [
-      "laravel",
-      "workflow-specialists"
-    ]
-  },
-  {
-    "id": "llm-eval",
-    "package_id": "llm-eval",
-    "catalog_id": "llm-eval",
-    "kind": "skill",
-    "name": "llm-eval",
-    "canonical": true,
-    "canonical_id": "llm-eval",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "stable",
-    "tier": "system",
-    "tags": [
-      "eval",
-      "llm",
-      "llm eval",
-      "llm-eval",
-      "workflow-specialists"
-    ],
-    "path": ".claude/skills/llm-eval/SKILL.md",
-    "description": "Use when designing LLM evaluation suites, writing assertions, building benchmarks, running human evals, implementing automated scoring, or detecting regressions across model or prompt versions.",
-    "triggers": [
-      "llm-eval",
-      "llm eval",
-      "llm",
-      "eval",
-      "workflow-specialists"
-    ]
-  },
-  {
     "id": "mcp-server-builder",
     "package_id": "mcp-server-builder",
     "catalog_id": "mcp-server-builder",
@@ -929,7 +649,10 @@
     "canonical_id": "mcp-server-builder",
     "deprecated": false,
     "replaced_by": null,
-    "aliases": [],
+    "aliases": [
+      "mcp builder",
+      "mcp-builder"
+    ],
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
     "maturity": "stable",
@@ -937,7 +660,9 @@
     "tags": [
       "builder",
       "mcp",
+      "mcp builder",
       "mcp server builder",
+      "mcp-builder",
       "mcp-server-builder",
       "server",
       "workflow-specialists"
@@ -945,43 +670,13 @@
     "path": ".claude/skills/mcp-server-builder/SKILL.md",
     "description": "Use when building MCP servers with spec-compliant tools, structured outputs, resource providers, transport configuration, and server testing.",
     "triggers": [
-      "mcp-server-builder",
-      "mcp server builder",
-      "mcp",
-      "server",
       "builder",
-      "workflow-specialists"
-    ]
-  },
-  {
-    "id": "microservices-design",
-    "package_id": "microservices-design",
-    "catalog_id": "microservices-design",
-    "kind": "skill",
-    "name": "microservices-design",
-    "canonical": true,
-    "canonical_id": "microservices-design",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "stable",
-    "tier": "curated",
-    "tags": [
-      "design",
-      "microservices",
-      "microservices design",
-      "microservices-design",
-      "workflow-specialists"
-    ],
-    "path": ".claude/skills/microservices-design/SKILL.md",
-    "description": "Microservices architecture patterns covering service decomposition, API gateways, service mesh, saga pattern, event sourcing, and deployment strategies for distributed applications.",
-    "triggers": [
-      "microservices-design",
-      "microservices design",
-      "microservices",
-      "design",
+      "mcp",
+      "mcp builder",
+      "mcp server builder",
+      "mcp-builder",
+      "mcp-server-builder",
+      "server",
       "workflow-specialists"
     ]
   },
@@ -1025,7 +720,7 @@
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
     "maturity": "stable",
-    "tier": "system",
+    "tier": "curated",
     "tags": [
       "nextjs",
       "workflow-specialists"
@@ -1050,8 +745,8 @@
     "aliases": [],
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
+    "maturity": "stable",
+    "tier": "curated",
     "tags": [
       "observability",
       "workflow-specialists"
@@ -1077,7 +772,7 @@
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
     "maturity": "stable",
-    "tier": "curated",
+    "tier": "system",
     "tags": [
       "owasp",
       "owasp security review",
@@ -1110,8 +805,8 @@
     "aliases": [],
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
+    "maturity": "stable",
+    "tier": "curated",
     "tags": [
       "pentest",
       "pentest skill",
@@ -1130,70 +825,6 @@
     ]
   },
   {
-    "id": "performance-testing",
-    "package_id": "performance-testing",
-    "catalog_id": "performance-testing",
-    "kind": "skill",
-    "name": "performance-testing",
-    "canonical": true,
-    "canonical_id": "performance-testing",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "stable",
-    "tier": "curated",
-    "tags": [
-      "performance",
-      "performance testing",
-      "performance-testing",
-      "testing",
-      "workflow-specialists"
-    ],
-    "path": ".claude/skills/performance-testing/SKILL.md",
-    "description": "Performance testing and benchmarking covering load testing, stress testing, profiling, and bottleneck identification. Use when evaluating system performance or detecting regressions.",
-    "triggers": [
-      "performance-testing",
-      "performance testing",
-      "performance",
-      "testing",
-      "workflow-specialists"
-    ]
-  },
-  {
-    "id": "php-best-practices",
-    "package_id": "php-best-practices",
-    "catalog_id": "php-best-practices",
-    "kind": "skill",
-    "name": "php-best-practices",
-    "canonical": true,
-    "canonical_id": "php-best-practices",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "stable",
-    "tier": "system",
-    "tags": [
-      "php",
-      "php best practices",
-      "php-best-practices",
-      "practices",
-      "workflow-specialists"
-    ],
-    "path": ".claude/skills/php-best-practices/SKILL.md",
-    "description": "Use when writing, reviewing, or refactoring modern PHP, including readonly classes, enums, property hooks, Composer package design, strict types, and security hardening.",
-    "triggers": [
-      "php-best-practices",
-      "php best practices",
-      "php",
-      "practices",
-      "workflow-specialists"
-    ]
-  },
-  {
     "id": "playwright-interactive",
     "package_id": "playwright-interactive",
     "catalog_id": "playwright-interactive",
@@ -1203,7 +834,10 @@
     "canonical_id": "playwright-interactive",
     "deprecated": false,
     "replaced_by": null,
-    "aliases": [],
+    "aliases": [
+      "webapp testing",
+      "webapp-testing"
+    ],
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
     "maturity": "stable",
@@ -1213,49 +847,19 @@
       "playwright",
       "playwright interactive",
       "playwright-interactive",
+      "webapp testing",
+      "webapp-testing",
       "workflow-specialists"
     ],
     "path": ".claude/skills/playwright-interactive/SKILL.md",
     "description": "Use when building interactive Playwright suites for browser automation, visual regression, accessibility audits, network interception, and collaborative test workflows.",
     "triggers": [
-      "playwright-interactive",
-      "playwright interactive",
-      "playwright",
       "interactive",
-      "workflow-specialists"
-    ]
-  },
-  {
-    "id": "playwright-persistent-browser",
-    "package_id": "playwright-persistent-browser",
-    "catalog_id": "playwright-persistent-browser",
-    "kind": "skill",
-    "name": "playwright-persistent-browser",
-    "canonical": true,
-    "canonical_id": "playwright-persistent-browser",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
-    "tags": [
-      "browser",
-      "persistent",
       "playwright",
-      "playwright persistent browser",
-      "playwright-persistent-browser",
-      "workflow-specialists"
-    ],
-    "path": ".claude/skills/playwright-persistent-browser/SKILL.md",
-    "description": "Use when implementing persistent browser sessions in Playwright: long-running browser contexts, cookie and session persistence, authentication state serialization, multi-tab coordination, or debugging browser lifecycle issues.",
-    "triggers": [
-      "playwright-persistent-browser",
-      "playwright persistent browser",
-      "playwright",
-      "persistent",
-      "browser",
+      "playwright interactive",
+      "playwright-interactive",
+      "webapp testing",
+      "webapp-testing",
       "workflow-specialists"
     ]
   },
@@ -1272,8 +876,8 @@
     "aliases": [],
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
+    "maturity": "stable",
+    "tier": "curated",
     "tags": [
       "prisma",
       "workflow-specialists"
@@ -1331,7 +935,7 @@
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
     "maturity": "stable",
-    "tier": "system",
+    "tier": "curated",
     "tags": [
       "practices",
       "python",
@@ -1350,38 +954,6 @@
     ]
   },
   {
-    "id": "rag-patterns",
-    "package_id": "rag-patterns",
-    "catalog_id": "rag-patterns",
-    "kind": "skill",
-    "name": "rag-patterns",
-    "canonical": true,
-    "canonical_id": "rag-patterns",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
-    "tags": [
-      "patterns",
-      "rag",
-      "rag patterns",
-      "rag-patterns",
-      "workflow-specialists"
-    ],
-    "path": ".claude/skills/rag-patterns/SKILL.md",
-    "description": "Use when designing or optimizing Retrieval-Augmented Generation systems: chunking strategies, embedding model selection, vector store configuration, retrieval optimization, hybrid search, re-ranking, and production RAG pipelines.",
-    "triggers": [
-      "rag-patterns",
-      "rag patterns",
-      "rag",
-      "patterns",
-      "workflow-specialists"
-    ]
-  },
-  {
     "id": "react",
     "package_id": "react",
     "catalog_id": "react",
@@ -1395,7 +967,7 @@
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
     "maturity": "stable",
-    "tier": "system",
+    "tier": "curated",
     "tags": [
       "react",
       "workflow-specialists"
@@ -1404,166 +976,6 @@
     "description": "Use when building user interfaces with React 19+. Invoke for Server Components, the use() hook, Suspense, Actions, concurrent features, ref callbacks, and component architecture.",
     "triggers": [
       "react",
-      "workflow-specialists"
-    ]
-  },
-  {
-    "id": "react-native",
-    "package_id": "react-native",
-    "catalog_id": "react-native",
-    "kind": "skill",
-    "name": "react-native",
-    "canonical": true,
-    "canonical_id": "react-native",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
-    "tags": [
-      "native",
-      "react",
-      "react native",
-      "react-native",
-      "workflow-specialists"
-    ],
-    "path": ".claude/skills/react-native/SKILL.md",
-    "description": "Use when building cross-platform mobile applications with React Native and Expo. Invoke for New Architecture (Fabric, TurboModules), Expo SDK 52+, native module bridging, navigation, and mobile performance optimization.",
-    "triggers": [
-      "react-native",
-      "react native",
-      "react",
-      "native",
-      "workflow-specialists"
-    ]
-  },
-  {
-    "id": "react-native-callstack",
-    "package_id": "react-native-callstack",
-    "catalog_id": "react-native-callstack",
-    "kind": "skill",
-    "name": "react-native-callstack",
-    "canonical": true,
-    "canonical_id": "react-native-callstack",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
-    "tags": [
-      "callstack",
-      "native",
-      "react",
-      "react native callstack",
-      "react-native-callstack",
-      "workflow-specialists"
-    ],
-    "path": ".claude/skills/react-native-callstack/SKILL.md",
-    "description": "Use when building React Native apps with Callstack patterns: performance profiling and optimization, Turbo Module and Fabric native module development, brownfield integration into existing iOS and Android apps, and mobile CI/CD pipelines.",
-    "triggers": [
-      "react-native-callstack",
-      "react native callstack",
-      "react",
-      "native",
-      "callstack",
-      "workflow-specialists"
-    ]
-  },
-  {
-    "id": "receiving-code-review",
-    "package_id": "receiving-code-review",
-    "catalog_id": "receiving-code-review",
-    "kind": "skill",
-    "name": "receiving-code-review",
-    "canonical": true,
-    "canonical_id": "receiving-code-review",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
-    "tags": [
-      "code",
-      "receiving",
-      "receiving code review",
-      "receiving-code-review",
-      "review",
-      "workflow-specialists"
-    ],
-    "path": ".claude/skills/receiving-code-review/SKILL.md",
-    "description": "Use when responding to code review feedback, incorporating reviewer suggestions, handling disagreements constructively, iterating through review cycles, or learning from repeated feedback patterns.",
-    "triggers": [
-      "receiving-code-review",
-      "receiving code review",
-      "receiving",
-      "code",
-      "review",
-      "workflow-specialists"
-    ]
-  },
-  {
-    "id": "remix",
-    "package_id": "remix",
-    "catalog_id": "remix",
-    "kind": "skill",
-    "name": "remix",
-    "canonical": true,
-    "canonical_id": "remix",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
-    "tags": [
-      "remix",
-      "workflow-specialists"
-    ],
-    "path": ".claude/skills/remix/SKILL.md",
-    "description": "Use when building Remix v2+ applications with nested routing, loaders, actions, progressive enhancement, streaming, server-side rendering, and full-stack data flow patterns.",
-    "triggers": [
-      "remix",
-      "workflow-specialists"
-    ]
-  },
-  {
-    "id": "requesting-code-review",
-    "package_id": "requesting-code-review",
-    "catalog_id": "requesting-code-review",
-    "kind": "skill",
-    "name": "requesting-code-review",
-    "canonical": true,
-    "canonical_id": "requesting-code-review",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
-    "tags": [
-      "code",
-      "requesting",
-      "requesting code review",
-      "requesting-code-review",
-      "review",
-      "workflow-specialists"
-    ],
-    "path": ".claude/skills/requesting-code-review/SKILL.md",
-    "description": "Use when preparing code for review, writing PR descriptions, selecting reviewers, structuring changes for easy review, or managing review timelines.",
-    "triggers": [
-      "requesting-code-review",
-      "requesting code review",
-      "requesting",
-      "code",
-      "review",
       "workflow-specialists"
     ]
   },
@@ -1581,7 +993,7 @@
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
     "maturity": "stable",
-    "tier": "system",
+    "tier": "curated",
     "tags": [
       "practices",
       "rust",
@@ -1600,64 +1012,6 @@
     ]
   },
   {
-    "id": "sadd",
-    "package_id": "sadd",
-    "catalog_id": "sadd",
-    "kind": "skill",
-    "name": "sadd",
-    "canonical": true,
-    "canonical_id": "sadd",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
-    "tags": [
-      "sadd",
-      "workflow-specialists"
-    ],
-    "path": ".claude/skills/sadd/SKILL.md",
-    "description": "Use when extracting testable specs from requirements, generating tests from specs, verifying implementations against specs, and tracing requirements to coverage.",
-    "triggers": [
-      "sadd",
-      "workflow-specialists"
-    ]
-  },
-  {
-    "id": "sanitize-pii",
-    "package_id": "sanitize-pii",
-    "catalog_id": "sanitize-pii",
-    "kind": "skill",
-    "name": "sanitize-pii",
-    "canonical": true,
-    "canonical_id": "sanitize-pii",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
-    "tags": [
-      "pii",
-      "sanitize",
-      "sanitize pii",
-      "sanitize-pii",
-      "workflow-specialists"
-    ],
-    "path": ".claude/skills/sanitize-pii/SKILL.md",
-    "description": "Detect and sanitize personally identifiable information (PII) in code, logs, databases, and data pipelines. Covers PII identification, redaction strategies, data masking, GDPR/CCPA compliance, and audit trail implementation.",
-    "triggers": [
-      "sanitize-pii",
-      "sanitize pii",
-      "sanitize",
-      "pii",
-      "workflow-specialists"
-    ]
-  },
-  {
     "id": "secret-management",
     "package_id": "secret-management",
     "catalog_id": "secret-management",
@@ -1670,8 +1024,8 @@
     "aliases": [],
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
+    "maturity": "stable",
+    "tier": "system",
     "tags": [
       "management",
       "secret",
@@ -1734,8 +1088,8 @@
     "aliases": [],
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
+    "maturity": "stable",
+    "tier": "system",
     "tags": [
       "delivery",
       "driven",
@@ -1768,8 +1122,8 @@
     "aliases": [],
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
+    "maturity": "stable",
+    "tier": "curated",
     "tags": [
       "boot",
       "spring",
@@ -1800,8 +1154,8 @@
     "aliases": [],
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
+    "maturity": "stable",
+    "tier": "curated",
     "tags": [
       "sqlalchemy",
       "workflow-specialists"
@@ -1819,55 +1173,159 @@
     "catalog_id": "stitch",
     "kind": "skill",
     "name": "stitch",
+    "canonical": false,
+    "canonical_id": "stitch-design-orchestrator",
+    "deprecated": true,
+    "replaced_by": "stitch-design-orchestrator",
+    "aliases": [],
+    "category": "compatibility",
+    "layer": "compatibility",
+    "maturity": "compatibility",
+    "tier": "compatibility",
+    "tags": [
+      "compatibility",
+      "stitch"
+    ],
+    "path": ".claude/skills/stitch/SKILL.md",
+    "description": "Compatibility wrapper for explicit `stitch` requests. Use this when older docs or users name `stitch` directly and route them into the design-first Stitch sequence: frontend-design, prompt enhancement, design-system sync, Stitch orchestration, and implementation handoff.",
+    "triggers": [
+      "stitch",
+      "compatibility"
+    ]
+  },
+  {
+    "id": "stitch-design-orchestrator",
+    "package_id": "stitch-design-orchestrator",
+    "catalog_id": "stitch-design-orchestrator",
+    "kind": "skill",
+    "name": "stitch-design-orchestrator",
     "canonical": true,
-    "canonical_id": "stitch",
+    "canonical_id": "stitch-design-orchestrator",
     "deprecated": false,
     "replaced_by": null,
     "aliases": [],
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
+    "maturity": "stable",
+    "tier": "system",
     "tags": [
+      "design",
+      "orchestrator",
       "stitch",
+      "stitch design orchestrator",
+      "stitch-design-orchestrator",
       "workflow-specialists"
     ],
-    "path": ".claude/skills/stitch/SKILL.md",
-    "description": "Use when implementing or updating UI from Google Stitch artifacts, screen-to-code handoff, design-to-code diffs, or syncing an existing screen with the latest Stitch output through Cubis Foundry MCP.",
+    "path": ".claude/skills/stitch-design-orchestrator/SKILL.md",
+    "description": "Orchestrate safe, design-first Google Stitch generation and editing by sequencing frontend-design, prompt enhancement, design-system sync, Stitch MCP tool selection, and implementation handoff.",
     "triggers": [
+      "stitch-design-orchestrator",
+      "stitch design orchestrator",
       "stitch",
+      "design",
+      "orchestrator",
       "workflow-specialists"
     ]
   },
   {
-    "id": "stripe-integration",
-    "package_id": "stripe-integration",
-    "catalog_id": "stripe-integration",
+    "id": "stitch-design-system",
+    "package_id": "stitch-design-system",
+    "catalog_id": "stitch-design-system",
     "kind": "skill",
-    "name": "stripe-integration",
+    "name": "stitch-design-system",
     "canonical": true,
-    "canonical_id": "stripe-integration",
+    "canonical_id": "stitch-design-system",
     "deprecated": false,
     "replaced_by": null,
     "aliases": [],
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
+    "maturity": "stable",
+    "tier": "system",
     "tags": [
-      "integration",
-      "stripe",
-      "stripe integration",
-      "stripe-integration",
+      "design",
+      "stitch",
+      "stitch design system",
+      "stitch-design-system",
+      "system",
       "workflow-specialists"
     ],
-    "path": ".claude/skills/stripe-integration/SKILL.md",
-    "description": "Use when building Stripe payment integrations: checkout sessions, subscriptions, webhook handling, idempotent API calls, fraud prevention, and end-to-end payment testing with Stripe CLI.",
+    "path": ".claude/skills/stitch-design-system/SKILL.md",
+    "description": "Create or refresh a Stitch-compatible design-system context by maintaining docs/foundation/DESIGN.md as the canonical source and mirroring it to .stitch/DESIGN.md when Stitch flows need persistent visual consistency.",
     "triggers": [
-      "stripe-integration",
-      "stripe integration",
-      "stripe",
-      "integration",
+      "stitch-design-system",
+      "stitch design system",
+      "stitch",
+      "design",
+      "system",
+      "workflow-specialists"
+    ]
+  },
+  {
+    "id": "stitch-implementation-handoff",
+    "package_id": "stitch-implementation-handoff",
+    "catalog_id": "stitch-implementation-handoff",
+    "kind": "skill",
+    "name": "stitch-implementation-handoff",
+    "canonical": true,
+    "canonical_id": "stitch-implementation-handoff",
+    "deprecated": false,
+    "replaced_by": null,
+    "aliases": [],
+    "category": "workflow-specialists",
+    "layer": "workflow-specialists",
+    "maturity": "stable",
+    "tier": "system",
+    "tags": [
+      "handoff",
+      "implementation",
+      "stitch",
+      "stitch implementation handoff",
+      "stitch-implementation-handoff",
+      "workflow-specialists"
+    ],
+    "path": ".claude/skills/stitch-implementation-handoff/SKILL.md",
+    "description": "Convert final Stitch screen artifacts into minimal, repo-native frontend changes by reusing local components, preserving validated logic, and documenting any intentional drift from the design source.",
+    "triggers": [
+      "stitch-implementation-handoff",
+      "stitch implementation handoff",
+      "stitch",
+      "implementation",
+      "handoff",
+      "workflow-specialists"
+    ]
+  },
+  {
+    "id": "stitch-prompt-enhancement",
+    "package_id": "stitch-prompt-enhancement",
+    "catalog_id": "stitch-prompt-enhancement",
+    "kind": "skill",
+    "name": "stitch-prompt-enhancement",
+    "canonical": true,
+    "canonical_id": "stitch-prompt-enhancement",
+    "deprecated": false,
+    "replaced_by": null,
+    "aliases": [],
+    "category": "workflow-specialists",
+    "layer": "workflow-specialists",
+    "maturity": "stable",
+    "tier": "system",
+    "tags": [
+      "enhancement",
+      "prompt",
+      "stitch",
+      "stitch prompt enhancement",
+      "stitch-prompt-enhancement",
+      "workflow-specialists"
+    ],
+    "path": ".claude/skills/stitch-prompt-enhancement/SKILL.md",
+    "description": "Transform rough UI intent into compact, Stitch-ready prompts that encode visual direction, component structure, design-system context, and constrained change scope.",
+    "triggers": [
+      "stitch-prompt-enhancement",
+      "stitch prompt enhancement",
+      "stitch",
+      "prompt",
+      "enhancement",
       "workflow-specialists"
     ]
   },
@@ -1884,8 +1342,8 @@
     "aliases": [],
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
+    "maturity": "stable",
+    "tier": "curated",
     "tags": [
       "svelte",
       "svelte sveltekit",
@@ -1917,7 +1375,7 @@
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
     "maturity": "stable",
-    "tier": "system",
+    "tier": "curated",
     "tags": [
       "practices",
       "swift",
@@ -2000,38 +1458,6 @@
     ]
   },
   {
-    "id": "t3-stack",
-    "package_id": "t3-stack",
-    "catalog_id": "t3-stack",
-    "kind": "skill",
-    "name": "t3-stack",
-    "canonical": true,
-    "canonical_id": "t3-stack",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
-    "tags": [
-      "stack",
-      "t3",
-      "t3 stack",
-      "t3-stack",
-      "workflow-specialists"
-    ],
-    "path": ".claude/skills/t3-stack/SKILL.md",
-    "description": "Use when building or maintaining T3 Stack apps with Next.js App Router, tRPC, Prisma, NextAuth.js, Tailwind CSS, and end-to-end type safety.",
-    "triggers": [
-      "t3-stack",
-      "t3 stack",
-      "t3",
-      "stack",
-      "workflow-specialists"
-    ]
-  },
-  {
     "id": "tech-doc",
     "package_id": "tech-doc",
     "catalog_id": "tech-doc",
@@ -2041,13 +1467,18 @@
     "canonical_id": "tech-doc",
     "deprecated": false,
     "replaced_by": null,
-    "aliases": [],
+    "aliases": [
+      "doc coauthoring",
+      "doc-coauthoring"
+    ],
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
     "maturity": "stable",
     "tier": "system",
     "tags": [
       "doc",
+      "doc coauthoring",
+      "doc-coauthoring",
       "tech",
       "tech doc",
       "tech-doc",
@@ -2056,10 +1487,12 @@
     "path": ".claude/skills/tech-doc/SKILL.md",
     "description": "Use when writing technical documentation including API references, operational runbooks, onboarding guides, decision logs, and changelog standards.",
     "triggers": [
-      "tech-doc",
-      "tech doc",
-      "tech",
       "doc",
+      "doc coauthoring",
+      "doc-coauthoring",
+      "tech",
+      "tech doc",
+      "tech-doc",
       "workflow-specialists"
     ]
   },
@@ -2108,8 +1541,8 @@
     "aliases": [],
     "category": "workflow-specialists",
     "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
+    "maturity": "stable",
+    "tier": "system",
     "tags": [
       "testing",
       "unit",
@@ -2124,58 +1557,6 @@
       "unit testing",
       "unit",
       "testing",
-      "workflow-specialists"
-    ]
-  },
-  {
-    "id": "vibesec",
-    "package_id": "vibesec",
-    "catalog_id": "vibesec",
-    "kind": "skill",
-    "name": "vibesec",
-    "canonical": true,
-    "canonical_id": "vibesec",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
-    "tags": [
-      "vibesec",
-      "workflow-specialists"
-    ],
-    "path": ".claude/skills/vibesec/SKILL.md",
-    "description": "Perform a lightweight security vibe check on codebases, configurations, and dependencies. Quick assessment of common security pitfalls, dependency health, and configuration hygiene without a full audit.",
-    "triggers": [
-      "vibesec",
-      "workflow-specialists"
-    ]
-  },
-  {
-    "id": "vuejs",
-    "package_id": "vuejs",
-    "catalog_id": "vuejs",
-    "kind": "skill",
-    "name": "vuejs",
-    "canonical": true,
-    "canonical_id": "vuejs",
-    "deprecated": false,
-    "replaced_by": null,
-    "aliases": [],
-    "category": "workflow-specialists",
-    "layer": "workflow-specialists",
-    "maturity": "incubating",
-    "tier": "experimental",
-    "tags": [
-      "vuejs",
-      "workflow-specialists"
-    ],
-    "path": ".claude/skills/vuejs/SKILL.md",
-    "description": "Use when building web applications with Vue 3.5+. Invoke for Composition API, script setup, Pinia state management, TypeScript integration, Vue Router, SSR with Nuxt, and reactivity patterns.",
-    "triggers": [
-      "vuejs",
       "workflow-specialists"
     ]
   }

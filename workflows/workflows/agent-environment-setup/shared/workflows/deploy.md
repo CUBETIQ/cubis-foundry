@@ -12,13 +12,14 @@ Use for CI/CD pipeline setup, Docker configuration, Kubernetes manifests, deploy
 
 ## Agent Chain
 
-`devops` → `tester` → `reviewer`
+`planner` -> `implementer` -> `tester` -> `reviewer`
 
 ## Routing
 
-1. **Build**: `@devops` creates or modifies pipeline configs, Dockerfiles, or infrastructure definitions.
-2. **Test**: `@tester` validates the pipeline (dry runs, container builds, integration checks).
-3. **Review**: `@reviewer` reviews the configuration for correctness and security.
+1. **Plan**: `@planner` defines the deployment path, risks, rollback points, and validation gates.
+2. **Build**: `@implementer` creates or modifies pipeline configs, Dockerfiles, or infrastructure definitions.
+3. **Test**: `@tester` validates the pipeline (dry runs, container builds, integration checks).
+4. **Review**: `@reviewer` reviews the configuration for correctness and security.
 
 ## Skill Routing
 
@@ -28,15 +29,15 @@ Use for CI/CD pipeline setup, Docker configuration, Kubernetes manifests, deploy
 ## Context notes
 
 - Provide the deployment target, requirements, and any infrastructure constraints.
-- DevOps follows the project's existing infrastructure patterns.
+- Implementer follows the project's existing infrastructure patterns.
 
 ## Workflow steps
 
-1. DevOps analyzes the current deployment setup and requirements.
-2. DevOps implements the pipeline/infrastructure changes.
+1. Planner analyzes the current deployment setup and requirements.
+2. Implementer implements the pipeline or infrastructure changes.
 3. Tester runs pipeline checks, container builds, or dry-run deployments.
 4. Reviewer validates security (no hardcoded secrets, least-privilege, image scanning).
-5. If issues are found, devops iterates on the configuration.
+5. If issues are found, implementer iterates on the configuration.
 
 ## Verification
 
@@ -48,8 +49,8 @@ Use for CI/CD pipeline setup, Docker configuration, Kubernetes manifests, deploy
 
 ```yaml
 WORKFLOW_RESULT:
-  primary_agent: devops
-  supporting_agents: [tester, reviewer]
+  primary_agent: implementer
+  supporting_agents: [planner, tester, reviewer]
   pipeline_status: <pass|fail>
   changed_artifacts: [<path>]
   secrets_hardcoded: <number>

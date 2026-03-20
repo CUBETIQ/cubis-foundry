@@ -1,13 +1,13 @@
 # Workflow Prompt: /implement
 
-End-to-end feature implementation: plan the approach, write the code, test it, and review it. Full lifecycle from idea to reviewed code.
+End-to-end feature implementation: explore, plan, implement, test, review, and optionally run the Stitch UI sequence for design-first screen generation.
 
 Execution contract:
 1. Treat route selection as already resolved by this command; do not begin with skill discovery.
 2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.
 Attached skills:
-- Load these exact skill IDs first: `api-design`, `typescript-best-practices`, `spec-driven-delivery`, `system-design`, `unit-testing`, `integration-testing`, `code-review`.
-- Local skill file hints if installed: `.github/skills/api-design/SKILL.md`, `.github/skills/typescript-best-practices/SKILL.md`, `.github/skills/spec-driven-delivery/SKILL.md`, `.github/skills/system-design/SKILL.md`, `.github/skills/unit-testing/SKILL.md`, `.github/skills/integration-testing/SKILL.md`, `.github/skills/code-review/SKILL.md`.
+- Load these exact skill IDs first: `api-design`, `typescript-best-practices`, `spec-driven-delivery`, `system-design`, `unit-testing`, `integration-testing`, `playwright-interactive`, `code-review`, `owasp-security-review`, `frontend-design`, `stitch-prompt-enhancement`, `stitch-design-orchestrator`, `stitch-design-system`, `stitch-implementation-handoff`.
+- Local skill file hints if installed: `.github/skills/api-design/SKILL.md`, `.github/skills/typescript-best-practices/SKILL.md`, `.github/skills/spec-driven-delivery/SKILL.md`, `.github/skills/system-design/SKILL.md`, `.github/skills/unit-testing/SKILL.md`, `.github/skills/integration-testing/SKILL.md`, `.github/skills/playwright-interactive/SKILL.md`, `.github/skills/code-review/SKILL.md`.
 - Treat the skill bundle as already resolved for this workflow. Do not start with route discovery.
 3. Apply workflow sections in order: When to use, Workflow steps, Context notes, Verification.
 4. Route to the workflow's primary specialist and only add supporting specialists when needed.
@@ -19,49 +19,65 @@ Workflow source:
 
 ## When to use
 
-Use for building new features or making code changes that need the full lifecycle: planning, implementation, testing, and review.
+Use for building new features, refactors, documentation refreshes, onboarding tasks, or Stitch-driven UI work that needs the full lifecycle: planning, design prep, implementation, testing, and review.
 
 ## Agent Chain
 
-`planner` → `implementer` → `tester` → `reviewer`
+`explorer` -> `planner` -> `implementer` -> `tester` -> `reviewer`
 
 ## Routing
 
-1. **Plan**: `@planner` reads the requirements and existing code, produces an implementation plan.
-2. **Implement**: `@implementer` executes the plan, writing production-quality code.
-3. **Test**: `@tester` writes and runs tests verifying the implementation.
-4. **Review**: `@reviewer` performs code review and either approves or requests changes.
+1. **Explore**: `@explorer` maps the code area and existing patterns when the task is non-trivial.
+2. **Plan**: `@planner` reads the requirements and existing code, then produces an implementation plan.
+3. **Implement**: `@implementer` executes the plan, writing production-quality code.
+4. **Test**: `@tester` writes and runs tests verifying the implementation.
+5. **Review**: `@reviewer` performs quality and security review, then approves or requests changes.
 
 ## Skill Routing
 
 - Primary skills: `api-design`, `typescript-best-practices`
-- Supporting skills (optional): `spec-driven-delivery`, `system-design`, `unit-testing`, `integration-testing`, `code-review`
+- Supporting skills (optional): `spec-driven-delivery`, `system-design`, `unit-testing`, `integration-testing`, `playwright-interactive`, `code-review`, `owasp-security-review`, `frontend-design`, `stitch-prompt-enhancement`, `stitch-design-orchestrator`, `stitch-design-system`, `stitch-implementation-handoff`
 
 ## Context notes
 
 - Provide the feature requirements, acceptance criteria, and any design constraints.
 - Implementer follows existing codebase patterns and conventions.
+- Use this workflow for doc-only or refactor-heavy work when you want one coordinated pass instead of separate routes.
+
+## Stitch UI mode
+
+Use `/implement` with a Stitch UI scope when the task explicitly involves Google Stitch generation or screen editing.
+
+1. Load `frontend-design` first, starting with `visual-direction` and `design-tokens`.
+2. Load `stitch-prompt-enhancement` before any Stitch tool call.
+3. If `docs/foundation/DESIGN.md` is missing, stale, or the work spans multiple screens, run `stitch-design-system` and mirror the result to `.stitch/DESIGN.md`.
+4. Verify `stitch_get_status`, `mcp_gateway_status`, and `stitch_list_enabled_tools`.
+5. Choose the smallest Stitch tool path: `generate_screen_from_text`, `edit_screens`, `generate_variants`, or design-system tools only when the design system itself is the task.
+6. Surface Stitch suggestions before retrying. Allow at most two automatic retries with backoff.
+7. Fetch the final artifact with `get_screen`, then run `stitch-implementation-handoff` before normal implementation, test, and review.
 
 ## Workflow steps
 
-1. Planner analyzes requirements and produces a structured implementation plan.
-2. Implementer executes the plan step by step, verifying compilation after each change.
-3. Tester writes tests for the new code and runs the full test suite.
-4. Reviewer evaluates code quality, patterns, and correctness.
-5. If changes are requested, implementer applies fixes and the cycle repeats from step 3.
+1. Explorer maps the relevant code and patterns when the request is not trivial.
+2. Planner analyzes requirements and produces a structured implementation plan.
+3. Implementer executes the plan step by step, verifying compilation after each change.
+4. Tester writes tests for the new code and runs the relevant test suite.
+5. Reviewer evaluates code quality, patterns, correctness, and security.
+6. If changes are requested, implementer applies fixes and the cycle repeats from step 4.
 
 ## Verification
 
 - All planned changes implemented and code compiles without errors.
 - Tests pass and cover the new functionality.
 - Code review approved with no critical findings.
+- For Stitch UI mode, design context is resolved before generation and the final implementation reuses repo-native components and tokens.
 
 ## Output Contract
 
 ```yaml
 WORKFLOW_RESULT:
   primary_agent: implementer
-  supporting_agents: [planner, tester, reviewer]
+  supporting_agents: [explorer, planner, tester, reviewer]
   changed_artifacts: [<path>]
   tests_status: <pass|fail>
   review_status: <approve|request_changes>

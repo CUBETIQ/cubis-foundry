@@ -1,6 +1,6 @@
 ---
 name: test
-description: "Test authoring and coverage improvement: explore the code, write comprehensive tests, and review test quality."
+description: "Test authoring and coverage improvement: explore the code, write tests, and review test quality."
 license: MIT
 metadata:
   author: cubis-foundry
@@ -17,18 +17,18 @@ Use when adding tests, fixing test failures, or improving test coverage for exis
 
 ## Agent Chain
 
-`explorer` → `tester` → `reviewer`
+`explorer` -> `tester` -> `reviewer`
 
 ## Routing
 
-1. **Explore**: `@explorer` reads the code under test — maps functions, inputs, outputs, edge cases, and existing test patterns.
+1. **Explore**: `@explorer` reads the code under test - maps functions, inputs, outputs, edge cases, and existing test patterns.
 2. **Test**: `@tester` writes tests following the project's conventions, runs the suite, and analyzes results.
 3. **Review**: `@reviewer` evaluates test quality, coverage, and correctness.
 
 ## Skill Routing
 
 - Primary skills: `unit-testing`, `integration-testing`
-- Supporting skills (optional): `deep-research`, `playwright-interactive`, `code-review`
+- Supporting skills (optional): `deep-research`, `playwright-interactive`, `flutter-mobile-qa`, `code-review`
 
 ## Context notes
 
@@ -40,7 +40,7 @@ Use when adding tests, fixing test failures, or improving test coverage for exis
 1. Explorer maps the code to be tested: public API, edge cases, error paths.
 2. Tester writes tests following existing project patterns (framework, naming, structure).
 3. Tester runs the full test suite and reports results.
-4. Reviewer evaluates test coverage and quality — checks for missing edge cases.
+4. Reviewer evaluates test coverage and quality - checks for missing edge cases.
 5. If gaps are found, tester adds additional tests and re-runs.
 
 ## Verification

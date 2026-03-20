@@ -35,6 +35,23 @@ export interface CliRegistrationDeps {
   runRulesInit: WorkflowAction;
   runRulesTechMd: WorkflowAction;
   runBuildArchitecture: WorkflowAction;
+  runWorkspaceAdd: WorkflowTargetAction;
+  runWorkspaceSync: WorkflowDoctorAction;
+  runContextGenerate: WorkflowAction;
+  runContextDiff: WorkflowAction;
+  runContextValidate: WorkflowAction;
+  runHarnessAudit: WorkflowAction;
+  runLoopStart: WorkflowAction;
+  runLoopStatus: WorkflowAction;
+  runLoopStop: WorkflowAction;
+  runMemoryReview: WorkflowAction;
+  runMemoryApply: WorkflowAction;
+  runMemoryPrune: WorkflowAction;
+  runProfileSet: WorkflowAction;
+  runWorkspaceUpgrade: WorkflowAction;
+  runMcpStatus: WorkflowAction;
+  runMcpTest: WorkflowTargetAction;
+  runMcpProxy: WorkflowAction;
 }
 
 export function registerCommands(deps: CliRegistrationDeps) {
@@ -46,19 +63,28 @@ export function registerCommands(deps: CliRegistrationDeps) {
 
   program
     .command("init")
-    .description("Run guided interactive install wizard")
+    .description("Bootstrap a secure AI workspace and harness in the current project")
     .option("-y, --yes", "accept defaults and apply without confirmation")
     .option("--dry-run", "preview wizard execution without writing files")
     .option("--overwrite", "overwrite existing files where supported")
     .option("--target <path>", "run against target project directory")
     .option("--bundle <bundleId>", "workflow bundle id")
+    .option("--stack <stack>", "workspace stack: web|api|cli|mobile|ml|fullstack|monorepo")
+    .option("--profile <profile>", "workspace profile: core|developer|security|research|full")
+    .option("--template <template>", "optional organization template name")
+    .option("--authoring-ai <platform>", "AI used for context docs: codex|claude|gemini|copilot")
+    .option("--skip-context", "skip automatic context generation after install")
+    .option(
+      "--capability-packs <items>",
+      "comma-separated packs: frontend,backend,database,devops,security,playwright,research,agentic",
+    )
     .option(
       "--platforms <items>",
       "comma-separated platforms: codex,antigravity,copilot,claude,gemini",
     )
     .option(
       "--skill-profile <profile>",
-      "skills profile: core|web-backend|full",
+      "skills profile: core|web-backend|mobile-qa|full",
     )
     .option(
       "--skills-scope <scope>",
@@ -70,7 +96,7 @@ export function registerCommands(deps: CliRegistrationDeps) {
     )
     .option(
       "--mcps <items>",
-      "comma-separated MCP selections: cubis-foundry,postman,stitch,playwright",
+      "comma-separated MCP selections: cubis-foundry,postman,stitch,playwright,android",
     )
     .option("--postman-mode <mode>", "Postman mode: full|minimal")
     .option(
@@ -85,6 +111,154 @@ export function registerCommands(deps: CliRegistrationDeps) {
     .option("--no-banner", "skip init welcome banner")
     .option("--json", "print machine-readable final summary")
     .action(deps.runInitWizard);
+
+  program
+    .command("add <platform>")
+    .description("Add one platform projection to the current workspace")
+    .option("--target <path>", "target project directory")
+    .option("--overwrite", "overwrite existing managed files where supported")
+    .option("--dry-run", "preview without writing files")
+    .option("-y, --yes", "skip confirmation")
+    .action(deps.runWorkspaceAdd);
+
+  program
+    .command("sync [platform]")
+    .description("Detect drift and re-apply managed workspace assets")
+    .option("--target <path>", "target project directory")
+    .option("--check", "exit 1 if drift is detected")
+    .option("--overwrite", "overwrite managed files during sync")
+    .option("--dry-run", "preview sync without writing files")
+    .action(deps.runWorkspaceSync);
+
+  const contextCommand = program
+    .command("context")
+    .description("Generate and validate AI-readable workspace context docs");
+
+  contextCommand
+    .command("generate")
+    .description("Generate or refresh foundation docs and platform rules")
+    .option("--platform <platform>", "authoring AI: codex|claude|gemini|copilot")
+    .option("--research <mode>", "research mode: auto|always|never", "auto")
+    .option("--overwrite", "overwrite managed context scaffolding")
+    .option("--watch", "reserved for future watch mode")
+    .option("--dry-run", "preview generation invocation without writing files")
+    .option("--json", "output JSON")
+    .action(deps.runContextGenerate);
+
+  contextCommand
+    .command("diff")
+    .description("Show context freshness and drift against current code")
+    .option("--json", "output JSON")
+    .action(deps.runContextDiff);
+
+  contextCommand
+    .command("validate")
+    .description("Validate context completeness and freshness")
+    .option("--json", "output JSON")
+    .action(deps.runContextValidate);
+
+  contextCommand.action(() => {
+    contextCommand.help();
+  });
+
+  const harnessCommand = program
+    .command("harness")
+    .description("Inspect and manage workspace harness runtime state");
+
+  harnessCommand
+    .command("audit")
+    .description("Run deterministic harness security and safety audit")
+    .option("--scope <scope>", "repo|hooks|skills|commands|agents", "repo")
+    .option("--format <format>", "text|json", "text")
+    .action(deps.runHarnessAudit);
+
+  harnessCommand.action(() => {
+    harnessCommand.help();
+  });
+
+  const loopCommand = program
+    .command("loop")
+    .description("Manage bounded autonomous loop runs");
+
+  loopCommand
+    .command("start")
+    .description("Create a managed loop run with explicit criteria")
+    .requiredOption("--task <task>", "task description")
+    .requiredOption("--completion-criteria <text>", "completion criteria")
+    .option("--max-iterations <count>", "maximum iterations", "20")
+    .option("--platform <platform>", "execution platform")
+    .option("--validate-command <command>", "verification command to run between iterations")
+    .option("--dry-run", "preview without writing runtime state")
+    .action(deps.runLoopStart);
+
+  loopCommand
+    .command("status")
+    .description("Show current or recent loop runs")
+    .option("--id <id>", "specific loop run id")
+    .option("--json", "output JSON")
+    .action(deps.runLoopStatus);
+
+  loopCommand
+    .command("stop")
+    .description("Stop a managed loop run")
+    .requiredOption("--id <id>", "loop run id")
+    .option("--reason <text>", "stop reason", "stopped by operator")
+    .action(deps.runLoopStop);
+
+  loopCommand.action(() => {
+    loopCommand.help();
+  });
+
+  const memoryCommand = program
+    .command("memory")
+    .description("Review and apply staged continuous-learning artifacts");
+
+  memoryCommand
+    .command("review")
+    .description("List staged learning candidates")
+    .option("--json", "output JSON")
+    .action(deps.runMemoryReview);
+
+  memoryCommand
+    .command("apply")
+    .description("Apply a staged memory candidate to managed workspace memory")
+    .requiredOption("--id <id>", "candidate file id")
+    .option("--target <target>", "memory|context-pack|skill-note", "memory")
+    .action(deps.runMemoryApply);
+
+  memoryCommand
+    .command("prune")
+    .description("Remove stale staged learning candidates")
+    .option("--all", "remove all staged candidates")
+    .option("--id <id>", "remove a specific candidate")
+    .action(deps.runMemoryPrune);
+
+  memoryCommand.action(() => {
+    memoryCommand.help();
+  });
+
+  const profileCommand = program
+    .command("profile")
+    .description("Manage workspace harness safety profiles");
+
+  profileCommand
+    .command("set <profile>")
+    .description("Set hook/autonomy profile: minimal|standard|strict|autonomous")
+    .option("--target <path>", "target project directory")
+    .action(deps.runProfileSet);
+
+  profileCommand.action(() => {
+    profileCommand.help();
+  });
+
+  program
+    .command("upgrade")
+    .description("Upgrade managed workspace assets to the latest Foundry catalog")
+    .option("--platform <platform>", "upgrade only one platform")
+    .option("--dry-run", "preview upgrade without writing files")
+    .option("--check", "report upgrade drift and exit 1 when changes are needed")
+    .option("--changelog", "print managed areas that will be refreshed")
+    .action(deps.runWorkspaceUpgrade);
 
   registerWorkflowCommands(program, {
     printPlatforms: deps.printPlatforms,
@@ -109,6 +283,9 @@ export function registerCommands(deps: CliRegistrationDeps) {
     runMcpRuntimeUp: deps.runMcpRuntimeUp,
     runMcpRuntimeDown: deps.runMcpRuntimeDown,
     defaultMcpDockerContainerName: deps.defaultMcpDockerContainerName,
+    runMcpStatus: deps.runMcpStatus,
+    runMcpTest: deps.runMcpTest,
+    runMcpProxy: deps.runMcpProxy,
   });
 
   registerRulesCommands(program, {

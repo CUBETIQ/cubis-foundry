@@ -14,7 +14,7 @@
   "ci-cd-pipeline": {
     "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
     "contextFork": true,
-    "forkAgent": "devops-engineer",
+    "forkAgent": "implementer",
     "userInvocable": true,
     "argumentHint": "Pipeline file or CI/CD concern to address"
   },
@@ -34,14 +34,14 @@
   "database-design": {
     "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
     "contextFork": true,
-    "forkAgent": "database-architect",
+    "forkAgent": "implementer",
     "userInvocable": true,
     "argumentHint": "Schema, query, or data model to design"
   },
   "deep-research": {
     "allowedTools": ["Read", "Grep", "Glob", "Bash"],
     "contextFork": true,
-    "forkAgent": "researcher",
+    "forkAgent": "explorer",
     "userInvocable": true,
     "argumentHint": "Topic, vendor capability, or public comparison to research"
   },
@@ -54,7 +54,7 @@
   "docker-compose-dev": {
     "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
     "contextFork": true,
-    "forkAgent": "devops-engineer",
+    "forkAgent": "implementer",
     "userInvocable": true,
     "argumentHint": "Docker Compose file or service to configure"
   },
@@ -91,7 +91,7 @@
   "frontend-design": {
     "allowedTools": ["Read", "Grep", "Glob"],
     "contextFork": true,
-    "forkAgent": "frontend-specialist",
+    "forkAgent": "implementer",
     "userInvocable": true,
     "argumentHint": "Component, design system, or UI pattern to design"
   },
@@ -134,7 +134,7 @@
   "integration-testing": {
     "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
     "contextFork": true,
-    "forkAgent": "test-engineer",
+    "forkAgent": "tester",
     "userInvocable": true,
     "argumentHint": "Component boundary or integration to test"
   },
@@ -165,7 +165,7 @@
   "kubernetes-deploy": {
     "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
     "contextFork": true,
-    "forkAgent": "devops-engineer",
+    "forkAgent": "implementer",
     "userInvocable": true,
     "argumentHint": "Kubernetes manifest, Helm chart, or deployment concern"
   },
@@ -184,7 +184,7 @@
   "mcp-server-builder": {
     "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
     "contextFork": true,
-    "forkAgent": "backend-specialist",
+    "forkAgent": "implementer",
     "userInvocable": true,
     "argumentHint": "MCP server, tool, or transport to build"
   },
@@ -215,14 +215,14 @@
   "owasp-security-review": {
     "allowedTools": ["Read", "Grep", "Glob", "Bash"],
     "contextFork": true,
-    "forkAgent": "security-auditor",
+    "forkAgent": "reviewer",
     "userInvocable": true,
     "argumentHint": "Application, endpoint, or codebase to audit"
   },
   "pentest-skill": {
     "allowedTools": ["Read", "Grep", "Glob", "Bash"],
     "contextFork": true,
-    "forkAgent": "penetration-tester",
+    "forkAgent": "reviewer",
     "userInvocable": true,
     "argumentHint": "Target application or scope for penetration test"
   },
@@ -356,7 +356,7 @@
   "stitch": {
     "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
     "contextFork": true,
-    "forkAgent": "frontend-specialist",
+    "forkAgent": "implementer",
     "userInvocable": true,
     "argumentHint": "Stitch screen, design artifact, or UI diff to implement"
   },
@@ -412,7 +412,7 @@
   "unit-testing": {
     "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
     "contextFork": true,
-    "forkAgent": "test-engineer",
+    "forkAgent": "tester",
     "userInvocable": true,
     "argumentHint": "Module, function, or component to unit test"
   },

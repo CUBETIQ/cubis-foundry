@@ -2,6 +2,7 @@ import { PATTERN_REGISTRY } from "./platform-parity.mjs";
 
 export const PATTERN_REGISTRY_FILE = "pattern-registry.json";
 export const PLATFORM_CAPABILITIES_FILE = "platform-capabilities.json";
+export const PLATFORM_SURFACE_SPEC_FILE = "platform-surface-spec.json";
 export const UPSTREAM_CAPABILITY_AUDIT_FILE = "upstream-capability-audit.json";
 
 export const MANAGED_PARITY_DOC_FILES = Object.freeze([
@@ -45,6 +46,7 @@ export function buildParityArtifactPointers() {
   return {
     patternRegistry: `generated/${PATTERN_REGISTRY_FILE}`,
     platformCapabilities: `generated/${PLATFORM_CAPABILITIES_FILE}`,
+    platformSurfaceSpec: `generated/${PLATFORM_SURFACE_SPEC_FILE}`,
     upstreamCapabilityAudit: `generated/${UPSTREAM_CAPABILITY_AUDIT_FILE}`,
     docs: MANAGED_PARITY_DOC_FILES.map((file) => `docs/${file}`),
   };

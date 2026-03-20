@@ -71,6 +71,7 @@ export async function promptInitSkillProfile(
     choices: [
       { name: "core", value: "core" },
       { name: "web-backend", value: "web-backend" },
+      { name: "mobile-qa", value: "mobile-qa" },
       { name: "full", value: "full" },
     ],
   });
@@ -99,6 +100,11 @@ export async function promptInitMcpSelection(defaultMcps: InitMcpId[]) {
         name: "Playwright",
         value: "playwright",
         checked: defaultMcps.includes("playwright"),
+      },
+      {
+        name: "Android ADB (android-mcp-server)",
+        value: "android",
+        checked: defaultMcps.includes("android"),
       },
     ],
   });

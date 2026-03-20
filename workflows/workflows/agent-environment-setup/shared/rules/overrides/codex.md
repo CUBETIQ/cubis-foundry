@@ -6,6 +6,7 @@
 - Skills: `.agents/skills/<skill-id>/SKILL.md`
 - Native subagents: `.codex/agents/*.toml`
 - Rules file: `AGENTS.md`
+- Hook support: experimental only; Foundry does not emit Codex hook files by default
 
 ## Platform-Specific Routing
 
@@ -27,4 +28,5 @@
 - Codex supports three autonomy levels: `suggest` (propose only), `auto-edit` (edit with confirmation), `full-auto` (autonomous execution).
 - Codex operates in a sandboxed environment — destructive operations are inherently limited.
 - Orchestration in Codex is native-subagent-first: delegate through `.codex/agents/*.toml` when the task benefits from a specialist handoff.
+- Codex hook support is tracked as experimental because the project hook config/schema is not yet a verified Foundry install surface.
 - Keep workflow instructions self-contained since network access for external docs may be restricted.

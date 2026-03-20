@@ -20,7 +20,7 @@ if (/(^|\s)(\/[-a-z0-9]+|@[a-z0-9_-]+)/i.test(prompt)) {
   );
 }
 
-if (/(^|[^a-z0-9-])(deep-research|stitch|skill-creator|frontend-design|api-design|database-design)([^a-z0-9-]|$)/i.test(normalized)) {
+if (/(^|[^a-z0-9-])(deep-research|stitch|stitch-design-orchestrator|stitch-prompt-enhancement|stitch-design-system|stitch-implementation-handoff|skill-creator|frontend-design|api-design|database-design)([^a-z0-9-]|$)/i.test(normalized)) {
   reminders.push(
     "Named skill detected. Run skill_validate on the exact skill ID first and skip route_resolve when it validates."
   );

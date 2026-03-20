@@ -77,6 +77,11 @@ Load on demand. Do not preload all reference files.
 | `references/writing-style-guide.md` | Establishing writing conventions, tone guidelines, or reviewing documentation for consistency and clarity. |
 | `references/documentation-tooling.md` | Choosing documentation platforms, setting up CI/CD validation, or configuring linting and link checking. |
 
+## Compatibility Aliases
+
+Anthropic upstream compatibility names for this skill: `doc coauthoring`, `doc-coauthoring`.
+Treat requests that use those names as equivalent to this canonical Foundry skill.
+
 ## Copilot Platform Notes
 
 - Custom agents live under `../../agents/` relative to the mirrored skill directory and use YAML frontmatter such as `name`, `description`, `tools`, `model`, and `handoffs`.

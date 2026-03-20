@@ -1,0 +1,147 @@
+{
+  "$schema": "cubis-foundry-external-skill-intake-v1",
+  "source": {
+    "id": "anthropic-agent-skills",
+    "label": "Anthropic Agent Skills",
+    "root": "research/plugins-claude/anthropic-agent-skills/example-skills/b0cbd3df1533",
+    "notes": "Curated intake of third-party Anthropic skills. Imported as Foundry compatibility mappings only; plugin/runtime structure is not mirrored."
+  },
+  "entries": [
+    {
+      "external_id": "algorithmic-art",
+      "status": "reject",
+      "canonical_skill_id": null,
+      "source_path": "research/plugins-claude/anthropic-agent-skills/example-skills/b0cbd3df1533/skills/algorithmic-art/SKILL.md",
+      "license": "Complete terms in LICENSE.txt",
+      "reason": "Creative artifact generation is outside the lean AI developer workspace core."
+    },
+    {
+      "external_id": "brand-guidelines",
+      "status": "reject",
+      "canonical_skill_id": null,
+      "source_path": "research/plugins-claude/anthropic-agent-skills/example-skills/b0cbd3df1533/skills/brand-guidelines/SKILL.md",
+      "license": "Complete terms in LICENSE.txt",
+      "reason": "Anthropic-specific branding guidance is not portable product engineering context."
+    },
+    {
+      "external_id": "canvas-design",
+      "status": "reject",
+      "canonical_skill_id": null,
+      "source_path": "research/plugins-claude/anthropic-agent-skills/example-skills/b0cbd3df1533/skills/canvas-design/SKILL.md",
+      "license": "Complete terms in LICENSE.txt",
+      "reason": "Static art generation does not belong in the default Foundry engineering catalog."
+    },
+    {
+      "external_id": "claude-api",
+      "status": "reject",
+      "canonical_skill_id": null,
+      "source_path": "research/plugins-claude/anthropic-agent-skills/example-skills/b0cbd3df1533/skills/claude-api/SKILL.md",
+      "license": "Complete terms in LICENSE.txt",
+      "reason": "Provider-specific Claude API guidance is not a cross-platform Foundry skill."
+    },
+    {
+      "external_id": "doc-coauthoring",
+      "status": "adapt",
+      "canonical_skill_id": "tech-doc",
+      "source_path": "research/plugins-claude/anthropic-agent-skills/example-skills/b0cbd3df1533/skills/doc-coauthoring/SKILL.md",
+      "license": "Complete terms in LICENSE.txt",
+      "reason": "The structured co-authoring workflow maps cleanly onto Foundry's technical documentation skill."
+    },
+    {
+      "external_id": "docx",
+      "status": "legal-review",
+      "canonical_skill_id": null,
+      "source_path": "research/plugins-claude/anthropic-agent-skills/example-skills/b0cbd3df1533/skills/docx/SKILL.md",
+      "license": "Proprietary. LICENSE.txt has complete terms",
+      "reason": "Document-processing implementation is valuable but the source-available license requires legal review before reuse."
+    },
+    {
+      "external_id": "frontend-design",
+      "status": "keep",
+      "canonical_skill_id": "frontend-design",
+      "source_path": "research/plugins-claude/anthropic-agent-skills/example-skills/b0cbd3df1533/skills/frontend-design/SKILL.md",
+      "license": "Complete terms in LICENSE.txt",
+      "reason": "This already matches an existing Foundry skill focus and naming surface."
+    },
+    {
+      "external_id": "internal-comms",
+      "status": "reject",
+      "canonical_skill_id": null,
+      "source_path": "research/plugins-claude/anthropic-agent-skills/example-skills/b0cbd3df1533/skills/internal-comms/SKILL.md",
+      "license": "Complete terms in LICENSE.txt",
+      "reason": "Internal communications templates are outside the core engineering workspace scope."
+    },
+    {
+      "external_id": "mcp-builder",
+      "status": "adapt",
+      "canonical_skill_id": "mcp-server-builder",
+      "source_path": "research/plugins-claude/anthropic-agent-skills/example-skills/b0cbd3df1533/skills/mcp-builder/SKILL.md",
+      "license": "Complete terms in LICENSE.txt",
+      "reason": "Foundry already has a canonical MCP server skill with a slightly different name."
+    },
+    {
+      "external_id": "pdf",
+      "status": "legal-review",
+      "canonical_skill_id": null,
+      "source_path": "research/plugins-claude/anthropic-agent-skills/example-skills/b0cbd3df1533/skills/pdf/SKILL.md",
+      "license": "Proprietary. LICENSE.txt has complete terms",
+      "reason": "PDF processing skill may be useful later but the proprietary terms block direct intake."
+    },
+    {
+      "external_id": "pptx",
+      "status": "legal-review",
+      "canonical_skill_id": null,
+      "source_path": "research/plugins-claude/anthropic-agent-skills/example-skills/b0cbd3df1533/skills/pptx/SKILL.md",
+      "license": "Proprietary. LICENSE.txt has complete terms",
+      "reason": "Presentation-processing skill may be useful later but the proprietary terms block direct intake."
+    },
+    {
+      "external_id": "skill-creator",
+      "status": "keep",
+      "canonical_skill_id": "skill-creator",
+      "source_path": "research/plugins-claude/anthropic-agent-skills/example-skills/b0cbd3df1533/skills/skill-creator/SKILL.md",
+      "license": "Complete terms in LICENSE.txt",
+      "reason": "This maps directly to Foundry's existing skill-creation capability."
+    },
+    {
+      "external_id": "slack-gif-creator",
+      "status": "reject",
+      "canonical_skill_id": null,
+      "source_path": "research/plugins-claude/anthropic-agent-skills/example-skills/b0cbd3df1533/skills/slack-gif-creator/SKILL.md",
+      "license": "Complete terms in LICENSE.txt",
+      "reason": "Slack GIF generation is outside the lean engineering catalog."
+    },
+    {
+      "external_id": "theme-factory",
+      "status": "reject",
+      "canonical_skill_id": null,
+      "source_path": "research/plugins-claude/anthropic-agent-skills/example-skills/b0cbd3df1533/skills/theme-factory/SKILL.md",
+      "license": "Complete terms in LICENSE.txt",
+      "reason": "Theme application across artifacts is broader than the current Foundry engineering scope."
+    },
+    {
+      "external_id": "web-artifacts-builder",
+      "status": "reject",
+      "canonical_skill_id": null,
+      "source_path": "research/plugins-claude/anthropic-agent-skills/example-skills/b0cbd3df1533/skills/web-artifacts-builder/SKILL.md",
+      "license": "Complete terms in LICENSE.txt",
+      "reason": "Claude artifact generation is platform-specific and would add a second artifact-builder model to Foundry."
+    },
+    {
+      "external_id": "webapp-testing",
+      "status": "adapt",
+      "canonical_skill_id": "playwright-interactive",
+      "source_path": "research/plugins-claude/anthropic-agent-skills/example-skills/b0cbd3df1533/skills/webapp-testing/SKILL.md",
+      "license": "Complete terms in LICENSE.txt",
+      "reason": "The Playwright-based local webapp testing workflow aligns with Foundry's interactive browser testing skill."
+    },
+    {
+      "external_id": "xlsx",
+      "status": "legal-review",
+      "canonical_skill_id": null,
+      "source_path": "research/plugins-claude/anthropic-agent-skills/example-skills/b0cbd3df1533/skills/xlsx/SKILL.md",
+      "license": "Proprietary. LICENSE.txt has complete terms",
+      "reason": "Spreadsheet-processing skill may be useful later but the proprietary terms block direct intake."
+    }
+  ]
+}

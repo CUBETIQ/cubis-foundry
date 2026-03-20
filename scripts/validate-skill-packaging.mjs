@@ -178,6 +178,15 @@ function shouldValidateLink(target) {
   if (target.startsWith("/") || target.startsWith("~/")) return false;
   if (target.includes("{") || target.includes("}")) return false;
   if (target.includes("<") || target.includes(">")) return false;
+  // Project-owned runtime artifacts may be referenced by skills but do not live
+  // inside the skill package itself, so packaging validation should not require
+  // them to exist relative to the skill directory.
+  if (
+    target === "docs/foundation/DESIGN.md" ||
+    target === ".stitch/DESIGN.md"
+  ) {
+    return false;
+  }
   // Skip well-known generated or platform-external files
   if (
     target === "AGENTS.md" ||
@@ -330,7 +339,13 @@ function validateUniversalFrontmatter(
 
   // Reject disallowed metadata subkeys
   const metaSubkeys = extractMetadataSubkeys(frontmatterRaw);
-  const ALLOWED_META_SUBKEYS = new Set(["author", "version"]);
+  const ALLOWED_META_SUBKEYS = new Set([
+    "author",
+    "version",
+    "deprecated",
+    "replaced_by",
+    "removal_target",
+  ]);
   for (const key of metaSubkeys) {
     if (!ALLOWED_META_SUBKEYS.has(key)) {
       errors.push(

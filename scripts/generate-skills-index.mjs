@@ -8,6 +8,10 @@ import {
   buildSkillsIndexRows,
   pathExists,
 } from "./lib/skill-inventory.mjs";
+import {
+  applyAnthropicAliasesToRows,
+  readAnthropicSkillIntake,
+} from "./lib/external-skill-intake.mjs";
 
 const DEFAULT_TARGETS = {
   canonical: {
@@ -110,8 +114,10 @@ async function writeIndex({
   indexPathPrefix,
   dryRun,
   check,
+  anthropicIntake,
 }) {
   const rows = await buildSkillsIndexRows({ roots, indexPathPrefix });
+  applyAnthropicAliasesToRows(rows, anthropicIntake);
   ensureUniqueNames(rows, label);
   ensureUniqueIds(rows, label);
 
@@ -136,6 +142,7 @@ async function writeIndex({
 
 async function main() {
   const { target, dryRun, check } = parseArgs(process.argv);
+  const anthropicIntake = await readAnthropicSkillIntake();
 
   const targetLabels =
     target === "all"
@@ -150,7 +157,13 @@ async function main() {
 
   for (const label of targetLabels) {
     const spec = DEFAULT_TARGETS[label];
-    const result = await writeIndex({ label, ...spec, dryRun, check });
+    const result = await writeIndex({
+      label,
+      ...spec,
+      dryRun,
+      check,
+      anthropicIntake,
+    });
     console.log(
       `${result.check ? "[check] " : result.dryRun ? "[dry-run] " : ""}${result.check ? "validated" : "generated"} ${result.label} skills index (${result.count} entries): ${result.outFile}`,
     );

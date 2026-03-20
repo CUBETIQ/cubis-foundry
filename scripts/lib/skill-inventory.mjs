@@ -157,9 +157,13 @@ export async function collectCanonicalDescriptors() {
 export async function buildSkillsIndexRows({ roots, indexPathPrefix }) {
   const rowById = new Map();
   const { coreIds, webBackendIds } = await readSkillProfiles();
+  const canonicalSourceById = await buildCanonicalSkillSourceMap([SKILLS_ROOT]);
+  const canonicalRoot = path.resolve(SKILLS_ROOT);
 
   for (const skillsRoot of roots) {
     if (!(await pathExists(skillsRoot))) continue;
+    const resolvedSkillsRoot = path.resolve(skillsRoot);
+    const useCanonicalDescriptor = resolvedSkillsRoot !== canonicalRoot;
 
     for (const skillFile of await listFilesRecursive(
       skillsRoot,
@@ -168,19 +172,35 @@ export async function buildSkillsIndexRows({ roots, indexPathPrefix }) {
       const skillDir = path.dirname(skillFile);
       const skillId = path.basename(skillDir);
       const rawContent = await fs.readFile(skillFile, "utf8");
-      const metadata = getMetadataBlock(parseFrontmatter(rawContent).raw);
+      let descriptorFile = {
+        skillDir,
+        filePath: skillFile,
+        rawContent,
+      };
+
+      if (useCanonicalDescriptor) {
+        const canonicalSource = canonicalSourceById.get(skillId.toLowerCase());
+        if (canonicalSource) {
+          const canonicalSkillFile = path.join(canonicalSource.source, "SKILL.md");
+          if (await pathExists(canonicalSkillFile)) {
+            descriptorFile = {
+              skillDir: canonicalSource.source,
+              filePath: canonicalSkillFile,
+              rawContent: await fs.readFile(canonicalSkillFile, "utf8"),
+            };
+          }
+        }
+      }
+
+      const metadata = getMetadataBlock(parseFrontmatter(descriptorFile.rawContent).raw);
 
       if (isWrapperSkill(skillId, metadata)) {
         continue;
       }
 
       const descriptor = deriveDescriptor({
-        skillFile: {
-          skillDir,
-          filePath: skillFile,
-          rawContent,
-        },
-        skillsRoot,
+        skillFile: descriptorFile,
+        skillsRoot: useCanonicalDescriptor ? SKILLS_ROOT : skillsRoot,
         coreProfileIds: coreIds,
         webBackendProfileIds: webBackendIds,
       });

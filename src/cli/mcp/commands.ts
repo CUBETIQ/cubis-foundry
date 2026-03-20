@@ -1,5 +1,5 @@
 import type { Command } from "commander";
-import type { WorkflowAction } from "../types.js";
+import type { WorkflowAction, WorkflowTargetAction } from "../types.js";
 
 export interface McpCommandDeps {
   runMcpServe: WorkflowAction;
@@ -9,12 +9,53 @@ export interface McpCommandDeps {
   runMcpRuntimeUp: WorkflowAction;
   runMcpRuntimeDown: WorkflowAction;
   defaultMcpDockerContainerName: string;
+  runMcpStatus: WorkflowAction;
+  runMcpTest: WorkflowTargetAction;
+  runMcpProxy: WorkflowAction;
 }
 
 export function registerMcpCommands(program: Command, deps: McpCommandDeps) {
   const mcpCommand = program
     .command("mcp")
     .description("Manage Cubis MCP runtime catalogs and tool discovery");
+
+  mcpCommand
+    .command("status")
+    .description("Show unified MCP health and configured runtime defaults")
+    .option(
+      "--scope <scope>",
+      "config scope: project|workspace|global|user",
+      "global",
+    )
+    .option(
+      "--name <name>",
+      "container name",
+      deps.defaultMcpDockerContainerName,
+    )
+    .option(
+      "--skills-root <path>",
+      "host skills directory to resolve/mount (default: auto-detect)",
+    )
+    .action(deps.runMcpStatus);
+
+  mcpCommand
+    .command("test <tool>")
+    .description("Inspect local MCP catalogs for a tool and its configuration source")
+    .option(
+      "--scope <scope>",
+      "config scope: project|workspace|global|user",
+      "global",
+    )
+    .action(deps.runMcpTest);
+
+  mcpCommand
+    .command("proxy")
+    .description("Run the Cubis MCP gateway in HTTP proxy mode")
+    .option("--port <port>", "HTTP port override", "3100")
+    .option("--host <host>", "HTTP host override", "127.0.0.1")
+    .option("--config <path>", "explicit MCP server config file path")
+    .option("--debug", "enable debug logging in MCP proxy")
+    .action(deps.runMcpProxy);
 
   mcpCommand
     .command("serve")

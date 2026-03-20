@@ -211,23 +211,23 @@ Resolve an explicit workflow command, explicit custom agent, compatibility alias
 **Input**:
 
 ```json
-{ "intent": "/mobile" }
+{ "intent": "test flutter login flow on android emulator" }
 ```
 
 **Output**:
 
 ```json
 {
-  "input": "/mobile",
+  "input": "test flutter login flow on android emulator",
   "resolved": true,
   "kind": "workflow",
-  "id": "mobile",
-  "command": "/mobile",
-  "agent": "mobile-developer",
-  "primarySkills": ["mobile-design", "flutter-expert"],
-  "supportingSkills": ["riverpod-3", "drift-flutter", "flutter-test-master"],
+  "id": "test",
+  "command": "/test",
+  "agent": "tester",
+  "primarySkills": ["unit-testing", "integration-testing"],
+  "supportingSkills": ["deep-research", "playwright-interactive", "flutter-mobile-qa", "code-review"],
   "fallbackSkillSearchRecommended": false,
-  "matchedBy": "explicit-workflow-command"
+  "matchedBy": "trigger-match"
 }
 ```
 
@@ -296,9 +296,9 @@ Search skills by keyword after route resolution fails or when a user explicitly 
   "query": "flutter",
   "results": [
     {
-      "id": "flutter-expert",
+      "id": "flutter-mobile-qa",
       "category": "mobile",
-      "description": "Flutter app architecture..."
+      "description": "Use when planning or running Flutter mobile QA with an Android emulator, ADB-backed MCP tooling, screenshot/UI-tree evidence, logcat triage, and structured test reporting."
     }
   ],
   "count": 3
@@ -312,22 +312,22 @@ Validate an exact skill ID before loading it.
 **Input**:
 
 ```json
-{ "id": "flutter-expert" }
+{ "id": "flutter-mobile-qa" }
 ```
 
 **Output**:
 
 ```json
 {
-  "id": "flutter-expert",
+  "id": "flutter-mobile-qa",
   "exists": true,
-  "canonicalId": "flutter-expert",
+  "canonicalId": "flutter-mobile-qa",
   "category": "mobile",
-  "description": "Flutter app architecture...",
+  "description": "Use when planning or running Flutter mobile QA with an Android emulator, ADB-backed MCP tooling, screenshot/UI-tree evidence, logcat triage, and structured test reporting.",
   "isWrapper": false,
   "isAlias": false,
   "replacementId": null,
-  "availableReferences": ["references/project-structure.md"]
+  "availableReferences": ["references/platform-setup.md", "references/flutter-readiness.md"]
 }
 ```
 
@@ -354,8 +354,8 @@ Get one validated markdown sidecar file for a skill.
 
 ```json
 {
-  "id": "flutter-expert",
-  "path": "references/project-structure.md"
+  "id": "flutter-mobile-qa",
+  "path": "references/platform-setup.md"
 }
 ```
 

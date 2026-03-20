@@ -165,7 +165,7 @@ skill-creator
 - Custom subagents live under `../../agents/` relative to the mirrored skill directory and support YAML frontmatter: `name`, `description`, `tools`, `model`, `maxTurns`, `memory`, `handoffs`.
 - Use `model` field in agent frontmatter to select model per subagent (e.g., `model: opus` for complex analysis).
 - Set `maxTurns` to prevent runaway iterations (default: 25, orchestrator: 30).
-- Key agents support `memory: project` for cross-session learning (orchestrator, debugger, researcher, project-planner).
+- Current project-memory agents are `orchestrator` and `planner`; use them for durable project context.
 - Hook templates in `.claude/hooks/` provide lifecycle event integration at `UserPromptSubmit` and other events.
 - Path-scoped rules live under `../../rules/` with `paths:` frontmatter for targeted guidance.
 - MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.

@@ -1,0 +1,120 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Cubis Foundry Platform Surface Spec",
+  "description": "Generated authoritative install surfaces for rules, skills, workflows, custom agents, subagents, and hooks.",
+  "type": "object",
+  "required": [
+    "$schema",
+    "generatedAt",
+    "platforms"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "platforms": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "platformId",
+          "label",
+          "hookSupport",
+          "workflowSurfaceKind",
+          "specialistRouteRenderer",
+          "rules",
+          "skills",
+          "workflows",
+          "customAgents",
+          "subagents",
+          "hooks"
+        ],
+        "properties": {
+          "platformId": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "hookSupport": {
+            "type": "string"
+          },
+          "workflowSurfaceKind": {
+            "type": "string"
+          },
+          "specialistRouteRenderer": {
+            "type": "string"
+          },
+          "rules": {
+            "$ref": "#/definitions/surface"
+          },
+          "skills": {
+            "$ref": "#/definitions/surface"
+          },
+          "workflows": {
+            "$ref": "#/definitions/surface"
+          },
+          "customAgents": {
+            "$ref": "#/definitions/surface"
+          },
+          "subagents": {
+            "$ref": "#/definitions/surface"
+          },
+          "hooks": {
+            "$ref": "#/definitions/surface"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "definitions": {
+    "surface": {
+      "type": "object",
+      "required": [
+        "vendorSupport",
+        "foundryStatus",
+        "projectPath",
+        "globalPath",
+        "format",
+        "nativeOrProjected",
+        "notes"
+      ],
+      "properties": {
+        "vendorSupport": {
+          "type": "string"
+        },
+        "foundryStatus": {
+          "type": "string"
+        },
+        "projectPath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "globalPath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "format": {
+          "type": "string"
+        },
+        "nativeOrProjected": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

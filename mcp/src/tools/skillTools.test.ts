@@ -228,6 +228,35 @@ function createRouteManifest(): RouteManifest {
   };
 }
 
+function createStitchRouteManifest(): RouteManifest {
+  return {
+    $schema: "cubis-foundry-route-manifest-v1",
+    generatedAt: new Date(0).toISOString(),
+    contentHash: "stitch-test",
+    summary: { totalRoutes: 1, workflows: 1, agents: 0 },
+    routes: [
+      {
+        kind: "workflow",
+        id: "implement",
+        command: "/implement",
+        displayName: "Implement Workflow",
+        description: "End-to-end feature implementation",
+        triggers: ["implement", "build", "feature"],
+        primaryAgent: "implementer",
+        supportingAgents: ["tester", "reviewer"],
+        primarySkills: ["api-design", "typescript-best-practices"],
+        supportingSkills: ["unit-testing", "code-review"],
+        artifacts: {
+          codex: { compatibilityAlias: "$workflow-implement", workflowFile: "implement.md" },
+          copilot: { workflowFile: "implement.md", promptFile: "implement.prompt.md" },
+          antigravity: { workflowFile: "implement.md", commandFile: "implement.toml" },
+          claude: { workflowFile: "implement.md" },
+        },
+      },
+    ],
+  };
+}
+
 const REPO_ROOT = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "../../..",
@@ -643,6 +672,30 @@ describe("skill tools", () => {
       primarySkillHint: "deep-research",
     });
     expect(["trigger-match", "intent-match"]).toContain(result.matchedBy);
+  });
+
+  it("routes Stitch UI intent to implement with the Stitch skill sequence", async () => {
+    const result = payload(
+      await handleRouteResolve(
+        { intent: "use Stitch to generate a dashboard screen" },
+        createStitchRouteManifest(),
+      ),
+    );
+    expect(result).toMatchObject({
+      resolved: true,
+      kind: "workflow",
+      id: "implement",
+      command: "/implement",
+      primarySkillHint: "frontend-design",
+      matchedBy: "stitch-ui-intent",
+    });
+    expect(result.primarySkills).toEqual([
+      "frontend-design",
+      "stitch-prompt-enhancement",
+      "stitch-design-orchestrator",
+      "stitch-design-system",
+      "stitch-implementation-handoff",
+    ]);
   });
 
   it("falls back cleanly when no route matches the intent", async () => {

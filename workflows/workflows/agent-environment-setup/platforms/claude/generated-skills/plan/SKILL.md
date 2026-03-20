@@ -1,6 +1,6 @@
 ---
 name: plan
-description: "Research a codebase and produce a structured implementation plan. Explores first, then designs, following the 'understand before building' principle."
+description: "Research a codebase and produce a structured implementation plan. Explore first, then design."
 license: MIT
 metadata:
   author: cubis-foundry
@@ -17,11 +17,11 @@ Use when you need to understand a codebase area and create an actionable impleme
 
 ## Agent Chain
 
-`explorer` → `planner` → `orchestrator`
+`explorer` -> `planner` -> `orchestrator`
 
 ## Routing
 
-1. **Explore**: `@explorer` surveys the relevant codebase area — maps files, reads key modules, identifies patterns and constraints.
+1. **Explore**: `@explorer` surveys the relevant codebase area - maps files, reads key modules, identifies patterns and constraints.
 2. **Plan**: `@planner` takes exploration findings and produces a structured implementation plan with steps, testing criteria, and risks.
 3. **Return**: `@orchestrator` receives the plan for delegation or approval.
 

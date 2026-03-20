@@ -31,8 +31,8 @@ Each generated platform rule file still exposes a routing matrix or equivalent s
 ```markdown
 | Skill | Category | When to Load | Primary Agent |
 |-------|----------|--------------|---------------|
-| python-best-practices | Language | Python backend, typing, async | @backend-specialist |
-| nextjs | Framework | Next.js App Router, RSC | @frontend-specialist |
+| python-best-practices | Language | Python backend, typing, async | @implementer |
+| nextjs | Framework | Next.js App Router, RSC | @implementer |
 ```
 
 ### Matrix Fields
@@ -104,16 +104,16 @@ Each skill should be assigned a primary agent in the routing matrix. Choose base
 
 | Domain | Primary Agent |
 |--------|---------------|
-| Languages (Python, TS, Go, etc.) | @backend-specialist or @frontend-specialist |
-| Backend frameworks | @backend-specialist |
-| Frontend frameworks | @frontend-specialist |
-| Mobile frameworks | @mobile-developer |
-| Database/ORM | @database-architect |
-| Testing | @test-engineer |
-| Security | @security-auditor |
-| DevOps | @devops-engineer |
-| Design/Architecture | @project-planner |
-| AI/ML | @researcher |
+| Languages (Python, TS, Go, etc.) | @implementer |
+| Backend frameworks | @implementer |
+| Frontend frameworks | @implementer |
+| Mobile frameworks | @implementer |
+| Database/ORM | @planner or @implementer |
+| Testing | @tester |
+| Security | @reviewer |
+| DevOps | @implementer |
+| Design/Architecture | @planner |
+| AI/ML / research | @explorer or @planner |
 | Workflow | @orchestrator |
 | Meta | @orchestrator |
 
@@ -135,6 +135,6 @@ After adding a skill to the routing infrastructure:
 
 1. **Editing generated platform rule files directly** — change shared `STEERING.md` or a platform override, then regenerate
 2. **Mismatched names** — directory name, frontmatter name, and routing matrix name must all match
-3. **Wrong agent assignment** — assigning a frontend skill to @backend-specialist causes incorrect context loading
+3. **Wrong agent assignment** — assigning a testing or review skill to the wrong lean agent causes incorrect routing and validation
 4. **Using skill mirror sync for non-skill assets** — agents, prompts, and command files have their own platform-native generation path
 5. **Invalid evals.json** — JSON syntax errors cause the eval runner to skip the skill silently

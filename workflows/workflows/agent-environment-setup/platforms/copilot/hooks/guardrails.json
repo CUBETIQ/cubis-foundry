@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      {
+        "type": "command",
+        "bash": "node ./pre-tool-security-guard.mjs",
+        "powershell": "node ./pre-tool-security-guard.mjs",
+        "cwd": ".github/hooks",
+        "timeoutSec": 5
+      }
+    ]
+  }
+}

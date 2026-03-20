@@ -1,6 +1,11 @@
 export type InitScope = "project" | "global";
-export type InitSkillProfile = "core" | "web-backend" | "full";
-export type InitMcpId = "cubis-foundry" | "postman" | "stitch" | "playwright";
+export type InitSkillProfile = "core" | "web-backend" | "mobile-qa" | "full";
+export type InitMcpId =
+  | "cubis-foundry"
+  | "postman"
+  | "stitch"
+  | "playwright"
+  | "android";
 export type InitPostmanMode = "full" | "minimal";
 export type InitPlatformId =
   | "codex"

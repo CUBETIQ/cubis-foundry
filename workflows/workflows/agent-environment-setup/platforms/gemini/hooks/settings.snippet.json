@@ -1,0 +1,32 @@
+{
+  "hooks": {
+    "BeforeAgent": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "name": "route-research-guard",
+            "command": "node \"$GEMINI_PROJECT_DIR/.gemini/hooks/route-research-guard.mjs\"",
+            "timeout": 5000,
+            "description": "Reinforce explicit route honoring and repo-first research escalation."
+          }
+        ]
+      }
+    ],
+    "BeforeTool": [
+      {
+        "matcher": "run_shell_command",
+        "hooks": [
+          {
+            "type": "command",
+            "name": "preflight-security-guard",
+            "command": "node \"$GEMINI_PROJECT_DIR/.gemini/hooks/preflight-security-guard.mjs\"",
+            "timeout": 5000,
+            "description": "Block destructive shell commands before Gemini executes them."
+          }
+        ]
+      }
+    ]
+  }
+}

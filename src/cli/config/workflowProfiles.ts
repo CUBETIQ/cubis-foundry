@@ -9,6 +9,9 @@ export const WORKFLOW_PROFILES = {
     id: "antigravity",
     label: "Antigravity",
     installsCustomAgents: false,
+    workflowSurfaceKind: "command",
+    specialistSurfaceKind: "agent-route-command",
+    hookSupport: "do-not-ship",
     project: {
       workflowDirs: [],
       agentDirs: [],
@@ -41,6 +44,9 @@ export const WORKFLOW_PROFILES = {
     id: "codex",
     label: "Codex",
     installsCustomAgents: true,
+    workflowSurfaceKind: "generated-skill",
+    specialistSurfaceKind: "subagent",
+    hookSupport: "experimental",
     project: {
       workflowDirs: [],
       agentDirs: [".codex/agents"],
@@ -61,11 +67,15 @@ export const WORKFLOW_PROFILES = {
     id: "copilot",
     label: "GitHub Copilot",
     installsCustomAgents: true,
+    workflowSurfaceKind: "prompt",
+    specialistSurfaceKind: "custom-agent",
+    hookSupport: "native",
     project: {
       workflowDirs: [],
       agentDirs: [".github/agents"],
       skillDirs: [".github/skills"],
       promptDirs: [".github/prompts"],
+      hookDirs: [".github/hooks"],
       ruleFilesByPriority: [".github/copilot-instructions.md"],
     },
     global: {
@@ -78,18 +88,22 @@ export const WORKFLOW_PROFILES = {
     detectorPaths: [
       ".github/agents",
       ".github/prompts",
+      ".github/hooks",
       ".vscode/mcp.json",
       ".github/copilot-instructions.md",
       ".github/instructions",
       "AGENTS.md",
     ],
     legacyDetectorPaths: [],
-    ruleHintName: "AGENTS.md or .github/copilot-instructions.md",
+    ruleHintName: ".github/copilot-instructions.md",
   },
   claude: {
     id: "claude",
     label: "Claude Code",
     installsCustomAgents: true,
+    workflowSurfaceKind: "generated-skill",
+    specialistSurfaceKind: "subagent",
+    hookSupport: "native",
     project: {
       workflowDirs: [],
       agentDirs: [".claude/agents"],
@@ -118,10 +132,14 @@ export const WORKFLOW_PROFILES = {
     id: "gemini",
     label: "Gemini CLI",
     installsCustomAgents: false,
+    workflowSurfaceKind: "command",
+    specialistSurfaceKind: "agent-route-command",
+    hookSupport: "native",
     project: {
       workflowDirs: [],
       skillDirs: [],
       commandDirs: [".gemini/commands"],
+      hookDirs: [".gemini/hooks"],
       ruleFilesByPriority: [".gemini/GEMINI.md", "GEMINI.md"],
     },
     global: {
@@ -133,6 +151,7 @@ export const WORKFLOW_PROFILES = {
     detectorPaths: [
       ".gemini",
       ".gemini/commands",
+      ".gemini/hooks",
       ".gemini/GEMINI.md",
       "GEMINI.md",
     ],

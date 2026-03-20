@@ -19,11 +19,19 @@ set cli [lindex $argv 0]
 
 spawn node $cli init --dry-run --no-banner --bundle agent-environment-setup --platforms codex --mcps postman --mcp-runtime local
 
+expect -re "Select workspace stack:" {} timeout { fail "Missing prompt: Select workspace stack:" }
+press_enter
 expect -re "Select workflow bundle:" {} timeout { fail "Missing prompt: Select workflow bundle:" }
 press_enter
 expect -re "Select target platform\\(s\\):" {} timeout { fail "Missing prompt: Select target platform(s):" }
 press_enter
+expect -re "Select workspace profile:" {} timeout { fail "Missing prompt: Select workspace profile:" }
+press_enter
 expect -re "Select skills install profile:" {} timeout { fail "Missing prompt: Select skills install profile:" }
+press_enter
+expect -re "Select the AI that should author context docs:" {} timeout { fail "Missing prompt: Select the AI that should author context docs:" }
+press_enter
+expect -re "Select optional capability packs:" {} timeout { fail "Missing prompt: Select optional capability packs:" }
 press_enter
 expect -re "Select which MCP integrations to configure:" {} timeout { fail "Missing prompt: Select which MCP integrations to configure:" }
 press_enter

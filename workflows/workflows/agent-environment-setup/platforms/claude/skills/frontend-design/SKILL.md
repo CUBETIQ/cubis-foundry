@@ -3,7 +3,7 @@ name: frontend-design
 description: Create distinctive, production-grade frontend interfaces with strong visual direction. Use for design systems, components, pages, dashboards, landing pages, accessibility, and polished UI work that should avoid generic AI aesthetics.
 allowed-tools: Read Grep Glob
 context: fork
-agent: frontend-specialist
+agent: implementer
 user-invocable: true
 argument-hint: "Component, design system, or UI pattern to design"
 ---
@@ -25,6 +25,7 @@ Provide systematic guidance for building distinctive, production-grade frontend 
 - Reviewing animation and motion patterns for usability and performance
 - Establishing frontend coding standards for a team or project
 - Beautifying an existing UI that feels flat, generic, or inconsistent
+- Preparing a design brief before Google Stitch generates or edits UI screens
 
 ## Instructions
 
@@ -64,6 +65,8 @@ Provide systematic guidance for building distinctive, production-grade frontend 
 
 18. **Test visual regressions alongside functional behavior** — Combine unit tests for logic, integration tests for composition, and visual regression snapshots for appearance so that refactors cannot silently break the user experience.
 
+19. **For Stitch-driven UI work, load only the refs needed for generation quality** — Start with `references/visual-direction.md` and `references/design-tokens.md` before prompting Stitch. Add `references/component-architecture.md` only when you are converting Stitch output into real components. Add `references/accessibility.md`, `references/responsive-patterns.md`, and `references/animation.md` only when the request explicitly needs those concerns. If the task spans multiple screens or iterative Stitch work, pair this skill with `stitch-design-system` so the design language persists across runs.
+
 ## Output Format
 
 Deliver:
@@ -88,6 +91,8 @@ Load only what the current task requires.
 | `references/responsive-patterns.md` | Task involves responsive layout, container queries, fluid grids, or adaptive design. |
 | `references/animation.md` | Task involves transitions, micro-interactions, easing curves, or motion accessibility. |
 
+For Stitch workflows, always start with `references/visual-direction.md` and `references/design-tokens.md`. Add `component-architecture`, `accessibility`, `responsive-patterns`, or `animation` only when the current screen actually needs them.
+
 ## Claude Platform Notes
 
 - Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
@@ -96,7 +101,7 @@ Load only what the current task requires.
 - Custom subagents live under `../../agents/` relative to the mirrored skill directory and support YAML frontmatter: `name`, `description`, `tools`, `model`, `maxTurns`, `memory`, `handoffs`.
 - Use `model` field in agent frontmatter to select model per subagent (e.g., `model: opus` for complex analysis).
 - Set `maxTurns` to prevent runaway iterations (default: 25, orchestrator: 30).
-- Key agents support `memory: project` for cross-session learning (orchestrator, debugger, researcher, project-planner).
+- Current project-memory agents are `orchestrator` and `planner`; use them for durable project context.
 - Hook templates in `.claude/hooks/` provide lifecycle event integration at `UserPromptSubmit` and other events.
 - Path-scoped rules live under `../../rules/` with `paths:` frontmatter for targeted guidance.
 - MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.

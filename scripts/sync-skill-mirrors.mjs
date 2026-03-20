@@ -11,6 +11,10 @@ import {
   listSkillDirs,
   pathExists,
 } from "./lib/skill-inventory.mjs";
+import {
+  buildAnthropicAliasMap,
+  readAnthropicSkillIntake,
+} from "./lib/external-skill-intake.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -112,6 +116,7 @@ function extractFrontmatter(markdown) {
 
 let _platformAttrs = null;
 let _platformNotes = {};
+let _anthropicAliasMap = null;
 
 async function loadPlatformAttributes() {
   if (_platformAttrs) return _platformAttrs;
@@ -135,45 +140,131 @@ async function loadPlatformNote(platform) {
   return _platformNotes[platform];
 }
 
-function buildStitchPlatformSection(platform) {
-  if (platform === "codex") {
-    return `## Codex Stitch Flow
+async function loadAnthropicAliasMap() {
+  if (_anthropicAliasMap) return _anthropicAliasMap;
+  const intake = await readAnthropicSkillIntake();
+  _anthropicAliasMap = buildAnthropicAliasMap(intake);
+  return _anthropicAliasMap;
+}
 
-- Treat Stitch as a repo-local implementation assistant, not a code drop. Verify the \`cubis-foundry\` MCP entry, inspect the workspace, then patch the existing screen with minimal diffs.
-- Keep the flow in one reasoning thread: preflight with \`stitch_get_status\` and \`mcp_gateway_status\`, fetch the artifact, map it to the current stack, then edit locally.
-- If the request sounds like "sync" or "update", compare the current component tree first and preserve validated local business logic while changing only UI structure, copy, tokens, and states.`;
+async function getAnthropicAliasesForSkill(skillId) {
+  const aliasMap = await loadAnthropicAliasMap();
+  return [...(aliasMap.get(String(skillId || "").toLowerCase()) || [])];
+}
+
+function injectDescriptionAliases(frontmatter, aliases) {
+  if (!Array.isArray(aliases) || aliases.length === 0) return frontmatter;
+  const aliasLabel = ` Anthropic compatibility aliases: ${aliases.join(", ")}.`;
+  const lines = frontmatter.split(/\r?\n/);
+  let updated = false;
+
+  const nextLines = lines.map((line) => {
+    if (updated || /^\s/.test(line)) return line;
+    const match = line.match(/^description\s*:\s*(.*)$/);
+    if (!match) return line;
+
+    const value = match[1] || "";
+    if (value.includes(aliasLabel.trim())) {
+      updated = true;
+      return line;
+    }
+
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      const quote = value[0];
+      const inner = value.slice(1, -1);
+      updated = true;
+      return `description: ${quote}${inner}${aliasLabel}${quote}`;
+    }
+
+    updated = true;
+    return `description: ${value}${aliasLabel}`;
+  });
+
+  return nextLines.join("\n");
+}
+
+function injectCompatibilityAliasSection(body, aliases) {
+  if (!Array.isArray(aliases) || aliases.length === 0) return body;
+  const normalized = [...new Set(aliases.filter(Boolean))];
+  if (normalized.length === 0) return body;
+
+  const heading = "## Compatibility Aliases";
+  if (body.includes(heading)) return body;
+
+  const section = [
+    heading,
+    "",
+    `Anthropic upstream compatibility names for this skill: ${normalized
+      .map((alias) => `\`${alias}\``)
+      .join(", ")}.`,
+    "Treat requests that use those names as equivalent to this canonical Foundry skill.",
+  ].join("\n");
+
+  return `${body.trimEnd()}\n\n${section}\n`;
+}
+
+function buildStitchPlatformSection(platform, skillId) {
+  const platformName =
+    platform === "codex"
+      ? "Codex"
+      : platform === "claude"
+        ? "Claude"
+        : platform === "copilot"
+          ? "Copilot"
+          : platform === "gemini"
+            ? "Gemini"
+            : platform === "antigravity"
+              ? "Antigravity"
+              : "Foundry";
+
+  const settingsPath =
+    platform === "claude"
+      ? "`.mcp.json`"
+      : platform === "copilot" || platform === "codex"
+        ? "`.vscode/mcp.json`"
+        : "`.gemini/settings.json`";
+
+  if (skillId === "stitch") {
+    return `## ${platformName} Stitch Compatibility Flow
+
+- Treat this skill as a compatibility wrapper only. Route the real work through \`frontend-design\`, \`stitch-prompt-enhancement\`, \`stitch-design-system\` when needed, \`stitch-design-orchestrator\`, and \`stitch-implementation-handoff\`.
+- Verify the Foundry Stitch MCP configuration from ${settingsPath} before choosing any Stitch tool path.
+- Prefer the shared \`/implement\` Stitch UI flow for new work so the design-first sequence stays intact on ${platformName}.`;
   }
 
-  if (platform === "claude") {
-    return `## Claude Stitch Flow
+  if (skillId === "stitch-design-orchestrator") {
+    return `## ${platformName} Stitch Orchestration
 
-- Use \`$ARGUMENTS\` as the requested Stitch screen or implementation brief when this skill is invoked directly.
-- Resolve any extra guidance from \`\${CLAUDE_SKILL_DIR}/references/platform-setup.md\`, \`\${CLAUDE_SKILL_DIR}/references/implementation-patterns.md\`, and \`\${CLAUDE_SKILL_DIR}/references/update-diff-workflow.md\`.
-- Start with Foundry gateway + Stitch status checks, then hand the concrete implementation work to the frontend-specialist fork only after the target artifact and destination surface are clear.`;
+- Run this as a workflow-first sequence: design prep, prompt enhancement, optional design-system refresh, Stitch preflight, minimal tool selection, then implementation handoff.
+- Verify \`stitch_get_status\`, \`mcp_gateway_status\`, and \`stitch_list_enabled_tools\` before any generation or edit call.
+- Treat Stitch as a rate-sensitive remote service on ${platformName}: allow one generation or edit action per turn by default, prefer \`edit_screens\` over full regeneration, and stop after two automatic retries with backoff.`;
   }
 
-  if (platform === "copilot") {
-    return `## Copilot Stitch Flow
+  if (skillId === "stitch-prompt-enhancement") {
+    return `## ${platformName} Stitch Prompt Rules
 
-- Treat the user prompt itself as the skill argument. Restate the target screen, framework, and reuse constraints before editing code.
-- Pull extra context from the mirrored references when needed, for example \`#file:references/platform-setup.md\` and \`#file:references/update-diff-workflow.md\`.
-- Keep the task inline: verify Foundry gateway access from workspace \`.vscode/mcp.json\`, fetch the Stitch artifact, then apply a minimal repo-native patch without assuming subagents or custom tool restrictions.`;
+- Convert vague UI intent into a compact prompt that names the target screen, visual direction, component hierarchy, and exact change scope.
+- Pull design language from \`frontend-design\` and \`docs/foundation/DESIGN.md\` instead of pasting raw repo context or long transcripts into Stitch.
+- Keep edit prompts narrow on ${platformName}: request one or two deltas at a time once a screen already exists.`;
   }
 
-  if (platform === "gemini") {
-    return `## Gemini Stitch Flow
+  if (skillId === "stitch-design-system") {
+    return `## ${platformName} Design Context Sync
 
-- Activate the \`stitch\` skill inline, then verify the workspace or global \`.gemini/settings.json\` entry points at \`cubis-foundry\`.
-- Keep the flow sequential: gateway preflight, artifact fetch, framework mapping, local patch, verification.
-- When the prompt is vague, first rewrite it into a concrete implementation brief with target route, component boundaries, states, and responsive expectations before editing code.`;
+- Keep \`docs/foundation/DESIGN.md\` as the canonical project design document and mirror it to \`.stitch/DESIGN.md\` for Stitch-facing flows.
+- Refresh this context only when the design language is missing, stale, or needs to stay consistent across multiple screens.
+- Derive the design system from repo truth first, then use Stitch artifacts only to fill missing visual context on ${platformName}.`;
   }
 
-  if (platform === "antigravity") {
-    return `## Antigravity Stitch Flow
+  if (skillId === "stitch-implementation-handoff") {
+    return `## ${platformName} Stitch Implementation Handoff
 
-- Use the \`stitch\` skill from \`.agent/skills/stitch\` as the preflight and artifact-retrieval entry point, then hand off focused implementation work through Agent Manager only if the task genuinely benefits from parallelism.
-- Keep Stitch verification with the initiating agent: confirm gateway status, screen identity, and destination files before dispatching any frontend-specialist work.
-- Preserve Antigravity's route-first posture: the result should still be a minimal, repo-native UI patch rather than a pasted design export.`;
+- Pull the final Stitch artifact before coding, then map it into the repo's real framework, tokens, routing, and components.
+- Preserve existing business logic, tests, and accessibility behavior while applying the UI diff.
+- Keep the result repo-native on ${platformName}: reuse local primitives and explain any intentional drift from the Stitch artifact.`;
   }
 
   return "";
@@ -225,8 +316,14 @@ function buildDeepResearchPlatformSection(platform) {
 
 function injectPlatformSpecificSkillGuidance(body, skillId, platform) {
   let section = "";
-  if (skillId === "stitch") {
-    section = buildStitchPlatformSection(platform);
+  if (
+    skillId === "stitch" ||
+    skillId === "stitch-design-orchestrator" ||
+    skillId === "stitch-prompt-enhancement" ||
+    skillId === "stitch-design-system" ||
+    skillId === "stitch-implementation-handoff"
+  ) {
+    section = buildStitchPlatformSection(platform, skillId);
   } else if (skillId === "deep-research") {
     section = buildDeepResearchPlatformSection(platform);
   } else {
@@ -283,6 +380,7 @@ function injectFrontmatterKeys(frontmatter, entries) {
 
 async function enrichClaudeSkillMarkdown(markdown, skillId) {
   const attrs = (await loadPlatformAttributes())[skillId] || {};
+  const anthropicAliases = await getAnthropicAliasesForSkill(skillId);
   const extracted = extractFrontmatter(markdown);
   if (!extracted.matched) return markdown;
 
@@ -313,6 +411,7 @@ async function enrichClaudeSkillMarkdown(markdown, skillId) {
   // Build body with platform notes
   let body = rewriteLegacySkillIds(extracted.body);
   body = injectPlatformSpecificSkillGuidance(body, skillId, "claude");
+  body = injectCompatibilityAliasSection(body, anthropicAliases);
   const note = await loadPlatformNote("claude");
   if (note) {
     body = body.trimEnd() + "\n\n" + note + "\n";
@@ -359,10 +458,12 @@ function retainMinimalSkillFrontmatter(frontmatter) {
 }
 
 async function transformMinimalSkillMarkdown(markdown, platform, skillId) {
+  const anthropicAliases = await getAnthropicAliasesForSkill(skillId);
   const extracted = extractFrontmatter(markdown);
   if (!extracted.matched) return markdown;
 
-  const minimalFrontmatter = retainMinimalSkillFrontmatter(extracted.frontmatter);
+  let minimalFrontmatter = retainMinimalSkillFrontmatter(extracted.frontmatter);
+  minimalFrontmatter = injectDescriptionAliases(minimalFrontmatter, anthropicAliases);
   let body = rewriteLegacySkillIds(extracted.body);
   body = body.replace(/\$ARGUMENTS/g, "user input");
   body = body.replace(/\$\{CLAUDE_SKILL_DIR\}/g, "the skill directory");
@@ -379,6 +480,7 @@ async function transformMinimalSkillMarkdown(markdown, platform, skillId) {
   }
 
   body = injectPlatformSpecificSkillGuidance(body, skillId, platform);
+  body = injectCompatibilityAliasSection(body, anthropicAliases);
 
   const note = await loadPlatformNote(platform);
   if (note) {
@@ -429,6 +531,7 @@ function filterFrontmatterByAllowedKeys(frontmatter, allowedKeys) {
 }
 
 async function transformCopilotSkillMarkdown(markdown, skillId) {
+  const anthropicAliases = await getAnthropicAliasesForSkill(skillId);
   const extracted = extractFrontmatter(markdown);
   if (!extracted.matched) return markdown;
 
@@ -443,6 +546,7 @@ async function transformCopilotSkillMarkdown(markdown, skillId) {
   body = body.replace(/\$\{CLAUDE_SKILL_DIR\}/g, "the skill directory");
   body = body.replace(/`?context:\s*fork`?/gi, "");
   body = injectPlatformSpecificSkillGuidance(body, skillId, "copilot");
+  body = injectCompatibilityAliasSection(body, anthropicAliases);
 
   // Append Copilot platform notes
   const note = await loadPlatformNote("copilot");

@@ -36,6 +36,10 @@ import {
   listTopLevelSkillDirs,
   pathExists,
 } from "./lib/skill-inventory.mjs";
+import {
+  buildAnthropicAliasMap,
+  readAnthropicSkillIntake,
+} from "./lib/external-skill-intake.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = path.join(ROOT, "mcp", "generated");
@@ -496,6 +500,8 @@ async function scanSkills(verbose) {
   const skills = [];
   const errors = [];
   const skillsById = new Map();
+  const anthropicIntake = await readAnthropicSkillIntake();
+  const anthropicAliasMap = buildAnthropicAliasMap(anthropicIntake);
 
   if (!(await pathExists(SKILLS_ROOT))) {
     throw new Error(`Skills root not found: ${SKILLS_ROOT}`);
@@ -524,7 +530,12 @@ async function scanSkills(verbose) {
       const description = getScalar(fm.raw, "description") || "";
       const explicitKeywords = getListField(fm.raw, "keywords");
       const explicitTriggers = getListField(fm.raw, "triggers");
-      const aliases = getMetadataAliases(fm.raw);
+      const aliases = [
+        ...new Set([
+          ...getMetadataAliases(fm.raw),
+          ...(anthropicAliasMap.get(skillId.toLowerCase()) || []),
+        ]),
+      ];
       const keywords = deriveKeywords(
         skillId,
         metadata,

@@ -10,6 +10,7 @@ import {
   ORCHESTRATION_SUBTYPES,
   PATTERN_REGISTRY,
   buildPlatformCapabilityContracts,
+  buildPlatformSurfaceSpec,
 } from "./lib/platform-parity.mjs";
 import {
   EXPECTED_PARITY_PLATFORM_IDS,
@@ -17,6 +18,7 @@ import {
   MANAGED_PARITY_DOC_FILES,
   PATTERN_REGISTRY_FILE,
   PLATFORM_CAPABILITIES_FILE,
+  PLATFORM_SURFACE_SPEC_FILE,
   UPSTREAM_CAPABILITY_AUDIT_FILE,
   buildBlockingSummary,
   buildParityArtifactPointers,
@@ -42,6 +44,11 @@ const GENERATED_PLATFORM_CAPABILITIES_PATH = path.join(
   BUNDLE_ROOT,
   "generated",
   PLATFORM_CAPABILITIES_FILE,
+);
+const GENERATED_PLATFORM_SURFACE_SPEC_PATH = path.join(
+  BUNDLE_ROOT,
+  "generated",
+  PLATFORM_SURFACE_SPEC_FILE,
 );
 const GENERATED_UPSTREAM_AUDIT_PATH = path.join(
   BUNDLE_ROOT,
@@ -157,6 +164,10 @@ const platforms = {
 
 function normalizeMarkdownId(fileName) {
   return path.basename(fileName, ".md");
+}
+
+function toCopilotAgentFileName(fileName) {
+  return `${normalizeMarkdownId(fileName)}.agent.md`;
 }
 
 function parseFrontmatter(markdown) {
@@ -377,6 +388,7 @@ async function validateParityManifest(manifest, errors) {
 
   let generatedPatternRegistry;
   let generatedPlatformCapabilities;
+  let generatedPlatformSurfaceSpec;
   let generatedUpstreamAudit;
   try {
     generatedPatternRegistry = JSON.parse(
@@ -401,6 +413,18 @@ async function validateParityManifest(manifest, errors) {
       `failed to read generated platform capabilities: ${err.message || err}`,
     );
     generatedPlatformCapabilities = null;
+  }
+  try {
+    generatedPlatformSurfaceSpec = JSON.parse(
+      await fs.readFile(GENERATED_PLATFORM_SURFACE_SPEC_PATH, "utf8"),
+    );
+  } catch (err) {
+    error(
+      errors,
+      GENERATED_PLATFORM_SURFACE_SPEC_PATH,
+      `failed to read generated platform surface spec: ${err.message || err}`,
+    );
+    generatedPlatformSurfaceSpec = null;
   }
   try {
     generatedUpstreamAudit = JSON.parse(
@@ -492,6 +516,12 @@ async function validateParityManifest(manifest, errors) {
     typeof generatedPlatformCapabilities.platforms === "object"
       ? generatedPlatformCapabilities.platforms
       : {};
+  const platformSurfaceSpec =
+    generatedPlatformSurfaceSpec?.platforms &&
+    typeof generatedPlatformSurfaceSpec.platforms === "object"
+      ? generatedPlatformSurfaceSpec.platforms
+      : {};
+  const expectedSurfaceSpec = buildPlatformSurfaceSpec();
   for (const platformId of EXPECTED_PARITY_PLATFORM_IDS) {
     const contract = platformContracts?.[platformId];
     if (!contract || typeof contract !== "object") {
@@ -623,6 +653,91 @@ async function validateParityManifest(manifest, errors) {
           `platform '${platformId}' missing pattern_support entry for '${patternId}'`,
         );
       }
+    }
+
+    const surfaceSpec = platformSurfaceSpec?.[platformId];
+    if (!surfaceSpec || typeof surfaceSpec !== "object") {
+      error(
+        errors,
+        GENERATED_PLATFORM_SURFACE_SPEC_PATH,
+        `platform surface spec missing platform '${platformId}'`,
+      );
+      continue;
+    }
+    for (const key of [
+      "platformId",
+      "label",
+      "hookSupport",
+      "workflowSurfaceKind",
+      "specialistRouteRenderer",
+      "rules",
+      "skills",
+      "workflows",
+      "customAgents",
+      "subagents",
+      "hooks",
+    ]) {
+      if (!(key in surfaceSpec)) {
+        error(
+          errors,
+          GENERATED_PLATFORM_SURFACE_SPEC_PATH,
+          `platform surface spec '${platformId}' missing '${key}'`,
+        );
+      }
+    }
+    for (const surfaceName of [
+      "rules",
+      "skills",
+      "workflows",
+      "customAgents",
+      "subagents",
+      "hooks",
+    ]) {
+      const surface = surfaceSpec[surfaceName];
+      if (!surface || typeof surface !== "object") {
+        error(
+          errors,
+          GENERATED_PLATFORM_SURFACE_SPEC_PATH,
+          `platform surface spec '${platformId}.${surfaceName}' missing`,
+        );
+        continue;
+      }
+      for (const requiredKey of [
+        "vendorSupport",
+        "foundryStatus",
+        "projectPath",
+        "globalPath",
+        "format",
+        "nativeOrProjected",
+        "notes",
+      ]) {
+        if (!(requiredKey in surface)) {
+          error(
+            errors,
+            GENERATED_PLATFORM_SURFACE_SPEC_PATH,
+            `platform surface spec '${platformId}.${surfaceName}' missing '${requiredKey}'`,
+          );
+        }
+      }
+      if (
+        typeof surface.foundryStatus !== "string" ||
+        !["native", "degraded", "experimental", "do-not-ship"].includes(
+          surface.foundryStatus,
+        )
+      ) {
+        error(
+          errors,
+          GENERATED_PLATFORM_SURFACE_SPEC_PATH,
+          `platform surface spec '${platformId}.${surfaceName}' has invalid foundryStatus '${surface.foundryStatus}'`,
+        );
+      }
+    }
+    if (JSON.stringify(surfaceSpec) !== JSON.stringify(expectedSurfaceSpec[platformId])) {
+      error(
+        errors,
+        GENERATED_PLATFORM_SURFACE_SPEC_PATH,
+        `platform surface spec drift detected for '${platformId}'`,
+      );
     }
   }
 
@@ -1244,9 +1359,12 @@ async function validateSharedSourceAndGeneratedParity({
     normalizeMarkdownId(fileName),
   );
   const workflowCommandFiles = workflowIds.map((id) => `${id}.toml`);
-  const claudePromptFiles = workflowIds.map((id) => `${id}.prompt.md`);
+  const copilotPromptFiles = workflowIds.map((id) => `${id}.prompt.md`);
   const codexAgentFiles = sharedAgents.map(
     (fileName) => `${normalizeMarkdownId(fileName)}.toml`,
+  );
+  const copilotAgentFiles = sharedAgents.map((fileName) =>
+    toCopilotAgentFileName(fileName),
   );
   const agentCommandFiles = sharedAgents.map(
     (fileName) => `agent-${normalizeMarkdownId(fileName)}.toml`,
@@ -1295,6 +1413,8 @@ async function validateSharedSourceAndGeneratedParity({
     const expectedAgentFiles =
       platformId === "codex"
         ? codexAgentFiles
+        : platformId === "copilot"
+          ? copilotAgentFiles
         : expectsGeneratedAgents
           ? sharedAgents
           : [];
@@ -1417,6 +1537,13 @@ async function validateSharedSourceAndGeneratedParity({
       `copilot prompts count mismatch: expected ${workflowIds.length}, found ${copilotPrompts.length}`,
     );
   }
+  assertFileSetParity({
+    label: "copilot prompt list",
+    expected: copilotPromptFiles,
+    actual: copilotPrompts,
+    errors,
+    contextPath: MANIFEST_PATH,
+  });
   for (const promptFile of copilotPrompts) {
     const filePath = path.join(
       BUNDLE_ROOT,

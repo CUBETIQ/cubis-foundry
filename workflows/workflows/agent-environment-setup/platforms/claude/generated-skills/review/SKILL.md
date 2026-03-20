@@ -1,6 +1,6 @@
 ---
 name: review
-description: "Comprehensive code review combining quality review and security audit. Runs reviewers in parallel for thorough analysis."
+description: "Comprehensive code review combining quality review and security audit."
 license: MIT
 metadata:
   author: cubis-foundry
@@ -17,13 +17,11 @@ Use for code review, pull request review, quality audits, or pre-merge verificat
 
 ## Agent Chain
 
-`reviewer` + `security-reviewer` (parallel) → `implementer` (if fixes needed)
+`reviewer` -> `implementer` (if fixes needed)
 
 ## Routing
 
-1. **Review (parallel)**:
-   - `@reviewer` performs quality, pattern, and maintainability review.
-   - `@security-reviewer` performs OWASP security audit.
+1. **Review**: `@reviewer` performs quality, pattern, maintainability, and security review.
 2. **Fix (if needed)**: `@implementer` addresses any critical or high-severity findings.
 
 ## Skill Routing
@@ -34,15 +32,14 @@ Use for code review, pull request review, quality audits, or pre-merge verificat
 ## Context notes
 
 - Provide the files or diff to review, and any specific concerns or focus areas.
-- Quality reviewer and security reviewer run in parallel for comprehensive coverage.
+- Quality review and security review are combined in one pass.
 
 ## Workflow steps
 
-1. Reviewer and security-reviewer analyze the code in parallel.
-2. Findings are merged and de-duplicated.
-3. If no critical/high issues: APPROVE.
-4. If fixes are needed: implementer addresses the findings.
-5. After fixes: re-review to verify resolutions.
+1. Reviewer analyzes the code and records quality and security findings together.
+2. If no critical/high issues: APPROVE.
+3. If fixes are needed: implementer addresses the findings.
+4. After fixes: re-review to verify resolutions.
 
 ## Verification
 
@@ -55,7 +52,7 @@ Use for code review, pull request review, quality audits, or pre-merge verificat
 ```yaml
 WORKFLOW_RESULT:
   primary_agent: reviewer
-  supporting_agents: [security-reviewer, implementer?]
+  supporting_agents: [implementer]
   review_status: <approve|request_changes>
   critical_findings: <number>
   high_findings: <number>

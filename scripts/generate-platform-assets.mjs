@@ -15,12 +15,14 @@ import {
   PATTERN_REGISTRY,
   buildParityDocs,
   buildPlatformCapabilityContracts,
+  buildPlatformSurfaceSpec,
   buildUpstreamCapabilityAudit,
 } from "./lib/platform-parity.mjs";
 import {
   MANAGED_PARITY_DOC_FILES,
   PATTERN_REGISTRY_FILE,
   PLATFORM_CAPABILITIES_FILE,
+  PLATFORM_SURFACE_SPEC_FILE,
   UPSTREAM_CAPABILITY_AUDIT_FILE,
   buildBlockingSummary,
   buildParityArtifactPointers,
@@ -46,6 +48,8 @@ const PATTERN_REGISTRY_SCHEMA_FILE =
   "cubis-foundry-pattern-registry-v1.schema.json";
 const PLATFORM_CAPABILITIES_SCHEMA_FILE =
   "cubis-foundry-platform-capabilities-v1.schema.json";
+const PLATFORM_SURFACE_SPEC_SCHEMA_FILE =
+  "cubis-foundry-platform-surface-spec-v1.schema.json";
 const UPSTREAM_CAPABILITY_AUDIT_SCHEMA_FILE =
   "cubis-foundry-upstream-capability-audit-v1.schema.json";
 
@@ -106,6 +110,11 @@ function unique(values) {
 
 function normalizeMarkdownId(fileName) {
   return path.basename(fileName, ".md").trim();
+}
+
+function toCopilotAgentFileName(fileName) {
+  const agentId = normalizeMarkdownId(fileName);
+  return `${agentId}.agent.md`;
 }
 
 function localJsonSchemaRef(fileName) {
@@ -399,19 +408,19 @@ function buildRouteManifest({ sharedAgents, sharedWorkflows }) {
       supportingSkills: allSkills.slice(2),
       artifacts: {
         codex: {
-          target: "agent",
+          target: "subagent",
           agentFile: `${agentId}.toml`,
         },
         copilot: {
-          target: "agent",
-          agentFile: agent.fileName,
+          target: "custom-agent",
+          agentFile: toCopilotAgentFileName(agent.fileName),
         },
         antigravity: {
           target: "command",
           commandFile: `agent-${agentId}.toml`,
         },
         claude: {
-          target: "agent",
+          target: "subagent",
           agentFile: agent.fileName,
         },
         gemini: {
@@ -602,6 +611,83 @@ function buildPlatformCapabilitiesSchema() {
   )}\n`;
 }
 
+function buildPlatformSurfaceSpecSchema() {
+  return `${JSON.stringify(
+    {
+      $schema: "http://json-schema.org/draft-07/schema#",
+      title: "Cubis Foundry Platform Surface Spec",
+      description:
+        "Generated authoritative install surfaces for rules, skills, workflows, custom agents, subagents, and hooks.",
+      type: "object",
+      required: ["$schema", "generatedAt", "platforms"],
+      properties: {
+        $schema: { type: "string" },
+        generatedAt: { type: "string", format: "date-time" },
+        platforms: {
+          type: "object",
+          additionalProperties: {
+            type: "object",
+            required: [
+              "platformId",
+              "label",
+              "hookSupport",
+              "workflowSurfaceKind",
+              "specialistRouteRenderer",
+              "rules",
+              "skills",
+              "workflows",
+              "customAgents",
+              "subagents",
+              "hooks",
+            ],
+            properties: {
+              platformId: { type: "string" },
+              label: { type: "string" },
+              hookSupport: { type: "string" },
+              workflowSurfaceKind: { type: "string" },
+              specialistRouteRenderer: { type: "string" },
+              rules: { $ref: "#/definitions/surface" },
+              skills: { $ref: "#/definitions/surface" },
+              workflows: { $ref: "#/definitions/surface" },
+              customAgents: { $ref: "#/definitions/surface" },
+              subagents: { $ref: "#/definitions/surface" },
+              hooks: { $ref: "#/definitions/surface" },
+            },
+            additionalProperties: false,
+          },
+        },
+      },
+      definitions: {
+        surface: {
+          type: "object",
+          required: [
+            "vendorSupport",
+            "foundryStatus",
+            "projectPath",
+            "globalPath",
+            "format",
+            "nativeOrProjected",
+            "notes",
+          ],
+          properties: {
+            vendorSupport: { type: "string" },
+            foundryStatus: { type: "string" },
+            projectPath: { type: ["string", "null"] },
+            globalPath: { type: ["string", "null"] },
+            format: { type: "string" },
+            nativeOrProjected: { type: "string" },
+            notes: { type: "string" },
+          },
+          additionalProperties: false,
+        },
+      },
+      additionalProperties: false,
+    },
+    null,
+    2,
+  )}\n`;
+}
+
 function buildUpstreamCapabilityAuditSchema() {
   return `${JSON.stringify(
     {
@@ -652,6 +738,9 @@ function buildBundleManifest({
   const markdownAgentFiles = sharedAgents
     .map((agent) => agent.fileName)
     .sort((a, b) => a.localeCompare(b));
+  const copilotAgentFiles = sharedAgents
+    .map((agent) => toCopilotAgentFileName(agent.fileName))
+    .sort((a, b) => a.localeCompare(b));
   const workflowCommandFiles = sharedWorkflows
     .map((workflow) => `${normalizeRouteCommandId(workflow.command)}.toml`)
     .sort((a, b) => a.localeCompare(b));
@@ -667,6 +756,66 @@ function buildBundleManifest({
       optional: true,
       description:
         "If Conductor artifacts exist, workflows can reference them as supporting context.",
+    },
+  ];
+  const geminiHooks = [
+    ...defaultHooks,
+    {
+      type: "template",
+      event: "BeforeAgent",
+      file: "README.md",
+      optional: true,
+      description: "Usage guide for the Gemini route/research and security hook templates.",
+    },
+    {
+      type: "template",
+      event: "BeforeAgent",
+      file: "settings.snippet.json",
+      optional: true,
+      description:
+        "Settings snippet that wires route/research and shell-security hooks into Gemini CLI.",
+    },
+    {
+      type: "template",
+      event: "BeforeAgent",
+      file: "route-research-guard.mjs",
+      optional: true,
+      description:
+        "Hook script template that reinforces explicit-route honoring and research escalation before planning.",
+    },
+    {
+      type: "template",
+      event: "BeforeTool",
+      file: "preflight-security-guard.mjs",
+      optional: true,
+      description:
+        "Hook script template that denies destructive shell commands before Gemini executes them.",
+    },
+  ];
+  const copilotHooks = [
+    ...defaultHooks,
+    {
+      type: "template",
+      event: "preToolUse",
+      file: "README.md",
+      optional: true,
+      description: "Usage guide for the Copilot security hook templates.",
+    },
+    {
+      type: "template",
+      event: "preToolUse",
+      file: "guardrails.json",
+      optional: true,
+      description:
+        "Repository hook configuration that wires the pre-tool security guard into GitHub Copilot.",
+    },
+    {
+      type: "template",
+      event: "preToolUse",
+      file: "pre-tool-security-guard.mjs",
+      optional: true,
+      description:
+        "Hook script template that denies destructive shell commands before Copilot tool execution.",
     },
   ];
   const claudeHooks = [
@@ -734,11 +883,11 @@ function buildBundleManifest({
           },
           copilot: {
             workflows: [],
-            agents: markdownAgentFiles,
+            agents: copilotAgentFiles,
             skills: topLevelSkillIds,
             generatedSkills: [],
             rulesTemplate: "platforms/copilot/rules/copilot-instructions.md",
-            hooks: defaultHooks,
+            hooks: copilotHooks,
             prompts: promptFiles,
           },
           claude: {
@@ -755,7 +904,7 @@ function buildBundleManifest({
             skills: [],
             generatedSkills: [],
             rulesTemplate: "platforms/gemini/rules/GEMINI.md",
-            hooks: defaultHooks,
+            hooks: geminiHooks,
             commands: [...workflowCommandFiles, ...agentCommandFiles],
           },
         },
@@ -860,27 +1009,6 @@ const CODEX_AGENT_CONFIG = {
   reviewer: { model: "gpt-5.4", effort: "medium", sandbox: "read-only" },
   debugger: { model: "gpt-5.4", effort: "high", sandbox: "workspace-write" },
   tester: { model: "gpt-5.4", effort: "medium", sandbox: "workspace-write" },
-  "security-reviewer": {
-    model: "gpt-5.4",
-    effort: "high",
-    sandbox: "read-only",
-  },
-  "docs-writer": {
-    model: "gpt-5.4-mini",
-    effort: "medium",
-    sandbox: "workspace-write",
-  },
-  devops: { model: "gpt-5.4", effort: "medium", sandbox: "workspace-write" },
-  "database-specialist": {
-    model: "gpt-5.4",
-    effort: "high",
-    sandbox: "workspace-write",
-  },
-  "frontend-specialist": {
-    model: "gpt-5.4",
-    effort: "medium",
-    sandbox: "workspace-write",
-  },
 };
 
 function buildCodexAgentToml(agent) {
@@ -1109,7 +1237,7 @@ function buildClaudeHookScript() {
     "  );",
     "}",
     "",
-    "if (/(^|[^a-z0-9-])(deep-research|stitch|skill-creator|frontend-design|api-design|database-design)([^a-z0-9-]|$)/i.test(normalized)) {",
+    "if (/(^|[^a-z0-9-])(deep-research|stitch|stitch-design-orchestrator|stitch-prompt-enhancement|stitch-design-system|stitch-implementation-handoff|skill-creator|frontend-design|api-design|database-design)([^a-z0-9-]|$)/i.test(normalized)) {",
     "  reminders.push(",
     '    "Named skill detected. Run skill_validate on the exact skill ID first and skip route_resolve when it validates."',
     "  );",
@@ -1126,6 +1254,278 @@ function buildClaudeHookScript() {
     "  : { continue: true };",
     "",
     "process.stdout.write(JSON.stringify(payload));",
+  ].join("\n");
+}
+
+function buildGeminiHookReadme() {
+  return [
+    "# Gemini Route/Research And Security Hook Templates",
+    "",
+    "These files are generated by Cubis Foundry as optional Gemini CLI hook templates.",
+    "",
+    "Use them when you want Gemini CLI to reinforce two behaviors with native hooks:",
+    "",
+    "- `BeforeAgent`: honor explicit workflow or agent routing and add repo-first, official-first research context",
+    "- `BeforeTool`: deny obviously destructive shell commands before they execute",
+    "",
+    "Files:",
+    "",
+    "- `settings.snippet.json` — example hook configuration to merge into `.gemini/settings.json`",
+    "- `route-research-guard.mjs` — `BeforeAgent` hook that injects additional turn context",
+    "- `preflight-security-guard.mjs` — `BeforeTool` hook that blocks destructive shell patterns",
+    "",
+    "These templates are intentionally conservative. They add context or deny a narrow set of unsafe shell commands; they do not try to replace route logic from `GEMINI.md` or workflow commands.",
+  ].join("\n");
+}
+
+function buildGeminiHookSettingsSnippet() {
+  return (
+    JSON.stringify(
+      {
+        hooks: {
+          BeforeAgent: [
+            {
+              matcher: "*",
+              hooks: [
+                {
+                  type: "command",
+                  name: "route-research-guard",
+                  command:
+                    'node "$GEMINI_PROJECT_DIR/.gemini/hooks/route-research-guard.mjs"',
+                  timeout: 5000,
+                  description:
+                    "Reinforce explicit route honoring and repo-first research escalation.",
+                },
+              ],
+            },
+          ],
+          BeforeTool: [
+            {
+              matcher: "run_shell_command",
+              hooks: [
+                {
+                  type: "command",
+                  name: "preflight-security-guard",
+                  command:
+                    'node "$GEMINI_PROJECT_DIR/.gemini/hooks/preflight-security-guard.mjs"',
+                  timeout: 5000,
+                  description:
+                    "Block destructive shell commands before Gemini executes them.",
+                },
+              ],
+            },
+          ],
+        },
+      },
+      null,
+      2,
+    ) + "\n"
+  );
+}
+
+function buildGeminiRouteResearchHookScript() {
+  return [
+    "#!/usr/bin/env node",
+    "",
+    "const buffers = [];",
+    "for await (const chunk of process.stdin) buffers.push(chunk);",
+    'const raw = Buffer.concat(buffers).toString("utf8");',
+    'let prompt = "";',
+    "try {",
+    '  const parsed = JSON.parse(raw || "{}");',
+    '  prompt = String(parsed.prompt || "");',
+    "} catch {",
+    '  prompt = "";',
+    "}",
+    "",
+    "const normalized = prompt.toLowerCase();",
+    "const reminders = [];",
+    "",
+    "if (/(^|\\s)(\\/[-a-z0-9]+|@[a-z0-9_-]+)/i.test(prompt)) {",
+    '  reminders.push("Explicit route detected. Honor the named workflow or agent directly unless it is invalid.");',
+    "}",
+    "",
+    "if (/(^|[^a-z0-9-])(deep-research|stitch|stitch-design-orchestrator|stitch-prompt-enhancement|stitch-design-system|stitch-implementation-handoff|skill-creator|frontend-design|api-design|database-design)([^a-z0-9-]|$)/i.test(normalized)) {",
+    '  reminders.push("Named skill detected. Load the exact skill first and skip broad rerouting when it already matches.");',
+    "}",
+    "",
+    "if (/(research|latest|compare|comparison|verify|official docs|reddit|community)/i.test(normalized)) {",
+    '  reminders.push("Research trigger detected. Inspect the repo first, use official docs as primary evidence, and label community sources as secondary evidence.");',
+    "}",
+    "",
+    "const payload = reminders.length > 0",
+    "  ? {",
+    "      hookSpecificOutput: {",
+    '        hookEventName: "BeforeAgent",',
+    '        additionalContext: reminders.join(" "),',
+    "      },",
+    "    }",
+    "  : {};",
+    "",
+    "process.stdout.write(JSON.stringify(payload));",
+  ].join("\n");
+}
+
+function buildGeminiSecurityHookScript() {
+  return [
+    "#!/usr/bin/env node",
+    "",
+    "const buffers = [];",
+    "for await (const chunk of process.stdin) buffers.push(chunk);",
+    'const raw = Buffer.concat(buffers).toString("utf8");',
+    "let parsed = {};",
+    "try {",
+    '  parsed = JSON.parse(raw || "{}");',
+    "} catch {",
+    "  parsed = {};",
+    "}",
+    "",
+    'const toolName = String(parsed.tool_name || "");',
+    "if (toolName !== \"run_shell_command\") {",
+    '  process.stdout.write(JSON.stringify({ decision: "allow" }));',
+    "  process.exit(0);",
+    "}",
+    "",
+    "const toolInput = parsed.tool_input && typeof parsed.tool_input === 'object' ? parsed.tool_input : {};",
+    "const command = String(toolInput.command || toolInput.cmd || toolInput.commandLine || '');",
+    "const deniedPatterns = [",
+    "  {",
+    '    reason: "destructive filesystem wipe",',
+    '    test: /(\\brm\\s+-rf\\s+\\/\\b|\\brm\\s+-rf\\s+~\\/|\\bsudo\\s+rm\\s+-rf\\b)/i,',
+    "  },",
+    "  {",
+    '    reason: "destructive git reset",',
+    '    test: /\\bgit\\s+reset\\s+--hard\\b/i,',
+    "  },",
+    "  {",
+    '    reason: "history-rewriting checkout",',
+    '    test: /\\bgit\\s+checkout\\s+--\\b/i,',
+    "  },",
+    "  {",
+    '    reason: "remote pipe-to-shell execution",',
+    '    test: /\\b(curl|wget)\\b[^\\n|]*\\|\\s*(sh|bash|zsh)\\b/i,',
+    "  },",
+    "];",
+    "",
+    "const match = deniedPatterns.find((entry) => entry.test.test(command));",
+    "if (!match) {",
+    '  process.stdout.write(JSON.stringify({ decision: "allow" }));',
+    "  process.exit(0);",
+    "}",
+    "",
+    "process.stdout.write(",
+    "  JSON.stringify({",
+    '    decision: "deny",',
+    '    reason: `Security policy: blocked ${match.reason}.`,',
+    '    systemMessage: "Preflight security guard blocked a destructive shell command.",',
+    "  }),",
+    ");",
+  ].join("\n");
+}
+
+function buildCopilotHookReadme() {
+  return [
+    "# Copilot Security Hook Templates",
+    "",
+    "These files are generated by Cubis Foundry as optional GitHub Copilot hook templates.",
+    "",
+    "Copilot's repo-native hook surface is strongest for security and audit enforcement. Unlike Claude or Gemini, these templates do not try to inject route context into the model prompt. Route honoring and research escalation stay in `AGENTS.md`, Copilot instructions, and workflow prompts.",
+    "",
+    "Files:",
+    "",
+    "- `guardrails.json` — repository hook configuration for `.github/hooks/`",
+    "- `pre-tool-security-guard.mjs` — `preToolUse` hook that blocks destructive shell commands",
+    "",
+    "The template is intentionally narrow: it guards the highest-risk shell patterns without trying to turn Copilot hooks into a full workflow router.",
+  ].join("\n");
+}
+
+function buildCopilotHookConfig() {
+  return (
+    JSON.stringify(
+      {
+        version: 1,
+        hooks: {
+          preToolUse: [
+            {
+              type: "command",
+              bash: "node ./pre-tool-security-guard.mjs",
+              powershell: "node ./pre-tool-security-guard.mjs",
+              cwd: ".github/hooks",
+              timeoutSec: 5,
+            },
+          ],
+        },
+      },
+      null,
+      2,
+    ) + "\n"
+  );
+}
+
+function buildCopilotSecurityHookScript() {
+  return [
+    "#!/usr/bin/env node",
+    "",
+    "const buffers = [];",
+    "for await (const chunk of process.stdin) buffers.push(chunk);",
+    'const raw = Buffer.concat(buffers).toString("utf8");',
+    "let parsed = {};",
+    "try {",
+    '  parsed = JSON.parse(raw || "{}");',
+    "} catch {",
+    "  parsed = {};",
+    "}",
+    "",
+    'const toolName = String(parsed.toolName || "");',
+    "let toolArgs = parsed.toolArgs;",
+    "if (typeof toolArgs === 'string') {",
+    "  try {",
+    "    toolArgs = JSON.parse(toolArgs);",
+    "  } catch {",
+    "    toolArgs = {};",
+    "  }",
+    "}",
+    "if (!toolArgs || typeof toolArgs !== 'object') toolArgs = {};",
+    "",
+    "const command = String(toolArgs.command || toolArgs.cmd || toolArgs.commandLine || '');",
+    "const shellLikeTool = /^(bash|shell|run_shell_command)$/i.test(toolName) || command.length > 0;",
+    "if (!shellLikeTool) {",
+    '  process.stdout.write("{}");',
+    "  process.exit(0);",
+    "}",
+    "",
+    "const deniedPatterns = [",
+    "  {",
+    '    reason: "destructive filesystem wipe",',
+    '    test: /(\\brm\\s+-rf\\s+\\/\\b|\\brm\\s+-rf\\s+~\\/|\\bsudo\\s+rm\\s+-rf\\b)/i,',
+    "  },",
+    "  {",
+    '    reason: "destructive git reset",',
+    '    test: /\\bgit\\s+reset\\s+--hard\\b/i,',
+    "  },",
+    "  {",
+    '    reason: "history-rewriting checkout",',
+    '    test: /\\bgit\\s+checkout\\s+--\\b/i,',
+    "  },",
+    "  {",
+    '    reason: "remote pipe-to-shell execution",',
+    '    test: /\\b(curl|wget)\\b[^\\n|]*\\|\\s*(sh|bash|zsh)\\b/i,',
+    "  },",
+    "];",
+    "",
+    "const match = deniedPatterns.find((entry) => entry.test.test(command));",
+    "if (!match) {",
+    '  process.stdout.write("{}");',
+    "  process.exit(0);",
+    "}",
+    "",
+    "process.stdout.write(",
+    "  JSON.stringify({",
+    '    permissionDecision: "deny",',
+    '    permissionDecisionReason: `Security policy: blocked ${match.reason}.`,',
+    "  }),",
+    ");",
   ].join("\n");
 }
 
@@ -1295,11 +1695,14 @@ async function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
   const antigravityCommands = new Map();
   const geminiCommands = new Map();
   const copilotPrompts = new Map();
+  const copilotHooks = new Map();
   const claudeHooks = new Map();
+  const geminiHooks = new Map();
   const generated = new Map();
   const docs = new Map();
   const topLevelSkillIds = await listTopLevelCanonicalSkillIds();
   const platformCapabilityContracts = buildPlatformCapabilityContracts();
+  const platformSurfaceSpec = buildPlatformSurfaceSpec();
   const upstreamCapabilityAudit = buildUpstreamCapabilityAudit();
   const parityDocs = buildParityDocs(platformCapabilityContracts);
 
@@ -1326,7 +1729,7 @@ async function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
       }),
     );
     const transformed = buildCopilotAgentMarkdown(agent.raw);
-    copilotAgents.set(agent.fileName, transformed.markdown);
+    copilotAgents.set(toCopilotAgentFileName(agent.fileName), transformed.markdown);
   }
 
   generated.set(
@@ -1338,6 +1741,10 @@ async function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
   generated.set(
     PLATFORM_CAPABILITIES_SCHEMA_FILE,
     buildPlatformCapabilitiesSchema(),
+  );
+  generated.set(
+    PLATFORM_SURFACE_SPEC_SCHEMA_FILE,
+    buildPlatformSurfaceSpecSchema(),
   );
   generated.set(
     UPSTREAM_CAPABILITY_AUDIT_SCHEMA_FILE,
@@ -1364,6 +1771,18 @@ async function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
         $schema: localJsonSchemaRef(PLATFORM_CAPABILITIES_SCHEMA_FILE),
         generatedAt: new Date(0).toISOString(),
         platforms: platformCapabilityContracts,
+      },
+      null,
+      2,
+    )}\n`,
+  );
+  generated.set(
+    PLATFORM_SURFACE_SPEC_FILE,
+    `${JSON.stringify(
+      {
+        $schema: localJsonSchemaRef(PLATFORM_SURFACE_SPEC_SCHEMA_FILE),
+        generatedAt: new Date(0).toISOString(),
+        platforms: platformSurfaceSpec,
       },
       null,
       2,
@@ -1421,6 +1840,22 @@ async function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
   claudeHooks.set("README.md", buildClaudeHookReadme());
   claudeHooks.set("settings.snippet.json", buildClaudeHookSettingsSnippet());
   claudeHooks.set("route-research-guard.mjs", buildClaudeHookScript());
+  geminiHooks.set("README.md", buildGeminiHookReadme());
+  geminiHooks.set("settings.snippet.json", buildGeminiHookSettingsSnippet());
+  geminiHooks.set(
+    "route-research-guard.mjs",
+    buildGeminiRouteResearchHookScript(),
+  );
+  geminiHooks.set(
+    "preflight-security-guard.mjs",
+    buildGeminiSecurityHookScript(),
+  );
+  copilotHooks.set("README.md", buildCopilotHookReadme());
+  copilotHooks.set("guardrails.json", buildCopilotHookConfig());
+  copilotHooks.set(
+    "pre-tool-security-guard.mjs",
+    buildCopilotSecurityHookScript(),
+  );
 
   return {
     codexAgents,
@@ -1437,7 +1872,9 @@ async function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
     antigravityCommands,
     geminiCommands,
     copilotPrompts,
+    copilotHooks,
     claudeHooks,
+    geminiHooks,
     generated,
     docs,
   };
@@ -1500,6 +1937,15 @@ function buildTargets(maps) {
       filter: (name) => name.endsWith(".prompt.md"),
     },
     {
+      label: "copilot hooks",
+      dir: path.join(PLATFORM_DIRS.copilot, "hooks"),
+      expected: maps.copilotHooks,
+      filter: (name) =>
+        name === "README.md" ||
+        name === "guardrails.json" ||
+        name === "pre-tool-security-guard.mjs",
+    },
+    {
       label: "claude agents",
       dir: path.join(PLATFORM_DIRS.claude, "agents"),
       expected: maps.claudeAgents,
@@ -1539,6 +1985,16 @@ function buildTargets(maps) {
       filter: (name) => name.endsWith(".toml"),
     },
     {
+      label: "gemini hooks",
+      dir: path.join(PLATFORM_DIRS.gemini, "hooks"),
+      expected: maps.geminiHooks,
+      filter: (name) =>
+        name === "README.md" ||
+        name === "settings.snippet.json" ||
+        name === "route-research-guard.mjs" ||
+        name === "preflight-security-guard.mjs",
+    },
+    {
       label: "generated route manifest",
       dir: GENERATED_DIR,
       expected: new Map(
@@ -1550,6 +2006,8 @@ function buildTargets(maps) {
             name === PATTERN_REGISTRY_SCHEMA_FILE ||
             name === PLATFORM_CAPABILITIES_FILE ||
             name === PLATFORM_CAPABILITIES_SCHEMA_FILE ||
+            name === PLATFORM_SURFACE_SPEC_FILE ||
+            name === PLATFORM_SURFACE_SPEC_SCHEMA_FILE ||
             name === UPSTREAM_CAPABILITY_AUDIT_FILE ||
             name === UPSTREAM_CAPABILITY_AUDIT_SCHEMA_FILE,
         ),
@@ -1561,6 +2019,8 @@ function buildTargets(maps) {
         name === PATTERN_REGISTRY_SCHEMA_FILE ||
         name === PLATFORM_CAPABILITIES_FILE ||
         name === PLATFORM_CAPABILITIES_SCHEMA_FILE ||
+        name === PLATFORM_SURFACE_SPEC_FILE ||
+        name === PLATFORM_SURFACE_SPEC_SCHEMA_FILE ||
         name === UPSTREAM_CAPABILITY_AUDIT_FILE ||
         name === UPSTREAM_CAPABILITY_AUDIT_SCHEMA_FILE,
     },
@@ -1717,6 +2177,12 @@ export async function run({ checkOnly = false } = {}) {
   );
   written.push(
     ...(await applyOutputMap({
+      rootDir: path.join(PLATFORM_DIRS.copilot, "hooks"),
+      fileMap: maps.copilotHooks,
+    })),
+  );
+  written.push(
+    ...(await applyOutputMap({
       rootDir: path.join(PLATFORM_DIRS.claude, "agents"),
       fileMap: maps.claudeAgents,
     })),
@@ -1753,6 +2219,12 @@ export async function run({ checkOnly = false } = {}) {
   );
   written.push(
     ...(await applyOutputMap({
+      rootDir: path.join(PLATFORM_DIRS.gemini, "hooks"),
+      fileMap: maps.geminiHooks,
+    })),
+  );
+  written.push(
+    ...(await applyOutputMap({
       rootDir: GENERATED_DIR,
       fileMap: new Map(
         [...maps.generated.entries()].filter(
@@ -1763,6 +2235,8 @@ export async function run({ checkOnly = false } = {}) {
             name === PATTERN_REGISTRY_SCHEMA_FILE ||
             name === PLATFORM_CAPABILITIES_FILE ||
             name === PLATFORM_CAPABILITIES_SCHEMA_FILE ||
+            name === PLATFORM_SURFACE_SPEC_FILE ||
+            name === PLATFORM_SURFACE_SPEC_SCHEMA_FILE ||
             name === UPSTREAM_CAPABILITY_AUDIT_FILE ||
             name === UPSTREAM_CAPABILITY_AUDIT_SCHEMA_FILE,
         ),

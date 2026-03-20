@@ -4,15 +4,16 @@
 
 - Rules: `.agents/rules/GEMINI.md`
 - Skills: `.agents/skills/<skill-id>/SKILL.md`
-- Gemini commands: `.gemini/commands/*.toml`
-- Rules file: `GEMINI.md`
+- Agent route commands: `.gemini/commands/*.toml`
+- Rules file: `.agents/rules/GEMINI.md`
+- Hooks: do not ship; no verified native Antigravity hook surface
 
 ## Platform-Specific Routing
 
 Gemini recognizes these additional entry points:
 
 1. **Explicit Gemini command** (`.gemini/commands/*.toml`) — highest priority route.
-2. Foundry compiles `/workflow` and `@agent` routes into command entry points instead of installing undocumented workspace workflow or agent folders.
+2. Foundry compiles `/workflow` and `@agent` specialist routes into command entry points instead of installing undocumented workspace workflow or agent folders.
 3. Standard workflow/agent routing from shared steering.
 
 ## Gemini Commands
@@ -33,3 +34,4 @@ Gemini recognizes these additional entry points:
 - Skills loaded via MCP are supported when the Cubis Foundry MCP server is configured.
 - Gemini supports function calling and tool use natively for code generation and analysis.
 - Keep `.toml` commands focused — one command per task pattern for clean routing.
+- Antigravity remains a Gemini-family compatibility target. Do not claim native agents, subagents, or hooks.

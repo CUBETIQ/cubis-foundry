@@ -3,7 +3,7 @@ name: mcp-server-builder
 description: "Use when building MCP servers with spec-compliant tools, structured outputs, resource providers, transport configuration, and server testing."
 allowed-tools: Read Grep Glob Bash Edit Write
 context: fork
-agent: backend-specialist
+agent: implementer
 user-invocable: true
 argument-hint: "MCP server, tool, or transport to build"
 ---
@@ -87,6 +87,11 @@ Guide the design and implementation of production-grade Model Context Protocol (
 - "Add a resource provider that serves database schema documentation to connected agents."
 - "Test an MCP server's tool registration and error handling with a mock client."
 
+## Compatibility Aliases
+
+Anthropic upstream compatibility names for this skill: `mcp builder`, `mcp-builder`.
+Treat requests that use those names as equivalent to this canonical Foundry skill.
+
 ## Claude Platform Notes
 
 - Use `$ARGUMENTS` to access user-provided arguments passed when the skill is invoked.
@@ -95,7 +100,7 @@ Guide the design and implementation of production-grade Model Context Protocol (
 - Custom subagents live under `../../agents/` relative to the mirrored skill directory and support YAML frontmatter: `name`, `description`, `tools`, `model`, `maxTurns`, `memory`, `handoffs`.
 - Use `model` field in agent frontmatter to select model per subagent (e.g., `model: opus` for complex analysis).
 - Set `maxTurns` to prevent runaway iterations (default: 25, orchestrator: 30).
-- Key agents support `memory: project` for cross-session learning (orchestrator, debugger, researcher, project-planner).
+- Current project-memory agents are `orchestrator` and `planner`; use them for durable project context.
 - Hook templates in `.claude/hooks/` provide lifecycle event integration at `UserPromptSubmit` and other events.
 - Path-scoped rules live under `../../rules/` with `paths:` frontmatter for targeted guidance.
 - MCP skill tools (`skill_search`, `skill_get`, `skill_validate`, `skill_get_reference`) are available for dynamic skill discovery and loading.

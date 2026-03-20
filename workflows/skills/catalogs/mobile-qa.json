@@ -1,0 +1,15 @@
+{
+  "profile": "mobile-qa",
+  "version": 1,
+  "extends": "core",
+  "skills": [
+    "flutter-mobile-qa",
+    "integration-testing",
+    "kotlin-best-practices",
+    "mcp-server-builder",
+    "secret-management",
+    "systematic-debugging",
+    "tech-doc",
+    "unit-testing"
+  ]
+}
