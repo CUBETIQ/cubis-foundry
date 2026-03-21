@@ -1,12 +1,12 @@
 {
   "$schema": "cubis-foundry-mcp-manifest-v1",
-  "generatedAt": "2026-03-20T10:48:29.866Z",
-  "contentHash": "169a70c7928735dc",
+  "generatedAt": "2026-03-21T03:45:46.739Z",
+  "contentHash": "3305587be9bc2aa2",
   "summary": {
-    "totalSkills": 55,
+    "totalSkills": 61,
     "totalCategories": 11,
-    "totalBytes": 363234,
-    "estimatedTokens": 90809
+    "totalBytes": 376792,
+    "estimatedTokens": 94198
   },
   "categories": [
     {
@@ -31,7 +31,7 @@
     },
     {
       "name": "frontend",
-      "skillCount": 3
+      "skillCount": 9
     },
     {
       "name": "general",
@@ -381,7 +381,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 6253
+      "fileBytes": 6663
     },
     {
       "id": "frontend-design",
@@ -402,12 +402,166 @@
       "path": "workflows/skills/frontend-design/SKILL.md",
       "metadata": {
         "author": "cubis-foundry",
-        "version": "3.1"
+        "version": "3.2"
       },
-      "fileBytes": 8702,
+      "fileBytes": 9626,
       "warnings": [
         "description too long (233 chars)"
       ]
+    },
+    {
+      "id": "frontend-design-core",
+      "name": "frontend-design-core",
+      "displayName": null,
+      "description": "Establish the design-engine execution order, canonical design-state model, and the repo-first constraints for serious frontend or mobile design work.",
+      "category": "frontend",
+      "keywords": [
+        "frontend-design-core",
+        "frontend design core",
+        "frontend",
+        "core"
+      ],
+      "triggers": [
+        "frontend-design-core",
+        "frontend design core",
+        "frontend",
+        "core"
+      ],
+      "path": "workflows/skills/frontend-design-core/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 2358
+    },
+    {
+      "id": "frontend-design-implementation-handoff",
+      "name": "frontend-design-implementation-handoff",
+      "displayName": null,
+      "description": "Translate design-engine output into repo-native implementation work, preferring real components, Flutter widgets, and existing tokens over pasted generated markup.",
+      "category": "frontend",
+      "keywords": [
+        "frontend-design-implementation-handoff",
+        "frontend design implementation handoff",
+        "frontend",
+        "implementation",
+        "handoff"
+      ],
+      "triggers": [
+        "frontend-design-implementation-handoff",
+        "frontend design implementation handoff",
+        "frontend",
+        "implementation",
+        "handoff"
+      ],
+      "path": "workflows/skills/frontend-design-implementation-handoff/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 1673
+    },
+    {
+      "id": "frontend-design-mobile-patterns",
+      "name": "frontend-design-mobile-patterns",
+      "displayName": null,
+      "description": "Adapt the design engine to mobile and Flutter surfaces using Foundry's normalized mobile-pattern dataset and implementation-first constraints.",
+      "category": "frontend",
+      "keywords": [
+        "frontend-design-mobile-patterns",
+        "frontend design mobile patterns",
+        "frontend",
+        "mobile"
+      ],
+      "triggers": [
+        "frontend-design-mobile-patterns",
+        "frontend design mobile patterns",
+        "frontend",
+        "mobile"
+      ],
+      "path": "workflows/skills/frontend-design-mobile-patterns/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 1763
+    },
+    {
+      "id": "frontend-design-screen-brief",
+      "name": "frontend-design-screen-brief",
+      "displayName": null,
+      "description": "Turn canonical design state plus overlays into a compact, high-signal screen brief for Stitch, frontend implementation, or Flutter/mobile work.",
+      "category": "frontend",
+      "keywords": [
+        "frontend-design-screen-brief",
+        "frontend design screen brief",
+        "frontend",
+        "screen",
+        "brief"
+      ],
+      "triggers": [
+        "frontend-design-screen-brief",
+        "frontend design screen brief",
+        "frontend",
+        "screen",
+        "brief"
+      ],
+      "path": "workflows/skills/frontend-design-screen-brief/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 1650
+    },
+    {
+      "id": "frontend-design-style-selector",
+      "name": "frontend-design-style-selector",
+      "displayName": null,
+      "description": "Select a non-generic visual direction from Foundry's normalized design datasets and align it to the product's domain, audience, and platform.",
+      "category": "frontend",
+      "keywords": [
+        "frontend-design-style-selector",
+        "frontend design style selector",
+        "frontend",
+        "style",
+        "selector"
+      ],
+      "triggers": [
+        "frontend-design-style-selector",
+        "frontend design style selector",
+        "frontend",
+        "style",
+        "selector"
+      ],
+      "path": "workflows/skills/frontend-design-style-selector/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 1706
+    },
+    {
+      "id": "frontend-design-system",
+      "name": "frontend-design-system",
+      "displayName": null,
+      "description": "Build or refresh the canonical design-system state for a repo, including DESIGN.md, overlays, token language, and platform-specific adaptation notes.",
+      "category": "frontend",
+      "keywords": [
+        "frontend-design-system",
+        "frontend design system",
+        "frontend"
+      ],
+      "triggers": [
+        "frontend-design-system",
+        "frontend design system",
+        "frontend"
+      ],
+      "path": "workflows/skills/frontend-design-system/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 2052
     },
     {
       "id": "git-workflow",
@@ -1062,7 +1216,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 4644
+      "fileBytes": 5523
     },
     {
       "id": "stitch-design-system",
@@ -1142,7 +1296,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 3270
+      "fileBytes": 3413
     },
     {
       "id": "svelte-sveltekit",

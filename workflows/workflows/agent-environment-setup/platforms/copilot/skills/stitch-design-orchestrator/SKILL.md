@@ -25,23 +25,27 @@ Coordinate Google Stitch work as a workflow-first, skill-driven sequence. This s
 
 1. **Treat Stitch as a remote design engine, not the source of production truth** — Use Stitch to generate or edit visual artifacts, then hand those artifacts into repo-native implementation. Do not paste returned HTML or markup blindly.
 
-2. **Load `frontend-design` first** — Always establish the visual direction and token language before forming a Stitch prompt. Start with `../frontend-design/references/visual-direction.md` and `../frontend-design/references/design-tokens.md`. Add other frontend references only when the task truly needs them.
+2. **Load the design engine first** — Always establish the visual direction, token language, and screen brief before forming a Stitch prompt. Start with `frontend-design`, then resolve `frontend-design-core`, `frontend-design-style-selector`, and `frontend-design-screen-brief` before calling Stitch.
 
 3. **Run `stitch-prompt-enhancement` before any Stitch tool call** — Convert rough user intent into a compact structured brief that names the platform, layout, components, visual mood, and change scope.
 
-4. **Require a design-system context for iterative or multi-screen work** — If `docs/foundation/DESIGN.md` is missing, stale, or the request spans multiple screens, run `stitch-design-system` to create or refresh `docs/foundation/DESIGN.md` and mirror it to `.stitch/DESIGN.md`.
+4. **Require a design-system context for iterative or multi-screen work** — If `docs/foundation/DESIGN.md` is missing, stale, or the request spans multiple screens, run `frontend-design-system` and `stitch-design-system` to create or refresh `docs/foundation/DESIGN.md`, resolve overlays, and mirror the result to `.stitch/DESIGN.md`.
 
 5. **Verify Stitch availability before trusting it** — Run `stitch_get_status`, `mcp_gateway_status`, and `stitch_list_enabled_tools` before choosing a tool flow. If Stitch is unavailable, stop treating it as authoritative input.
 
-6. **Choose the minimal tool path** — Use `generate_screen_from_text` for a net-new screen, `edit_screens` for targeted revisions, `generate_variants` for controlled alternatives, and `create_design_system` or `apply_design_system` only when the design system itself is the current task. See `references/tool-selection.md`.
+6. **Reuse before creating** — Call `list_projects` before `create_project` and reuse an existing project when it already represents the current feature or product area. Call `list_screens` before planning follow-up work so edits stay attached to the current screen set instead of spawning unnecessary new artifacts.
 
-7. **Surface Stitch suggestions instead of brute-forcing retries** — If Stitch returns suggestion-bearing components or follow-up guidance, show that guidance and incorporate it before retrying.
+7. **Choose the minimal tool path** — Use `generate_screen_from_text` for a net-new screen, `edit_screens` for targeted revisions, `generate_variants` for controlled alternatives, and `create_design_system` or `apply_design_system` only when the design system itself is the current task. Default to `GEMINI_3_1_PRO` for complex new screens, multi-screen work, and design-system-heavy tasks. Use `GEMINI_3_FLASH` only when the user explicitly wants a speed-first draft or the task is a lightweight edit. See `references/tool-selection.md`.
 
-8. **Rate-limit yourself** — By default, allow one Stitch generation or edit action per user turn, prefer `edit_screens` over full regeneration once a screen exists, and stop after two automatic retries with backoff. See `references/anti-abuse.md`.
+8. **Surface Stitch suggestions instead of brute-forcing retries** — If Stitch returns suggestion-bearing components or follow-up guidance, show that guidance and incorporate it before retrying.
 
-9. **Fetch the final screen artifact before implementation handoff** — Use `get_screen` after the final generation or edit pass so the downstream implementation step receives the actual latest artifact, not a guessed description.
+9. **Rate-limit yourself** — By default, allow one Stitch generation or edit action per user turn, prefer `edit_screens` over full regeneration once a screen exists, and stop after two automatic retries with backoff. See `references/anti-abuse.md`.
 
-10. **Finish with `stitch-implementation-handoff`** — Once the design output is settled, hand off the artifact so the repo implementation reuses local components, tokens, and architecture.
+10. **Recover intelligently after timeouts** — For `generate_screen_from_text` and `generate_variants`, a timeout can still leave a finished screen in Stitch. Check `list_screens` before assuming the generation failed, then continue from the recovered screen instead of creating a new project.
+
+11. **Fetch the final screen artifact before implementation handoff** — Use `get_screen` after the final generation or edit pass so the downstream implementation step receives the actual latest artifact, not a guessed description.
+
+12. **Finish with `stitch-implementation-handoff`** — Once the design output is settled, hand off the artifact so the repo implementation reuses local components, tokens, and architecture.
 
 ## Output Format
 

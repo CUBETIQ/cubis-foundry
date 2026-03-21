@@ -9,6 +9,7 @@ import {
 } from "./registry.js";
 import type { VaultManifest } from "../vault/types.js";
 import type { RouteManifest } from "../routes/types.js";
+import type { GatewayManager } from "../gateway/manager.js";
 
 function createTestContext(): ToolRuntimeContext {
   const manifest: VaultManifest = {
@@ -63,6 +64,63 @@ function createTestContext(): ToolRuntimeContext {
   return {
     manifest,
     routeManifest,
+    gatewayManager: {
+      getStatus: () => ({
+        scope: "auto",
+        configPath: null,
+        catalogDir: "/tmp/catalog",
+        generatedAt: new Date(0).toISOString(),
+        providers: {
+          postman: {
+            provider: "postman",
+            mcpUrl: null,
+            authEnvVar: null,
+            authConfigured: false,
+            available: false,
+            warnings: [],
+            lastError: null,
+            syncedAt: null,
+            tools: [],
+          },
+          stitch: {
+            provider: "stitch",
+            mcpUrl: null,
+            authEnvVar: null,
+            authConfigured: false,
+            available: false,
+            warnings: [],
+            lastError: null,
+            syncedAt: null,
+            tools: [],
+          },
+          playwright: {
+            provider: "playwright",
+            mcpUrl: null,
+            authEnvVar: null,
+            authConfigured: false,
+            available: false,
+            warnings: [],
+            lastError: null,
+            syncedAt: null,
+            tools: [],
+          },
+        },
+      }),
+      listEnabledTools: (provider) => ({
+        provider,
+        available: false,
+        enabledCount: 0,
+        enabledTools: [],
+        upstreamTools: [],
+        warnings: [],
+        lastError: null,
+        syncedAt: null,
+        mcpUrl: null,
+        authEnvVar: null,
+        authConfigured: false,
+        catalogDir: "/tmp/catalog",
+      }),
+    } as unknown as GatewayManager,
     charsPerToken: 4,
     summaryMaxLength: 200,
     defaultConfigScope: "auto",
@@ -73,6 +131,9 @@ describe("tool registry", () => {
   it("contains all expected built-in tools", () => {
     const names = getRegisteredToolNames();
     expect(names).toContain("route_resolve");
+    expect(names).toContain("mcp_gateway_status");
+    expect(names).toContain("postman_list_enabled_tools");
+    expect(names).toContain("stitch_list_enabled_tools");
     expect(names).toContain("skill_list_categories");
     expect(names).toContain("skill_browse_category");
     expect(names).toContain("skill_search");
@@ -89,8 +150,8 @@ describe("tool registry", () => {
     expect(names).toContain("playwright_get_status");
   });
 
-  it("has exactly 15 built-in tools", () => {
-    expect(TOOL_REGISTRY).toHaveLength(15);
+  it("has exactly 18 built-in tools", () => {
+    expect(TOOL_REGISTRY).toHaveLength(18);
   });
 
   it("has no duplicate tool names", () => {
@@ -105,7 +166,7 @@ describe("tool registry", () => {
       expect(entry.description).toBeTruthy();
       expect(entry.schema).toBeTruthy();
       expect(entry.category).toMatch(
-        /^(skill|route|postman|stitch|playwright)$/,
+        /^(skill|route|postman|stitch|playwright|gateway)$/,
       );
       expect(typeof entry.createHandler).toBe("function");
     }
@@ -114,6 +175,9 @@ describe("tool registry", () => {
   it("filters by category", () => {
     const routeTools = getToolsByCategory("route");
     expect(routeTools).toHaveLength(1);
+
+    const gatewayTools = getToolsByCategory("gateway");
+    expect(gatewayTools).toHaveLength(3);
 
     const skillTools = getToolsByCategory("skill");
     expect(skillTools).toHaveLength(7);
@@ -153,13 +217,15 @@ describe("tool registry", () => {
 
   it("buildRegistrySummary produces correct structure", () => {
     const summary = buildRegistrySummary();
-    expect(summary.totalTools).toBe(15);
+    expect(summary.totalTools).toBe(18);
     expect(summary.categories).toHaveProperty("route");
+    expect(summary.categories).toHaveProperty("gateway");
     expect(summary.categories).toHaveProperty("skill");
     expect(summary.categories).toHaveProperty("postman");
     expect(summary.categories).toHaveProperty("stitch");
     expect(summary.categories).toHaveProperty("playwright");
     expect(summary.categories.route.tools).toHaveLength(1);
+    expect(summary.categories.gateway.tools).toHaveLength(3);
     expect(summary.categories.skill.tools).toHaveLength(7);
     expect(summary.categories.postman.tools).toHaveLength(3);
     expect(summary.categories.stitch.tools).toHaveLength(3);

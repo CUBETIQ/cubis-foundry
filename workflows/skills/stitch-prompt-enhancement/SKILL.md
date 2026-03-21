@@ -25,9 +25,9 @@ Improve UI prompts before they reach Stitch. This skill turns vague product or d
 
 1. **Start from the real task, not a generic design template** — Restate the actual screen, route, audience, and product goal before writing the Stitch prompt.
 
-2. **Pull the visual direction from `frontend-design`** — Use the chosen mood, composition, typography voice, and token language instead of inventing an unrelated aesthetic.
+2. **Pull the visual direction from `frontend-design` and the design engine** — Use the chosen mood, composition, typography voice, token language, and any `frontend-design-screen-brief` output instead of inventing an unrelated aesthetic.
 
-3. **Read `docs/foundation/DESIGN.md` when it exists** — Use the canonical design context as the source of truth, then assume `.stitch/DESIGN.md` mirrors it for Stitch-facing flows.
+3. **Read `docs/foundation/DESIGN.md` and overlays when they exist** — Use the canonical design context plus any relevant page, flow, or mobile overlay as the source of truth, then assume `.stitch/DESIGN.md` mirrors the resolved state for Stitch-facing flows.
 
 4. **Keep prompts compact and structured** — Name platform, page purpose, visual style, component hierarchy, and the exact requested change. Do not dump raw repo context or large docs into the prompt.
 

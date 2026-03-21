@@ -3,6 +3,7 @@ import path from "node:path";
 export const FOUNDATION_DOCS_DIR = path.join("docs", "foundation");
 export const FOUNDATION_ADR_DIR = path.join(FOUNDATION_DOCS_DIR, "adr");
 export const FOUNDATION_MEMORY_DIR = path.join(FOUNDATION_DOCS_DIR, "memory");
+export const FOUNDATION_DESIGN_DIR = path.join(FOUNDATION_DOCS_DIR, "design");
 
 export const ARCHITECTURE_BUILD_PLATFORM_CAPABILITIES = {
   antigravity:
@@ -64,6 +65,19 @@ export function buildMemoryBuildSkeleton() {
     "<!-- cbx:memory:index:start version=1 profile=uninitialized -->",
     "Replace this managed section by running `cbx build architecture --platform <antigravity|codex|claude|gemini|copilot>`.",
     "<!-- cbx:memory:index:end -->",
+    "",
+  ].join("\n");
+}
+
+export function buildDesignBuildSkeleton() {
+  return [
+    "# Design",
+    "",
+    "This file is managed by `cbx build architecture` as the durable design-system backbone for UI, Stitch, and mobile work.",
+    "",
+    "<!-- cbx:design:foundation:start version=1 profile=uninitialized -->",
+    "Replace this managed section by running `cbx build architecture --platform <antigravity|codex|claude|gemini|copilot>`.",
+    "<!-- cbx:design:foundation:end -->",
     "",
   ].join("\n");
 }

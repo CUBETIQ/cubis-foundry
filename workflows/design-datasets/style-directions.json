@@ -1,0 +1,42 @@
+{
+  "dataset": "style-directions",
+  "version": 1,
+  "entries": [
+    {
+      "id": "editorial-serene",
+      "source": [
+        "https://impeccable.style/",
+        "https://agentskills.so/skills/pbakaus-impeccable-frontend-design"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "stitch", "mobile"],
+      "applicability": ["wellness", "habits", "journaling", "creator products"],
+      "qualityTier": "high",
+      "notes": "Soft editorial UI with calm whitespace, restrained accents, and a premium reading rhythm."
+    },
+    {
+      "id": "structured-athletic",
+      "source": [
+        "https://impeccable.style/",
+        "anthropic-front-end-lineage"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "mobile"],
+      "applicability": ["fitness", "progress tracking", "stats-heavy products"],
+      "qualityTier": "high",
+      "notes": "Sharper geometry, tighter density, stronger data contrast, and clearer section framing."
+    },
+    {
+      "id": "playful-guided",
+      "source": [
+        "anthropic-front-end-lineage"
+      ],
+      "licenseStatus": "derived-foundry",
+      "platformScope": ["mobile", "stitch"],
+      "applicability": ["onboarding", "consumer apps", "education", "habit flows"],
+      "qualityTier": "medium",
+      "notes": "Friendly motion, approachable illustrations, and guided progress framing without looking toy-like."
+    }
+  ]
+}
+

@@ -51,6 +51,8 @@ Provide a repeatable workflow for AI-driven QA of Flutter applications running o
 
 14. **Use CI only for reproducible emulator flows** because unstable devices produce false failures. Load `references/ci-emulator.md` when the user wants automation in GitHub Actions or another CI runner.
 
+15. **Anchor visual QA to the design engine when present** because a pass/fail verdict for mobile UI should reflect the intended design system, not just whether taps work. When `docs/foundation/DESIGN.md` or the mobile overlays directory under `docs/foundation/design/mobile/` exists, read the relevant design state first and mention any clear drift between the intended design language and the rendered app.
+
 ## Output Format
 
 ```markdown

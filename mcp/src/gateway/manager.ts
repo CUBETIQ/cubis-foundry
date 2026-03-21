@@ -12,6 +12,7 @@ import type {
   UpstreamCallResult,
 } from "./upstreamClient.js";
 import type {
+  GatewayScope,
   GatewayStatus,
   UpstreamProvider,
   UpstreamState,
@@ -98,8 +99,8 @@ export class GatewayManager {
       options?.clientFactory ?? new SdkUpstreamClientFactory();
   }
 
-  async initialize(): Promise<void> {
-    const resolved = resolveGatewayConfig("auto");
+  async initialize(scope: GatewayScope = "auto"): Promise<void> {
+    const resolved = resolveGatewayConfig(scope);
     this.scope = resolved.scope;
     this.configPath = resolved.configPath;
     this.catalogDir = resolveCatalogDir(resolved.scope, resolved.configPath);

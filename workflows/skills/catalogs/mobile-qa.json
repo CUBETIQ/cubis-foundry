@@ -3,6 +3,11 @@
   "version": 1,
   "extends": "core",
   "skills": [
+    "frontend-design",
+    "frontend-design-implementation-handoff",
+    "frontend-design-mobile-patterns",
+    "frontend-design-screen-brief",
+    "frontend-design-system",
     "flutter-mobile-qa",
     "integration-testing",
     "kotlin-best-practices",

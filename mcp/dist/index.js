@@ -450,8 +450,8 @@ function estimateTokensFromCharCount(charCount, charsPerToken) {
   const ratio = normalizeCharsPerToken(charsPerToken);
   return Math.ceil(safeChars / ratio);
 }
-function estimateTokensFromText(text, charsPerToken) {
-  return estimateTokensFromCharCount(text.length, charsPerToken);
+function estimateTokensFromText(text2, charsPerToken) {
+  return estimateTokensFromCharCount(text2.length, charsPerToken);
 }
 function estimateTokensFromBytes(byteCount, charsPerToken) {
   return estimateTokensFromCharCount(byteCount, charsPerToken);
@@ -726,7 +726,7 @@ function mergeGeneratedSkillMetadata(scannedSkills, generatedManifest) {
 
 // src/server.ts
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z as z16 } from "zod";
+import { z as z18 } from "zod";
 
 // src/tools/routeResolve.ts
 import path6 from "path";
@@ -737,7 +737,7 @@ var routeResolveName = "route_resolve";
 var routeResolveDescription = "Resolve an explicit workflow command, explicit custom agent, compatibility alias, or free-text intent into one workflow/agent route before skill loading.";
 var routeResolveSchema = z2.object({
   intent: z2.string().min(1).describe(
-    "Explicit workflow command (/mobile), explicit agent (@mobile-developer), compatibility alias ($workflow-mobile / $agent-mobile-developer), or free-text user intent"
+    "Explicit workflow command (/implement), explicit agent (@reviewer), compatibility alias ($workflow-implement / $agent-reviewer), or free-text user intent"
   )
 });
 var ROUTE_STOP_WORDS = /* @__PURE__ */ new Set([
@@ -835,6 +835,50 @@ var LEGACY_AGENT_ALIASES = {
   "product-owner": "product-manager",
   "explorer-agent": "code-archaeologist"
 };
+var STITCH_REQUIRED_SIGNALS = ["stitch"];
+var DESIGN_SYSTEM_SIGNALS = [
+  "design system",
+  "design-system",
+  "design tokens",
+  "theme system",
+  "token system"
+];
+var DESIGN_AUDIT_SIGNALS = [
+  "design audit",
+  "ui audit",
+  "ux audit",
+  "visual audit",
+  "design review"
+];
+var DESIGN_REFRESH_SIGNALS = [
+  "design refresh",
+  "refresh design",
+  "refresh tokens",
+  "design drift"
+];
+var DESIGN_SCREEN_SIGNALS = [
+  "design screen",
+  "screen design",
+  "ui design",
+  "ux design",
+  "landing page",
+  "redesign",
+  "mobile screen"
+];
+var STITCH_UI_SUPPORTING_SKILLS = [
+  "frontend-design-core",
+  "frontend-design-style-selector",
+  "frontend-design-system",
+  "frontend-design-screen-brief",
+  "stitch-prompt-enhancement",
+  "stitch-design-orchestrator",
+  "stitch-design-system",
+  "stitch-implementation-handoff"
+];
+var MOBILE_DESIGN_SUPPORTING_SKILLS = [
+  "frontend-design-mobile-patterns",
+  "frontend-design-implementation-handoff"
+];
 function normalize(value) {
   return value.toLowerCase().replace(/[^a-z0-9@/$+-]+/g, " ").trim();
 }
@@ -864,6 +908,14 @@ function isSkillCreatorIntent(intent) {
   );
   if (!hasObjectSignal) return false;
   return includesAnyPhrase(normalizedIntent, SKILL_CREATOR_ACTION_SIGNALS);
+}
+function isStitchUiIntent(intent) {
+  const normalizedIntent = normalize(intent);
+  return includesAnyPhrase(normalizedIntent, STITCH_REQUIRED_SIGNALS);
+}
+function isDesignIntent(intent) {
+  const normalizedIntent = normalize(intent);
+  return includesAnyPhrase(normalizedIntent, DESIGN_SYSTEM_SIGNALS) || includesAnyPhrase(normalizedIntent, DESIGN_AUDIT_SIGNALS) || includesAnyPhrase(normalizedIntent, DESIGN_REFRESH_SIGNALS) || includesAnyPhrase(normalizedIntent, DESIGN_SCREEN_SIGNALS);
 }
 function chooseSkillCreatorRoute(intent, manifest) {
   if (!isSkillCreatorIntent(intent)) return null;
@@ -965,8 +1017,10 @@ function resolveByIntent(intent, manifest) {
   if (best.score < 80 && best.tokenMatches < 2) return null;
   return best;
 }
-function buildResolvedPayload(input, route, matchedBy, detectedLanguageSkill) {
-  const primarySkillHint = isSkillCreatorIntent(input) ? "skill-creator" : route.primarySkills[0] || null;
+function buildResolvedPayload(input, route, matchedBy, detectedLanguageSkill, overrides = {}) {
+  const primarySkills = overrides.primarySkills || route.primarySkills;
+  const supportingSkills = overrides.supportingSkills || route.supportingSkills;
+  const primarySkillHint = overrides.primarySkillHint !== void 0 ? overrides.primarySkillHint : isSkillCreatorIntent(input) ? "skill-creator" : primarySkills[0] || null;
   return {
     input,
     resolved: true,
@@ -975,14 +1029,33 @@ function buildResolvedPayload(input, route, matchedBy, detectedLanguageSkill) {
     command: route.command,
     agent: route.primaryAgent,
     primarySkillHint,
-    primarySkills: route.primarySkills,
-    supportingSkills: route.supportingSkills,
+    primarySkills,
+    supportingSkills,
     detectedLanguageSkill,
     fallbackSkillSearchRecommended: false,
     matchedBy,
-    explanation: matchedBy === "explicit-workflow-command" ? `Matched explicit workflow command ${route.command}.` : matchedBy === "explicit-agent" ? `Matched explicit agent @${route.id}.` : matchedBy === "legacy-workflow-alias" ? `Matched legacy workflow alias and routed to canonical workflow '${route.id}'.` : matchedBy === "legacy-agent-alias" ? `Matched legacy agent alias and routed to canonical agent @${route.id}.` : matchedBy === "compatibility-alias" ? `Matched compatibility alias ${route.artifacts.codex?.compatibilityAlias}.` : matchedBy === "skill-creator-intent" ? `Matched workflow '${route.id}' and selected skill-creator as the primary skill hint for skill package work.` : `Matched ${route.kind} '${route.id}' from installed route metadata.`,
+    explanation: overrides.explanation ?? (matchedBy === "explicit-workflow-command" ? `Matched explicit workflow command ${route.command}.` : matchedBy === "explicit-agent" ? `Matched explicit agent @${route.id}.` : matchedBy === "legacy-workflow-alias" ? `Matched legacy workflow alias and routed to canonical workflow '${route.id}'.` : matchedBy === "legacy-agent-alias" ? `Matched legacy agent alias and routed to canonical agent @${route.id}.` : matchedBy === "compatibility-alias" ? `Matched compatibility alias ${route.artifacts.codex?.compatibilityAlias}.` : matchedBy === "skill-creator-intent" ? `Matched workflow '${route.id}' and selected skill-creator as the primary skill hint for skill package work.` : `Matched ${route.kind} '${route.id}' from installed route metadata.`),
     artifacts: route.artifacts
   };
+}
+function chooseStitchUiRoute(manifest) {
+  return manifest.routes.find(
+    (entry) => entry.kind === "workflow" && (entry.id === "design-screen" || entry.command === "/design-screen")
+  ) || null;
+}
+function chooseDesignRoute(intent, manifest) {
+  const normalizedIntent = normalize(intent);
+  let preferredWorkflowId = "design-screen";
+  if (includesAnyPhrase(normalizedIntent, DESIGN_SYSTEM_SIGNALS)) {
+    preferredWorkflowId = "design-system";
+  } else if (includesAnyPhrase(normalizedIntent, DESIGN_AUDIT_SIGNALS)) {
+    preferredWorkflowId = "design-audit";
+  } else if (includesAnyPhrase(normalizedIntent, DESIGN_REFRESH_SIGNALS)) {
+    preferredWorkflowId = "design-refresh";
+  }
+  return manifest.routes.find(
+    (entry) => entry.kind === "workflow" && entry.id === preferredWorkflowId
+  ) || null;
 }
 async function fileExists(target) {
   try {
@@ -1046,6 +1119,77 @@ async function handleRouteResolve(args, routeManifest) {
       structuredContent: payload2
     };
   }
+  if (isStitchUiIntent(intent)) {
+    const stitchRoute = chooseStitchUiRoute(routeManifest);
+    if (stitchRoute) {
+      const needsMobilePatterns = /\b(mobile|flutter|android|ios)\b/i.test(intent);
+      const payload2 = buildResolvedPayload(
+        intent,
+        stitchRoute,
+        "stitch-ui-intent",
+        detectedLanguageSkill,
+        {
+          primarySkillHint: "frontend-design",
+          primarySkills: [
+            "frontend-design",
+            ...needsMobilePatterns ? MOBILE_DESIGN_SUPPORTING_SKILLS : [],
+            ...STITCH_UI_SUPPORTING_SKILLS
+          ],
+          supportingSkills: stitchRoute.supportingSkills,
+          explanation: "Matched Stitch UI intent and routed to /design-screen so the design engine resolves canonical design state, builds the screen brief, and only then runs the Stitch sequence."
+        }
+      );
+      return {
+        content: [{ type: "text", text: JSON.stringify(payload2, null, 2) }],
+        structuredContent: payload2
+      };
+    }
+  }
+  if (isDesignIntent(intent)) {
+    const designRoute = chooseDesignRoute(intent, routeManifest);
+    if (designRoute) {
+      const needsMobilePatterns = /\b(mobile|flutter|android|ios)\b/i.test(intent);
+      const primarySkills = [
+        "frontend-design",
+        "frontend-design-core"
+      ];
+      if (designRoute.id === "design-system") {
+        primarySkills.push("frontend-design-style-selector", "frontend-design-system");
+      } else if (designRoute.id === "design-audit") {
+        primarySkills.push("frontend-design-style-selector");
+      } else if (designRoute.id === "design-refresh") {
+        primarySkills.push(
+          "frontend-design-style-selector",
+          "frontend-design-system",
+          "frontend-design-screen-brief"
+        );
+      } else {
+        primarySkills.push(
+          "frontend-design-style-selector",
+          "frontend-design-screen-brief"
+        );
+      }
+      if (needsMobilePatterns) {
+        primarySkills.push(...MOBILE_DESIGN_SUPPORTING_SKILLS);
+      }
+      const payload2 = buildResolvedPayload(
+        intent,
+        designRoute,
+        "design-intent",
+        detectedLanguageSkill,
+        {
+          primarySkillHint: "frontend-design",
+          primarySkills,
+          supportingSkills: designRoute.supportingSkills,
+          explanation: "Matched design intent and routed through the design engine so canonical design state, overlays, and screen briefs resolve before implementation or generation."
+        }
+      );
+      return {
+        content: [{ type: "text", text: JSON.stringify(payload2, null, 2) }],
+        structuredContent: payload2
+      };
+    }
+  }
   const inferred = resolveByIntent(intent, routeManifest);
   if (inferred) {
     const payload2 = buildResolvedPayload(
@@ -1096,18 +1240,18 @@ function handleSkillListCategories(manifest, charsPerToken) {
     skillCount: categoryCounts[cat] ?? 0
   }));
   const payload = { categories, totalSkills: manifest.skills.length };
-  const text = JSON.stringify(payload, null, 2);
+  const text2 = JSON.stringify(payload, null, 2);
   const metrics = buildSkillToolMetrics({
     charsPerToken,
     fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
-    responseEstimatedTokens: estimateTokensFromText(text, charsPerToken),
-    responseCharacterCount: text.length
+    responseEstimatedTokens: estimateTokensFromText(text2, charsPerToken),
+    responseCharacterCount: text2.length
   });
   return {
     content: [
       {
         type: "text",
-        text
+        text: text2
       }
     ],
     structuredContent: {
@@ -1150,10 +1294,10 @@ var skillBrowseCategorySchema = z4.object({
   category: z4.string().describe("The category name to browse (from skill_list_categories)")
 });
 function summarizeDescription(description, maxLength) {
-  const text = String(description || "").trim();
-  if (!text) return "(no description)";
-  if (text.length <= maxLength) return text;
-  return `${text.slice(0, Math.max(0, maxLength - 3))}...`;
+  const text2 = String(description || "").trim();
+  if (!text2) return "(no description)";
+  if (text2.length <= maxLength) return text2;
+  return `${text2.slice(0, Math.max(0, maxLength - 3))}...`;
 }
 async function handleSkillBrowseCategory(args, manifest, summaryMaxLength, charsPerToken) {
   const { category } = args;
@@ -1166,7 +1310,7 @@ async function handleSkillBrowseCategory(args, manifest, summaryMaxLength, chars
     description: summarizeDescription(s.description, summaryMaxLength)
   }));
   const payload = { category, skills, count: skills.length };
-  const text = JSON.stringify(payload, null, 2);
+  const text2 = JSON.stringify(payload, null, 2);
   const selectedSkillsEstimatedTokens = matching.reduce(
     (sum, skill) => sum + estimateTokensFromBytes(skill.fileBytes, charsPerToken),
     0
@@ -1174,15 +1318,15 @@ async function handleSkillBrowseCategory(args, manifest, summaryMaxLength, chars
   const metrics = buildSkillToolMetrics({
     charsPerToken,
     fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
-    responseEstimatedTokens: estimateTokensFromText(text, charsPerToken),
+    responseEstimatedTokens: estimateTokensFromText(text2, charsPerToken),
     selectedSkillsEstimatedTokens,
-    responseCharacterCount: text.length
+    responseCharacterCount: text2.length
   });
   return {
     content: [
       {
         type: "text",
-        text
+        text: text2
       }
     ],
     structuredContent: {
@@ -1244,10 +1388,10 @@ function normalizeSignalList(values) {
   return normalizeSearchText((values || []).join(" "));
 }
 function summarizeDescription2(description, maxLength) {
-  const text = String(description || "").trim();
-  if (!text) return "(no description)";
-  if (text.length <= maxLength) return text;
-  return `${text.slice(0, Math.max(0, maxLength - 3))}...`;
+  const text2 = String(description || "").trim();
+  if (!text2) return "(no description)";
+  if (text2.length <= maxLength) return text2;
+  return `${text2.slice(0, Math.max(0, maxLength - 3))}...`;
 }
 async function handleSkillSearch(args, manifest, summaryMaxLength, charsPerToken) {
   const { query } = args;
@@ -1298,7 +1442,7 @@ async function handleSkillSearch(args, manifest, summaryMaxLength, charsPerToken
     description: summarizeDescription2(s.description, summaryMaxLength)
   }));
   const payload = { query, results, count: results.length };
-  const text = JSON.stringify(payload, null, 2);
+  const text2 = JSON.stringify(payload, null, 2);
   const selectedSkillsEstimatedTokens = matches.reduce(
     (sum, skill) => sum + estimateTokensFromBytes(skill.fileBytes, charsPerToken),
     0
@@ -1306,15 +1450,15 @@ async function handleSkillSearch(args, manifest, summaryMaxLength, charsPerToken
   const metrics = buildSkillToolMetrics({
     charsPerToken,
     fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
-    responseEstimatedTokens: estimateTokensFromText(text, charsPerToken),
+    responseEstimatedTokens: estimateTokensFromText(text2, charsPerToken),
     selectedSkillsEstimatedTokens,
-    responseCharacterCount: text.length
+    responseCharacterCount: text2.length
   });
   return {
     content: [
       {
         type: "text",
-        text
+        text: text2
       }
     ],
     structuredContent: payload,
@@ -1354,15 +1498,15 @@ async function handleSkillValidate(args, manifest, charsPerToken) {
       replacementId: null,
       availableReferences: []
     };
-    const text2 = JSON.stringify(payload2, null, 2);
+    const text3 = JSON.stringify(payload2, null, 2);
     const metrics2 = buildSkillToolMetrics({
       charsPerToken,
       fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
-      responseEstimatedTokens: estimateTokensFromText(text2, charsPerToken),
-      responseCharacterCount: text2.length
+      responseEstimatedTokens: estimateTokensFromText(text3, charsPerToken),
+      responseCharacterCount: text3.length
     });
     return {
-      content: [{ type: "text", text: text2 }],
+      content: [{ type: "text", text: text3 }],
       structuredContent: payload2,
       _meta: { metrics: metrics2 }
     };
@@ -1385,15 +1529,15 @@ async function handleSkillValidate(args, manifest, charsPerToken) {
     replacementId,
     availableReferences
   };
-  const text = JSON.stringify(payload, null, 2);
+  const text2 = JSON.stringify(payload, null, 2);
   const metrics = buildSkillToolMetrics({
     charsPerToken,
     fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
-    responseEstimatedTokens: estimateTokensFromText(text, charsPerToken),
-    responseCharacterCount: text.length
+    responseEstimatedTokens: estimateTokensFromText(text2, charsPerToken),
+    responseCharacterCount: text2.length
   });
   return {
-    content: [{ type: "text", text }],
+    content: [{ type: "text", text: text2 }],
     structuredContent: payload,
     _meta: { metrics }
   };
@@ -1486,7 +1630,7 @@ function assertConcreteSkillId2(id) {
   }
 }
 async function handleSkillGetReference(args, manifest, charsPerToken) {
-  const { id, path: path11 } = args;
+  const { id, path: path12 } = args;
   assertConcreteSkillId2(id);
   const skill = manifest.skills.find((entry) => entry.id === id);
   if (!skill) {
@@ -1494,7 +1638,7 @@ async function handleSkillGetReference(args, manifest, charsPerToken) {
   }
   let reference;
   try {
-    reference = await readSkillReferenceFile(skill.path, path11);
+    reference = await readSkillReferenceFile(skill.path, path12);
   } catch (error) {
     invalidInput(error instanceof Error ? error.message : String(error));
   }
@@ -1601,12 +1745,12 @@ function handleSkillBudgetReport(args, manifest, charsPerToken) {
       estimated: true
     }
   };
-  const text = JSON.stringify(payload, null, 2);
+  const text2 = JSON.stringify(payload, null, 2);
   return {
     content: [
       {
         type: "text",
-        text
+        text: text2
       }
     ],
     structuredContent: payload,
@@ -1745,6 +1889,8 @@ function writeConfigField(fieldPath, value, scope, workspaceRoot) {
 // src/cbxConfig/serviceConfig.ts
 var DEFAULT_POSTMAN_URL = "https://mcp.postman.com/minimal";
 var DEFAULT_STITCH_URL = "https://stitch.googleapis.com/mcp";
+var DEFAULT_PLAYWRIGHT_PORT = 8931;
+var DEFAULT_PLAYWRIGHT_URL = `http://localhost:${DEFAULT_PLAYWRIGHT_PORT}/mcp`;
 var DEFAULT_PROFILE_NAME = "default";
 var DEFAULT_POSTMAN_ENV_VAR = "POSTMAN_API_KEY";
 var DEFAULT_STITCH_ENV_VAR = "STITCH_API_KEY";
@@ -1854,6 +2000,15 @@ function parseStitchState(config) {
     profiles,
     useSystemGcloud: Boolean(section.useSystemGcloud)
   };
+}
+function parsePlaywrightState(config) {
+  const section = asRecord(config.playwright) ?? {};
+  const portRaw = typeof section.port === "number" ? section.port : DEFAULT_PLAYWRIGHT_PORT;
+  const port = Number.isFinite(portRaw) && portRaw > 0 && portRaw < 65536 ? portRaw : DEFAULT_PLAYWRIGHT_PORT;
+  const envPort = process.env.PLAYWRIGHT_MCP_PORT ? Number(process.env.PLAYWRIGHT_MCP_PORT) : void 0;
+  const effectivePort = envPort && Number.isFinite(envPort) && envPort > 0 && envPort < 65536 ? envPort : port;
+  const mcpUrl = normalizeOptionalString(section.mcpUrl) ?? `http://localhost:${effectivePort}/mcp`;
+  return { mcpUrl, port: effectivePort };
 }
 
 // src/tools/postmanModes.ts
@@ -2159,6 +2314,74 @@ function handleStitchGetStatus(args) {
   };
 }
 
+// src/tools/playwrightGetStatus.ts
+import { z as z16 } from "zod";
+var playwrightGetStatusName = "playwright_get_status";
+var playwrightGetStatusDescription = "Get Playwright MCP upstream configuration status including URL and port.";
+var playwrightGetStatusSchema = z16.object({
+  scope: z16.enum(["global", "project", "auto"]).optional().describe(
+    "Config scope to read. Default: auto (project if exists, else global)"
+  )
+});
+function handlePlaywrightGetStatus(args) {
+  const scope = args.scope ?? "auto";
+  const effective = readEffectiveConfig(scope);
+  if (!effective) {
+    configNotFound();
+  }
+  const playwright = parsePlaywrightState(effective.config);
+  return {
+    content: [
+      {
+        type: "text",
+        text: JSON.stringify(
+          {
+            configured: Boolean(playwright.mcpUrl),
+            mcpUrl: playwright.mcpUrl,
+            port: playwright.port,
+            scope: effective.scope,
+            configPath: effective.path,
+            note: "Playwright MCP runs locally \u2014 no authentication required. Start with: npx @playwright/mcp --port <port>"
+          },
+          null,
+          2
+        )
+      }
+    ]
+  };
+}
+
+// src/tools/mcpGateway.ts
+import { z as z17 } from "zod";
+var postmanListEnabledToolsName = "postman_list_enabled_tools";
+var postmanListEnabledToolsDescription = "List currently enabled Postman upstream passthrough tools and gateway warnings.";
+var postmanListEnabledToolsSchema = z17.object({});
+var stitchListEnabledToolsName = "stitch_list_enabled_tools";
+var stitchListEnabledToolsDescription = "List currently enabled Stitch upstream passthrough tools and gateway warnings.";
+var stitchListEnabledToolsSchema = z17.object({});
+var mcpGatewayStatusName = "mcp_gateway_status";
+var mcpGatewayStatusDescription = "Get passthrough gateway status for Postman and Stitch, including warnings and catalog location.";
+var mcpGatewayStatusSchema = z17.object({});
+function text(data) {
+  return {
+    content: [
+      {
+        type: "text",
+        text: JSON.stringify(data, null, 2)
+      }
+    ]
+  };
+}
+function handlePostmanListEnabledTools(gateway) {
+  return text(gateway.listEnabledTools("postman"));
+}
+function handleStitchListEnabledTools(gateway) {
+  return text(gateway.listEnabledTools("stitch"));
+}
+function handleMcpGatewayStatus(gateway) {
+  return text(gateway.getStatus());
+}
+
 // src/tools/registry.ts
 function withDefaultScope(args, defaultScope) {
   const safeArgs = args && typeof args === "object" ? args : {};
@@ -2178,6 +2401,28 @@ var TOOL_REGISTRY = [
       args,
       ctx.routeManifest
     )
+  },
+  // ── Gateway helper tools ──────────────────────────────────
+  {
+    name: mcpGatewayStatusName,
+    description: mcpGatewayStatusDescription,
+    schema: mcpGatewayStatusSchema,
+    category: "gateway",
+    createHandler: (ctx) => async () => handleMcpGatewayStatus(ctx.gatewayManager)
+  },
+  {
+    name: postmanListEnabledToolsName,
+    description: postmanListEnabledToolsDescription,
+    schema: postmanListEnabledToolsSchema,
+    category: "gateway",
+    createHandler: (ctx) => async () => handlePostmanListEnabledTools(ctx.gatewayManager)
+  },
+  {
+    name: stitchListEnabledToolsName,
+    description: stitchListEnabledToolsDescription,
+    schema: stitchListEnabledToolsSchema,
+    category: "gateway",
+    createHandler: (ctx) => async () => handleStitchListEnabledTools(ctx.gatewayManager)
   },
   // ── Skill vault tools ─────────────────────────────────────
   {
@@ -2310,20 +2555,530 @@ var TOOL_REGISTRY = [
     createHandler: (ctx) => async (args) => handleStitchGetStatus(
       withDefaultScope(args, ctx.defaultConfigScope)
     )
+  },
+  // ── Playwright tools ──────────────────────────────────────
+  {
+    name: playwrightGetStatusName,
+    description: playwrightGetStatusDescription,
+    schema: playwrightGetStatusSchema,
+    category: "playwright",
+    createHandler: (ctx) => async (args) => handlePlaywrightGetStatus(
+      withDefaultScope(args, ctx.defaultConfigScope)
+    )
   }
 ];
 
-// src/upstream/passthrough.ts
-import { mkdir, readFile as readFile4, writeFile } from "fs/promises";
+// src/gateway/catalog.ts
+import { mkdirSync as mkdirSync2, writeFileSync as writeFileSync2 } from "fs";
+import os2 from "os";
 import path9 from "path";
+function resolveCatalogDir(scope, configPath) {
+  if (scope === "project" && configPath) {
+    return path9.join(path9.dirname(configPath), ".cbx", "mcp", "catalog");
+  }
+  return path9.join(os2.homedir(), ".cbx", "mcp", "catalog");
+}
+function catalogFilePath(catalogDir, provider) {
+  return path9.join(catalogDir, `${provider}.tools.json`);
+}
+function persistCatalog(catalogDir, payload) {
+  mkdirSync2(catalogDir, { recursive: true });
+  const filePath = catalogFilePath(catalogDir, payload.provider);
+  writeFileSync2(filePath, JSON.stringify(payload, null, 2) + "\n", "utf8");
+  return filePath;
+}
+
+// src/gateway/config.ts
+var STITCH_DEFAULT_MCP_URL = "https://stitch.googleapis.com/mcp";
+var PLAYWRIGHT_DEFAULT_PORT = 8931;
+function isNonEmptyString(value) {
+  return typeof value === "string" && value.trim().length > 0;
+}
+function firstString(...values) {
+  for (const value of values) {
+    if (isNonEmptyString(value)) {
+      return value.trim();
+    }
+  }
+  return null;
+}
+function normalizeProfiles(profiles) {
+  if (!profiles) {
+    return [];
+  }
+  if (Array.isArray(profiles)) {
+    return profiles.map((profile, index) => ({
+      name: firstString(profile.name) ?? `profile_${index + 1}`,
+      profile
+    })).filter((entry) => !!entry.profile);
+  }
+  return Object.entries(profiles).map(([name, profile]) => ({
+    name,
+    profile
+  }));
+}
+function selectActiveProfile(profiles, activeProfileName) {
+  if (profiles.length === 0) {
+    return null;
+  }
+  const active = firstString(activeProfileName);
+  if (active) {
+    const hit = profiles.find((profile) => profile.name === active);
+    if (hit) {
+      return hit;
+    }
+  }
+  return profiles[0];
+}
+function buildPostmanConfig(postman, scope, configPath) {
+  const warnings = [];
+  const profiles = normalizeProfiles(postman?.profiles);
+  const active = selectActiveProfile(profiles, postman?.activeProfileName);
+  const mcpUrl = firstString(
+    postman?.mcpUrl,
+    active?.profile.mcpUrl,
+    active?.profile.url
+  );
+  if (!mcpUrl) {
+    warnings.push("Postman MCP URL is not configured (postman.mcpUrl).");
+  }
+  const authEnvVar = firstString(
+    active?.profile.tokenEnvVar,
+    active?.profile.apiKeyEnvVar,
+    postman?.tokenEnvVar,
+    postman?.apiKeyEnvVar
+  );
+  const rawApiKeySet = !!firstString(active?.profile.apiKey);
+  if (rawApiKeySet) {
+    warnings.push(
+      "Postman profile apiKey is ignored; configure apiKeyEnvVar/tokenEnvVar alias instead."
+    );
+  }
+  if (!authEnvVar) {
+    warnings.push(
+      "Postman auth env var alias is missing (active profile apiKeyEnvVar/tokenEnvVar)."
+    );
+    return {
+      provider: "postman",
+      mcpUrl,
+      authHeader: null,
+      authEnvVar: null,
+      scope,
+      configPath,
+      warnings
+    };
+  }
+  const token = process.env[authEnvVar];
+  if (!isNonEmptyString(token)) {
+    warnings.push(`Postman auth env var "${authEnvVar}" is not set.`);
+    return {
+      provider: "postman",
+      mcpUrl,
+      authHeader: null,
+      authEnvVar,
+      scope,
+      configPath,
+      warnings
+    };
+  }
+  return {
+    provider: "postman",
+    mcpUrl,
+    authHeader: { Authorization: `Bearer ${token}` },
+    authEnvVar,
+    scope,
+    configPath,
+    warnings
+  };
+}
+function buildStitchConfig(stitch, scope, configPath) {
+  const warnings = [];
+  const profiles = normalizeProfiles(stitch?.profiles);
+  const active = selectActiveProfile(profiles, stitch?.activeProfileName);
+  const mcpUrl = firstString(stitch?.mcpUrl, active?.profile.mcpUrl, active?.profile.url) ?? STITCH_DEFAULT_MCP_URL;
+  const authEnvVar = firstString(
+    active?.profile.apiKeyEnvVar,
+    stitch?.apiKeyEnvVar
+  );
+  const rawApiKeySet = !!firstString(active?.profile.apiKey);
+  if (rawApiKeySet) {
+    warnings.push(
+      "Stitch profile apiKey is ignored; configure apiKeyEnvVar alias instead."
+    );
+  }
+  if (!authEnvVar) {
+    warnings.push(
+      "Stitch auth env var alias is missing (active profile apiKeyEnvVar)."
+    );
+    return {
+      provider: "stitch",
+      mcpUrl,
+      authHeader: null,
+      authEnvVar: null,
+      scope,
+      configPath,
+      warnings
+    };
+  }
+  const apiKey = process.env[authEnvVar];
+  if (!isNonEmptyString(apiKey)) {
+    warnings.push(`Stitch auth env var "${authEnvVar}" is not set.`);
+    return {
+      provider: "stitch",
+      mcpUrl,
+      authHeader: null,
+      authEnvVar,
+      scope,
+      configPath,
+      warnings
+    };
+  }
+  return {
+    provider: "stitch",
+    mcpUrl,
+    authHeader: { "X-Goog-Api-Key": apiKey },
+    authEnvVar,
+    scope,
+    configPath,
+    warnings
+  };
+}
+function buildPlaywrightConfig(playwright, scope, configPath) {
+  const warnings = [];
+  const portRaw = playwright?.port ?? PLAYWRIGHT_DEFAULT_PORT;
+  const envPort = process.env.PLAYWRIGHT_MCP_PORT ? Number(process.env.PLAYWRIGHT_MCP_PORT) : void 0;
+  const effectivePort = envPort && Number.isFinite(envPort) && envPort > 0 && envPort < 65536 ? envPort : Number.isFinite(portRaw) && portRaw > 0 && portRaw < 65536 ? portRaw : PLAYWRIGHT_DEFAULT_PORT;
+  const mcpUrl = firstString(playwright?.mcpUrl) ?? `http://localhost:${effectivePort}/mcp`;
+  return {
+    provider: "playwright",
+    mcpUrl,
+    authHeader: {},
+    authEnvVar: null,
+    scope,
+    configPath,
+    warnings
+  };
+}
+function resolveGatewayConfig(scope = "auto") {
+  const effective = readEffectiveConfig(scope);
+  if (!effective) {
+    const warning = "cbx_config.json not found. Configure Postman/Stitch profiles to enable upstream passthrough.";
+    return {
+      scope: null,
+      configPath: null,
+      providers: {
+        postman: {
+          provider: "postman",
+          mcpUrl: null,
+          authHeader: null,
+          authEnvVar: null,
+          scope: null,
+          configPath: null,
+          warnings: [warning]
+        },
+        stitch: {
+          provider: "stitch",
+          mcpUrl: STITCH_DEFAULT_MCP_URL,
+          authHeader: null,
+          authEnvVar: null,
+          scope: null,
+          configPath: null,
+          warnings: [warning]
+        },
+        playwright: buildPlaywrightConfig(void 0, null, null)
+      }
+    };
+  }
+  return {
+    scope: effective.scope,
+    configPath: effective.path,
+    providers: {
+      postman: buildPostmanConfig(
+        effective.config.postman,
+        effective.scope,
+        effective.path
+      ),
+      stitch: buildStitchConfig(
+        effective.config.stitch,
+        effective.scope,
+        effective.path
+      ),
+      playwright: buildPlaywrightConfig(
+        effective.config.playwright,
+        effective.scope,
+        effective.path
+      )
+    }
+  };
+}
+
+// src/gateway/upstreamClient.ts
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
-function resolveCatalogDir(configPath) {
-  const configDir = path9.dirname(configPath);
-  if (path9.basename(configDir) === ".cbx") {
-    return path9.join(configDir, "mcp", "catalog");
+function toObjectSchema(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return void 0;
   }
-  return path9.join(configDir, ".cbx", "mcp", "catalog");
+  return value;
+}
+var SdkUpstreamClientFactory = class {
+  async connect(params) {
+    const client = new Client(
+      {
+        name: "cubis-foundry-mcp-gateway",
+        version: "0.1.0"
+      },
+      { capabilities: {} }
+    );
+    const transport = new StreamableHTTPClientTransport(new URL(params.mcpUrl), {
+      requestInit: {
+        headers: params.headers
+      }
+    });
+    await client.connect(transport);
+    return {
+      async listTools() {
+        const listed = await client.listTools();
+        return listed.tools.map((tool) => ({
+          name: tool.name,
+          description: tool.description,
+          inputSchema: toObjectSchema(tool.inputSchema)
+        }));
+      },
+      async callTool(toolName, args) {
+        return await client.callTool({
+          name: toolName,
+          arguments: args
+        });
+      },
+      async close() {
+        await client.close();
+      }
+    };
+  }
+};
+
+// src/gateway/manager.ts
+function emptyProviderState(provider) {
+  return {
+    provider,
+    mcpUrl: null,
+    authEnvVar: null,
+    authConfigured: false,
+    available: false,
+    warnings: [],
+    lastError: null,
+    syncedAt: null,
+    tools: []
+  };
+}
+function messageFromError(error) {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return String(error);
+}
+function errorResult(message) {
+  return {
+    content: [{ type: "text", text: message }],
+    isError: true
+  };
+}
+function normalizeCallResult(result) {
+  if (Array.isArray(result.content)) {
+    return result;
+  }
+  return {
+    content: [{ type: "text", text: JSON.stringify(result) }],
+    isError: result.isError ?? false,
+    structuredContent: result.structuredContent
+  };
+}
+function normalizeArgs(args) {
+  if (!args || typeof args !== "object" || Array.isArray(args)) {
+    return {};
+  }
+  return args;
+}
+var GatewayManager = class {
+  clientFactory;
+  providerRuntime = {
+    postman: { mcpUrl: null, headers: null, authEnvVar: null },
+    stitch: { mcpUrl: null, headers: null, authEnvVar: null },
+    playwright: { mcpUrl: null, headers: null, authEnvVar: null }
+  };
+  providerState = {
+    postman: emptyProviderState("postman"),
+    stitch: emptyProviderState("stitch"),
+    playwright: emptyProviderState("playwright")
+  };
+  scope = null;
+  configPath = null;
+  catalogDir = resolveCatalogDir(null, null);
+  constructor(options) {
+    this.clientFactory = options?.clientFactory ?? new SdkUpstreamClientFactory();
+  }
+  async initialize(scope = "auto") {
+    const resolved = resolveGatewayConfig(scope);
+    this.scope = resolved.scope;
+    this.configPath = resolved.configPath;
+    this.catalogDir = resolveCatalogDir(resolved.scope, resolved.configPath);
+    await Promise.all([
+      this.syncProvider("postman", resolved.providers.postman),
+      this.syncProvider("stitch", resolved.providers.stitch),
+      this.syncProvider("playwright", resolved.providers.playwright)
+    ]);
+  }
+  getCatalogDir() {
+    return this.catalogDir;
+  }
+  getStatus() {
+    return {
+      scope: this.scope,
+      configPath: this.configPath,
+      catalogDir: this.catalogDir,
+      generatedAt: (/* @__PURE__ */ new Date()).toISOString(),
+      providers: {
+        postman: this.providerState.postman,
+        stitch: this.providerState.stitch,
+        playwright: this.providerState.playwright
+      }
+    };
+  }
+  listEnabledTools(provider) {
+    const state = this.providerState[provider];
+    return {
+      provider,
+      available: state.available,
+      enabledCount: state.tools.length,
+      enabledTools: state.tools.map((tool) => `${provider}.${tool.name}`),
+      upstreamTools: state.tools,
+      warnings: state.warnings,
+      lastError: state.lastError,
+      syncedAt: state.syncedAt,
+      mcpUrl: state.mcpUrl,
+      authEnvVar: state.authEnvVar,
+      authConfigured: state.authConfigured,
+      catalogDir: this.catalogDir
+    };
+  }
+  getDynamicTools(provider) {
+    return [...this.providerState[provider].tools];
+  }
+  async callTool(provider, upstreamToolName, args) {
+    const runtime = this.providerRuntime[provider];
+    if (!runtime.mcpUrl) {
+      return errorResult(`${provider} upstream MCP URL is not configured.`);
+    }
+    if (!runtime.headers) {
+      return errorResult(
+        `${provider} upstream auth is not configured via env var alias (${runtime.authEnvVar ?? "missing alias"}).`
+      );
+    }
+    let client = null;
+    try {
+      client = await this.clientFactory.connect({
+        mcpUrl: runtime.mcpUrl,
+        headers: runtime.headers
+      });
+      const result = await client.callTool(
+        upstreamToolName,
+        normalizeArgs(args)
+      );
+      return normalizeCallResult(result);
+    } catch (error) {
+      const message = `${provider}.${upstreamToolName} failed: ${messageFromError(error)}`;
+      logger.warn(message);
+      return errorResult(message);
+    } finally {
+      if (client) {
+        try {
+          await client.close();
+        } catch {
+        }
+      }
+    }
+  }
+  async syncProvider(provider, resolved) {
+    const state = emptyProviderState(provider);
+    state.mcpUrl = resolved.mcpUrl;
+    state.authEnvVar = resolved.authEnvVar;
+    state.authConfigured = !!resolved.authHeader;
+    state.warnings = [...resolved.warnings];
+    this.providerRuntime[provider] = {
+      mcpUrl: resolved.mcpUrl,
+      headers: resolved.authHeader,
+      authEnvVar: resolved.authEnvVar
+    };
+    if (!resolved.mcpUrl || !resolved.authHeader) {
+      this.providerState[provider] = state;
+      return;
+    }
+    let client = null;
+    try {
+      client = await this.clientFactory.connect({
+        mcpUrl: resolved.mcpUrl,
+        headers: resolved.authHeader
+      });
+      const tools = await client.listTools();
+      const syncedAt = (/* @__PURE__ */ new Date()).toISOString();
+      state.tools = tools;
+      state.available = true;
+      state.syncedAt = syncedAt;
+      persistCatalog(this.catalogDir, {
+        provider,
+        mcpUrl: resolved.mcpUrl,
+        syncedAt,
+        tools: tools.map((tool) => ({
+          name: tool.name,
+          description: tool.description,
+          inputSchema: tool.inputSchema
+        }))
+      });
+    } catch (error) {
+      state.lastError = messageFromError(error);
+      state.warnings.push(
+        `${provider} upstream unavailable: ${state.lastError}`
+      );
+      state.available = false;
+      state.tools = [];
+      logger.warn(`${provider} gateway init failed: ${state.lastError}`);
+    } finally {
+      if (client) {
+        try {
+          await client.close();
+        } catch {
+        }
+      }
+    }
+    this.providerState[provider] = state;
+  }
+};
+
+// src/upstream/passthrough.ts
+import { mkdir, readFile as readFile4, writeFile } from "fs/promises";
+import path10 from "path";
+import { Client as Client2 } from "@modelcontextprotocol/sdk/client/index.js";
+import { StreamableHTTPClientTransport as StreamableHTTPClientTransport2 } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+var STITCH_ENV_FALLBACKS = ["STITCH_API_KEY_DEFAULT", "STITCH_API_KEY"];
+var STITCH_LONG_RUNNING_TIMEOUT_MS = 8 * 60 * 1e3;
+var STITCH_DISCOVERY_TIMEOUT_MS = 30 * 1e3;
+var STITCH_DEFAULT_COMPLEX_MODEL = "GEMINI_3_1_PRO";
+var STITCH_MUTATION_TOOLS = /* @__PURE__ */ new Set([
+  "generate_screen_from_text",
+  "edit_screens",
+  "generate_variants"
+]);
+var STITCH_TIMEOUT_RECOVERY_TOOLS = /* @__PURE__ */ new Set([
+  "generate_screen_from_text",
+  "generate_variants"
+]);
+function resolveCatalogDir2(configPath) {
+  const configDir = path10.dirname(configPath);
+  if (path10.basename(configDir) === ".cbx") {
+    return path10.join(configDir, "mcp", "catalog");
+  }
+  return path10.join(configDir, ".cbx", "mcp", "catalog");
 }
 function buildPassthroughAliasName(service, toolName) {
   const normalizedTool = String(toolName || "").trim().replace(/([a-z0-9])([A-Z])/g, "$1_$2").replace(/[^A-Za-z0-9]+/g, "_").replace(/^_+|_+$/g, "").replace(/_+/g, "_").toLowerCase();
@@ -2350,8 +3105,8 @@ async function loadCachedCatalogTools({
   configPath
 }) {
   if (!configPath) return [];
-  const catalogDir = resolveCatalogDir(configPath);
-  const catalogPath = path9.join(catalogDir, `${service}.json`);
+  const catalogDir = resolveCatalogDir2(configPath);
+  const catalogPath = path10.join(catalogDir, `${service}.json`);
   try {
     const raw = await readFile4(catalogPath, "utf8");
     const parsed = JSON.parse(raw);
@@ -2365,6 +3120,16 @@ async function loadCachedCatalogTools({
   }
 }
 function getServiceAuth(config, service) {
+  if (service === "playwright") {
+    const state2 = parsePlaywrightState(config);
+    return {
+      mcpUrl: state2.mcpUrl,
+      activeProfileName: null,
+      envVar: null,
+      headers: {},
+      configured: Boolean(state2.mcpUrl)
+    };
+  }
   if (service === "postman") {
     const state2 = parsePostmanState(config);
     const activeProfile2 = state2.activeProfile;
@@ -2391,12 +3156,13 @@ function getServiceAuth(config, service) {
   const state = parseStitchState(config);
   const activeProfile = state.activeProfile;
   const envVar = activeProfile?.apiKeyEnvVar ?? "STITCH_API_KEY";
-  const token = process.env[envVar]?.trim();
+  const tokenInfo = resolveStitchToken(envVar);
+  const token = tokenInfo?.token;
   if (!token && !state.useSystemGcloud) {
     return {
       mcpUrl: state.mcpUrl,
       activeProfileName: state.activeProfileName,
-      envVar,
+      envVar: tokenInfo?.envVar || envVar,
       headers: {},
       configured: false,
       error: `Missing Stitch key env var: ${envVar}`
@@ -2405,17 +3171,30 @@ function getServiceAuth(config, service) {
   return {
     mcpUrl: state.mcpUrl,
     activeProfileName: state.activeProfileName,
-    envVar,
+    envVar: tokenInfo?.envVar || envVar,
     headers: token ? { "X-Goog-Api-Key": token } : {},
     configured: Boolean(state.mcpUrl)
   };
+}
+function resolveStitchToken(preferredEnvVar, env = process.env) {
+  const candidates = [preferredEnvVar, ...STITCH_ENV_FALLBACKS].filter(Boolean);
+  const seen = /* @__PURE__ */ new Set();
+  for (const candidate of candidates) {
+    if (seen.has(candidate)) continue;
+    seen.add(candidate);
+    const token = env[candidate]?.trim();
+    if (token) {
+      return { envVar: candidate, token };
+    }
+  }
+  return null;
 }
 async function withUpstreamClient({
   url,
   headers,
   fn
 }) {
-  const client = new Client(
+  const client = new Client2(
     {
       name: "cubis-foundry-mcp-passthrough",
       version: "0.1.0"
@@ -2424,7 +3203,7 @@ async function withUpstreamClient({
       capabilities: {}
     }
   );
-  const transport = new StreamableHTTPClientTransport(new URL(url), {
+  const transport = new StreamableHTTPClientTransport2(new URL(url), {
     requestInit: { headers }
   });
   await client.connect(transport);
@@ -2459,10 +3238,118 @@ function normalizeUpstreamToolResult(result) {
     _meta: result._meta
   };
 }
-async function persistCatalog(catalog) {
+function isStitchLongRunningTool(name) {
+  return STITCH_MUTATION_TOOLS.has(String(name || "").trim());
+}
+function getUpstreamRequestOptions(service, name) {
+  if (service !== "stitch" || !isStitchLongRunningTool(name)) {
+    return void 0;
+  }
+  return {
+    timeout: STITCH_LONG_RUNNING_TIMEOUT_MS,
+    maxTotalTimeout: STITCH_LONG_RUNNING_TIMEOUT_MS,
+    resetTimeoutOnProgress: true
+  };
+}
+function applyStitchDefaultArguments(name, argumentsValue) {
+  if (name !== "generate_screen_from_text" && name !== "edit_screens") {
+    return argumentsValue;
+  }
+  const next = { ...argumentsValue };
+  if (typeof next.modelId !== "string" || !next.modelId.trim()) {
+    next.modelId = STITCH_DEFAULT_COMPLEX_MODEL;
+  }
+  return next;
+}
+async function listStitchScreens(client, projectId) {
+  const response = normalizeUpstreamToolResult(
+    await client.callTool(
+      {
+        name: "list_screens",
+        arguments: { projectId }
+      },
+      void 0,
+      {
+        timeout: STITCH_DISCOVERY_TIMEOUT_MS
+      }
+    )
+  );
+  const text2 = response.content.find((item) => item.type === "text")?.text;
+  if (!text2) return [];
+  try {
+    const parsed = JSON.parse(text2);
+    return Array.isArray(parsed.screens) ? parsed.screens : [];
+  } catch {
+    return [];
+  }
+}
+async function listStitchProjects(client) {
+  const response = normalizeUpstreamToolResult(
+    await client.callTool(
+      {
+        name: "list_projects",
+        arguments: {}
+      },
+      void 0,
+      {
+        timeout: STITCH_DISCOVERY_TIMEOUT_MS
+      }
+    )
+  );
+  const text2 = response.content.find((item) => item.type === "text")?.text;
+  if (!text2) return [];
+  try {
+    const parsed = JSON.parse(text2);
+    return Array.isArray(parsed.projects) ? parsed.projects : [];
+  } catch {
+    return [];
+  }
+}
+function findMatchingStitchProject(projects, title) {
+  const normalizedTitle = title.trim().toLowerCase();
+  if (!normalizedTitle) return null;
+  return projects.find(
+    (project) => typeof project.title === "string" && project.title.trim().toLowerCase() === normalizedTitle
+  ) || null;
+}
+function isTimeoutError(error) {
+  const text2 = String(error || "");
+  return text2.includes("Request timed out") || text2.includes("RequestTimeout");
+}
+function buildStitchTimeoutRecoveryResult({
+  toolName,
+  projectId,
+  screens
+}) {
+  return {
+    content: [
+      {
+        type: "text",
+        text: JSON.stringify(
+          {
+            service: "stitch",
+            tool: `stitch.${toolName}`,
+            projectId,
+            recoveredAfterTimeout: true,
+            message: "The Stitch request timed out locally, but new screens were detected in the project. Treat these as recovered results and prefer edit_screens for follow-up changes.",
+            outputComponents: screens.map((screen) => ({
+              text: `Recovered screen ${screen.title || screen.name || "unknown"} after timeout.`,
+              design: {
+                screens: [screen]
+              }
+            }))
+          },
+          null,
+          2
+        )
+      }
+    ]
+  };
+}
+async function persistCatalog2(catalog) {
   if (!catalog.configPath) return;
-  const catalogDir = resolveCatalogDir(catalog.configPath);
-  const catalogPath = path9.join(catalogDir, `${catalog.service}.json`);
+  const catalogDir = resolveCatalogDir2(catalog.configPath);
+  const catalogPath = path10.join(catalogDir, `${catalog.service}.json`);
   const payload = {
     schemaVersion: 1,
     generatedAt: (/* @__PURE__ */ new Date()).toISOString(),
@@ -2501,9 +3388,14 @@ async function discoverUpstreamCatalogs(scope = "auto") {
       discoveryError: "cbx_config.json not found"
     };
     const missingStitch = { ...missing, service: "stitch" };
+    const missingPlaywright = {
+      ...missing,
+      service: "playwright"
+    };
     return {
       postman: missing,
-      stitch: missingStitch
+      stitch: missingStitch,
+      playwright: missingPlaywright
     };
   }
   const baseInfo = {
@@ -2535,7 +3427,7 @@ async function discoverUpstreamCatalogs(scope = "auto") {
         catalog.toolCount = cachedTools.length;
         catalog.discoveryError = auth.error ? `${auth.error} (using cached tool catalog)` : "Upstream not configured; using cached tool catalog";
       }
-      await persistCatalog(catalog);
+      await persistCatalog2(catalog);
       return catalog;
     }
     try {
@@ -2560,12 +3452,13 @@ async function discoverUpstreamCatalogs(scope = "auto") {
         catalog.discoveryError = `${catalog.discoveryError} (using cached tool catalog)`;
       }
     }
-    await persistCatalog(catalog);
+    await persistCatalog2(catalog);
     return catalog;
   };
   return {
     postman: await discoverOne("postman"),
-    stitch: await discoverOne("stitch")
+    stitch: await discoverOne("stitch"),
+    playwright: await discoverOne("playwright")
   };
 }
 async function callUpstreamTool({
@@ -2588,12 +3481,67 @@ async function callUpstreamTool({
   return withUpstreamClient({
     url: auth.mcpUrl,
     headers: auth.headers,
-    fn: async (client) => normalizeUpstreamToolResult(
-      await client.callTool({
-        name,
-        arguments: argumentsValue
-      })
-    )
+    fn: async (client) => {
+      const effectiveArguments = service === "stitch" ? applyStitchDefaultArguments(name, argumentsValue) : argumentsValue;
+      const requestOptions = getUpstreamRequestOptions(service, name);
+      const projectId = service === "stitch" && typeof effectiveArguments.projectId === "string" ? effectiveArguments.projectId.trim() : "";
+      const shouldRecoverAfterTimeout = service === "stitch" && STITCH_TIMEOUT_RECOVERY_TOOLS.has(name) && projectId.length > 0;
+      if (service === "stitch" && name === "create_project" && typeof effectiveArguments.title === "string") {
+        const existingProject = findMatchingStitchProject(
+          await listStitchProjects(client),
+          effectiveArguments.title
+        );
+        if (existingProject) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(
+                  {
+                    ...existingProject,
+                    reusedExistingProject: true,
+                    message: "Reused an existing Stitch project with the same title instead of creating a duplicate."
+                  },
+                  null,
+                  2
+                )
+              }
+            ]
+          };
+        }
+      }
+      const beforeScreens = shouldRecoverAfterTimeout && projectId ? await listStitchScreens(client, projectId) : [];
+      try {
+        return normalizeUpstreamToolResult(
+          await client.callTool(
+            {
+              name,
+              arguments: effectiveArguments
+            },
+            void 0,
+            requestOptions
+          )
+        );
+      } catch (error) {
+        if (shouldRecoverAfterTimeout && projectId && isTimeoutError(error)) {
+          const knownNames = new Set(
+            beforeScreens.map((screen) => screen.name).filter(Boolean)
+          );
+          const afterScreens = await listStitchScreens(client, projectId);
+          const recoveredScreens = afterScreens.filter(
+            (screen) => screen.name && !knownNames.has(screen.name)
+          );
+          if (recoveredScreens.length > 0) {
+            return buildStitchTimeoutRecoveryResult({
+              toolName: name,
+              projectId,
+              screens: recoveredScreens
+            });
+          }
+        }
+        throw error;
+      }
+    }
   });
 }
 
@@ -2631,9 +3579,12 @@ async function createServer({
     name: config.server.name,
     version: config.server.version
   });
+  const gatewayManager = new GatewayManager();
+  await gatewayManager.initialize(defaultConfigScope);
   const runtimeCtx = {
     manifest,
     routeManifest,
+    gatewayManager,
     charsPerToken: config.telemetry?.charsPerToken ?? 4,
     summaryMaxLength: config.vault.summaryMaxLength,
     defaultConfigScope
@@ -2654,9 +3605,13 @@ async function createServer({
     `Registered ${TOOL_REGISTRY.length} built-in tools from registry`
   );
   const upstreamCatalogs = await discoverUpstreamCatalogs(defaultConfigScope);
-  const dynamicSchema = z16.object({}).passthrough();
+  const dynamicSchema = z18.object({}).passthrough();
   const registeredDynamicToolNames = /* @__PURE__ */ new Set();
-  for (const catalog of [upstreamCatalogs.postman, upstreamCatalogs.stitch]) {
+  for (const catalog of [
+    upstreamCatalogs.postman,
+    upstreamCatalogs.stitch,
+    upstreamCatalogs.playwright
+  ]) {
     for (const tool of catalog.tools) {
       const registrationNames = [
         tool.namespacedName,
@@ -2887,9 +3842,9 @@ function createMultiSessionHttpServer(options, serverFactory) {
 }
 
 // src/index.ts
-import path10 from "path";
+import path11 from "path";
 import { fileURLToPath as fileURLToPath2 } from "url";
-var __dirname2 = path10.dirname(fileURLToPath2(import.meta.url));
+var __dirname2 = path11.dirname(fileURLToPath2(import.meta.url));
 function parseArgs(argv) {
   let transport = "stdio";
   let scope = "auto";
@@ -2971,9 +3926,11 @@ function printConfigStatus(scope) {
     }
     const stitchState = parseStitchState(config);
     const stitchProfile = stitchState.activeProfileName;
-    if (stitchProfile && stitchState.activeProfile?.url) {
-      const url = stitchState.activeProfile.url ?? "(no URL)";
-      logger.info(`Stitch profile: ${stitchProfile} (${url})`);
+    const stitchUrl = stitchState.mcpUrl ?? stitchState.activeProfile?.url;
+    if (stitchProfile && stitchUrl) {
+      logger.info(`Stitch profile: ${stitchProfile} (${stitchUrl})`);
+    } else if (stitchUrl) {
+      logger.info(`Stitch: configured (${stitchUrl})`);
     } else {
       logger.info("Stitch: not configured");
     }
@@ -2988,7 +3945,7 @@ async function main() {
     setLogLevel("debug");
   }
   const serverConfig = loadServerConfig(args.configPath);
-  const basePath = path10.resolve(__dirname2, "..");
+  const basePath = path11.resolve(__dirname2, "..");
   const scannedSkills = await scanVaultRoots(serverConfig.vault.roots, basePath);
   const generatedSkillManifest = await loadGeneratedSkillManifest(basePath);
   const skills = mergeGeneratedSkillMetadata(

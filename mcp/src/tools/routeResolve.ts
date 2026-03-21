@@ -20,7 +20,7 @@ export const routeResolveSchema = z.object({
     .string()
     .min(1)
     .describe(
-      "Explicit workflow command (/mobile), explicit agent (@mobile-developer), compatibility alias ($workflow-mobile / $agent-mobile-developer), or free-text user intent",
+      "Explicit workflow command (/implement), explicit agent (@reviewer), compatibility alias ($workflow-implement / $agent-reviewer), or free-text user intent",
     ),
 });
 
@@ -127,11 +127,48 @@ const LEGACY_AGENT_ALIASES: Record<string, string> = {
 };
 
 const STITCH_REQUIRED_SIGNALS = ["stitch"];
+const DESIGN_SYSTEM_SIGNALS = [
+  "design system",
+  "design-system",
+  "design tokens",
+  "theme system",
+  "token system",
+];
+const DESIGN_AUDIT_SIGNALS = [
+  "design audit",
+  "ui audit",
+  "ux audit",
+  "visual audit",
+  "design review",
+];
+const DESIGN_REFRESH_SIGNALS = [
+  "design refresh",
+  "refresh design",
+  "refresh tokens",
+  "design drift",
+];
+const DESIGN_SCREEN_SIGNALS = [
+  "design screen",
+  "screen design",
+  "ui design",
+  "ux design",
+  "landing page",
+  "redesign",
+  "mobile screen",
+];
 const STITCH_UI_SUPPORTING_SKILLS = [
+  "frontend-design-core",
+  "frontend-design-style-selector",
+  "frontend-design-system",
+  "frontend-design-screen-brief",
   "stitch-prompt-enhancement",
   "stitch-design-orchestrator",
   "stitch-design-system",
   "stitch-implementation-handoff",
+];
+const MOBILE_DESIGN_SUPPORTING_SKILLS = [
+  "frontend-design-mobile-patterns",
+  "frontend-design-implementation-handoff",
 ];
 
 function normalize(value: string): string {
@@ -176,6 +213,16 @@ function isSkillCreatorIntent(intent: string): boolean {
 function isStitchUiIntent(intent: string): boolean {
   const normalizedIntent = normalize(intent);
   return includesAnyPhrase(normalizedIntent, STITCH_REQUIRED_SIGNALS);
+}
+
+function isDesignIntent(intent: string): boolean {
+  const normalizedIntent = normalize(intent);
+  return (
+    includesAnyPhrase(normalizedIntent, DESIGN_SYSTEM_SIGNALS) ||
+    includesAnyPhrase(normalizedIntent, DESIGN_AUDIT_SIGNALS) ||
+    includesAnyPhrase(normalizedIntent, DESIGN_REFRESH_SIGNALS) ||
+    includesAnyPhrase(normalizedIntent, DESIGN_SCREEN_SIGNALS)
+  );
 }
 
 function chooseSkillCreatorRoute(
@@ -355,8 +402,8 @@ function buildResolvedPayload(
     fallbackSkillSearchRecommended: false,
     matchedBy,
     explanation:
-      overrides.explanation ||
-      matchedBy === "explicit-workflow-command"
+      overrides.explanation ??
+      (matchedBy === "explicit-workflow-command"
         ? `Matched explicit workflow command ${route.command}.`
         : matchedBy === "explicit-agent"
           ? `Matched explicit agent @${route.id}.`
@@ -364,11 +411,11 @@ function buildResolvedPayload(
             ? `Matched legacy workflow alias and routed to canonical workflow '${route.id}'.`
             : matchedBy === "legacy-agent-alias"
               ? `Matched legacy agent alias and routed to canonical agent @${route.id}.`
-          : matchedBy === "compatibility-alias"
-            ? `Matched compatibility alias ${route.artifacts.codex?.compatibilityAlias}.`
-            : matchedBy === "skill-creator-intent"
-              ? `Matched workflow '${route.id}' and selected skill-creator as the primary skill hint for skill package work.`
-              : `Matched ${route.kind} '${route.id}' from installed route metadata.`,
+              : matchedBy === "compatibility-alias"
+                ? `Matched compatibility alias ${route.artifacts.codex?.compatibilityAlias}.`
+                : matchedBy === "skill-creator-intent"
+                  ? `Matched workflow '${route.id}' and selected skill-creator as the primary skill hint for skill package work.`
+                  : `Matched ${route.kind} '${route.id}' from installed route metadata.`),
     artifacts: route.artifacts,
   };
 }
@@ -378,7 +425,25 @@ function chooseStitchUiRoute(manifest: RouteManifest): RouteEntry | null {
     manifest.routes.find(
       (entry) =>
         entry.kind === "workflow" &&
-        (entry.id === "implement" || entry.command === "/implement"),
+        (entry.id === "design-screen" || entry.command === "/design-screen"),
+    ) || null
+  );
+}
+
+function chooseDesignRoute(intent: string, manifest: RouteManifest): RouteEntry | null {
+  const normalizedIntent = normalize(intent);
+  let preferredWorkflowId = "design-screen";
+  if (includesAnyPhrase(normalizedIntent, DESIGN_SYSTEM_SIGNALS)) {
+    preferredWorkflowId = "design-system";
+  } else if (includesAnyPhrase(normalizedIntent, DESIGN_AUDIT_SIGNALS)) {
+    preferredWorkflowId = "design-audit";
+  } else if (includesAnyPhrase(normalizedIntent, DESIGN_REFRESH_SIGNALS)) {
+    preferredWorkflowId = "design-refresh";
+  }
+
+  return (
+    manifest.routes.find(
+      (entry) => entry.kind === "workflow" && entry.id === preferredWorkflowId,
     ) || null
   );
 }
@@ -456,6 +521,7 @@ export async function handleRouteResolve(
   if (isStitchUiIntent(intent)) {
     const stitchRoute = chooseStitchUiRoute(routeManifest);
     if (stitchRoute) {
+      const needsMobilePatterns = /\b(mobile|flutter|android|ios)\b/i.test(intent);
       const payload = buildResolvedPayload(
         intent,
         stitchRoute,
@@ -465,11 +531,60 @@ export async function handleRouteResolve(
           primarySkillHint: "frontend-design",
           primarySkills: [
             "frontend-design",
+            ...(needsMobilePatterns ? MOBILE_DESIGN_SUPPORTING_SKILLS : []),
             ...STITCH_UI_SUPPORTING_SKILLS,
           ],
           supportingSkills: stitchRoute.supportingSkills,
           explanation:
-            "Matched Stitch UI intent and routed to /implement with the Stitch UI sequence: frontend-design, prompt enhancement, Stitch orchestration, design-system sync when needed, then implementation handoff.",
+            "Matched Stitch UI intent and routed to /design-screen so the design engine resolves canonical design state, builds the screen brief, and only then runs the Stitch sequence.",
+        },
+      );
+      return {
+        content: [{ type: "text" as const, text: JSON.stringify(payload, null, 2) }],
+        structuredContent: payload,
+      };
+    }
+  }
+
+  if (isDesignIntent(intent)) {
+    const designRoute = chooseDesignRoute(intent, routeManifest);
+    if (designRoute) {
+      const needsMobilePatterns = /\b(mobile|flutter|android|ios)\b/i.test(intent);
+      const primarySkills = [
+        "frontend-design",
+        "frontend-design-core",
+      ];
+      if (designRoute.id === "design-system") {
+        primarySkills.push("frontend-design-style-selector", "frontend-design-system");
+      } else if (designRoute.id === "design-audit") {
+        primarySkills.push("frontend-design-style-selector");
+      } else if (designRoute.id === "design-refresh") {
+        primarySkills.push(
+          "frontend-design-style-selector",
+          "frontend-design-system",
+          "frontend-design-screen-brief",
+        );
+      } else {
+        primarySkills.push(
+          "frontend-design-style-selector",
+          "frontend-design-screen-brief",
+        );
+      }
+      if (needsMobilePatterns) {
+        primarySkills.push(...MOBILE_DESIGN_SUPPORTING_SKILLS);
+      }
+
+      const payload = buildResolvedPayload(
+        intent,
+        designRoute,
+        "design-intent",
+        detectedLanguageSkill,
+        {
+          primarySkillHint: "frontend-design",
+          primarySkills,
+          supportingSkills: designRoute.supportingSkills,
+          explanation:
+            "Matched design intent and routed through the design engine so canonical design state, overlays, and screen briefs resolve before implementation or generation.",
         },
       );
       return {
