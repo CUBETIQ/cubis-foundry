@@ -28,8 +28,29 @@ jobs:
       - name: Install smoke test dependencies
         run: sudo apt-get update && sudo apt-get install -y ripgrep expect
 
-      - name: Check generated assets
-        run: npm run check:generated-assets
+      - name: Check platform assets
+        run: npm run check:platform-assets
+
+      - name: Check skill mirrors
+        run: npm run check:skill-mirrors
+
+      - name: Validate MCP manifest
+        run: npm run validate:mcp-manifest
+
+      - name: Check MCP rules for Codex
+        run: npm run check:mcp-rules:codex
+
+      - name: Check MCP rules for Antigravity
+        run: npm run check:mcp-rules:antigravity
+
+      - name: Check MCP rules for Gemini
+        run: npm run check:mcp-rules:gemini
+
+      - name: Check MCP rules for Copilot
+        run: npm run check:mcp-rules:copilot
+
+      - name: Check MCP rules for Claude
+        run: npm run check:mcp-rules:claude
 
       - name: Validate attributes
         run: npm run test:attributes
