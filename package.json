@@ -29,7 +29,7 @@
   "scripts": {
     "start": "npm run build:cli && node bin/cubis.js",
     "check": "npm run build:cli && node bin/cubis.js --help",
-    "build:mcp": "npm --prefix mcp run build",
+    "build:mcp": "node scripts/ensure-mcp-deps.mjs && npm --prefix mcp run build",
     "test:attributes": "node scripts/validate-platform-attributes.mjs && node scripts/validate-shared-routing.mjs && node scripts/validate-skill-packaging.mjs && node scripts/validate-runtime-wiring.mjs && node scripts/validate-cleanup-invariants.mjs && node scripts/generate-skills-index.mjs --check && node scripts/generate-skill-catalog.mjs --check",
     "test:attributes:strict": "node scripts/validate-platform-attributes.mjs --strict && node scripts/validate-shared-routing.mjs && node scripts/validate-skill-packaging.mjs && node scripts/validate-runtime-wiring.mjs && node scripts/validate-cleanup-invariants.mjs && node scripts/generate-skills-index.mjs --check && node scripts/generate-skill-catalog.mjs --check",
     "test:cli-help": "npm run build:cli && node scripts/validate-cli-help.mjs",
