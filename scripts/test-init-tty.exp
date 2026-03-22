@@ -3,6 +3,9 @@
 set timeout 90
 
 proc fail {msg} {
+  if {[info exists ::env(GITHUB_ACTIONS)] && $::env(GITHUB_ACTIONS) ne ""} {
+    puts stderr "::error title=Init PTY smoke::$msg"
+  }
   puts stderr $msg
   exit 1
 }
@@ -17,7 +20,7 @@ if {[llength $argv] < 1} {
 
 set cli [lindex $argv 0]
 
-spawn node $cli init --dry-run --no-banner --bundle agent-environment-setup --platforms codex --mcps postman --mcp-runtime local
+spawn node $cli init --dry-run --no-banner --bundle agent-environment-setup --platforms codex --mcps cubis-foundry --mcp-runtime local
 
 expect -re "Select workspace stack:" {} timeout { fail "Missing prompt: Select workspace stack:" }
 press_enter
@@ -37,18 +40,9 @@ expect -re "Select which MCP integrations to configure:" {} timeout { fail "Miss
 press_enter
 expect -re "Select MCP runtime mode:" {} timeout { fail "Missing prompt: Select MCP runtime mode:" }
 press_enter
-expect -re "Select Postman installation mode:" {} timeout { fail "Missing prompt: Select Postman installation mode:" }
+expect -re "Apply this installation plan\?" {} timeout { fail "Missing prompt: Apply this installation plan?" }
 press_enter
-expect -re "Postman API key \\(optional, leave blank to keep existing env/profile state\\):" {} timeout { fail "Missing prompt: Postman API key (optional...):" }
-press_enter
-expect {
-  -re "Choose default Postman workspace for this install:" { press_enter }
-  -re "Default Postman workspace ID \\(optional, leave blank for null\\):" { press_enter }
-  timeout { fail "Missing prompt: Postman workspace selection" }
-}
-expect -re "Apply this installation plan\\?" {} timeout { fail "Missing prompt: Apply this installation plan?" }
-press_enter
-expect -re "Dry-run complete\\." {} timeout { fail "Missing output: Dry-run complete." }
+expect -re "Dry-run complete\." {} timeout { fail "Missing output: Dry-run complete." }
 expect eof
 
 set result [wait]

@@ -9,9 +9,21 @@ EXPECTED_AGENT_COUNT="$(find "$ROOT_DIR/workflows/workflows/agent-environment-se
 EXPECTED_ROUTE_COMMAND_COUNT="$((EXPECTED_WORKFLOW_COUNT + EXPECTED_AGENT_COUNT))"
 export EXPECTED_WORKFLOW_COUNT EXPECTED_AGENT_COUNT EXPECTED_ROUTE_COMMAND_COUNT
 
-if [ ! -f "$CLI" ]; then
-  echo "ERROR: CLI entry not found at $CLI" >&2
+CURRENT_STEP="bootstrap"
+
+fail_step() {
+  local message="$1"
+  if [ -n "${GITHUB_ACTIONS:-}" ]; then
+    echo "::error title=Smoke workflow failure::${CURRENT_STEP}: ${message}" >&2
+  fi
+  echo "[FAIL] ${CURRENT_STEP}: ${message}" >&2
   exit 1
+}
+
+trap 'status=$?; if [ "$status" -ne 0 ]; then fail_step "command failed (exit $status) at line $LINENO"; fi' ERR
+
+if [ ! -f "$CLI" ]; then
+  fail_step "CLI entry not found at $CLI"
 fi
 
 TMP_DIR="$(mktemp -d /tmp/cbx-smoke.XXXXXX)"
@@ -24,11 +36,11 @@ rg_or_fail() {
     rg "$@"
     return
   fi
-  echo "[FAIL] ripgrep is required for smoke assertions in this environment" >&2
-  exit 1
+  fail_step "ripgrep is required for smoke assertions in this environment"
 }
 
 log_step() {
+  CURRENT_STEP="$1"
   echo
   echo "== $1 =="
 }
@@ -42,8 +54,7 @@ assert_file_contains_literal() {
   local needle="$2"
   local label="$3"
   if ! grep -Fq "$needle" "$file"; then
-    echo "[FAIL] $label missing '$needle' in $file" >&2
-    exit 1
+    fail_step "$label missing '$needle' in $file"
   fi
 }
 
@@ -99,8 +110,7 @@ node "$CLI" add codex --yes >/tmp/cbx-a2.log
 [ -f .agents/skills/implement/SKILL.md ]
 [ -f .agents/skills/loop/SKILL.md ]
 if [ "$(find .codex/agents -maxdepth 1 -type f -name '*.toml' | wc -l | tr -d ' ')" -ne "$EXPECTED_AGENT_COUNT" ]; then
-  echo "[FAIL] Codex expected exactly $EXPECTED_AGENT_COUNT agent files" >&2
-  exit 1
+  fail_step "Codex expected exactly $EXPECTED_AGENT_COUNT agent files"
 fi
 node - <<'NODE'
 const fs = require('fs');
@@ -126,8 +136,7 @@ node "$CLI" add antigravity --yes >/tmp/cbx-a3.log
 [ -f .gemini/commands/agent-orchestrator.toml ]
 [ -f .gemini/commands/agent-reviewer.toml ]
 if [ "$(find .gemini/commands -maxdepth 1 -type f -name '*.toml' | wc -l | tr -d ' ')" -ne "$EXPECTED_ROUTE_COMMAND_COUNT" ]; then
-  echo "[FAIL] Antigravity expected exactly $EXPECTED_ROUTE_COMMAND_COUNT Gemini command files" >&2
-  exit 1
+  fail_step "Antigravity expected exactly $EXPECTED_ROUTE_COMMAND_COUNT Gemini command files"
 fi
 log_ok "Antigravity install writes the lean 7 workflow and 7 agent commands"
 
@@ -153,8 +162,7 @@ log_step "A6 loop lifecycle"
 node "$CLI" loop start --task "Verify loop runtime wiring" --completion-criteria "status file exists" --max-iterations 3 >/tmp/cbx-a6-start.log
 LOOP_ID="$(awk -F': ' '/^Loop run:/ {print $2}' /tmp/cbx-a6-start.log | tail -n 1)"
 if [ -z "$LOOP_ID" ]; then
-  echo "[FAIL] Could not parse loop run id from loop start output" >&2
-  exit 1
+  fail_step "Could not parse loop run id from loop start output"
 fi
 [ -f ".cbx/harness/loops/$LOOP_ID/status.json" ]
 node "$CLI" loop status --id "$LOOP_ID" --json >./cbx-a6-status.json
@@ -174,12 +182,10 @@ node "$CLI" workflows install --platform copilot --bundle agent-environment-setu
 [ -f .github/prompts/plan.prompt.md ]
 [ -f .github/prompts/loop.prompt.md ]
 if [ "$(find .github/agents -maxdepth 1 -type f -name '*.agent.md' | wc -l | tr -d ' ')" -ne "$EXPECTED_AGENT_COUNT" ]; then
-  echo "[FAIL] Copilot expected exactly $EXPECTED_AGENT_COUNT agent files" >&2
-  exit 1
+  fail_step "Copilot expected exactly $EXPECTED_AGENT_COUNT agent files"
 fi
 if [ "$(find .github/prompts -maxdepth 1 -type f -name '*.prompt.md' | wc -l | tr -d ' ')" -ne "$EXPECTED_WORKFLOW_COUNT" ]; then
-  echo "[FAIL] Copilot expected exactly $EXPECTED_WORKFLOW_COUNT prompt files" >&2
-  exit 1
+  fail_step "Copilot expected exactly $EXPECTED_WORKFLOW_COUNT prompt files"
 fi
 log_ok "Legacy workflows install still projects the lean catalog to Copilot"
 
@@ -211,8 +217,7 @@ node "$ROOT_DIR/scripts/run-init-tty-test.mjs" "$CLI" >/tmp/cbx-a10.log
 if rg_or_fail -n 'TTY_INIT_OK|TTY_INIT_SKIPPED' /tmp/cbx-a10.log >/dev/null; then
   log_ok "Init wizard PTY path is working or intentionally skipped"
 else
-  echo "[FAIL] Init wizard PTY test did not report success or skip" >&2
-  exit 1
+  fail_step "Init wizard PTY test did not report success or skip"
 fi
 
 log_step "DONE"
