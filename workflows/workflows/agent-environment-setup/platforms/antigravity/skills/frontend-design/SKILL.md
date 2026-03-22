@@ -61,6 +61,10 @@ Provide systematic guidance for building distinctive, production-grade frontend 
 
 19. **For Stitch-driven UI work, load only the refs needed for generation quality** — Start with `references/visual-direction.md` and `references/design-tokens.md` before prompting Stitch. Add `references/component-architecture.md` only when you are converting Stitch output into real components. Add `references/accessibility.md`, `references/responsive-patterns.md`, and `references/animation.md` only when the request explicitly needs those concerns. If the task spans multiple screens or iterative Stitch work, pair this skill with `stitch-design-system` so the design language persists across runs.
 
+20. **Use the design engine for serious UI work** — Treat this skill as the public anchor, then load the internal design-engine capabilities as needed: `frontend-design-core` for design-state resolution, `frontend-design-style-selector` for choosing the visual direction, `frontend-design-system` for canonical `docs/foundation/DESIGN.md`, `frontend-design-screen-brief` for task-specific briefs, `frontend-design-mobile-patterns` for Flutter/mobile adaptation, and `frontend-design-implementation-handoff` when converting the result into production UI.
+
+21. **Use only normalized design datasets during execution** — When broader design intelligence is needed, consume the Foundry-owned datasets under `workflows/design-datasets/*.json` rather than copying raw external design pages or prompts into runtime instructions.
+
 ## Output Format
 
 Deliver:
@@ -71,6 +75,7 @@ Deliver:
 4. **Accessibility audit** — WCAG compliance notes: contrast ratios, keyboard flow, ARIA usage
 5. **Responsive behavior** — Breakpoint strategy or container query usage with before/after viewport descriptions
 6. **Usage example** — A concrete code snippet showing the component in a realistic context
+7. **Design-engine handoff** — Which internal design-engine capability should run next, if any
 
 ## References
 

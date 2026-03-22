@@ -371,7 +371,8 @@ export async function writeWorkspaceSummary(
     "## Workspace Files",
     "",
     "- `.claude/` / `.codex/` / `.gemini/` / `.github/` projections as installed",
-    "- `docs/foundation/*` context docs when generated",
+    "- `docs/foundation/*` context docs, including `DESIGN.md` and scoped design overlays when generated",
+    "- `.stitch/DESIGN.md` compatibility mirror when Stitch flows are active",
     "- `.cbx/harness/*` runtime state",
     "- `.cbx/memory/inbox/*` learning review queue",
     "",
@@ -421,9 +422,11 @@ async function hashFiles(cwd: string, relativePaths: string[]) {
 export async function collectFoundationDocState(cwd: string) {
   const docs = [
     "docs/foundation/ARCHITECTURE.md",
+    "docs/foundation/DESIGN.md",
     "docs/foundation/TECH.md",
     "docs/foundation/MEMORY.md",
     "docs/foundation/PRODUCT.md",
+    ".stitch/DESIGN.md",
     "CLAUDE.md",
     "AGENTS.md",
     "GEMINI.md",

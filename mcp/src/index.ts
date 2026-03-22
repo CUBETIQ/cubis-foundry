@@ -143,9 +143,13 @@ function printConfigStatus(scope: "auto" | "global" | "project"): void {
     // Stitch status
     const stitchState = parseStitchState(config);
     const stitchProfile = stitchState.activeProfileName;
-    if (stitchProfile && stitchState.activeProfile?.url) {
-      const url = stitchState.activeProfile.url ?? "(no URL)";
-      logger.info(`Stitch profile: ${stitchProfile} (${url})`);
+    const stitchUrl =
+      stitchState.mcpUrl ??
+      stitchState.activeProfile?.url;
+    if (stitchProfile && stitchUrl) {
+      logger.info(`Stitch profile: ${stitchProfile} (${stitchUrl})`);
+    } else if (stitchUrl) {
+      logger.info(`Stitch: configured (${stitchUrl})`);
     } else {
       logger.info("Stitch: not configured");
     }

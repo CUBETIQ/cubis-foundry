@@ -1,0 +1,41 @@
+{
+  "dataset": "component-motifs",
+  "version": 1,
+  "entries": [
+    {
+      "id": "soft-elevated-cards",
+      "source": [
+        "https://impeccable.style/",
+        "anthropic-front-end-lineage"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "mobile", "stitch"],
+      "applicability": ["wellness", "consumer products", "dashboards"],
+      "qualityTier": "high",
+      "notes": "Round, calm cards with layered elevation and restrained borders instead of harsh separators."
+    },
+    {
+      "id": "metric-ring-hero",
+      "source": [
+        "anthropic-front-end-lineage"
+      ],
+      "licenseStatus": "derived-foundry",
+      "platformScope": ["mobile", "web"],
+      "applicability": ["fitness", "habits", "goal tracking"],
+      "qualityTier": "medium",
+      "notes": "Progress rings should be compact, legible, and paired with a concrete recommendation rather than floating alone."
+    },
+    {
+      "id": "editorial-quote-panel",
+      "source": [
+        "https://impeccable.style/"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["mobile", "web", "stitch"],
+      "applicability": ["motivation", "reflection", "content-led products"],
+      "qualityTier": "medium",
+      "notes": "Use a distinct accent block for motivational or educational content to break list fatigue."
+    }
+  ]
+}
+

@@ -2,7 +2,7 @@
   "$schema": "cubis-foundry-skill-audit-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
   "summary": {
-    "keep": 48,
+    "keep": 54,
     "review": 0,
     "alias-only": 1
   },
@@ -121,6 +121,60 @@
       "status": "keep",
       "layer": "frameworks-runtimes",
       "category": "frameworks-runtimes",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "frontend-design-core",
+      "canonical_id": "frontend-design-core",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "frontend-design-implementation-handoff",
+      "canonical_id": "frontend-design-implementation-handoff",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "frontend-design-mobile-patterns",
+      "canonical_id": "frontend-design-mobile-patterns",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "frontend-design-screen-brief",
+      "canonical_id": "frontend-design-screen-brief",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "frontend-design-style-selector",
+      "canonical_id": "frontend-design-style-selector",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "frontend-design-system",
+      "canonical_id": "frontend-design-system",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
       "tier": "system",
       "reason": "Canonical skill remains active in the layered catalog."
     },
@@ -449,5 +503,5 @@
       "reason": "Canonical skill remains active in the layered catalog."
     }
   ],
-  "contentHash": "28279badee103342"
+  "contentHash": "f8fd643428f29149"
 }

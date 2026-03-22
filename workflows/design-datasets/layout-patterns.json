@@ -1,0 +1,40 @@
+{
+  "dataset": "layout-patterns",
+  "version": 1,
+  "entries": [
+    {
+      "id": "hero-anchor-stack",
+      "source": [
+        "https://impeccable.style/"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "stitch", "mobile"],
+      "applicability": ["landing", "onboarding", "single-focus screens"],
+      "qualityTier": "high",
+      "notes": "Lead with one dominant message block, one hero artifact, and one decisive action."
+    },
+    {
+      "id": "dashboard-card-rail",
+      "source": [
+        "anthropic-front-end-lineage"
+      ],
+      "licenseStatus": "derived-foundry",
+      "platformScope": ["web", "mobile"],
+      "applicability": ["dashboards", "analytics", "tracking apps"],
+      "qualityTier": "high",
+      "notes": "Use a clear hero metric, a stable card rhythm, and a secondary rail for drills and actions."
+    },
+    {
+      "id": "sectioned-mobile-scroll",
+      "source": [
+        "anthropic-front-end-lineage"
+      ],
+      "licenseStatus": "derived-foundry",
+      "platformScope": ["mobile"],
+      "applicability": ["consumer mobile apps", "Flutter", "habit trackers"],
+      "qualityTier": "high",
+      "notes": "Compose mobile surfaces as vertically staged zones with section headers, high-signal cards, and safe thumb reach."
+    }
+  ]
+}
+

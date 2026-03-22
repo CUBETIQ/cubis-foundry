@@ -186,6 +186,9 @@ async function main() {
 
   const required = [
     "route_resolve",
+    "mcp_gateway_status",
+    "postman_list_enabled_tools",
+    "stitch_list_enabled_tools",
     "skill_list_categories",
     "skill_browse_category",
     "skill_search",
@@ -231,15 +234,68 @@ async function main() {
     endpointUrl: endpoint,
     sessionId,
     name: "route_resolve",
-    args: { intent: "/mobile" },
+    args: { intent: "/implement" },
   });
   const routeResolvePayload = parseToolTextPayload(routeResolveResult);
   if (
     routeResolvePayload.resolved !== true ||
     routeResolvePayload.kind !== "workflow" ||
-    routeResolvePayload.id !== "mobile"
+    routeResolvePayload.id !== "implement"
   ) {
     throw new Error("route_resolve failed explicit workflow resolution");
+  }
+
+  const stitchRouteResolveResult = await callTool({
+    endpointUrl: endpoint,
+    sessionId,
+    name: "route_resolve",
+    args: { intent: "use stitch to generate a marketing landing page hero UI" },
+  });
+  const stitchRoutePayload = parseToolTextPayload(stitchRouteResolveResult);
+  if (
+    stitchRoutePayload.resolved !== true ||
+    stitchRoutePayload.id !== "implement" ||
+    stitchRoutePayload.matchedBy !== "stitch-ui-intent" ||
+    stitchRoutePayload.primarySkillHint !== "frontend-design"
+  ) {
+    throw new Error("route_resolve failed Stitch UI intent routing");
+  }
+
+  const gatewayStatusResult = await callTool({
+    endpointUrl: endpoint,
+    sessionId,
+    name: "mcp_gateway_status",
+    args: {},
+  });
+  const gatewayStatusPayload = parseToolTextPayload(gatewayStatusResult);
+  if (!gatewayStatusPayload || typeof gatewayStatusPayload !== "object") {
+    throw new Error("mcp_gateway_status returned an invalid payload");
+  }
+
+  const postmanEnabledToolsResult = await callTool({
+    endpointUrl: endpoint,
+    sessionId,
+    name: "postman_list_enabled_tools",
+    args: {},
+  });
+  const postmanEnabledToolsPayload = parseToolTextPayload(
+    postmanEnabledToolsResult,
+  );
+  if (postmanEnabledToolsPayload?.provider !== "postman") {
+    throw new Error("postman_list_enabled_tools returned the wrong provider");
+  }
+
+  const stitchEnabledToolsResult = await callTool({
+    endpointUrl: endpoint,
+    sessionId,
+    name: "stitch_list_enabled_tools",
+    args: {},
+  });
+  const stitchEnabledToolsPayload = parseToolTextPayload(
+    stitchEnabledToolsResult,
+  );
+  if (stitchEnabledToolsPayload?.provider !== "stitch") {
+    throw new Error("stitch_list_enabled_tools returned the wrong provider");
   }
 
   const skillCreatorRouteResolveResult = await callTool({
@@ -253,7 +309,7 @@ async function main() {
   );
   if (
     skillCreatorRoutePayload.resolved !== true ||
-    skillCreatorRoutePayload.id !== "create" ||
+    skillCreatorRoutePayload.kind !== "workflow" ||
     skillCreatorRoutePayload.primarySkillHint !== "skill-creator"
   ) {
     throw new Error(
@@ -311,12 +367,12 @@ async function main() {
     endpointUrl: endpoint,
     sessionId,
     name: "route_resolve",
-    args: { intent: "research latest Claude Code hooks behavior" },
+    args: { intent: "@explorer" },
   });
   const researchRoutePayload = parseToolTextPayload(researchRouteResolveResult);
   if (
     researchRoutePayload.resolved !== true ||
-    researchRoutePayload.id !== "researcher" ||
+    researchRoutePayload.id !== "explorer" ||
     researchRoutePayload.primarySkillHint !== "deep-research"
   ) {
     throw new Error("route_resolve failed research escalation routing");
@@ -429,6 +485,7 @@ async function main() {
   console.log(`sessionId=${sessionId}`);
   console.log(`tools.total=${toolNames.length}`);
   console.log(`route_resolve.kind=${routeResolvePayload.kind}`);
+  console.log(`route_resolve.stitch=${stitchRoutePayload.matchedBy}`);
   console.log(`route_resolve.research=${researchRoutePayload.id}`);
   console.log(`tools.postman.namespaced=${namespacedPostman}`);
   console.log(`tools.stitch.namespaced=${namespacedStitch}`);

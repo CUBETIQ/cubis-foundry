@@ -20,6 +20,21 @@ export {
 } from "./registry.js";
 
 export {
+  mcpGatewayStatusName,
+  mcpGatewayStatusDescription,
+  mcpGatewayStatusSchema,
+  handleMcpGatewayStatus,
+  postmanListEnabledToolsName,
+  postmanListEnabledToolsDescription,
+  postmanListEnabledToolsSchema,
+  handlePostmanListEnabledTools,
+  stitchListEnabledToolsName,
+  stitchListEnabledToolsDescription,
+  stitchListEnabledToolsSchema,
+  handleStitchListEnabledTools,
+} from "./mcpGateway.js";
+
+export {
   routeResolveName,
   routeResolveDescription,
   routeResolveSchema,

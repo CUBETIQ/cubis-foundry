@@ -1,0 +1,40 @@
+{
+  "dataset": "token-language",
+  "version": 1,
+  "entries": [
+    {
+      "id": "semantic-role-first",
+      "source": [
+        "anthropic-front-end-lineage"
+      ],
+      "licenseStatus": "derived-foundry",
+      "platformScope": ["web", "mobile", "stitch"],
+      "applicability": ["all"],
+      "qualityTier": "high",
+      "notes": "Name tokens by semantic role first: surface, ink, accent, positive, warning, danger, quiet, border, ring."
+    },
+    {
+      "id": "tiered-surface-system",
+      "source": [
+        "https://impeccable.style/"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "mobile"],
+      "applicability": ["apps with cards, sheets, or dashboards"],
+      "qualityTier": "high",
+      "notes": "Keep 3-5 distinct surface elevations with clear border and shadow relationships instead of many arbitrary neutrals."
+    },
+    {
+      "id": "motion-token-pairs",
+      "source": [
+        "anthropic-front-end-lineage"
+      ],
+      "licenseStatus": "derived-foundry",
+      "platformScope": ["web", "mobile"],
+      "applicability": ["interactive apps"],
+      "qualityTier": "medium",
+      "notes": "Pair duration and easing tokens for tap, reveal, sheet, and page transitions so motion stays coherent."
+    }
+  ]
+}
+

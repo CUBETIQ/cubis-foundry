@@ -1,0 +1,40 @@
+{
+  "dataset": "motion-patterns",
+  "version": 1,
+  "entries": [
+    {
+      "id": "soft-enter-stagger",
+      "source": [
+        "https://impeccable.style/"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "mobile"],
+      "applicability": ["dashboard loads", "section reveals", "marketing surfaces"],
+      "qualityTier": "medium",
+      "notes": "Use short upward fades and restrained stagger to stage content without feeling gimmicky."
+    },
+    {
+      "id": "feedback-over-decoration",
+      "source": [
+        "anthropic-front-end-lineage"
+      ],
+      "licenseStatus": "derived-foundry",
+      "platformScope": ["web", "mobile", "stitch"],
+      "applicability": ["all"],
+      "qualityTier": "high",
+      "notes": "Prioritize motion for confirmation, focus changes, and continuity. Avoid decorative loops."
+    },
+    {
+      "id": "reduce-motion-safe-mode",
+      "source": [
+        "anthropic-front-end-lineage"
+      ],
+      "licenseStatus": "derived-foundry",
+      "platformScope": ["web", "mobile"],
+      "applicability": ["all"],
+      "qualityTier": "high",
+      "notes": "Every animated pattern should have a reduced-motion equivalent with zero hidden content dependencies."
+    }
+  ]
+}
+

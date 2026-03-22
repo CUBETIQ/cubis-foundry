@@ -22,7 +22,9 @@ Follow this decision tree for every user request:
 │       ├─ Valid? -> Load it and proceed. Stop.
 │       └─ Invalid/unavailable? -> Fall through. Do not guess.
 ├─ Is it explicit Stitch UI generation, screen editing, or "use Stitch" work?
-│   └─ Prefer /implement with a Stitch UI scope. Load `frontend-design` first, then the Stitch skill sequence. Stop.
+│   └─ Prefer /design-screen first. Resolve design state, then run the Stitch sequence only if still needed. Stop.
+├─ Is it explicit UI/UX/design-system work?
+│   └─ Prefer `/design-system`, `/design-screen`, `/design-audit`, or `/design-refresh` based on intent. Stop.
 ├─ Is it non-trivial work with requirements, traceability, or spec language?
 │   └─ Prefer /plan unless the user already chose another valid route. Stop.
 ├─ Is it bug, error, or failing test investigation?
@@ -58,7 +60,7 @@ Follow this decision tree for every user request:
 | Layer | What it is | When to use it | How to invoke | Example |
 | --- | --- | --- | --- | --- |
 | Direct execution | No routing needed | Small, clear, single-step tasks | Just do it | "rename this variable" |
-| Workflow | Multi-step recipe with verification | Structured task with known pattern | `/plan`, `/implement`, `/debug`, `/test`, `/review`, `/deploy`, `/loop` | "plan the auth system" |
+| Workflow | Multi-step recipe with verification | Structured task with known pattern | `/plan`, `/implement`, `/debug`, `/test`, `/review`, `/deploy`, `/loop`, `/design-system`, `/design-screen`, `/design-audit`, `/design-refresh` | "plan the auth system" |
 | Agent | Specialist persona with domain skills | Domain expertise needed for execution | `@implementer`, `@reviewer` | "design the API schema" |
 | Named skill | Exact skill selected by the user | User already named the skill and it validates cleanly | `skill_validate` -> `skill_get` | "use stitch for this screen" |
 | Skill (MCP) | Supporting domain knowledge | Domain context that a workflow or agent does not cover | `skill_get` after `skill_validate` | loading `typescript-best-practices` |
@@ -82,7 +84,7 @@ Skills are supporting context unless the user explicitly named the exact skill. 
 8. Load reference files one at a time with `skill_get_reference` only when a specific reference is needed.
 9. Do not auto-prime every specialist. Only load what `primarySkills` recommends or the task clearly needs.
 10. Never pass workflow IDs or agent IDs to skill tools.
-11. For Stitch UI work, use this order: `frontend-design` -> `stitch-prompt-enhancement` -> `stitch-design-system` when missing/stale/multi-screen -> `stitch-design-orchestrator` -> `stitch-implementation-handoff`.
+11. For Stitch UI work, use this order: `frontend-design` -> `frontend-design-core` -> `frontend-design-style-selector` -> `frontend-design-system` / `frontend-design-screen-brief` -> `stitch-prompt-enhancement` -> `stitch-design-system` when Stitch mirror sync is needed -> `stitch-design-orchestrator` -> `stitch-implementation-handoff`.
 
 ---
 
@@ -140,6 +142,10 @@ Use the smallest specialist set needed:
 | --- | --- | --- |
 | Plan a feature or architecture | `/plan` | `@explorer` -> `@planner` |
 | Build a feature end-to-end | `/implement` | `@implementer` |
+| Establish or refresh design foundations | `/design-system` | `@planner` -> `@implementer` |
+| Design a screen before generation or implementation | `/design-screen` | `@planner` -> `@implementer` |
+| Audit visual quality and design drift | `/design-audit` | `@reviewer` |
+| Refresh design state after product or UI direction changes | `/design-refresh` | `@implementer` |
 | Debug a complex issue | `/debug` | `@debugger` |
 | Write or improve tests | `/test` | `@tester` |
 | Code review + security audit | `/review` | `@reviewer` |

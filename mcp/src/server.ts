@@ -13,6 +13,7 @@ import type { ConfigScope } from "./cbxConfig/types.js";
 import type { VaultManifest } from "./vault/types.js";
 import type { RouteManifest } from "./routes/types.js";
 import { TOOL_REGISTRY, type ToolRuntimeContext } from "./tools/registry.js";
+import { GatewayManager } from "./gateway/manager.js";
 import {
   callUpstreamTool,
   discoverUpstreamCatalogs,
@@ -65,11 +66,15 @@ export async function createServer({
     version: config.server.version,
   });
 
+  const gatewayManager = new GatewayManager();
+  await gatewayManager.initialize(defaultConfigScope);
+
   // ─── Built-in tools from declarative registry ─────────────
 
   const runtimeCtx: ToolRuntimeContext = {
     manifest,
     routeManifest,
+    gatewayManager,
     charsPerToken: config.telemetry?.charsPerToken ?? 4,
     summaryMaxLength: config.vault.summaryMaxLength,
     defaultConfigScope,

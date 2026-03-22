@@ -233,8 +233,36 @@ function createStitchRouteManifest(): RouteManifest {
     $schema: "cubis-foundry-route-manifest-v1",
     generatedAt: new Date(0).toISOString(),
     contentHash: "stitch-test",
-    summary: { totalRoutes: 1, workflows: 1, agents: 0 },
+    summary: { totalRoutes: 2, workflows: 2, agents: 0 },
     routes: [
+      {
+        kind: "workflow",
+        id: "design-screen",
+        command: "/design-screen",
+        displayName: "Design Screen Workflow",
+        description: "Resolve the design engine before Stitch or implementation",
+        triggers: ["design screen", "ui design", "stitch"],
+        primaryAgent: "implementer",
+        supportingAgents: ["explorer", "planner"],
+        primarySkills: [
+          "frontend-design",
+          "frontend-design-core",
+          "frontend-design-style-selector",
+          "frontend-design-screen-brief",
+        ],
+        supportingSkills: [
+          "stitch-prompt-enhancement",
+          "stitch-design-orchestrator",
+          "stitch-design-system",
+          "stitch-implementation-handoff",
+        ],
+        artifacts: {
+          codex: { compatibilityAlias: "$workflow-design-screen", workflowFile: "design-screen.md" },
+          copilot: { workflowFile: "design-screen.md", promptFile: "design-screen.prompt.md" },
+          antigravity: { workflowFile: "design-screen.md", commandFile: "design-screen.toml" },
+          claude: { workflowFile: "design-screen.md" },
+        },
+      },
       {
         kind: "workflow",
         id: "implement",
@@ -674,7 +702,7 @@ describe("skill tools", () => {
     expect(["trigger-match", "intent-match"]).toContain(result.matchedBy);
   });
 
-  it("routes Stitch UI intent to implement with the Stitch skill sequence", async () => {
+  it("routes Stitch UI intent to design-screen with the design-first Stitch skill sequence", async () => {
     const result = payload(
       await handleRouteResolve(
         { intent: "use Stitch to generate a dashboard screen" },
@@ -684,13 +712,50 @@ describe("skill tools", () => {
     expect(result).toMatchObject({
       resolved: true,
       kind: "workflow",
-      id: "implement",
-      command: "/implement",
+      id: "design-screen",
+      command: "/design-screen",
       primarySkillHint: "frontend-design",
       matchedBy: "stitch-ui-intent",
     });
     expect(result.primarySkills).toEqual([
       "frontend-design",
+      "frontend-design-core",
+      "frontend-design-style-selector",
+      "frontend-design-system",
+      "frontend-design-screen-brief",
+      "stitch-prompt-enhancement",
+      "stitch-design-orchestrator",
+      "stitch-design-system",
+      "stitch-implementation-handoff",
+    ]);
+  });
+
+  it("routes flutter ecommerce stitch intent through design-screen with mobile design skills", async () => {
+    const result = payload(
+      await handleRouteResolve(
+        {
+          intent:
+            "design a flutter fashion ecommerce app with Stitch and Android MCP",
+        },
+        createStitchRouteManifest(),
+      ),
+    );
+    expect(result).toMatchObject({
+      resolved: true,
+      kind: "workflow",
+      id: "design-screen",
+      command: "/design-screen",
+      primarySkillHint: "frontend-design",
+      matchedBy: "stitch-ui-intent",
+    });
+    expect(result.primarySkills).toEqual([
+      "frontend-design",
+      "frontend-design-mobile-patterns",
+      "frontend-design-implementation-handoff",
+      "frontend-design-core",
+      "frontend-design-style-selector",
+      "frontend-design-system",
+      "frontend-design-screen-brief",
       "stitch-prompt-enhancement",
       "stitch-design-orchestrator",
       "stitch-design-system",

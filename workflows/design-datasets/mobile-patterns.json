@@ -1,0 +1,40 @@
+{
+  "dataset": "mobile-patterns",
+  "version": 1,
+  "entries": [
+    {
+      "id": "thumb-zone-primary-actions",
+      "source": [
+        "anthropic-front-end-lineage"
+      ],
+      "licenseStatus": "derived-foundry",
+      "platformScope": ["mobile"],
+      "applicability": ["flutter", "android", "ios"],
+      "qualityTier": "high",
+      "notes": "Primary actions should sit in the lower third or be reachable via bottom sheets and pinned footers."
+    },
+    {
+      "id": "glanceable-progress-clusters",
+      "source": [
+        "https://impeccable.style/"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["mobile", "stitch"],
+      "applicability": ["habit", "wellness", "fitness", "progress apps"],
+      "qualityTier": "high",
+      "notes": "Group metrics into small clusters that answer streak, momentum, and next action at a glance."
+    },
+    {
+      "id": "guided-onboarding-steps",
+      "source": [
+        "anthropic-front-end-lineage"
+      ],
+      "licenseStatus": "derived-foundry",
+      "platformScope": ["mobile", "stitch"],
+      "applicability": ["onboarding", "setup", "habit coaching"],
+      "qualityTier": "medium",
+      "notes": "Use one decision per screen, progress framing, and short explanatory copy tied to immediate action."
+    }
+  ]
+}
+

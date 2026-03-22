@@ -2,10 +2,10 @@
   "$schema": "cubis-foundry-skill-catalog-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
   "summary": {
-    "totalEntries": 49,
-    "totalSkills": 49,
+    "totalEntries": 55,
+    "totalSkills": 55,
     "totalSubskills": 0,
-    "canonicalSkills": 48,
+    "canonicalSkills": 54,
     "compatibilityAliases": 1,
     "layers": [
       "compatibility",
@@ -443,6 +443,218 @@
         "frontend",
         "design",
         "frameworks-runtimes"
+      ]
+    },
+    {
+      "id": "frontend-design-core",
+      "package_id": "frontend-design-core",
+      "catalog_id": "frontend-design-core",
+      "kind": "skill",
+      "path": "workflows/skills/frontend-design-core/SKILL.md",
+      "name": "frontend-design-core",
+      "description": "Establish the design-engine execution order, canonical design-state model, and the repo-first constraints for serious frontend or mobile design work.",
+      "canonical": true,
+      "canonical_id": "frontend-design-core",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "stable",
+      "tier": "system",
+      "tags": [
+        "core",
+        "design",
+        "frontend",
+        "frontend design core",
+        "frontend-design-core",
+        "workflow-specialists"
+      ],
+      "triggers": [
+        "frontend-design-core",
+        "frontend design core",
+        "frontend",
+        "design",
+        "core",
+        "workflow-specialists"
+      ]
+    },
+    {
+      "id": "frontend-design-implementation-handoff",
+      "package_id": "frontend-design-implementation-handoff",
+      "catalog_id": "frontend-design-implementation-handoff",
+      "kind": "skill",
+      "path": "workflows/skills/frontend-design-implementation-handoff/SKILL.md",
+      "name": "frontend-design-implementation-handoff",
+      "description": "Translate design-engine output into repo-native implementation work, preferring real components, Flutter widgets, and existing tokens over pasted generated markup.",
+      "canonical": true,
+      "canonical_id": "frontend-design-implementation-handoff",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "stable",
+      "tier": "system",
+      "tags": [
+        "design",
+        "frontend",
+        "frontend design implementation handoff",
+        "frontend-design-implementation-handoff",
+        "handoff",
+        "implementation",
+        "workflow-specialists"
+      ],
+      "triggers": [
+        "frontend-design-implementation-handoff",
+        "frontend design implementation handoff",
+        "frontend",
+        "design",
+        "implementation",
+        "handoff",
+        "workflow-specialists"
+      ]
+    },
+    {
+      "id": "frontend-design-mobile-patterns",
+      "package_id": "frontend-design-mobile-patterns",
+      "catalog_id": "frontend-design-mobile-patterns",
+      "kind": "skill",
+      "path": "workflows/skills/frontend-design-mobile-patterns/SKILL.md",
+      "name": "frontend-design-mobile-patterns",
+      "description": "Adapt the design engine to mobile and Flutter surfaces using Foundry's normalized mobile-pattern dataset and implementation-first constraints.",
+      "canonical": true,
+      "canonical_id": "frontend-design-mobile-patterns",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "stable",
+      "tier": "system",
+      "tags": [
+        "design",
+        "frontend",
+        "frontend design mobile patterns",
+        "frontend-design-mobile-patterns",
+        "mobile",
+        "patterns",
+        "workflow-specialists"
+      ],
+      "triggers": [
+        "frontend-design-mobile-patterns",
+        "frontend design mobile patterns",
+        "frontend",
+        "design",
+        "mobile",
+        "patterns",
+        "workflow-specialists"
+      ]
+    },
+    {
+      "id": "frontend-design-screen-brief",
+      "package_id": "frontend-design-screen-brief",
+      "catalog_id": "frontend-design-screen-brief",
+      "kind": "skill",
+      "path": "workflows/skills/frontend-design-screen-brief/SKILL.md",
+      "name": "frontend-design-screen-brief",
+      "description": "Turn canonical design state plus overlays into a compact, high-signal screen brief for Stitch, frontend implementation, or Flutter/mobile work.",
+      "canonical": true,
+      "canonical_id": "frontend-design-screen-brief",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "stable",
+      "tier": "system",
+      "tags": [
+        "brief",
+        "design",
+        "frontend",
+        "frontend design screen brief",
+        "frontend-design-screen-brief",
+        "screen",
+        "workflow-specialists"
+      ],
+      "triggers": [
+        "frontend-design-screen-brief",
+        "frontend design screen brief",
+        "frontend",
+        "design",
+        "screen",
+        "brief",
+        "workflow-specialists"
+      ]
+    },
+    {
+      "id": "frontend-design-style-selector",
+      "package_id": "frontend-design-style-selector",
+      "catalog_id": "frontend-design-style-selector",
+      "kind": "skill",
+      "path": "workflows/skills/frontend-design-style-selector/SKILL.md",
+      "name": "frontend-design-style-selector",
+      "description": "Select a non-generic visual direction from Foundry's normalized design datasets and align it to the product's domain, audience, and platform.",
+      "canonical": true,
+      "canonical_id": "frontend-design-style-selector",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "stable",
+      "tier": "system",
+      "tags": [
+        "design",
+        "frontend",
+        "frontend design style selector",
+        "frontend-design-style-selector",
+        "selector",
+        "style",
+        "workflow-specialists"
+      ],
+      "triggers": [
+        "frontend-design-style-selector",
+        "frontend design style selector",
+        "frontend",
+        "design",
+        "style",
+        "selector",
+        "workflow-specialists"
+      ]
+    },
+    {
+      "id": "frontend-design-system",
+      "package_id": "frontend-design-system",
+      "catalog_id": "frontend-design-system",
+      "kind": "skill",
+      "path": "workflows/skills/frontend-design-system/SKILL.md",
+      "name": "frontend-design-system",
+      "description": "Build or refresh the canonical design-system state for a repo, including DESIGN.md, overlays, token language, and platform-specific adaptation notes.",
+      "canonical": true,
+      "canonical_id": "frontend-design-system",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "stable",
+      "tier": "system",
+      "tags": [
+        "design",
+        "frontend",
+        "frontend design system",
+        "frontend-design-system",
+        "system",
+        "workflow-specialists"
+      ],
+      "triggers": [
+        "frontend-design-system",
+        "frontend design system",
+        "frontend",
+        "design",
+        "system",
+        "workflow-specialists"
       ]
     },
     {
@@ -1593,5 +1805,5 @@
       ]
     }
   ],
-  "contentHash": "3b5f3fb5b2355e65"
+  "contentHash": "1b0f05c11380e9c1"
 }

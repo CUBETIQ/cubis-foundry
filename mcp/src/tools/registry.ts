@@ -16,6 +16,7 @@ import type { ToolCallback } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { VaultManifest } from "../vault/types.js";
 import type { RouteManifest } from "../routes/types.js";
 import type { ConfigScope } from "../cbxConfig/types.js";
+import type { GatewayManager } from "../gateway/manager.js";
 
 // ─── Core types ─────────────────────────────────────────────
 
@@ -24,7 +25,8 @@ export type ToolCategory =
   | "route"
   | "postman"
   | "stitch"
-  | "playwright";
+  | "playwright"
+  | "gateway";
 
 export interface ToolRegistryEntry {
   /** Tool name exposed to MCP clients. */
@@ -47,6 +49,7 @@ export interface ToolRegistryEntry {
 export interface ToolRuntimeContext {
   manifest: VaultManifest;
   routeManifest: RouteManifest;
+  gatewayManager: GatewayManager;
   charsPerToken: number;
   summaryMaxLength: number;
   defaultConfigScope: ConfigScope | "auto";
@@ -159,6 +162,21 @@ import {
   handlePlaywrightGetStatus,
 } from "./playwrightGetStatus.js";
 
+import {
+  mcpGatewayStatusName,
+  mcpGatewayStatusDescription,
+  mcpGatewayStatusSchema,
+  handleMcpGatewayStatus,
+  postmanListEnabledToolsName,
+  postmanListEnabledToolsDescription,
+  postmanListEnabledToolsSchema,
+  handlePostmanListEnabledTools,
+  stitchListEnabledToolsName,
+  stitchListEnabledToolsDescription,
+  stitchListEnabledToolsSchema,
+  handleStitchListEnabledTools,
+} from "./mcpGateway.js";
+
 // ─── Scope helper ───────────────────────────────────────────
 
 function withDefaultScope(
@@ -187,6 +205,31 @@ export const TOOL_REGISTRY: readonly ToolRegistryEntry[] = [
         args as z.infer<typeof routeResolveSchema>,
         ctx.routeManifest,
       ),
+  },
+
+  // ── Gateway helper tools ──────────────────────────────────
+  {
+    name: mcpGatewayStatusName,
+    description: mcpGatewayStatusDescription,
+    schema: mcpGatewayStatusSchema,
+    category: "gateway",
+    createHandler: (ctx) => async () => handleMcpGatewayStatus(ctx.gatewayManager),
+  },
+  {
+    name: postmanListEnabledToolsName,
+    description: postmanListEnabledToolsDescription,
+    schema: postmanListEnabledToolsSchema,
+    category: "gateway",
+    createHandler: (ctx) => async () =>
+      handlePostmanListEnabledTools(ctx.gatewayManager),
+  },
+  {
+    name: stitchListEnabledToolsName,
+    description: stitchListEnabledToolsDescription,
+    schema: stitchListEnabledToolsSchema,
+    category: "gateway",
+    createHandler: (ctx) => async () =>
+      handleStitchListEnabledTools(ctx.gatewayManager),
   },
 
   // ── Skill vault tools ─────────────────────────────────────

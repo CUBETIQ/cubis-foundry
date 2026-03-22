@@ -5,6 +5,7 @@
 import type { ConfigScope } from "../cbxConfig/types.js";
 
 export type UpstreamProvider = "postman" | "stitch" | "playwright";
+export type GatewayScope = ConfigScope | "auto";
 
 export interface UpstreamTool {
   name: string;

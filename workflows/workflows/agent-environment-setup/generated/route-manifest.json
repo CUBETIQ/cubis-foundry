@@ -1,10 +1,10 @@
 {
   "$schema": "./cubis-foundry-route-manifest-v2.schema.json",
   "generatedAt": "1970-01-01T00:00:00.000Z",
-  "contentHash": "1b95532726e6cce1",
+  "contentHash": "71e5be8ac72b1094",
   "summary": {
-    "totalRoutes": 14,
-    "workflows": 7,
+    "totalRoutes": 18,
+    "workflows": 11,
     "agents": 7
   },
   "routes": [
@@ -363,6 +363,220 @@
         "gemini": {
           "target": "command",
           "commandFile": "deploy.toml"
+        }
+      }
+    },
+    {
+      "kind": "workflow",
+      "id": "design-audit",
+      "command": "/design-audit",
+      "displayName": "design-audit",
+      "description": "Audit an existing interface against the design engine, token language, accessibility, and anti-generic UI constraints.",
+      "triggers": [
+        "design audit",
+        "ui audit",
+        "ux audit",
+        "design review",
+        "visual audit",
+        "frontend polish"
+      ],
+      "primaryAgent": "explorer",
+      "supportingAgents": [
+        "reviewer"
+      ],
+      "primarySkills": [
+        "frontend-design",
+        "frontend-design-core"
+      ],
+      "supportingSkills": [
+        "frontend-design-style-selector",
+        "frontend-design-mobile-patterns",
+        "code-review"
+      ],
+      "artifacts": {
+        "codex": {
+          "target": "skill",
+          "skillDir": "design-audit"
+        },
+        "copilot": {
+          "target": "prompt",
+          "promptFile": "design-audit.prompt.md"
+        },
+        "antigravity": {
+          "target": "command",
+          "commandFile": "design-audit.toml"
+        },
+        "claude": {
+          "target": "skill",
+          "skillDir": "design-audit"
+        },
+        "gemini": {
+          "target": "command",
+          "commandFile": "design-audit.toml"
+        }
+      }
+    },
+    {
+      "kind": "workflow",
+      "id": "design-refresh",
+      "command": "/design-refresh",
+      "displayName": "design-refresh",
+      "description": "Refresh design state and implementation surfaces after product direction, design tokens, or major UI structure changes.",
+      "triggers": [
+        "design refresh",
+        "refresh design",
+        "refresh tokens",
+        "update design system",
+        "design drift"
+      ],
+      "primaryAgent": "explorer",
+      "supportingAgents": [
+        "planner",
+        "implementer",
+        "reviewer"
+      ],
+      "primarySkills": [
+        "frontend-design",
+        "frontend-design-core",
+        "frontend-design-system"
+      ],
+      "supportingSkills": [
+        "frontend-design-style-selector",
+        "frontend-design-screen-brief",
+        "stitch-design-system",
+        "tech-doc"
+      ],
+      "artifacts": {
+        "codex": {
+          "target": "skill",
+          "skillDir": "design-refresh"
+        },
+        "copilot": {
+          "target": "prompt",
+          "promptFile": "design-refresh.prompt.md"
+        },
+        "antigravity": {
+          "target": "command",
+          "commandFile": "design-refresh.toml"
+        },
+        "claude": {
+          "target": "skill",
+          "skillDir": "design-refresh"
+        },
+        "gemini": {
+          "target": "command",
+          "commandFile": "design-refresh.toml"
+        }
+      }
+    },
+    {
+      "kind": "workflow",
+      "id": "design-screen",
+      "command": "/design-screen",
+      "displayName": "design-screen",
+      "description": "Resolve the design engine first, produce a high-signal screen brief, then optionally hand off to Stitch or implementation.",
+      "triggers": [
+        "design screen",
+        "screen design",
+        "ui design",
+        "ux design",
+        "landing page design",
+        "mobile screen",
+        "stitch",
+        "redesign ui"
+      ],
+      "primaryAgent": "explorer",
+      "supportingAgents": [
+        "planner",
+        "implementer"
+      ],
+      "primarySkills": [
+        "frontend-design",
+        "frontend-design-core",
+        "frontend-design-style-selector",
+        "frontend-design-screen-brief"
+      ],
+      "supportingSkills": [
+        "frontend-design-mobile-patterns",
+        "stitch-prompt-enhancement",
+        "stitch-design-system",
+        "stitch-design-orchestrator",
+        "frontend-design-implementation-handoff",
+        "stitch-implementation-handoff"
+      ],
+      "artifacts": {
+        "codex": {
+          "target": "skill",
+          "skillDir": "design-screen"
+        },
+        "copilot": {
+          "target": "prompt",
+          "promptFile": "design-screen.prompt.md"
+        },
+        "antigravity": {
+          "target": "command",
+          "commandFile": "design-screen.toml"
+        },
+        "claude": {
+          "target": "skill",
+          "skillDir": "design-screen"
+        },
+        "gemini": {
+          "target": "command",
+          "commandFile": "design-screen.toml"
+        }
+      }
+    },
+    {
+      "kind": "workflow",
+      "id": "design-system",
+      "command": "/design-system",
+      "displayName": "design-system",
+      "description": "Establish or refresh canonical design state, token language, overlays, and Stitch compatibility before implementation.",
+      "triggers": [
+        "design-system",
+        "design language",
+        "token system",
+        "design tokens",
+        "theme system",
+        "design foundation"
+      ],
+      "primaryAgent": "explorer",
+      "supportingAgents": [
+        "planner",
+        "implementer"
+      ],
+      "primarySkills": [
+        "frontend-design",
+        "frontend-design-core",
+        "frontend-design-style-selector",
+        "frontend-design-system"
+      ],
+      "supportingSkills": [
+        "frontend-design-mobile-patterns",
+        "stitch-design-system",
+        "tech-doc"
+      ],
+      "artifacts": {
+        "codex": {
+          "target": "skill",
+          "skillDir": "design-system"
+        },
+        "copilot": {
+          "target": "prompt",
+          "promptFile": "design-system.prompt.md"
+        },
+        "antigravity": {
+          "target": "command",
+          "commandFile": "design-system.toml"
+        },
+        "claude": {
+          "target": "skill",
+          "skillDir": "design-system"
+        },
+        "gemini": {
+          "target": "command",
+          "commandFile": "design-system.toml"
         }
       }
     },
