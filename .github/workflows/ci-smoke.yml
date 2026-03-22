@@ -28,5 +28,17 @@ jobs:
       - name: Install smoke test dependencies
         run: sudo apt-get update && sudo apt-get install -y ripgrep expect
 
-      - name: Run CI validation suite
-        run: npm run test:ci
+      - name: Check generated assets
+        run: npm run check:generated-assets
+
+      - name: Validate attributes
+        run: npm run test:attributes
+
+      - name: Validate CLI help
+        run: npm run test:cli-help
+
+      - name: Validate build architecture
+        run: npm run test:build-architecture
+
+      - name: Run smoke workflows
+        run: npm run test:smoke
