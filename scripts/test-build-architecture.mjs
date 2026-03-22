@@ -643,10 +643,19 @@ async function main() {
       mkdtempSync(path.join(os.tmpdir(), "cbx-empty-path-")),
     );
     const missingRun = await runCli(
-      ["build", "architecture", "--platform", "copilot", "--dry-run"],
+      ["build", "architecture", "--platform", "copilot", "--dry-run", "--json"],
       { cwd: workspace, env: missingEnv },
     );
-    assert(missingRun.status !== 0, "missing copilot runtime should fail");
+    assert(
+      missingRun.status === 0,
+      `missing-runtime dry-run should still succeed: ${missingRun.stderr}`,
+    );
+    const missingDryRunJson = parseJsonOutput(missingRun.stdout);
+    assert(
+      Array.isArray(missingDryRunJson.invocation) &&
+        missingDryRunJson.invocation[0] === "copilot",
+      "missing-runtime dry-run should still emit the planned copilot invocation",
+    );
 
     const geminiFailRun = await runCli(
       ["build", "architecture", "--platform", "gemini"],
