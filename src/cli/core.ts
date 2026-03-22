@@ -13542,6 +13542,35 @@ async function probeArchitectureAdapter(platform, cwd) {
   };
 }
 
+function buildArchitectureDryRunPlan(platform, prompt) {
+  if (platform === "codex") {
+    return {
+      adapter: "codex",
+      invocation: ["codex", "exec", prompt],
+    };
+  }
+
+  if (platform === "claude") {
+    return {
+      adapter: "claude",
+      invocation: ["claude", "--print", prompt],
+    };
+  }
+
+  if (platform === "gemini" || platform === "antigravity") {
+    return {
+      adapter: "gemini",
+      invocation: ["gemini", "--prompt", prompt],
+    };
+  }
+
+  return {
+    adapter: "copilot",
+    invocation: ["copilot", "chat", "--prompt", prompt],
+  };
+}
+
+
 function normalizeArchitectureResult({
   stdout,
   workspaceRoot,
@@ -13938,23 +13967,24 @@ async function executeContextGeneration(options) {
     conditionalSkills,
     skillPathHints,
   });
-  const adapter = await probeArchitectureAdapter(platform, workspaceRoot);
-  const args = adapter.buildInvocation(prompt);
   const managedTargets = managedFilePaths.map((filePath) => toPosixPath(filePath));
 
   if (dryRun) {
+    const dryRunPlan = buildArchitectureDryRunPlan(platform, prompt);
     return {
       mode: "dry-run",
       platform,
       researchMode,
       workspaceRoot: toPosixPath(workspaceRoot),
-      adapter: adapter.binary,
-      invocation: [adapter.binary, ...args],
+      adapter: dryRunPlan.adapter,
+      invocation: dryRunPlan.invocation,
       managedTargets,
       skillBundle,
     };
   }
 
+  const adapter = await probeArchitectureAdapter(platform, workspaceRoot);
+  const args = adapter.buildInvocation(prompt);
   const filesBefore = await captureFileContents(managedFilePaths);
   const scaffold = await ensureArchitectureBuildScaffold({
     workspaceRoot,
