@@ -8,8 +8,8 @@ Execution contract:
 1. Treat route selection as already resolved by this command; do not begin with skill discovery.
 2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.
 Attached skills:
-- Load these exact skill IDs first: `unit-testing`, `integration-testing`, `deep-research`, `playwright-interactive`, `flutter-mobile-qa`, `code-review`.
-- Local skill file hints if installed: `.agents/skills/unit-testing/SKILL.md`, `.agents/skills/integration-testing/SKILL.md`, `.agents/skills/deep-research/SKILL.md`, `.agents/skills/playwright-interactive/SKILL.md`, `.agents/skills/flutter-mobile-qa/SKILL.md`, `.agents/skills/code-review/SKILL.md`.
+- Load these exact skill IDs first: `unit-testing`, `integration-testing`, `deep-research`, `playwright-interactive`, `playwright-web-qa`, `flutter-mobile-qa`, `code-review`.
+- Local skill file hints if installed: `.agents/skills/unit-testing/SKILL.md`, `.agents/skills/integration-testing/SKILL.md`, `.agents/skills/deep-research/SKILL.md`, `.agents/skills/playwright-interactive/SKILL.md`, `.agents/skills/playwright-web-qa/SKILL.md`, `.agents/skills/flutter-mobile-qa/SKILL.md`, `.agents/skills/code-review/SKILL.md`.
 - Treat the skill bundle as already resolved for this workflow. Do not start with route discovery.
 3. Confirm the request fits the workflow's "When to use" section before acting.
 4. Execute according to "Workflow steps" and apply "Context notes".
@@ -37,7 +37,7 @@ Use when adding tests, fixing test failures, or improving test coverage for exis
 ## Skill Routing
 
 - Primary skills: `unit-testing`, `integration-testing`
-- Supporting skills (optional): `deep-research`, `playwright-interactive`, `flutter-mobile-qa`, `code-review`
+- Supporting skills (optional): `deep-research`, `playwright-interactive`, `playwright-web-qa`, `flutter-mobile-qa`, `code-review`
 
 ## Context notes
 

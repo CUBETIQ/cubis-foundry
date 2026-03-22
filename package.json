@@ -1,6 +1,6 @@
 {
   "name": "@cubis/foundry",
-  "version": "0.3.83",
+  "version": "0.3.84",
   "description": "Cubis Foundry CLI for workflow-first AI agent environments",
   "type": "module",
   "bin": {
@@ -14,6 +14,7 @@
     "!workflows/workflows/agent-environment-setup/platforms/*/skills/**/evals",
     "!workflows/workflows/agent-environment-setup/platforms/*/skills/**/evals/**",
     "mcp/dist",
+    "mcp/runtime",
     "mcp/generated",
     "mcp/config.json",
     "mcp/package.json",
@@ -72,8 +73,9 @@
     "generate:powers:force": "node \"workflows/scripts/generate-powers.mjs\" --force",
     "generate:powers:from-skills": "node \"workflows/scripts/generate-powers.mjs\" --from-skills",
     "generate:powers:sync": "node \"workflows/scripts/generate-powers.mjs\" --sync-skills --force",
-    "build:cli": "rm -rf dist/cli && tsc -p tsconfig.cli.json && npm run build:mcp",
-    "clean:cli": "rm -rf dist/cli",
+    "build:cli": "node scripts/clean-cli.mjs && tsc -p tsconfig.cli.json && npm run build:mcp",
+    "clean:cli": "node scripts/clean-cli.mjs",
+    "check:mcp-build-freshness": "node scripts/validate-mcp-build-freshness.mjs",
     "prepack": "npm run build:cli && npm run check:skills-index && npm run check:skill-catalog"
   },
   "engines": {

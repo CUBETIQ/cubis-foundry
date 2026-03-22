@@ -170,6 +170,18 @@ const MOBILE_DESIGN_SUPPORTING_SKILLS = [
   "frontend-design-mobile-patterns",
   "frontend-design-implementation-handoff",
 ];
+const MOBILE_QA_SIGNALS = [
+  "mobile qa",
+  "android qa",
+  "flutter qa",
+  "emulator qa",
+];
+const WEB_QA_SIGNALS = [
+  "web qa",
+  "browser qa",
+  "playwright qa",
+  "website qa",
+];
 
 function normalize(value: string): string {
   return value.toLowerCase().replace(/[^a-z0-9@/$+-]+/g, " ").trim();
@@ -430,6 +442,32 @@ function chooseStitchUiRoute(manifest: RouteManifest): RouteEntry | null {
   );
 }
 
+function chooseQaRoute(intent: string, manifest: RouteManifest): RouteEntry | null {
+  const normalizedIntent = normalize(intent);
+  const wantsMobileQa =
+    includesAnyPhrase(normalizedIntent, MOBILE_QA_SIGNALS) ||
+    (/\b(android|flutter|emulator|adb)\b/.test(normalizedIntent) && /\b(test|qa|verify|validation)\b/.test(normalizedIntent));
+  if (wantsMobileQa) {
+    return (
+      manifest.routes.find(
+        (entry) => entry.kind === "workflow" && entry.id === "mobile-qa",
+      ) || null
+    );
+  }
+
+  const wantsWebQa =
+    includesAnyPhrase(normalizedIntent, WEB_QA_SIGNALS) ||
+    (/\b(playwright|browser|web|website|page|pages)\b/.test(normalizedIntent) && /\b(test|qa|verify|validation)\b/.test(normalizedIntent));
+  if (wantsWebQa) {
+    return (
+      manifest.routes.find(
+        (entry) => entry.kind === "workflow" && entry.id === "web-qa",
+      ) || null
+    );
+  }
+
+  return null;
+}
 function chooseDesignRoute(intent: string, manifest: RouteManifest): RouteEntry | null {
   const normalizedIntent = normalize(intent);
   let preferredWorkflowId = "design-screen";
@@ -511,6 +549,32 @@ export async function handleRouteResolve(
       skillCreatorRoute,
       "skill-creator-intent",
       detectedLanguageSkill,
+    );
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify(payload, null, 2) }],
+      structuredContent: payload,
+    };
+  }
+
+  const qaRoute = chooseQaRoute(intent, routeManifest);
+  if (qaRoute) {
+    const payload = buildResolvedPayload(
+      intent,
+      qaRoute,
+      "qa-runtime-intent",
+      detectedLanguageSkill,
+      {
+        primarySkillHint: qaRoute.id === "web-qa" ? "playwright-web-qa" : "flutter-mobile-qa",
+        primarySkills:
+          qaRoute.id === "web-qa"
+            ? ["playwright-web-qa", "playwright-interactive"]
+            : ["flutter-mobile-qa"],
+        supportingSkills: qaRoute.supportingSkills,
+        explanation:
+          qaRoute.id === "web-qa"
+            ? "Matched web QA intent and routed to /web-qa so Playwright MCP execution, evidence capture, and QA reporting stay on the dedicated web runtime path."
+            : "Matched mobile QA intent and routed to /mobile-qa so Android MCP execution, emulator evidence capture, and fallback rules stay on the dedicated mobile runtime path.",
+      },
     );
     return {
       content: [{ type: "text" as const, text: JSON.stringify(payload, null, 2) }],
@@ -631,3 +695,4 @@ export async function handleRouteResolve(
     structuredContent: payload,
   };
 }
+

@@ -2,10 +2,10 @@
   "$schema": "cubis-foundry-skill-catalog-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
   "summary": {
-    "totalEntries": 55,
-    "totalSkills": 55,
+    "totalEntries": 56,
+    "totalSkills": 56,
     "totalSubskills": 0,
-    "canonicalSkills": 54,
+    "canonicalSkills": 55,
     "compatibilityAliases": 1,
     "layers": [
       "compatibility",
@@ -386,7 +386,7 @@
       "kind": "skill",
       "path": "workflows/skills/flutter-mobile-qa/SKILL.md",
       "name": "flutter-mobile-qa",
-      "description": "Use when planning or running Flutter mobile QA with an Android emulator, ADB-backed MCP tooling, screenshot/UI-tree evidence, logcat triage, and structured test reporting.",
+      "description": "Use when planning or running Flutter mobile QA with Android MCP as the primary device path, explicit ADB fallback, screenshot/UI-tree evidence, logcat triage, and structured test reporting.",
       "canonical": true,
       "canonical_id": "flutter-mobile-qa",
       "deprecated": false,
@@ -1106,6 +1106,40 @@
       ]
     },
     {
+      "id": "playwright-web-qa",
+      "package_id": "playwright-web-qa",
+      "catalog_id": "playwright-web-qa",
+      "kind": "skill",
+      "path": "workflows/skills/playwright-web-qa/SKILL.md",
+      "name": "playwright-web-qa",
+      "description": "Use when running charter-driven web QA through Playwright MCP with deterministic evidence, runtime traces, and report-ready browser artifacts.",
+      "canonical": true,
+      "canonical_id": "playwright-web-qa",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "playwright",
+        "playwright web qa",
+        "playwright-web-qa",
+        "qa",
+        "web",
+        "workflow-specialists"
+      ],
+      "triggers": [
+        "playwright-web-qa",
+        "playwright web qa",
+        "playwright",
+        "web",
+        "qa",
+        "workflow-specialists"
+      ]
+    },
+    {
       "id": "prisma",
       "package_id": "prisma",
       "catalog_id": "prisma",
@@ -1805,5 +1839,5 @@
       ]
     }
   ],
-  "contentHash": "1b0f05c11380e9c1"
+  "contentHash": "edbd8c1d2ca157f4"
 }

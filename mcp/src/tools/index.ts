@@ -131,3 +131,29 @@ export {
   stitchGetStatusSchema,
   handleStitchGetStatus,
 } from "./stitchGetStatus.js";
+
+export {
+  stitchExecuteName,
+  stitchExecuteDescription,
+  stitchExecuteSchema,
+  createStitchExecuteHandler,
+  handleStitchExecute,
+} from "./stitchExecute.js";
+
+export {
+  mobileQaRunName,
+  mobileQaRunDescription,
+  mobileQaRunSchema,
+  createMobileQaRunHandler,
+  handleMobileQaRun,
+} from "./mobileQaRun.js";
+
+export {
+  webQaRunName,
+  webQaRunDescription,
+  webQaRunSchema,
+  createWebQaRunHandler,
+  handleWebQaRun,
+} from "./webQaRun.js";
+
+

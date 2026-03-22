@@ -2,13 +2,14 @@
  * Cubis Foundry MCP Server – upstream gateway config resolution.
  */
 
-import { readEffectiveConfig } from "../cbxConfig/index.js";
+import { parseAndroidState, readEffectiveConfig } from "../cbxConfig/index.js";
 import type {
   ConfigScope,
   ServiceProfile,
   PostmanConfig,
   StitchConfig,
   PlaywrightConfig,
+  AndroidConfig,
 } from "../cbxConfig/types.js";
 import type { UpstreamConfig, UpstreamProvider } from "./types.js";
 
@@ -118,9 +119,14 @@ function buildPostmanConfig(
     );
     return {
       provider: "postman",
+      transport: "http",
       mcpUrl,
       authHeader: null,
       authEnvVar: null,
+      command: null,
+      args: [],
+      env: {},
+      cwd: null,
       scope,
       configPath,
       warnings,
@@ -132,9 +138,14 @@ function buildPostmanConfig(
     warnings.push(`Postman auth env var \"${authEnvVar}\" is not set.`);
     return {
       provider: "postman",
+      transport: "http",
       mcpUrl,
       authHeader: null,
       authEnvVar,
+      command: null,
+      args: [],
+      env: {},
+      cwd: null,
       scope,
       configPath,
       warnings,
@@ -143,9 +154,14 @@ function buildPostmanConfig(
 
   return {
     provider: "postman",
+    transport: "http",
     mcpUrl,
     authHeader: { Authorization: `Bearer ${token}` },
     authEnvVar,
+    command: null,
+    args: [],
+    env: {},
+    cwd: null,
     scope,
     configPath,
     warnings,
@@ -183,9 +199,14 @@ function buildStitchConfig(
     );
     return {
       provider: "stitch",
+      transport: "http",
       mcpUrl,
       authHeader: null,
       authEnvVar: null,
+      command: null,
+      args: [],
+      env: {},
+      cwd: null,
       scope,
       configPath,
       warnings,
@@ -197,9 +218,14 @@ function buildStitchConfig(
     warnings.push(`Stitch auth env var \"${authEnvVar}\" is not set.`);
     return {
       provider: "stitch",
+      transport: "http",
       mcpUrl,
       authHeader: null,
       authEnvVar,
+      command: null,
+      args: [],
+      env: {},
+      cwd: null,
       scope,
       configPath,
       warnings,
@@ -208,9 +234,14 @@ function buildStitchConfig(
 
   return {
     provider: "stitch",
+    transport: "http",
     mcpUrl,
     authHeader: { "X-Goog-Api-Key": apiKey },
     authEnvVar,
+    command: null,
+    args: [],
+    env: {},
+    cwd: null,
     scope,
     configPath,
     warnings,
@@ -238,9 +269,40 @@ function buildPlaywrightConfig(
 
   return {
     provider: "playwright",
+    transport: "http",
     mcpUrl,
     authHeader: {},
     authEnvVar: null,
+    command: null,
+    args: [],
+    env: {},
+    cwd: null,
+    scope,
+    configPath,
+    warnings,
+  };
+}
+
+function buildAndroidConfig(
+  android: AndroidConfig | boolean | undefined,
+  scope: ConfigScope | null,
+  configPath: string | null,
+): UpstreamConfig {
+  const warnings: string[] = [];
+  const state = parseAndroidState({ android });
+  if (!state.enabled) {
+    warnings.push("Android MCP is not enabled in cbx_config.json.");
+  }
+  return {
+    provider: "android",
+    transport: "stdio",
+    mcpUrl: null,
+    authHeader: {},
+    authEnvVar: null,
+    command: state.command,
+    args: state.args,
+    env: state.env,
+    cwd: state.cwd,
     scope,
     configPath,
     warnings,
@@ -261,23 +323,34 @@ export function resolveGatewayConfig(
       providers: {
         postman: {
           provider: "postman",
+          transport: "http",
           mcpUrl: null,
           authHeader: null,
           authEnvVar: null,
+          command: null,
+          args: [],
+          env: {},
+          cwd: null,
           scope: null,
           configPath: null,
           warnings: [warning],
         },
         stitch: {
           provider: "stitch",
+          transport: "http",
           mcpUrl: STITCH_DEFAULT_MCP_URL,
           authHeader: null,
           authEnvVar: null,
+          command: null,
+          args: [],
+          env: {},
+          cwd: null,
           scope: null,
           configPath: null,
           warnings: [warning],
         },
         playwright: buildPlaywrightConfig(undefined, null, null),
+        android: buildAndroidConfig(undefined, null, null),
       },
     };
   }
@@ -301,8 +374,14 @@ export function resolveGatewayConfig(
         effective.scope,
         effective.path,
       ),
+      android: buildAndroidConfig(
+        effective.config.android,
+        effective.scope,
+        effective.path,
+      ),
     },
   };
 }
 
 export { STITCH_DEFAULT_MCP_URL };
+

@@ -45,6 +45,9 @@ assertIncludes(
 assertIncludes(normalizedRootHelp, "init", "root help");
 assertIncludes(normalizedRootHelp, "workflows", "root help");
 assertIncludes(normalizedRootHelp, "build", "root help");
+assertIncludes(normalizedRootHelp, "mobile", "root help");
+assertIncludes(normalizedRootHelp, "web", "root help");
+assertIncludes(normalizedRootHelp, "web", "root help");
 
 const workflowsCommand = findCommand(program, "workflows");
 const workflowsHelp = workflowsCommand
@@ -144,6 +147,67 @@ assertIncludes(
   "build architecture help",
 );
 
+const mobileCommand = findCommand(program, "mobile");
+const mobileHelp = mobileCommand
+  ? mobileCommand.helpInformation().replace(/\r\n/g, "\n")
+  : "";
+const normalizedMobileHelp = normalizeWhitespace(mobileHelp);
+assertIncludes(
+  normalizedMobileHelp,
+  "first-class mobile QA workflows",
+  "mobile help",
+);
+const mobileQaCommand = mobileCommand
+  ? findCommand(mobileCommand, "qa")
+  : null;
+const mobileQaRunCommand = mobileQaCommand
+  ? findCommand(mobileQaCommand, "run")
+  : null;
+const mobileQaRunHelp = mobileQaRunCommand
+  ? mobileQaRunCommand.helpInformation().replace(/\r\n/g, "\n")
+  : "";
+const normalizedMobileQaRunHelp = normalizeWhitespace(mobileQaRunHelp);
+assertIncludes(
+  normalizedMobileQaRunHelp,
+  "--allow-adb-fallback",
+  "mobile qa run help",
+);
+assertIncludes(
+  normalizedMobileQaRunHelp,
+  "--charter <path>",
+  "mobile qa run help",
+);
+
+const webCommand = findCommand(program, "web");
+const webHelp = webCommand
+  ? webCommand.helpInformation().replace(/\r\n/g, "\n")
+  : "";
+const normalizedWebHelp = normalizeWhitespace(webHelp);
+assertIncludes(
+  normalizedWebHelp,
+  "first-class web QA workflows",
+  "web help",
+);
+const webQaCommand = webCommand
+  ? findCommand(webCommand, "qa")
+  : null;
+const webQaRunCommand = webQaCommand
+  ? findCommand(webQaCommand, "run")
+  : null;
+const webQaRunHelp = webQaRunCommand
+  ? webQaRunCommand.helpInformation().replace(/\r\n/g, "\n")
+  : "";
+const normalizedWebQaRunHelp = normalizeWhitespace(webQaRunHelp);
+assertIncludes(
+  normalizedWebQaRunHelp,
+  "--charter <path>",
+  "web qa run help",
+);
+assertIncludes(
+  normalizedWebQaRunHelp,
+  "artifacts/web-qa",
+  "web qa run help",
+);
 if (failures.length > 0) {
   for (const failure of failures) {
     console.error(`FAIL: ${failure}`);
@@ -152,3 +216,5 @@ if (failures.length > 0) {
 }
 
 console.log("CLI help validation passed.");
+
+

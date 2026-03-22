@@ -6,8 +6,8 @@ Execution contract:
 1. Treat route selection as already resolved by this command; do not begin with skill discovery.
 2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.
 Attached skills:
-- Load these exact skill IDs first: `unit-testing`, `integration-testing`, `deep-research`, `playwright-interactive`, `flutter-mobile-qa`, `code-review`.
-- Local skill file hints if installed: `.github/skills/unit-testing/SKILL.md`, `.github/skills/integration-testing/SKILL.md`, `.github/skills/deep-research/SKILL.md`, `.github/skills/playwright-interactive/SKILL.md`, `.github/skills/flutter-mobile-qa/SKILL.md`, `.github/skills/code-review/SKILL.md`.
+- Load these exact skill IDs first: `unit-testing`, `integration-testing`, `deep-research`, `playwright-interactive`, `playwright-web-qa`, `flutter-mobile-qa`, `code-review`.
+- Local skill file hints if installed: `.github/skills/unit-testing/SKILL.md`, `.github/skills/integration-testing/SKILL.md`, `.github/skills/deep-research/SKILL.md`, `.github/skills/playwright-interactive/SKILL.md`, `.github/skills/playwright-web-qa/SKILL.md`, `.github/skills/flutter-mobile-qa/SKILL.md`, `.github/skills/code-review/SKILL.md`.
 - Treat the skill bundle as already resolved for this workflow. Do not start with route discovery.
 3. Apply workflow sections in order: When to use, Workflow steps, Context notes, Verification.
 4. Route to the workflow's primary specialist and only add supporting specialists when needed.
@@ -34,7 +34,7 @@ Use when adding tests, fixing test failures, or improving test coverage for exis
 ## Skill Routing
 
 - Primary skills: `unit-testing`, `integration-testing`
-- Supporting skills (optional): `deep-research`, `playwright-interactive`, `flutter-mobile-qa`, `code-review`
+- Supporting skills (optional): `deep-research`, `playwright-interactive`, `playwright-web-qa`, `flutter-mobile-qa`, `code-review`
 
 ## Context notes
 

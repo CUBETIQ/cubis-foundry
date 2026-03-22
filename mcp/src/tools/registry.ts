@@ -26,7 +26,8 @@ export type ToolCategory =
   | "postman"
   | "stitch"
   | "playwright"
-  | "gateway";
+  | "gateway"
+  | "mobile";
 
 export interface ToolRegistryEntry {
   /** Tool name exposed to MCP clients. */
@@ -154,6 +155,12 @@ import {
   stitchGetStatusSchema,
   handleStitchGetStatus,
 } from "./stitchGetStatus.js";
+import {
+  stitchExecuteName,
+  stitchExecuteDescription,
+  stitchExecuteSchema,
+  createStitchExecuteHandler,
+} from "./stitchExecute.js";
 
 import {
   playwrightGetStatusName,
@@ -161,6 +168,18 @@ import {
   playwrightGetStatusSchema,
   handlePlaywrightGetStatus,
 } from "./playwrightGetStatus.js";
+import {
+  mobileQaRunName,
+  mobileQaRunDescription,
+  mobileQaRunSchema,
+  createMobileQaRunHandler,
+} from "./mobileQaRun.js";
+import {
+  webQaRunName,
+  webQaRunDescription,
+  webQaRunSchema,
+  createWebQaRunHandler,
+} from "./webQaRun.js";
 
 import {
   mcpGatewayStatusName,
@@ -391,6 +410,16 @@ export const TOOL_REGISTRY: readonly ToolRegistryEntry[] = [
         >,
       ),
   },
+  {
+    name: stitchExecuteName,
+    description: stitchExecuteDescription,
+    schema: stitchExecuteSchema,
+    category: "stitch",
+    createHandler: (ctx) => async (args) =>
+      createStitchExecuteHandler(ctx)(
+        args as z.infer<typeof stitchExecuteSchema>,
+      ),
+  },
 
   // ── Playwright tools ──────────────────────────────────────
   {
@@ -403,6 +432,26 @@ export const TOOL_REGISTRY: readonly ToolRegistryEntry[] = [
         withDefaultScope(args, ctx.defaultConfigScope) as z.infer<
           typeof playwrightGetStatusSchema
         >,
+      ),
+  },
+  {
+    name: mobileQaRunName,
+    description: mobileQaRunDescription,
+    schema: mobileQaRunSchema,
+    category: "mobile",
+    createHandler: (ctx) => async (args) =>
+      createMobileQaRunHandler(ctx)(
+        args as z.infer<typeof mobileQaRunSchema>,
+      ),
+  },
+  {
+    name: webQaRunName,
+    description: webQaRunDescription,
+    schema: webQaRunSchema,
+    category: "playwright",
+    createHandler: (ctx) => async (args) =>
+      createWebQaRunHandler(ctx)(
+        args as z.infer<typeof webQaRunSchema>,
       ),
   },
 ];
@@ -446,3 +495,6 @@ export function buildRegistrySummary(): {
 
   return { categories, totalTools: TOOL_REGISTRY.length };
 }
+
+
+

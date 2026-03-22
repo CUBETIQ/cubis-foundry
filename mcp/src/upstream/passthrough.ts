@@ -5,6 +5,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import type { RequestOptions } from "@modelcontextprotocol/sdk/shared/protocol.js";
@@ -12,11 +13,12 @@ import {
   parsePostmanState,
   parseStitchState,
   parsePlaywrightState,
+  parseAndroidState,
   readEffectiveConfig,
 } from "../cbxConfig/index.js";
 import type { CbxConfig, ConfigScope } from "../cbxConfig/types.js";
 
-type ServiceId = "postman" | "stitch" | "playwright";
+type ServiceId = "postman" | "stitch" | "playwright" | "android";
 
 const STITCH_ENV_FALLBACKS = ["STITCH_API_KEY_DEFAULT", "STITCH_API_KEY"];
 const STITCH_LONG_RUNNING_TIMEOUT_MS = 8 * 60 * 1000;
@@ -165,16 +167,42 @@ function getServiceAuth(
   config: CbxConfig,
   service: ServiceId,
 ): {
+  transport: "http" | "stdio";
   mcpUrl: string | null;
   activeProfileName: string | null;
   envVar: string | null;
   headers: Record<string, string>;
+  command?: string;
+  args?: string[];
+  env?: Record<string, string>;
+  cwd?: string | null;
   configured: boolean;
   error?: string;
 } {
+  if (service === "android") {
+    const state = parseAndroidState(config);
+    return {
+      transport: "stdio",
+      mcpUrl: null,
+      activeProfileName: null,
+      envVar: null,
+      headers: {},
+      command: state.command,
+      args: state.args,
+      env: state.env,
+      cwd: state.cwd,
+      configured: Boolean(state.enabled && state.command),
+      error:
+        state.enabled && state.command
+          ? undefined
+          : "Android MCP is not enabled in cbx_config.json",
+    };
+  }
+
   if (service === "playwright") {
     const state = parsePlaywrightState(config);
     return {
+      transport: "http",
       mcpUrl: state.mcpUrl,
       activeProfileName: null,
       envVar: null,
@@ -190,6 +218,7 @@ function getServiceAuth(
     const token = process.env[envVar]?.trim();
     if (!token) {
       return {
+        transport: "http",
         mcpUrl: state.mcpUrl,
         activeProfileName: state.activeProfileName,
         envVar,
@@ -199,6 +228,7 @@ function getServiceAuth(
       };
     }
     return {
+      transport: "http",
       mcpUrl: state.mcpUrl,
       activeProfileName: state.activeProfileName,
       envVar,
@@ -214,6 +244,7 @@ function getServiceAuth(
   const token = tokenInfo?.token;
   if (!token && !state.useSystemGcloud) {
     return {
+      transport: "http",
       mcpUrl: state.mcpUrl,
       activeProfileName: state.activeProfileName,
       envVar: tokenInfo?.envVar || envVar,
@@ -223,6 +254,7 @@ function getServiceAuth(
     };
   }
   return {
+    transport: "http",
     mcpUrl: state.mcpUrl,
     activeProfileName: state.activeProfileName,
     envVar: tokenInfo?.envVar || envVar,
@@ -249,12 +281,22 @@ function resolveStitchToken(
 }
 
 async function withUpstreamClient<T>({
+  transport,
   url,
   headers,
+  command,
+  args,
+  env,
+  cwd,
   fn,
 }: {
-  url: string;
+  transport: "http" | "stdio";
+  url?: string | null;
   headers: Record<string, string>;
+  command?: string;
+  args?: string[];
+  env?: Record<string, string>;
+  cwd?: string | null;
   fn: (client: Client) => Promise<T>;
 }): Promise<T> {
   const client = new Client(
@@ -266,10 +308,19 @@ async function withUpstreamClient<T>({
       capabilities: {},
     },
   );
-  const transport = new StreamableHTTPClientTransport(new URL(url), {
-    requestInit: { headers },
-  });
-  await client.connect(transport);
+  const clientTransport =
+    transport === "stdio"
+      ? new StdioClientTransport({
+          command: command || "npx",
+          args: args || [],
+          env: env || {},
+          cwd: cwd || process.cwd(),
+          stderr: "pipe",
+        })
+      : new StreamableHTTPClientTransport(new URL(url || ""), {
+          requestInit: { headers },
+        });
+  await client.connect(clientTransport);
   try {
     return await fn(client);
   } finally {
@@ -486,6 +537,7 @@ export async function discoverUpstreamCatalogs(
   postman: UpstreamCatalog;
   stitch: UpstreamCatalog;
   playwright: UpstreamCatalog;
+  android: UpstreamCatalog;
 }> {
   const effective = readEffectiveConfig(scope);
   if (!effective) {
@@ -506,10 +558,15 @@ export async function discoverUpstreamCatalogs(
       ...missing,
       service: "playwright",
     };
+    const missingAndroid: UpstreamCatalog = {
+      ...missing,
+      service: "android",
+    };
     return {
       postman: missing,
       stitch: missingStitch,
       playwright: missingPlaywright,
+      android: missingAndroid,
     };
   }
 
@@ -534,6 +591,13 @@ export async function discoverUpstreamCatalogs(
     };
 
     if (!auth.configured || !auth.mcpUrl || auth.error) {
+      const missingConnection =
+        auth.transport === "http"
+          ? !auth.mcpUrl
+          : !(auth.command && auth.command.trim());
+      if (!missingConnection && !auth.error) {
+        // continue to discovery
+      } else {
       const cachedTools = await loadCachedCatalogTools({
         service,
         scope: baseInfo.scope,
@@ -548,12 +612,18 @@ export async function discoverUpstreamCatalogs(
       }
       await persistCatalog(catalog);
       return catalog;
+      }
     }
 
     try {
       const listed = await withUpstreamClient({
+        transport: auth.transport,
         url: auth.mcpUrl,
         headers: auth.headers,
+        command: auth.command,
+        args: auth.args,
+        env: auth.env,
+        cwd: auth.cwd,
         fn: async (client) => client.listTools(),
       });
       const rawTools = Array.isArray(listed.tools) ? listed.tools : [];
@@ -583,6 +653,7 @@ export async function discoverUpstreamCatalogs(
     postman: await discoverOne("postman"),
     stitch: await discoverOne("stitch"),
     playwright: await discoverOne("playwright"),
+    android: await discoverOne("android"),
   };
 }
 
@@ -602,7 +673,11 @@ export async function callUpstreamTool({
     throw new Error("cbx_config.json not found");
   }
   const auth = getServiceAuth(effective.config, service);
-  if (!auth.configured || !auth.mcpUrl) {
+  const missingConnection =
+    auth.transport === "http"
+      ? !auth.mcpUrl
+      : !(auth.command && auth.command.trim());
+  if (!auth.configured || missingConnection) {
     throw new Error(auth.error || `${service} is not configured`);
   }
   if (auth.error) {
@@ -610,8 +685,13 @@ export async function callUpstreamTool({
   }
 
   return withUpstreamClient({
+    transport: auth.transport,
     url: auth.mcpUrl,
     headers: auth.headers,
+    command: auth.command,
+    args: auth.args,
+    env: auth.env,
+    cwd: auth.cwd,
     fn: async (client): Promise<CallToolResult> => {
       const effectiveArguments =
         service === "stitch"

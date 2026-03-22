@@ -1,12 +1,12 @@
 ---
 name: flutter-mobile-qa
-description: "Use when planning or running Flutter mobile QA with an Android emulator, ADB-backed MCP tooling, screenshot/UI-tree evidence, logcat triage, and structured test reporting."
+description: "Use when planning or running Flutter mobile QA with Android MCP as the primary device path, explicit ADB fallback, screenshot/UI-tree evidence, logcat triage, and structured test reporting."
 ---
 # Flutter Mobile QA
 
 ## Purpose
 
-Provide a repeatable workflow for AI-driven QA of Flutter applications running on Android emulators or devices. This skill combines structured test planning, safe MCP-based device control, screenshot/UI-tree observation, logcat evidence gathering, and Flutter-specific readiness guidance so the agent behaves like a cautious QA engineer instead of a blind script runner.
+Provide a repeatable workflow for AI-driven QA of Flutter applications running on Android emulators or devices. This skill combines structured test planning, Android-MCP-primary device control, deterministic screenshot/UI-tree evidence, logcat triage, and Flutter-specific readiness guidance so the agent behaves like a cautious QA engineer instead of a blind script runner.
 
 ## When to Use
 
@@ -32,13 +32,13 @@ Provide a repeatable workflow for AI-driven QA of Flutter applications running o
 
 7. **Treat `adb_shell` as restricted** because it enables arbitrary device shell execution. Do not use it unless the user explicitly approves a device-level action that cannot be expressed with safer tools, and record the exact command in the final report.
 
-8. **Keep evidence local and deterministic** because mobile bugs are hard to reproduce. Save screenshots, logs, and reports under `artifacts/mobile-qa/` or another workspace-local test artifact directory. Do not write evidence into random local paths.
+8. **Keep evidence local and deterministic** because mobile bugs are hard to reproduce. Save screenshots, logs, UI trees, and reports under `artifacts/mobile-qa/` or another workspace-local test artifact directory. Do not write evidence into random local paths.
 
 9. **Clear logs before reproducing suspected crashes** because mobile logcat is noisy. When triaging a failure, clear logs, reproduce once, then collect filtered logs immediately so the report reflects only the failing attempt.
 
 10. **Expect Flutter instrumentation gaps and call them out explicitly** because many test failures are product readiness issues, not agent mistakes. Load `references/flutter-readiness.md` when widgets cannot be reliably targeted or when route assertions are ambiguous.
 
-11. **Use one controlled retry for flaky interactions, not open-ended loops** because emulator timing issues are real but repeated blind retries hide bugs. A safe retry is: relaunch app or return to the last stable screen, recapture screenshot/UI tree, try once more, then stop and report evidence.
+11. **Use one controlled retry for flaky interactions, not open-ended loops** because emulator timing issues are real but repeated blind retries hide bugs. Prefer Android MCP for the retry, and only drop to ADB when the operator explicitly allows fallback. A safe retry is: relaunch app or return to the last stable screen, recapture screenshot/UI tree, try once more, then stop and report evidence.
 
 12. **Handle credentials as session inputs, never repo state** because test credentials are sensitive and environment-specific. Ask for them when needed, prefer non-production accounts, and never commit them into app fixtures, prompts, or project config.
 

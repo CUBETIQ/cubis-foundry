@@ -1,10 +1,10 @@
 {
   "$schema": "./cubis-foundry-route-manifest-v2.schema.json",
   "generatedAt": "1970-01-01T00:00:00.000Z",
-  "contentHash": "71e5be8ac72b1094",
+  "contentHash": "2e221b37eaa9b3c5",
   "summary": {
-    "totalRoutes": 18,
-    "workflows": 11,
+    "totalRoutes": 20,
+    "workflows": 13,
     "agents": 7
   },
   "routes": [
@@ -701,6 +701,54 @@
     },
     {
       "kind": "workflow",
+      "id": "mobile-qa",
+      "command": "/mobile-qa",
+      "displayName": "mobile-qa",
+      "description": "Run charter-driven mobile QA through Android MCP first, capture deterministic evidence, and use ADB only as explicit fallback.",
+      "triggers": [
+        "mobile qa",
+        "android qa",
+        "flutter qa",
+        "emulator qa",
+        "adb qa"
+      ],
+      "primaryAgent": "explorer",
+      "supportingAgents": [
+        "tester",
+        "reviewer"
+      ],
+      "primarySkills": [
+        "flutter-mobile-qa"
+      ],
+      "supportingSkills": [
+        "integration-testing",
+        "code-review"
+      ],
+      "artifacts": {
+        "codex": {
+          "target": "skill",
+          "skillDir": "mobile-qa"
+        },
+        "copilot": {
+          "target": "prompt",
+          "promptFile": "mobile-qa.prompt.md"
+        },
+        "antigravity": {
+          "target": "command",
+          "commandFile": "mobile-qa.toml"
+        },
+        "claude": {
+          "target": "skill",
+          "skillDir": "mobile-qa"
+        },
+        "gemini": {
+          "target": "command",
+          "commandFile": "mobile-qa.toml"
+        }
+      }
+    },
+    {
+      "kind": "workflow",
       "id": "plan",
       "command": "/plan",
       "displayName": "plan",
@@ -829,6 +877,7 @@
       "supportingSkills": [
         "deep-research",
         "playwright-interactive",
+        "playwright-web-qa",
         "flutter-mobile-qa",
         "code-review"
       ],
@@ -852,6 +901,55 @@
         "gemini": {
           "target": "command",
           "commandFile": "test.toml"
+        }
+      }
+    },
+    {
+      "kind": "workflow",
+      "id": "web-qa",
+      "command": "/web-qa",
+      "displayName": "web-qa",
+      "description": "Run charter-driven web QA through Playwright MCP with deterministic browser evidence and report-ready artifacts.",
+      "triggers": [
+        "web qa",
+        "browser qa",
+        "playwright qa",
+        "website qa",
+        "page qa"
+      ],
+      "primaryAgent": "explorer",
+      "supportingAgents": [
+        "tester",
+        "reviewer"
+      ],
+      "primarySkills": [
+        "playwright-web-qa"
+      ],
+      "supportingSkills": [
+        "playwright-interactive",
+        "integration-testing",
+        "code-review"
+      ],
+      "artifacts": {
+        "codex": {
+          "target": "skill",
+          "skillDir": "web-qa"
+        },
+        "copilot": {
+          "target": "prompt",
+          "promptFile": "web-qa.prompt.md"
+        },
+        "antigravity": {
+          "target": "command",
+          "commandFile": "web-qa.toml"
+        },
+        "claude": {
+          "target": "skill",
+          "skillDir": "web-qa"
+        },
+        "gemini": {
+          "target": "command",
+          "commandFile": "web-qa.toml"
         }
       }
     }

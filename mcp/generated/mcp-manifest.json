@@ -1,12 +1,12 @@
 {
   "$schema": "cubis-foundry-mcp-manifest-v1",
-  "generatedAt": "2026-03-21T03:45:46.739Z",
-  "contentHash": "3305587be9bc2aa2",
+  "generatedAt": "2026-03-22T11:27:08.713Z",
+  "contentHash": "90210df22c1acf14",
   "summary": {
-    "totalSkills": 61,
+    "totalSkills": 62,
     "totalCategories": 11,
-    "totalBytes": 376792,
-    "estimatedTokens": 94198
+    "totalBytes": 379290,
+    "estimatedTokens": 94823
   },
   "categories": [
     {
@@ -47,7 +47,7 @@
     },
     {
       "name": "testing",
-      "skillCount": 3
+      "skillCount": 4
     },
     {
       "name": "tooling",
@@ -360,7 +360,7 @@
       "id": "flutter-mobile-qa",
       "name": "flutter-mobile-qa",
       "displayName": null,
-      "description": "Use when planning or running Flutter mobile QA with an Android emulator, ADB-backed MCP tooling, screenshot/UI-tree evidence, logcat triage, and structured test reporting.",
+      "description": "Use when planning or running Flutter mobile QA with Android MCP as the primary device path, explicit ADB fallback, screenshot/UI-tree evidence, logcat triage, and structured test reporting.",
       "category": "mobile",
       "keywords": [
         "flutter-mobile-qa",
@@ -381,7 +381,7 @@
         "author": "cubis-foundry",
         "version": "1.0"
       },
-      "fileBytes": 6663
+      "fileBytes": 6797
     },
     {
       "id": "frontend-design",
@@ -938,6 +938,33 @@
         "version": "3.0"
       },
       "fileBytes": 6807
+    },
+    {
+      "id": "playwright-web-qa",
+      "name": "playwright-web-qa",
+      "displayName": null,
+      "description": "Use when running charter-driven web QA through Playwright MCP with deterministic evidence, runtime traces, and report-ready browser artifacts.",
+      "category": "testing",
+      "keywords": [
+        "playwright-web-qa",
+        "playwright web qa",
+        "playwright",
+        "web",
+        "qa"
+      ],
+      "triggers": [
+        "playwright-web-qa",
+        "playwright web qa",
+        "playwright",
+        "web",
+        "qa"
+      ],
+      "path": "workflows/skills/playwright-web-qa/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 2364
     },
     {
       "id": "prisma",

@@ -92,7 +92,8 @@ Load on demand. Do not preload all references.
 | --- | --- |
 | `unit-testing` | Task involves unit test authoring or verification. |
 | `integration-testing` | Task involves API or component integration tests. |
-| `playwright-interactive` | Task involves browser-based end-to-end testing. |
+| `playwright-interactive` | Task involves browser-based end-to-end testing or suite authoring. |
+| `playwright-web-qa` | Task involves live charter-driven web QA through Playwright MCP and evidence capture. |
 | `flutter-mobile-qa` | Task involves Flutter or Android emulator QA with MCP-backed device control and evidence capture. |
 
 ## Skill routing

@@ -4,8 +4,9 @@
 
 import type { ConfigScope } from "../cbxConfig/types.js";
 
-export type UpstreamProvider = "postman" | "stitch" | "playwright";
+export type UpstreamProvider = "postman" | "stitch" | "playwright" | "android";
 export type GatewayScope = ConfigScope | "auto";
+export type UpstreamTransport = "http" | "stdio";
 
 export interface UpstreamTool {
   name: string;
@@ -15,9 +16,14 @@ export interface UpstreamTool {
 
 export interface UpstreamConfig {
   provider: UpstreamProvider;
+  transport: UpstreamTransport;
   mcpUrl: string | null;
   authHeader: Record<string, string> | null;
   authEnvVar: string | null;
+  command?: string | null;
+  args?: string[];
+  env?: Record<string, string>;
+  cwd?: string | null;
   scope: ConfigScope | null;
   configPath: string | null;
   warnings: string[];
@@ -25,9 +31,11 @@ export interface UpstreamConfig {
 
 export interface UpstreamState {
   provider: UpstreamProvider;
+  transport: UpstreamTransport;
   mcpUrl: string | null;
   authEnvVar: string | null;
   authConfigured: boolean;
+  command?: string | null;
   available: boolean;
   warnings: string[];
   lastError: string | null;

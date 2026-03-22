@@ -129,6 +129,7 @@
         "owasp-security-review",
         "pentest-skill",
         "playwright-interactive",
+        "playwright-web-qa",
         "prisma",
         "prompt-engineering",
         "python-best-practices",
@@ -170,9 +171,11 @@
         "design-system.toml",
         "implement.toml",
         "loop.toml",
+        "mobile-qa.toml",
         "plan.toml",
         "review.toml",
         "test.toml",
+        "web-qa.toml",
         "agent-debugger.toml",
         "agent-explorer.toml",
         "agent-implementer.toml",
@@ -227,6 +230,7 @@
         "owasp-security-review",
         "pentest-skill",
         "playwright-interactive",
+        "playwright-web-qa",
         "prisma",
         "prompt-engineering",
         "python-best-practices",
@@ -259,9 +263,11 @@
         "design-system",
         "implement",
         "loop",
+        "mobile-qa",
         "plan",
         "review",
-        "test"
+        "test",
+        "web-qa"
       ],
       "rulesTemplate": "platforms/codex/rules/AGENTS.md",
       "hooks": [
@@ -317,6 +323,7 @@
         "owasp-security-review",
         "pentest-skill",
         "playwright-interactive",
+        "playwright-web-qa",
         "prisma",
         "prompt-engineering",
         "python-best-practices",
@@ -379,9 +386,11 @@
         "design-system.prompt.md",
         "implement.prompt.md",
         "loop.prompt.md",
+        "mobile-qa.prompt.md",
         "plan.prompt.md",
         "review.prompt.md",
-        "test.prompt.md"
+        "test.prompt.md",
+        "web-qa.prompt.md"
       ]
     },
     "claude": {
@@ -429,6 +438,7 @@
         "owasp-security-review",
         "pentest-skill",
         "playwright-interactive",
+        "playwright-web-qa",
         "prisma",
         "prompt-engineering",
         "python-best-practices",
@@ -461,9 +471,11 @@
         "design-system",
         "implement",
         "loop",
+        "mobile-qa",
         "plan",
         "review",
-        "test"
+        "test",
+        "web-qa"
       ],
       "rulesTemplate": "platforms/claude/rules/CLAUDE.md",
       "hooks": [
@@ -545,9 +557,11 @@
         "design-system.toml",
         "implement.toml",
         "loop.toml",
+        "mobile-qa.toml",
         "plan.toml",
         "review.toml",
         "test.toml",
+        "web-qa.toml",
         "agent-debugger.toml",
         "agent-explorer.toml",
         "agent-implementer.toml",

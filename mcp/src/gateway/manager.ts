@@ -24,17 +24,24 @@ export interface GatewayManagerOptions {
 }
 
 interface ProviderRuntime {
+  transport: "http" | "stdio";
   mcpUrl: string | null;
   headers: Record<string, string> | null;
   authEnvVar: string | null;
+  command: string | null;
+  args: string[];
+  env: Record<string, string>;
+  cwd: string | null;
 }
 
 function emptyProviderState(provider: UpstreamProvider): UpstreamState {
   return {
     provider,
+    transport: provider === "android" ? "stdio" : "http",
     mcpUrl: null,
     authEnvVar: null,
     authConfigured: false,
+    command: null,
     available: false,
     warnings: [],
     lastError: null,
@@ -80,14 +87,52 @@ export class GatewayManager {
   private readonly clientFactory: UpstreamClientFactory;
   private readonly providerRuntime: Record<UpstreamProvider, ProviderRuntime> =
     {
-      postman: { mcpUrl: null, headers: null, authEnvVar: null },
-      stitch: { mcpUrl: null, headers: null, authEnvVar: null },
-      playwright: { mcpUrl: null, headers: null, authEnvVar: null },
+      postman: {
+        transport: "http",
+        mcpUrl: null,
+        headers: null,
+        authEnvVar: null,
+        command: null,
+        args: [],
+        env: {},
+        cwd: null,
+      },
+      stitch: {
+        transport: "http",
+        mcpUrl: null,
+        headers: null,
+        authEnvVar: null,
+        command: null,
+        args: [],
+        env: {},
+        cwd: null,
+      },
+      playwright: {
+        transport: "http",
+        mcpUrl: null,
+        headers: null,
+        authEnvVar: null,
+        command: null,
+        args: [],
+        env: {},
+        cwd: null,
+      },
+      android: {
+        transport: "stdio",
+        mcpUrl: null,
+        headers: {},
+        authEnvVar: null,
+        command: null,
+        args: [],
+        env: {},
+        cwd: null,
+      },
     };
   private readonly providerState: Record<UpstreamProvider, UpstreamState> = {
     postman: emptyProviderState("postman"),
     stitch: emptyProviderState("stitch"),
     playwright: emptyProviderState("playwright"),
+    android: emptyProviderState("android"),
   };
 
   private scope: GatewayStatus["scope"] = null;
@@ -109,6 +154,7 @@ export class GatewayManager {
       this.syncProvider("postman", resolved.providers.postman),
       this.syncProvider("stitch", resolved.providers.stitch),
       this.syncProvider("playwright", resolved.providers.playwright),
+      this.syncProvider("android", resolved.providers.android),
     ]);
   }
 
@@ -126,6 +172,7 @@ export class GatewayManager {
         postman: this.providerState.postman,
         stitch: this.providerState.stitch,
         playwright: this.providerState.playwright,
+        android: this.providerState.android,
       },
     };
   }
@@ -134,6 +181,7 @@ export class GatewayManager {
     const state = this.providerState[provider];
     return {
       provider,
+      transport: state.transport,
       available: state.available,
       enabledCount: state.tools.length,
       enabledTools: state.tools.map((tool) => `${provider}.${tool.name}`),
@@ -142,6 +190,7 @@ export class GatewayManager {
       lastError: state.lastError,
       syncedAt: state.syncedAt,
       mcpUrl: state.mcpUrl,
+      command: state.command,
       authEnvVar: state.authEnvVar,
       authConfigured: state.authConfigured,
       catalogDir: this.catalogDir,
@@ -159,10 +208,13 @@ export class GatewayManager {
   ): Promise<UpstreamCallResult> {
     const runtime = this.providerRuntime[provider];
 
-    if (!runtime.mcpUrl) {
+    if (runtime.transport === "http" && !runtime.mcpUrl) {
       return errorResult(`${provider} upstream MCP URL is not configured.`);
     }
-    if (!runtime.headers) {
+    if (runtime.transport === "stdio" && !runtime.command) {
+      return errorResult(`${provider} upstream stdio command is not configured.`);
+    }
+    if (runtime.transport === "http" && !runtime.headers) {
       return errorResult(
         `${provider} upstream auth is not configured via env var alias (${runtime.authEnvVar ?? "missing alias"}).`,
       );
@@ -171,8 +223,13 @@ export class GatewayManager {
     let client: ConnectedUpstreamClient | null = null;
     try {
       client = await this.clientFactory.connect({
+        transport: runtime.transport,
         mcpUrl: runtime.mcpUrl,
-        headers: runtime.headers,
+        headers: runtime.headers || {},
+        command: runtime.command,
+        args: runtime.args,
+        env: runtime.env,
+        cwd: runtime.cwd,
       });
 
       const result = await client.callTool(
@@ -198,25 +255,42 @@ export class GatewayManager {
   private async syncProvider(
     provider: UpstreamProvider,
     resolved: {
+      transport: "http" | "stdio";
       mcpUrl: string | null;
       authHeader: Record<string, string> | null;
       authEnvVar: string | null;
+      command?: string | null;
+      args?: string[];
+      env?: Record<string, string>;
+      cwd?: string | null;
       warnings: string[];
     },
   ): Promise<void> {
     const state = emptyProviderState(provider);
+    state.transport = resolved.transport;
     state.mcpUrl = resolved.mcpUrl;
     state.authEnvVar = resolved.authEnvVar;
-    state.authConfigured = !!resolved.authHeader;
+    state.authConfigured =
+      resolved.transport === "stdio" ? Boolean(resolved.command) : !!resolved.authHeader;
+    state.command = resolved.command ?? null;
     state.warnings = [...resolved.warnings];
 
     this.providerRuntime[provider] = {
+      transport: resolved.transport,
       mcpUrl: resolved.mcpUrl,
       headers: resolved.authHeader,
       authEnvVar: resolved.authEnvVar,
+      command: resolved.command ?? null,
+      args: resolved.args ?? [],
+      env: resolved.env ?? {},
+      cwd: resolved.cwd ?? null,
     };
 
-    if (!resolved.mcpUrl || !resolved.authHeader) {
+    const unavailable =
+      resolved.transport === "stdio"
+        ? !resolved.command
+        : !resolved.mcpUrl || !resolved.authHeader;
+    if (unavailable) {
       this.providerState[provider] = state;
       return;
     }
@@ -224,8 +298,13 @@ export class GatewayManager {
     let client: ConnectedUpstreamClient | null = null;
     try {
       client = await this.clientFactory.connect({
+        transport: resolved.transport,
         mcpUrl: resolved.mcpUrl,
-        headers: resolved.authHeader,
+        headers: resolved.authHeader || {},
+        command: resolved.command ?? null,
+        args: resolved.args ?? [],
+        env: resolved.env ?? {},
+        cwd: resolved.cwd ?? null,
       });
 
       const tools = await client.listTools();
@@ -236,7 +315,7 @@ export class GatewayManager {
 
       persistCatalog(this.catalogDir, {
         provider,
-        mcpUrl: resolved.mcpUrl,
+        mcpUrl: resolved.mcpUrl ?? `stdio:${resolved.command ?? "unknown"}`,
         syncedAt,
         tools: tools.map((tool) => ({
           name: tool.name,
@@ -265,3 +344,4 @@ export class GatewayManager {
     this.providerState[provider] = state;
   }
 }
+

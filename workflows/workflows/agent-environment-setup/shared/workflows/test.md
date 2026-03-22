@@ -23,7 +23,7 @@ Use when adding tests, fixing test failures, or improving test coverage for exis
 ## Skill Routing
 
 - Primary skills: `unit-testing`, `integration-testing`
-- Supporting skills (optional): `deep-research`, `playwright-interactive`, `flutter-mobile-qa`, `code-review`
+- Supporting skills (optional): `deep-research`, `playwright-interactive`, `playwright-web-qa`, `flutter-mobile-qa`, `code-review`
 
 ## Context notes
 
@@ -56,3 +56,4 @@ WORKFLOW_RESULT:
   coverage_delta: <string>
   follow_up_items: [<string>] | []
 ```
+

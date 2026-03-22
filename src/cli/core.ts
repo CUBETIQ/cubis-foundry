@@ -24,6 +24,9 @@ import process from "node:process";
 import { promisify } from "node:util";
 import { registerCommands } from "./commands/register.js";
 import { DEFAULT_SKILL_PROFILE } from "./constants.js";
+import { assertBundledMcpBuildFreshness } from "./mcp/buildFreshness.js";
+import { runMobileQa } from "./mobile/run.js";
+import { runWebQa } from "./web/run.js";
 import {
   buildInitExecutionPlan,
   formatInitSummary,
@@ -12017,6 +12020,7 @@ async function runMcpServe(options) {
     const opts = resolveActionOptions(options);
     const cwd = process.cwd();
     await loadManagedCredentialsEnv();
+    assertBundledMcpBuildFreshness();
     const entryPath = resolveBundledMcpEntryPath();
     if (!(await pathExists(entryPath))) {
       throw new Error(
@@ -15811,6 +15815,8 @@ export function buildCliProgram() {
     runMcpStatus,
     runMcpTest,
     runMcpProxy,
+    runMobileQa,
+    runWebQa,
   });
 }
 
@@ -15856,3 +15862,6 @@ export async function runCli(argv = process.argv) {
     process.exit(1);
   }
 }
+
+
+

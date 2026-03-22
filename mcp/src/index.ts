@@ -15,6 +15,7 @@ import { loadServerConfig } from "./config/index.js";
 import { loadGeneratedRouteManifest } from "./routes/loadGeneratedRouteManifest.js";
 import { scanVaultRoots } from "./vault/scanner.js";
 import { buildManifest } from "./vault/manifest.js";
+import { assertBuildFreshness } from "./runtime/buildFreshness.js";
 import {
   loadGeneratedSkillManifest,
   mergeGeneratedSkillMetadata,
@@ -175,6 +176,7 @@ async function main(): Promise<void> {
   // Resolve vault roots relative to the mcp package root.
   // `index.ts` is in `<pkg>/src` during dev and `<pkg>/dist` after build.
   const basePath = path.resolve(__dirname, "..");
+  assertBuildFreshness(basePath);
   const scannedSkills = await scanVaultRoots(serverConfig.vault.roots, basePath);
   const generatedSkillManifest = await loadGeneratedSkillManifest(basePath);
   const skills = mergeGeneratedSkillMetadata(

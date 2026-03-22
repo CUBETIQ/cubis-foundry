@@ -26,6 +26,8 @@ const DEFAULT_POSTMAN_URL = "https://mcp.postman.com/minimal";
 const DEFAULT_STITCH_URL = "https://stitch.googleapis.com/mcp";
 const DEFAULT_PLAYWRIGHT_PORT = 8931;
 const DEFAULT_PLAYWRIGHT_URL = `http://localhost:${DEFAULT_PLAYWRIGHT_PORT}/mcp`;
+const DEFAULT_ANDROID_COMMAND = "npx";
+const DEFAULT_ANDROID_PACKAGE = "android-mcp-server@1.3.0";
 const DEFAULT_PROFILE_NAME = "default";
 const DEFAULT_POSTMAN_ENV_VAR = "POSTMAN_API_KEY";
 const DEFAULT_STITCH_ENV_VAR = "STITCH_API_KEY";
@@ -189,4 +191,41 @@ export function parsePlaywrightState(
     normalizeOptionalString(section.mcpUrl) ??
     `http://localhost:${effectivePort}/mcp`;
   return { mcpUrl, port: effectivePort };
+}
+
+export interface AndroidServiceState {
+  enabled: boolean;
+  command: string;
+  args: string[];
+  cwd: string | null;
+  env: Record<string, string>;
+}
+
+export function parseAndroidState(config: CbxConfig): AndroidServiceState {
+  const section = asRecord(config.android) ?? {};
+  const enabled = Boolean(section.enabled ?? config.android);
+  const command =
+    normalizeOptionalString(section.command) ?? DEFAULT_ANDROID_COMMAND;
+  const packageSpec =
+    normalizeOptionalString(section.package) ?? DEFAULT_ANDROID_PACKAGE;
+  const args = Array.isArray(section.args)
+    ? section.args
+        .map((value) => normalizeOptionalString(value))
+        .filter((value): value is string => Boolean(value))
+    : ["-y", packageSpec];
+  const cwd = normalizeOptionalString(section.cwd);
+  const envRecord = asRecord(section.env) ?? {};
+  const env = Object.fromEntries(
+    Object.entries(envRecord)
+      .map(([key, value]) => [key, normalizeOptionalString(value)])
+      .filter((entry): entry is [string, string] => Boolean(entry[1])),
+  );
+
+  return {
+    enabled,
+    command,
+    args: args.length > 0 ? args : ["-y", packageSpec],
+    cwd,
+    env,
+  };
 }

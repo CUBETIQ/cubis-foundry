@@ -9,6 +9,8 @@ import { registerWorkflowCommands } from "../workflows/commands.js";
 import { registerMcpCommands } from "../mcp/commands.js";
 import { registerRulesCommands } from "../rules/commands.js";
 import { registerBuildCommands } from "../build/commands.js";
+import { registerMobileCommands } from "../mobile/commands.js";
+import { registerWebCommands } from "../web/commands.js";
 
 export interface CliRegistrationDeps {
   cliVersion: string;
@@ -52,6 +54,8 @@ export interface CliRegistrationDeps {
   runMcpStatus: WorkflowAction;
   runMcpTest: WorkflowTargetAction;
   runMcpProxy: WorkflowAction;
+  runMobileQa: WorkflowAction;
+  runWebQa: WorkflowAction;
 }
 
 export function registerCommands(deps: CliRegistrationDeps) {
@@ -297,6 +301,14 @@ export function registerCommands(deps: CliRegistrationDeps) {
     runBuildArchitecture: deps.runBuildArchitecture,
   });
 
+  registerMobileCommands(program, {
+    runMobileQa: deps.runMobileQa,
+  });
+
+  registerWebCommands(program, {
+    runWebQa: deps.runWebQa,
+  });
+
   const agentsCommand = program
     .command("agents")
     .description("Cubis Agent Bot commands");
@@ -348,3 +360,5 @@ export function registerCommands(deps: CliRegistrationDeps) {
 
   return program;
 }
+
+

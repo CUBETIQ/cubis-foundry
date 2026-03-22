@@ -4,6 +4,7 @@
 
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import type { UpstreamTool } from "./types.js";
 
 export interface UpstreamCallResult {
@@ -19,8 +20,13 @@ export interface ConnectedUpstreamClient {
 }
 
 export interface UpstreamClientConnectParams {
-  mcpUrl: string;
-  headers: Record<string, string>;
+  transport: "http" | "stdio";
+  mcpUrl?: string | null;
+  headers?: Record<string, string>;
+  command?: string | null;
+  args?: string[];
+  env?: Record<string, string>;
+  cwd?: string | null;
 }
 
 export interface UpstreamClientFactory {
@@ -46,11 +52,20 @@ export class SdkUpstreamClientFactory implements UpstreamClientFactory {
       { capabilities: {} },
     );
 
-    const transport = new StreamableHTTPClientTransport(new URL(params.mcpUrl), {
-      requestInit: {
-        headers: params.headers,
-      },
-    });
+    const transport =
+      params.transport === "stdio"
+        ? new StdioClientTransport({
+            command: params.command || "npx",
+            args: params.args || [],
+            env: params.env || {},
+            cwd: params.cwd || process.cwd(),
+            stderr: "pipe",
+          })
+        : new StreamableHTTPClientTransport(new URL(params.mcpUrl || ""), {
+            requestInit: {
+              headers: params.headers || {},
+            },
+          });
 
     await client.connect(transport);
 

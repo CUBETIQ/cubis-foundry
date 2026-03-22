@@ -73,6 +73,7 @@ function createTestContext(): ToolRuntimeContext {
         providers: {
           postman: {
             provider: "postman",
+            transport: "http",
             mcpUrl: null,
             authEnvVar: null,
             authConfigured: false,
@@ -84,6 +85,7 @@ function createTestContext(): ToolRuntimeContext {
           },
           stitch: {
             provider: "stitch",
+            transport: "http",
             mcpUrl: null,
             authEnvVar: null,
             authConfigured: false,
@@ -95,9 +97,23 @@ function createTestContext(): ToolRuntimeContext {
           },
           playwright: {
             provider: "playwright",
+            transport: "http",
             mcpUrl: null,
             authEnvVar: null,
             authConfigured: false,
+            available: false,
+            warnings: [],
+            lastError: null,
+            syncedAt: null,
+            tools: [],
+          },
+          android: {
+            provider: "android",
+            transport: "stdio",
+            mcpUrl: null,
+            authEnvVar: null,
+            authConfigured: false,
+            command: null,
             available: false,
             warnings: [],
             lastError: null,
@@ -108,6 +124,7 @@ function createTestContext(): ToolRuntimeContext {
       }),
       listEnabledTools: (provider) => ({
         provider,
+        transport: provider === "android" ? "stdio" : "http",
         available: false,
         enabledCount: 0,
         enabledTools: [],
@@ -116,6 +133,7 @@ function createTestContext(): ToolRuntimeContext {
         lastError: null,
         syncedAt: null,
         mcpUrl: null,
+        command: null,
         authEnvVar: null,
         authConfigured: false,
         catalogDir: "/tmp/catalog",
@@ -147,11 +165,14 @@ describe("tool registry", () => {
     expect(names).toContain("stitch_get_mode");
     expect(names).toContain("stitch_set_profile");
     expect(names).toContain("stitch_get_status");
+    expect(names).toContain("stitch_execute");
     expect(names).toContain("playwright_get_status");
+    expect(names).toContain("mobile_qa_run");
+    expect(names).toContain("web_qa_run");
   });
 
-  it("has exactly 18 built-in tools", () => {
-    expect(TOOL_REGISTRY).toHaveLength(18);
+  it("has exactly 21 built-in tools", () => {
+    expect(TOOL_REGISTRY).toHaveLength(21);
   });
 
   it("has no duplicate tool names", () => {
@@ -166,7 +187,7 @@ describe("tool registry", () => {
       expect(entry.description).toBeTruthy();
       expect(entry.schema).toBeTruthy();
       expect(entry.category).toMatch(
-        /^(skill|route|postman|stitch|playwright|gateway)$/,
+        /^(skill|route|postman|stitch|playwright|gateway|mobile)$/,
       );
       expect(typeof entry.createHandler).toBe("function");
     }
@@ -187,7 +208,13 @@ describe("tool registry", () => {
     expect(postmanTools).toHaveLength(3);
 
     const stitchTools = getToolsByCategory("stitch");
-    expect(stitchTools).toHaveLength(3);
+    expect(stitchTools).toHaveLength(4);
+
+    const mobileTools = getToolsByCategory("mobile");
+    expect(mobileTools).toHaveLength(1);
+
+    const playwrightTools = getToolsByCategory("playwright");
+    expect(playwrightTools).toHaveLength(2);
   });
 
   it("creates handlers from runtime context", () => {
@@ -217,19 +244,21 @@ describe("tool registry", () => {
 
   it("buildRegistrySummary produces correct structure", () => {
     const summary = buildRegistrySummary();
-    expect(summary.totalTools).toBe(18);
+    expect(summary.totalTools).toBe(21);
     expect(summary.categories).toHaveProperty("route");
     expect(summary.categories).toHaveProperty("gateway");
     expect(summary.categories).toHaveProperty("skill");
     expect(summary.categories).toHaveProperty("postman");
     expect(summary.categories).toHaveProperty("stitch");
     expect(summary.categories).toHaveProperty("playwright");
+    expect(summary.categories).toHaveProperty("mobile");
     expect(summary.categories.route.tools).toHaveLength(1);
     expect(summary.categories.gateway.tools).toHaveLength(3);
     expect(summary.categories.skill.tools).toHaveLength(7);
     expect(summary.categories.postman.tools).toHaveLength(3);
-    expect(summary.categories.stitch.tools).toHaveLength(3);
-    expect(summary.categories.playwright.tools).toHaveLength(1);
+    expect(summary.categories.stitch.tools).toHaveLength(4);
+    expect(summary.categories.playwright.tools).toHaveLength(2);
+    expect(summary.categories.mobile.tools).toHaveLength(1);
   });
 
   it("each schema has a valid .shape property", () => {
@@ -239,3 +268,9 @@ describe("tool registry", () => {
     }
   });
 });
+
+
+
+
+
+
