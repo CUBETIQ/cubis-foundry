@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>maison-prive</title>
+    <link rel="icon" href="data:,">
+    <style>
+      :root {
+        --bg: #f4eee5;
+        --panel: rgba(255, 251, 244, 0.94);
+        --panel-strong: #fffdf8;
+        --ink: #171412;
+        --muted: #665f58;
+        --line: rgba(23, 20, 18, 0.16);
+        --line-strong: rgba(23, 20, 18, 0.3);
+        --accent: #8c6b4f;
+        --accent-soft: rgba(140, 107, 79, 0.14);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: "Canela", "Baskerville", "Iowan Old Style", Georgia, serif;
+        background:
+          linear-gradient(90deg, rgba(23,20,18,0.04) 1px, transparent 1px),
+          linear-gradient(rgba(23,20,18,0.025) 1px, transparent 1px),
+          var(--bg);
+        background-size: 40px 40px, 40px 40px, auto;
+      }
+      button {
+        font: inherit;
+        color: inherit;
+        background: transparent;
+        border: 1px solid var(--line);
+        cursor: pointer;
+      }
+      .eyebrow,
+      .caps,
+      .residence-switch button,
+      .service-switch button,
+      .status-chip {
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        font-size: 0.72rem;
+      }
+      h1, h2, h3, h4 {
+        margin: 0;
+        line-height: 0.9;
+        letter-spacing: -0.055em;
+        font-weight: 600;
+      }
+      .page {
+        min-height: 100vh;
+        max-width: 1500px;
+        margin: 0 auto;
+        padding: 22px;
+        display: grid;
+        gap: 18px;
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.02fr) minmax(360px, 0.98fr);
+        gap: 18px;
+      }
+      .story,
+      .ledger,
+      .salon,
+      .itinerary,
+      .host-card {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        padding: 18px;
+      }
+      .story h1 {
+        margin-top: 10px;
+        font-size: clamp(3.4rem, 7vw, 6.2rem);
+        max-width: 8ch;
+      }
+      .story p,
+      .ledger p,
+      .salon p,
+      .itinerary p,
+      .host-card p {
+        color: var(--muted);
+        line-height: 1.72;
+      }
+      .status-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        background: var(--accent-soft);
+        border: 1px solid rgba(140,107,79,0.28);
+        width: fit-content;
+      }
+      .residence-switch,
+      .service-switch,
+      .action-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .residence-switch button,
+      .service-switch button,
+      .action-row button {
+        padding: 11px 14px;
+      }
+      .residence-switch .active,
+      .service-switch .active {
+        background: var(--ink);
+        color: #fffaf5;
+        border-color: var(--ink);
+      }
+      .ledger h2 {
+        margin-top: 10px;
+        font-size: clamp(2rem, 4vw, 3.4rem);
+      }
+      .summary-grid {
+        margin-top: 16px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .summary-grid div {
+        border: 1px solid var(--line);
+        background: var(--panel-strong);
+        padding: 12px;
+      }
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+        gap: 18px;
+      }
+      .left-stack,
+      .right-stack {
+        display: grid;
+        gap: 18px;
+      }
+      .itinerary-list,
+      .service-list {
+        margin-top: 16px;
+        display: grid;
+        gap: 10px;
+      }
+      .itinerary-item,
+      .service-item {
+        border-top: 1px solid var(--line);
+        padding-top: 10px;
+        display: grid;
+        gap: 6px;
+      }
+      .itinerary-item:first-child,
+      .service-item:first-child {
+        border-top: 0;
+        padding-top: 0;
+      }
+      .primary {
+        background: var(--ink);
+        color: #fffaf5;
+        border-color: var(--ink);
+      }
+      #residence-status,
+      #host-status {
+        min-height: 1.5rem;
+        font-weight: 600;
+      }
+      #residence-status { color: var(--accent); }
+      #host-status { color: #73543c; }
+      @media (max-width: 1120px) {
+        .hero,
+        .workspace,
+        .summary-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 760px) {
+        .story,
+        .ledger,
+        .salon,
+        .itinerary,
+        .host-card {
+          padding: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <section class="hero">
+        <article class="story">
+          <div class="eyebrow">Maison Prive</div>
+          <h1 id="hero-title">An itinerary authored like a host already knows your name.</h1>
+          <p id="hero-copy">
+            A luxury concierge surface where residence choice, host service, and reservation timing stay connected
+            instead of scattering into ornamental hospitality cards.
+          </p>
+          <div class="status-chip" id="hero-chip">north salon residence / dusk arrival</div>
+        </article>
+
+        <section class="ledger" aria-labelledby="ledger-title">
+          <div class="caps">Residence ledger</div>
+          <h2 id="ledger-title">North Salon Residence</h2>
+          <p id="ledger-copy">
+            Three-night minimum. Library salon, private supper setting, and a host-led arrival sequence staged before check-in.
+          </p>
+          <div class="residence-switch" aria-label="Residence selection" style="margin-top: 16px;">
+            <button class="active" type="button" data-residence="north">North salon</button>
+            <button type="button" data-residence="garden">Garden suite</button>
+            <button type="button" data-residence="atelier">Atelier floor</button>
+          </div>
+          <div class="summary-grid">
+            <div><span class="caps">Rate</span><strong id="rate">$1,260 / night</strong></div>
+            <div><span class="caps">Arrival</span><strong id="arrival">dusk ritual</strong></div>
+            <div><span class="caps">Host</span><strong id="host">private table setting</strong></div>
+          </div>
+          <div id="residence-status" aria-live="polite" style="margin-top: 16px;"></div>
+        </section>
+      </section>
+
+      <section class="workspace">
+        <div class="left-stack">
+          <section class="salon" aria-labelledby="salon-title">
+            <div class="caps">Service salon</div>
+            <h3 id="salon-title" style="font-size: 2rem; margin-top: 8px;">Host services in focus</h3>
+            <p id="salon-copy">
+              The salon should feel like a curated host desk: one selected service, one timing decision, and one
+              visible handoff into the itinerary.
+            </p>
+            <div class="service-switch" aria-label="Service selection" style="margin-top: 16px;">
+              <button class="active" type="button" data-service="supper">Supper</button>
+              <button type="button" data-service="drive">Drive</button>
+              <button type="button" data-service="archive">Archive visit</button>
+            </div>
+            <div class="service-list">
+              <div class="service-item"><strong id="service-title">Private supper setting</strong><p id="service-copy">Stage the first evening in the north salon with linen service and one low-lit host course.</p></div>
+              <div class="service-item"><strong>Arrival note</strong><p id="service-note">Guests are received through the library entry instead of the public drive court.</p></div>
+            </div>
+          </section>
+        </div>
+
+        <aside class="right-stack">
+          <section class="itinerary" aria-labelledby="itinerary-title">
+            <div class="caps">Host itinerary</div>
+            <h3 id="itinerary-title" style="font-size: 2rem; margin-top: 8px;">Arrival rhythm</h3>
+            <div class="itinerary-list" id="itinerary-list">
+              <div class="itinerary-item"><strong>18:10 Arrival</strong><p>Meet at the library stair and move through the north salon before luggage follows.</p></div>
+              <div class="itinerary-item"><strong>19:00 Supper</strong><p>Private supper is staged before the guest enters the residence proper.</p></div>
+              <div class="itinerary-item"><strong>08:30 Breakfast</strong><p>Breakfast is poured inside the courtyard room rather than the public terrace.</p></div>
+            </div>
+          </section>
+
+          <section class="host-card" aria-labelledby="host-title">
+            <div class="caps">Host desk</div>
+            <h3 id="host-title" style="font-size: 2rem; margin-top: 8px;">Prepare the hosted stay</h3>
+            <p id="host-copy">
+              The request action should read like a host desk preparing a stay, not like a generic purchase button.
+            </p>
+            <div class="action-row" style="margin-top: 16px;">
+              <button class="primary" id="prepare-itinerary" type="button">Prepare itinerary</button>
+              <button id="reserve-salon" type="button">Reserve residence</button>
+            </div>
+            <div id="host-status" aria-live="polite" style="margin-top: 16px;"></div>
+          </section>
+        </aside>
+      </section>
+    </div>
+
+    <script>
+      const residences = {
+        north: {
+          heroChip: "north salon residence / dusk arrival",
+          title: "North Salon Residence",
+          copy: "Three-night minimum. Library salon, private supper setting, and a host-led arrival sequence staged before check-in.",
+          rate: "$1,260 / night",
+          arrival: "dusk ritual",
+          host: "private table setting"
+        },
+        garden: {
+          heroChip: "garden suite / morning arrival",
+          title: "Garden Suite",
+          copy: "Two-night minimum. Garden breakfast service, lower gallery access, and a slower host-led morning arrival.",
+          rate: "$980 / night",
+          arrival: "garden morning",
+          host: "courtyard breakfast"
+        },
+        atelier: {
+          heroChip: "atelier floor / archive arrival",
+          title: "Atelier Floor",
+          copy: "Four-night minimum. Working studio salon, archive supper, and an arrival framed by the private collection room.",
+          rate: "$1,540 / night",
+          arrival: "archive entry",
+          host: "collection supper"
+        }
+      };
+
+      const services = {
+        supper: {
+          title: "Private supper setting",
+          copy: "Stage the first evening in the north salon with linen service and one low-lit host course.",
+          note: "Guests are received through the library entry instead of the public drive court."
+        },
+        drive: {
+          title: "Private drive arrival",
+          copy: "Shift the arrival to the private drive court with a shorter handoff and immediate luggage placement.",
+          note: "The host note should move from ceremony toward privacy and speed."
+        },
+        archive: {
+          title: "Archive visit",
+          copy: "Open the archive room before supper so the first hosted moment reads like a guided invitation instead of a tour.",
+          note: "The itinerary should hold a longer pause between arrival and table service."
+        }
+      };
+
+      const residenceButtons = [...document.querySelectorAll("[data-residence]")];
+      const serviceButtons = [...document.querySelectorAll("[data-service]")];
+
+      function setResidence(key) {
+        residenceButtons.forEach((button) => button.classList.toggle("active", button.dataset.residence === key));
+        const next = residences[key];
+        document.getElementById("hero-chip").textContent = next.heroChip;
+        document.getElementById("ledger-title").textContent = next.title;
+        document.getElementById("ledger-copy").textContent = next.copy;
+        document.getElementById("rate").textContent = next.rate;
+        document.getElementById("arrival").textContent = next.arrival;
+        document.getElementById("host").textContent = next.host;
+        document.getElementById("residence-status").textContent = `${next.title} moved into the active residence ledger.`;
+      }
+
+      function setService(key) {
+        serviceButtons.forEach((button) => button.classList.toggle("active", button.dataset.service === key));
+        const next = services[key];
+        document.getElementById("service-title").textContent = next.title;
+        document.getElementById("service-copy").textContent = next.copy;
+        document.getElementById("service-note").textContent = next.note;
+        document.getElementById("host-status").textContent = `${next.title} moved into the host itinerary.`;
+      }
+
+      residenceButtons.forEach((button) => button.addEventListener("click", () => setResidence(button.dataset.residence)));
+      serviceButtons.forEach((button) => button.addEventListener("click", () => setService(button.dataset.service)));
+
+      document.getElementById("prepare-itinerary").addEventListener("click", () => {
+        document.getElementById("host-status").textContent = "Hosted itinerary prepared for the active residence and service pairing.";
+      });
+
+      document.getElementById("reserve-salon").addEventListener("click", () => {
+        document.getElementById("host-status").textContent = "Reservation request opened with the current host ledger details.";
+      });
+    </script>
+  </body>
+</html>

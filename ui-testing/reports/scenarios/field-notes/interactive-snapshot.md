@@ -1,0 +1,76 @@
+- main [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]: Field Notes
+      - heading "Keep the weather in the manuscript." [level=1] [ref=e7]
+      - paragraph [ref=e8]: A writing and publishing studio for essays, letters, and issue planning. The surface should help the writer edit, gather, and release without turning reflection into productivity theater.
+      - generic [ref=e9]: scheduled issue / tidal almanac
+    - region "editor mode" [ref=e10]:
+      - generic [ref=e11]: editor mode
+      - generic "Content filter" [ref=e12]:
+        - button "Drafts" [ref=e13] [cursor=pointer]
+        - button "Scheduled" [ref=e14] [cursor=pointer]
+        - button "Released" [ref=e15] [cursor=pointer]
+      - generic "Issue selection" [ref=e16]:
+        - button "Harbor Ledger" [ref=e17] [cursor=pointer]
+        - button "Tidal Almanac" [ref=e18] [cursor=pointer]
+      - paragraph [ref=e19]: Scheduled work should foreground issue timing and final proofing rather than raw drafting energy.
+  - generic [ref=e20]:
+    - generic [ref=e21]:
+      - article "Tidal almanac assembled for a dawn release." [ref=e78]:
+        - generic [ref=e23]: scheduled issue
+        - heading "Tidal almanac assembled for a dawn release." [level=2] [ref=e79]
+        - paragraph [ref=e25]: This issue is less confessional and more observational. Keep the weather fragments crisp and let the issue note carry the frame.
+        - generic [ref=e26]:
+          - generic [ref=e27]:
+            - paragraph [ref=e28]: The weather was not dramatic enough to make a story on its own, which is why the pilings noticed it first.
+            - paragraph [ref=e29]: By the second morning the harbor looked ordinary again, but every rope on the west edge had shifted half an inch toward the boats that leave before dawn.
+            - paragraph [ref=e30]: By dawn the weather note read less like warning and more like a ledger of what the harbor had already admitted.
+          - generic [ref=e31]:
+            - generic [ref=e32]: Margin note
+            - blockquote [ref=e33]: This one wants clarity, not softness. Keep the weather fragments clean and the release note spare.
+      - region "Release rhythm" [ref=e35]:
+        - generic [ref=e36]: Issue planner
+        - heading "Release rhythm" [level=3] [ref=e37]
+        - generic [ref=e38]:
+          - generic [ref=e39]:
+            - generic [ref=e40]: Mon
+            - generic [ref=e41]:
+              - strong [ref=e42]: Lead essay close
+              - generic [ref=e43]: Finish the last image without over-explaining the harbor.
+          - generic [ref=e44]:
+            - generic [ref=e45]: Tue
+            - generic [ref=e46]:
+              - strong [ref=e47]: Source review
+              - generic [ref=e48]: Pull one weather note and one dock log into the supporting section.
+          - generic [ref=e49]:
+            - generic [ref=e50]: Thu
+            - generic [ref=e51]:
+              - strong [ref=e52]: Issue package
+              - generic [ref=e53]: Lock the issue note and schedule the letter for dawn release.
+        - generic [ref=e54]:
+          - button "Prepare publish brief" [ref=e55] [cursor=pointer]
+          - button "Run quiet pass" [ref=e56] [cursor=pointer]
+    - complementary [ref=e58]:
+      - region "Working material" [ref=e59]:
+        - generic [ref=e60]: Source library
+        - heading "Working material" [level=3] [ref=e61]
+        - generic "Source selection" [ref=e62]:
+          - button "Dock log West pier shift record" [ref=e63] [cursor=pointer]:
+            - text: Dock log
+            - strong [ref=e64]: West pier shift record
+          - button "Weather note Barometer dip at 04:10" [active] [ref=e65] [cursor=pointer]:
+            - text: Weather note
+            - strong [ref=e66]: Barometer dip at 04:10
+          - button "Voice memo Night watch on rope tension" [ref=e67] [cursor=pointer]:
+            - text: Voice memo
+            - strong [ref=e68]: Night watch on rope tension
+        - paragraph [ref=e69]: The weather note should sharpen the atmosphere of the piece, not overwrite its human scale.
+        - generic [ref=e70]: Barometer dip at 04:10 moved into the active source rail.
+      - region "Next issue moves" [ref=e71]:
+        - generic [ref=e72]: Publishing queue
+        - heading "Next issue moves" [level=3] [ref=e73]
+        - paragraph [ref=e74]: The studio should help the writer shift between drafting, issue prep, and release timing without collapsing into a dashboard clone.
+        - generic [ref=e75]:
+          - button "Move to scheduled" [ref=e76] [cursor=pointer]
+          - button "Promote margin note" [ref=e77] [cursor=pointer]

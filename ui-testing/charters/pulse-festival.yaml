@@ -1,0 +1,21 @@
+flow: Pulse Festival daypart planner
+success_criteria: The planner can switch the lineup from tonight to after-hours and pin a stage pass in the planner rail.
+base_url: http://127.0.0.1:4173/pulse-festival/
+start_path: index.html
+steps:
+  - action: assert_text
+    expected: Pulse Festival
+  - action: click_element
+    text: After-hours
+  - action: assert_text
+    expected: Warehouse Echo takes the after-hours spotlight
+  - action: click_element
+    text: Pin South Hall
+  - action: assert_text
+    expected: South Hall pinned to your planner rail
+  - action: screenshot
+    name: pulse-festival-interaction
+  - action: capture_dom
+    name: pulse-festival-dom
+  - action: capture_accessibility
+    name: pulse-festival-accessibility

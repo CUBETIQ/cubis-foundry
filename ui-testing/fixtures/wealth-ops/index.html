@@ -1,0 +1,792 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>wealth-ops</title>
+    <link rel="icon" href="data:,">
+    <style>
+      :root {
+        --bg: #ece6dd;
+        --shell: #f6f1e8;
+        --panel: rgba(250, 246, 239, 0.92);
+        --panel-strong: #fffaf2;
+        --ink: #162126;
+        --muted: #627077;
+        --line: rgba(22, 33, 38, 0.16);
+        --line-strong: rgba(22, 33, 38, 0.34);
+        --accent: #32554d;
+        --accent-soft: rgba(50, 85, 77, 0.12);
+        --alert: #9a543e;
+        --alert-soft: rgba(154, 84, 62, 0.12);
+        --warn: #a37a2d;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif;
+        background:
+          linear-gradient(90deg, rgba(22,33,38,0.045) 1px, transparent 1px),
+          linear-gradient(rgba(22,33,38,0.03) 1px, transparent 1px),
+          radial-gradient(circle at top right, rgba(50,85,77,0.14), transparent 28%),
+          var(--bg);
+        background-size: 28px 28px, 28px 28px, auto, auto;
+      }
+      button {
+        font: inherit;
+        color: inherit;
+        background: transparent;
+        border: 1px solid var(--line);
+        cursor: pointer;
+      }
+      .shell {
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: 340px 1fr;
+      }
+      .rail {
+        padding: 28px 24px 30px;
+        border-right: 1px solid var(--line-strong);
+        background: rgba(248, 242, 232, 0.94);
+        backdrop-filter: blur(10px);
+        display: grid;
+        gap: 22px;
+        align-content: start;
+        box-shadow: inset -18px 0 32px rgba(22, 33, 38, 0.035);
+      }
+      .eyebrow,
+      .label,
+      .ticker span,
+      .desk-switch button,
+      .status-chip,
+      .mini-stat span,
+      .signal-badge {
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        font-size: 0.72rem;
+      }
+      h1, h2, h3, h4, .figure {
+        margin: 0;
+        font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+        letter-spacing: -0.04em;
+        font-weight: 600;
+      }
+      .eyebrow {
+        color: var(--accent);
+      }
+      .rail-header h1 {
+        margin-top: 10px;
+        font-size: clamp(2.1rem, 3.8vw, 3.15rem);
+        line-height: 0.92;
+        max-width: 7.5ch;
+      }
+      .rail-copy {
+        color: var(--muted);
+        line-height: 1.65;
+        max-width: 24rem;
+      }
+      .desk-switch {
+        display: grid;
+        gap: 10px;
+      }
+      .desk-switch button,
+      .focus-switch button {
+        text-align: left;
+        padding: 12px 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(250,246,239,0.68);
+      }
+      .desk-switch button.active,
+      .focus-switch button.active {
+        background: var(--ink);
+        color: #f8f6f2;
+        border-color: var(--ink);
+      }
+      .process-rail,
+      .operator-note,
+      .queue-card,
+      .matrix-card,
+      .timeline-card,
+      .drawer-card,
+      .mini-stat,
+      .watch-card {
+        border: 1px solid var(--line);
+        background: var(--panel);
+      }
+      .process-rail,
+      .operator-note {
+        padding: 16px;
+      }
+      .process-steps {
+        display: grid;
+        gap: 12px;
+        margin-top: 12px;
+      }
+      .process-step {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 12px;
+        align-items: start;
+      }
+      .step-index {
+        width: 2rem;
+        height: 2rem;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--ink);
+        font-size: 0.74rem;
+      }
+      main {
+        padding: 20px 26px 28px;
+        display: grid;
+        gap: 18px;
+      }
+      .topbar {
+        display: grid;
+        gap: 14px;
+      }
+      .ticker,
+      .headline-bar {
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.45);
+        padding: 12px 14px;
+      }
+      .ticker {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        align-items: center;
+      }
+      .ticker strong {
+        font-size: 0.95rem;
+      }
+      .ticker .down { color: var(--alert); }
+      .ticker .up { color: var(--accent); }
+      .headline-bar {
+        display: grid;
+        grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.82fr);
+        gap: 24px;
+        align-items: end;
+      }
+      .headline-copy h2 {
+        margin: 8px 0 12px;
+        font-size: clamp(2rem, 4.25vw, 4rem);
+        line-height: 0.94;
+        max-width: 12ch;
+      }
+      .headline-copy p {
+        margin: 0;
+        max-width: 42rem;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+      .headline-side {
+        display: grid;
+        gap: 12px;
+      }
+      .status-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border: 1px solid var(--line-strong);
+        background: var(--accent-soft);
+        width: fit-content;
+      }
+      .mini-stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .mini-stat {
+        padding: 14px;
+      }
+      .mini-stat span {
+        color: var(--muted);
+      }
+      .figure {
+        display: block;
+        margin-top: 8px;
+        font-size: 1.8rem;
+      }
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.78fr);
+        gap: 18px;
+      }
+      .left-stack,
+      .right-stack {
+        display: grid;
+        gap: 18px;
+      }
+      .matrix-card,
+      .timeline-card,
+      .drawer-card,
+      .queue-card,
+      .watch-card {
+        padding: 18px;
+      }
+      .card-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: center;
+      }
+      .card-head p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        line-height: 1.6;
+        max-width: 42rem;
+      }
+      .focus-switch {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .focus-switch button {
+        min-width: 152px;
+      }
+      .matrix {
+        margin-top: 18px;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .cell {
+        min-height: 114px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        background: var(--panel-strong);
+        display: grid;
+        align-content: space-between;
+        gap: 10px;
+      }
+      .cell.alert {
+        background: linear-gradient(180deg, rgba(154,84,62,0.18), rgba(255,250,242,0.96));
+        border-color: rgba(154,84,62,0.35);
+      }
+      .cell.warn {
+        background: linear-gradient(180deg, rgba(163,122,45,0.15), rgba(255,250,242,0.96));
+        border-color: rgba(163,122,45,0.35);
+      }
+      .cell strong {
+        font-size: 1rem;
+      }
+      .cell small {
+        color: var(--muted);
+        line-height: 1.5;
+      }
+      .queue-list {
+        margin-top: 18px;
+        display: grid;
+        gap: 10px;
+      }
+      .queue-item {
+        width: 100%;
+        padding: 14px;
+        text-align: left;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 14px;
+        align-items: center;
+        background: var(--panel-strong);
+      }
+      .queue-item.active {
+        border-color: var(--accent);
+        background: linear-gradient(90deg, rgba(50,85,77,0.12), rgba(255,250,242,0.98));
+      }
+      .queue-item .slot {
+        width: 2rem;
+        height: 2rem;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--ink);
+        font-size: 0.76rem;
+      }
+      .queue-item small,
+      .watch-row small,
+      .timeline-item p,
+      .drawer-card p {
+        color: var(--muted);
+        line-height: 1.55;
+      }
+      .signal-badge {
+        padding: 6px 8px;
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.52);
+      }
+      .signal-badge.alert {
+        color: var(--alert);
+        border-color: rgba(154,84,62,0.32);
+        background: var(--alert-soft);
+      }
+      .watchlist {
+        margin-top: 18px;
+        display: grid;
+        gap: 10px;
+      }
+      .watch-row {
+        padding-top: 10px;
+        border-top: 1px solid var(--line);
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+      }
+      .watch-row:first-child {
+        border-top: 0;
+        padding-top: 0;
+      }
+      .timeline-list {
+        margin-top: 18px;
+        display: grid;
+        gap: 12px;
+      }
+      .timeline-item {
+        display: grid;
+        grid-template-columns: 88px 1fr;
+        gap: 14px;
+        padding-top: 12px;
+        border-top: 1px solid var(--line);
+      }
+      .timeline-item:first-child {
+        border-top: 0;
+        padding-top: 0;
+      }
+      .timeline-time {
+        color: var(--muted);
+        font-size: 0.86rem;
+      }
+      .drawer-card {
+        display: grid;
+        gap: 14px;
+      }
+      .drawer-summary {
+        display: grid;
+        gap: 8px;
+        padding: 14px;
+        background: var(--panel-strong);
+        border: 1px solid var(--line);
+      }
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .summary-grid div {
+        padding: 10px;
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.58);
+      }
+      .drawer-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .drawer-actions button,
+      .stress-button {
+        padding: 12px 14px;
+      }
+      .primary {
+        background: var(--ink);
+        color: #f8f6f2;
+        border-color: var(--ink);
+      }
+      .stress-button {
+        background: var(--accent-soft);
+        border-color: rgba(50,85,77,0.28);
+        width: fit-content;
+      }
+      #stress-status,
+      #drawer-status {
+        min-height: 1.5rem;
+        font-weight: 600;
+      }
+      #drawer-status { color: var(--alert); }
+      #stress-status { color: var(--accent); }
+      @media (max-width: 1120px) {
+        .headline-bar,
+        .workspace,
+        .matrix {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 900px) {
+        .shell {
+          grid-template-columns: 1fr;
+        }
+        main {
+          order: 1;
+          padding: 18px 18px 24px;
+        }
+        .rail {
+          order: 2;
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+          border-top: 1px solid var(--line);
+          padding: 18px;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 14px;
+        }
+        .rail-header,
+        .process-rail,
+        .operator-note,
+        .headline-side,
+        .mini-stats,
+        .summary-grid,
+        .drawer-summary {
+          grid-column: 1 / -1;
+        }
+        .workspace > .right-stack {
+          order: -1;
+        }
+        .desk-switch {
+          grid-column: 1 / -1;
+        }
+        .timeline-item,
+        .queue-item {
+          grid-template-columns: 1fr;
+        }
+        .queue-item .slot {
+          margin-bottom: 4px;
+        }
+        .matrix,
+        .mini-stats,
+        .summary-grid {
+          grid-template-columns: 1fr;
+        }
+        .headline-copy h2 {
+          max-width: 10ch;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="rail">
+        <div class="rail-header">
+          <div class="eyebrow">wealth-ops / control rail</div>
+          <h1>Intervention before the handoff.</h1>
+          <p class="rail-copy">
+            A finance command surface for desks that need to rank live exposure, document relief action,
+            and release decisions before the market handoff turns risk into overnight debt.
+          </p>
+        </div>
+
+        <section aria-labelledby="desk-title">
+          <div class="label" id="desk-title">desk focus</div>
+          <div class="desk-switch" style="margin-top: 12px;">
+            <button class="active" type="button" data-desk="london"><span>London ladder</span><strong>12 flags</strong></button>
+            <button type="button" data-desk="zurich"><span>Zurich private desk</span><strong>7 flags</strong></button>
+            <button type="button" data-desk="singapore"><span>Singapore reserve</span><strong>5 flags</strong></button>
+          </div>
+        </section>
+
+        <section class="process-rail" aria-labelledby="process-title">
+          <div class="label" id="process-title">numbered process rail</div>
+          <div class="process-steps">
+            <div class="process-step"><div class="step-index">01</div><div><strong>Rank</strong><div class="rail-copy">Expose same-session exceptions before dashboard totals hide them.</div></div></div>
+            <div class="process-step"><div class="step-index">02</div><div><strong>Assign</strong><div class="rail-copy">Pin one owner, one route, and one fallback before treasury sign-off.</div></div></div>
+            <div class="process-step"><div class="step-index">03</div><div><strong>Document</strong><div class="rail-copy">Write the rationale that explains why release happened under pressure.</div></div></div>
+          </div>
+        </section>
+
+        <section class="operator-note" aria-labelledby="operator-note-title">
+          <div class="label" id="operator-note-title">operator note</div>
+          <p class="rail-copy" id="operator-note">
+            London is the lead desk this hour. Keep the queue tight and document every exception before the
+            release window narrows under fourteen minutes.
+          </p>
+        </section>
+      </aside>
+
+      <main>
+        <section class="topbar" aria-label="market pulse">
+          <div class="ticker">
+            <span class="label">Market pulse</span>
+            <strong>GBP ladder <span class="down">-1.8%</span></strong>
+            <strong>Liquidity buffer <span class="up">+240bp</span></strong>
+            <strong>Handoff in 14m</strong>
+            <strong>Treasury route 02 active</strong>
+          </div>
+
+          <div class="headline-bar">
+            <div class="headline-copy">
+              <div class="eyebrow" id="hero-eyebrow">London ladder / live escalations</div>
+              <h2 id="hero-title">Four outflows crossed the desk tolerance band inside one session.</h2>
+              <p id="hero-copy">
+                The command canvas should rank high-value releases, expose route congestion, and force one
+                written rationale before anything clears into the handoff queue.
+              </p>
+            </div>
+            <div class="headline-side">
+              <div class="status-chip" id="hero-chip">priority desk / direct confirmation</div>
+              <button class="stress-button" id="stress-button" type="button">Run stress replay</button>
+              <div id="stress-status" aria-live="polite"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="mini-stats" aria-label="priority metrics">
+          <article class="mini-stat"><span>Priority flow</span><strong class="figure" id="stat-flow">4.2m</strong></article>
+          <article class="mini-stat"><span>Breached desks</span><strong class="figure" id="stat-desks">3</strong></article>
+          <article class="mini-stat"><span>Median action</span><strong class="figure" id="stat-window">14m</strong></article>
+        </section>
+
+        <section class="workspace">
+          <div class="left-stack">
+            <section class="matrix-card" aria-labelledby="matrix-title">
+              <div class="card-head">
+                <div>
+                  <div class="eyebrow">Precision enterprise / catalog-control-canvas</div>
+                  <h3 id="matrix-title">Exposure matrix</h3>
+                  <p>
+                    Rank the book by urgency and route risk. The surface is useful only if operators can see which
+                    decisions are structurally dangerous, not just numerically large.
+                  </p>
+                </div>
+                <div class="focus-switch" aria-label="matrix focus">
+                  <button class="active" type="button" data-focus="exposure">Exposure</button>
+                  <button type="button" data-focus="settlement">Settlement</button>
+                </div>
+              </div>
+              <div class="matrix" id="matrix-grid">
+                <article class="cell alert"><span class="label">A1 / direct</span><strong>4.2m London release</strong><small>client reachability conflict and same-session deadline</small></article>
+                <article class="cell warn"><span class="label">A2 / buffer</span><strong>2.1m Zurich bridge</strong><small>treasury sign-off blocked by owner mismatch</small></article>
+                <article class="cell"><span class="label">B1 / watch</span><strong>1.4m reserve transfer</strong><small>buffer restored but release note still missing</small></article>
+                <article class="cell"><span class="label">B2 / watch</span><strong>840k reserve sweep</strong><small>route clear if confirmation lands before 18:25</small></article>
+              </div>
+            </section>
+
+            <section class="timeline-card" aria-labelledby="timeline-title">
+              <div class="card-head">
+                <div>
+                  <div class="eyebrow">Action timeline</div>
+                  <h3 id="timeline-title">Desk handoff sequence</h3>
+                </div>
+                <div class="status-chip">one owner per release</div>
+              </div>
+              <div class="timeline-list" id="timeline-list">
+                <div class="timeline-item"><div class="timeline-time">18:04</div><div><strong>Exposure route widened</strong><p>Same-session outflows breached the London desk buffer and triggered direct review.</p></div></div>
+                <div class="timeline-item"><div class="timeline-time">18:09</div><div><strong>Treasury callback delayed</strong><p>Confirmation route split across two owners, creating a release bottleneck.</p></div></div>
+                <div class="timeline-item"><div class="timeline-time">18:13</div><div><strong>Operator escalation opened</strong><p>Command desk asked for written rationale before any priority release clears.</p></div></div>
+              </div>
+            </section>
+          </div>
+
+          <div class="right-stack">
+            <section class="queue-card" aria-labelledby="queue-title">
+              <div class="card-head">
+                <div>
+                  <div class="eyebrow">Decision queue</div>
+                  <h3 id="queue-title">Next interventions</h3>
+                </div>
+                <div class="signal-badge alert" id="queue-badge">2 routes blocked</div>
+              </div>
+              <div class="queue-list">
+                <button class="queue-item active" type="button" data-queue="london-release">
+                  <div class="slot">01</div>
+                  <div><strong>London cash ladder</strong><small>Outbound release waiting on treasury sign-off and relationship verification.</small></div>
+                  <div class="signal-badge alert">8m</div>
+                </button>
+                <button class="queue-item" type="button" data-queue="zurich-bridge">
+                  <div class="slot">02</div>
+                  <div><strong>Zurich bridge route</strong><small>Owner mismatch on private desk route keeps the approval chain split.</small></div>
+                  <div class="signal-badge">12m</div>
+                </button>
+                <button class="queue-item" type="button" data-queue="reserve-note">
+                  <div class="slot">03</div>
+                  <div><strong>Singapore reserve note</strong><small>Buffer restored, but the release note is still absent from the audit trail.</small></div>
+                  <div class="signal-badge">17m</div>
+                </button>
+              </div>
+            </section>
+
+            <section class="watch-card" aria-labelledby="watch-title">
+              <div class="eyebrow">Watchlist</div>
+              <h3 id="watch-title">Pressure points</h3>
+              <div class="watchlist">
+                <div class="watch-row"><div><strong>Confirmation route</strong><small>Two-step callback path still depends on direct treasury ownership.</small></div><strong>fragile</strong></div>
+                <div class="watch-row"><div><strong>Reserve desk note</strong><small>Audit visibility remains incomplete even after liquidity improves.</small></div><strong>open</strong></div>
+                <div class="watch-row"><div><strong>Client reachability</strong><small>One unreachable counterparty keeps the London route elevated.</small></div><strong>high</strong></div>
+              </div>
+            </section>
+
+            <section class="drawer-card" aria-labelledby="drawer-title">
+              <div>
+                <div class="eyebrow">Approval drawer</div>
+                <h3 id="drawer-title">London cash ladder</h3>
+              </div>
+              <p id="drawer-copy">
+                Release requires direct treasury sign-off, one named owner, and a written explanation for why
+                the desk is clearing above the temporary tolerance band.
+              </p>
+              <div class="drawer-summary">
+                <strong id="drawer-headline">Priority route / 4.2m exposure</strong>
+                <div class="summary-grid">
+                  <div><span class="label">Owner</span><strong id="drawer-owner">Treasury route 02</strong></div>
+                  <div><span class="label">Fallback</span><strong id="drawer-fallback">Hold until call-back</strong></div>
+                  <div><span class="label">Release window</span><strong id="drawer-window">8 minutes</strong></div>
+                </div>
+              </div>
+              <div class="drawer-actions">
+                <button class="primary" id="approve-button" type="button">Approve route</button>
+                <button id="hold-button" type="button">Hold for callback</button>
+              </div>
+              <div id="drawer-status" aria-live="polite"></div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const deskContent = {
+        london: {
+          eyebrow: "London ladder / live escalations",
+          title: "Four outflows crossed the desk tolerance band inside one session.",
+          copy: "The command canvas should rank high-value releases, expose route congestion, and force one written rationale before anything clears into the handoff queue.",
+          chip: "priority desk / direct confirmation",
+          flow: "4.2m",
+          desks: "3",
+          window: "14m",
+          note: "London is the lead desk this hour. Keep the queue tight and document every exception before the release window narrows under fourteen minutes."
+        },
+        zurich: {
+          eyebrow: "Zurich private desk / owner mismatch",
+          title: "Two private-bank releases are blocked by a split approval chain.",
+          copy: "The surface should make ownership ambiguity impossible to miss. Zurich needs one accountable route, one fallback, and a visible call-back path before handoff.",
+          chip: "owner conflict / callback required",
+          flow: "2.8m",
+          desks: "2",
+          window: "12m",
+          note: "Zurich is less noisy than London, but more structurally fragile because the route still belongs to two desks instead of one."
+        },
+        singapore: {
+          eyebrow: "Singapore reserve / note discipline",
+          title: "Liquidity has stabilized, but the audit trail is still weak.",
+          copy: "Reserve operators no longer need emergency relief, yet the system should continue highlighting incomplete documentation so clean numbers do not hide weak process.",
+          chip: "stabilized book / audit at risk",
+          flow: "1.4m",
+          desks: "1",
+          window: "17m",
+          note: "Singapore is a process-quality problem now, not a liquidity emergency. The UI should downshift emphasis without dropping the open requirement."
+        }
+      };
+
+      const matrixContent = {
+        exposure: [
+          ["alert", "A1 / direct", "4.2m London release", "client reachability conflict and same-session deadline"],
+          ["warn", "A2 / buffer", "2.1m Zurich bridge", "treasury sign-off blocked by owner mismatch"],
+          ["", "B1 / watch", "1.4m reserve transfer", "buffer restored but release note still missing"],
+          ["", "B2 / watch", "840k reserve sweep", "route clear if confirmation lands before 18:25"]
+        ],
+        settlement: [
+          ["alert", "A1 / hold", "same-hour mismatch", "settlement route ages into the next handoff if callback slips again"],
+          ["warn", "A2 / repair", "confirmation ledger", "ownership note needs rewrite before export pack closes"],
+          ["", "B1 / queue", "batch review path", "secondary route can clear if London confirms first"],
+          ["", "B2 / reserve", "late reserve sweep", "low value but still visible in the desk queue"]
+        ]
+      };
+
+      const queueContent = {
+        "london-release": {
+          title: "London cash ladder",
+          copy: "Release requires direct treasury sign-off, one named owner, and a written explanation for why the desk is clearing above the temporary tolerance band.",
+          headline: "Priority route / 4.2m exposure",
+          owner: "Treasury route 02",
+          fallback: "Hold until call-back",
+          window: "8 minutes",
+          status: "London route moved into direct review"
+        },
+        "zurich-bridge": {
+          title: "Zurich bridge route",
+          copy: "Resolve the split owner chain first. The desk should not clear a private route while the callback responsibility remains ambiguous across treasury and desk operations.",
+          headline: "Owner mismatch / 2.1m bridge",
+          owner: "Private desk pair",
+          fallback: "Collapse to one operator",
+          window: "12 minutes",
+          status: "Zurich route staged for ownership repair"
+        },
+        "reserve-note": {
+          title: "Singapore reserve note",
+          copy: "The book is no longer under direct pressure, but the release note is still missing. This route should shift from urgency emphasis to audit emphasis without disappearing from view.",
+          headline: "Documentation gap / 1.4m reserve",
+          owner: "Reserve desk lead",
+          fallback: "Block export pack",
+          window: "17 minutes",
+          status: "Singapore note moved into documentation review"
+        }
+      };
+
+      const deskButtons = [...document.querySelectorAll("[data-desk]")];
+      const focusButtons = [...document.querySelectorAll("[data-focus]")];
+      const queueButtons = [...document.querySelectorAll("[data-queue]")];
+      let currentQueue = "london-release";
+
+      function setDesk(id) {
+        const next = deskContent[id];
+        deskButtons.forEach((button) => button.classList.toggle("active", button.dataset.desk === id));
+        document.getElementById("hero-eyebrow").textContent = next.eyebrow;
+        document.getElementById("hero-title").textContent = next.title;
+        document.getElementById("hero-copy").textContent = next.copy;
+        document.getElementById("hero-chip").textContent = next.chip;
+        document.getElementById("stat-flow").textContent = next.flow;
+        document.getElementById("stat-desks").textContent = next.desks;
+        document.getElementById("stat-window").textContent = next.window;
+        document.getElementById("operator-note").textContent = next.note;
+      }
+
+      function setFocus(id) {
+        focusButtons.forEach((button) => button.classList.toggle("active", button.dataset.focus === id));
+        const grid = document.getElementById("matrix-grid");
+        grid.innerHTML = "";
+        matrixContent[id].forEach(([tone, label, title, copy]) => {
+          const card = document.createElement("article");
+          card.className = tone ? `cell ${tone}` : "cell";
+          card.innerHTML = `<span class="label">${label}</span><strong>${title}</strong><small>${copy}</small>`;
+          grid.appendChild(card);
+        });
+      }
+
+      function setQueue(id) {
+        currentQueue = id;
+        queueButtons.forEach((button) => button.classList.toggle("active", button.dataset.queue === id));
+        const next = queueContent[id];
+        document.getElementById("drawer-title").textContent = next.title;
+        document.getElementById("drawer-copy").textContent = next.copy;
+        document.getElementById("drawer-headline").textContent = next.headline;
+        document.getElementById("drawer-owner").textContent = next.owner;
+        document.getElementById("drawer-fallback").textContent = next.fallback;
+        document.getElementById("drawer-window").textContent = next.window;
+        document.getElementById("drawer-status").textContent = next.status;
+      }
+
+      deskButtons.forEach((button) => {
+        button.addEventListener("click", () => setDesk(button.dataset.desk));
+      });
+
+      focusButtons.forEach((button) => {
+        button.addEventListener("click", () => setFocus(button.dataset.focus));
+      });
+
+      queueButtons.forEach((button) => {
+        button.addEventListener("click", () => setQueue(button.dataset.queue));
+      });
+
+      document.getElementById("stress-button").addEventListener("click", () => {
+        document.getElementById("stress-status").textContent = "Stress replay complete: reserve route stays open, Zurich remains split, London clears only with written rationale.";
+      });
+
+      document.getElementById("approve-button").addEventListener("click", () => {
+        document.getElementById("drawer-status").textContent = `${queueContent[currentQueue].title} approved for release pack`;
+      });
+
+      document.getElementById("hold-button").addEventListener("click", () => {
+        document.getElementById("drawer-status").textContent = `${queueContent[currentQueue].title} held for callback`;
+      });
+    </script>
+  </body>
+</html>

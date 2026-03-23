@@ -1,0 +1,21 @@
+flow: Atelier Stay room family switch
+success_criteria: The guest can switch from suites to residences and see the booking panel update before opening the request panel.
+base_url: http://127.0.0.1:4173/atelier-stay/
+start_path: index.html
+steps:
+  - action: assert_text
+    expected: Atelier Stay
+  - action: click_element
+    text: Residences
+  - action: assert_text
+    expected: Rooftop Residence
+  - action: click_element
+    text: Request this stay
+  - action: assert_text
+    expected: Stay request opened for Rooftop Residence
+  - action: screenshot
+    name: atelier-stay-interaction
+  - action: capture_dom
+    name: atelier-stay-dom
+  - action: capture_accessibility
+    name: atelier-stay-accessibility

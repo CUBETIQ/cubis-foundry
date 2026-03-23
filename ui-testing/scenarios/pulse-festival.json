@@ -1,0 +1,48 @@
+{
+  "id": "pulse-festival",
+  "topic": "event discovery and routing planner",
+  "surface_type": "webapp",
+  "style_reference_id": "kinetic-dark-09",
+  "primary_style_direction": "kinetic-poster",
+  "supporting_motif": "stage-route-marquee",
+  "layout_pattern": "poster-route-canvas",
+  "complexity_tier": "complex",
+  "anti_slop_constraints": [
+    "avoid generic nightlife app cards",
+    "avoid cyberpunk neon cliches",
+    "avoid empty desktop shell tracks"
+  ],
+  "must_include": [
+    "one spotlight stage block",
+    "one route planner rail",
+    "one venue-pressure summary"
+  ],
+  "interactive_states": [
+    "switch the active daypart",
+    "switch the pinned route"
+  ],
+  "desktop_failure_checks": [
+    "the hero shell cannot leave a dead page-level desktop column",
+    "the spotlight block and route rail must feel intentionally weighted against each other"
+  ],
+  "mobile_expectations": [
+    "lead with the current spotlight and route action before supporting pressure cards",
+    "keep route switching visible without forcing the full desktop shell to stack unchanged"
+  ],
+  "skills_required": [
+    "design-context-capture",
+    "frontend-design-style-selector",
+    "frontend-design-system",
+    "frontend-design-screen-brief",
+    "frontend-design",
+    "design-audit",
+    "frontend-design-mobile-patterns",
+    "playwright-web-qa"
+  ],
+  "benchmark_lanes": ["local-authored"],
+  "acceptance_checks": [
+    "the page feels like a designed poster with a real planner behind it",
+    "route switching updates route copy and the stage canvas",
+    "venue pressure remains visible as a decision cue rather than just decoration"
+  ]
+}

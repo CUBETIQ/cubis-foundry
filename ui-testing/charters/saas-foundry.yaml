@@ -1,0 +1,21 @@
+flow: SaaS Foundry mode and plan switch
+success_criteria: The reviewer can switch the command ribbon mode, see the preview shell update, then switch from team to enterprise plan and see the pricing rail change.
+base_url: http://127.0.0.1:4173/saas-foundry/
+start_path: index.html
+steps:
+  - action: assert_text
+    expected: SaaS Foundry
+  - action: click_element
+    text: Design audit
+  - action: assert_text
+    expected: Design audit workspace
+  - action: click_element
+    text: Enterprise
+  - action: assert_text
+    expected: Guided remediation routing
+  - action: screenshot
+    name: saas-foundry-interaction
+  - action: capture_dom
+    name: saas-foundry-dom
+  - action: capture_accessibility
+    name: saas-foundry-accessibility

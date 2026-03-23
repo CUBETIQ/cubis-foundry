@@ -1,0 +1,48 @@
+{
+  "id": "saas-foundry",
+  "topic": "AI workflow SaaS product surface",
+  "surface_type": "webapp",
+  "style_reference_id": "saas-light-05",
+  "primary_style_direction": "saas-minimal",
+  "supporting_motif": "shadcn-command-ribbon",
+  "layout_pattern": "minimalist-saas-shell",
+  "complexity_tier": "complex",
+  "anti_slop_constraints": [
+    "avoid default startup gradient heroes",
+    "avoid generic card-only feature grids",
+    "avoid shadcn-looking chrome with no product point of view"
+  ],
+  "must_include": [
+    "one live product preview shell",
+    "one pricing or plan rail",
+    "one command ribbon that changes the product story"
+  ],
+  "interactive_states": [
+    "switch from design audit mode to workflow mode",
+    "switch from team plan to enterprise plan"
+  ],
+  "desktop_failure_checks": [
+    "the hero cannot devolve into a text block plus decorative browser mockup",
+    "the product preview and pricing rail must both feel real"
+  ],
+  "mobile_expectations": [
+    "lead with one command ribbon and one preview proof point above fold",
+    "stack pricing below the preview instead of beside a shrunken desktop shell"
+  ],
+  "skills_required": [
+    "design-context-capture",
+    "frontend-design-style-selector",
+    "frontend-design-system",
+    "frontend-design-screen-brief",
+    "frontend-design",
+    "design-audit",
+    "frontend-design-mobile-patterns",
+    "playwright-web-qa"
+  ],
+  "benchmark_lanes": ["local-authored", "stitch"],
+  "acceptance_checks": [
+    "the page feels product-led instead of marketing-template-led",
+    "mode switching updates the preview shell and proof metrics",
+    "plan switching updates the pricing rail"
+  ]
+}

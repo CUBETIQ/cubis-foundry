@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>pulse-festival</title>
+    <link rel="icon" href="data:,">
+    <style>
+      :root {
+        --bg: #0b0d18;
+        --panel: rgba(20, 25, 48, 0.92);
+        --panel-strong: #161d39;
+        --ink: #f5f0db;
+        --muted: #beb8a5;
+        --line: rgba(245, 240, 219, 0.15);
+        --line-strong: rgba(245, 240, 219, 0.28);
+        --hot: #ff6d2e;
+        --lime: #d8ff54;
+        --violet: #7b62ff;
+        --cyan: #62e0ff;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: "ABC Monument Grotesk", "Avenir Next", "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(255,109,46,0.18), transparent 26%),
+          radial-gradient(circle at bottom right, rgba(123,98,255,0.22), transparent 28%),
+          linear-gradient(160deg, #090b14 0%, #10152a 58%, #121834 100%);
+      }
+      button {
+        font: inherit;
+        color: inherit;
+        background: transparent;
+        border: 1px solid var(--line);
+        cursor: pointer;
+      }
+      .eyebrow,
+      .caps,
+      .dayparts button,
+      .route-list button,
+      .stage-grid button,
+      .status-chip {
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        font-size: 0.72rem;
+      }
+      h1, h2, h3, h4 {
+        margin: 0;
+        line-height: 0.92;
+        letter-spacing: -0.05em;
+      }
+      .page {
+        min-height: 100vh;
+        display: grid;
+        gap: 18px;
+        grid-template-columns: 1fr;
+        max-width: 1520px;
+        margin: 0 auto;
+        padding: 22px;
+      }
+      .panel {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        padding: 18px;
+      }
+      .hero {
+        display: grid;
+        gap: 18px;
+      }
+      .hero-top {
+        display: grid;
+        grid-template-columns: minmax(0, 1.02fr) minmax(340px, 0.98fr);
+        gap: 18px;
+      }
+      .hero-copy h1 {
+        margin-top: 8px;
+        font-size: clamp(3.2rem, 8vw, 6.6rem);
+      }
+      .hero-copy p,
+      .spotlight p,
+      .route-detail p,
+      .venue-card p,
+      .pressure-card p {
+        color: var(--muted);
+        line-height: 1.68;
+      }
+      .status-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        background: rgba(255,109,46,0.14);
+        border: 1px solid rgba(255,109,46,0.32);
+        width: fit-content;
+      }
+      .dayparts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 16px;
+      }
+      .dayparts button,
+      .route-list button,
+      .stage-grid button,
+      .action-row button {
+        padding: 11px 14px;
+      }
+      .dayparts .active,
+      .route-list .active,
+      .stage-grid .active {
+        background: var(--lime);
+        color: #121212;
+        border-color: var(--lime);
+      }
+      .spotlight {
+        display: grid;
+        gap: 12px;
+        padding: 18px;
+        border: 1px solid var(--line-strong);
+        background: linear-gradient(135deg, rgba(255,109,46,0.12), rgba(123,98,255,0.14), rgba(20,25,48,0.96));
+      }
+      .spotlight h2 {
+        font-size: clamp(2rem, 4vw, 3.6rem);
+      }
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1.04fr) minmax(320px, 0.96fr);
+        gap: 18px;
+      }
+      .left-stack,
+      .right-stack {
+        display: grid;
+        gap: 18px;
+      }
+      .stage-board,
+      .route-board,
+      .venue-card,
+      .pressure-card {
+        border: 1px solid var(--line);
+        background: var(--panel-strong);
+        padding: 18px;
+      }
+      .stage-grid {
+        margin-top: 16px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .stage-grid button {
+        text-align: left;
+        min-height: 120px;
+        background: rgba(255,255,255,0.03);
+      }
+      .stage-grid strong {
+        display: block;
+        font-size: 1rem;
+        margin-top: 12px;
+      }
+      .route-board h3 {
+        font-size: 2rem;
+        margin-top: 8px;
+      }
+      .route-list {
+        margin-top: 16px;
+        display: grid;
+        gap: 10px;
+      }
+      .route-list button {
+        text-align: left;
+        background: rgba(255,255,255,0.03);
+      }
+      .route-list strong {
+        display: block;
+        margin-top: 8px;
+        font-size: 1rem;
+      }
+      .route-detail {
+        margin-top: 16px;
+        padding: 16px;
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.03);
+      }
+      .timeline {
+        margin-top: 16px;
+        display: grid;
+        gap: 10px;
+      }
+      .timeline-row {
+        display: grid;
+        grid-template-columns: 90px 1fr;
+        gap: 14px;
+        padding-top: 10px;
+        border-top: 1px solid var(--line);
+      }
+      .timeline-row:first-child {
+        border-top: 0;
+        padding-top: 0;
+      }
+      .action-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .primary {
+        background: var(--hot);
+        color: #160b05;
+        border-color: var(--hot);
+      }
+      .venue-stack,
+      .pressure-stack {
+        margin-top: 16px;
+        display: grid;
+        gap: 10px;
+      }
+      .venue-card strong,
+      .pressure-card strong {
+        display: block;
+        margin-top: 8px;
+        font-size: 1.55rem;
+      }
+      #planner-status,
+      #route-status {
+        min-height: 1.5rem;
+        font-weight: 600;
+      }
+      #planner-status { color: var(--lime); }
+      #route-status { color: var(--cyan); }
+      @media (max-width: 1120px) {
+        .hero-top,
+        .workspace,
+        .stage-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 760px) {
+        .page,
+        .panel,
+        .spotlight,
+        .stage-board,
+        .route-board,
+        .venue-card,
+        .pressure-card {
+          padding: 16px;
+        }
+        .stage-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <main class="panel hero">
+        <div class="hero-top">
+          <section class="hero-copy">
+            <div class="eyebrow">Pulse Festival</div>
+            <h1 id="hero-title">Build the route before the crowd decides it for you.</h1>
+            <p id="hero-copy">
+              An event planner for lineup energy, venue flow, and after-hours pivots. The surface should feel
+              poster-driven and alive, but still support a real planning decision in seconds.
+            </p>
+            <div class="dayparts" aria-label="Daypart selection">
+              <button class="active" type="button" data-daypart="tonight">Tonight</button>
+              <button type="button" data-daypart="late">Late shift</button>
+              <button type="button" data-daypart="afterhours">After-hours</button>
+            </div>
+          </section>
+
+          <section class="spotlight" aria-labelledby="spotlight-title">
+            <div class="status-chip" id="spotlight-chip">Tonight spotlight / North Dock</div>
+            <h2 id="spotlight-title">River Array opens the festival by pulling the crowd west before midnight.</h2>
+            <p id="spotlight-copy">
+              Start at North Dock while the entry pressure is low, then move toward South Hall before the transfer corridor hardens into a queue.
+            </p>
+          </section>
+        </div>
+
+        <section class="workspace">
+          <div class="left-stack">
+            <section class="stage-board" aria-labelledby="stage-title">
+              <div class="eyebrow">Kinetic contrast / catalog-control-canvas</div>
+              <h2 id="stage-title" style="font-size: 2.1rem; margin-top: 8px;">Stage matrix</h2>
+              <div class="stage-grid" aria-label="Stage selection">
+                <button class="active" type="button" data-stage="north"><span class="caps">19:30</span><strong>North Dock</strong><div>River Array</div></button>
+                <button type="button" data-stage="south"><span class="caps">21:10</span><strong>South Hall</strong><div>Glass Index</div></button>
+                <button type="button" data-stage="warehouse"><span class="caps">01:15</span><strong>Warehouse Echo</strong><div>Static Bloom</div></button>
+              </div>
+              <div class="route-detail">
+                <div class="eyebrow" id="stage-eyebrow">north dock / low friction opener</div>
+                <h3 id="stage-detail-title">River Array opens the west-side route.</h3>
+                <p id="stage-detail-copy">
+                  North Dock buys early breathing room. Use it to build the night before the transfer corridor tightens.
+                </p>
+                <div class="timeline" id="timeline-list">
+                  <div class="timeline-row"><div class="caps">19:00</div><div><strong>Gate flow</strong><div>Low pressure across west entry.</div></div></div>
+                  <div class="timeline-row"><div class="caps">19:30</div><div><strong>North Dock opener</strong><div>Best entry for a crowd that still wants movement room.</div></div></div>
+                  <div class="timeline-row"><div class="caps">20:45</div><div><strong>Move south</strong><div>Leave before the transfer path turns into a choke point.</div></div></div>
+                </div>
+                <div id="route-status" aria-live="polite"></div>
+              </div>
+            </section>
+          </div>
+
+          <aside class="right-stack">
+            <section class="route-board" aria-labelledby="route-title">
+              <div class="eyebrow">Planner rail</div>
+              <h3 id="route-title">Pinned route</h3>
+              <div class="route-list" aria-label="Route steps">
+                <button class="active" type="button" data-route="dock-south"><span class="caps">Route 01</span><strong>North Dock -> South Hall</strong></button>
+                <button type="button" data-route="south-warehouse"><span class="caps">Route 02</span><strong>South Hall -> Warehouse Echo</strong></button>
+                <button type="button" data-route="warehouse-late"><span class="caps">Route 03</span><strong>Warehouse -> Late corridor</strong></button>
+              </div>
+              <div class="route-detail">
+                <div class="eyebrow" id="route-eyebrow">Route 01</div>
+                <h4 id="route-detail-title" style="font-size: 1.7rem;">Keep the first transfer short and intentional.</h4>
+                <p id="route-detail-copy">
+                  Stay on the west side long enough to catch the opener, then cut to South Hall before the crowd surge.
+                </p>
+              </div>
+              <div class="action-row" style="margin-top: 16px;">
+                <button class="primary" id="pin-route" type="button">Pin current route</button>
+                <button id="share-plan" type="button">Share plan</button>
+              </div>
+              <div id="planner-status" aria-live="polite"></div>
+            </section>
+
+            <section class="venue-card" aria-labelledby="venue-title">
+              <div class="eyebrow">Venue pressure</div>
+              <h3 id="venue-title" style="font-size: 2rem;">Flow checks</h3>
+              <div class="venue-stack">
+                <article class="pressure-card"><div class="caps">Transfer corridor</div><strong id="pressure-a">medium</strong><p id="pressure-a-copy">Open enough for one clean cross-site move before 21:15.</p></article>
+                <article class="pressure-card"><div class="caps">Warehouse queue</div><strong id="pressure-b">rising</strong><p id="pressure-b-copy">After-hours traffic builds fast if you arrive after 01:30.</p></article>
+                <article class="pressure-card"><div class="caps">North entry</div><strong id="pressure-c">easy</strong><p id="pressure-c-copy">Best entry for an early start and low-friction first set.</p></article>
+              </div>
+            </section>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const dayparts = {
+        tonight: {
+          chip: "Tonight spotlight / North Dock",
+          title: "River Array opens the festival by pulling the crowd west before midnight.",
+          copy: "Start at North Dock while the entry pressure is low, then move toward South Hall before the transfer corridor hardens into a queue."
+        },
+        late: {
+          chip: "Late shift / South Hall",
+          title: "South Hall becomes the hinge point once the first routes converge.",
+          copy: "Use South Hall as the center of gravity for the late shift, but leave before the final queue closes the room off."
+        },
+        afterhours: {
+          chip: "After-hours / Warehouse Echo",
+          title: "Warehouse Echo takes the night once the open-air stages empty out.",
+          copy: "The indoor route matters now. Arrive early, pin one fallback hall, and avoid the corridor once queue pressure spikes."
+        }
+      };
+
+      const stages = {
+        north: {
+          eyebrow: "north dock / low friction opener",
+          title: "River Array opens the west-side route.",
+          copy: "North Dock buys early breathing room. Use it to build the night before the transfer corridor tightens.",
+          timeline: [
+            ["19:00", "Gate flow", "Low pressure across west entry."],
+            ["19:30", "North Dock opener", "Best entry for a crowd that still wants movement room."],
+            ["20:45", "Move south", "Leave before the transfer path turns into a choke point."]
+          ],
+          pressures: ["medium", "rising", "easy"],
+          pressureCopy: [
+            "Open enough for one clean cross-site move before 21:15.",
+            "After-hours traffic builds fast if you arrive after 01:30.",
+            "Best entry for an early start and low-friction first set."
+          ]
+        },
+        south: {
+          eyebrow: "south hall / convergence point",
+          title: "Glass Index anchors the late crowd at South Hall.",
+          copy: "South Hall is the best late-evening room if you arrive before the crowd transfer hits full pressure.",
+          timeline: [
+            ["20:50", "South transfer", "Move early before the corridor fills."],
+            ["21:10", "Glass Index", "The room holds best before the surge peaks."],
+            ["22:20", "Decision point", "Choose whether to stay deep or reset for later."]
+          ],
+          pressures: ["high", "medium", "easy"],
+          pressureCopy: [
+            "Transfer corridor hardens once South Hall draws the first surge.",
+            "Warehouse queue is still manageable if you move before midnight.",
+            "North entry is no longer the lead route after 21:00."
+          ]
+        },
+        warehouse: {
+          eyebrow: "warehouse echo / after-hours anchor",
+          title: "Static Bloom pulls the night indoors after 01:00.",
+          copy: "Warehouse Echo becomes the night anchor. The planner should make the indoor pivot obvious before the queue starts to look permanent.",
+          timeline: [
+            ["00:40", "Indoor shift", "Move before the corridor clogs."],
+            ["01:15", "Warehouse Echo", "Main after-hours set begins."],
+            ["02:10", "Fallback hall", "Keep one alternate room pinned if the queue locks."]
+          ],
+          pressures: ["high", "high", "low"],
+          pressureCopy: [
+            "The corridor is difficult once everyone pivots indoors.",
+            "Warehouse queue spikes quickly after 01:20.",
+            "North entry no longer matters in the after-hours window."
+          ]
+        }
+      };
+
+      const routes = {
+        "dock-south": {
+          eyebrow: "Route 01",
+          title: "Keep the first transfer short and intentional.",
+          copy: "Stay on the west side long enough to catch the opener, then cut to South Hall before the crowd surge."
+        },
+        "south-warehouse": {
+          eyebrow: "Route 02",
+          title: "Use South Hall as the hinge into the indoor night.",
+          copy: "Hold South Hall through the late set, then pivot to Warehouse Echo before the after-hours queue turns defensive."
+        },
+        "warehouse-late": {
+          eyebrow: "Route 03",
+          title: "Pin one fallback hall before the queue writes the rest of the night.",
+          copy: "Warehouse is still the anchor, but the planner should keep one alternate corridor alive if the room closes too hard."
+        }
+      };
+
+      const daypartButtons = [...document.querySelectorAll("[data-daypart]")];
+      const stageButtons = [...document.querySelectorAll("[data-stage]")];
+      const routeButtons = [...document.querySelectorAll("[data-route]")];
+      let currentRoute = "dock-south";
+
+      function renderTimeline(id) {
+        const next = stages[id];
+        document.getElementById("stage-eyebrow").textContent = next.eyebrow;
+        document.getElementById("stage-detail-title").textContent = next.title;
+        document.getElementById("stage-detail-copy").textContent = next.copy;
+        const timeline = document.getElementById("timeline-list");
+        timeline.innerHTML = "";
+        next.timeline.forEach(([time, title, copy]) => {
+          const row = document.createElement("div");
+          row.className = "timeline-row";
+          row.innerHTML = `<div class="caps">${time}</div><div><strong>${title}</strong><div>${copy}</div></div>`;
+          timeline.appendChild(row);
+        });
+        document.getElementById("pressure-a").textContent = next.pressures[0];
+        document.getElementById("pressure-b").textContent = next.pressures[1];
+        document.getElementById("pressure-c").textContent = next.pressures[2];
+        document.getElementById("pressure-a-copy").textContent = next.pressureCopy[0];
+        document.getElementById("pressure-b-copy").textContent = next.pressureCopy[1];
+        document.getElementById("pressure-c-copy").textContent = next.pressureCopy[2];
+      }
+
+      daypartButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          daypartButtons.forEach((item) => item.classList.toggle("active", item === button));
+          const next = dayparts[button.dataset.daypart];
+          document.getElementById("spotlight-chip").textContent = next.chip;
+          document.getElementById("spotlight-title").textContent = next.title;
+          document.getElementById("spotlight-copy").textContent = next.copy;
+        });
+      });
+
+      stageButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          stageButtons.forEach((item) => item.classList.toggle("active", item === button));
+          renderTimeline(button.dataset.stage);
+          document.getElementById("route-status").textContent = `${button.querySelector("strong").textContent} moved into the live route matrix.`;
+        });
+      });
+
+      routeButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          currentRoute = button.dataset.route;
+          routeButtons.forEach((item) => item.classList.toggle("active", item === button));
+          document.getElementById("route-eyebrow").textContent = routes[currentRoute].eyebrow;
+          document.getElementById("route-detail-title").textContent = routes[currentRoute].title;
+          document.getElementById("route-detail-copy").textContent = routes[currentRoute].copy;
+        });
+      });
+
+      document.getElementById("pin-route").addEventListener("click", () => {
+        document.getElementById("planner-status").textContent = `${routes[currentRoute].eyebrow} pinned to your planner rail.`;
+      });
+
+      document.getElementById("share-plan").addEventListener("click", () => {
+        document.getElementById("planner-status").textContent = `Shared current planner route with the group.`;
+      });
+    </script>
+  </body>
+</html>

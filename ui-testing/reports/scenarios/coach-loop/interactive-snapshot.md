@@ -1,0 +1,102 @@
+- main [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]: Coach Loop
+      - heading "Keep the sprint day sharp, short, and believable." [level=1] [ref=e103]
+      - paragraph [ref=e8]: Eli's speed work should emphasize precision and leave some hunger. The UI should make overreaching look obviously incorrect.
+      - generic [ref=e9]:
+        - generic [ref=e10]: speed block / confidence first
+        - generic "Training mode" [ref=e11]:
+          - button "Strength" [ref=e12] [cursor=pointer]
+          - button "Recovery" [ref=e13] [cursor=pointer]
+          - button "Speed" [ref=e14] [cursor=pointer]
+        - generic "Athlete roster" [ref=e15]:
+          - button "Mara K" [ref=e16] [cursor=pointer]
+          - button "Eli J" [ref=e17] [cursor=pointer]
+    - region "Readiness ring" [ref=e18]:
+      - generic [ref=e19]: Readiness ring
+      - generic [ref=e21]: "81"
+      - paragraph [ref=e22]: Good enough for acceleration quality if the day stays short and transitions do not cool down.
+  - generic [ref=e23]:
+    - generic [ref=e24]:
+      - region "Acceleration ladder with a shorter close and no volume chase." [ref=e104]:
+        - generic [ref=e26]:
+          - generic [ref=e27]:
+            - generic [ref=e28]: Speed prescription
+            - heading "Acceleration ladder with a shorter close and no volume chase." [level=2] [ref=e105]
+          - generic [ref=e30]: Friday tune / short ladder
+        - paragraph [ref=e31]: Clean starts, one quality fly rep, and a fast exit from the track.
+        - generic [ref=e32]:
+          - article [ref=e33]:
+            - generic [ref=e34]: block 01
+            - heading "Lift" [level=3] [ref=e35]
+            - paragraph [ref=e36]: 2 x 20m acceleration with full recovery.
+          - article [ref=e37]:
+            - generic [ref=e38]: block 02
+            - heading "Move" [level=3] [ref=e39]
+            - paragraph [ref=e40]: One fly exposure after the second build.
+          - article [ref=e41]:
+            - generic [ref=e42]: block 03
+            - heading "Land" [level=3] [ref=e43]
+            - paragraph [ref=e44]: Short rhythm hops and lower-leg reset close.
+      - region "Session staging" [ref=e45]:
+        - generic [ref=e46]: Weekly rail
+        - heading "Session staging" [level=2] [ref=e47]
+        - generic "Session selection" [ref=e48]:
+          - button "Tue Power hinge" [ref=e49] [cursor=pointer]:
+            - text: Tue
+            - strong [ref=e50]: Power hinge
+          - button "Thu Tempo reset" [ref=e51] [cursor=pointer]:
+            - text: Thu
+            - strong [ref=e52]: Tempo reset
+          - button "Fri Speed tune" [active] [ref=e53] [cursor=pointer]:
+            - text: Fri
+            - strong [ref=e54]: Speed tune
+          - button "Sun Recovery flush" [ref=e55] [cursor=pointer]:
+            - text: Sun
+            - strong [ref=e56]: Recovery flush
+        - generic [ref=e57]:
+          - generic [ref=e58]: Friday tune
+          - heading "Acceleration tune with one clean top-end rep." [level=3] [ref=e106]
+          - paragraph [ref=e60]: Keep the ladder concise. The session is a confidence builder, not a second heavy day wearing sprint shoes.
+          - generic [ref=e61]:
+            - generic [ref=e107]:
+              - generic [ref=e108]:
+                - strong [ref=e109]: 20m acceleration
+                - generic [ref=e110]: full recovery between reps
+              - strong [ref=e111]: 12 min
+            - generic [ref=e112]:
+              - generic [ref=e113]:
+                - strong [ref=e114]: Fly sprint
+                - generic [ref=e115]: single high-quality exposure
+              - strong [ref=e116]: 8 min
+            - generic [ref=e117]:
+              - generic [ref=e118]:
+                - strong [ref=e119]: Rhythm hurdle close
+                - generic [ref=e120]: keep the feet quick and relaxed
+              - strong [ref=e121]: 10 min
+          - generic [ref=e77]: Friday tune moved into the live planning rail.
+    - complementary [ref=e78]:
+      - region "Do not reward fatigue with fake intensity." [ref=e79]:
+        - generic [ref=e80]: Coach note
+        - heading "Do not reward fatigue with fake intensity." [level=3] [ref=e81]
+        - paragraph [ref=e82]: The right finish is one rep too few, not one rep too many.
+        - generic [ref=e83]:
+          - button "Confirm plan" [ref=e84] [cursor=pointer]
+          - button "Send athlete note" [ref=e85] [cursor=pointer]
+      - region "Weekly checks" [ref=e87]:
+        - generic [ref=e88]: Monitor rail
+        - heading "Weekly checks" [level=3] [ref=e89]
+        - generic [ref=e90]:
+          - article [ref=e91]:
+            - generic [ref=e92]: Lower body freshness
+            - strong [ref=e93]: 7 / 10
+            - paragraph [ref=e94]: Enough freshness for crisp acceleration work.
+          - article [ref=e95]:
+            - generic [ref=e96]: Sprint confidence
+            - strong [ref=e97]: high
+            - paragraph [ref=e98]: Confidence is best when the day ends early.
+          - article [ref=e99]:
+            - generic [ref=e100]: Sleep trend
+            - strong [ref=e101]: 7h 02m
+            - paragraph [ref=e102]: Sleep is adequate, so avoid unnecessary extras.

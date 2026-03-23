@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>style-atlas</title>
+    <link rel="icon" href="data:,">
+    <style>
+      :root {
+        --bg: #eef1f6;
+        --ink: #15202b;
+        --muted: #607086;
+        --line: rgba(21, 32, 43, 0.14);
+        --panel: rgba(255, 255, 255, 0.92);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: "Inter", "Avenir Next", "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at top right, rgba(60, 106, 255, 0.10), transparent 24%),
+          linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0)),
+          var(--bg);
+      }
+      button,
+      input {
+        font: inherit;
+      }
+      .page {
+        max-width: 1560px;
+        margin: 0 auto;
+        padding: 28px 24px 56px;
+        display: grid;
+        gap: 22px;
+      }
+      .hero,
+      .section,
+      .nav {
+        border: 1px solid var(--line);
+        background: var(--panel);
+      }
+      .hero,
+      .section {
+        border-radius: 28px;
+        padding: 24px;
+        box-shadow: 0 18px 50px rgba(21, 32, 43, 0.06);
+      }
+      .nav {
+        position: sticky;
+        top: 12px;
+        z-index: 2;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 14px;
+        border-radius: 999px;
+        backdrop-filter: blur(14px);
+      }
+      .nav a,
+      .chip {
+        text-decoration: none;
+        color: inherit;
+        border: 1px solid var(--line);
+        padding: 10px 14px;
+        border-radius: 999px;
+        font-size: 0.76rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .eyebrow {
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        font-size: 0.72rem;
+        color: var(--muted);
+      }
+      h1, h2, h3, h4, p {
+        margin: 0;
+      }
+      h1 {
+        margin-top: 8px;
+        font-size: clamp(3rem, 5.5vw, 5.4rem);
+        line-height: 0.9;
+        letter-spacing: -0.06em;
+        max-width: 10ch;
+      }
+      .hero p {
+        margin-top: 14px;
+        max-width: 58rem;
+        color: var(--muted);
+        line-height: 1.75;
+        font-size: 1.04rem;
+      }
+      .hero-grid,
+      .component-grid {
+        display: grid;
+        gap: 16px;
+      }
+      .hero-grid {
+        margin-top: 18px;
+        grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+      }
+      .summary-card {
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 18px;
+        display: grid;
+        gap: 12px;
+        background: rgba(255,255,255,0.78);
+      }
+      .summary-card strong {
+        font-size: 1.8rem;
+      }
+      .summary-card p {
+        color: var(--muted);
+        line-height: 1.65;
+      }
+      .section {
+        display: grid;
+        gap: 18px;
+      }
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: start;
+      }
+      .section-header p {
+        max-width: 52rem;
+        color: var(--muted);
+        line-height: 1.68;
+      }
+      .component-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .card {
+        border: 1px solid rgba(21, 32, 43, 0.12);
+        padding: 18px;
+        display: grid;
+        gap: 14px;
+        min-height: 210px;
+      }
+      .card h4 {
+        font-size: 1.35rem;
+        line-height: 1;
+      }
+      .card p {
+        color: inherit;
+        line-height: 1.6;
+      }
+      .controls,
+      .stats,
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .button,
+      .field,
+      .mini-chip,
+      .stat {
+        border: 1px solid currentColor;
+        padding: 11px 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .field {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .mono {
+        background: #fbf8f2;
+        color: #121110;
+        font-family: "Canela", "Iowan Old Style", Georgia, serif;
+      }
+      .mono .card,
+      .mono .button,
+      .mono .field,
+      .mono .mini-chip,
+      .mono .stat {
+        border-radius: 0;
+        background: rgba(255,255,255,0.42);
+      }
+      .mono h2,
+      .mono h4 {
+        letter-spacing: -0.06em;
+      }
+      .mono .button.primary {
+        background: #121110;
+        color: #fbf8f2;
+      }
+      .saas {
+        background: #f8fbff;
+        color: #122448;
+      }
+      .saas .card,
+      .saas .button,
+      .saas .field,
+      .saas .mini-chip,
+      .saas .stat {
+        border-radius: 18px;
+        background: rgba(255,255,255,0.92);
+      }
+      .saas .button.primary {
+        background: #276ef1;
+        color: #f7fbff;
+        border-color: #276ef1;
+      }
+      .material {
+        background: #f6f4ff;
+        color: #231b3b;
+      }
+      .material .card,
+      .material .button,
+      .material .field,
+      .material .mini-chip,
+      .material .stat {
+        border-radius: 24px;
+        border-color: rgba(68, 52, 117, 0.14);
+        background: #ffffff;
+        box-shadow: 0 14px 30px rgba(76, 59, 131, 0.08);
+      }
+      .material .button.primary {
+        background: #6558d3;
+        color: #f9f8ff;
+        border-color: #6558d3;
+      }
+      .material .fab {
+        width: 56px;
+        height: 56px;
+        justify-content: center;
+        border-radius: 999px;
+      }
+      .material .sheet {
+        border-radius: 28px;
+      }
+      .luxury {
+        background: #f8f2ea;
+        color: #201712;
+        font-family: "Canela", Georgia, serif;
+      }
+      .luxury .card,
+      .luxury .button,
+      .luxury .field,
+      .luxury .mini-chip,
+      .luxury .stat {
+        border-radius: 10px;
+        background: rgba(255,255,255,0.45);
+      }
+      .luxury .button.primary {
+        background: #201712;
+        color: #fbf7f1;
+      }
+      .brutal {
+        background: #fff5cc;
+        color: #11110f;
+      }
+      .brutal .card,
+      .brutal .button,
+      .brutal .field,
+      .brutal .mini-chip,
+      .brutal .stat {
+        border-radius: 0;
+        background: #fff;
+        box-shadow: 8px 8px 0 #11110f;
+      }
+      .brutal .button.primary {
+        background: #ff7849;
+      }
+      .terminal {
+        background: #111926;
+        color: #dbe9ff;
+      }
+      .terminal .card,
+      .terminal .button,
+      .terminal .field,
+      .terminal .mini-chip,
+      .terminal .stat {
+        border-radius: 14px;
+        border-color: rgba(126, 214, 170, 0.18);
+        background: rgba(15, 25, 38, 0.9);
+      }
+      .terminal .button.primary {
+        background: #7ed6aa;
+        color: #112218;
+        border-color: #7ed6aa;
+      }
+      .component-note {
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+      @media (max-width: 1080px) {
+        .hero-grid,
+        .component-grid {
+          grid-template-columns: 1fr;
+        }
+        .nav {
+          position: static;
+          border-radius: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <nav class="nav">
+        <a href="#monochrome">Monochrome</a>
+        <a href="#saas">SaaS</a>
+        <a href="#material">Material</a>
+        <a href="#luxury">Luxury</a>
+        <a href="#brutal">Neo Brutalism</a>
+        <a href="#terminal">Terminal</a>
+      </nav>
+
+      <section class="hero">
+        <div class="eyebrow">Cubis Foundry / Style Atlas</div>
+        <h1>Compare component systems, not just page mockups.</h1>
+        <p>
+          This page exists because the fixture suite alone was not enough. The harness now needs one place to compare
+          geometry, cards, chips, inputs, buttons, tabs, metrics, and action clusters across style families, including
+          rounded Material-like surfaces instead of only sharp editorial and enterprise shells.
+        </p>
+        <div class="hero-grid">
+          <div class="summary-card">
+            <div class="eyebrow">What To Check</div>
+            <strong>Radius, density, surface texture, and action-state language.</strong>
+            <p>Use this atlas to spot when two “different” styles are really the same component kit with different colors.</p>
+          </div>
+          <div class="summary-card">
+            <div class="eyebrow">Material Coverage</div>
+            <strong>Rounded cards, chips, sheets, and FABs are now explicit.</strong>
+            <p>Material is not a cosmetic afterthought. It needs its own geometry, elevation, and action patterns in the harness.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section mono" id="monochrome">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">Monochrome Editorial</div>
+            <h2>Sharp, ruled, and nearly radius-free.</h2>
+          </div>
+          <p>Use severe seams, square geometry, and hierarchy led by typography rather than soft cards or ornamental gradients.</p>
+        </div>
+        <div class="component-grid">
+          <article class="card">
+            <h4>Action Strip</h4>
+            <div class="actions">
+              <div class="button primary">Reserve stay</div>
+              <div class="button">Compare suites</div>
+              <div class="mini-chip">2-night minimum</div>
+            </div>
+            <p class="component-note">Buttons stay rectangular and typographic. The seam carries the structure.</p>
+          </article>
+          <article class="card">
+            <h4>Ledger Field</h4>
+            <div class="field"><span>Arrival rhythm</span><strong>Dusk</strong></div>
+            <div class="field"><span>Host table</span><strong>Prepared</strong></div>
+            <div class="field"><span>Breakfast</span><strong>Archive court</strong></div>
+          </article>
+          <article class="card">
+            <h4>Selection Stats</h4>
+            <div class="stats">
+              <div class="stat">Rate $740</div>
+              <div class="stat">Quiet house</div>
+              <div class="stat">North suite</div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section saas" id="saas">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">SaaS Minimal</div>
+            <h2>Softened product chrome with controlled radius.</h2>
+          </div>
+          <p>The restrained SaaS lane should not be a borderless text slab. It needs believable product surfaces, measured radius, and proof-driven controls.</p>
+        </div>
+        <div class="component-grid">
+          <article class="card">
+            <h4>Command Ribbon</h4>
+            <div class="actions">
+              <div class="button primary">Open live preview</div>
+              <div class="button">Sync brief</div>
+              <div class="mini-chip">Audit ready</div>
+            </div>
+            <p class="component-note">SaaS gets moderate radius, quieter borders, and visible product-state language.</p>
+          </article>
+          <article class="card">
+            <h4>Preview Controls</h4>
+            <div class="field"><span>Mode</span><strong>Workflow</strong></div>
+            <div class="field"><span>Queue</span><strong>12 active runs</strong></div>
+            <div class="field"><span>Guardrails</span><strong>84%</strong></div>
+          </article>
+          <article class="card">
+            <h4>Plan Rail</h4>
+            <div class="stats">
+              <div class="stat">Team</div>
+              <div class="stat">Enterprise</div>
+              <div class="stat">$69 seat</div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section material" id="material">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">Material Expressive</div>
+            <h2>Rounded, tactile, and sheet-driven.</h2>
+          </div>
+          <p>This is the missing geometry lane. Material needs visible radius, tonal layers, chips, FABs, and clear state hierarchy instead of the hard-edge harness default.</p>
+        </div>
+        <div class="component-grid">
+          <article class="card sheet">
+            <h4>Assistant Actions</h4>
+            <div class="actions">
+              <div class="button primary">Create plan</div>
+              <div class="button">Refine prompt</div>
+              <div class="mini-chip">Auto-save on</div>
+              <div class="button fab">+</div>
+            </div>
+            <p class="component-note">Rounded chips, pill controls, and a floating action button belong here by default.</p>
+          </article>
+          <article class="card sheet">
+            <h4>Tonal Inputs</h4>
+            <div class="field"><span>Priority mode</span><strong>Balanced</strong></div>
+            <div class="field"><span>Reminder</span><strong>Today at 18:00</strong></div>
+            <div class="field"><span>Theme</span><strong>Lavender surface</strong></div>
+          </article>
+          <article class="card sheet">
+            <h4>State Cluster</h4>
+            <div class="stats">
+              <div class="stat">3 pending</div>
+              <div class="stat">12 archived</div>
+              <div class="stat">1 sheet open</div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section luxury" id="luxury">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">Luxury Formal</div>
+            <h2>Curated service, not rounded ecommerce.</h2>
+          </div>
+          <p>Luxury still uses gentler geometry than monochrome editorial, but the hierarchy comes from host-led sequencing and refined ledgers, not soft marketplace widgets.</p>
+        </div>
+        <div class="component-grid">
+          <article class="card">
+            <h4>Hosted Request</h4>
+            <div class="actions">
+              <div class="button primary">Prepare host note</div>
+              <div class="button">Review itinerary</div>
+              <div class="mini-chip">Private salon</div>
+            </div>
+          </article>
+          <article class="card">
+            <h4>Residence Ledger</h4>
+            <div class="field"><span>Residence</span><strong>North salon</strong></div>
+            <div class="field"><span>Arrival</span><strong>Dusk ritual</strong></div>
+            <div class="field"><span>Rate</span><strong>$1,260 / night</strong></div>
+          </article>
+          <article class="card">
+            <h4>Host Signals</h4>
+            <div class="stats">
+              <div class="stat">Table staged</div>
+              <div class="stat">Car ready</div>
+              <div class="stat">Library supper</div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section brutal" id="brutal">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">Neo Brutalist Product</div>
+            <h2>Loud geometry with bounded transaction clarity.</h2>
+          </div>
+          <p>Brutalism gets hard corners and offset shadows on purpose, but the transaction path still needs to stay readable.</p>
+        </div>
+        <div class="component-grid">
+          <article class="card">
+            <h4>Market Actions</h4>
+            <div class="actions">
+              <div class="button primary">Pin order</div>
+              <div class="button">Boost creator</div>
+              <div class="mini-chip">Rush lane</div>
+            </div>
+          </article>
+          <article class="card">
+            <h4>Fulfillment Cabinet</h4>
+            <div class="field"><span>Order block</span><strong>#204</strong></div>
+            <div class="field"><span>Pack status</span><strong>Ready</strong></div>
+            <div class="field"><span>Courier</span><strong>Waiting</strong></div>
+          </article>
+          <article class="card">
+            <h4>Selection Signals</h4>
+            <div class="stats">
+              <div class="stat">3 live drops</div>
+              <div class="stat">2 held carts</div>
+              <div class="stat">1 pinned route</div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section terminal" id="terminal">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">Terminal Ops</div>
+            <h2>Rounded dark shells with command hierarchy.</h2>
+          </div>
+          <p>Terminal does not need to be fake hacker neon. It needs status grouping, operational logs, and readable action clusters under dark contrast.</p>
+        </div>
+        <div class="component-grid">
+          <article class="card">
+            <h4>Command Bar</h4>
+            <div class="actions">
+              <div class="button primary">Retry deploy</div>
+              <div class="button">Open rollback</div>
+              <div class="mini-chip">Cluster east-2</div>
+            </div>
+          </article>
+          <article class="card">
+            <h4>Status Board</h4>
+            <div class="field"><span>Health</span><strong>97% passing</strong></div>
+            <div class="field"><span>Logs</span><strong>3 warnings</strong></div>
+            <div class="field"><span>Latency</span><strong>42ms</strong></div>
+          </article>
+          <article class="card">
+            <h4>Deploy Signals</h4>
+            <div class="stats">
+              <div class="stat">2 retries</div>
+              <div class="stat">1 rollback</div>
+              <div class="stat">Queue stable</div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,21 @@
+flow: Wealth Ops focus switch
+success_criteria: The operator can switch the main canvas from live escalations to the liquidity queue and see the desk audit banner state.
+base_url: http://127.0.0.1:4173/wealth-ops/
+start_path: index.html
+steps:
+  - action: assert_text
+    expected: Wealth Ops Command
+  - action: click_element
+    text: Liquidity Queue
+  - action: assert_text
+    expected: Settlement exceptions need same-hour review
+  - action: click_element
+    text: Run desk audit
+  - action: assert_text
+    expected: Desk audit queued for London cash ladder
+  - action: screenshot
+    name: wealth-ops-interaction
+  - action: capture_dom
+    name: wealth-ops-dom
+  - action: capture_accessibility
+    name: wealth-ops-accessibility

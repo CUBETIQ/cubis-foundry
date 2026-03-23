@@ -1,0 +1,48 @@
+{
+  "id": "neo-market",
+  "topic": "creator marketplace and fulfillment workspace",
+  "surface_type": "webapp",
+  "style_reference_id": "neo-brutalism-light-13",
+  "primary_style_direction": "neo-brutalist-product",
+  "supporting_motif": "brutalist-sticker-stack",
+  "layout_pattern": "market-grid-cabinet",
+  "complexity_tier": "complex",
+  "anti_slop_constraints": [
+    "avoid brutalism as pure novelty styling",
+    "avoid offset cards with no transaction logic",
+    "avoid marketplace UIs that look like generic ecommerce grids"
+  ],
+  "must_include": [
+    "one featured creator selection board",
+    "one order or fulfillment cabinet",
+    "one action drawer that changes with selection"
+  ],
+  "interactive_states": [
+    "switch the creator category",
+    "pin the current order"
+  ],
+  "desktop_failure_checks": [
+    "bold labels and shadows cannot obscure hierarchy",
+    "the cabinet must feel transactional instead of decorative"
+  ],
+  "mobile_expectations": [
+    "lead with one selected creator card and one order action above fold",
+    "compress the cabinet into a vertical sequence without losing the marketplace energy"
+  ],
+  "skills_required": [
+    "design-context-capture",
+    "frontend-design-style-selector",
+    "frontend-design-system",
+    "frontend-design-screen-brief",
+    "frontend-design",
+    "design-audit",
+    "frontend-design-mobile-patterns",
+    "playwright-web-qa"
+  ],
+  "benchmark_lanes": ["local-authored"],
+  "acceptance_checks": [
+    "the page feels intentionally loud but still operable",
+    "category switching updates the featured creator and drawer copy",
+    "fulfillment actions stay visible under the styling intensity"
+  ]
+}

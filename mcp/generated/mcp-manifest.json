@@ -1,12 +1,12 @@
 {
   "$schema": "cubis-foundry-mcp-manifest-v1",
-  "generatedAt": "2026-03-22T11:27:08.713Z",
-  "contentHash": "90210df22c1acf14",
+  "generatedAt": "2026-03-23T06:21:13.911Z",
+  "contentHash": "4db7e3e5aa670eb0",
   "summary": {
-    "totalSkills": 62,
+    "totalSkills": 70,
     "totalCategories": 11,
-    "totalBytes": 379290,
-    "estimatedTokens": 94823
+    "totalBytes": 404122,
+    "estimatedTokens": 101031
   },
   "categories": [
     {
@@ -35,7 +35,7 @@
     },
     {
       "name": "general",
-      "skillCount": 31
+      "skillCount": 39
     },
     {
       "name": "mcp",
@@ -227,6 +227,172 @@
       "fileBytes": 5130
     },
     {
+      "id": "design-arrange",
+      "name": "design-arrange",
+      "displayName": null,
+      "description": "Repair layout, spacing, and visual rhythm when a UI has the right ingredients but the composition still feels templated, monotonous, or badly prioritized.",
+      "category": "general",
+      "keywords": [
+        "design-arrange",
+        "design arrange",
+        "arrange"
+      ],
+      "triggers": [
+        "design-arrange",
+        "design arrange",
+        "arrange"
+      ],
+      "path": "workflows/skills/design-arrange/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 2237
+    },
+    {
+      "id": "design-audit",
+      "name": "design-audit",
+      "displayName": null,
+      "description": "Diagnose why a UI feels generic, uneven, or hard to validate before making edits. Use for screenshot-first or live-browser review of composition, typography, states, responsiveness, and anti-slop failures.",
+      "category": "general",
+      "keywords": [
+        "design-audit",
+        "design audit",
+        "audit"
+      ],
+      "triggers": [
+        "design-audit",
+        "design audit",
+        "audit"
+      ],
+      "path": "workflows/skills/design-audit/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 2955,
+      "warnings": [
+        "description too long (205 chars)"
+      ]
+    },
+    {
+      "id": "design-bolder",
+      "name": "design-bolder",
+      "displayName": null,
+      "description": "Increase visual conviction when a UI is safe, bland, or too polite. Use to strengthen hierarchy, contrast, motif repetition, and brand character without making the surface chaotic.",
+      "category": "general",
+      "keywords": [
+        "design-bolder",
+        "design bolder",
+        "bolder"
+      ],
+      "triggers": [
+        "design-bolder",
+        "design bolder",
+        "bolder"
+      ],
+      "path": "workflows/skills/design-bolder/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 2002
+    },
+    {
+      "id": "design-context-capture",
+      "name": "design-context-capture",
+      "displayName": null,
+      "description": "Capture or refresh the project's canonical design context in `docs/foundation/DESIGN.md` so downstream design, implementation, and QA skills stop relying on vague taste or one-off prompts.",
+      "category": "general",
+      "keywords": [
+        "design-context-capture",
+        "design context capture",
+        "context",
+        "capture"
+      ],
+      "triggers": [
+        "design-context-capture",
+        "design context capture",
+        "context",
+        "capture"
+      ],
+      "path": "workflows/skills/design-context-capture/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 3124
+    },
+    {
+      "id": "design-distill",
+      "name": "design-distill",
+      "displayName": null,
+      "description": "Remove clutter and reduce visual noise so the strongest parts of the interface can lead. Use when a UI is overbuilt, over-labeled, over-boxed, or trying to say too many things at once.",
+      "category": "general",
+      "keywords": [
+        "design-distill",
+        "design distill",
+        "distill"
+      ],
+      "triggers": [
+        "design-distill",
+        "design distill",
+        "distill"
+      ],
+      "path": "workflows/skills/design-distill/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 2078
+    },
+    {
+      "id": "design-polish",
+      "name": "design-polish",
+      "displayName": null,
+      "description": "Run the final design cleanup pass on a functionally complete UI. Use when the direction is already chosen and the remaining work is alignment, state completeness, consistency, and ship-quality detail.",
+      "category": "general",
+      "keywords": [
+        "design-polish",
+        "design polish",
+        "polish"
+      ],
+      "triggers": [
+        "design-polish",
+        "design polish",
+        "polish"
+      ],
+      "path": "workflows/skills/design-polish/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 2328
+    },
+    {
+      "id": "design-typeset",
+      "name": "design-typeset",
+      "displayName": null,
+      "description": "Repair or strengthen typography so text has hierarchy, voice, and readability instead of defaulting to generic app copy styling. Use for headlines, labels, body rhythm, and type-scale decisions.",
+      "category": "general",
+      "keywords": [
+        "design-typeset",
+        "design typeset",
+        "typeset"
+      ],
+      "triggers": [
+        "design-typeset",
+        "design typeset",
+        "typeset"
+      ],
+      "path": "workflows/skills/design-typeset/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 2262
+    },
+    {
       "id": "django-drf",
       "name": "django-drf",
       "displayName": null,
@@ -404,7 +570,7 @@
         "author": "cubis-foundry",
         "version": "3.2"
       },
-      "fileBytes": 9626,
+      "fileBytes": 10083,
       "warnings": [
         "description too long (233 chars)"
       ]
@@ -1473,6 +1639,36 @@
         "version": "3.0"
       },
       "fileBytes": 7574
+    },
+    {
+      "id": "ui-testing-harness",
+      "name": "ui-testing-harness",
+      "displayName": null,
+      "description": "Use when building or reviewing a Foundry-owned UI evaluation harness, generating anti-slop web fixtures, scoring design outputs with deterministic evidence, or turning multi-scenario UI findings into concrete Foundry gaps.",
+      "category": "general",
+      "keywords": [
+        "ui-testing-harness",
+        "ui testing harness",
+        "ui",
+        "testing",
+        "harness"
+      ],
+      "triggers": [
+        "ui-testing-harness",
+        "ui testing harness",
+        "ui",
+        "testing",
+        "harness"
+      ],
+      "path": "workflows/skills/ui-testing-harness/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 7389,
+      "warnings": [
+        "description too long (222 chars)"
+      ]
     },
     {
       "id": "unit-testing",

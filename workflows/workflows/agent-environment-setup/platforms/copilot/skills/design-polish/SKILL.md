@@ -1,0 +1,60 @@
+---
+name: design-polish
+description: Run the final design cleanup pass on a functionally complete UI. Use when the direction is already chosen and the remaining work is alignment, state completeness, consistency, and ship-quality detail.
+license: MIT
+metadata:
+  author: cubis-foundry
+  version: "1.0"
+compatibility: Claude Code, Codex, GitHub Copilot, Gemini CLI, Antigravity
+---
+# Design Polish
+
+## Purpose
+
+Apply the last high-signal refinement pass before a UI is reviewed as finished. This skill should clean up spacing, alignment, visual consistency, state coverage, and quality details without re-litigating the whole concept.
+
+## When to Use
+
+- The feature is already functionally complete
+- The visual direction is acceptable, but the details still feel rough
+- QA exposed state gaps, awkward spacing, or inconsistent styling
+- A design needs cleanup before screenshots, review, or handoff
+
+## Instructions
+
+1. **Polish only after the feature works** — If the structure or direction is still weak, use `design-audit`, `design-bolder`, or `design-distill` first.
+2. **Fix the system before the symptom** — Normalize spacing, alignment, focus treatment, and state patterns at the component level when possible.
+3. **Complete interaction states** — Ensure hover, focus, active, disabled, loading, success, error, and empty states are explicit where relevant.
+4. **Tighten detail quality** — Remove awkward gaps, optical misalignment, inconsistent casing, weak feedback text, and unbalanced whitespace.
+5. **Respect the canonical design context** — Keep typography, palette, borders, and motion consistent with `docs/foundation/DESIGN.md` rather than adding one-off flourish.
+6. **Verify with real usage** — Use the UI and confirm that the polished state still feels deliberate at desktop and mobile sizes.
+
+## Output Format
+
+Deliver:
+
+1. Preconditions checked
+2. Polish targets
+3. Key fixes applied or required
+4. Remaining risks
+5. Verification notes
+
+## References
+
+| File | Load when |
+| --- | --- |
+| `../frontend-design/references/design-tokens.md` | Cleaning up token usage or inconsistent visual values. |
+| `../frontend-design/references/accessibility.md` | Finishing focus, contrast, or semantic state details. |
+| `../playwright-web-qa/SKILL.md` | Revalidating the final polished pass in-browser. |
+
+## Copilot Platform Notes
+
+- Custom agents live under `../../agents/` relative to the mirrored skill directory and use YAML frontmatter such as `name`, `description`, `tools`, `model`, and `handoffs`.
+- Agent `handoffs` can guide workflow transitions (for example, `@planner` → `@implementer`).
+- Skill files are stored under `.github/skills/` (skill markdown) and `.github/prompts/` (prompt files).
+- Path-scoped instructions live under `../../instructions/` and provide file-pattern-targeted guidance via `applyTo` frontmatter.
+- User arguments are provided as natural language input in the prompt, not through a `$ARGUMENTS` variable.
+- Frontmatter keys `context: fork` and `allowed-tools` are not natively supported; guidance is advisory.
+- Reference files can be included via `#file:references/<name>.md` syntax in Copilot Chat.
+- MCP configuration lives in `.vscode/mcp.json`. MCP skill tools are available when configured.
+- Rules file relative to the mirrored skill directory: `../../rules/copilot-instructions.md` — broad and stable, not task-specific.

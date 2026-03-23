@@ -1,0 +1,21 @@
+flow: Terminal Cloud cluster and deploy switch
+success_criteria: The reviewer can switch the active cluster, then switch from retry to rollback and see the board and queue update.
+base_url: http://127.0.0.1:4173/terminal-cloud/
+start_path: index.html
+steps:
+  - action: assert_text
+    expected: Terminal Cloud
+  - action: click_element
+    text: Beta
+  - action: assert_text
+    expected: Worker fleet rollback
+  - action: click_element
+    text: Rollback
+  - action: assert_text
+    expected: Rollback lane is active
+  - action: screenshot
+    name: terminal-cloud-interaction
+  - action: capture_dom
+    name: terminal-cloud-dom
+  - action: capture_accessibility
+    name: terminal-cloud-accessibility

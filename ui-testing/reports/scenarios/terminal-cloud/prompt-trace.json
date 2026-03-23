@@ -1,0 +1,55 @@
+{
+  "scenario_id": "terminal-cloud",
+  "style_reference_id": "terminal-dark-07",
+  "dataset_ids": {
+    "style_direction": "terminal-ops",
+    "supporting_motif": "terminal-log-ribbon",
+    "layout_pattern": "terminal-command-cascade"
+  },
+  "research_refs": [
+    "design-prompts-style-reference",
+    "google-a2ui",
+    "vercel-design-systems"
+  ],
+  "excluded_cliches": [
+    "avoid fake hacker neon",
+    "avoid devtools dashboards that are only charts and cards",
+    "avoid unstructured console dumps with no command hierarchy"
+  ],
+  "intended_skill_sequence": [
+    "design-context-capture",
+    "frontend-design-style-selector",
+    "frontend-design-system",
+    "frontend-design-screen-brief",
+    "frontend-design",
+    "design-audit",
+    "frontend-design-mobile-patterns",
+    "playwright-web-qa",
+    "ui-testing-harness"
+  ],
+  "remediation_skill_sequence": [
+    "design-audit",
+    "design-arrange",
+    "design-typeset",
+    "design-bolder",
+    "design-distill",
+    "design-polish",
+    "playwright-web-qa",
+    "ui-testing-harness"
+  ],
+  "benchmark_lane_results": [
+    {
+      "lane": "local-authored",
+      "status": "active"
+    },
+    {
+      "lane": "playwright-interactive",
+      "status": "pending-review"
+    }
+  ],
+  "fallback_warnings": [
+    "Prompt trace is still recorded manually in the harness; the runtime does not yet emit this provenance automatically.",
+    "The remediation command layer exists, but operators still need to choose and sequence those skills manually after review."
+  ],
+  "fixture_stack": "static-html"
+}

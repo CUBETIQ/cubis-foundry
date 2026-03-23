@@ -35,7 +35,150 @@
       "applicability": ["motivation", "reflection", "content-led products"],
       "qualityTier": "medium",
       "notes": "Use a distinct accent block for motivational or educational content to break list fatigue."
+    },
+    {
+      "id": "rule-driven-hero",
+      "source": [
+        "https://www.designprompts.dev/",
+        "https://www.figma.com/blog/designer-framework-for-better-ai-prompts/"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "stitch"],
+      "applicability": ["editorial landing pages", "hospitality", "campaign pages"],
+      "qualityTier": "high",
+      "notes": "Anchor the hero with one typographic statement, one framing rule system, and one decisive CTA instead of multiple floating accent cards."
+    },
+    {
+      "id": "numbered-process-rail",
+      "source": [
+        "https://www.designprompts.dev/",
+        "https://developers.googleblog.com/pt-br/stitch-a-new-way-to-design-uis/"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "mobile", "stitch"],
+      "applicability": ["operations", "analytics", "event planning", "workflow products"],
+      "qualityTier": "medium",
+      "notes": "Expose sequence and progress through a numbered side rail or stacked checkpoints rather than burying process context inside anonymous cards."
+    },
+    {
+      "id": "editorial-rule-ledger",
+      "source": [
+        "https://www.designprompts.dev/monochrome",
+        "ui-testing/research/design-prompts-style-catalog.json#monochrome-light-01"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "stitch"],
+      "applicability": ["editorial commerce", "hospitality", "publishing"],
+      "qualityTier": "high",
+      "notes": "Use hard rules, ledger labels, and visible seams to bind narrative panels to operational companion zones."
+    },
+    {
+      "id": "source-margin-rail",
+      "source": [
+        "https://www.designprompts.dev/newsprint",
+        "ui-testing/research/design-prompts-style-catalog.json#newsprint-light-04"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "mobile", "stitch"],
+      "applicability": ["publishing", "knowledge work", "writing tools"],
+      "qualityTier": "high",
+      "notes": "Pair the primary content surface with a margin or source rail that can update without turning the whole page into a dashboard."
+    },
+    {
+      "id": "shadcn-command-ribbon",
+      "source": [
+        "https://www.designprompts.dev/saas",
+        "ui-testing/research/design-prompts-style-catalog.json#saas-light-05"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "stitch"],
+      "applicability": ["SaaS products", "AI workflow tools", "B2B product marketing"],
+      "qualityTier": "high",
+      "notes": "Use a compact command or mode ribbon to connect the marketing thesis to a real product preview and stateful work area."
+    },
+    {
+      "id": "concierge-itinerary-stack",
+      "source": [
+        "https://www.designprompts.dev/luxury",
+        "ui-testing/research/design-prompts-style-catalog.json#luxury-light-06"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "stitch"],
+      "applicability": ["concierge", "luxury booking", "hospitality"],
+      "qualityTier": "high",
+      "notes": "Stack itinerary notes, service selections, and reservation actions like a curated host ledger instead of standard commerce widgets."
+    },
+    {
+      "id": "severity-queue-strip",
+      "source": [
+        "https://www.designprompts.dev/enterprise",
+        "ui-testing/research/design-prompts-style-catalog.json#enterprise-light-24"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "mobile"],
+      "applicability": ["operations", "enterprise dashboards", "finance tools"],
+      "qualityTier": "high",
+      "notes": "Keep high-priority work visible through compact severity strips, queued interventions, and named action slots."
+    },
+    {
+      "id": "brutalist-sticker-stack",
+      "source": [
+        "https://www.designprompts.dev/neo-brutalism",
+        "ui-testing/research/design-prompts-style-catalog.json#neo-brutalism-light-13"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "stitch"],
+      "applicability": ["creator tools", "marketplaces", "consumer product launches"],
+      "qualityTier": "high",
+      "notes": "Use loud sticker labels, hard-edge cards, and offset stacking to create urgency without losing the product transaction path."
+    },
+    {
+      "id": "terminal-log-ribbon",
+      "source": [
+        "https://www.designprompts.dev/terminal",
+        "ui-testing/research/design-prompts-style-catalog.json#terminal-dark-07"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "stitch"],
+      "applicability": ["devtools", "infra consoles", "security tools"],
+      "qualityTier": "high",
+      "notes": "Bind command bars, structured logs, and retry actions into one visible operational ribbon rather than hiding them under generic tabs."
+    },
+    {
+      "id": "status-beacon-strip",
+      "source": [
+        "https://www.designprompts.dev/industrial",
+        "ui-testing/research/design-prompts-style-catalog.json#industrial-light-26"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "mobile"],
+      "applicability": ["industrial dashboards", "manufacturing", "maintenance tools"],
+      "qualityTier": "high",
+      "notes": "Expose machine state through compact beacons, intervention strips, and warning-led summaries that stay visible under load."
+    },
+    {
+      "id": "stage-route-marquee",
+      "source": [
+        "https://www.designprompts.dev/kinetic",
+        "ui-testing/research/design-prompts-style-catalog.json#kinetic-dark-09"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "stitch"],
+      "applicability": ["events", "routing tools", "music discovery"],
+      "qualityTier": "high",
+      "notes": "Use a marquee-like spotlight block and route strip so the event planner feels like a designed poster with real navigation consequences."
+    },
+    {
+      "id": "tonal-action-cluster",
+      "source": [
+        "https://www.designprompts.dev/material-design",
+        "ui-testing/research/design-prompts-style-catalog.json#material-design-light-12"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "mobile", "stitch"],
+      "applicability": ["assistant surfaces", "productivity tools", "consumer settings", "component systems"],
+      "qualityTier": "high",
+      "notes": "Group rounded chips, tonal cards, FABs, and sheet-driven actions into a tactile cluster that clearly communicates state and hierarchy."
     }
   ]
 }
-

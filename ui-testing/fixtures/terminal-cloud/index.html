@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>terminal-cloud</title>
+    <link rel="icon" href="data:,">
+    <style>
+      :root { --bg:#091016; --panel:#0f1a21; --panel-strong:#13232d; --ink:#d9f0d8; --muted:#89a796; --line:rgba(217,240,216,0.16); --accent:#7dff70; --warn:#ffc25c; }
+      * { box-sizing:border-box; } body { margin:0; color:var(--ink); font-family:"IBM Plex Mono","JetBrains Mono",monospace; background:linear-gradient(180deg,#071015,#0b1419 100%); }
+      button { font:inherit; color:inherit; background:transparent; border:1px solid var(--line); cursor:pointer; }
+      .eyebrow,.caps,.cluster-switch button,.deploy-switch button,.status-chip { text-transform:uppercase; letter-spacing:0.14em; font-size:.72rem; }
+      h1,h2,h3,h4 { margin:0; line-height:.94; letter-spacing:-0.04em; font-family:"Suisse Intl","Avenir Next",sans-serif; }
+      .page { min-height:100vh; max-width:1500px; margin:0 auto; padding:22px; display:grid; gap:18px; }
+      .hero,.board,.log,.queue { border:1px solid var(--line); background:var(--panel); padding:18px; }
+      .hero { display:grid; grid-template-columns:minmax(0,1.02fr) minmax(340px,.98fr); gap:18px; }
+      .hero h1 { margin-top:10px; font-size:clamp(3rem,7vw,5.8rem); max-width:9ch; }
+      .hero p,.board p,.log p,.queue p { color:var(--muted); line-height:1.68; }
+      .status-chip { display:inline-flex; gap:8px; align-items:center; padding:8px 10px; background:rgba(125,255,112,.12); border:1px solid rgba(125,255,112,.28); width:fit-content; }
+      .cluster-switch,.deploy-switch,.action-row { display:flex; flex-wrap:wrap; gap:10px; }
+      .cluster-switch button,.deploy-switch button,.action-row button { padding:11px 14px; }
+      .cluster-switch .active,.deploy-switch .active { background:var(--accent); color:#071015; border-color:var(--accent); }
+      .workspace { display:grid; grid-template-columns:minmax(0,1.08fr) minmax(320px,.92fr); gap:18px; }
+      .service-grid { margin-top:16px; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+      .service-card { border:1px solid var(--line); background:var(--panel-strong); padding:14px; }
+      .service-card strong { display:block; margin-top:8px; font-size:1.2rem; }
+      .log-list,.queue-list { margin-top:16px; display:grid; gap:10px; }
+      .log-row,.queue-row { border-top:1px solid var(--line); padding-top:10px; display:grid; gap:6px; }
+      .log-row:first-child,.queue-row:first-child { border-top:0; padding-top:0; }
+      .primary { background:var(--accent); color:#071015; border-color:var(--accent); }
+      #cluster-status,#deploy-status { min-height:1.5rem; font-weight:700; }
+      #deploy-status { color:var(--warn); }
+      @media (max-width:1120px) { .hero,.workspace,.service-grid { grid-template-columns:1fr; } }
+      @media (max-width:760px) { .hero,.board,.log,.queue { padding:16px; } }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <section class="hero">
+        <article>
+          <div class="eyebrow">Terminal Cloud</div>
+          <h1 id="hero-title">Run the deploy before the queue turns into folklore.</h1>
+          <p id="hero-copy">A terminal-led infrastructure control plane where service health, deploy actions, and logs stay visible as one command story.</p>
+          <div class="status-chip" id="hero-chip">cluster alpha / deploy lane open</div>
+          <div class="cluster-switch" aria-label="Cluster selection" style="margin-top:16px;">
+            <button class="active" type="button" data-cluster="alpha">Alpha</button>
+            <button type="button" data-cluster="beta">Beta</button>
+            <button type="button" data-cluster="gamma">Gamma</button>
+          </div>
+        </article>
+        <section class="queue" aria-labelledby="deploy-title">
+          <div class="caps">Deploy queue</div>
+          <h2 id="deploy-title" style="font-size:2.2rem; margin-top:8px;">Payments API rollout</h2>
+          <p id="deploy-copy">The queue should keep one active release, one rollback path, and one visible operator note instead of hiding action under tabs.</p>
+          <div class="deploy-switch" aria-label="Deploy state" style="margin-top:16px;">
+            <button class="active" type="button" data-deploy="retry">Retry</button>
+            <button type="button" data-deploy="rollback">Rollback</button>
+          </div>
+          <div class="queue-list">
+            <div class="queue-row"><strong id="deploy-a">Retry current build</strong><p id="deploy-a-copy">Hold the release in the active queue until health stabilizes.</p></div>
+            <div class="queue-row"><strong id="deploy-b">Operator note attached</strong><p id="deploy-b-copy">The service owner has already attached one human-readable rationale.</p></div>
+          </div>
+          <div class="action-row" style="margin-top:16px;">
+            <button class="primary" id="run-deploy" type="button">Run deploy</button>
+            <button id="open-log" type="button">Open logs</button>
+          </div>
+          <div id="deploy-status" aria-live="polite" style="margin-top:16px;"></div>
+        </section>
+      </section>
+      <section class="workspace">
+        <section class="board" aria-labelledby="board-title">
+          <div class="caps">Service health board</div>
+          <h3 id="board-title" style="font-size:2rem; margin-top:8px;">Cluster state</h3>
+          <p id="board-copy">The board should act like a control surface: three high-signal services, one live severity read, and one visible link to the queue above.</p>
+          <div class="service-grid" id="service-grid">
+            <article class="service-card"><div class="caps">svc-01</div><strong>Payments API</strong><div>warning</div></article>
+            <article class="service-card"><div class="caps">svc-02</div><strong>Queue broker</strong><div>stable</div></article>
+            <article class="service-card"><div class="caps">svc-03</div><strong>Auth edge</strong><div>stable</div></article>
+          </div>
+          <div id="cluster-status" aria-live="polite" style="margin-top:16px;"></div>
+        </section>
+        <aside class="log" aria-labelledby="log-title">
+          <div class="caps">Command log</div>
+          <h3 id="log-title" style="font-size:2rem; margin-top:8px;">Recent entries</h3>
+          <div class="log-list" id="log-list">
+            <div class="log-row"><strong>18:04 deploy gate</strong><p>Payments API breached the latency band and opened the retry lane.</p></div>
+            <div class="log-row"><strong>18:07 operator note</strong><p>Owner attached the rollback threshold and the fallback cluster.</p></div>
+            <div class="log-row"><strong>18:12 queue broker</strong><p>Broker stayed healthy, so the release remains isolated to one service.</p></div>
+          </div>
+        </aside>
+      </section>
+    </div>
+    <script>
+      const clusters = {
+        alpha: { chip:"cluster alpha / deploy lane open", title:"Payments API rollout", copy:"The queue should keep one active release, one rollback path, and one visible operator note instead of hiding action under tabs.", services:[["Payments API","warning"],["Queue broker","stable"],["Auth edge","stable"]], logs:[["18:04 deploy gate","Payments API breached the latency band and opened the retry lane."],["18:07 operator note","Owner attached the rollback threshold and the fallback cluster."],["18:12 queue broker","Broker stayed healthy, so the release remains isolated to one service."]] },
+        beta: { chip:"cluster beta / rollback window active", title:"Worker fleet rollback", copy:"Beta cluster is in containment mode. Rollback stays live until queue drain completes.", services:[["Worker fleet","critical"],["Artifact cache","warning"],["Billing hook","stable"]], logs:[["17:46 rollback gate","Worker fleet opened the rollback path after queue lag spiked."],["17:50 artifact sync","Cache is lagging but still recoverable under rollback."],["17:58 billing hook","Billing hook stayed stable and isolated from the incident."]] },
+        gamma: { chip:"cluster gamma / patch lane quiet", title:"Edge patch release", copy:"Gamma cluster is calmer. The board should show one quiet patch lane with explicit readiness.", services:[["Edge patch","stable"],["Queue broker","stable"],["Audit sink","warning"]], logs:[["19:10 patch lane","Edge patch is ready for controlled release."],["19:14 audit sink","Audit sink is lagging but not blocking the patch."],["19:18 queue broker","Broker stayed clean through the patch window."]] }
+      };
+      const deployStates = {
+        retry:["Retry current build","Hold the release in the active queue until health stabilizes.","Operator note attached","The service owner has already attached one human-readable rationale."],
+        rollback:["Rollback current build","The rollback path should stay first-class instead of hiding under danger-state chrome.","Fallback cluster pinned","Cluster beta is ready as the visible rollback target."]
+      };
+      const clusterButtons = [...document.querySelectorAll("[data-cluster]")];
+      const deployButtons = [...document.querySelectorAll("[data-deploy]")];
+      function setCluster(key) {
+        clusterButtons.forEach((button)=>button.classList.toggle("active", button.dataset.cluster===key));
+        const next = clusters[key];
+        document.getElementById("hero-chip").textContent = next.chip;
+        document.getElementById("deploy-title").textContent = next.title;
+        document.getElementById("deploy-copy").textContent = next.copy;
+        document.getElementById("service-grid").innerHTML = next.services.map((item, index)=>`<article class="service-card"><div class="caps">svc-0${index+1}</div><strong>${item[0]}</strong><div>${item[1]}</div></article>`).join("");
+        document.getElementById("log-list").innerHTML = next.logs.map((item)=>`<div class="log-row"><strong>${item[0]}</strong><p>${item[1]}</p></div>`).join("");
+        document.getElementById("cluster-status").textContent = `${key.toUpperCase()} cluster moved into the active health board.`;
+      }
+      function setDeploy(key) {
+        deployButtons.forEach((button)=>button.classList.toggle("active", button.dataset.deploy===key));
+        const next = deployStates[key];
+        document.getElementById("deploy-a").textContent = next[0];
+        document.getElementById("deploy-a-copy").textContent = next[1];
+        document.getElementById("deploy-b").textContent = next[2];
+        document.getElementById("deploy-b-copy").textContent = next[3];
+        document.getElementById("deploy-status").textContent = `${key.charAt(0).toUpperCase()+key.slice(1)} lane is active in the deploy queue.`;
+      }
+      clusterButtons.forEach((button)=>button.addEventListener("click",()=>setCluster(button.dataset.cluster)));
+      deployButtons.forEach((button)=>button.addEventListener("click",()=>setDeploy(button.dataset.deploy)));
+      document.getElementById("run-deploy").addEventListener("click",()=>{ document.getElementById("deploy-status").textContent = "Deploy command sent to the active queue with operator trace attached."; });
+      document.getElementById("open-log").addEventListener("click",()=>{ document.getElementById("cluster-status").textContent = "Command log opened for the active cluster."; });
+    </script>
+  </body>
+</html>

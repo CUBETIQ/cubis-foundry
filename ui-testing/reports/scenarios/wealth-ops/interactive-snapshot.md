@@ -1,0 +1,181 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: wealth-ops / control rail
+      - heading "Intervention before the handoff." [level=1] [ref=e6]
+      - paragraph [ref=e7]: A finance command surface for desks that need to rank live exposure, document relief action, and release decisions before the market handoff turns risk into overnight debt.
+    - region "desk focus" [ref=e8]:
+      - generic [ref=e9]: desk focus
+      - generic [ref=e10]:
+        - button "London ladder 12 flags" [ref=e11] [cursor=pointer]:
+          - generic [ref=e12]: London ladder
+          - strong [ref=e13]: 12 flags
+        - button "Zurich private desk 7 flags" [ref=e14] [cursor=pointer]:
+          - generic [ref=e15]: Zurich private desk
+          - strong [ref=e16]: 7 flags
+        - button "Singapore reserve 5 flags" [ref=e17] [cursor=pointer]:
+          - generic [ref=e18]: Singapore reserve
+          - strong [ref=e19]: 5 flags
+    - region "numbered process rail" [ref=e20]:
+      - generic [ref=e21]: numbered process rail
+      - generic [ref=e22]:
+        - generic [ref=e23]:
+          - generic [ref=e24]: "01"
+          - generic [ref=e25]:
+            - strong [ref=e26]: Rank
+            - generic [ref=e27]: Expose same-session exceptions before dashboard totals hide them.
+        - generic [ref=e28]:
+          - generic [ref=e29]: "02"
+          - generic [ref=e30]:
+            - strong [ref=e31]: Assign
+            - generic [ref=e32]: Pin one owner, one route, and one fallback before treasury sign-off.
+        - generic [ref=e33]:
+          - generic [ref=e34]: "03"
+          - generic [ref=e35]:
+            - strong [ref=e36]: Document
+            - generic [ref=e37]: Write the rationale that explains why release happened under pressure.
+    - region "operator note" [ref=e38]:
+      - generic [ref=e39]: operator note
+      - paragraph [ref=e40]: Zurich is less noisy than London, but more structurally fragile because the route still belongs to two desks instead of one.
+  - main [ref=e41]:
+    - region "market pulse" [ref=e42]:
+      - generic [ref=e43]:
+        - generic [ref=e44]: Market pulse
+        - strong [ref=e45]: GBP ladder -1.8%
+        - strong [ref=e46]: Liquidity buffer +240bp
+        - strong [ref=e47]: Handoff in 14m
+        - strong [ref=e48]: Treasury route 02 active
+      - generic [ref=e49]:
+        - generic [ref=e50]:
+          - generic [ref=e51]: Zurich private desk / owner mismatch
+          - heading "Two private-bank releases are blocked by a split approval chain." [level=2] [ref=e172]
+          - paragraph [ref=e53]: The surface should make ownership ambiguity impossible to miss. Zurich needs one accountable route, one fallback, and a visible call-back path before handoff.
+        - generic [ref=e54]:
+          - generic [ref=e55]: owner conflict / callback required
+          - button "Run stress replay" [ref=e56] [cursor=pointer]
+    - region "priority metrics" [ref=e58]:
+      - article [ref=e59]:
+        - text: Priority flow
+        - strong [ref=e60]: 2.8m
+      - article [ref=e61]:
+        - text: Breached desks
+        - strong [ref=e62]: "2"
+      - article [ref=e63]:
+        - text: Median action
+        - strong [ref=e64]: 12m
+    - generic [ref=e65]:
+      - generic [ref=e66]:
+        - region "Exposure matrix" [ref=e67]:
+          - generic [ref=e68]:
+            - generic [ref=e69]:
+              - generic [ref=e70]: Precision enterprise / catalog-control-canvas
+              - heading "Exposure matrix" [level=3] [ref=e71]
+              - paragraph [ref=e72]: Rank the book by urgency and route risk. The surface is useful only if operators can see which decisions are structurally dangerous, not just numerically large.
+            - generic "matrix focus" [ref=e73]:
+              - button "Exposure" [ref=e74] [cursor=pointer]
+              - button "Settlement" [ref=e75] [cursor=pointer]
+          - generic [ref=e76]:
+            - article [ref=e173]:
+              - generic [ref=e174]: A1 / hold
+              - strong [ref=e175]: same-hour mismatch
+              - generic [ref=e176]: settlement route ages into the next handoff if callback slips again
+            - article [ref=e177]:
+              - generic [ref=e178]: A2 / repair
+              - strong [ref=e179]: confirmation ledger
+              - generic [ref=e180]: ownership note needs rewrite before export pack closes
+            - article [ref=e181]:
+              - generic [ref=e182]: B1 / queue
+              - strong [ref=e183]: batch review path
+              - generic [ref=e184]: secondary route can clear if London confirms first
+            - article [ref=e185]:
+              - generic [ref=e186]: B2 / reserve
+              - strong [ref=e187]: late reserve sweep
+              - generic [ref=e188]: low value but still visible in the desk queue
+        - region "Desk handoff sequence" [ref=e93]:
+          - generic [ref=e94]:
+            - generic [ref=e95]:
+              - generic [ref=e96]: Action timeline
+              - heading "Desk handoff sequence" [level=3] [ref=e97]
+            - generic [ref=e98]: one owner per release
+          - generic [ref=e99]:
+            - generic [ref=e100]:
+              - generic [ref=e101]: 18:04
+              - generic [ref=e102]:
+                - strong [ref=e103]: Exposure route widened
+                - paragraph [ref=e104]: Same-session outflows breached the London desk buffer and triggered direct review.
+            - generic [ref=e105]:
+              - generic [ref=e106]: 18:09
+              - generic [ref=e107]:
+                - strong [ref=e108]: Treasury callback delayed
+                - paragraph [ref=e109]: Confirmation route split across two owners, creating a release bottleneck.
+            - generic [ref=e110]:
+              - generic [ref=e111]: 18:13
+              - generic [ref=e112]:
+                - strong [ref=e113]: Operator escalation opened
+                - paragraph [ref=e114]: Command desk asked for written rationale before any priority release clears.
+      - generic [ref=e115]:
+        - region "Next interventions" [ref=e116]:
+          - generic [ref=e117]:
+            - generic [ref=e118]:
+              - generic [ref=e119]: Decision queue
+              - heading "Next interventions" [level=3] [ref=e120]
+            - generic [ref=e121]: 2 routes blocked
+          - generic [ref=e122]:
+            - button "01 London cash ladderOutbound release waiting on treasury sign-off and relationship verification. 8m" [ref=e123] [cursor=pointer]:
+              - generic [ref=e124]: "01"
+              - generic [ref=e125]:
+                - strong [ref=e126]: London cash ladder
+                - text: Outbound release waiting on treasury sign-off and relationship verification.
+              - generic [ref=e127]: 8m
+            - button "02 Zurich bridge routeOwner mismatch on private desk route keeps the approval chain split. 12m" [active] [ref=e128] [cursor=pointer]:
+              - generic [ref=e129]: "02"
+              - generic [ref=e130]:
+                - strong [ref=e131]: Zurich bridge route
+                - text: Owner mismatch on private desk route keeps the approval chain split.
+              - generic [ref=e132]: 12m
+            - button "03 Singapore reserve noteBuffer restored, but the release note is still absent from the audit trail. 17m" [ref=e133] [cursor=pointer]:
+              - generic [ref=e134]: "03"
+              - generic [ref=e135]:
+                - strong [ref=e136]: Singapore reserve note
+                - text: Buffer restored, but the release note is still absent from the audit trail.
+              - generic [ref=e137]: 17m
+        - region "Pressure points" [ref=e138]:
+          - generic [ref=e139]: Watchlist
+          - heading "Pressure points" [level=3] [ref=e140]
+          - generic [ref=e141]:
+            - generic [ref=e142]:
+              - generic [ref=e143]:
+                - strong [ref=e144]: Confirmation route
+                - text: Two-step callback path still depends on direct treasury ownership.
+              - strong [ref=e145]: fragile
+            - generic [ref=e146]:
+              - generic [ref=e147]:
+                - strong [ref=e148]: Reserve desk note
+                - text: Audit visibility remains incomplete even after liquidity improves.
+              - strong [ref=e149]: open
+            - generic [ref=e150]:
+              - generic [ref=e151]:
+                - strong [ref=e152]: Client reachability
+                - text: One unreachable counterparty keeps the London route elevated.
+              - strong [ref=e153]: high
+        - region "Zurich bridge route" [ref=e189]:
+          - generic [ref=e155]:
+            - generic [ref=e156]: Approval drawer
+            - heading "Zurich bridge route" [level=3] [ref=e190]
+          - paragraph [ref=e158]: Resolve the split owner chain first. The desk should not clear a private route while the callback responsibility remains ambiguous across treasury and desk operations.
+          - generic [ref=e159]:
+            - strong [ref=e160]: Owner mismatch / 2.1m bridge
+            - generic [ref=e161]:
+              - generic [ref=e162]:
+                - text: Owner
+                - strong [ref=e163]: Private desk pair
+              - generic [ref=e164]:
+                - text: Fallback
+                - strong [ref=e165]: Collapse to one operator
+              - generic [ref=e166]:
+                - text: Release window
+                - strong [ref=e167]: 12 minutes
+          - generic [ref=e168]:
+            - button "Approve route" [ref=e169] [cursor=pointer]
+            - button "Hold for callback" [ref=e170] [cursor=pointer]
+          - generic [ref=e171]: Zurich route staged for ownership repair

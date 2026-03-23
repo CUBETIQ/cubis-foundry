@@ -1,0 +1,48 @@
+{
+  "id": "terminal-cloud",
+  "topic": "infrastructure deployment control plane",
+  "surface_type": "webapp",
+  "style_reference_id": "terminal-dark-07",
+  "primary_style_direction": "terminal-ops",
+  "supporting_motif": "terminal-log-ribbon",
+  "layout_pattern": "terminal-command-cascade",
+  "complexity_tier": "complex",
+  "anti_slop_constraints": [
+    "avoid fake hacker neon",
+    "avoid devtools dashboards that are only charts and cards",
+    "avoid unstructured console dumps with no command hierarchy"
+  ],
+  "must_include": [
+    "one deployment queue",
+    "one service health board",
+    "one command log or rollback drawer"
+  ],
+  "interactive_states": [
+    "switch the active cluster",
+    "retry a deployment"
+  ],
+  "desktop_failure_checks": [
+    "the command band must stay structurally visible above the board and logs",
+    "the log drawer cannot feel like decorative terminal wallpaper"
+  ],
+  "mobile_expectations": [
+    "lead with the active deploy and command bar before the full service matrix",
+    "collapse logs into a concise action feed rather than a giant desktop panel"
+  ],
+  "skills_required": [
+    "design-context-capture",
+    "frontend-design-style-selector",
+    "frontend-design-system",
+    "frontend-design-screen-brief",
+    "frontend-design",
+    "design-audit",
+    "frontend-design-mobile-patterns",
+    "playwright-web-qa"
+  ],
+  "benchmark_lanes": ["local-authored", "playwright-interactive"],
+  "acceptance_checks": [
+    "the page feels like a real operator console rather than a themed dashboard",
+    "cluster switching updates the health board and log ribbon",
+    "deployment actions produce visible textual state changes"
+  ]
+}

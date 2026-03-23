@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ui-testing fixtures</title>
+    <link rel="icon" href="data:,">
+    <style>
+      :root {
+        --bg: #f4efe6;
+        --ink: #172126;
+        --muted: #5d696f;
+        --panel: rgba(255, 255, 255, 0.78);
+        --line: rgba(23, 33, 38, 0.14);
+        --accent: #8f5d43;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Avenir Next", "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top right, rgba(143, 93, 67, 0.10), transparent 30%),
+          linear-gradient(0deg, rgba(23,33,38,0.03) 1px, transparent 1px),
+          var(--bg);
+        background-size: auto, 100% 28px, auto;
+      }
+      main {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 48px 24px 64px;
+      }
+      .eyebrow {
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        font-size: 0.75rem;
+        color: var(--accent);
+      }
+      h1 {
+        margin: 8px 0 16px;
+        font-size: clamp(2.8rem, 7vw, 5.8rem);
+        line-height: 0.92;
+        letter-spacing: -0.05em;
+      }
+      p.lead {
+        max-width: 48rem;
+        color: var(--muted);
+        font-size: 1.08rem;
+        line-height: 1.7;
+        margin-bottom: 28px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+      }
+      a.card {
+        display: grid;
+        gap: 10px;
+        padding: 20px;
+        text-decoration: none;
+        color: inherit;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        min-height: 190px;
+      }
+      a.card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(23, 33, 38, 0.28);
+      }
+      .tag {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--muted);
+      }
+      h2 {
+        margin: 0;
+        font-size: 1.55rem;
+        line-height: 1;
+      }
+      .notes {
+        color: var(--muted);
+        line-height: 1.6;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="eyebrow">Cubis Foundry / UI Testing Harness</div>
+      <h1>Ten runnable benchmark fixtures plus one style atlas for anti-slop UI review.</h1>
+      <p class="lead">
+        Open any fixture below. Each page is a local runnable surface with a deliberate visual direction,
+        one or more interaction states, and corresponding QA/report artifacts under <code>ui-testing/reports/</code>.
+      </p>
+      <div class="grid">
+        <a class="card" href="/wealth-ops/">
+          <div class="tag">Precision enterprise</div>
+          <h2>Wealth Ops</h2>
+          <div class="notes">Finance operations command center with a control rail and a decision canvas.</div>
+        </a>
+        <a class="card" href="/atelier-stay/">
+          <div class="tag">Editorial monochrome</div>
+          <h2>Atelier Stay</h2>
+          <div class="notes">Boutique hotel booking surface with a split editorial narrative and booking panel.</div>
+        </a>
+        <a class="card" href="/coach-loop/">
+          <div class="tag">Structured athletic</div>
+          <h2>Coach Loop</h2>
+          <div class="notes">Fitness coaching workspace with readiness hero, weekly rail, and mode switching.</div>
+        </a>
+        <a class="card" href="/field-notes/">
+          <div class="tag">Editorial serene</div>
+          <h2>Field Notes</h2>
+          <div class="notes">Writing and publishing studio with calm hierarchy and a reflection panel.</div>
+        </a>
+        <a class="card" href="/pulse-festival/">
+          <div class="tag">Kinetic poster</div>
+          <h2>Pulse Festival</h2>
+          <div class="notes">Event discovery planner with a lineup canvas, planner rail, and daypart switching.</div>
+        </a>
+        <a class="card" href="/saas-foundry/">
+          <div class="tag">SaaS minimal</div>
+          <h2>SaaS Foundry</h2>
+          <div class="notes">Minimalist SaaS benchmark with a live product preview shell, command ribbon, and pricing rail.</div>
+        </a>
+        <a class="card" href="/maison-prive/">
+          <div class="tag">Luxury formal</div>
+          <h2>Maison Prive</h2>
+          <div class="notes">Luxury concierge and reservation studio with a residence ledger, service salon, and host itinerary.</div>
+        </a>
+        <a class="card" href="/neo-market/">
+          <div class="tag">Neo brutalist product</div>
+          <h2>Neo Market</h2>
+          <div class="notes">Creator marketplace workspace with a loud cabinet, fulfillment drawer, and category switching.</div>
+        </a>
+        <a class="card" href="/terminal-cloud/">
+          <div class="tag">Terminal ops</div>
+          <h2>Terminal Cloud</h2>
+          <div class="notes">Infrastructure deploy console with cluster switching, service boards, and a command log ribbon.</div>
+        </a>
+        <a class="card" href="/plant-ops/">
+          <div class="tag">Industrial control</div>
+          <h2>Plant Ops</h2>
+          <div class="notes">Manufacturing operations dashboard with live line state, maintenance queue, and intervention drawer.</div>
+        </a>
+        <a class="card" href="/style-atlas/">
+          <div class="tag">Component atlas</div>
+          <h2>Style Atlas</h2>
+          <div class="notes">Cross-style component board showing how geometry, chips, cards, inputs, and actions change by style family, including Material.</div>
+        </a>
+      </div>
+    </main>
+  </body>
+</html>

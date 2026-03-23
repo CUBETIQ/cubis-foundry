@@ -1,0 +1,146 @@
+[
+  {
+    "id": "anthropic-artifacts",
+    "title": "Anthropic Artifacts",
+    "date": "2024-08-27",
+    "source_url": "https://www.anthropic.com/news/artifacts",
+    "principles": [
+      "interactive artifacts are useful for fast iteration",
+      "artifact workflow benefits from preserved lineage and review checkpoints"
+    ],
+    "anti_patterns": [
+      "treating a fast prototype as a finished design system",
+      "assuming interactive output is automatically visually coherent"
+    ],
+    "foundry_implications": [
+      "require prompt-trace artifacts for fixture review",
+      "separate artifact speed from design quality scoring"
+    ]
+  },
+  {
+    "id": "anthropic-build-artifacts",
+    "title": "Turn ideas into interactive AI-powered apps",
+    "date": "2025-06-25",
+    "source_url": "https://www.anthropic.com/news/build-artifacts?refid=a9744544-1d58-4d04-b569-04776c27250c",
+    "principles": [
+      "rapid interactive prototyping needs a stronger review loop",
+      "artifact generation should preserve intent through iteration"
+    ],
+    "anti_patterns": [
+      "shipping the first generated structure without critique",
+      "mistaking speed for design completeness"
+    ],
+    "foundry_implications": [
+      "score interaction quality separately from visual direction",
+      "treat prototype iteration as evidence, not as the final quality signal"
+    ]
+  },
+  {
+    "id": "google-stitch",
+    "title": "From idea to app: Introducing Stitch, a new way to design UIs",
+    "date": "2025-05-20",
+    "source_url": "https://developers.googleblog.com/pt-br/stitch-a-new-way-to-design-uis/",
+    "principles": [
+      "UI generation works better with structured intent",
+      "generated interfaces should stay connected to a design workflow"
+    ],
+    "anti_patterns": [
+      "calling the remote generator before the design state is ready",
+      "treating screen output as production truth"
+    ],
+    "foundry_implications": [
+      "keep design prep ahead of generation",
+      "use prompt traces and final handoff artifacts for review"
+    ]
+  },
+  {
+    "id": "google-a2ui",
+    "title": "Introducing A2UI: An open project for agent-driven interfaces",
+    "date": "2025-12-15",
+    "source_url": "https://developers.googleblog.com/introducing-a2ui-an-open-project-for-agent-driven-interfaces/",
+    "principles": [
+      "agent-generated interfaces need explicit task context and boundaries",
+      "interface generation should preserve observable structure and state"
+    ],
+    "anti_patterns": [
+      "opaque UI generation with no provenance",
+      "state changes that do not reveal clear user-facing feedback"
+    ],
+    "foundry_implications": [
+      "add provenance and state quality to the scoring rubric",
+      "treat untraceable style drift as a harness failure"
+    ]
+  },
+  {
+    "id": "vercel-design-systems",
+    "title": "AI-powered prototyping with design systems",
+    "date": "2025-08-22",
+    "source_url": "https://vercel.com/blog/ai-powered-prototyping-with-design-systems",
+    "principles": [
+      "design-system context improves generated UI consistency",
+      "shared tokens and primitives reduce default-style drift"
+    ],
+    "anti_patterns": [
+      "asking for beautiful UI without system constraints",
+      "letting a tool default to its own visual bias"
+    ],
+    "foundry_implications": [
+      "tie every scenario to explicit direction, motif, and layout ids",
+      "score unexplained default-style fallback as a gap"
+    ]
+  },
+  {
+    "id": "figma-make-designs-retrospective",
+    "title": "Inside Figma: A retrospective on Make Designs",
+    "date": "2024-07-17",
+    "source_url": "https://www.figma.com/blog/inside-figma-a-retrospective-on-make-designs/",
+    "principles": [
+      "design generation needs stronger review and selection discipline",
+      "good output depends on structured constraints more than novelty"
+    ],
+    "anti_patterns": [
+      "prompting with aesthetic adjectives alone",
+      "reviewing outcomes without a scenario contract"
+    ],
+    "foundry_implications": [
+      "use fixed manifests instead of freeform prompt tests",
+      "preserve a clear review path from prompt trace to scorecard"
+    ]
+  },
+  {
+    "id": "figma-better-ai-prompts",
+    "title": "A designer's framework for better AI prompts",
+    "date": "2026-01-14",
+    "source_url": "https://www.figma.com/blog/designer-framework-for-better-ai-prompts/",
+    "principles": [
+      "prompt structure should name constraints, priorities, and exclusions",
+      "better prompts define what should not happen as well as what should"
+    ],
+    "anti_patterns": [
+      "leaving exclusions implicit",
+      "using generic style words with no operational meaning"
+    ],
+    "foundry_implications": [
+      "require anti-slop constraints on every scenario",
+      "record excluded cliches inside prompt-trace artifacts"
+    ]
+  },
+  {
+    "id": "design-prompts-style-reference",
+    "title": "Design Prompts",
+    "date": "2026-03-23",
+    "source_url": "https://www.designprompts.dev/",
+    "principles": [
+      "style libraries help compare clear visual directions",
+      "named styles make it easier to discuss exclusions and motifs"
+    ],
+    "anti_patterns": [
+      "copying raw prompt payloads into Foundry runtime flows",
+      "using external style presets as the sole design system"
+    ],
+    "foundry_implications": [
+      "translate style presets into dataset entries with source metadata",
+      "use Design Prompts as vocabulary intake only"
+    ]
+  }
+]

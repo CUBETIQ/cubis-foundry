@@ -65,6 +65,8 @@ Provide systematic guidance for building distinctive, production-grade frontend 
 
 21. **Use only normalized design datasets during execution** — When broader design intelligence is needed, consume the Foundry-owned datasets under `workflows/design-datasets/*.json` rather than copying raw external design pages or prompts into runtime instructions.
 
+22. **Use the command layer for second-pass remediation** — When the task is diagnosis, context capture, typography repair, layout repair, amplification, simplification, or final cleanup, route through `design-context-capture`, `design-audit`, `design-typeset`, `design-arrange`, `design-bolder`, `design-distill`, and `design-polish` instead of repeating bespoke design advice from scratch.
+
 ## Output Format
 
 Deliver:
@@ -75,7 +77,7 @@ Deliver:
 4. **Accessibility audit** — WCAG compliance notes: contrast ratios, keyboard flow, ARIA usage
 5. **Responsive behavior** — Breakpoint strategy or container query usage with before/after viewport descriptions
 6. **Usage example** — A concrete code snippet showing the component in a realistic context
-7. **Design-engine handoff** — Which internal design-engine capability should run next, if any
+7. **Design-engine handoff** — Which internal design-engine capability should run next, if any, including the command-layer remediation skills when relevant
 
 ## References
 

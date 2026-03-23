@@ -1,0 +1,21 @@
+flow: Neo Market category and order switch
+success_criteria: The reviewer can switch the featured creator category and the order lane, then see the drawer and queue update.
+base_url: http://127.0.0.1:4173/neo-market/
+start_path: index.html
+steps:
+  - action: assert_text
+    expected: Neo Market
+  - action: click_element
+    text: Motion loops
+  - action: assert_text
+    expected: Signal Loop Motion Pack
+  - action: click_element
+    text: Standard
+  - action: assert_text
+    expected: Standard order lane is active
+  - action: screenshot
+    name: neo-market-interaction
+  - action: capture_dom
+    name: neo-market-dom
+  - action: capture_accessibility
+    name: neo-market-accessibility

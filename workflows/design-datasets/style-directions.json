@@ -36,7 +36,174 @@
       "applicability": ["onboarding", "consumer apps", "education", "habit flows"],
       "qualityTier": "medium",
       "notes": "Friendly motion, approachable illustrations, and guided progress framing without looking toy-like."
+    },
+    {
+      "id": "editorial-monochrome",
+      "source": [
+        "https://www.designprompts.dev/",
+        "https://www.figma.com/blog/inside-figma-a-retrospective-on-make-designs/"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "stitch"],
+      "applicability": ["hospitality", "portfolio", "luxury booking", "editorial commerce"],
+      "qualityTier": "high",
+      "notes": "High-contrast editorial composition with serif-led hierarchy, sharp rules, and deliberate negative space instead of generic hospitality softness."
+    },
+    {
+      "id": "precision-enterprise",
+      "source": [
+        "https://vercel.com/blog/ai-powered-prototyping-with-design-systems",
+        "https://www.figma.com/blog/designer-framework-for-better-ai-prompts/"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "mobile"],
+      "applicability": ["finance", "operations", "b2b control planes", "dense dashboards"],
+      "qualityTier": "high",
+      "notes": "A disciplined enterprise direction with compact density, strong hierarchy, and sober accents that read as trustworthy instead of generic SaaS chrome."
+    },
+    {
+      "id": "kinetic-contrast",
+      "source": [
+        "https://www.designprompts.dev/",
+        "https://developers.googleblog.com/introducing-a2ui-an-open-project-for-agent-driven-interfaces/"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "stitch"],
+      "applicability": ["events", "culture", "music discovery", "campaign microsites"],
+      "qualityTier": "high",
+      "notes": "Poster-like contrast, assertive typography, and directional motion cues that create momentum without collapsing into neon cyberpunk cliches."
+    },
+    {
+      "id": "monochrome-editorial",
+      "source": [
+        "https://www.designprompts.dev/monochrome",
+        "ui-testing/research/design-prompts-style-catalog.json#monochrome-light-01"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "stitch"],
+      "applicability": ["editorial commerce", "hospitality", "luxury booking", "portfolio"],
+      "qualityTier": "high",
+      "notes": "A hard-edged monochrome editorial direction with strong seam definition, severe rules, and display-led hierarchy."
+    },
+    {
+      "id": "newsprint-editorial",
+      "source": [
+        "https://www.designprompts.dev/newsprint",
+        "ui-testing/research/design-prompts-style-catalog.json#newsprint-light-04"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "stitch"],
+      "applicability": ["publishing", "journaling", "knowledge products", "content studios"],
+      "qualityTier": "high",
+      "notes": "Print-inspired editorial UI with column rhythm, serif-led narrative hierarchy, and restrained archival tone."
+    },
+    {
+      "id": "saas-minimal",
+      "source": [
+        "https://www.designprompts.dev/saas",
+        "ui-testing/research/design-prompts-style-catalog.json#saas-light-05"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "stitch"],
+      "applicability": ["SaaS marketing", "product dashboards", "AI workflow tools", "devtools"],
+      "qualityTier": "high",
+      "notes": "A disciplined minimalist SaaS direction with clean shells, focused accents, and shadcn-adjacent composure without template drift."
+    },
+    {
+      "id": "luxury-formal",
+      "source": [
+        "https://www.designprompts.dev/luxury",
+        "ui-testing/research/design-prompts-style-catalog.json#luxury-light-06"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "stitch"],
+      "applicability": ["concierge services", "hospitality", "private reservations", "premium commerce"],
+      "qualityTier": "high",
+      "notes": "A formal premium direction with restrained elegance, curated service framing, and disciplined serif contrast."
+    },
+    {
+      "id": "enterprise-disciplined",
+      "source": [
+        "https://www.designprompts.dev/enterprise",
+        "ui-testing/research/design-prompts-style-catalog.json#enterprise-light-24"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "mobile", "stitch"],
+      "applicability": ["finance", "enterprise SaaS", "operations", "governance tools"],
+      "qualityTier": "high",
+      "notes": "Compact decision-first enterprise UI with sober accents, strong information hierarchy, and a bias toward operational clarity."
+    },
+    {
+      "id": "swiss-minimalist",
+      "source": [
+        "https://www.designprompts.dev/swiss-minimalist",
+        "ui-testing/research/design-prompts-style-catalog.json#swiss-minimalist-light-08"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "mobile", "stitch"],
+      "applicability": ["productivity tools", "fitness workspaces", "data products", "B2B apps"],
+      "qualityTier": "high",
+      "notes": "Grid-strict minimalist UI with rational spacing, controlled typography, and visible structural precision."
+    },
+    {
+      "id": "neo-brutalist-product",
+      "source": [
+        "https://www.designprompts.dev/neo-brutalism",
+        "ui-testing/research/design-prompts-style-catalog.json#neo-brutalism-light-13"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "stitch"],
+      "applicability": ["marketplaces", "creator tools", "product launches", "consumer webapps"],
+      "qualityTier": "high",
+      "notes": "Loud neo-brutalist product styling with hard outlines, offset depth, and punchy labels that still preserve task clarity."
+    },
+    {
+      "id": "terminal-ops",
+      "source": [
+        "https://www.designprompts.dev/terminal",
+        "ui-testing/research/design-prompts-style-catalog.json#terminal-dark-07"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "stitch"],
+      "applicability": ["developer tools", "infrastructure", "security operations", "command consoles"],
+      "qualityTier": "high",
+      "notes": "Command-led dark UI with monospace structure, terminal cues, and status-first hierarchy that still reads as product design."
+    },
+    {
+      "id": "industrial-control",
+      "source": [
+        "https://www.designprompts.dev/industrial",
+        "ui-testing/research/design-prompts-style-catalog.json#industrial-light-26"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "mobile"],
+      "applicability": ["manufacturing", "maintenance", "supply operations", "industrial dashboards"],
+      "qualityTier": "high",
+      "notes": "Utility-first industrial UI with machine-room clarity, warning accents, and practical density over decorative polish."
+    },
+    {
+      "id": "kinetic-poster",
+      "source": [
+        "https://www.designprompts.dev/kinetic",
+        "ui-testing/research/design-prompts-style-catalog.json#kinetic-dark-09"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "stitch"],
+      "applicability": ["events", "culture", "music discovery", "campaign experiences"],
+      "qualityTier": "high",
+      "notes": "Poster-driven, high-energy composition with oversized display type, assertive contrast, and route-oriented motion cues."
+    },
+    {
+      "id": "material-expressive",
+      "source": [
+        "https://www.designprompts.dev/material-design",
+        "ui-testing/research/design-prompts-style-catalog.json#material-design-light-12"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "mobile", "stitch"],
+      "applicability": ["productivity apps", "consumer tools", "assistant surfaces", "settings-heavy products"],
+      "qualityTier": "high",
+      "notes": "Rounded, tactile product language with tonal surfaces, clear elevation hierarchy, expressive chips, and sheet-driven component logic."
     }
   ]
 }
-

@@ -34,7 +34,126 @@
       "applicability": ["consumer mobile apps", "Flutter", "habit trackers"],
       "qualityTier": "high",
       "notes": "Compose mobile surfaces as vertically staged zones with section headers, high-signal cards, and safe thumb reach."
+    },
+    {
+      "id": "split-editorial-feature",
+      "source": [
+        "https://www.designprompts.dev/",
+        "https://www.figma.com/blog/inside-figma-a-retrospective-on-make-designs/"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "stitch"],
+      "applicability": ["hospitality", "luxury commerce", "editorial product storytelling"],
+      "qualityTier": "high",
+      "notes": "Split the surface into one commanding narrative panel and one operational booking or browsing panel so the page feels curated rather than templated."
+    },
+    {
+      "id": "catalog-control-canvas",
+      "source": [
+        "https://developers.googleblog.com/introducing-a2ui-an-open-project-for-agent-driven-interfaces/",
+        "https://vercel.com/blog/ai-powered-prototyping-with-design-systems"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web"],
+      "applicability": ["webapps", "operations dashboards", "event discovery", "data-heavy commerce"],
+      "qualityTier": "high",
+      "notes": "Use a stable control rail, an expressive main canvas, and one secondary decision zone so dense workflows stay legible across desktop and tablet."
+    },
+    {
+      "id": "editorial-ledger-spread",
+      "source": [
+        "https://www.designprompts.dev/newsprint",
+        "ui-testing/research/design-prompts-style-catalog.json#newsprint-light-04"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "stitch"],
+      "applicability": ["publishing", "journaling", "editorial apps"],
+      "qualityTier": "high",
+      "notes": "Lead with a manuscript or article spread, then pair it with notes, source rails, and issue-planning zones."
+    },
+    {
+      "id": "minimalist-saas-shell",
+      "source": [
+        "https://www.designprompts.dev/saas",
+        "ui-testing/research/design-prompts-style-catalog.json#saas-light-05"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "stitch"],
+      "applicability": ["SaaS sites", "hybrid marketing-app shells", "AI tools"],
+      "qualityTier": "high",
+      "notes": "Combine a clean product hero, one high-signal preview shell, and one conversion or pricing rail without collapsing into generic marketing cards."
+    },
+    {
+      "id": "concierge-salon-split",
+      "source": [
+        "https://www.designprompts.dev/luxury",
+        "ui-testing/research/design-prompts-style-catalog.json#luxury-light-06"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "stitch"],
+      "applicability": ["luxury hospitality", "private concierge", "reservation products"],
+      "qualityTier": "high",
+      "notes": "Split one side into a curated service or residence narrative and the other into ledger-like itinerary, rate, and request surfaces."
+    },
+    {
+      "id": "market-grid-cabinet",
+      "source": [
+        "https://www.designprompts.dev/neo-brutalism",
+        "ui-testing/research/design-prompts-style-catalog.json#neo-brutalism-light-13"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web"],
+      "applicability": ["marketplaces", "creator tools", "commerce workspaces"],
+      "qualityTier": "high",
+      "notes": "Use a bold catalog cabinet with a loud selection board, merchandising blocks, and one transactional drawer."
+    },
+    {
+      "id": "terminal-command-cascade",
+      "source": [
+        "https://www.designprompts.dev/terminal",
+        "ui-testing/research/design-prompts-style-catalog.json#terminal-dark-07"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web"],
+      "applicability": ["devtools", "infra consoles", "security operations"],
+      "qualityTier": "high",
+      "notes": "Cascade command bands, service status boards, and structured logs so the page feels like an operator console rather than a themed dashboard."
+    },
+    {
+      "id": "industrial-twin-board",
+      "source": [
+        "https://www.designprompts.dev/industrial",
+        "ui-testing/research/design-prompts-style-catalog.json#industrial-light-26"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web"],
+      "applicability": ["industrial operations", "manufacturing dashboards", "maintenance planning"],
+      "qualityTier": "high",
+      "notes": "Run a twin-board layout with one live line-status canvas and one maintenance or intervention board so the surface can hold real operational tension."
+    },
+    {
+      "id": "poster-route-canvas",
+      "source": [
+        "https://www.designprompts.dev/kinetic",
+        "ui-testing/research/design-prompts-style-catalog.json#kinetic-dark-09"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "stitch"],
+      "applicability": ["events", "routing tools", "campaign planners"],
+      "qualityTier": "high",
+      "notes": "Anchor the page with one poster-like spotlight block, then pair it with route, schedule, and venue-pressure canvases."
+    },
+    {
+      "id": "component-atlas-board",
+      "source": [
+        "https://www.designprompts.dev/material-design",
+        "ui-testing/research/design-prompts-style-catalog.json#material-design-light-12"
+      ],
+      "licenseStatus": "research-reference-only",
+      "platformScope": ["web", "mobile"],
+      "applicability": ["design systems", "component galleries", "UI testing harnesses"],
+      "qualityTier": "high",
+      "notes": "A comparative board layout for showing style-specific component primitives, states, and geometry decisions side by side."
     }
   ]
 }
-

@@ -1,0 +1,48 @@
+{
+  "id": "maison-prive",
+  "topic": "luxury concierge and reservation studio",
+  "surface_type": "website",
+  "style_reference_id": "luxury-light-06",
+  "primary_style_direction": "luxury-formal",
+  "supporting_motif": "concierge-itinerary-stack",
+  "layout_pattern": "concierge-salon-split",
+  "complexity_tier": "complex",
+  "anti_slop_constraints": [
+    "avoid spa-beige generic luxury",
+    "avoid rounded ecommerce widgets",
+    "avoid decorative service cards with no itinerary logic"
+  ],
+  "must_include": [
+    "one residence selector",
+    "one itinerary or host ledger",
+    "one concierge request action stack"
+  ],
+  "interactive_states": [
+    "switch the residence in focus",
+    "prepare a concierge itinerary"
+  ],
+  "desktop_failure_checks": [
+    "the narrative panel cannot overpower the itinerary ledger",
+    "service cards must read like hosted operations, not generic upsells"
+  ],
+  "mobile_expectations": [
+    "lead with the selected residence and one hosted action above fold",
+    "compress service details into a staged itinerary rather than parallel columns"
+  ],
+  "skills_required": [
+    "design-context-capture",
+    "frontend-design-style-selector",
+    "frontend-design-system",
+    "frontend-design-screen-brief",
+    "frontend-design",
+    "design-audit",
+    "frontend-design-mobile-patterns",
+    "playwright-web-qa"
+  ],
+  "benchmark_lanes": ["local-authored"],
+  "acceptance_checks": [
+    "the page feels hosted and curated rather than transactional",
+    "residence switching updates the itinerary and rate summary",
+    "the concierge action feels more like a host desk than an ecommerce CTA"
+  ]
+}

@@ -1,0 +1,21 @@
+flow: Plant Ops line and hold switch
+success_criteria: The reviewer can switch the active production line, then switch the intervention lane and see the drawer and maintenance board update.
+base_url: http://127.0.0.1:4173/plant-ops/
+start_path: index.html
+steps:
+  - action: assert_text
+    expected: Plant Ops
+  - action: click_element
+    text: Line 09
+  - action: assert_text
+    expected: Conveyor slip is forcing a real hold decision
+  - action: click_element
+    text: Hold line
+  - action: assert_text
+    expected: Hold lane is active
+  - action: screenshot
+    name: plant-ops-interaction
+  - action: capture_dom
+    name: plant-ops-dom
+  - action: capture_accessibility
+    name: plant-ops-accessibility

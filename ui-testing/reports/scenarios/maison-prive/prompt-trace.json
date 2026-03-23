@@ -1,0 +1,51 @@
+{
+  "scenario_id": "maison-prive",
+  "style_reference_id": "luxury-light-06",
+  "dataset_ids": {
+    "style_direction": "luxury-formal",
+    "supporting_motif": "concierge-itinerary-stack",
+    "layout_pattern": "concierge-salon-split"
+  },
+  "research_refs": [
+    "design-prompts-style-reference",
+    "figma-better-ai-prompts",
+    "figma-make-designs-retrospective"
+  ],
+  "excluded_cliches": [
+    "avoid spa-beige generic luxury",
+    "avoid rounded ecommerce widgets",
+    "avoid decorative service cards with no itinerary logic"
+  ],
+  "intended_skill_sequence": [
+    "design-context-capture",
+    "frontend-design-style-selector",
+    "frontend-design-system",
+    "frontend-design-screen-brief",
+    "frontend-design",
+    "design-audit",
+    "frontend-design-mobile-patterns",
+    "playwright-web-qa",
+    "ui-testing-harness"
+  ],
+  "remediation_skill_sequence": [
+    "design-audit",
+    "design-arrange",
+    "design-typeset",
+    "design-bolder",
+    "design-distill",
+    "design-polish",
+    "playwright-web-qa",
+    "ui-testing-harness"
+  ],
+  "benchmark_lane_results": [
+    {
+      "lane": "local-authored",
+      "status": "active"
+    }
+  ],
+  "fallback_warnings": [
+    "Prompt trace is still recorded manually in the harness; the runtime does not yet emit this provenance automatically.",
+    "The remediation command layer exists, but operators still need to choose and sequence those skills manually after review."
+  ],
+  "fixture_stack": "static-html"
+}

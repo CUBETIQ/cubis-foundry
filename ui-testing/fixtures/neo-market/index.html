@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>neo-market</title>
+    <link rel="icon" href="data:,">
+    <style>
+      :root {
+        --bg: #f9f35e;
+        --ink: #111111;
+        --panel: #fff8d9;
+        --line: #111111;
+        --pink: #ff78c6;
+        --cyan: #7ff1ff;
+        --mint: #b8ff86;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: "Space Grotesk", "Avenir Next", sans-serif;
+        background: var(--bg);
+      }
+      button { font: inherit; color: inherit; background: transparent; border: 2px solid var(--line); cursor: pointer; }
+      .eyebrow, .caps, .category-switch button, .order-switch button, .status-chip {
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        font-size: 0.72rem;
+      }
+      h1, h2, h3, h4 { margin: 0; line-height: 0.92; letter-spacing: -0.05em; }
+      .page { min-height: 100vh; max-width: 1500px; margin: 0 auto; padding: 22px; display: grid; gap: 18px; }
+      .hero, .cabinet, .drawer, .queue { border: 2px solid var(--line); background: var(--panel); box-shadow: 10px 10px 0 var(--line); padding: 18px; }
+      .hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(340px, 0.92fr); gap: 18px; }
+      .hero h1 { margin-top: 10px; font-size: clamp(3.2rem, 7vw, 5.8rem); max-width: 9ch; }
+      .hero p, .cabinet p, .drawer p, .queue p { line-height: 1.7; }
+      .status-chip { display: inline-flex; gap: 8px; align-items: center; padding: 8px 10px; background: var(--pink); border: 2px solid var(--line); width: fit-content; }
+      .category-switch, .order-switch, .action-row { display: flex; flex-wrap: wrap; gap: 10px; }
+      .category-switch button, .order-switch button, .action-row button { padding: 11px 14px; }
+      .category-switch .active, .order-switch .active { background: var(--ink); color: #fffef8; }
+      .workspace { display: grid; grid-template-columns: minmax(0, 1.04fr) minmax(320px, 0.96fr); gap: 18px; }
+      .creator-grid { margin-top: 16px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+      .creator-card { border: 2px solid var(--line); background: #ffffff; padding: 14px; box-shadow: 6px 6px 0 var(--line); }
+      .creator-card.active { background: var(--cyan); }
+      .creator-card strong { display: block; margin-top: 8px; font-size: 1.1rem; }
+      .drawer-list, .queue-list { margin-top: 16px; display: grid; gap: 10px; }
+      .drawer-item, .queue-item { border-top: 2px solid var(--line); padding-top: 10px; display: grid; gap: 6px; }
+      .drawer-item:first-child, .queue-item:first-child { border-top: 0; padding-top: 0; }
+      .primary { background: var(--ink); color: #fffef8; }
+      #category-status, #order-status { min-height: 1.5rem; font-weight: 700; }
+      @media (max-width: 1120px) { .hero, .workspace, .creator-grid { grid-template-columns: 1fr; } }
+      @media (max-width: 760px) { .hero, .cabinet, .drawer, .queue { box-shadow: 6px 6px 0 var(--line); padding: 16px; } }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <section class="hero">
+        <article>
+          <div class="eyebrow">Neo Market</div>
+          <h1 id="hero-title">Creators should look collectible before they look generic.</h1>
+          <p id="hero-copy">A creator marketplace and fulfillment workspace where the loudness serves the transaction instead of hiding it.</p>
+          <div class="status-chip" id="hero-chip">featured category / brand systems</div>
+          <div class="category-switch" aria-label="Creator category" style="margin-top: 16px;">
+            <button class="active" type="button" data-category="brand">Brand systems</button>
+            <button type="button" data-category="motion">Motion loops</button>
+            <button type="button" data-category="campaign">Campaign kits</button>
+          </div>
+        </article>
+        <section class="drawer" aria-labelledby="drawer-title">
+          <div class="caps">Pinned order</div>
+          <h2 id="drawer-title" style="font-size: 2.2rem; margin-top: 8px;">North Shelf Identity Pack</h2>
+          <p id="drawer-copy">A creator pack that lands with a punchy front card, a fulfillment estimate, and one clear approval action.</p>
+          <div class="order-switch" aria-label="Order state" style="margin-top: 16px;">
+            <button class="active" type="button" data-order="rush">Rush</button>
+            <button type="button" data-order="standard">Standard</button>
+          </div>
+          <div class="drawer-list">
+            <div class="drawer-item"><strong id="drawer-a">48h fulfillment</strong><p id="drawer-a-copy">Rush mode keeps the pack live for the next campaign sprint.</p></div>
+            <div class="drawer-item"><strong id="drawer-b">3 review rounds</strong><p id="drawer-b-copy">Approval stays visible instead of disappearing into a generic cart flow.</p></div>
+          </div>
+          <div class="action-row" style="margin-top: 16px;">
+            <button class="primary" id="pin-order" type="button">Pin order</button>
+            <button id="open-creator" type="button">Open creator board</button>
+          </div>
+          <div id="order-status" aria-live="polite" style="margin-top: 16px;"></div>
+        </section>
+      </section>
+
+      <section class="workspace">
+        <section class="cabinet" aria-labelledby="cabinet-title">
+          <div class="caps">Featured creators</div>
+          <h3 id="cabinet-title" style="font-size: 2rem; margin-top: 8px;">Category cabinet</h3>
+          <p id="cabinet-copy">Each category should feel merchandised and operational at the same time: one featured creator, two supporting blocks, and one obvious fulfillment path.</p>
+          <div class="creator-grid" id="creator-grid">
+            <article class="creator-card active"><div class="caps">Shelf 01</div><strong>North Shelf</strong><div>Identity systems</div></article>
+            <article class="creator-card"><div class="caps">Shelf 02</div><strong>Pink Current</strong><div>Brand direction</div></article>
+            <article class="creator-card"><div class="caps">Shelf 03</div><strong>Grid Riot</strong><div>Launch assets</div></article>
+          </div>
+          <div id="category-status" aria-live="polite" style="margin-top: 16px;"></div>
+        </section>
+        <aside class="queue" aria-labelledby="queue-title">
+          <div class="caps">Fulfillment queue</div>
+          <h3 id="queue-title" style="font-size: 2rem; margin-top: 8px;">Next maker actions</h3>
+          <div class="queue-list" id="queue-list">
+            <div class="queue-item"><strong>Approval lock</strong><p>North Shelf is waiting for one final systems review before release.</p></div>
+            <div class="queue-item"><strong>Asset handoff</strong><p>Campaign kit needs file naming aligned to the client board.</p></div>
+            <div class="queue-item"><strong>Delivery window</strong><p>Rush queue stays visible in the drawer instead of moving into hidden checkout copy.</p></div>
+          </div>
+        </aside>
+      </section>
+    </div>
+    <script>
+      const categories = {
+        brand: {
+          chip: "featured category / brand systems",
+          drawerTitle: "North Shelf Identity Pack",
+          drawerCopy: "A creator pack that lands with a punchy front card, a fulfillment estimate, and one clear approval action.",
+          creators: [["North Shelf", "Identity systems"], ["Pink Current", "Brand direction"], ["Grid Riot", "Launch assets"]],
+          queue: [
+            ["Approval lock", "North Shelf is waiting for one final systems review before release."],
+            ["Asset handoff", "Campaign kit needs file naming aligned to the client board."],
+            ["Delivery window", "Rush queue stays visible in the drawer instead of moving into hidden checkout copy."]
+          ]
+        },
+        motion: {
+          chip: "featured category / motion loops",
+          drawerTitle: "Signal Loop Motion Pack",
+          drawerCopy: "Motion work should read like a collectible asset board with timing, preview weight, and one direct action path.",
+          creators: [["Signal Loop", "Motion systems"], ["Neon Transit", "Launch motion"], ["Frame Unit", "Loop kits"]],
+          queue: [
+            ["Preview cut", "Signal Loop is ready for motion review with one scene still missing."],
+            ["Timing pass", "Launch motion needs a final duration pass before export."],
+            ["Delivery window", "Standard queue stays inside the fulfillment rail."]
+          ]
+        },
+        campaign: {
+          chip: "featured category / campaign kits",
+          drawerTitle: "Grid Riot Campaign Cabinet",
+          drawerCopy: "Campaign kits need one featured board, one timeline, and one checkout path with no hidden logistics.",
+          creators: [["Grid Riot", "Campaign stack"], ["Poster Lab", "OOH kits"], ["Launch Choir", "Rollout sets"]],
+          queue: [
+            ["Asset lock", "Grid Riot is waiting on final copy lock for the launch cabinet."],
+            ["Rollout board", "Poster Lab needs schedule sign-off before batch export."],
+            ["Delivery window", "Rush and standard lanes stay visible in the drawer."]
+          ]
+        }
+      };
+      const orders = {
+        rush: ["48h fulfillment", "Rush mode keeps the pack live for the next campaign sprint.", "3 review rounds", "Approval stays visible instead of disappearing into a generic cart flow."],
+        standard: ["5 day fulfillment", "Standard mode slows the queue without stripping the cabinet of urgency.", "2 review rounds", "The order keeps one clear approval step and one visible delivery promise."]
+      };
+      const categoryButtons = [...document.querySelectorAll("[data-category]")];
+      const orderButtons = [...document.querySelectorAll("[data-order]")];
+      function setCategory(key) {
+        categoryButtons.forEach((button) => button.classList.toggle("active", button.dataset.category === key));
+        const next = categories[key];
+        document.getElementById("hero-chip").textContent = next.chip;
+        document.getElementById("drawer-title").textContent = next.drawerTitle;
+        document.getElementById("drawer-copy").textContent = next.drawerCopy;
+        document.getElementById("creator-grid").innerHTML = next.creators.map((item, index) => `<article class="creator-card ${index === 0 ? "active" : ""}"><div class="caps">Shelf 0${index + 1}</div><strong>${item[0]}</strong><div>${item[1]}</div></article>`).join("");
+        document.getElementById("queue-list").innerHTML = next.queue.map((item) => `<div class="queue-item"><strong>${item[0]}</strong><p>${item[1]}</p></div>`).join("");
+        document.getElementById("category-status").textContent = `${next.drawerTitle} moved into the featured creator drawer.`;
+      }
+      function setOrder(key) {
+        orderButtons.forEach((button) => button.classList.toggle("active", button.dataset.order === key));
+        const next = orders[key];
+        document.getElementById("drawer-a").textContent = next[0];
+        document.getElementById("drawer-a-copy").textContent = next[1];
+        document.getElementById("drawer-b").textContent = next[2];
+        document.getElementById("drawer-b-copy").textContent = next[3];
+        document.getElementById("order-status").textContent = `${key.charAt(0).toUpperCase() + key.slice(1)} order lane is active.`;
+      }
+      categoryButtons.forEach((button) => button.addEventListener("click", () => setCategory(button.dataset.category)));
+      orderButtons.forEach((button) => button.addEventListener("click", () => setOrder(button.dataset.order)));
+      document.getElementById("pin-order").addEventListener("click", () => { document.getElementById("order-status").textContent = "Current creator pack pinned into the fulfillment queue."; });
+      document.getElementById("open-creator").addEventListener("click", () => { document.getElementById("category-status").textContent = "Creator board opened with the current featured category."; });
+    </script>
+  </body>
+</html>

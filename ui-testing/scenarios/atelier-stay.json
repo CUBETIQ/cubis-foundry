@@ -1,0 +1,48 @@
+{
+  "id": "atelier-stay",
+  "topic": "boutique hotel booking experience",
+  "surface_type": "website",
+  "style_reference_id": "monochrome-light-01",
+  "primary_style_direction": "monochrome-editorial",
+  "supporting_motif": "editorial-rule-ledger",
+  "layout_pattern": "split-editorial-feature",
+  "complexity_tier": "complex",
+  "anti_slop_constraints": [
+    "avoid generic beige luxury branding",
+    "avoid soft rounded booking widgets",
+    "avoid lifestyle card mosaics with no typographic thesis"
+  ],
+  "must_include": [
+    "one narrative hero panel",
+    "one booking control panel",
+    "one room family switch that updates the detail copy"
+  ],
+  "interactive_states": [
+    "switch from suites to residences",
+    "open the stay request panel"
+  ],
+  "desktop_failure_checks": [
+    "hero headline cannot visually collide with the adjacent booking or arrival cards",
+    "the booking column must feel operational instead of like decorative stacked boxes"
+  ],
+  "mobile_expectations": [
+    "lead with the stay thesis and one active booking action above fold",
+    "arrival and room-family controls should stay visible without requiring the full editorial spread first"
+  ],
+  "skills_required": [
+    "design-context-capture",
+    "frontend-design-style-selector",
+    "frontend-design-system",
+    "frontend-design-screen-brief",
+    "frontend-design",
+    "design-audit",
+    "frontend-design-mobile-patterns",
+    "playwright-web-qa"
+  ],
+  "benchmark_lanes": ["local-authored"],
+  "acceptance_checks": [
+    "the page relies on typography and rules rather than decorative imagery alone",
+    "the booking panel feels operational while the hero remains editorial",
+    "room selection updates the descriptive and pricing text"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "id": "wealth-ops",
+  "topic": "finance operations command center",
+  "surface_type": "webapp",
+  "style_reference_id": "enterprise-light-24",
+  "primary_style_direction": "enterprise-disciplined",
+  "supporting_motif": "severity-queue-strip",
+  "layout_pattern": "catalog-control-canvas",
+  "complexity_tier": "complex",
+  "anti_slop_constraints": [
+    "avoid generic SaaS pastel metric cards",
+    "avoid empty gradient hero banners",
+    "avoid anonymous icon grids with no operator priority"
+  ],
+  "must_include": [
+    "a live operator queue",
+    "a high-signal risk summary",
+    "one decision canvas that changes when the user switches focus"
+  ],
+  "interactive_states": [
+    "switch the canvas from live escalations to the liquidity queue",
+    "trigger a desk audit action banner"
+  ],
+  "desktop_failure_checks": [
+    "the control rail cannot fight the main hero canvas",
+    "the operator queue and approval drawer must read as real workflow zones"
+  ],
+  "mobile_expectations": [
+    "lead with market pulse and next interventions before the full rail",
+    "re-stage rail content below the decision stack instead of preserving the desktop order"
+  ],
+  "skills_required": [
+    "design-context-capture",
+    "frontend-design-style-selector",
+    "frontend-design-system",
+    "frontend-design-screen-brief",
+    "frontend-design",
+    "design-audit",
+    "frontend-design-mobile-patterns",
+    "playwright-web-qa"
+  ],
+  "benchmark_lanes": ["local-authored", "stitch", "playwright-interactive"],
+  "acceptance_checks": [
+    "the surface feels like an operating console rather than a marketing dashboard",
+    "the process rail remains visible as a real prioritization cue",
+    "the main detail canvas text changes after a focus switch"
+  ]
+}

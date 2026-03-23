@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>field-notes</title>
+    <link rel="icon" href="data:,">
+    <style>
+      :root {
+        --bg: #f1ecdf;
+        --panel: rgba(252, 248, 239, 0.92);
+        --panel-strong: #fffaf1;
+        --ink: #213036;
+        --muted: #67777d;
+        --line: rgba(33, 48, 54, 0.16);
+        --line-strong: rgba(33, 48, 54, 0.3);
+        --accent: #bf8d63;
+        --accent-soft: rgba(191, 141, 99, 0.13);
+        --sage: #cfd6c2;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: "Charter", "Iowan Old Style", Georgia, serif;
+        background:
+          linear-gradient(90deg, rgba(33,48,54,0.04) 1px, transparent 1px),
+          linear-gradient(rgba(33,48,54,0.025) 1px, transparent 1px),
+          linear-gradient(180deg, rgba(191,141,99,0.06), transparent 24%),
+          var(--bg);
+        background-size: 32px 32px, 32px 32px, auto, auto;
+      }
+      button {
+        font: inherit;
+        color: inherit;
+        background: transparent;
+        border: 1px solid var(--line);
+        cursor: pointer;
+      }
+      .eyebrow,
+      .caps,
+      .filter-switch button,
+      .issue-switch button,
+      .source-list button,
+      .status-chip {
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        font-size: 0.72rem;
+      }
+      h1, h2, h3, h4 {
+        margin: 0;
+        letter-spacing: -0.05em;
+        line-height: 0.94;
+        font-weight: 600;
+      }
+      .page {
+        min-height: 100vh;
+        display: grid;
+        gap: 18px;
+        grid-template-columns: 1fr;
+        max-width: 1500px;
+        margin: 0 auto;
+        padding: 22px;
+      }
+      .panel {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        padding: 18px;
+      }
+      .hero {
+        display: grid;
+        gap: 18px;
+      }
+      .hero-top {
+        display: grid;
+        grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+        gap: 18px;
+      }
+      .hero-copy h1 {
+        margin-top: 8px;
+        font-size: clamp(3rem, 7vw, 5.7rem);
+      }
+      .hero-copy p,
+      .manuscript-copy,
+      .planner-copy,
+      .source-card p,
+      .margin-card p,
+      .queue-card p {
+        color: var(--muted);
+        line-height: 1.72;
+      }
+      .status-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        background: var(--accent-soft);
+        border: 1px solid rgba(191,141,99,0.26);
+        width: fit-content;
+      }
+      .control-card {
+        display: grid;
+        gap: 12px;
+        border: 1px solid var(--line);
+        background: linear-gradient(180deg, rgba(191,141,99,0.12), rgba(255,250,241,0.94));
+        padding: 16px;
+      }
+      .filter-switch,
+      .issue-switch {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .filter-switch button,
+      .issue-switch button,
+      .source-list button,
+      .action-row button {
+        padding: 11px 14px;
+      }
+      .filter-switch .active,
+      .issue-switch .active,
+      .source-list .active {
+        background: var(--ink);
+        color: #fbf8f1;
+        border-color: var(--ink);
+      }
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1.06fr) minmax(320px, 0.94fr);
+        gap: 18px;
+      }
+      .left-stack,
+      .right-stack {
+        display: grid;
+        gap: 18px;
+      }
+      .manuscript,
+      .planner,
+      .source-card,
+      .margin-card,
+      .queue-card {
+        border: 1px solid var(--line);
+        background: var(--panel-strong);
+        padding: 18px;
+      }
+      .manuscript h2 {
+        margin-top: 10px;
+        font-size: clamp(2rem, 4vw, 3.6rem);
+      }
+      .manuscript-grid {
+        margin-top: 16px;
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(240px, 0.8fr);
+        gap: 16px;
+      }
+      .draft-surface {
+        border: 1px solid var(--line);
+        background: linear-gradient(180deg, rgba(255,255,255,0.78), rgba(255,250,241,0.92));
+        padding: 18px;
+      }
+      .draft-surface p {
+        margin: 0 0 14px;
+        color: var(--ink);
+        line-height: 1.86;
+      }
+      .draft-surface p:last-child {
+        margin-bottom: 0;
+      }
+      .margin-quote {
+        padding: 14px;
+        border: 1px solid var(--line);
+        background: rgba(207,214,194,0.28);
+      }
+      blockquote {
+        margin: 0;
+        font-size: 1.25rem;
+        line-height: 1.55;
+      }
+      .planner h3 {
+        font-size: 2rem;
+        margin-top: 8px;
+      }
+      .planner-grid {
+        margin-top: 16px;
+        display: grid;
+        gap: 12px;
+      }
+      .planner-slot {
+        padding-top: 10px;
+        border-top: 1px solid var(--line);
+        display: grid;
+        grid-template-columns: 90px 1fr;
+        gap: 14px;
+      }
+      .planner-slot:first-child {
+        border-top: 0;
+        padding-top: 0;
+      }
+      .source-list {
+        margin-top: 16px;
+        display: grid;
+        gap: 10px;
+      }
+      .source-list button {
+        text-align: left;
+        background: rgba(255,255,255,0.58);
+      }
+      .source-list strong {
+        display: block;
+        margin-top: 8px;
+        font-size: 1rem;
+      }
+      .action-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .primary {
+        background: var(--ink);
+        color: #fbf8f1;
+        border-color: var(--ink);
+      }
+      #margin-status,
+      #source-status,
+      #publish-status {
+        min-height: 1.5rem;
+        font-weight: 600;
+      }
+      #margin-status { color: #8a5f3c; }
+      #source-status { color: var(--accent); }
+      #publish-status { color: #5f6e4d; }
+      @media (max-width: 1120px) {
+        .hero-top,
+        .workspace,
+        .manuscript-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 760px) {
+        .page,
+        .panel,
+        .control-card,
+        .manuscript,
+        .planner,
+        .source-card,
+        .margin-card,
+        .queue-card {
+          padding: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <main class="panel hero">
+        <div class="hero-top">
+          <section class="hero-copy">
+            <div class="eyebrow">Field Notes</div>
+            <h1 id="hero-title">Keep the weather in the manuscript.</h1>
+            <p id="hero-copy">
+              A writing and publishing studio for essays, letters, and issue planning. The surface should help the
+              writer edit, gather, and release without turning reflection into productivity theater.
+            </p>
+            <div class="status-chip" id="hero-chip">draft issue / harbor ledger</div>
+          </section>
+
+          <section class="control-card" aria-labelledby="control-title">
+            <div class="caps" id="control-title">editor mode</div>
+            <div class="filter-switch" aria-label="Content filter">
+              <button class="active" type="button" data-filter="drafts">Drafts</button>
+              <button type="button" data-filter="scheduled">Scheduled</button>
+              <button type="button" data-filter="released">Released</button>
+            </div>
+            <div class="issue-switch" aria-label="Issue selection">
+              <button class="active" type="button" data-issue="harbor">Harbor Ledger</button>
+              <button type="button" data-issue="almanac">Tidal Almanac</button>
+            </div>
+            <p id="planner-copy" class="planner-copy">
+              The current issue should move between manuscript work, source review, and release prep without losing the tone of the writing.
+            </p>
+          </section>
+        </div>
+
+        <section class="workspace">
+          <div class="left-stack">
+            <article class="manuscript" aria-labelledby="manuscript-title">
+              <div class="eyebrow" id="manuscript-eyebrow">draft in focus</div>
+              <h2 id="manuscript-title">Harbor ledger waiting for one softer closing line.</h2>
+              <p class="manuscript-copy" id="manuscript-copy">
+                The draft is nearly ready, but the ending still resolves too cleanly. Keep the tide image open and let the paragraph leave a little air in the room.
+              </p>
+              <div class="manuscript-grid">
+                <div class="draft-surface" id="draft-surface">
+                  <p>The weather was not dramatic enough to make a story on its own, which is why the pilings noticed it first.</p>
+                  <p>By the second morning the harbor looked ordinary again, but every rope on the west edge had shifted half an inch toward the boats that leave before dawn.</p>
+                  <p id="draft-ending">I keep thinking the tide did not fix the harbor. It only showed what the posts had been holding all week.</p>
+                </div>
+                <div class="margin-quote">
+                  <div class="caps">Margin note</div>
+                  <blockquote id="margin-quote">Leave the last image open enough for the water to keep moving after the sentence ends.</blockquote>
+                  <div id="margin-status" aria-live="polite" style="margin-top: 16px;"></div>
+                </div>
+              </div>
+            </article>
+
+            <section class="planner" aria-labelledby="planner-title">
+              <div class="eyebrow">Issue planner</div>
+              <h3 id="planner-title">Release rhythm</h3>
+              <div class="planner-grid" id="planner-grid">
+                <div class="planner-slot"><div class="caps">Mon</div><div><strong>Lead essay close</strong><div class="planner-copy">Finish the last image without over-explaining the harbor.</div></div></div>
+                <div class="planner-slot"><div class="caps">Tue</div><div><strong>Source review</strong><div class="planner-copy">Pull one weather note and one dock log into the supporting section.</div></div></div>
+                <div class="planner-slot"><div class="caps">Thu</div><div><strong>Issue package</strong><div class="planner-copy">Lock the issue note and schedule the letter for dawn release.</div></div></div>
+              </div>
+              <div class="action-row" style="margin-top: 16px;">
+                <button class="primary" id="publish-brief" type="button">Prepare publish brief</button>
+                <button id="quiet-pass" type="button">Run quiet pass</button>
+              </div>
+              <div id="publish-status" aria-live="polite"></div>
+            </section>
+          </div>
+
+          <aside class="right-stack">
+            <section class="source-card" aria-labelledby="source-title">
+              <div class="eyebrow">Source library</div>
+              <h3 id="source-title" style="font-size: 2rem;">Working material</h3>
+              <div class="source-list" aria-label="Source selection">
+                <button class="active" type="button" data-source="dock-log"><span class="caps">Dock log</span><strong>West pier shift record</strong></button>
+                <button type="button" data-source="weather-note"><span class="caps">Weather note</span><strong>Barometer dip at 04:10</strong></button>
+                <button type="button" data-source="voice-memo"><span class="caps">Voice memo</span><strong>Night watch on rope tension</strong></button>
+              </div>
+              <p id="source-copy" style="margin-top: 16px;">
+                Use the dock log as pressure, not as exposition. It should support the essay without sounding like research notes dropped into the page.
+              </p>
+              <div id="source-status" aria-live="polite"></div>
+            </section>
+
+            <section class="queue-card" aria-labelledby="queue-title">
+              <div class="eyebrow">Publishing queue</div>
+              <h3 id="queue-title" style="font-size: 2rem;">Next issue moves</h3>
+              <p>
+                The studio should help the writer shift between drafting, issue prep, and release timing without collapsing into a dashboard clone.
+              </p>
+              <div class="action-row">
+                <button id="move-to-scheduled" type="button">Move to scheduled</button>
+                <button id="open-margin-note" type="button">Promote margin note</button>
+              </div>
+            </section>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const filterData = {
+        drafts: "The current issue should move between manuscript work, source review, and release prep without losing the tone of the writing.",
+        scheduled: "Scheduled work should foreground issue timing and final proofing rather than raw drafting energy.",
+        released: "Released mode should feel archival and calm, with the writing preserved and the process receding."
+      };
+
+      const issues = {
+        harbor: {
+          chip: "draft issue / harbor ledger",
+          eyebrow: "draft in focus",
+          title: "Harbor ledger waiting for one softer closing line.",
+          copy: "The draft is nearly ready, but the ending still resolves too cleanly. Keep the tide image open and let the paragraph leave a little air in the room.",
+          ending: "I keep thinking the tide did not fix the harbor. It only showed what the posts had been holding all week.",
+          margin: "Leave the last image open enough for the water to keep moving after the sentence ends."
+        },
+        almanac: {
+          chip: "scheduled issue / tidal almanac",
+          eyebrow: "scheduled issue",
+          title: "Tidal almanac assembled for a dawn release.",
+          copy: "This issue is less confessional and more observational. Keep the weather fragments crisp and let the issue note carry the frame.",
+          ending: "By dawn the weather note read less like warning and more like a ledger of what the harbor had already admitted.",
+          margin: "This one wants clarity, not softness. Keep the weather fragments clean and the release note spare."
+        }
+      };
+
+      const sources = {
+        "dock-log": "Use the dock log as pressure, not as exposition. It should support the essay without sounding like research notes dropped into the page.",
+        "weather-note": "The weather note should sharpen the atmosphere of the piece, not overwrite its human scale.",
+        "voice-memo": "The voice memo adds lived texture. Pull one line if you need breath, not another fact."
+      };
+
+      const filterButtons = [...document.querySelectorAll("[data-filter]")];
+      const issueButtons = [...document.querySelectorAll("[data-issue]")];
+      const sourceButtons = [...document.querySelectorAll("[data-source]")];
+      let currentIssue = "harbor";
+
+      function setIssue(id) {
+        currentIssue = id;
+        issueButtons.forEach((button) => button.classList.toggle("active", button.dataset.issue === id));
+        const next = issues[id];
+        document.getElementById("hero-chip").textContent = next.chip;
+        document.getElementById("manuscript-eyebrow").textContent = next.eyebrow;
+        document.getElementById("manuscript-title").textContent = next.title;
+        document.getElementById("manuscript-copy").textContent = next.copy;
+        document.getElementById("draft-ending").textContent = next.ending;
+        document.getElementById("margin-quote").textContent = next.margin;
+      }
+
+      filterButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          filterButtons.forEach((item) => item.classList.toggle("active", item === button));
+          document.getElementById("planner-copy").textContent = filterData[button.dataset.filter];
+        });
+      });
+
+      issueButtons.forEach((button) => {
+        button.addEventListener("click", () => setIssue(button.dataset.issue));
+      });
+
+      sourceButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          sourceButtons.forEach((item) => item.classList.toggle("active", item === button));
+          document.getElementById("source-copy").textContent = sources[button.dataset.source];
+          document.getElementById("source-status").textContent = `${button.querySelector("strong").textContent} moved into the active source rail.`;
+        });
+      });
+
+      document.getElementById("publish-brief").addEventListener("click", () => {
+        document.getElementById("publish-status").textContent = `Publish brief drafted for ${issues[currentIssue].title}`;
+      });
+
+      document.getElementById("quiet-pass").addEventListener("click", () => {
+        document.getElementById("publish-status").textContent = "Quiet pass complete: repeated labels removed and the manuscript close stays open.";
+      });
+
+      document.getElementById("move-to-scheduled").addEventListener("click", () => {
+        document.getElementById("publish-status").textContent = `${issues[currentIssue].title} moved into scheduled review.`;
+      });
+
+      document.getElementById("open-margin-note").addEventListener("click", () => {
+        document.getElementById("margin-status").textContent = "Margin note promoted into the manuscript edge rail.";
+      });
+    </script>
+  </body>
+</html>

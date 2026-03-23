@@ -1,0 +1,48 @@
+{
+  "id": "plant-ops",
+  "topic": "manufacturing operations and maintenance dashboard",
+  "surface_type": "webapp",
+  "style_reference_id": "industrial-light-26",
+  "primary_style_direction": "industrial-control",
+  "supporting_motif": "status-beacon-strip",
+  "layout_pattern": "industrial-twin-board",
+  "complexity_tier": "complex",
+  "anti_slop_constraints": [
+    "avoid generic B2B card stacks",
+    "avoid safety dashboards that feel like a marketing BI tool",
+    "avoid warning color overload with no hierarchy"
+  ],
+  "must_include": [
+    "one line-status board",
+    "one maintenance queue",
+    "one intervention drawer"
+  ],
+  "interactive_states": [
+    "switch the active production line",
+    "place a line into maintenance hold"
+  ],
+  "desktop_failure_checks": [
+    "the twin-board layout must show real tension between output and maintenance",
+    "warning strips cannot dominate the page without supporting detail"
+  ],
+  "mobile_expectations": [
+    "lead with active line status and one intervention action above fold",
+    "defer secondary watchlists below the primary maintenance sequence"
+  ],
+  "skills_required": [
+    "design-context-capture",
+    "frontend-design-style-selector",
+    "frontend-design-system",
+    "frontend-design-screen-brief",
+    "frontend-design",
+    "design-audit",
+    "frontend-design-mobile-patterns",
+    "playwright-web-qa"
+  ],
+  "benchmark_lanes": ["local-authored", "playwright-interactive"],
+  "acceptance_checks": [
+    "the page feels like an industrial control surface rather than enterprise BI",
+    "line switching updates the maintenance and intervention detail",
+    "holding a line produces visible status changes in the queue"
+  ]
+}

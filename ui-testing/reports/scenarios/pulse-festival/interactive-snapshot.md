@@ -1,0 +1,89 @@
+- main [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]: Pulse Festival
+      - heading "Build the route before the crowd decides it for you." [level=1] [ref=e7]
+      - paragraph [ref=e8]: An event planner for lineup energy, venue flow, and after-hours pivots. The surface should feel poster-driven and alive, but still support a real planning decision in seconds.
+      - generic "Daypart selection" [ref=e9]:
+        - button "Tonight" [ref=e10] [cursor=pointer]
+        - button "Late shift" [ref=e11] [cursor=pointer]
+        - button "After-hours" [ref=e12] [cursor=pointer]
+    - region "Warehouse Echo takes the night once the open-air stages empty out." [ref=e88]:
+      - generic [ref=e14]: After-hours / Warehouse Echo
+      - heading "Warehouse Echo takes the night once the open-air stages empty out." [level=2] [ref=e89]
+      - paragraph [ref=e16]: The indoor route matters now. Arrive early, pin one fallback hall, and avoid the corridor once queue pressure spikes.
+  - generic [ref=e17]:
+    - region "Stage matrix" [ref=e19]:
+      - generic [ref=e20]: Kinetic contrast / catalog-control-canvas
+      - heading "Stage matrix" [level=2] [ref=e21]
+      - generic "Stage selection" [ref=e22]:
+        - button "19:30 North Dock River Array" [ref=e23] [cursor=pointer]:
+          - text: 19:30
+          - strong [ref=e24]: North Dock
+          - generic [ref=e25]: River Array
+        - button "21:10 South Hall Glass Index" [ref=e26] [cursor=pointer]:
+          - text: 21:10
+          - strong [ref=e27]: South Hall
+          - generic [ref=e28]: Glass Index
+        - button "01:15 Warehouse Echo Static Bloom" [ref=e29] [cursor=pointer]:
+          - text: 01:15
+          - strong [ref=e30]: Warehouse Echo
+          - generic [ref=e31]: Static Bloom
+      - generic [ref=e32]:
+        - generic [ref=e33]: warehouse echo / after-hours anchor
+        - heading "Static Bloom pulls the night indoors after 01:00." [level=3] [ref=e90]
+        - paragraph [ref=e35]: Warehouse Echo becomes the night anchor. The planner should make the indoor pivot obvious before the queue starts to look permanent.
+        - generic [ref=e36]:
+          - generic [ref=e91]:
+            - generic [ref=e92]: 00:40
+            - generic [ref=e93]:
+              - strong [ref=e94]: Indoor shift
+              - generic [ref=e95]: Move before the corridor clogs.
+          - generic [ref=e96]:
+            - generic [ref=e97]: 01:15
+            - generic [ref=e98]:
+              - strong [ref=e99]: Warehouse Echo
+              - generic [ref=e100]: Main after-hours set begins.
+          - generic [ref=e101]:
+            - generic [ref=e102]: 02:10
+            - generic [ref=e103]:
+              - strong [ref=e104]: Fallback hall
+              - generic [ref=e105]: Keep one alternate room pinned if the queue locks.
+        - generic [ref=e52]: Warehouse Echo moved into the live route matrix.
+    - complementary [ref=e53]:
+      - region "Pinned route" [ref=e54]:
+        - generic [ref=e55]: Planner rail
+        - heading "Pinned route" [level=3] [ref=e56]
+        - generic "Route steps" [ref=e57]:
+          - button "Route 01 North Dock -> South Hall" [ref=e58] [cursor=pointer]:
+            - text: Route 01
+            - strong [ref=e59]: North Dock -> South Hall
+          - button "Route 02 South Hall -> Warehouse Echo" [active] [ref=e60] [cursor=pointer]:
+            - text: Route 02
+            - strong [ref=e61]: South Hall -> Warehouse Echo
+          - button "Route 03 Warehouse -> Late corridor" [ref=e62] [cursor=pointer]:
+            - text: Route 03
+            - strong [ref=e63]: Warehouse -> Late corridor
+        - generic [ref=e64]:
+          - generic [ref=e65]: Route 02
+          - heading "Use South Hall as the hinge into the indoor night." [level=4] [ref=e106]
+          - paragraph [ref=e67]: Hold South Hall through the late set, then pivot to Warehouse Echo before the after-hours queue turns defensive.
+        - generic [ref=e68]:
+          - button "Pin current route" [ref=e69] [cursor=pointer]
+          - button "Share plan" [ref=e70] [cursor=pointer]
+      - region "Flow checks" [ref=e72]:
+        - generic [ref=e73]: Venue pressure
+        - heading "Flow checks" [level=3] [ref=e74]
+        - generic [ref=e75]:
+          - article [ref=e76]:
+            - generic [ref=e77]: Transfer corridor
+            - strong [ref=e78]: high
+            - paragraph [ref=e79]: The corridor is difficult once everyone pivots indoors.
+          - article [ref=e80]:
+            - generic [ref=e81]: Warehouse queue
+            - strong [ref=e82]: high
+            - paragraph [ref=e83]: Warehouse queue spikes quickly after 01:20.
+          - article [ref=e84]:
+            - generic [ref=e85]: North entry
+            - strong [ref=e86]: low
+            - paragraph [ref=e87]: North entry no longer matters in the after-hours window.

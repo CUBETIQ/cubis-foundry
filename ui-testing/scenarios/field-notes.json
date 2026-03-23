@@ -1,0 +1,48 @@
+{
+  "id": "field-notes",
+  "topic": "independent journal and publishing studio",
+  "surface_type": "webapp",
+  "style_reference_id": "newsprint-light-04",
+  "primary_style_direction": "newsprint-editorial",
+  "supporting_motif": "source-margin-rail",
+  "layout_pattern": "editorial-ledger-spread",
+  "complexity_tier": "complex",
+  "anti_slop_constraints": [
+    "avoid generic note-taking dashboards",
+    "avoid app-store productivity chrome",
+    "avoid empty desktop shell tracks"
+  ],
+  "must_include": [
+    "one manuscript spread",
+    "one source library that changes supporting copy",
+    "one issue planner and publishing queue"
+  ],
+  "interactive_states": [
+    "switch the issue in focus",
+    "switch the active source note"
+  ],
+  "desktop_failure_checks": [
+    "the page cannot waste a full desktop track on empty space",
+    "the manuscript spread and source rail must feel like one editorial system"
+  ],
+  "mobile_expectations": [
+    "lead with the active manuscript and issue chip before source support",
+    "keep source switching accessible without turning the page into a long control dump"
+  ],
+  "skills_required": [
+    "design-context-capture",
+    "frontend-design-style-selector",
+    "frontend-design-system",
+    "frontend-design-screen-brief",
+    "frontend-design",
+    "design-audit",
+    "frontend-design-mobile-patterns",
+    "playwright-web-qa"
+  ],
+  "benchmark_lanes": ["local-authored", "stitch"],
+  "acceptance_checks": [
+    "the manuscript remains the emotional center of the page",
+    "source changes update the support language",
+    "the issue planner and publishing queue feel related but not dashboard-like"
+  ]
+}

@@ -1,0 +1,21 @@
+flow: Coach Loop mode review
+success_criteria: The coach can switch from strength to recovery mode and see the main plan card update to a recovery prescription.
+base_url: http://127.0.0.1:4173/coach-loop/
+start_path: index.html
+steps:
+  - action: assert_text
+    expected: Coach Loop
+  - action: click_element
+    text: Recovery
+  - action: assert_text
+    expected: Recovery reset for lower-body fatigue
+  - action: click_element
+    text: Friday reset
+  - action: assert_text
+    expected: Friday reset selected for the athlete plan
+  - action: screenshot
+    name: coach-loop-interaction
+  - action: capture_dom
+    name: coach-loop-dom
+  - action: capture_accessibility
+    name: coach-loop-accessibility

@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>atelier-stay</title>
+    <link rel="icon" href="data:,">
+    <style>
+      :root {
+        --paper: #fbf8f2;
+        --paper-strong: #fffdf8;
+        --ink: #141312;
+        --muted: #635d56;
+        --line: rgba(20, 19, 18, 0.24);
+        --line-strong: rgba(20, 19, 18, 0.46);
+        --accent: #8a694e;
+        --accent-soft: rgba(138, 105, 78, 0.12);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(138,105,78,0.08), transparent 32%),
+          linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0)),
+          var(--paper);
+        background-size: auto, auto, auto;
+        font-family: "Canela", "Iowan Old Style", "Baskerville", Georgia, serif;
+      }
+      button {
+        font: inherit;
+        color: inherit;
+        background: transparent;
+        border: 1px solid var(--line);
+        cursor: pointer;
+      }
+      .page {
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: minmax(0, 1.06fr) minmax(420px, 0.94fr);
+      }
+      .story {
+        padding: 28px 36px 32px 32px;
+        border-right: 1px solid var(--line-strong);
+        display: grid;
+        gap: 24px;
+      }
+      .eyebrow,
+      .caps,
+      .pill,
+      .suite-switch button,
+      .arrival-switch button,
+      .availability-grid button {
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        font-size: 0.72rem;
+      }
+      h1, h2, h3, h4 {
+        margin: 0;
+        font-weight: 600;
+        letter-spacing: -0.055em;
+        line-height: 0.92;
+      }
+      h1 {
+        font-size: clamp(3.15rem, 5.2vw, 5.8rem);
+        max-width: 5.15ch;
+        line-height: 0.86;
+      }
+      .headline {
+        display: grid;
+        grid-template-columns: minmax(0, 0.96fr) minmax(300px, 0.9fr);
+        gap: 26px;
+        align-items: start;
+      }
+      .headline-copy {
+        display: grid;
+        gap: 22px;
+        align-content: start;
+        max-width: 31rem;
+      }
+      .lede {
+        max-width: 27rem;
+        color: var(--muted);
+        font-size: 1.08rem;
+        line-height: 1.78;
+      }
+      .rule {
+        width: 132px;
+        height: 5px;
+        background: var(--ink);
+      }
+      .editorial-stack {
+        display: grid;
+        gap: 18px;
+        align-content: start;
+        padding-top: 10px;
+      }
+      .story-grid {
+        display: grid;
+        gap: 18px;
+        grid-template-columns: minmax(0, 1.04fr) minmax(300px, 0.96fr);
+      }
+      .gallery,
+      .availability,
+      .suite-panel,
+      .booking-card,
+      .house-note,
+      .arrival-card,
+      .concierge-card {
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.36);
+      }
+      .gallery,
+      .availability,
+      .suite-panel,
+      .booking-card,
+      .house-note,
+      .arrival-card,
+      .concierge-card {
+        padding: 18px;
+      }
+      .gallery-grid {
+        margin-top: 18px;
+        display: grid;
+        gap: 12px;
+        grid-template-columns: 1.3fr 0.7fr;
+      }
+      .gallery-hero,
+      .gallery-mini {
+        min-height: 180px;
+        border: 1px solid var(--line);
+      }
+      .gallery-hero {
+        display: grid;
+        align-content: end;
+        padding: 18px;
+        background: linear-gradient(135deg, rgba(20,19,18,0.1), rgba(255,255,255,0.32));
+      }
+      .gallery-side {
+        display: grid;
+        gap: 12px;
+      }
+      .gallery-mini:nth-child(1) {
+        background: linear-gradient(135deg, rgba(138,105,78,0.2), rgba(255,255,255,0.24));
+      }
+      .gallery-mini:nth-child(2) {
+        background: linear-gradient(135deg, rgba(20,19,18,0.12), rgba(255,255,255,0.12));
+      }
+      .suite-panel h2 {
+        font-size: clamp(2.4rem, 4vw, 4.4rem);
+        margin-top: 12px;
+      }
+      .suite-switch,
+      .arrival-switch {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 14px;
+      }
+      .suite-switch button,
+      .arrival-switch button,
+      .availability-grid button {
+        padding: 10px 12px;
+      }
+      .suite-switch .active,
+      .arrival-switch .active,
+      .availability-grid .active {
+        background: var(--ink);
+        color: var(--paper);
+        border-color: var(--ink);
+      }
+      .suite-copy,
+      .booking-card p,
+      .arrival-card p,
+      .house-note p,
+      .concierge-card p {
+        color: var(--muted);
+        line-height: 1.72;
+      }
+      .detail-grid {
+        margin-top: 18px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .detail-grid div {
+        padding: 12px;
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.52);
+      }
+      .availability-grid {
+        margin-top: 16px;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .availability-grid button {
+        min-height: 72px;
+        text-align: left;
+        display: grid;
+        gap: 4px;
+        align-content: start;
+        background: rgba(255,255,255,0.62);
+      }
+      .booking {
+        padding: 28px 28px 32px;
+        display: grid;
+        gap: 18px;
+        align-content: start;
+      }
+      .booking-card .price {
+        margin: 12px 0 8px;
+        font-size: 3rem;
+        line-height: 0.94;
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        background: var(--accent-soft);
+        border: 1px solid rgba(138,105,78,0.28);
+        width: fit-content;
+      }
+      .stay-benefits {
+        margin: 18px 0;
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.78;
+      }
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .primary {
+        background: var(--ink);
+        color: var(--paper);
+        border-color: var(--ink);
+      }
+      .booking-card button,
+      .arrival-card button,
+      .concierge-card button {
+        padding: 12px 14px;
+      }
+      .status {
+        min-height: 1.5rem;
+        margin-top: 14px;
+        font-weight: 600;
+      }
+      .house-note {
+        display: grid;
+        gap: 10px;
+      }
+      @media (max-width: 1320px) {
+        .headline {
+          grid-template-columns: 1fr;
+        }
+        .editorial-stack {
+          padding-top: 0;
+        }
+      }
+      @media (max-width: 1120px) {
+        .page,
+        .story-grid,
+        .gallery-grid {
+          grid-template-columns: 1fr;
+        }
+        h1 {
+          max-width: 7ch;
+        }
+        .story {
+          border-right: 0;
+          border-bottom: 1px solid var(--line-strong);
+        }
+      }
+      @media (max-width: 760px) {
+        .detail-grid,
+        .availability-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media (max-width: 560px) {
+        .detail-grid,
+        .availability-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <section class="story">
+        <div class="headline">
+          <div class="headline-copy">
+            <div class="eyebrow">Atelier Stay</div>
+            <h1 id="hero-title">A stay authored like an invitation in black ink.</h1>
+            <div class="rule"></div>
+            <p class="lede" id="hero-copy">
+              A small house of suites and residences where arrival feels composed, ceremonial, and sharply edited.
+              The booking surface sits beside the story, but the story still leads the room.
+            </p>
+          </div>
+          <div class="editorial-stack">
+            <section class="arrival-card" aria-labelledby="arrival-title">
+              <div class="caps" id="arrival-title">arrival rhythm</div>
+              <div class="arrival-switch" aria-label="Arrival mode">
+                <button class="active" type="button" data-arrival="dusk">Dusk arrival</button>
+                <button type="button" data-arrival="morning">Morning arrival</button>
+              </div>
+              <p id="arrival-copy">
+                Guests enter through the print room at dusk, with the first table setting already composed.
+              </p>
+              <button id="arrival-brief" type="button">Draft arrival brief</button>
+              <div class="status" id="arrival-status" aria-live="polite"></div>
+            </section>
+
+            <section class="availability" aria-labelledby="availability-title">
+              <div class="caps" id="availability-title">Availability ledger</div>
+              <div class="availability-grid" aria-label="Availability weeks">
+                <button class="active" type="button" data-week="11-13"><span>Apr 11-13</span><strong id="week-a">2 suites left</strong></button>
+                <button type="button" data-week="18-20"><span>Apr 18-20</span><strong id="week-b">Residence open</strong></button>
+                <button type="button" data-week="25-27"><span>Apr 25-27</span><strong id="week-c">Waitlist only</strong></button>
+                <button type="button" data-week="2-4"><span>May 2-4</span><strong id="week-d">House weekend</strong></button>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <div class="story-grid">
+          <section class="gallery" aria-labelledby="gallery-title">
+            <div class="caps" id="gallery-title">Split editorial feature</div>
+            <div class="gallery-grid">
+              <div class="gallery-hero" id="gallery-hero">
+                <div class="pill" id="gallery-pill">North Gallery Suite</div>
+                <strong id="gallery-line">Linen, reading room, and courtyard breakfast service.</strong>
+              </div>
+              <div class="gallery-side">
+                <div class="gallery-mini"></div>
+                <div class="gallery-mini"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="suite-panel" aria-labelledby="suite-title">
+            <div class="caps">room families</div>
+            <div class="suite-switch" aria-label="Room families">
+              <button class="active" type="button" data-suite="suite">Suites</button>
+              <button type="button" data-suite="residence">Residences</button>
+              <button type="button" data-suite="salon">Salon floor</button>
+            </div>
+            <h2 id="suite-title">North Gallery Suite</h2>
+            <p class="suite-copy" id="suite-copy">
+              Two-night minimum. A quiet reading room, linen palette, courtyard breakfast, and a host-led arrival ritual.
+            </p>
+            <div class="detail-grid">
+              <div><span class="caps">Rate</span><strong id="suite-rate">$740 / night</strong></div>
+              <div><span class="caps">House tone</span><strong id="suite-tone">quiet and formal</strong></div>
+              <div><span class="caps">Best for</span><strong id="suite-best">weekend editing retreat</strong></div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <aside class="booking">
+        <section class="booking-card" aria-labelledby="booking-title">
+          <div class="caps">current stay selection</div>
+          <h3 id="booking-title">Reservation ledger</h3>
+          <div class="price" id="booking-price">$740</div>
+          <div id="booking-rate-copy">per night / private breakfast included</div>
+          <div class="pill" style="margin-top: 16px;" id="booking-pill">Dusk arrival / 2-night minimum</div>
+          <ul class="stay-benefits">
+            <li id="benefit-a">Private breakfast poured in the courtyard archive</li>
+            <li id="benefit-b">Print room table setting on first night</li>
+            <li id="benefit-c">Quiet house after 23:00</li>
+          </ul>
+          <div class="cta-row">
+            <button class="primary" id="request-stay" type="button">Request this stay</button>
+            <button id="compare-stay" type="button">Compare with previous selection</button>
+          </div>
+          <div class="status" id="booking-status" aria-live="polite"></div>
+        </section>
+
+        <section class="concierge-card" aria-labelledby="concierge-title">
+          <div class="caps" id="concierge-title">concierge sheet</div>
+          <p id="concierge-copy">
+            If the guest chooses the North Gallery Suite, stage the first evening around the print room and keep breakfast inside the courtyard archive.
+          </p>
+          <button id="concierge-button" type="button">Prepare concierge note</button>
+          <div class="status" id="concierge-status" aria-live="polite"></div>
+        </section>
+
+        <section class="house-note" aria-labelledby="house-note-title">
+          <div class="caps" id="house-note-title">house rule</div>
+          <p>
+            Every reservation begins with one authored moment: a guide, a table, and an arrival sequence that
+            feels closer to being hosted into a studio than checked into a hotel lobby.
+          </p>
+        </section>
+      </aside>
+    </div>
+
+    <script>
+      const suites = {
+        suite: {
+          heroTitle: "A stay authored like an invitation in black ink.",
+          heroCopy: "A small house of suites and residences where arrival feels composed, ceremonial, and sharply edited. The booking surface sits beside the story, but the story still leads the room.",
+          title: "North Gallery Suite",
+          copy: "Two-night minimum. A quiet reading room, linen palette, courtyard breakfast, and a host-led arrival ritual.",
+          rate: "$740 / night",
+          tone: "quiet and formal",
+          best: "weekend editing retreat",
+          price: "$740",
+          bookingRate: "per night / private breakfast included",
+          pill: "Dusk arrival / 2-night minimum",
+          galleryPill: "North Gallery Suite",
+          galleryLine: "Linen, reading room, and courtyard breakfast service.",
+          benefits: [
+            "Private breakfast poured in the courtyard archive",
+            "Print room table setting on first night",
+            "Quiet house after 23:00"
+          ],
+          concierge: "If the guest chooses the North Gallery Suite, stage the first evening around the print room and keep breakfast inside the courtyard archive."
+        },
+        residence: {
+          heroTitle: "Residences for longer stays and slower mornings.",
+          heroCopy: "The residence floor opens the house into a longer rhythm: rooftop tea, double-height salon, and a stay that feels less like a weekend and more like a temporary chapter.",
+          title: "Rooftop Residence",
+          copy: "Three-night minimum. Double-height salon, rooftop soaking bath, and dusk tea service framed by the city line.",
+          rate: "$1,180 / night",
+          tone: "expansive and private",
+          best: "long-form city stay",
+          price: "$1,180",
+          bookingRate: "per night / rooftop tea ritual included",
+          pill: "Morning arrival / 3-night minimum",
+          galleryPill: "Rooftop Residence",
+          galleryLine: "Double-height salon, rooftop bath, and dusk tea above the courtyard roofline.",
+          benefits: [
+            "Rooftop tea ritual at first dusk",
+            "Double-height salon for long stays",
+            "Private host check-in by appointment"
+          ],
+          concierge: "For the Rooftop Residence, prepare rooftop tea service on arrival and hold the skyline salon open for the guest's first evening."
+        },
+        salon: {
+          heroTitle: "An entire salon floor for gatherings that still feel composed.",
+          heroCopy: "The salon floor gives the guest a more public kind of privacy: longer tables, print room hosting, and house access tuned for small gatherings rather than retreat silence.",
+          title: "Salon Floor Reservation",
+          copy: "Four-night minimum. Private salon floor, long supper table, and full print-room hosting support for small gatherings.",
+          rate: "$1,860 / night",
+          tone: "ceremonial and social",
+          best: "small hosted gathering",
+          price: "$1,860",
+          bookingRate: "per night / salon host service included",
+          pill: "Curated arrival / 4-night minimum",
+          galleryPill: "Salon Floor",
+          galleryLine: "Long table settings, print room hosting, and a private floor staged for gatherings.",
+          benefits: [
+            "Dedicated salon host on first night",
+            "Long-table dining setup included",
+            "Print room access for private gathering"
+          ],
+          concierge: "For the Salon Floor, coordinate the print room, confirm host presence, and stage the long supper table before the guest arrives."
+        }
+      };
+
+      const arrivalModes = {
+        dusk: {
+          copy: "Guests enter through the print room at dusk, with the first table setting already composed.",
+          pillText: "Dusk arrival"
+        },
+        morning: {
+          copy: "Morning arrivals begin in the courtyard archive with breakfast first, room second, and a quieter handoff into the house.",
+          pillText: "Morning arrival"
+        }
+      };
+
+      const suiteButtons = [...document.querySelectorAll("[data-suite]")];
+      const arrivalButtons = [...document.querySelectorAll("[data-arrival]")];
+      const weekButtons = [...document.querySelectorAll("[data-week]")];
+      let currentSuite = "suite";
+      let currentArrival = "dusk";
+
+      function syncBookingPill() {
+        const minimum = currentSuite === "suite" ? "2-night minimum" : currentSuite === "residence" ? "3-night minimum" : "4-night minimum";
+        document.getElementById("booking-pill").textContent = `${arrivalModes[currentArrival].pillText} / ${minimum}`;
+      }
+
+      function setSuite(id) {
+        currentSuite = id;
+        suiteButtons.forEach((button) => button.classList.toggle("active", button.dataset.suite === id));
+        const next = suites[id];
+        document.getElementById("hero-title").textContent = next.heroTitle;
+        document.getElementById("hero-copy").textContent = next.heroCopy;
+        document.getElementById("suite-title").textContent = next.title;
+        document.getElementById("suite-copy").textContent = next.copy;
+        document.getElementById("suite-rate").textContent = next.rate;
+        document.getElementById("suite-tone").textContent = next.tone;
+        document.getElementById("suite-best").textContent = next.best;
+        document.getElementById("booking-price").textContent = next.price;
+        document.getElementById("booking-rate-copy").textContent = next.bookingRate;
+        document.getElementById("gallery-pill").textContent = next.galleryPill;
+        document.getElementById("gallery-line").textContent = next.galleryLine;
+        document.getElementById("benefit-a").textContent = next.benefits[0];
+        document.getElementById("benefit-b").textContent = next.benefits[1];
+        document.getElementById("benefit-c").textContent = next.benefits[2];
+        document.getElementById("concierge-copy").textContent = next.concierge;
+        syncBookingPill();
+      }
+
+      function setArrival(id) {
+        currentArrival = id;
+        arrivalButtons.forEach((button) => button.classList.toggle("active", button.dataset.arrival === id));
+        document.getElementById("arrival-copy").textContent = arrivalModes[id].copy;
+        syncBookingPill();
+      }
+
+      suiteButtons.forEach((button) => {
+        button.addEventListener("click", () => setSuite(button.dataset.suite));
+      });
+
+      arrivalButtons.forEach((button) => {
+        button.addEventListener("click", () => setArrival(button.dataset.arrival));
+      });
+
+      weekButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          weekButtons.forEach((item) => item.classList.toggle("active", item === button));
+          document.getElementById("booking-status").textContent = `Availability focus moved to ${button.dataset.week.replace("-", " to ")} for ${suites[currentSuite].title}`;
+        });
+      });
+
+      document.getElementById("request-stay").addEventListener("click", () => {
+        document.getElementById("booking-status").textContent = `Stay request opened for ${suites[currentSuite].title} with ${arrivalModes[currentArrival].pillText.toLowerCase()}.`;
+      });
+
+      document.getElementById("compare-stay").addEventListener("click", () => {
+        document.getElementById("booking-status").textContent = `${suites[currentSuite].title} moved into comparison mode against the previous house selection.`;
+      });
+
+      document.getElementById("arrival-brief").addEventListener("click", () => {
+        document.getElementById("arrival-status").textContent = `${arrivalModes[currentArrival].pillText} brief drafted for ${suites[currentSuite].title}.`;
+      });
+
+      document.getElementById("concierge-button").addEventListener("click", () => {
+        document.getElementById("concierge-status").textContent = `Concierge note prepared for ${suites[currentSuite].title}.`;
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,76 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]: Atelier Stay
+        - heading "Residences for longer stays and slower mornings." [level=1] [ref=e82]
+        - paragraph [ref=e9]: "The residence floor opens the house into a longer rhythm: rooftop tea, double-height salon, and a stay that feels less like a weekend and more like a temporary chapter."
+      - generic [ref=e10]:
+        - region "arrival rhythm" [ref=e11]:
+          - generic [ref=e12]: arrival rhythm
+          - generic "Arrival mode" [ref=e13]:
+            - button "Dusk arrival" [ref=e14] [cursor=pointer]
+            - button "Morning arrival" [ref=e15] [cursor=pointer]
+          - paragraph [ref=e16]: Morning arrivals begin in the courtyard archive with breakfast first, room second, and a quieter handoff into the house.
+          - button "Draft arrival brief" [ref=e17] [cursor=pointer]
+        - region "Availability ledger" [ref=e19]:
+          - generic [ref=e20]: Availability ledger
+          - generic "Availability weeks" [ref=e21]:
+            - button "Apr 11-13 2 suites left" [ref=e22] [cursor=pointer]:
+              - generic [ref=e23]: Apr 11-13
+              - strong [ref=e24]: 2 suites left
+            - button "Apr 18-20 Residence open" [active] [ref=e25] [cursor=pointer]:
+              - generic [ref=e26]: Apr 18-20
+              - strong [ref=e27]: Residence open
+            - button "Apr 25-27 Waitlist only" [ref=e28] [cursor=pointer]:
+              - generic [ref=e29]: Apr 25-27
+              - strong [ref=e30]: Waitlist only
+            - button "May 2-4 House weekend" [ref=e31] [cursor=pointer]:
+              - generic [ref=e32]: May 2-4
+              - strong [ref=e33]: House weekend
+    - generic [ref=e34]:
+      - region "Split editorial feature" [ref=e35]:
+        - generic [ref=e36]: Split editorial feature
+        - generic [ref=e38]:
+          - generic [ref=e39]: Rooftop Residence
+          - strong [ref=e40]: Double-height salon, rooftop bath, and dusk tea above the courtyard roofline.
+      - region "Rooftop Residence" [ref=e83]:
+        - generic [ref=e45]: room families
+        - generic "Room families" [ref=e46]:
+          - button "Suites" [ref=e47] [cursor=pointer]
+          - button "Residences" [ref=e48] [cursor=pointer]
+          - button "Salon floor" [ref=e49] [cursor=pointer]
+        - heading "Rooftop Residence" [level=2] [ref=e84]
+        - paragraph [ref=e51]: Three-night minimum. Double-height salon, rooftop soaking bath, and dusk tea service framed by the city line.
+        - generic [ref=e52]:
+          - generic [ref=e53]:
+            - text: Rate
+            - strong [ref=e54]: $1,180 / night
+          - generic [ref=e55]:
+            - text: House tone
+            - strong [ref=e56]: expansive and private
+          - generic [ref=e57]:
+            - text: Best for
+            - strong [ref=e58]: long-form city stay
+  - complementary [ref=e59]:
+    - region "Reservation ledger" [ref=e60]:
+      - generic [ref=e61]: current stay selection
+      - heading "Reservation ledger" [level=3] [ref=e62]
+      - generic [ref=e63]: $1,180
+      - generic [ref=e64]: per night / rooftop tea ritual included
+      - generic [ref=e65]: Morning arrival / 3-night minimum
+      - list [ref=e66]:
+        - listitem [ref=e67]: Rooftop tea ritual at first dusk
+        - listitem [ref=e68]: Double-height salon for long stays
+        - listitem [ref=e69]: Private host check-in by appointment
+      - generic [ref=e70]:
+        - button "Request this stay" [ref=e71] [cursor=pointer]
+        - button "Compare with previous selection" [ref=e72] [cursor=pointer]
+      - generic [ref=e73]: Availability focus moved to 18 to 20 for Rooftop Residence
+    - region "concierge sheet" [ref=e74]:
+      - generic [ref=e75]: concierge sheet
+      - paragraph [ref=e76]: For the Rooftop Residence, prepare rooftop tea service on arrival and hold the skyline salon open for the guest's first evening.
+      - button "Prepare concierge note" [ref=e77] [cursor=pointer]
+    - region "house rule" [ref=e79]:
+      - generic [ref=e80]: house rule
+      - paragraph [ref=e81]: "Every reservation begins with one authored moment: a guide, a table, and an arrival sequence that feels closer to being hosted into a studio than checked into a hotel lobby."

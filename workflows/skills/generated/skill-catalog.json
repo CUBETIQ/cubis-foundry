@@ -2,10 +2,10 @@
   "$schema": "cubis-foundry-skill-catalog-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
   "summary": {
-    "totalEntries": 56,
-    "totalSkills": 56,
+    "totalEntries": 64,
+    "totalSkills": 64,
     "totalSubskills": 0,
-    "canonicalSkills": 55,
+    "canonicalSkills": 63,
     "compatibilityAliases": 1,
     "layers": [
       "compatibility",
@@ -253,6 +253,232 @@
         "deep",
         "research",
         "core-operating"
+      ]
+    },
+    {
+      "id": "design-arrange",
+      "package_id": "design-arrange",
+      "catalog_id": "design-arrange",
+      "kind": "skill",
+      "path": "workflows/skills/design-arrange/SKILL.md",
+      "name": "design-arrange",
+      "description": "Repair layout, spacing, and visual rhythm when a UI has the right ingredients but the composition still feels templated, monotonous, or badly prioritized.",
+      "canonical": true,
+      "canonical_id": "design-arrange",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "arrange",
+        "design",
+        "design arrange",
+        "design-arrange",
+        "workflow-specialists"
+      ],
+      "triggers": [
+        "design-arrange",
+        "design arrange",
+        "design",
+        "arrange",
+        "workflow-specialists"
+      ]
+    },
+    {
+      "id": "design-audit",
+      "package_id": "design-audit",
+      "catalog_id": "design-audit",
+      "kind": "skill",
+      "path": "workflows/skills/design-audit/SKILL.md",
+      "name": "design-audit",
+      "description": "Diagnose why a UI feels generic, uneven, or hard to validate before making edits. Use for screenshot-first or live-browser review of composition, typography, states, responsiveness, and anti-slop failures.",
+      "canonical": true,
+      "canonical_id": "design-audit",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "audit",
+        "design",
+        "design audit",
+        "design-audit",
+        "workflow-specialists"
+      ],
+      "triggers": [
+        "design-audit",
+        "design audit",
+        "design",
+        "audit",
+        "workflow-specialists"
+      ]
+    },
+    {
+      "id": "design-bolder",
+      "package_id": "design-bolder",
+      "catalog_id": "design-bolder",
+      "kind": "skill",
+      "path": "workflows/skills/design-bolder/SKILL.md",
+      "name": "design-bolder",
+      "description": "Increase visual conviction when a UI is safe, bland, or too polite. Use to strengthen hierarchy, contrast, motif repetition, and brand character without making the surface chaotic.",
+      "canonical": true,
+      "canonical_id": "design-bolder",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "bolder",
+        "design",
+        "design bolder",
+        "design-bolder",
+        "workflow-specialists"
+      ],
+      "triggers": [
+        "design-bolder",
+        "design bolder",
+        "design",
+        "bolder",
+        "workflow-specialists"
+      ]
+    },
+    {
+      "id": "design-context-capture",
+      "package_id": "design-context-capture",
+      "catalog_id": "design-context-capture",
+      "kind": "skill",
+      "path": "workflows/skills/design-context-capture/SKILL.md",
+      "name": "design-context-capture",
+      "description": "Capture or refresh the project's canonical design context in `docs/foundation/DESIGN.md` so downstream design, implementation, and QA skills stop relying on vague taste or one-off prompts.",
+      "canonical": true,
+      "canonical_id": "design-context-capture",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "capture",
+        "context",
+        "design",
+        "design context capture",
+        "design-context-capture",
+        "workflow-specialists"
+      ],
+      "triggers": [
+        "design-context-capture",
+        "design context capture",
+        "design",
+        "context",
+        "capture",
+        "workflow-specialists"
+      ]
+    },
+    {
+      "id": "design-distill",
+      "package_id": "design-distill",
+      "catalog_id": "design-distill",
+      "kind": "skill",
+      "path": "workflows/skills/design-distill/SKILL.md",
+      "name": "design-distill",
+      "description": "Remove clutter and reduce visual noise so the strongest parts of the interface can lead. Use when a UI is overbuilt, over-labeled, over-boxed, or trying to say too many things at once.",
+      "canonical": true,
+      "canonical_id": "design-distill",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "design",
+        "design distill",
+        "design-distill",
+        "distill",
+        "workflow-specialists"
+      ],
+      "triggers": [
+        "design-distill",
+        "design distill",
+        "design",
+        "distill",
+        "workflow-specialists"
+      ]
+    },
+    {
+      "id": "design-polish",
+      "package_id": "design-polish",
+      "catalog_id": "design-polish",
+      "kind": "skill",
+      "path": "workflows/skills/design-polish/SKILL.md",
+      "name": "design-polish",
+      "description": "Run the final design cleanup pass on a functionally complete UI. Use when the direction is already chosen and the remaining work is alignment, state completeness, consistency, and ship-quality detail.",
+      "canonical": true,
+      "canonical_id": "design-polish",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "design",
+        "design polish",
+        "design-polish",
+        "polish",
+        "workflow-specialists"
+      ],
+      "triggers": [
+        "design-polish",
+        "design polish",
+        "design",
+        "polish",
+        "workflow-specialists"
+      ]
+    },
+    {
+      "id": "design-typeset",
+      "package_id": "design-typeset",
+      "catalog_id": "design-typeset",
+      "kind": "skill",
+      "path": "workflows/skills/design-typeset/SKILL.md",
+      "name": "design-typeset",
+      "description": "Repair or strengthen typography so text has hierarchy, voice, and readability instead of defaulting to generic app copy styling. Use for headlines, labels, body rhythm, and type-scale decisions.",
+      "canonical": true,
+      "canonical_id": "design-typeset",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "design",
+        "design typeset",
+        "design-typeset",
+        "typeset",
+        "workflow-specialists"
+      ],
+      "triggers": [
+        "design-typeset",
+        "design typeset",
+        "design",
+        "typeset",
+        "workflow-specialists"
       ]
     },
     {
@@ -1807,6 +2033,40 @@
       ]
     },
     {
+      "id": "ui-testing-harness",
+      "package_id": "ui-testing-harness",
+      "catalog_id": "ui-testing-harness",
+      "kind": "skill",
+      "path": "workflows/skills/ui-testing-harness/SKILL.md",
+      "name": "ui-testing-harness",
+      "description": "Use when building or reviewing a Foundry-owned UI evaluation harness, generating anti-slop web fixtures, scoring design outputs with deterministic evidence, or turning multi-scenario UI findings into concrete Foundry gaps.",
+      "canonical": true,
+      "canonical_id": "ui-testing-harness",
+      "deprecated": false,
+      "replaced_by": null,
+      "aliases": [],
+      "category": "workflow-specialists",
+      "layer": "workflow-specialists",
+      "maturity": "incubating",
+      "tier": "experimental",
+      "tags": [
+        "harness",
+        "testing",
+        "ui",
+        "ui testing harness",
+        "ui-testing-harness",
+        "workflow-specialists"
+      ],
+      "triggers": [
+        "ui-testing-harness",
+        "ui testing harness",
+        "ui",
+        "testing",
+        "harness",
+        "workflow-specialists"
+      ]
+    },
+    {
       "id": "unit-testing",
       "package_id": "unit-testing",
       "catalog_id": "unit-testing",
@@ -1839,5 +2099,5 @@
       ]
     }
   ],
-  "contentHash": "edbd8c1d2ca157f4"
+  "contentHash": "ce0a818ac0e13030"
 }

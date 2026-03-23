@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>saas-foundry</title>
+    <link rel="icon" href="data:,">
+    <style>
+      :root {
+        --bg: #f4f7fb;
+        --panel: rgba(255, 255, 255, 0.92);
+        --panel-strong: #ffffff;
+        --line: rgba(18, 33, 56, 0.12);
+        --line-strong: rgba(18, 33, 56, 0.22);
+        --ink: #10203b;
+        --muted: #60708d;
+        --accent: #276ef1;
+        --accent-soft: rgba(39, 110, 241, 0.12);
+        --mint: #d6f4e2;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: "Inter", "Avenir Next", "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at top right, rgba(39,110,241,0.12), transparent 32%),
+          radial-gradient(circle at left center, rgba(111,146,220,0.08), transparent 26%),
+          var(--bg);
+        background-size: auto, auto, auto;
+      }
+      button {
+        font: inherit;
+        color: inherit;
+        background: transparent;
+        border: 1px solid var(--line);
+        cursor: pointer;
+        border-radius: 14px;
+      }
+      .eyebrow,
+      .caps,
+      .mode-switch button,
+      .plan-switch button,
+      .command-row button,
+      .status-chip {
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        font-size: 0.72rem;
+      }
+      h1, h2, h3, h4 {
+        margin: 0;
+        line-height: 0.94;
+        letter-spacing: -0.05em;
+      }
+      .page {
+        min-height: 100vh;
+        max-width: 1500px;
+        margin: 0 auto;
+        padding: 22px;
+        display: grid;
+        gap: 18px;
+      }
+      .panel {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        padding: 18px;
+        border-radius: 24px;
+        box-shadow: 0 20px 48px rgba(16, 32, 59, 0.06);
+      }
+      .hero {
+        display: grid;
+        gap: 18px;
+      }
+      .hero-top {
+        display: grid;
+        grid-template-columns: minmax(0, 0.94fr) minmax(420px, 1.06fr);
+        gap: 18px;
+      }
+      .hero-copy h1 {
+        margin-top: 10px;
+        font-size: clamp(2.9rem, 5.9vw, 5.1rem);
+        max-width: 7.1ch;
+      }
+      .hero-copy p,
+      .preview-copy,
+      .cabinet-card p,
+      .plan-card p,
+      .signal-card p {
+        color: var(--muted);
+        line-height: 1.7;
+      }
+      .status-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        background: var(--accent-soft);
+        border: 1px solid rgba(39,110,241,0.26);
+        width: fit-content;
+      }
+      .mode-switch,
+      .plan-switch,
+      .command-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .mode-switch button,
+      .plan-switch button,
+      .command-row button {
+        padding: 11px 14px;
+      }
+      .mode-switch .active,
+      .plan-switch .active {
+        background: var(--ink);
+        color: #f7fbff;
+        border-color: var(--ink);
+      }
+      .preview-shell {
+        display: grid;
+        gap: 14px;
+        border: 1px solid var(--line-strong);
+        background: linear-gradient(180deg, rgba(39,110,241,0.09), rgba(255,255,255,0.96));
+        padding: 18px;
+        border-radius: 30px;
+      }
+      .preview-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: center;
+      }
+      .preview-head h2 {
+        font-size: clamp(2rem, 4vw, 3.2rem);
+      }
+      .proof-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .proof-grid article,
+      .cabinet-card,
+      .plan-card,
+      .signal-card {
+        border: 1px solid var(--line);
+        background: var(--panel-strong);
+        border-radius: 22px;
+      }
+      .proof-grid article {
+        padding: 14px;
+      }
+      .figure {
+        display: block;
+        margin-top: 8px;
+        font-size: 1.7rem;
+        font-weight: 700;
+      }
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+        gap: 18px;
+      }
+      .left-stack,
+      .right-stack {
+        display: grid;
+        gap: 18px;
+      }
+      .cabinet-card,
+      .plan-card,
+      .signal-card {
+        padding: 18px;
+      }
+      .command-board {
+        margin-top: 16px;
+        display: grid;
+        gap: 10px;
+      }
+      .command-item {
+        display: grid;
+        grid-template-columns: 120px 1fr auto;
+        gap: 12px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        background: rgba(248, 250, 255, 0.82);
+        align-items: center;
+        border-radius: 18px;
+      }
+      .command-item strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+      .price {
+        margin: 10px 0;
+        font-size: 3rem;
+        line-height: 0.92;
+        font-weight: 700;
+      }
+      .plan-list,
+      .signal-list {
+        margin-top: 14px;
+        display: grid;
+        gap: 10px;
+      }
+      .plan-row,
+      .signal-row {
+        padding-top: 10px;
+        border-top: 1px solid var(--line);
+        display: grid;
+        gap: 6px;
+      }
+      .plan-row:first-child,
+      .signal-row:first-child {
+        border-top: 0;
+        padding-top: 0;
+      }
+      .primary {
+        background: var(--accent);
+        color: #f7fbff;
+        border-color: var(--accent);
+      }
+      #mode-status,
+      #plan-status {
+        min-height: 1.5rem;
+        font-weight: 600;
+      }
+      #mode-status { color: var(--accent); }
+      #plan-status { color: #2d7d4f; }
+      @media (max-width: 1120px) {
+        .hero-top,
+        .workspace,
+        .proof-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 760px) {
+        .page,
+        .panel,
+        .preview-shell,
+        .cabinet-card,
+        .plan-card,
+        .signal-card {
+          padding: 16px;
+        }
+        .command-item {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <main class="panel hero">
+        <div class="hero-top">
+          <section class="hero-copy">
+            <div class="eyebrow">SaaS Foundry</div>
+            <h1 id="hero-title">A product shell that proves the workflow before it sells it.</h1>
+            <p id="hero-copy">
+              A minimalist SaaS surface for AI workflow teams that need the page to show a real product state,
+              not a generic startup hero with decorative numbers.
+            </p>
+            <div class="status-chip" id="hero-chip">workflow mode / design audit ready</div>
+            <div class="mode-switch" aria-label="Product mode">
+              <button class="active" type="button" data-mode="workflow">Workflow</button>
+              <button type="button" data-mode="audit">Design audit</button>
+              <button type="button" data-mode="handoff">Handoff</button>
+            </div>
+          </section>
+
+          <section class="preview-shell" aria-labelledby="preview-title">
+            <div class="preview-head">
+              <div>
+                <div class="caps">Live product preview</div>
+                <h2 id="preview-title">Workflow control room</h2>
+              </div>
+              <div class="status-chip" id="preview-chip">12 active runs</div>
+            </div>
+            <p class="preview-copy" id="preview-copy">
+              The preview should demonstrate one real work surface: run queues, review checkpoints, and human-ready output handoff.
+            </p>
+            <div class="proof-grid">
+              <article><div class="caps">Approval lag</div><strong class="figure" id="proof-a">9m</strong></article>
+              <article><div class="caps">Guardrails passed</div><strong class="figure" id="proof-b">84%</strong></article>
+              <article><div class="caps">Handoff ready</div><strong class="figure" id="proof-c">26 runs</strong></article>
+            </div>
+            <div id="mode-status" aria-live="polite"></div>
+          </section>
+        </div>
+
+        <section class="workspace">
+          <div class="left-stack">
+            <section class="cabinet-card" aria-labelledby="cabinet-title">
+              <div class="caps">Command ribbon</div>
+              <h3 id="cabinet-title" style="font-size: 2rem; margin-top: 8px;">Current operating lane</h3>
+              <p id="cabinet-copy">
+                Run the product like a real workspace: one mode ribbon, one command board, and one visible checkpoint story.
+              </p>
+              <div class="command-row" style="margin-top: 16px;">
+                <button class="primary" id="open-preview" type="button">Open live preview</button>
+                <button id="sync-brief" type="button">Sync screen brief</button>
+              </div>
+              <div class="command-board" id="command-board">
+                <div class="command-item"><div class="caps">Queue</div><div><strong>Prompt trace</strong><div class="preview-copy">Dataset, exclusions, and skill chain stay visible.</div></div><div>ready</div></div>
+                <div class="command-item"><div class="caps">Review</div><div><strong>Design audit</strong><div class="preview-copy">Weak composition is routed into remediation before release.</div></div><div>active</div></div>
+                <div class="command-item"><div class="caps">Ship</div><div><strong>Implementation handoff</strong><div class="preview-copy">The product state converts into a real build path, not a pretty mock.</div></div><div>queued</div></div>
+              </div>
+            </section>
+
+            <section class="signal-card" aria-labelledby="signal-title">
+              <div class="caps">Signal cabinet</div>
+              <h3 id="signal-title" style="font-size: 2rem; margin-top: 8px;">Proof the product is doing work</h3>
+              <div class="signal-list">
+                <div class="signal-row"><strong>Run queue</strong><p>Three flows are waiting for design review before handoff.</p></div>
+                <div class="signal-row"><strong>Audit coverage</strong><p>The deep review lane is enabled for the dense workflow surfaces only.</p></div>
+                <div class="signal-row"><strong>Operator confidence</strong><p>Teams can see why the screen looks the way it does before they click deploy.</p></div>
+              </div>
+            </section>
+          </div>
+
+          <aside class="right-stack">
+            <section class="plan-card" aria-labelledby="plan-title">
+              <div class="caps">Plan rail</div>
+              <h3 id="plan-title" style="font-size: 2rem; margin-top: 8px;">Selected plan</h3>
+              <div class="plan-switch" aria-label="Billing plan" style="margin-top: 16px;">
+                <button class="active" type="button" data-plan="team">Team</button>
+                <button type="button" data-plan="enterprise">Enterprise</button>
+              </div>
+              <div class="price" id="plan-price">$69</div>
+              <div id="plan-copy">per seat / monthly review lane included</div>
+              <div class="plan-list">
+                <div class="plan-row"><strong id="plan-a">Up to 25 workflows</strong><p>Great for small product teams running design-aware automation.</p></div>
+                <div class="plan-row"><strong id="plan-b">Review trace included</strong><p>Prompt trace and remediation history stay attached to every workflow.</p></div>
+                <div class="plan-row"><strong id="plan-c">Playwright QA lane</strong><p>One browser review path is included for each published flow.</p></div>
+              </div>
+              <div class="command-row" style="margin-top: 16px;">
+                <button class="primary" id="start-trial" type="button">Start team trial</button>
+                <button id="compare-plan" type="button">Compare enterprise</button>
+              </div>
+              <div id="plan-status" aria-live="polite"></div>
+            </section>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const modes = {
+        workflow: {
+          heroChip: "workflow mode / design audit ready",
+          previewTitle: "Workflow control room",
+          previewChip: "12 active runs",
+          previewCopy: "The preview should demonstrate one real work surface: run queues, review checkpoints, and human-ready output handoff.",
+          proof: ["9m", "84%", "26 runs"],
+          cabinetCopy: "Run the product like a real workspace: one mode ribbon, one command board, and one visible checkpoint story.",
+          board: [
+            ["Queue", "Prompt trace", "Dataset, exclusions, and skill chain stay visible.", "ready"],
+            ["Review", "Design audit", "Weak composition is routed into remediation before release.", "active"],
+            ["Ship", "Implementation handoff", "The product state converts into a real build path, not a pretty mock.", "queued"]
+          ]
+        },
+        audit: {
+          heroChip: "audit mode / browser evidence live",
+          previewTitle: "Design audit workspace",
+          previewChip: "8 failing checks",
+          previewCopy: "Audit mode should foreground shell occupancy, composition balance, and mobile re-staging instead of burying them in screenshots.",
+          proof: ["6m", "5 fails", "18 views"],
+          cabinetCopy: "The ribbon becomes diagnostic: what failed, what skill should run next, and what evidence supports the call.",
+          board: [
+            ["Audit", "Layout occupancy", "Empty desktop tracks fail immediately instead of reading like vague spacing bugs.", "high"],
+            ["Review", "Mobile recomposition", "The mobile shell must reorder, compress, or defer zones.", "active"],
+            ["Fix", "Skill routing", "Arrange, typeset, and polish move in a deterministic order.", "queued"]
+          ]
+        },
+        handoff: {
+          heroChip: "handoff mode / implementation ready",
+          previewTitle: "Implementation handoff board",
+          previewChip: "31 components mapped",
+          previewCopy: "Handoff mode should prove the design survived into real structure: token language, component contracts, and QA-ready states.",
+          proof: ["14m", "31 mapped", "3 blockers"],
+          cabinetCopy: "The command board shifts from design generation to implementation confidence and release readiness.",
+          board: [
+            ["Map", "Design system", "Token language and component vocabulary stay tied to the chosen style family.", "ready"],
+            ["Build", "Implementation lane", "The app shell is translated into real components instead of screenshot prose.", "active"],
+            ["Verify", "QA contract", "Browser and accessibility evidence stay attached to the release candidate.", "queued"]
+          ]
+        }
+      };
+
+      const plans = {
+        team: {
+          price: "$69",
+          copy: "per seat / monthly review lane included",
+          rows: [
+            "Up to 25 workflows",
+            "Review trace included",
+            "Playwright QA lane"
+          ],
+          notes: [
+            "Great for small product teams running design-aware automation.",
+            "Prompt trace and remediation history stay attached to every workflow.",
+            "One browser review path is included for each published flow."
+          ]
+        },
+        enterprise: {
+          price: "Custom",
+          copy: "workspace-wide / audit governance included",
+          rows: [
+            "Unlimited workflows",
+            "Guided remediation routing",
+            "Deep QA comparison lane"
+          ],
+          notes: [
+            "Built for larger orgs running multi-team benchmark surfaces and design governance.",
+            "Runtime chooses audit, arrange, typeset, and polish with preserved traceability.",
+            "Includes the sampled Stitch lane and deep Playwright comparison for dense products."
+          ]
+        }
+      };
+
+      const modeButtons = [...document.querySelectorAll("[data-mode]")];
+      const planButtons = [...document.querySelectorAll("[data-plan]")];
+
+      function setMode(mode) {
+        modeButtons.forEach((button) => button.classList.toggle("active", button.dataset.mode === mode));
+        const next = modes[mode];
+        document.getElementById("hero-chip").textContent = next.heroChip;
+        document.getElementById("preview-title").textContent = next.previewTitle;
+        document.getElementById("preview-chip").textContent = next.previewChip;
+        document.getElementById("preview-copy").textContent = next.previewCopy;
+        document.getElementById("proof-a").textContent = next.proof[0];
+        document.getElementById("proof-b").textContent = next.proof[1];
+        document.getElementById("proof-c").textContent = next.proof[2];
+        document.getElementById("cabinet-copy").textContent = next.cabinetCopy;
+        const board = document.getElementById("command-board");
+        board.innerHTML = next.board.map((item) => `
+          <div class="command-item">
+            <div class="caps">${item[0]}</div>
+            <div><strong>${item[1]}</strong><div class="preview-copy">${item[2]}</div></div>
+            <div>${item[3]}</div>
+          </div>
+        `).join("");
+        document.getElementById("mode-status").textContent = `${next.previewTitle} moved into the live preview shell.`;
+      }
+
+      function setPlan(plan) {
+        planButtons.forEach((button) => button.classList.toggle("active", button.dataset.plan === plan));
+        const next = plans[plan];
+        document.getElementById("plan-price").textContent = next.price;
+        document.getElementById("plan-copy").textContent = next.copy;
+        document.getElementById("plan-a").textContent = next.rows[0];
+        document.getElementById("plan-b").textContent = next.rows[1];
+        document.getElementById("plan-c").textContent = next.rows[2];
+        const rows = document.querySelectorAll(".plan-row p");
+        rows[0].textContent = next.notes[0];
+        rows[1].textContent = next.notes[1];
+        rows[2].textContent = next.notes[2];
+        document.getElementById("plan-status").textContent = `${plan.charAt(0).toUpperCase() + plan.slice(1)} plan is active in the pricing rail.`;
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      planButtons.forEach((button) => button.addEventListener("click", () => setPlan(button.dataset.plan)));
+
+      document.getElementById("open-preview").addEventListener("click", () => {
+        document.getElementById("mode-status").textContent = "Live preview opened with the current command ribbon.";
+      });
+
+      document.getElementById("sync-brief").addEventListener("click", () => {
+        document.getElementById("mode-status").textContent = "Screen brief synced to the preview shell with current exclusions.";
+      });
+
+      document.getElementById("start-trial").addEventListener("click", () => {
+        document.getElementById("plan-status").textContent = "Team trial opened with the current review and QA bundle.";
+      });
+
+      document.getElementById("compare-plan").addEventListener("click", () => setPlan("enterprise"));
+    </script>
+  </body>
+</html>

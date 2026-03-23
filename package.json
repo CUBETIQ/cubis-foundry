@@ -41,6 +41,8 @@
     "test:all": "npm run test:attributes && npm run test:cli-help && npm run test:build-architecture && npm run test:smoke",
     "test:all:strict": "npm run test:attributes:strict && npm run test:cli-help && npm run test:build-architecture && npm run test:smoke",
     "test:ci": "npm run check:generated-assets && npm run test:all",
+    "ui-testing:serve": "node ui-testing/scripts/serve-fixtures.mjs",
+    "ui-testing:aggregate": "node ui-testing/scripts/aggregate-gap-report.mjs",
     "generate:platform-assets": "node scripts/generate-platform-assets.mjs",
     "sync:skill-mirrors": "node scripts/sync-skill-mirrors.mjs",
     "generate:skills-index": "node scripts/generate-skills-index.mjs",

@@ -1,0 +1,48 @@
+{
+  "id": "coach-loop",
+  "topic": "performance coaching workspace",
+  "surface_type": "webapp",
+  "style_reference_id": "swiss-minimalist-light-08",
+  "primary_style_direction": "swiss-minimalist",
+  "supporting_motif": "metric-ring-hero",
+  "layout_pattern": "dashboard-card-rail",
+  "complexity_tier": "complex",
+  "anti_slop_constraints": [
+    "avoid motivational fitness poster aesthetics",
+    "avoid glossy wellness cards",
+    "avoid dead dashboard columns with no mounted content"
+  ],
+  "must_include": [
+    "one readiness indicator tied to real programming advice",
+    "one weekly session planner",
+    "one coach note and monitor rail"
+  ],
+  "interactive_states": [
+    "switch the training mode",
+    "switch the active athlete"
+  ],
+  "desktop_failure_checks": [
+    "the page shell cannot reserve an empty right-side track",
+    "the readiness card and coach rail must feel proportionate to the prescription zone"
+  ],
+  "mobile_expectations": [
+    "lead with current prescription and readiness before secondary monitoring",
+    "collapse the weekly rail into staged sessions rather than tiny desktop cards"
+  ],
+  "skills_required": [
+    "design-context-capture",
+    "frontend-design-style-selector",
+    "frontend-design-system",
+    "frontend-design-screen-brief",
+    "frontend-design",
+    "design-audit",
+    "frontend-design-mobile-patterns",
+    "playwright-web-qa"
+  ],
+  "benchmark_lanes": ["local-authored"],
+  "acceptance_checks": [
+    "the interface feels like a coaching workspace instead of a generic health dashboard",
+    "readiness data changes the prescription language",
+    "the monitor rail supports the prescription rather than competing with it"
+  ]
+}

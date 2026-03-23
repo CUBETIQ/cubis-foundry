@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>coach-loop</title>
+    <link rel="icon" href="data:,">
+    <style>
+      :root {
+        --bg: #0d1315;
+        --panel: rgba(19, 31, 34, 0.92);
+        --panel-strong: #18262a;
+        --line: rgba(234, 240, 235, 0.12);
+        --line-strong: rgba(234, 240, 235, 0.24);
+        --ink: #eef2ec;
+        --muted: #9fb0a8;
+        --accent: #d7f26a;
+        --accent-soft: rgba(215, 242, 106, 0.12);
+        --warm: #ffb15c;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: "Suisse Intl", "Avenir Next", "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at top right, rgba(215,242,106,0.16), transparent 28%),
+          radial-gradient(circle at bottom left, rgba(255,177,92,0.12), transparent 22%),
+          linear-gradient(180deg, #091013 0%, #101a1d 58%, #0e1719 100%);
+      }
+      button {
+        font: inherit;
+        color: inherit;
+        background: transparent;
+        border: 1px solid var(--line);
+        cursor: pointer;
+      }
+      .eyebrow,
+      .label,
+      .mode-switch button,
+      .athlete-switch button,
+      .session-grid button,
+      .status-chip,
+      .block-tag {
+        text-transform: uppercase;
+        letter-spacing: 0.13em;
+        font-size: 0.72rem;
+      }
+      h1, h2, h3, h4, .score {
+        margin: 0;
+        letter-spacing: -0.04em;
+      }
+      .shell {
+        min-height: 100vh;
+        display: grid;
+        gap: 18px;
+        grid-template-columns: 1fr;
+        max-width: 1540px;
+        margin: 0 auto;
+        padding: 22px;
+      }
+      .panel {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        padding: 18px;
+      }
+      .hero {
+        display: grid;
+        gap: 18px;
+      }
+      .hero-top {
+        display: grid;
+        grid-template-columns: minmax(0, 1.14fr) minmax(300px, 0.86fr);
+        gap: 18px;
+      }
+      .hero-copy h1 {
+        margin-top: 8px;
+        font-size: clamp(3.1rem, 7vw, 5.8rem);
+        line-height: 0.92;
+      }
+      .hero-copy p,
+      .prescription-copy,
+      .block-card p,
+      .coach-note p,
+      .monitor-card p,
+      .rail-copy {
+        color: var(--muted);
+        line-height: 1.68;
+      }
+      .score-card {
+        padding: 18px;
+        border: 1px solid var(--line-strong);
+        background: linear-gradient(180deg, rgba(215,242,106,0.08), rgba(24,38,42,0.98));
+        display: grid;
+        gap: 14px;
+      }
+      .ring {
+        width: 156px;
+        height: 156px;
+        margin-inline: auto;
+        border-radius: 50%;
+        border: 10px solid rgba(215,242,106,0.16);
+        border-top-color: var(--accent);
+        border-right-color: rgba(255,177,92,0.76);
+        display: grid;
+        place-items: center;
+      }
+      .score {
+        font-size: 2.8rem;
+      }
+      .mode-row {
+        display: grid;
+        gap: 12px;
+      }
+      .mode-switch,
+      .athlete-switch {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .mode-switch button,
+      .athlete-switch button,
+      .session-grid button,
+      .action-row button {
+        padding: 11px 14px;
+      }
+      .mode-switch .active,
+      .athlete-switch .active,
+      .session-grid .active {
+        background: var(--accent);
+        color: #111714;
+        border-color: var(--accent);
+      }
+      .status-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        background: var(--accent-soft);
+        border: 1px solid rgba(215,242,106,0.26);
+        width: fit-content;
+      }
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+        gap: 18px;
+      }
+      .left-stack,
+      .right-stack {
+        display: grid;
+        gap: 18px;
+      }
+      .prescription {
+        display: grid;
+        gap: 16px;
+      }
+      .prescription-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: end;
+      }
+      .prescription-head h2 {
+        margin-top: 8px;
+        font-size: clamp(2rem, 4vw, 3.4rem);
+        line-height: 0.95;
+      }
+      .block-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .block-card,
+      .coach-note,
+      .monitor-card,
+      .session-detail {
+        border: 1px solid var(--line);
+        background: var(--panel-strong);
+        padding: 16px;
+      }
+      .block-tag {
+        color: var(--accent);
+      }
+      .session-board {
+        display: grid;
+        gap: 16px;
+      }
+      .session-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .session-grid button {
+        text-align: left;
+        min-height: 90px;
+        background: rgba(255,255,255,0.02);
+      }
+      .session-grid strong {
+        display: block;
+        font-size: 1rem;
+        margin-top: 10px;
+      }
+      .session-detail h3 {
+        font-size: 2rem;
+        line-height: 0.95;
+      }
+      .drill-list {
+        margin-top: 14px;
+        display: grid;
+        gap: 10px;
+      }
+      .drill {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        padding-top: 10px;
+        border-top: 1px solid var(--line);
+      }
+      .drill:first-child {
+        border-top: 0;
+        padding-top: 0;
+      }
+      .coach-note {
+        display: grid;
+        gap: 12px;
+      }
+      .action-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .primary {
+        background: var(--accent);
+        color: #121714;
+        border-color: var(--accent);
+      }
+      .monitor-stack {
+        display: grid;
+        gap: 12px;
+        margin-top: 12px;
+      }
+      .monitor-card strong {
+        display: block;
+        font-size: 1.5rem;
+        margin-top: 8px;
+      }
+      #coach-status,
+      #session-status {
+        min-height: 1.5rem;
+        font-weight: 600;
+      }
+      #coach-status {
+        color: var(--accent);
+      }
+      #session-status {
+        color: var(--warm);
+      }
+      @media (max-width: 1120px) {
+        .shell,
+        .hero-top,
+        .workspace {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 760px) {
+        .shell,
+        .panel,
+        .score-card,
+        .block-card,
+        .coach-note,
+        .monitor-card,
+        .session-detail {
+          padding: 16px;
+        }
+        .block-grid,
+        .session-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media (max-width: 560px) {
+        .block-grid,
+        .session-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <main class="panel hero">
+        <div class="hero-top">
+          <section class="hero-copy">
+            <div class="eyebrow">Coach Loop</div>
+            <h1 id="hero-title">Train the week, not just the workout.</h1>
+            <p id="hero-copy">
+              A coaching workspace for operators who need to balance readiness, block design, and athlete confidence
+              without turning the plan into a motivational poster or a dead spreadsheet.
+            </p>
+            <div class="mode-row">
+              <div class="status-chip" id="hero-chip">strength block / posterior chain managed</div>
+              <div class="mode-switch" aria-label="Training mode">
+                <button class="active" type="button" data-mode="strength">Strength</button>
+                <button type="button" data-mode="recovery">Recovery</button>
+                <button type="button" data-mode="speed">Speed</button>
+              </div>
+              <div class="athlete-switch" aria-label="Athlete roster">
+                <button class="active" type="button" data-athlete="mara">Mara K</button>
+                <button type="button" data-athlete="eli">Eli J</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="score-card" aria-labelledby="score-title">
+            <div class="label" id="score-title">Readiness ring</div>
+            <div class="ring"><div class="score" id="readiness-score">84</div></div>
+            <p class="rail-copy" id="readiness-copy">
+              Strong overall readiness, but lower-back fatigue is flattening. Keep the athlete fast and precise, not heroic.
+            </p>
+          </section>
+        </div>
+
+        <section class="workspace">
+          <div class="left-stack">
+            <section class="prescription" aria-labelledby="prescription-title">
+              <div class="prescription-head">
+                <div>
+                  <div class="eyebrow" id="prescription-eyebrow">Current prescription</div>
+                  <h2 id="prescription-title">Three hinge sets with reduced eccentric load and a faster finish.</h2>
+                </div>
+                <div class="status-chip" id="prescription-chip">Tuesday power / live block</div>
+              </div>
+              <p class="prescription-copy" id="prescription-copy">
+                The athlete is trending up, but the posterior chain is still carrying enough fatigue that adding one more heavy top set would read like theater instead of coaching.
+              </p>
+              <div class="block-grid">
+                <article class="block-card"><div class="block-tag">block 01</div><h3>Lift</h3><p id="block-a">3 x heavy hinge at 86% with strict technical cut-off.</p></article>
+                <article class="block-card"><div class="block-tag">block 02</div><h3>Move</h3><p id="block-b">Contrast jumps and short accelerations after each heavy exposure.</p></article>
+                <article class="block-card"><div class="block-tag">block 03</div><h3>Land</h3><p id="block-c">Finish with trunk stiffness and tissue reset, not another vanity finisher.</p></article>
+              </div>
+            </section>
+
+            <section class="session-board" aria-labelledby="session-title">
+              <div class="eyebrow">Weekly rail</div>
+              <h2 id="session-title" style="font-size: 2.2rem;">Session staging</h2>
+              <div class="session-grid" aria-label="Session selection">
+                <button class="active" type="button" data-session="tuesday"><span class="label">Tue</span><strong>Power hinge</strong></button>
+                <button type="button" data-session="thursday"><span class="label">Thu</span><strong>Tempo reset</strong></button>
+                <button type="button" data-session="friday"><span class="label">Fri</span><strong>Speed tune</strong></button>
+                <button type="button" data-session="sunday"><span class="label">Sun</span><strong>Recovery flush</strong></button>
+              </div>
+              <div class="session-detail">
+                <div class="eyebrow" id="session-eyebrow">Tuesday power</div>
+                <h3 id="session-detail-title">Hinge focus with acceleration contrast.</h3>
+                <p id="session-detail-copy">
+                  Open with velocity checks, build into the hinge sequence, then keep the athlete moving with a cleaner finish instead of extra volume.
+                </p>
+                <div class="drill-list" id="drill-list">
+                  <div class="drill"><div><strong>Trap-bar hinge</strong><div class="rail-copy">3 x 3 with technical shutoff</div></div><strong>18 min</strong></div>
+                  <div class="drill"><div><strong>Low hurdle jump</strong><div class="rail-copy">paired contrast after each hinge set</div></div><strong>10 min</strong></div>
+                  <div class="drill"><div><strong>Resisted march + trunk brace</strong><div class="rail-copy">finish with trunk control and breathing reset</div></div><strong>12 min</strong></div>
+                </div>
+                <div id="session-status" aria-live="polite"></div>
+              </div>
+            </section>
+          </div>
+
+          <aside class="right-stack">
+            <section class="coach-note" aria-labelledby="coach-note-title">
+              <div class="eyebrow">Coach note</div>
+              <h3 id="coach-note-title" style="font-size: 2rem;">Do not reward fatigue with fake intensity.</h3>
+              <p id="coach-note-copy">
+                The point of this week is quality under confidence. If the athlete leaves feeling powerful and technically clean, the plan worked.
+              </p>
+              <div class="action-row">
+                <button class="primary" id="confirm-plan" type="button">Confirm plan</button>
+                <button id="send-athlete-note" type="button">Send athlete note</button>
+              </div>
+              <div id="coach-status" aria-live="polite"></div>
+            </section>
+
+            <section class="panel" aria-labelledby="monitor-title">
+              <div class="eyebrow">Monitor rail</div>
+              <h3 id="monitor-title" style="font-size: 2rem;">Weekly checks</h3>
+              <div class="monitor-stack">
+                <article class="monitor-card"><div class="label">Lower body freshness</div><strong id="monitor-a">6 / 10</strong><p id="monitor-a-copy">Improving, but not ready for a full-volume chase.</p></article>
+                <article class="monitor-card"><div class="label">Sprint confidence</div><strong id="monitor-b">high</strong><p id="monitor-b-copy">Athlete is moving well if the lifting block stays contained.</p></article>
+                <article class="monitor-card"><div class="label">Sleep trend</div><strong id="monitor-c">7h 22m</strong><p id="monitor-c-copy">Stable enough for a quality speed finish, not enough for extra grind work.</p></article>
+              </div>
+            </section>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const athleteData = {
+        mara: {
+          strength: {
+            heroTitle: "Train the week, not just the workout.",
+            heroCopy: "A coaching workspace for operators who need to balance readiness, block design, and athlete confidence without turning the plan into a motivational poster or a dead spreadsheet.",
+            chip: "strength block / posterior chain managed",
+            score: "84",
+            scoreCopy: "Strong overall readiness, but lower-back fatigue is flattening. Keep the athlete fast and precise, not heroic.",
+            prescriptionEyebrow: "Current prescription",
+            prescriptionTitle: "Three hinge sets with reduced eccentric load and a faster finish.",
+            prescriptionCopy: "The athlete is trending up, but the posterior chain is still carrying enough fatigue that adding one more heavy top set would read like theater instead of coaching.",
+            prescriptionChip: "Tuesday power / live block",
+            blocks: [
+              "3 x heavy hinge at 86% with strict technical cut-off.",
+              "Contrast jumps and short accelerations after each heavy exposure.",
+              "Finish with trunk stiffness and tissue reset, not another vanity finisher."
+            ],
+            monitors: ["6 / 10", "high", "7h 22m"],
+            monitorCopy: [
+              "Improving, but not ready for a full-volume chase.",
+              "Athlete is moving well if the lifting block stays contained.",
+              "Stable enough for a quality speed finish, not enough for extra grind work."
+            ],
+            coach: "The point of this week is quality under confidence. If the athlete leaves feeling powerful and technically clean, the plan worked."
+          },
+          recovery: {
+            heroTitle: "Use recovery to keep the week moving forward.",
+            heroCopy: "Recovery should not look ornamental. The system needs to show what gets unloaded, what stays alive, and how the next high-output day remains reachable.",
+            chip: "recovery block / tissue reset",
+            score: "78",
+            scoreCopy: "Readiness is still solid, but the athlete needs cleaner tissue recovery and lower trunk demand before the next power day.",
+            prescriptionEyebrow: "Recovery prescription",
+            prescriptionTitle: "Flush the legs, reintroduce stiffness, and leave with better rhythm.",
+            prescriptionCopy: "Shift from load-chasing to movement quality. The win is a cleaner nervous system response, not visible fatigue.",
+            prescriptionChip: "Thursday reset / low stress",
+            blocks: [
+              "Tempo bike and breathing ramp for blood flow.",
+              "Trunk stiffness, adductor control, and easy med-ball rhythm.",
+              "Short mobility close without letting the session become passive."
+            ],
+            monitors: ["4 / 10", "steady", "7h 48m"],
+            monitorCopy: [
+              "Fatigue is manageable if loading stays modest.",
+              "Confidence returns quickly when the reset stays structured.",
+              "Sleep supports a low-stress training day."
+            ],
+            coach: "Recovery has to feel like coaching, not apology. Keep structure visible so the athlete trusts the quieter day."
+          },
+          speed: {
+            heroTitle: "Fast work only matters when the athlete still looks organized.",
+            heroCopy: "The speed mode should prioritize rhythm, sharp exposures, and confidence. Every drill needs a reason, and every rep needs to look like it belongs in the same week.",
+            chip: "speed block / low friction",
+            score: "88",
+            scoreCopy: "The athlete is primed for short high-quality speed work if the total session stays tight and the transitions stay warm.",
+            prescriptionEyebrow: "Speed prescription",
+            prescriptionTitle: "Short acceleration ladder with one technical sprint anchor.",
+            prescriptionCopy: "Keep the session crisp, build confidence, and leave enough in the tank for the next lift day.",
+            prescriptionChip: "Friday tune / acceleration day",
+            blocks: [
+              "3 x 20m acceleration with full walk-back recovery.",
+              "One technical fly rep every round, no max-volume ego sprinting.",
+              "Close with low hurdle rhythm and calf reset."
+            ],
+            monitors: ["8 / 10", "very high", "7h 10m"],
+            monitorCopy: [
+              "Fresh enough for quality acceleration work.",
+              "The athlete responds best to a concise speed ladder.",
+              "Sleep is adequate but not generous, so do not add fluff."
+            ],
+            coach: "The point is to make speed look easy. Stop before the session starts teaching tension instead of rhythm."
+          }
+        },
+        eli: {
+          strength: {
+            heroTitle: "Build the session around control, not noise.",
+            heroCopy: "Eli needs a slightly calmer strength day than Mara: less output theater, more visible organization, and a session that preserves confidence under load.",
+            chip: "strength block / trunk-first",
+            score: "76",
+            scoreCopy: "Work capacity is present, but trunk fatigue is higher than usual. Keep the day structured and shorter.",
+            prescriptionEyebrow: "Current prescription",
+            prescriptionTitle: "Short front-loaded strength day with tighter trunk guardrails.",
+            prescriptionCopy: "The athlete can still load, but only if the structure protects posture and keeps the day from spreading out.",
+            prescriptionChip: "Tuesday power / compressed",
+            blocks: [
+              "Front-loaded hinge work at lower exposure.",
+              "Short jump contrast to preserve intent.",
+              "Earlier finish with trunk and hip recovery."
+            ],
+            monitors: ["5 / 10", "medium", "6h 54m"],
+            monitorCopy: [
+              "Freshness is behind baseline today.",
+              "Confidence improves when the day stays compressed.",
+              "Sleep is below ideal, so keep the plan honest."
+            ],
+            coach: "Eli does better when the session feels clean and decisive. Do not let the room pressure him into matching someone else's volume."
+          },
+          recovery: {
+            heroTitle: "The reset day should lower friction across the whole week.",
+            heroCopy: "For Eli, recovery means restoring posture, breathing, and trust in the next speed day. The surface should show how the reset preserves the whole plan.",
+            chip: "recovery block / restore posture",
+            score: "73",
+            scoreCopy: "Recovery is needed now, but confidence rises quickly if the session remains structured and short.",
+            prescriptionEyebrow: "Recovery prescription",
+            prescriptionTitle: "Breathing-led reset with low-level tissue reload.",
+            prescriptionCopy: "A better reset here protects both Friday speed and the next heavy day.",
+            prescriptionChip: "Thursday reset / confidence rebuild",
+            blocks: [
+              "Bike flush and long exhale breathing start.",
+              "Adductor and trunk stacking work in short circuits.",
+              "Finish with easy medicine-ball rhythm and walk reset."
+            ],
+            monitors: ["4 / 10", "steady", "7h 08m"],
+            monitorCopy: [
+              "Tissue reset matters more than output today.",
+              "Athlete confidence stabilizes with a clear plan.",
+              "Sleep supports a moderate reset only."
+            ],
+            coach: "Make recovery visible and structured. Eli responds well when the quiet day still looks intentional."
+          },
+          speed: {
+            heroTitle: "Keep the sprint day sharp, short, and believable.",
+            heroCopy: "Eli's speed work should emphasize precision and leave some hunger. The UI should make overreaching look obviously incorrect.",
+            chip: "speed block / confidence first",
+            score: "81",
+            scoreCopy: "Good enough for acceleration quality if the day stays short and transitions do not cool down.",
+            prescriptionEyebrow: "Speed prescription",
+            prescriptionTitle: "Acceleration ladder with a shorter close and no volume chase.",
+            prescriptionCopy: "Clean starts, one quality fly rep, and a fast exit from the track.",
+            prescriptionChip: "Friday tune / short ladder",
+            blocks: [
+              "2 x 20m acceleration with full recovery.",
+              "One fly exposure after the second build.",
+              "Short rhythm hops and lower-leg reset close."
+            ],
+            monitors: ["7 / 10", "high", "7h 02m"],
+            monitorCopy: [
+              "Enough freshness for crisp acceleration work.",
+              "Confidence is best when the day ends early.",
+              "Sleep is adequate, so avoid unnecessary extras."
+            ],
+            coach: "The right finish is one rep too few, not one rep too many."
+          }
+        }
+      };
+
+      const sessionData = {
+        tuesday: {
+          eyebrow: "Tuesday power",
+          title: "Hinge focus with acceleration contrast.",
+          copy: "Open with velocity checks, build into the hinge sequence, then keep the athlete moving with a cleaner finish instead of extra volume.",
+          drills: [
+            ["Trap-bar hinge", "3 x 3 with technical shutoff", "18 min"],
+            ["Low hurdle jump", "paired contrast after each hinge set", "10 min"],
+            ["Resisted march + trunk brace", "finish with trunk control and breathing reset", "12 min"]
+          ]
+        },
+        thursday: {
+          eyebrow: "Thursday reset",
+          title: "Low-stress reset that still feels coached.",
+          copy: "Use blood flow, trunk control, and a short med-ball sequence to preserve the week without draining the athlete.",
+          drills: [
+            ["Tempo bike", "8 min flush into breathing ramp", "8 min"],
+            ["Trunk stack circuit", "three rounds, no fatigue chasing", "14 min"],
+            ["Med-ball rhythm", "simple release patterns for confidence", "10 min"]
+          ]
+        },
+        friday: {
+          eyebrow: "Friday tune",
+          title: "Acceleration tune with one clean top-end rep.",
+          copy: "Keep the ladder concise. The session is a confidence builder, not a second heavy day wearing sprint shoes.",
+          drills: [
+            ["20m acceleration", "full recovery between reps", "12 min"],
+            ["Fly sprint", "single high-quality exposure", "8 min"],
+            ["Rhythm hurdle close", "keep the feet quick and relaxed", "10 min"]
+          ]
+        },
+        sunday: {
+          eyebrow: "Sunday flush",
+          title: "Restore tissue and leave the athlete fresher on exit.",
+          copy: "Sunday is not a passive day. It is a short structured flush to remove noise before the next cycle begins.",
+          drills: [
+            ["Bike + walk mix", "light circulation work", "12 min"],
+            ["Mobility ladder", "hips, trunk, and lower leg", "14 min"],
+            ["Breathing finish", "long exhale close", "6 min"]
+          ]
+        }
+      };
+
+      const modeButtons = [...document.querySelectorAll("[data-mode]")];
+      const athleteButtons = [...document.querySelectorAll("[data-athlete]")];
+      const sessionButtons = [...document.querySelectorAll("[data-session]")];
+      let currentMode = "strength";
+      let currentAthlete = "mara";
+      let currentSession = "tuesday";
+
+      function renderProgram() {
+        const next = athleteData[currentAthlete][currentMode];
+        document.getElementById("hero-title").textContent = next.heroTitle;
+        document.getElementById("hero-copy").textContent = next.heroCopy;
+        document.getElementById("hero-chip").textContent = next.chip;
+        document.getElementById("readiness-score").textContent = next.score;
+        document.getElementById("readiness-copy").textContent = next.scoreCopy;
+        document.getElementById("prescription-eyebrow").textContent = next.prescriptionEyebrow;
+        document.getElementById("prescription-title").textContent = next.prescriptionTitle;
+        document.getElementById("prescription-copy").textContent = next.prescriptionCopy;
+        document.getElementById("prescription-chip").textContent = next.prescriptionChip;
+        document.getElementById("block-a").textContent = next.blocks[0];
+        document.getElementById("block-b").textContent = next.blocks[1];
+        document.getElementById("block-c").textContent = next.blocks[2];
+        document.getElementById("monitor-a").textContent = next.monitors[0];
+        document.getElementById("monitor-b").textContent = next.monitors[1];
+        document.getElementById("monitor-c").textContent = next.monitors[2];
+        document.getElementById("monitor-a-copy").textContent = next.monitorCopy[0];
+        document.getElementById("monitor-b-copy").textContent = next.monitorCopy[1];
+        document.getElementById("monitor-c-copy").textContent = next.monitorCopy[2];
+        document.getElementById("coach-note-copy").textContent = next.coach;
+      }
+
+      function renderSession() {
+        const next = sessionData[currentSession];
+        document.getElementById("session-eyebrow").textContent = next.eyebrow;
+        document.getElementById("session-detail-title").textContent = next.title;
+        document.getElementById("session-detail-copy").textContent = next.copy;
+        const drillList = document.getElementById("drill-list");
+        drillList.innerHTML = "";
+        next.drills.forEach(([title, copy, time]) => {
+          const item = document.createElement("div");
+          item.className = "drill";
+          item.innerHTML = `<div><strong>${title}</strong><div class="rail-copy">${copy}</div></div><strong>${time}</strong>`;
+          drillList.appendChild(item);
+        });
+      }
+
+      modeButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          currentMode = button.dataset.mode;
+          modeButtons.forEach((item) => item.classList.toggle("active", item === button));
+          renderProgram();
+        });
+      });
+
+      athleteButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          currentAthlete = button.dataset.athlete;
+          athleteButtons.forEach((item) => item.classList.toggle("active", item === button));
+          renderProgram();
+        });
+      });
+
+      sessionButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          currentSession = button.dataset.session;
+          sessionButtons.forEach((item) => item.classList.toggle("active", item === button));
+          renderSession();
+          document.getElementById("session-status").textContent = `${sessionData[currentSession].eyebrow} moved into the live planning rail.`;
+        });
+      });
+
+      document.getElementById("confirm-plan").addEventListener("click", () => {
+        document.getElementById("coach-status").textContent = `${athleteButtons.find((button) => button.classList.contains("active")).textContent} plan confirmed in ${currentMode} mode.`;
+      });
+
+      document.getElementById("send-athlete-note").addEventListener("click", () => {
+        document.getElementById("coach-status").textContent = `Athlete note sent for ${sessionData[currentSession].eyebrow.toLowerCase()}.`;
+      });
+    </script>
+  </body>
+</html>

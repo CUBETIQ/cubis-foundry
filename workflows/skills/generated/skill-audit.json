@@ -2,7 +2,7 @@
   "$schema": "cubis-foundry-skill-audit-v1",
   "generatedAt": "1970-01-01T00:00:00.000Z",
   "summary": {
-    "keep": 55,
+    "keep": 63,
     "review": 0,
     "alias-only": 1
   },
@@ -68,6 +68,69 @@
       "layer": "core-operating",
       "category": "core-operating",
       "tier": "system",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "design-arrange",
+      "canonical_id": "design-arrange",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "design-audit",
+      "canonical_id": "design-audit",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "design-bolder",
+      "canonical_id": "design-bolder",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "design-context-capture",
+      "canonical_id": "design-context-capture",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "design-distill",
+      "canonical_id": "design-distill",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "design-polish",
+      "canonical_id": "design-polish",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
+      "id": "design-typeset",
+      "canonical_id": "design-typeset",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
@@ -503,6 +566,15 @@
       "reason": "Canonical skill remains active in the layered catalog."
     },
     {
+      "id": "ui-testing-harness",
+      "canonical_id": "ui-testing-harness",
+      "status": "keep",
+      "layer": "workflow-specialists",
+      "category": "workflow-specialists",
+      "tier": "experimental",
+      "reason": "Canonical skill remains active in the layered catalog."
+    },
+    {
       "id": "unit-testing",
       "canonical_id": "unit-testing",
       "status": "keep",
@@ -512,5 +584,5 @@
       "reason": "Canonical skill remains active in the layered catalog."
     }
   ],
-  "contentHash": "24cffc8c94a81824"
+  "contentHash": "b59516f1310a8d35"
 }

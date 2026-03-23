@@ -1,0 +1,21 @@
+flow: Field Notes publishing filter
+success_criteria: The editor can switch from drafts to scheduled letters and see the main composition panel update to the scheduled issue.
+base_url: http://127.0.0.1:4173/field-notes/
+start_path: index.html
+steps:
+  - action: assert_text
+    expected: Field Notes
+  - action: click_element
+    text: Scheduled Letters
+  - action: assert_text
+    expected: Tidal Almanac issue scheduled for Thursday
+  - action: click_element
+    text: Evening Margin
+  - action: assert_text
+    expected: Evening Margin moved into the reflection panel
+  - action: screenshot
+    name: field-notes-interaction
+  - action: capture_dom
+    name: field-notes-dom
+  - action: capture_accessibility
+    name: field-notes-accessibility

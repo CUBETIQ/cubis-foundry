@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>plant-ops</title>
+    <link rel="icon" href="data:,">
+    <style>
+      :root { --bg:#ebe6de; --panel:#f7f3eb; --panel-strong:#fffaf4; --ink:#1d2322; --muted:#67706c; --line:rgba(29,35,34,0.16); --warn:#d38a28; --alert:#bb5132; --safe:#486950; }
+      *{box-sizing:border-box;} body{margin:0;color:var(--ink);font-family:"IBM Plex Sans","Avenir Next",sans-serif;background:linear-gradient(rgba(29,35,34,0.03) 1px, transparent 1px),var(--bg);background-size:100% 28px,auto;}
+      button{font:inherit;color:inherit;background:transparent;border:1px solid var(--line);cursor:pointer;} .eyebrow,.caps,.line-switch button,.hold-switch button,.status-chip{text-transform:uppercase;letter-spacing:.14em;font-size:.72rem;}
+      h1,h2,h3,h4{margin:0;line-height:.94;letter-spacing:-.05em;} .page{min-height:100vh;max-width:1500px;margin:0 auto;padding:22px;display:grid;gap:18px;}
+      .hero,.board,.maintenance,.drawer{border:1px solid var(--line);background:var(--panel);padding:18px;} .hero{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(340px,.98fr);gap:18px;}
+      .hero h1{margin-top:10px;font-size:clamp(3rem,7vw,5.6rem);max-width:8ch;} .hero p,.board p,.maintenance p,.drawer p{color:var(--muted);line-height:1.7;}
+      .status-chip{display:inline-flex;gap:8px;align-items:center;padding:8px 10px;background:rgba(72,105,80,.12);border:1px solid rgba(72,105,80,.28);width:fit-content;}
+      .line-switch,.hold-switch,.action-row{display:flex;flex-wrap:wrap;gap:10px;} .line-switch button,.hold-switch button,.action-row button{padding:11px 14px;}
+      .line-switch .active,.hold-switch .active{background:var(--ink);color:#fffaf4;border-color:var(--ink);}
+      .workspace{display:grid;grid-template-columns:minmax(0,1.06fr) minmax(320px,.94fr);gap:18px;} .status-grid{margin-top:16px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
+      .status-card{border:1px solid var(--line);background:var(--panel-strong);padding:14px;} .status-card strong{display:block;margin-top:8px;font-size:1.4rem;}
+      .maintenance-list,.drawer-list{margin-top:16px;display:grid;gap:10px;} .maintenance-row,.drawer-row{border-top:1px solid var(--line);padding-top:10px;display:grid;gap:6px;} .maintenance-row:first-child,.drawer-row:first-child{border-top:0;padding-top:0;}
+      .primary{background:var(--ink);color:#fffaf4;border-color:var(--ink);} #line-status,#hold-status{min-height:1.5rem;font-weight:700;} #hold-status{color:var(--alert);}
+      @media (max-width:1120px){.hero,.workspace,.status-grid{grid-template-columns:1fr;}} @media (max-width:760px){.hero,.board,.maintenance,.drawer{padding:16px;}}
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <section class="hero">
+        <article>
+          <div class="eyebrow">Plant Ops</div>
+          <h1 id="hero-title">Hold the line before maintenance writes the shift for you.</h1>
+          <p id="hero-copy">A manufacturing control surface that keeps live output, maintenance pressure, and intervention decisions in one visible industrial board.</p>
+          <div class="status-chip" id="hero-chip">line 04 / amber pressure</div>
+          <div class="line-switch" aria-label="Production line" style="margin-top:16px;">
+            <button class="active" type="button" data-line="line4">Line 04</button>
+            <button type="button" data-line="line7">Line 07</button>
+            <button type="button" data-line="line9">Line 09</button>
+          </div>
+        </article>
+        <section class="drawer" aria-labelledby="drawer-title">
+          <div class="caps">Intervention drawer</div>
+          <h2 id="drawer-title" style="font-size:2.2rem; margin-top:8px;">Bearing heat drift on line 04</h2>
+          <p id="drawer-copy">The drawer should keep one visible intervention, one hold path, and one named shift note instead of hiding the response under generic BI chrome.</p>
+          <div class="hold-switch" aria-label="Hold state" style="margin-top:16px;">
+            <button class="active" type="button" data-hold="inspect">Inspect</button>
+            <button type="button" data-hold="hold">Hold line</button>
+          </div>
+          <div class="drawer-list">
+            <div class="drawer-row"><strong id="drawer-a">Inspect before changeover</strong><p id="drawer-a-copy">The shift can still finish if engineering checks heat drift now.</p></div>
+            <div class="drawer-row"><strong id="drawer-b">Shift note attached</strong><p id="drawer-b-copy">Maintenance note stays in the drawer so the operator sees the reason before acting.</p></div>
+          </div>
+          <div class="action-row" style="margin-top:16px;">
+            <button class="primary" id="run-intervention" type="button">Run intervention</button>
+            <button id="open-maintenance" type="button">Open maintenance</button>
+          </div>
+          <div id="hold-status" aria-live="polite" style="margin-top:16px;"></div>
+        </section>
+      </section>
+      <section class="workspace">
+        <section class="board" aria-labelledby="board-title">
+          <div class="caps">Line status board</div>
+          <h3 id="board-title" style="font-size:2rem; margin-top:8px;">Active line state</h3>
+          <p id="board-copy">Output, drift, and shift continuity should sit together so the operator sees the plant as a real system, not as anonymous KPI tiles.</p>
+          <div class="status-grid" id="status-grid">
+            <article class="status-card"><div class="caps">Output</div><strong>82%</strong><div>below target</div></article>
+            <article class="status-card"><div class="caps">Heat</div><strong>amber</strong><div>watch now</div></article>
+            <article class="status-card"><div class="caps">Shift</div><strong>03h 14m</strong><div>to handoff</div></article>
+          </div>
+          <div id="line-status" aria-live="polite" style="margin-top:16px;"></div>
+        </section>
+        <aside class="maintenance" aria-labelledby="maintenance-title">
+          <div class="caps">Maintenance queue</div>
+          <h3 id="maintenance-title" style="font-size:2rem; margin-top:8px;">Next actions</h3>
+          <div class="maintenance-list" id="maintenance-list">
+            <div class="maintenance-row"><strong>Bearing check</strong><p>Engineering needs one pre-handoff inspection on the heated side.</p></div>
+            <div class="maintenance-row"><strong>Lubrication cycle</strong><p>Cycle can wait until the current output batch closes.</p></div>
+            <div class="maintenance-row"><strong>Shift handoff</strong><p>Night crew needs the intervention note attached before takeover.</p></div>
+          </div>
+        </aside>
+      </section>
+    </div>
+    <script>
+      const lines = {
+        line4:{chip:"line 04 / amber pressure", title:"Bearing heat drift on line 04", copy:"The drawer should keep one visible intervention, one hold path, and one named shift note instead of hiding the response under generic BI chrome.", grid:[["82%","below target"],["amber","watch now"],["03h 14m","to handoff"]], maintenance:[["Bearing check","Engineering needs one pre-handoff inspection on the heated side."],["Lubrication cycle","Cycle can wait until the current output batch closes."],["Shift handoff","Night crew needs the intervention note attached before takeover."]]},
+        line7:{chip:"line 07 / green recovery", title:"Packaging rhythm recovered on line 07", copy:"Line 07 is healthier. The board should show one quieter intervention path without losing the industrial tone.", grid:[["96%","on target"],["green","stable"],["02h 08m","to handoff"]], maintenance:[["Seal check","One seal inspection remains before the next pallet run."],["Sensor reset","Reset can happen during the standard pause window."],["Shift handoff","Attach the recovered-state note for the next team."]]},
+        line9:{chip:"line 09 / red hold risk", title:"Conveyor slip is forcing a real hold decision", copy:"Line 09 needs a harder call. The drawer should make the hold path explicit instead of leaving it hidden.", grid:[["61%","falling"],["red","hold risk"],["01h 42m","to handoff"]], maintenance:[["Conveyor stop","The line may need a full stop before the next output block."],["Parts request","Replacement belt request is already live."],["Shift handoff","Escalation note must be attached to the hold action."]]}
+      };
+      const holds = {
+        inspect:["Inspect before changeover","The shift can still finish if engineering checks heat drift now.","Shift note attached","Maintenance note stays in the drawer so the operator sees the reason before acting."],
+        hold:["Hold line before next batch","The hold path should be visible and explicit once the line crosses risk tolerance.","Escalation note attached","The next crew should inherit the reason, not just the red status."]
+      };
+      const lineButtons=[...document.querySelectorAll("[data-line]")]; const holdButtons=[...document.querySelectorAll("[data-hold]")];
+      function setLine(key){ lineButtons.forEach((b)=>b.classList.toggle("active",b.dataset.line===key)); const next=lines[key]; document.getElementById("hero-chip").textContent=next.chip; document.getElementById("drawer-title").textContent=next.title; document.getElementById("drawer-copy").textContent=next.copy; document.getElementById("status-grid").innerHTML=next.grid.map((item,index)=>`<article class="status-card"><div class="caps">${["Output","Heat","Shift"][index]}</div><strong>${item[0]}</strong><div>${item[1]}</div></article>`).join(""); document.getElementById("maintenance-list").innerHTML=next.maintenance.map((item)=>`<div class="maintenance-row"><strong>${item[0]}</strong><p>${item[1]}</p></div>`).join(""); document.getElementById("line-status").textContent=`${key.toUpperCase()} moved into the active plant board.`; }
+      function setHold(key){ holdButtons.forEach((b)=>b.classList.toggle("active",b.dataset.hold===key)); const next=holds[key]; document.getElementById("drawer-a").textContent=next[0]; document.getElementById("drawer-a-copy").textContent=next[1]; document.getElementById("drawer-b").textContent=next[2]; document.getElementById("drawer-b-copy").textContent=next[3]; document.getElementById("hold-status").textContent=`${key.charAt(0).toUpperCase()+key.slice(1)} lane is active in the intervention drawer.`; }
+      lineButtons.forEach((button)=>button.addEventListener("click",()=>setLine(button.dataset.line)));
+      holdButtons.forEach((button)=>button.addEventListener("click",()=>setHold(button.dataset.hold)));
+      document.getElementById("run-intervention").addEventListener("click",()=>{ document.getElementById("hold-status").textContent="Intervention queued with maintenance and shift note attached."; });
+      document.getElementById("open-maintenance").addEventListener("click",()=>{ document.getElementById("line-status").textContent="Maintenance queue opened for the active line."; });
+    </script>
+  </body>
+</html>

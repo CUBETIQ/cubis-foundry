@@ -1,0 +1,21 @@
+flow: Maison Prive residence and itinerary switch
+success_criteria: The reviewer can switch the active residence, then switch the hosted service and see the host itinerary update.
+base_url: http://127.0.0.1:4173/maison-prive/
+start_path: index.html
+steps:
+  - action: assert_text
+    expected: Maison Prive
+  - action: click_element
+    text: Garden suite
+  - action: assert_text
+    expected: Garden Suite
+  - action: click_element
+    text: Archive visit
+  - action: assert_text
+    expected: Archive visit moved into the host itinerary
+  - action: screenshot
+    name: maison-prive-interaction
+  - action: capture_dom
+    name: maison-prive-dom
+  - action: capture_accessibility
+    name: maison-prive-accessibility
