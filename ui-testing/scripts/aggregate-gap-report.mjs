@@ -13,6 +13,8 @@ const jsonOutPath = path.resolve(root, "reports", "ui-testing-gap-report.json");
 const atlasPath = path.resolve(root, "fixtures", "style-atlas", "index.html");
 const atlasReportPath = path.resolve(root, "reports", "style-atlas.md");
 const atlasScreenshotPath = path.resolve(root, "reports", "style-atlas-desktop.png");
+const benchmarkRuntimePath = path.resolve(root, "reports", "benchmark-runtime.json");
+const benchmarkExecutionPath = path.resolve(root, "reports", "benchmark-execution.json");
 
 async function loadScenarioMap() {
   const files = (await fs.readdir(scenariosRoot)).filter((file) => file.endsWith(".json")).sort();
@@ -38,10 +40,12 @@ async function loadScorecards() {
 }
 
 async function loadSupplementaryArtifacts() {
-  const [atlasFixture, atlasNote, atlasShot] = await Promise.all([
+  const [atlasFixture, atlasNote, atlasShot, benchmarkRuntime, benchmarkExecution] = await Promise.all([
     fs.access(atlasPath).then(() => true).catch(() => false),
     fs.access(atlasReportPath).then(() => true).catch(() => false),
     fs.access(atlasScreenshotPath).then(() => true).catch(() => false),
+    fs.access(benchmarkRuntimePath).then(() => true).catch(() => false),
+    fs.access(benchmarkExecutionPath).then(() => true).catch(() => false),
   ]);
 
   return {
@@ -52,6 +56,14 @@ async function loadSupplementaryArtifacts() {
       route: "/style-atlas/",
       report_path: "ui-testing/reports/style-atlas.md",
       screenshot_path: "ui-testing/reports/style-atlas-desktop.png",
+    },
+    benchmark_runtime: {
+      present: benchmarkRuntime,
+      path: "ui-testing/reports/benchmark-runtime.json",
+    },
+    benchmark_execution: {
+      present: benchmarkExecution,
+      path: "ui-testing/reports/benchmark-execution.json",
     },
   };
 }
@@ -132,9 +144,9 @@ function summarize(scorecards, scenarioMap) {
   };
 
   const fixOrder = [
-    "promote prompt-trace provenance and design execution traces into the runtime",
-    "add a first-class remediation workflow that routes audit output into arrange, typeset, bolder, distill, and polish",
-    "ship a first-class ui-testing workflow over scenario manifests, browser capture, remediation, and score aggregation",
+    "promote harness-derived prompt traces and design execution traces into the core design runtime",
+    "add a native remediation executor that routes audit output into arrange, typeset, bolder, distill, and polish",
+    "promote the shared ui-testing route from script-backed orchestration into a native runtime executor",
     "promote Design Prompts-style normalization into a reusable Foundry style catalog",
     "add style-fidelity scoring, optical-collision checks, and layout-occupancy checks to design-audit",
     "add viewport-aware mobile recomposition scoring and shell-track occupancy failure rules",
@@ -174,6 +186,8 @@ function buildMarkdown(scorecards, summary, scenarioMap, supplementary) {
   lines.push(`- Style atlas fixture present: ${supplementary.style_atlas.fixture ? "yes" : "no"}`);
   lines.push(`- Style atlas note present: ${supplementary.style_atlas.note ? "yes" : "no"} (${supplementary.style_atlas.report_path})`);
   lines.push(`- Style atlas screenshot present: ${supplementary.style_atlas.screenshot ? "yes" : "no"} (${supplementary.style_atlas.screenshot_path})`);
+  lines.push(`- Benchmark runtime artifact present: ${supplementary.benchmark_runtime.present ? "yes" : "no"} (${supplementary.benchmark_runtime.path})`);
+  lines.push(`- Benchmark execution artifact present: ${supplementary.benchmark_execution.present ? "yes" : "no"} (${supplementary.benchmark_execution.path})`);
   lines.push("");
   lines.push("## Score Summary");
   lines.push("");

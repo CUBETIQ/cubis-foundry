@@ -1,6 +1,6 @@
 # Foundry UI Implementation Backlog
 
-Date: March 23, 2026
+Date: March 24, 2026
 
 This backlog converts the current UI benchmark findings into execution-ready work for Foundry.
 
@@ -15,8 +15,9 @@ This backlog converts the current UI benchmark findings into execution-ready wor
 ### `P0` Add a first-class `ui-testing` workflow
 
 - Owner area: workflow routing / CLI
+- Status: route and single runner complete, native shared executor pending
 - Problem:
-  - the current harness is still folder-first and operator-driven
+  - the current harness now has a shared route and a single runner, but execution is still repo-local, script-backed, and not yet shared-runtime-native
 - Deliverable:
   - one canonical workflow or CLI path that runs:
     - scenario selection
@@ -33,6 +34,7 @@ This backlog converts the current UI benchmark findings into execution-ready wor
 ### `P0` Add a guided design remediation workflow
 
 - Owner area: design-engine runtime / workflow routing
+- Status: derived routing complete, native execution pending
 - Problem:
   - `design-audit`, `design-arrange`, `design-typeset`, `design-bolder`, `design-distill`, and `design-polish` still require manual routing
 - Deliverable:
@@ -58,6 +60,7 @@ This backlog converts the current UI benchmark findings into execution-ready wor
 ### `P0` Emit prompt trace and dataset provenance from runtime
 
 - Owner area: design-engine runtime
+- Status: harness-runtime emission complete, native design-runtime emission pending
 - Problem:
   - `prompt-trace.json` is still authored by harness scripts instead of the design runtime
 - Deliverable:

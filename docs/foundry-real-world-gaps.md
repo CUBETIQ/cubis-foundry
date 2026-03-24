@@ -1,6 +1,6 @@
 # Foundry Real-World Gaps
 
-Date: March 23, 2026
+Date: March 24, 2026
 
 This document captures the concrete issues exposed while using Foundry to:
 - generate Stitch-driven UI concepts
@@ -145,23 +145,26 @@ The goal is to track the gaps that still need product or tooling fixes inside Fo
   - introduce a dedicated mobile QA workflow for Flutter/Android validation
   - make artifact output paths deterministic
 
-### 15. UI harness provenance is still manual
-- Problem: the new web UI testing harness can record dataset ids, exclusions, and skill sequence, but only through manually authored `prompt-trace.json` files rather than a first-class runtime artifact.
+### 15. UI harness provenance is now harness-emitted, but not design-runtime-native
+- Problem: the web UI testing harness can now emit dataset ids, exclusions, lane status, and remediation traces through its benchmark runtime, but the core design runtime still does not emit that provenance natively.
 - Evidence:
-  - every scenario in `ui-testing/` required a hand-authored prompt trace to preserve design reasoning
-  - the current design runtime still does not emit selected dataset ids or anti-slop exclusions automatically
+  - `ui-testing/reports/benchmark-runtime.json` now records route scope and refreshed scenario traces
+  - scenario `prompt-trace.json` files are now generated from the harness runtime instead of remaining fully hand-authored
+  - the core design runtime still does not emit selected dataset ids or anti-slop exclusions automatically outside the harness layer
 - Fix direction:
   - promote prompt-trace generation into the design runtime
-  - attach selected style direction, motif, layout pattern, and exclusions to every design-heavy run
+  - attach selected style direction, motif, layout pattern, exclusions, and remediation traces to every design-heavy run
 
-### 16. Web UI testing is still a folder-first harness, not a first-class workflow
-- Problem: Foundry now has a repo-local `ui-testing/` harness, but operators still need to coordinate fixture serving, charter execution, score aggregation, and report updates manually.
+### 16. Web UI testing now has a first-class route, but still lacks a native executor
+- Problem: Foundry now has a shared `/ui-testing` workflow route and a single benchmark runner, but the actual benchmark execution still depends on repo-local harness scripts for scenario refresh, score sync, route verification, and consolidated reporting.
 - Evidence:
-  - the current loop depends on local scripts and per-scenario QA charters
-  - there is still no single `cbx` command or workflow that runs multi-scenario web UI evaluation end-to-end
+  - `workflows/workflows/agent-environment-setup/shared/workflows/ui-testing.md` now defines the shared route
+  - `ui-testing/scripts/run-benchmark.mjs` now consolidates the benchmark into one repo-local command path
+  - the current loop still depends on `ui-testing/scripts/run-benchmark.mjs`, `ui-testing/scripts/sync-scenario-artifacts.mjs`, and `ui-testing/scripts/aggregate-gap-report.mjs`
+  - there is still no native runtime executor that the shared route can invoke end-to-end
 - Fix direction:
-  - add a first-class `ui-testing` workflow or CLI surface on top of existing web QA primitives
-  - let the workflow chain scenario selection, browser evidence capture, scoring, and consolidated report generation
+  - promote the repo-local benchmark runner into a native `ui-testing` runtime or CLI surface
+  - let the route own scenario selection, browser evidence capture, scoring, and consolidated report generation directly
 
 ### 17. Web style coverage is improving, but the normalized dataset is still thin
 - Problem: the harness needed new style directions, motifs, and layout patterns just to produce an initial ten-scenario benchmark without drifting back to the same few safe web compositions.
@@ -191,14 +194,15 @@ The goal is to track the gaps that still need product or tooling fixes inside Fo
   - add viewport-aware scoring hooks to the web QA or UI testing workflow
   - surface responsive drift as a structured report dimension instead of a freeform reviewer note
 
-### 20. Design remediation now exists as skills, but not yet as a guided runtime
-- Problem: Foundry now has a usable command layer for second-pass UI remediation, but operators still need to decide manually when to run audit, typeset, arrange, bolder, distill, or polish after a weak first pass.
+### 20. Design remediation now has guided routing in the harness, but not native execution
+- Problem: Foundry now has a usable command layer for second-pass UI remediation, and the harness can derive which remediation steps are needed, but the shared runtime still cannot execute that loop end-to-end after a weak first pass.
 - Evidence:
-  - the second UI harness pass improved substantially only after manually sequencing the new remediation skills
-  - prompt traces still needed to record remediation steps by hand because the runtime does not understand this loop yet
+  - scenario scorecards and prompt traces now emit `remediation_trace` data derived from scenario gaps and review criteria
+  - the benchmark runtime can name which scenarios require `design-arrange`, `design-typeset`, `design-bolder`, `design-distill`, or `design-polish`
+  - operators still need downstream workflow support to actually execute that routing as a native runtime behavior
 - Fix direction:
-  - add a first-class remediation workflow that runs `design-audit` first and routes to the right follow-on skills
-  - emit remediation traces automatically so the harness can prove how a weak surface was improved
+  - add a first-class remediation workflow that runs `design-audit` first and executes the right follow-on skills
+  - keep emitting remediation traces automatically so the harness can prove how a weak surface was improved
 
 ### 21. Optical collision detection is still manual
 - Problem: the remediated web harness can still approve layouts whose composition is technically valid but visually collides, such as a narrow control rail fighting a very large adjacent hero headline.

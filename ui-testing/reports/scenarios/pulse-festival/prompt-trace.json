@@ -30,10 +30,6 @@
   "remediation_skill_sequence": [
     "design-audit",
     "design-arrange",
-    "design-typeset",
-    "design-bolder",
-    "design-distill",
-    "design-polish",
     "playwright-web-qa",
     "ui-testing-harness"
   ],
@@ -43,9 +39,144 @@
       "status": "active"
     }
   ],
-  "fallback_warnings": [
-    "Prompt trace is still recorded manually in the harness; the runtime does not yet emit this provenance automatically.",
-    "The remediation command layer exists, but operators still need to choose and sequence those skills manually after review."
-  ],
-  "fixture_stack": "static-html"
+  "runtime_trace": {
+    "trace_version": "1.0",
+    "route": {
+      "id": "ui-testing",
+      "command": "/ui-testing",
+      "scope": "scenario"
+    },
+    "emission_source": "ui-testing/scripts/sync-scenario-artifacts.mjs",
+    "provenance_status": "derived-harness-runtime",
+    "scenario_contract": {
+      "manifest_path": "ui-testing/scenarios/pulse-festival.json",
+      "topic": "event discovery and routing planner",
+      "surface_type": "webapp",
+      "complexity_tier": "complex",
+      "style_reference_id": "kinetic-dark-09",
+      "dataset_ids": {
+        "style_direction": "kinetic-poster",
+        "supporting_motif": "stage-route-marquee",
+        "layout_pattern": "poster-route-canvas"
+      },
+      "exclusions": [
+        "avoid generic nightlife app cards",
+        "avoid cyberpunk neon cliches",
+        "avoid empty desktop shell tracks"
+      ]
+    },
+    "design_inputs": {
+      "must_include": [
+        "one spotlight stage block",
+        "one route planner rail",
+        "one venue-pressure summary"
+      ],
+      "interactive_states": [
+        "switch the active daypart",
+        "switch the pinned route"
+      ],
+      "desktop_failure_checks": [
+        "the hero shell cannot leave a dead page-level desktop column",
+        "the spotlight block and route rail must feel intentionally weighted against each other"
+      ],
+      "mobile_expectations": [
+        "lead with the current spotlight and route action before supporting pressure cards",
+        "keep route switching visible without forcing the full desktop shell to stack unchanged"
+      ],
+      "acceptance_checks": [
+        "the page feels like a designed poster with a real planner behind it",
+        "route switching updates route copy and the stage canvas",
+        "venue pressure remains visible as a decision cue rather than just decoration"
+      ],
+      "normalized_research_refs": [
+        "design-prompts-style-reference",
+        "google-a2ui",
+        "figma-better-ai-prompts"
+      ]
+    },
+    "lanes": [
+      {
+        "lane": "local-authored",
+        "status": "active"
+      }
+    ],
+    "remediation_plan": [
+      {
+        "order": 1,
+        "skill": "design-audit",
+        "status": "required",
+        "triggered_by": [
+          "the hero shell cannot leave a dead page-level desktop column",
+          "the spotlight block and route rail must feel intentionally weighted against each other",
+          "lead with the current spotlight and route action before supporting pressure cards",
+          "keep route switching visible without forcing the full desktop shell to stack unchanged",
+          "the page feels like a designed poster with a real planner behind it",
+          "route switching updates route copy and the stage canvas",
+          "venue pressure remains visible as a decision cue rather than just decoration"
+        ],
+        "rationale": "Audit the scenario against its desktop failure checks, mobile expectations, and acceptance checks before any second-pass remediation."
+      },
+      {
+        "order": 2,
+        "skill": "design-arrange",
+        "status": "required",
+        "triggered_by": [
+          "layout-occupancy"
+        ],
+        "rationale": "Selected automatically from scenario gap categories: layout-occupancy."
+      },
+      {
+        "order": 3,
+        "skill": "design-typeset",
+        "status": "standby",
+        "triggered_by": [],
+        "rationale": "Not selected by current scenario gaps, but available if browser review surfaces additional issues in this style family."
+      },
+      {
+        "order": 4,
+        "skill": "design-bolder",
+        "status": "standby",
+        "triggered_by": [],
+        "rationale": "Not selected by current scenario gaps, but available if browser review surfaces additional issues in this style family."
+      },
+      {
+        "order": 5,
+        "skill": "design-distill",
+        "status": "standby",
+        "triggered_by": [],
+        "rationale": "Not selected by current scenario gaps, but available if browser review surfaces additional issues in this style family."
+      },
+      {
+        "order": 6,
+        "skill": "design-polish",
+        "status": "standby",
+        "triggered_by": [],
+        "rationale": "Not selected by current scenario gaps, but available if browser review surfaces additional issues in this style family."
+      },
+      {
+        "order": 7,
+        "skill": "playwright-web-qa",
+        "status": "required",
+        "triggered_by": [
+          "refresh deterministic browser evidence after remediation"
+        ],
+        "rationale": "Capture post-remediation screenshots, snapshots, and execution evidence before summarizing the scenario."
+      },
+      {
+        "order": 8,
+        "skill": "ui-testing-harness",
+        "status": "required",
+        "triggered_by": [
+          "refresh scorecards, reports, and repeated-gap summary"
+        ],
+        "rationale": "Update the benchmark outputs and consolidated Foundry gap summary after the evidence pass."
+      }
+    ],
+    "runtime_limitations": [
+      "The harness now emits deterministic benchmark traces, but Foundry's core design runtime still does not natively emit this provenance.",
+      "Remediation routing is derived automatically here, but execution still depends on downstream workflow support rather than a shared native remediation executor."
+    ]
+  },
+  "fixture_stack": "static-html",
+  "trace_generated_from_runtime": true
 }

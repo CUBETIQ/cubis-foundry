@@ -14,6 +14,8 @@
 - Style atlas fixture present: yes
 - Style atlas note present: yes (ui-testing/reports/style-atlas.md)
 - Style atlas screenshot present: yes (ui-testing/reports/style-atlas-desktop.png)
+- Benchmark runtime artifact present: yes (ui-testing/reports/benchmark-runtime.json)
+- Benchmark execution artifact present: yes (ui-testing/reports/benchmark-execution.json)
 
 ## Score Summary
 
@@ -67,18 +69,18 @@
   Scenarios: atelier-stay, coach-loop, field-notes, maison-prive, neo-market, plant-ops, pulse-festival, saas-foundry, terminal-cloud, wealth-ops
   Owner area: design-system guidance / ui-testing
   Recommended fix: Add a first-class style atlas workflow that compares component behavior, geometry, state language, and density across style families alongside full-page fixtures.
-- design-command-orchestration: The remediation skills still have to be sequenced manually after a weak UI pass.
+- design-command-orchestration: The UI harness can now derive remediation routing, but Foundry still lacks a native runtime that executes second-pass design remediation automatically after a weak first pass.
   Scenarios: atelier-stay, coach-loop, field-notes, maison-prive, neo-market, plant-ops, pulse-festival, saas-foundry, terminal-cloud, wealth-ops
   Owner area: design-engine runtime / workflow routing
-  Recommended fix: Add a first-class design remediation workflow that chains audit, layout repair, typography repair, intensity adjustment, simplification, and polish with explicit traces.
+  Recommended fix: Add a first-class design remediation runtime that chains audit, layout repair, typography repair, intensity adjustment, simplification, and polish with explicit execution traces.
 - responsive-scoring: Responsive quality is visible in screenshots but not automatically scored by existing Foundry QA primitives.
   Scenarios: atelier-stay, coach-loop, field-notes, maison-prive, neo-market, plant-ops, pulse-festival, saas-foundry, terminal-cloud, wealth-ops
   Owner area: web QA / scoring
   Recommended fix: Add viewport-aware scoring hooks and responsive heuristics to the harness workflow.
-- runtime-provenance: Prompt and dataset provenance is still captured manually in the harness instead of being emitted by the design runtime.
+- runtime-provenance: The UI harness can now emit derived runtime traces, but Foundry's underlying design runtime still does not natively emit first-class provenance for style selection, exclusions, remediation steps, and dataset usage.
   Scenarios: atelier-stay, coach-loop, field-notes, maison-prive, neo-market, plant-ops, pulse-festival, saas-foundry, terminal-cloud, wealth-ops
   Owner area: design-engine runtime
-  Recommended fix: Promote prompt-trace generation into the runtime and attach dataset ids, exclusions, remediation skills, and style reference ids automatically.
+  Recommended fix: Promote prompt-trace generation into the core design runtime and attach dataset ids, exclusions, remediation skills, and style reference ids automatically.
 - style-catalog-normalization: The harness now depends on a large external style reference intake, but Foundry still lacks a first-class normalized style catalog that the design runtime can query directly.
   Scenarios: atelier-stay, coach-loop, field-notes, maison-prive, neo-market, plant-ops, pulse-festival, saas-foundry, terminal-cloud, wealth-ops
   Owner area: design datasets / runtime data
@@ -95,10 +97,10 @@
   Scenarios: atelier-stay, coach-loop, field-notes, maison-prive, neo-market, plant-ops, pulse-festival, saas-foundry, terminal-cloud, wealth-ops
   Owner area: design audit / visual direction
   Recommended fix: Teach design-audit to flag repeated texture overlays and require surface texture to be justified by the chosen style family.
-- workflow-surface: The harness still relies on local scripts and per-scenario charters rather than a first-class ui-testing workflow.
+- workflow-surface: Foundry now has a first-class ui-testing route and a single benchmark runner, but the execution path still lives in repo-local harness scripts instead of a shared Foundry runtime or CLI executor.
   Scenarios: atelier-stay, coach-loop, field-notes, maison-prive, neo-market, plant-ops, pulse-festival, saas-foundry, terminal-cloud, wealth-ops
   Owner area: workflow routing / CLI
-  Recommended fix: Add a first-class ui-testing workflow or CLI command that chains fixture review, remediation, QA capture, and score aggregation.
+  Recommended fix: Promote the repo-local benchmark runner into a native ui-testing runtime or CLI surface that the shared route can execute directly.
 
 ## Repeated Failures By Foundry Subsystem
 
@@ -177,9 +179,9 @@
 
 ## Fix Order
 
-1. promote prompt-trace provenance and design execution traces into the runtime
-2. add a first-class remediation workflow that routes audit output into arrange, typeset, bolder, distill, and polish
-3. ship a first-class ui-testing workflow over scenario manifests, browser capture, remediation, and score aggregation
+1. promote harness-derived prompt traces and design execution traces into the core design runtime
+2. add a native remediation executor that routes audit output into arrange, typeset, bolder, distill, and polish
+3. promote the shared ui-testing route from script-backed orchestration into a native runtime executor
 4. promote Design Prompts-style normalization into a reusable Foundry style catalog
 5. add style-fidelity scoring, optical-collision checks, and layout-occupancy checks to design-audit
 6. add viewport-aware mobile recomposition scoring and shell-track occupancy failure rules

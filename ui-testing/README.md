@@ -34,12 +34,23 @@ Every benchmark pass also includes `style-atlas`, a cross-style component board 
 - Material-like component language
 - repeated background texture or surface-treatment fallback
 
+The benchmark runtime now also emits:
+
+- `ui-testing/reports/benchmark-runtime.json`, which records route scope, refreshed scenarios, remediation requirements, and report targets
+- `ui-testing/reports/benchmark-execution.json`, which records the executed runner steps, route checks, and supplementary artifact validation
+
 ## Run locally
 
 Start the static server:
 
 ```bash
 node ui-testing/scripts/serve-fixtures.mjs
+```
+
+Run the benchmark in one command:
+
+```bash
+node ui-testing/scripts/run-benchmark.mjs
 ```
 
 Then run a QA charter against one fixture:
@@ -49,6 +60,12 @@ cbx web qa run --charter ui-testing/charters/wealth-ops.yaml
 ```
 
 Aggregate scorecards into the consolidated report:
+
+```bash
+node ui-testing/scripts/sync-scenario-artifacts.mjs
+```
+
+Then refresh the consolidated report:
 
 ```bash
 node ui-testing/scripts/aggregate-gap-report.mjs

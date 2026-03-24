@@ -18,6 +18,8 @@ Each benchmark pass should also include:
 - a current `style-atlas` route
 - one atlas screenshot under `ui-testing/reports/`
 - a short `style-atlas.md` note that explains which style families, geometry types, and component systems are represented
+- one `benchmark-runtime.json` artifact that records route scope, refreshed scenarios, and report targets
+- one `benchmark-execution.json` artifact that records the executed runner steps, route checks, and supplementary artifact validation
 
 ## `brief.md`
 
@@ -41,7 +43,9 @@ Record:
 - intended skill sequence
 - remediation skill sequence, if a second pass ran
 - benchmark lane results
-- fallback or drift warnings
+- runtime trace metadata
+- remediation plan metadata
+- runtime limitations, if the harness still had to derive behavior the core design runtime does not emit itself
 
 This file is for traceability, not for end-user prose.
 

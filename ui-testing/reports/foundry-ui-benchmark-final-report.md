@@ -1,6 +1,6 @@
 # Foundry UI Benchmark Final Report
 
-Date: March 23, 2026
+Date: March 24, 2026
 
 ## Scope
 
@@ -30,27 +30,32 @@ This final report summarizes the current web UI benchmark pass across:
 
 ## Current Findings
 
-### 1. Foundry still lacks a first-class UI testing runtime
+### 1. Foundry now has a first-class route, but not a native benchmark executor
 
-- The harness is strong enough to expose problems, but it is still folder-first and script-driven.
-- Operators still have to manually coordinate fixtures, scorecards, screenshots, atlas review, and report generation.
+- The shared `/ui-testing` route now exists, and the repo now has a single benchmark runner plus top-level runtime and execution artifacts.
+- The actual benchmark execution is still repo-local and script-backed, so the route is not yet a shared native executor for scenario refresh, remediation, and report generation.
 
 ### 2. Style fidelity is better than before, but still weakly enforced
 
 - The benchmark can now describe style drift clearly.
 - The runtime still does not score style fidelity, geometry variation, or texture discipline automatically.
 
-### 3. Remediation works, but routing is still manual
+### 3. Provenance exists at the harness layer, but not in the core design runtime
 
-- `design-audit`, `design-arrange`, `design-typeset`, `design-bolder`, `design-distill`, and `design-polish` improved results.
-- Foundry still has no guided remediation runtime that can route a failed surface through the right second-pass sequence automatically.
+- Scenario traces are now emitted from the harness runtime with dataset ids, exclusions, lane status, and remediation plans.
+- Foundry still does not emit this provenance natively from the design runtime itself.
 
-### 4. Responsive evidence exists, but mobile quality is still under-scored
+### 4. Remediation routing exists at the harness layer, but not as native execution
+
+- The harness can now derive second-pass remediation steps from scenario gaps and review criteria.
+- Foundry still has no shared runtime that can execute that routing end-to-end after a weak UI pass.
+
+### 5. Responsive evidence exists, but mobile quality is still under-scored
 
 - Mobile screenshots and state captures exist for every scenario.
 - The runtime still cannot automatically distinguish real mobile re-staging from a compressed desktop stack.
 
-### 5. Page mocks were not enough on their own
+### 6. Page mocks were not enough on their own
 
 - The new `style-atlas` surface proved necessary because several issues were really component-system problems:
   - too much hard-edge geometry
@@ -61,9 +66,10 @@ This final report summarizes the current web UI benchmark pass across:
 
 ### Immediate
 
-1. Add a first-class `ui-testing` workflow that owns scenario runs, atlas capture, screenshots, score aggregation, and report updates.
-2. Add a remediation runtime that starts from `design-audit` and routes into the correct second-pass skills automatically.
-3. Promote prompt trace and dataset provenance into first-class runtime artifacts.
+1. Keep the shared `ui-testing` workflow as the canonical benchmark entrypoint for scenario runs, atlas capture, screenshots, score aggregation, and report updates.
+2. Promote the repo-local benchmark runner into a native runtime executor behind that route.
+3. Add a remediation runtime that starts from `design-audit` and routes into the correct second-pass skills automatically.
+4. Promote prompt trace and dataset provenance from harness-derived artifacts into first-class design runtime artifacts.
 
 ### Near-term
 
@@ -92,4 +98,4 @@ This final report summarizes the current web UI benchmark pass across:
 
 ## Conclusion
 
-Foundry is now materially better at exposing UI quality gaps than it was at the start of this pass. The biggest remaining problem is no longer “can it make a page,” but “can it systematically enforce style fidelity, component-system diversity, and remediation without manual supervision.” The benchmark suite is now good enough to drive those fixes directly.
+Foundry is now materially better at exposing UI quality gaps than it was at the start of this pass. The biggest remaining problem is no longer “can it make a page,” but “can it promote harness-level workflow, provenance, and remediation behavior into native runtime guarantees.” The benchmark suite is now good enough to drive those fixes directly.

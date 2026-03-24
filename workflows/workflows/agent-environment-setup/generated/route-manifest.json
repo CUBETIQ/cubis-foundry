@@ -1,10 +1,10 @@
 {
   "$schema": "./cubis-foundry-route-manifest-v2.schema.json",
   "generatedAt": "1970-01-01T00:00:00.000Z",
-  "contentHash": "2e221b37eaa9b3c5",
+  "contentHash": "72a685e1f5d31472",
   "summary": {
-    "totalRoutes": 20,
-    "workflows": 13,
+    "totalRoutes": 21,
+    "workflows": 14,
     "agents": 7
   },
   "routes": [
@@ -901,6 +901,68 @@
         "gemini": {
           "target": "command",
           "commandFile": "test.toml"
+        }
+      }
+    },
+    {
+      "kind": "workflow",
+      "id": "ui-testing",
+      "command": "/ui-testing",
+      "displayName": "ui-testing",
+      "description": "Run the Foundry UI benchmark harness, refresh scenario evidence and atlas artifacts, and update the consolidated UI gap report.",
+      "triggers": [
+        "ui testing",
+        "ui benchmark",
+        "frontend benchmark",
+        "design benchmark",
+        "benchmark ui",
+        "style atlas"
+      ],
+      "primaryAgent": "explorer",
+      "supportingAgents": [
+        "tester",
+        "reviewer"
+      ],
+      "primarySkills": [
+        "ui-testing-harness",
+        "playwright-web-qa"
+      ],
+      "supportingSkills": [
+        "playwright-interactive",
+        "design-context-capture",
+        "frontend-design-style-selector",
+        "frontend-design-system",
+        "frontend-design-screen-brief",
+        "frontend-design",
+        "design-audit",
+        "frontend-design-mobile-patterns",
+        "design-arrange",
+        "design-typeset",
+        "design-bolder",
+        "design-distill",
+        "design-polish",
+        "stitch-design-orchestrator"
+      ],
+      "artifacts": {
+        "codex": {
+          "target": "skill",
+          "skillDir": "ui-testing"
+        },
+        "copilot": {
+          "target": "prompt",
+          "promptFile": "ui-testing.prompt.md"
+        },
+        "antigravity": {
+          "target": "command",
+          "commandFile": "ui-testing.toml"
+        },
+        "claude": {
+          "target": "skill",
+          "skillDir": "ui-testing"
+        },
+        "gemini": {
+          "target": "command",
+          "commandFile": "ui-testing.toml"
         }
       }
     },

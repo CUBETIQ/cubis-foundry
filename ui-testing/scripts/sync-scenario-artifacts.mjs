@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import path from "node:path";
+import process from "node:process";
 import { promises as fs } from "node:fs";
 import { fileURLToPath } from "node:url";
 
@@ -8,6 +9,31 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
 const scenariosDir = path.join(root, "scenarios");
 const reportsDir = path.join(root, "reports", "scenarios");
+const benchmarkRuntimePath = path.join(root, "reports", "benchmark-runtime.json");
+
+const TRACE_VERSION = "1.0";
+const ROUTE_ID = "ui-testing";
+const ROUTE_COMMAND = "/ui-testing";
+const EMISSION_SOURCE = "ui-testing/scripts/sync-scenario-artifacts.mjs";
+
+const LANE_STATUS = {
+  "local-authored": "active",
+  stitch: "skipped-unavailable",
+  "playwright-interactive": "pending-review",
+};
+
+const REMEDIATION_ROUTING = {
+  "composition-balance": ["design-arrange", "design-typeset"],
+  "composition-calibration": ["design-arrange", "design-typeset"],
+  "layout-occupancy": ["design-arrange"],
+  "mobile-recomposition": ["design-arrange"],
+  "style-fidelity": ["design-distill", "design-polish"],
+  "intensity-governance": ["design-distill", "design-bolder"],
+  "luxury-operability": ["design-arrange", "design-polish"],
+  "warning-governance": ["design-distill", "design-polish"],
+  "texture-discipline": ["design-distill"],
+  "style-geometry-coverage": ["design-bolder", "design-polish"],
+};
 
 const commonGaps = [
   {
@@ -52,27 +78,27 @@ const commonGaps = [
   },
   {
     category: "runtime-provenance",
-    severity: "high",
-    symptom: "Prompt and dataset provenance is still captured manually in the harness instead of being emitted by the design runtime.",
-    likely_root_cause: "Foundry does not yet emit first-class design execution traces for style selection, exclusions, remediation steps, and dataset usage.",
+    severity: "medium",
+    symptom: "The UI harness can now emit derived runtime traces, but Foundry's underlying design runtime still does not natively emit first-class provenance for style selection, exclusions, remediation steps, and dataset usage.",
+    likely_root_cause: "Benchmark routing can derive trace artifacts from scenario contracts, but the design engine itself still lacks a runtime-native provenance layer.",
     foundry_owner_area: "design-engine runtime",
-    recommended_fix: "Promote prompt-trace generation into the runtime and attach dataset ids, exclusions, remediation skills, and style reference ids automatically."
+    recommended_fix: "Promote prompt-trace generation into the core design runtime and attach dataset ids, exclusions, remediation skills, and style reference ids automatically."
   },
   {
     category: "design-command-orchestration",
-    severity: "high",
-    symptom: "The remediation skills still have to be sequenced manually after a weak UI pass.",
-    likely_root_cause: "Foundry has a command layer for design remediation, but no guided runtime that can diagnose a surface and route it through the right second-pass skills.",
+    severity: "medium",
+    symptom: "The UI harness can now derive remediation routing, but Foundry still lacks a native runtime that executes second-pass design remediation automatically after a weak first pass.",
+    likely_root_cause: "Foundry has a command layer for design remediation and harness-level routing, but no shared runtime that can diagnose a surface and execute the right second-pass skills end-to-end.",
     foundry_owner_area: "design-engine runtime / workflow routing",
-    recommended_fix: "Add a first-class design remediation workflow that chains audit, layout repair, typography repair, intensity adjustment, simplification, and polish with explicit traces."
+    recommended_fix: "Add a first-class design remediation runtime that chains audit, layout repair, typography repair, intensity adjustment, simplification, and polish with explicit execution traces."
   },
   {
     category: "workflow-surface",
     severity: "medium",
-    symptom: "The harness still relies on local scripts and per-scenario charters rather than a first-class ui-testing workflow.",
-    likely_root_cause: "Foundry exposes web QA primitives but no orchestration layer for multi-scenario UI evaluation.",
+    symptom: "Foundry now has a first-class ui-testing route and a single benchmark runner, but the execution path still lives in repo-local harness scripts instead of a shared Foundry runtime or CLI executor.",
+    likely_root_cause: "Workflow routing and runner consolidation exist, but the benchmark runtime is still implemented in repo-local scripts rather than a reusable shared execution layer.",
     foundry_owner_area: "workflow routing / CLI",
-    recommended_fix: "Add a first-class ui-testing workflow or CLI command that chains fixture review, remediation, QA capture, and score aggregation."
+    recommended_fix: "Promote the repo-local benchmark runner into a native ui-testing runtime or CLI surface that the shared route can execute directly."
   },
   {
     category: "responsive-scoring",
@@ -226,11 +252,119 @@ const scenarioMeta = {
   }
 };
 
+function unique(values) {
+  return [...new Set(values)];
+}
+
 function titleCase(id) {
   return id
     .split("-")
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");
+}
+
+function parseArgs(argv) {
+  const args = { scenario: null, scope: "full-suite" };
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    if (arg === "--scenario") {
+      args.scenario = argv[index + 1] || null;
+      args.scope = "targeted";
+      index += 1;
+      continue;
+    }
+    if (arg.startsWith("--scenario=")) {
+      args.scenario = arg.slice("--scenario=".length) || null;
+      args.scope = "targeted";
+      continue;
+    }
+    if (arg.startsWith("--scope=")) {
+      args.scope = arg.slice("--scope=".length) || args.scope;
+    }
+  }
+  return args;
+}
+
+function laneStatus(lane) {
+  return LANE_STATUS[lane] || "planned";
+}
+
+function laneResults(scenario) {
+  return scenario.benchmark_lanes.map((lane) => ({
+    lane,
+    status: laneStatus(lane),
+  }));
+}
+
+function remediationStepsForScenario(scenario, meta) {
+  const triggeredBySkill = new Map();
+  for (const gap of meta.gaps) {
+    const skills = REMEDIATION_ROUTING[gap.category] || [];
+    for (const skill of skills) {
+      const current = triggeredBySkill.get(skill) || [];
+      current.push(gap.category);
+      triggeredBySkill.set(skill, unique(current));
+    }
+  }
+
+  const orderedSkills = [
+    "design-audit",
+    "design-arrange",
+    "design-typeset",
+    "design-bolder",
+    "design-distill",
+    "design-polish",
+    "playwright-web-qa",
+    "ui-testing-harness",
+  ];
+
+  return orderedSkills.map((skill, index) => {
+    if (skill === "design-audit") {
+      return {
+        order: index + 1,
+        skill,
+        status: "required",
+        triggered_by: unique([
+          ...scenario.desktop_failure_checks,
+          ...scenario.mobile_expectations,
+          ...scenario.acceptance_checks,
+        ]),
+        rationale: "Audit the scenario against its desktop failure checks, mobile expectations, and acceptance checks before any second-pass remediation.",
+      };
+    }
+
+    if (skill === "playwright-web-qa") {
+      return {
+        order: index + 1,
+        skill,
+        status: "required",
+        triggered_by: ["refresh deterministic browser evidence after remediation"],
+        rationale: "Capture post-remediation screenshots, snapshots, and execution evidence before summarizing the scenario.",
+      };
+    }
+
+    if (skill === "ui-testing-harness") {
+      return {
+        order: index + 1,
+        skill,
+        status: "required",
+        triggered_by: ["refresh scorecards, reports, and repeated-gap summary"],
+        rationale: "Update the benchmark outputs and consolidated Foundry gap summary after the evidence pass.",
+      };
+    }
+
+    const categories = triggeredBySkill.get(skill) || [];
+    return {
+      order: index + 1,
+      skill,
+      status: categories.length > 0 ? "required" : "standby",
+      triggered_by: categories,
+      rationale:
+        categories.length > 0
+          ? `Selected automatically from scenario gap categories: ${categories.join(", ")}.`
+          : "Not selected by current scenario gaps, but available if browser review surfaces additional issues in this style family.",
+    };
+  });
 }
 
 function buildBrief(scenario) {
@@ -250,15 +384,52 @@ function buildBrief(scenario) {
   return `${lines.join("\n")}\n`;
 }
 
+function buildRuntimeTrace(scenario, meta) {
+  return {
+    trace_version: TRACE_VERSION,
+    route: {
+      id: ROUTE_ID,
+      command: ROUTE_COMMAND,
+      scope: "scenario",
+    },
+    emission_source: EMISSION_SOURCE,
+    provenance_status: "derived-harness-runtime",
+    scenario_contract: {
+      manifest_path: `ui-testing/scenarios/${scenario.id}.json`,
+      topic: scenario.topic,
+      surface_type: scenario.surface_type,
+      complexity_tier: scenario.complexity_tier,
+      style_reference_id: scenario.style_reference_id,
+      dataset_ids: {
+        style_direction: scenario.primary_style_direction,
+        supporting_motif: scenario.supporting_motif,
+        layout_pattern: scenario.layout_pattern,
+      },
+      exclusions: scenario.anti_slop_constraints,
+    },
+    design_inputs: {
+      must_include: scenario.must_include,
+      interactive_states: scenario.interactive_states,
+      desktop_failure_checks: scenario.desktop_failure_checks,
+      mobile_expectations: scenario.mobile_expectations,
+      acceptance_checks: scenario.acceptance_checks,
+      normalized_research_refs: meta.research_refs,
+    },
+    lanes: laneResults(scenario),
+    remediation_plan: remediationStepsForScenario(scenario, meta),
+    runtime_limitations: [
+      "The harness now emits deterministic benchmark traces, but Foundry's core design runtime still does not natively emit this provenance.",
+      "Remediation routing is derived automatically here, but execution still depends on downstream workflow support rather than a shared native remediation executor.",
+    ],
+  };
+}
+
 function buildPromptTrace(scenario, meta) {
+  const runtimeTrace = buildRuntimeTrace(scenario, meta);
   return {
     scenario_id: scenario.id,
     style_reference_id: scenario.style_reference_id,
-    dataset_ids: {
-      style_direction: scenario.primary_style_direction,
-      supporting_motif: scenario.supporting_motif,
-      layout_pattern: scenario.layout_pattern
-    },
+    dataset_ids: runtimeTrace.scenario_contract.dataset_ids,
     research_refs: meta.research_refs,
     excluded_cliches: scenario.anti_slop_constraints,
     intended_skill_sequence: [
@@ -272,43 +443,21 @@ function buildPromptTrace(scenario, meta) {
       "playwright-web-qa",
       "ui-testing-harness"
     ],
-    remediation_skill_sequence: [
-      "design-audit",
-      "design-arrange",
-      "design-typeset",
-      "design-bolder",
-      "design-distill",
-      "design-polish",
-      "playwright-web-qa",
-      "ui-testing-harness"
-    ],
-    benchmark_lane_results: scenario.benchmark_lanes.map((lane) => ({
-      lane,
-      status:
-        lane === "local-authored"
-          ? "active"
-          : lane === "stitch"
-            ? "skipped-unavailable"
-            : "pending-review"
-    })),
-    fallback_warnings: [
-      "Prompt trace is still recorded manually in the harness; the runtime does not yet emit this provenance automatically.",
-      "The remediation command layer exists, but operators still need to choose and sequence those skills manually after review."
-    ],
-    fixture_stack: "static-html"
+    remediation_skill_sequence: runtimeTrace.remediation_plan
+      .filter((step) => step.status === "required")
+      .map((step) => step.skill),
+    benchmark_lane_results: runtimeTrace.lanes,
+    runtime_trace: runtimeTrace,
+    fixture_stack: "static-html",
+    trace_generated_from_runtime: true
   };
 }
 
 function buildScorecard(scenario, meta) {
-  const remediationSkills = [
-    "design-audit",
-    "design-arrange",
-    "design-typeset",
-    "design-bolder",
-    "design-distill",
-    "design-polish",
-    "ui-testing-harness"
-  ];
+  const remediationTrace = remediationStepsForScenario(scenario, meta);
+  const remediationSkills = remediationTrace
+    .filter((step) => step.status === "required")
+    .map((step) => step.skill);
 
   return {
     scenario_id: scenario.id,
@@ -324,15 +473,8 @@ function buildScorecard(scenario, meta) {
     layout_occupancy_score: meta.scores.occupancy,
     mobile_recomposition_score: meta.scores.mobile,
     skills_exercised: [...new Set([...scenario.skills_required, ...remediationSkills])],
-    benchmark_lane_results: scenario.benchmark_lanes.map((lane) => ({
-      lane,
-      status:
-        lane === "local-authored"
-          ? "active"
-          : lane === "stitch"
-            ? "skipped-unavailable"
-            : "pending-review"
-    })),
+    benchmark_lane_results: laneResults(scenario),
+    remediation_trace: remediationTrace,
     artifact_paths: [
       `ui-testing/scenarios/${scenario.id}.json`,
       `ui-testing/charters/${scenario.id}.yaml`,
@@ -348,24 +490,74 @@ function buildScorecard(scenario, meta) {
 }
 
 async function main() {
-  const scenarioFiles = (await fs.readdir(scenariosDir)).filter((file) => file.endsWith(".json")).sort();
+  const args = parseArgs(process.argv.slice(2));
+  const scenarioFiles = (await fs.readdir(scenariosDir))
+    .filter((file) => file.endsWith(".json"))
+    .sort()
+    .filter((file) => (args.scenario ? file === `${args.scenario}.json` : true));
+
+  if (args.scenario && scenarioFiles.length === 0) {
+    throw new Error(`Unknown scenario '${args.scenario}'`);
+  }
+
+  const refreshed = [];
+
   for (const file of scenarioFiles) {
     const scenario = JSON.parse(await fs.readFile(path.join(scenariosDir, file), "utf8"));
     const meta = scenarioMeta[scenario.id];
     if (!meta) {
       throw new Error(`Missing scenario meta for ${scenario.id}`);
     }
+
     const outDir = path.join(reportsDir, scenario.id);
+    const remediationTrace = remediationStepsForScenario(scenario, meta);
+
     await fs.mkdir(outDir, { recursive: true });
     await fs.writeFile(path.join(outDir, "brief.md"), buildBrief(scenario), "utf8");
     await fs.writeFile(path.join(outDir, "prompt-trace.json"), `${JSON.stringify(buildPromptTrace(scenario, meta), null, 2)}\n`, "utf8");
     await fs.writeFile(path.join(outDir, "scorecard.json"), `${JSON.stringify(buildScorecard(scenario, meta), null, 2)}\n`, "utf8");
+
     try {
       await fs.access(path.join(outDir, "interactive-snapshot.md"));
     } catch {
       await fs.writeFile(path.join(outDir, "interactive-snapshot.md"), `Interactive snapshot pending browser capture for ${scenario.id}.\n`, "utf8");
     }
+
+    refreshed.push({
+      scenario_id: scenario.id,
+      trace_path: `ui-testing/reports/scenarios/${scenario.id}/prompt-trace.json`,
+      scorecard_path: `ui-testing/reports/scenarios/${scenario.id}/scorecard.json`,
+      remediation_required: remediationTrace
+        .filter((step) => step.status === "required" && !["design-audit", "playwright-web-qa", "ui-testing-harness"].includes(step.skill))
+        .map((step) => step.skill),
+    });
   }
+
+  await fs.writeFile(
+    benchmarkRuntimePath,
+    `${JSON.stringify(
+      {
+        trace_version: TRACE_VERSION,
+        route: {
+          id: ROUTE_ID,
+          command: ROUTE_COMMAND,
+          scope: args.scope,
+        },
+        emission_source: EMISSION_SOURCE,
+        scenarios_refreshed: refreshed,
+        atlas_required: args.scope !== "targeted",
+        report_targets: [
+          "ui-testing/reports/ui-testing-gap-report.md",
+          "ui-testing/reports/ui-testing-gap-report.json",
+          "ui-testing/reports/foundry-ui-benchmark-final-report.md",
+          "docs/foundry-real-world-gaps.md",
+        ],
+      },
+      null,
+      2,
+    )}\n`,
+    "utf8",
+  );
 }
 
 main().catch((error) => {

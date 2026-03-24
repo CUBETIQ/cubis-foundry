@@ -31,9 +31,6 @@
     "design-audit",
     "design-arrange",
     "design-typeset",
-    "design-bolder",
-    "design-distill",
-    "design-polish",
     "playwright-web-qa",
     "ui-testing-harness"
   ],
@@ -43,9 +40,146 @@
       "status": "active"
     }
   ],
-  "fallback_warnings": [
-    "Prompt trace is still recorded manually in the harness; the runtime does not yet emit this provenance automatically.",
-    "The remediation command layer exists, but operators still need to choose and sequence those skills manually after review."
-  ],
-  "fixture_stack": "static-html"
+  "runtime_trace": {
+    "trace_version": "1.0",
+    "route": {
+      "id": "ui-testing",
+      "command": "/ui-testing",
+      "scope": "scenario"
+    },
+    "emission_source": "ui-testing/scripts/sync-scenario-artifacts.mjs",
+    "provenance_status": "derived-harness-runtime",
+    "scenario_contract": {
+      "manifest_path": "ui-testing/scenarios/atelier-stay.json",
+      "topic": "boutique hotel booking experience",
+      "surface_type": "website",
+      "complexity_tier": "complex",
+      "style_reference_id": "monochrome-light-01",
+      "dataset_ids": {
+        "style_direction": "monochrome-editorial",
+        "supporting_motif": "editorial-rule-ledger",
+        "layout_pattern": "split-editorial-feature"
+      },
+      "exclusions": [
+        "avoid generic beige luxury branding",
+        "avoid soft rounded booking widgets",
+        "avoid lifestyle card mosaics with no typographic thesis"
+      ]
+    },
+    "design_inputs": {
+      "must_include": [
+        "one narrative hero panel",
+        "one booking control panel",
+        "one room family switch that updates the detail copy"
+      ],
+      "interactive_states": [
+        "switch from suites to residences",
+        "open the stay request panel"
+      ],
+      "desktop_failure_checks": [
+        "hero headline cannot visually collide with the adjacent booking or arrival cards",
+        "the booking column must feel operational instead of like decorative stacked boxes"
+      ],
+      "mobile_expectations": [
+        "lead with the stay thesis and one active booking action above fold",
+        "arrival and room-family controls should stay visible without requiring the full editorial spread first"
+      ],
+      "acceptance_checks": [
+        "the page relies on typography and rules rather than decorative imagery alone",
+        "the booking panel feels operational while the hero remains editorial",
+        "room selection updates the descriptive and pricing text"
+      ],
+      "normalized_research_refs": [
+        "design-prompts-style-reference",
+        "figma-better-ai-prompts",
+        "vercel-design-systems"
+      ]
+    },
+    "lanes": [
+      {
+        "lane": "local-authored",
+        "status": "active"
+      }
+    ],
+    "remediation_plan": [
+      {
+        "order": 1,
+        "skill": "design-audit",
+        "status": "required",
+        "triggered_by": [
+          "hero headline cannot visually collide with the adjacent booking or arrival cards",
+          "the booking column must feel operational instead of like decorative stacked boxes",
+          "lead with the stay thesis and one active booking action above fold",
+          "arrival and room-family controls should stay visible without requiring the full editorial spread first",
+          "the page relies on typography and rules rather than decorative imagery alone",
+          "the booking panel feels operational while the hero remains editorial",
+          "room selection updates the descriptive and pricing text"
+        ],
+        "rationale": "Audit the scenario against its desktop failure checks, mobile expectations, and acceptance checks before any second-pass remediation."
+      },
+      {
+        "order": 2,
+        "skill": "design-arrange",
+        "status": "required",
+        "triggered_by": [
+          "composition-balance"
+        ],
+        "rationale": "Selected automatically from scenario gap categories: composition-balance."
+      },
+      {
+        "order": 3,
+        "skill": "design-typeset",
+        "status": "required",
+        "triggered_by": [
+          "composition-balance"
+        ],
+        "rationale": "Selected automatically from scenario gap categories: composition-balance."
+      },
+      {
+        "order": 4,
+        "skill": "design-bolder",
+        "status": "standby",
+        "triggered_by": [],
+        "rationale": "Not selected by current scenario gaps, but available if browser review surfaces additional issues in this style family."
+      },
+      {
+        "order": 5,
+        "skill": "design-distill",
+        "status": "standby",
+        "triggered_by": [],
+        "rationale": "Not selected by current scenario gaps, but available if browser review surfaces additional issues in this style family."
+      },
+      {
+        "order": 6,
+        "skill": "design-polish",
+        "status": "standby",
+        "triggered_by": [],
+        "rationale": "Not selected by current scenario gaps, but available if browser review surfaces additional issues in this style family."
+      },
+      {
+        "order": 7,
+        "skill": "playwright-web-qa",
+        "status": "required",
+        "triggered_by": [
+          "refresh deterministic browser evidence after remediation"
+        ],
+        "rationale": "Capture post-remediation screenshots, snapshots, and execution evidence before summarizing the scenario."
+      },
+      {
+        "order": 8,
+        "skill": "ui-testing-harness",
+        "status": "required",
+        "triggered_by": [
+          "refresh scorecards, reports, and repeated-gap summary"
+        ],
+        "rationale": "Update the benchmark outputs and consolidated Foundry gap summary after the evidence pass."
+      }
+    ],
+    "runtime_limitations": [
+      "The harness now emits deterministic benchmark traces, but Foundry's core design runtime still does not natively emit this provenance.",
+      "Remediation routing is derived automatically here, but execution still depends on downstream workflow support rather than a shared native remediation executor."
+    ]
+  },
+  "fixture_stack": "static-html",
+  "trace_generated_from_runtime": true
 }

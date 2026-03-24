@@ -30,10 +30,6 @@
   "remediation_skill_sequence": [
     "design-audit",
     "design-arrange",
-    "design-typeset",
-    "design-bolder",
-    "design-distill",
-    "design-polish",
     "playwright-web-qa",
     "ui-testing-harness"
   ],
@@ -47,9 +43,148 @@
       "status": "skipped-unavailable"
     }
   ],
-  "fallback_warnings": [
-    "Prompt trace is still recorded manually in the harness; the runtime does not yet emit this provenance automatically.",
-    "The remediation command layer exists, but operators still need to choose and sequence those skills manually after review."
-  ],
-  "fixture_stack": "static-html"
+  "runtime_trace": {
+    "trace_version": "1.0",
+    "route": {
+      "id": "ui-testing",
+      "command": "/ui-testing",
+      "scope": "scenario"
+    },
+    "emission_source": "ui-testing/scripts/sync-scenario-artifacts.mjs",
+    "provenance_status": "derived-harness-runtime",
+    "scenario_contract": {
+      "manifest_path": "ui-testing/scenarios/field-notes.json",
+      "topic": "independent journal and publishing studio",
+      "surface_type": "webapp",
+      "complexity_tier": "complex",
+      "style_reference_id": "newsprint-light-04",
+      "dataset_ids": {
+        "style_direction": "newsprint-editorial",
+        "supporting_motif": "source-margin-rail",
+        "layout_pattern": "editorial-ledger-spread"
+      },
+      "exclusions": [
+        "avoid generic note-taking dashboards",
+        "avoid app-store productivity chrome",
+        "avoid empty desktop shell tracks"
+      ]
+    },
+    "design_inputs": {
+      "must_include": [
+        "one manuscript spread",
+        "one source library that changes supporting copy",
+        "one issue planner and publishing queue"
+      ],
+      "interactive_states": [
+        "switch the issue in focus",
+        "switch the active source note"
+      ],
+      "desktop_failure_checks": [
+        "the page cannot waste a full desktop track on empty space",
+        "the manuscript spread and source rail must feel like one editorial system"
+      ],
+      "mobile_expectations": [
+        "lead with the active manuscript and issue chip before source support",
+        "keep source switching accessible without turning the page into a long control dump"
+      ],
+      "acceptance_checks": [
+        "the manuscript remains the emotional center of the page",
+        "source changes update the support language",
+        "the issue planner and publishing queue feel related but not dashboard-like"
+      ],
+      "normalized_research_refs": [
+        "design-prompts-style-reference",
+        "figma-make-designs-retrospective",
+        "figma-better-ai-prompts"
+      ]
+    },
+    "lanes": [
+      {
+        "lane": "local-authored",
+        "status": "active"
+      },
+      {
+        "lane": "stitch",
+        "status": "skipped-unavailable"
+      }
+    ],
+    "remediation_plan": [
+      {
+        "order": 1,
+        "skill": "design-audit",
+        "status": "required",
+        "triggered_by": [
+          "the page cannot waste a full desktop track on empty space",
+          "the manuscript spread and source rail must feel like one editorial system",
+          "lead with the active manuscript and issue chip before source support",
+          "keep source switching accessible without turning the page into a long control dump",
+          "the manuscript remains the emotional center of the page",
+          "source changes update the support language",
+          "the issue planner and publishing queue feel related but not dashboard-like"
+        ],
+        "rationale": "Audit the scenario against its desktop failure checks, mobile expectations, and acceptance checks before any second-pass remediation."
+      },
+      {
+        "order": 2,
+        "skill": "design-arrange",
+        "status": "required",
+        "triggered_by": [
+          "layout-occupancy"
+        ],
+        "rationale": "Selected automatically from scenario gap categories: layout-occupancy."
+      },
+      {
+        "order": 3,
+        "skill": "design-typeset",
+        "status": "standby",
+        "triggered_by": [],
+        "rationale": "Not selected by current scenario gaps, but available if browser review surfaces additional issues in this style family."
+      },
+      {
+        "order": 4,
+        "skill": "design-bolder",
+        "status": "standby",
+        "triggered_by": [],
+        "rationale": "Not selected by current scenario gaps, but available if browser review surfaces additional issues in this style family."
+      },
+      {
+        "order": 5,
+        "skill": "design-distill",
+        "status": "standby",
+        "triggered_by": [],
+        "rationale": "Not selected by current scenario gaps, but available if browser review surfaces additional issues in this style family."
+      },
+      {
+        "order": 6,
+        "skill": "design-polish",
+        "status": "standby",
+        "triggered_by": [],
+        "rationale": "Not selected by current scenario gaps, but available if browser review surfaces additional issues in this style family."
+      },
+      {
+        "order": 7,
+        "skill": "playwright-web-qa",
+        "status": "required",
+        "triggered_by": [
+          "refresh deterministic browser evidence after remediation"
+        ],
+        "rationale": "Capture post-remediation screenshots, snapshots, and execution evidence before summarizing the scenario."
+      },
+      {
+        "order": 8,
+        "skill": "ui-testing-harness",
+        "status": "required",
+        "triggered_by": [
+          "refresh scorecards, reports, and repeated-gap summary"
+        ],
+        "rationale": "Update the benchmark outputs and consolidated Foundry gap summary after the evidence pass."
+      }
+    ],
+    "runtime_limitations": [
+      "The harness now emits deterministic benchmark traces, but Foundry's core design runtime still does not natively emit this provenance.",
+      "Remediation routing is derived automatically here, but execution still depends on downstream workflow support rather than a shared native remediation executor."
+    ]
+  },
+  "fixture_stack": "static-html",
+  "trace_generated_from_runtime": true
 }

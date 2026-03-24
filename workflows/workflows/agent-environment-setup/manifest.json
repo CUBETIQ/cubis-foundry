@@ -183,6 +183,7 @@
         "plan.toml",
         "review.toml",
         "test.toml",
+        "ui-testing.toml",
         "web-qa.toml",
         "agent-debugger.toml",
         "agent-explorer.toml",
@@ -283,6 +284,7 @@
         "plan",
         "review",
         "test",
+        "ui-testing",
         "web-qa"
       ],
       "rulesTemplate": "platforms/codex/rules/AGENTS.md",
@@ -414,6 +416,7 @@
         "plan.prompt.md",
         "review.prompt.md",
         "test.prompt.md",
+        "ui-testing.prompt.md",
         "web-qa.prompt.md"
       ]
     },
@@ -507,6 +510,7 @@
         "plan",
         "review",
         "test",
+        "ui-testing",
         "web-qa"
       ],
       "rulesTemplate": "platforms/claude/rules/CLAUDE.md",
@@ -593,6 +597,7 @@
         "plan.toml",
         "review.toml",
         "test.toml",
+        "ui-testing.toml",
         "web-qa.toml",
         "agent-debugger.toml",
         "agent-explorer.toml",

@@ -3,7 +3,7 @@
 - `spec_id`: `foundry-ui-benchmark-runtime`
 - `spec_root`: `docs/specs/foundry-ui-benchmark-runtime`
 - Status: active
-- Last updated: March 23, 2026
+- Last updated: March 24, 2026
 
 ## Goal
 
@@ -63,3 +63,10 @@ Implement in this order:
 3. design-audit scoring expansion
 4. atlas-required artifact support
 5. dataset and style-selector expansion
+
+## Current Progress
+
+- Completed: shared `/ui-testing` workflow entrypoint under `workflows/workflows/agent-environment-setup/shared/workflows/ui-testing.md`
+- Completed: repo-local benchmark runner under `ui-testing/scripts/run-benchmark.mjs`
+- Completed: harness runtime now emits derived scenario provenance, remediation routing, and top-level benchmark runtime status through `ui-testing/scripts/sync-scenario-artifacts.mjs`
+- Next: move derived harness traces and remediation routing into the core design runtime so the shared route does not depend on repo-local emitter logic

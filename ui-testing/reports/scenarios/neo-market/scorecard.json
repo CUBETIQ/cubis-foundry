@@ -20,17 +20,88 @@
     "design-audit",
     "frontend-design-mobile-patterns",
     "playwright-web-qa",
-    "design-arrange",
-    "design-typeset",
     "design-bolder",
     "design-distill",
-    "design-polish",
     "ui-testing-harness"
   ],
   "benchmark_lane_results": [
     {
       "lane": "local-authored",
       "status": "active"
+    }
+  ],
+  "remediation_trace": [
+    {
+      "order": 1,
+      "skill": "design-audit",
+      "status": "required",
+      "triggered_by": [
+        "bold labels and shadows cannot obscure hierarchy",
+        "the cabinet must feel transactional instead of decorative",
+        "lead with one selected creator card and one order action above fold",
+        "compress the cabinet into a vertical sequence without losing the marketplace energy",
+        "the page feels intentionally loud but still operable",
+        "category switching updates the featured creator and drawer copy",
+        "fulfillment actions stay visible under the styling intensity"
+      ],
+      "rationale": "Audit the scenario against its desktop failure checks, mobile expectations, and acceptance checks before any second-pass remediation."
+    },
+    {
+      "order": 2,
+      "skill": "design-arrange",
+      "status": "standby",
+      "triggered_by": [],
+      "rationale": "Not selected by current scenario gaps, but available if browser review surfaces additional issues in this style family."
+    },
+    {
+      "order": 3,
+      "skill": "design-typeset",
+      "status": "standby",
+      "triggered_by": [],
+      "rationale": "Not selected by current scenario gaps, but available if browser review surfaces additional issues in this style family."
+    },
+    {
+      "order": 4,
+      "skill": "design-bolder",
+      "status": "required",
+      "triggered_by": [
+        "intensity-governance"
+      ],
+      "rationale": "Selected automatically from scenario gap categories: intensity-governance."
+    },
+    {
+      "order": 5,
+      "skill": "design-distill",
+      "status": "required",
+      "triggered_by": [
+        "intensity-governance"
+      ],
+      "rationale": "Selected automatically from scenario gap categories: intensity-governance."
+    },
+    {
+      "order": 6,
+      "skill": "design-polish",
+      "status": "standby",
+      "triggered_by": [],
+      "rationale": "Not selected by current scenario gaps, but available if browser review surfaces additional issues in this style family."
+    },
+    {
+      "order": 7,
+      "skill": "playwright-web-qa",
+      "status": "required",
+      "triggered_by": [
+        "refresh deterministic browser evidence after remediation"
+      ],
+      "rationale": "Capture post-remediation screenshots, snapshots, and execution evidence before summarizing the scenario."
+    },
+    {
+      "order": 8,
+      "skill": "ui-testing-harness",
+      "status": "required",
+      "triggered_by": [
+        "refresh scorecards, reports, and repeated-gap summary"
+      ],
+      "rationale": "Update the benchmark outputs and consolidated Foundry gap summary after the evidence pass."
     }
   ],
   "artifact_paths": [
@@ -86,27 +157,27 @@
     },
     {
       "category": "runtime-provenance",
-      "severity": "high",
-      "symptom": "Prompt and dataset provenance is still captured manually in the harness instead of being emitted by the design runtime.",
-      "likely_root_cause": "Foundry does not yet emit first-class design execution traces for style selection, exclusions, remediation steps, and dataset usage.",
+      "severity": "medium",
+      "symptom": "The UI harness can now emit derived runtime traces, but Foundry's underlying design runtime still does not natively emit first-class provenance for style selection, exclusions, remediation steps, and dataset usage.",
+      "likely_root_cause": "Benchmark routing can derive trace artifacts from scenario contracts, but the design engine itself still lacks a runtime-native provenance layer.",
       "foundry_owner_area": "design-engine runtime",
-      "recommended_fix": "Promote prompt-trace generation into the runtime and attach dataset ids, exclusions, remediation skills, and style reference ids automatically."
+      "recommended_fix": "Promote prompt-trace generation into the core design runtime and attach dataset ids, exclusions, remediation skills, and style reference ids automatically."
     },
     {
       "category": "design-command-orchestration",
-      "severity": "high",
-      "symptom": "The remediation skills still have to be sequenced manually after a weak UI pass.",
-      "likely_root_cause": "Foundry has a command layer for design remediation, but no guided runtime that can diagnose a surface and route it through the right second-pass skills.",
+      "severity": "medium",
+      "symptom": "The UI harness can now derive remediation routing, but Foundry still lacks a native runtime that executes second-pass design remediation automatically after a weak first pass.",
+      "likely_root_cause": "Foundry has a command layer for design remediation and harness-level routing, but no shared runtime that can diagnose a surface and execute the right second-pass skills end-to-end.",
       "foundry_owner_area": "design-engine runtime / workflow routing",
-      "recommended_fix": "Add a first-class design remediation workflow that chains audit, layout repair, typography repair, intensity adjustment, simplification, and polish with explicit traces."
+      "recommended_fix": "Add a first-class design remediation runtime that chains audit, layout repair, typography repair, intensity adjustment, simplification, and polish with explicit execution traces."
     },
     {
       "category": "workflow-surface",
       "severity": "medium",
-      "symptom": "The harness still relies on local scripts and per-scenario charters rather than a first-class ui-testing workflow.",
-      "likely_root_cause": "Foundry exposes web QA primitives but no orchestration layer for multi-scenario UI evaluation.",
+      "symptom": "Foundry now has a first-class ui-testing route and a single benchmark runner, but the execution path still lives in repo-local harness scripts instead of a shared Foundry runtime or CLI executor.",
+      "likely_root_cause": "Workflow routing and runner consolidation exist, but the benchmark runtime is still implemented in repo-local scripts rather than a reusable shared execution layer.",
       "foundry_owner_area": "workflow routing / CLI",
-      "recommended_fix": "Add a first-class ui-testing workflow or CLI command that chains fixture review, remediation, QA capture, and score aggregation."
+      "recommended_fix": "Promote the repo-local benchmark runner into a native ui-testing runtime or CLI surface that the shared route can execute directly."
     },
     {
       "category": "responsive-scoring",

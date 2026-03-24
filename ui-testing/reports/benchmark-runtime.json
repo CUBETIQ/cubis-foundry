@@ -1,0 +1,102 @@
+{
+  "trace_version": "1.0",
+  "route": {
+    "id": "ui-testing",
+    "command": "/ui-testing",
+    "scope": "full-suite"
+  },
+  "emission_source": "ui-testing/scripts/sync-scenario-artifacts.mjs",
+  "scenarios_refreshed": [
+    {
+      "scenario_id": "atelier-stay",
+      "trace_path": "ui-testing/reports/scenarios/atelier-stay/prompt-trace.json",
+      "scorecard_path": "ui-testing/reports/scenarios/atelier-stay/scorecard.json",
+      "remediation_required": [
+        "design-arrange",
+        "design-typeset"
+      ]
+    },
+    {
+      "scenario_id": "coach-loop",
+      "trace_path": "ui-testing/reports/scenarios/coach-loop/prompt-trace.json",
+      "scorecard_path": "ui-testing/reports/scenarios/coach-loop/scorecard.json",
+      "remediation_required": [
+        "design-arrange"
+      ]
+    },
+    {
+      "scenario_id": "field-notes",
+      "trace_path": "ui-testing/reports/scenarios/field-notes/prompt-trace.json",
+      "scorecard_path": "ui-testing/reports/scenarios/field-notes/scorecard.json",
+      "remediation_required": [
+        "design-arrange"
+      ]
+    },
+    {
+      "scenario_id": "maison-prive",
+      "trace_path": "ui-testing/reports/scenarios/maison-prive/prompt-trace.json",
+      "scorecard_path": "ui-testing/reports/scenarios/maison-prive/scorecard.json",
+      "remediation_required": [
+        "design-arrange",
+        "design-polish"
+      ]
+    },
+    {
+      "scenario_id": "neo-market",
+      "trace_path": "ui-testing/reports/scenarios/neo-market/prompt-trace.json",
+      "scorecard_path": "ui-testing/reports/scenarios/neo-market/scorecard.json",
+      "remediation_required": [
+        "design-bolder",
+        "design-distill"
+      ]
+    },
+    {
+      "scenario_id": "plant-ops",
+      "trace_path": "ui-testing/reports/scenarios/plant-ops/prompt-trace.json",
+      "scorecard_path": "ui-testing/reports/scenarios/plant-ops/scorecard.json",
+      "remediation_required": [
+        "design-distill",
+        "design-polish"
+      ]
+    },
+    {
+      "scenario_id": "pulse-festival",
+      "trace_path": "ui-testing/reports/scenarios/pulse-festival/prompt-trace.json",
+      "scorecard_path": "ui-testing/reports/scenarios/pulse-festival/scorecard.json",
+      "remediation_required": [
+        "design-arrange"
+      ]
+    },
+    {
+      "scenario_id": "saas-foundry",
+      "trace_path": "ui-testing/reports/scenarios/saas-foundry/prompt-trace.json",
+      "scorecard_path": "ui-testing/reports/scenarios/saas-foundry/scorecard.json",
+      "remediation_required": [
+        "design-distill",
+        "design-polish"
+      ]
+    },
+    {
+      "scenario_id": "terminal-cloud",
+      "trace_path": "ui-testing/reports/scenarios/terminal-cloud/prompt-trace.json",
+      "scorecard_path": "ui-testing/reports/scenarios/terminal-cloud/scorecard.json",
+      "remediation_required": []
+    },
+    {
+      "scenario_id": "wealth-ops",
+      "trace_path": "ui-testing/reports/scenarios/wealth-ops/prompt-trace.json",
+      "scorecard_path": "ui-testing/reports/scenarios/wealth-ops/scorecard.json",
+      "remediation_required": [
+        "design-arrange",
+        "design-typeset"
+      ]
+    }
+  ],
+  "atlas_required": true,
+  "report_targets": [
+    "ui-testing/reports/ui-testing-gap-report.md",
+    "ui-testing/reports/ui-testing-gap-report.json",
+    "ui-testing/reports/foundry-ui-benchmark-final-report.md",
+    "docs/foundry-real-world-gaps.md"
+  ]
+}
