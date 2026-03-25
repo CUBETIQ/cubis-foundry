@@ -2,9 +2,9 @@
 
 ## Traceability Status
 
-Partial.
+Complete at the harness-runtime layer, partial at the shared core-runtime layer.
 
-The benchmark data and backlog are captured, but the runtime behavior is still mostly manual. This spec closes that gap.
+The benchmark route, runner, remediation executor, atlas validation, runtime dataset sync, analyzer-backed scoring, and component-system reporting now exist. The remaining gap is promotion from repo-local harness runtime into shared Foundry runtime behavior.
 
 ## Acceptance Criteria
 
@@ -60,7 +60,7 @@ The benchmark data and backlog are captured, but the runtime behavior is still m
 
 ## Non-Acceptance Signals
 
-- A workflow still depends on hand-authored prompt traces.
-- Atlas artifacts are optional or omitted.
-- Mobile quality is still only a screenshot reviewer note.
-- Rounded/material coverage still requires one-off local fixture work instead of canonical dataset support.
+- Prompt traces are still emitted only by the harness layer and not by the shared design runtime.
+- Guided remediation can execute at the harness-runtime layer, but not yet natively end-to-end from the shared runtime.
+- Shared QA and design-audit primitives still cannot reuse the harness scoring logic directly.
+- The canonical `/ui-testing` route still depends on repo-local executor scripts instead of a shared native executor.

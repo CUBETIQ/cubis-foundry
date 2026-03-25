@@ -54,7 +54,7 @@ One Foundry direction id from `workflows/design-datasets/style-directions.json`.
 
 ### `style_reference_id`
 
-One normalized style intake id from `ui-testing/research/design-prompts-style-catalog.json`.
+One normalized style intake id from `workflows/design-datasets/style-reference-catalog.json`.
 
 ### `supporting_motif`
 
@@ -152,6 +152,8 @@ Each scenario should also produce:
 
 - `brief.md`
 - `prompt-trace.json`
+- `remediation-pass.md`
+- `remediation-execution.json`
 - a local runnable fixture
 - a QA charter
 - `scorecard.json`
@@ -167,3 +169,11 @@ In addition to scenario-specific artifacts, every benchmark run should maintain:
 - a short atlas note describing which style families and component systems are represented
 
 The atlas is part of the benchmark contract because page-level fixtures alone do not expose component geometry drift, missing rounded-system coverage, or repeated texture fallbacks clearly enough.
+
+## Runtime dataset requirement
+
+The benchmark runtime should also maintain a normalized style-reference dataset at:
+
+- `workflows/design-datasets/style-reference-catalog.json`
+
+That dataset exists so design workflows can query normalized style-reference data without depending directly on the local harness research folder.

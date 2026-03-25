@@ -4,12 +4,14 @@ import path from "node:path";
 import process from "node:process";
 import { promises as fs } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { analyzeFixtureFile } from "./lib/benchmark-analysis.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
 const scenariosDir = path.join(root, "scenarios");
 const reportsDir = path.join(root, "reports", "scenarios");
 const benchmarkRuntimePath = path.join(root, "reports", "benchmark-runtime.json");
+const fixturesDir = path.join(root, "fixtures");
 
 const TRACE_VERSION = "1.0";
 const ROUTE_ID = "ui-testing";
@@ -28,6 +30,7 @@ const REMEDIATION_ROUTING = {
   "layout-occupancy": ["design-arrange"],
   "mobile-recomposition": ["design-arrange"],
   "style-fidelity": ["design-distill", "design-polish"],
+  "style-fidelity-drift": ["design-distill", "design-polish"],
   "intensity-governance": ["design-distill", "design-bolder"],
   "luxury-operability": ["design-arrange", "design-polish"],
   "warning-governance": ["design-distill", "design-polish"],
@@ -37,60 +40,20 @@ const REMEDIATION_ROUTING = {
 
 const commonGaps = [
   {
-    category: "component-atlas-coverage",
-    severity: "medium",
-    symptom: "The harness benchmarked full pages but did not originally include a first-class component atlas showing how each style treats buttons, inputs, chips, cards, rails, and interactive states.",
-    likely_root_cause: "Foundry review has focused on full-surface composition more than cross-style component-system comparison.",
-    foundry_owner_area: "design-system guidance / ui-testing",
-    recommended_fix: "Add a first-class style atlas workflow that compares component behavior, geometry, state language, and density across style families alongside full-page fixtures."
-  },
-  {
-    category: "style-geometry-coverage",
-    severity: "medium",
-    symptom: "The current harness over-indexed on hard-edge, low-radius component geometry and underrepresented rounded systems such as Material-style surfaces.",
-    likely_root_cause: "The style catalog favored editorial, enterprise, and brutalist directions before adding a tactile rounded-system benchmark.",
-    foundry_owner_area: "design datasets / style-selector",
-    recommended_fix: "Expand canonical style coverage to include rounded, tactile systems and make geometry variation a first-class style-fidelity check."
-  },
-  {
-    category: "texture-discipline",
-    severity: "medium",
-    symptom: "Background texture patterns were reused too freely as a quick way to differentiate surfaces, which made several pages feel templated instead of style-specific.",
-    likely_root_cause: "The runtime and harness do not yet distinguish between a deliberate surface texture and a generic grid-overlay fallback.",
-    foundry_owner_area: "design audit / visual direction",
-    recommended_fix: "Teach design-audit to flag repeated texture overlays and require surface texture to be justified by the chosen style family."
-  },
-  {
-    category: "style-catalog-normalization",
-    severity: "medium",
-    symptom: "The harness now depends on a large external style reference intake, but Foundry still lacks a first-class normalized style catalog that the design runtime can query directly.",
-    likely_root_cause: "Style research is being normalized inside the repo harness instead of inside a reusable runtime data layer shared by design workflows.",
-    foundry_owner_area: "design datasets / runtime data",
-    recommended_fix: "Promote Design Prompts-style normalization into a first-class Foundry dataset pipeline with explicit source metadata, mappings, and anti-pattern fields."
-  },
-  {
-    category: "style-fidelity-scoring",
-    severity: "medium",
-    symptom: "The harness can describe style drift, but style fidelity still depends on manually assigned scorecard numbers rather than a runtime scoring dimension.",
-    likely_root_cause: "Foundry QA primitives capture evidence and screenshots, but they do not yet score whether a surface remained faithful to a restrained, editorial, industrial, or other chosen style family.",
-    foundry_owner_area: "design audit / scoring",
-    recommended_fix: "Add style-fidelity checks to design-audit and the UI harness so each scenario can fail when it drifts back to generic product defaults."
-  },
-  {
     category: "runtime-provenance",
     severity: "medium",
-    symptom: "The UI harness can now emit derived runtime traces, but Foundry's underlying design runtime still does not natively emit first-class provenance for style selection, exclusions, remediation steps, and dataset usage.",
-    likely_root_cause: "Benchmark routing can derive trace artifacts from scenario contracts, but the design engine itself still lacks a runtime-native provenance layer.",
+    symptom: "The UI harness now emits runtime-derived traces, but Foundry's underlying design runtime still does not natively emit first-class provenance for style selection, exclusions, remediation steps, and dataset usage outside the harness layer.",
+    likely_root_cause: "Benchmark routing can derive trace artifacts from scenario contracts, but the design engine itself still lacks a runtime-native provenance layer shared across routes and skills.",
     foundry_owner_area: "design-engine runtime",
     recommended_fix: "Promote prompt-trace generation into the core design runtime and attach dataset ids, exclusions, remediation skills, and style reference ids automatically."
   },
   {
-    category: "design-command-orchestration",
+    category: "shared-remediation-runtime",
     severity: "medium",
-    symptom: "The UI harness can now derive remediation routing, but Foundry still lacks a native runtime that executes second-pass design remediation automatically after a weak first pass.",
-    likely_root_cause: "Foundry has a command layer for design remediation and harness-level routing, but no shared runtime that can diagnose a surface and execute the right second-pass skills end-to-end.",
+    symptom: "The UI harness now executes guided remediation passes, but Foundry still lacks a shared native runtime that exposes the same second-pass design remediation path outside the benchmark layer.",
+    likely_root_cause: "Foundry now has a harness-runtime remediation executor, but the command layer has not yet been promoted into a shared route/runtime capability.",
     foundry_owner_area: "design-engine runtime / workflow routing",
-    recommended_fix: "Add a first-class design remediation runtime that chains audit, layout repair, typography repair, intensity adjustment, simplification, and polish with explicit execution traces."
+    recommended_fix: "Promote the harness remediation executor into a shared design remediation runtime that chains audit, layout repair, typography repair, intensity adjustment, simplification, and polish with explicit execution traces."
   },
   {
     category: "workflow-surface",
@@ -99,21 +62,12 @@ const commonGaps = [
     likely_root_cause: "Workflow routing and runner consolidation exist, but the benchmark runtime is still implemented in repo-local scripts rather than a reusable shared execution layer.",
     foundry_owner_area: "workflow routing / CLI",
     recommended_fix: "Promote the repo-local benchmark runner into a native ui-testing runtime or CLI surface that the shared route can execute directly."
-  },
-  {
-    category: "responsive-scoring",
-    severity: "medium",
-    symptom: "Responsive quality is visible in screenshots but not automatically scored by existing Foundry QA primitives.",
-    likely_root_cause: "Web QA captures evidence but lacks a built-in rubric for mobile re-composition quality.",
-    foundry_owner_area: "web QA / scoring",
-    recommended_fix: "Add viewport-aware scoring hooks and responsive heuristics to the harness workflow."
   }
 ];
 
 const scenarioMeta = {
   "atelier-stay": {
     research_refs: ["design-prompts-style-reference", "figma-better-ai-prompts", "vercel-design-systems"],
-    scores: { design: 5, anti: 5, responsive: 4, interaction: 5, accessibility: 4, style: 5, composition: 4, occupancy: 5, mobile: 4 },
     gaps: [
       {
         category: "composition-balance",
@@ -127,7 +81,6 @@ const scenarioMeta = {
   },
   "wealth-ops": {
     research_refs: ["design-prompts-style-reference", "vercel-design-systems", "google-a2ui", "figma-better-ai-prompts"],
-    scores: { design: 5, anti: 5, responsive: 4, interaction: 5, accessibility: 5, style: 5, composition: 4, occupancy: 5, mobile: 4 },
     gaps: [
       {
         category: "composition-calibration",
@@ -149,7 +102,6 @@ const scenarioMeta = {
   },
   "coach-loop": {
     research_refs: ["design-prompts-style-reference", "figma-better-ai-prompts", "vercel-design-systems"],
-    scores: { design: 5, anti: 5, responsive: 4, interaction: 5, accessibility: 5, style: 5, composition: 5, occupancy: 4, mobile: 4 },
     gaps: [
       {
         category: "layout-occupancy",
@@ -163,7 +115,6 @@ const scenarioMeta = {
   },
   "field-notes": {
     research_refs: ["design-prompts-style-reference", "figma-make-designs-retrospective", "figma-better-ai-prompts"],
-    scores: { design: 5, anti: 5, responsive: 4, interaction: 4, accessibility: 5, style: 5, composition: 4, occupancy: 4, mobile: 4 },
     gaps: [
       {
         category: "layout-occupancy",
@@ -177,7 +128,6 @@ const scenarioMeta = {
   },
   "pulse-festival": {
     research_refs: ["design-prompts-style-reference", "google-a2ui", "figma-better-ai-prompts"],
-    scores: { design: 5, anti: 5, responsive: 4, interaction: 5, accessibility: 4, style: 5, composition: 4, occupancy: 4, mobile: 4 },
     gaps: [
       {
         category: "layout-occupancy",
@@ -191,7 +141,6 @@ const scenarioMeta = {
   },
   "saas-foundry": {
     research_refs: ["design-prompts-style-reference", "vercel-design-systems", "figma-better-ai-prompts"],
-    scores: { design: 4, anti: 4, responsive: 4, interaction: 5, accessibility: 5, style: 4, composition: 4, occupancy: 5, mobile: 4 },
     gaps: [
       {
         category: "style-fidelity",
@@ -205,7 +154,6 @@ const scenarioMeta = {
   },
   "maison-prive": {
     research_refs: ["design-prompts-style-reference", "figma-better-ai-prompts", "figma-make-designs-retrospective"],
-    scores: { design: 5, anti: 5, responsive: 4, interaction: 4, accessibility: 4, style: 5, composition: 4, occupancy: 5, mobile: 4 },
     gaps: [
       {
         category: "luxury-operability",
@@ -219,7 +167,6 @@ const scenarioMeta = {
   },
   "neo-market": {
     research_refs: ["design-prompts-style-reference", "figma-better-ai-prompts", "google-a2ui"],
-    scores: { design: 4, anti: 4, responsive: 4, interaction: 5, accessibility: 4, style: 5, composition: 4, occupancy: 5, mobile: 4 },
     gaps: [
       {
         category: "intensity-governance",
@@ -233,12 +180,10 @@ const scenarioMeta = {
   },
   "terminal-cloud": {
     research_refs: ["design-prompts-style-reference", "google-a2ui", "vercel-design-systems"],
-    scores: { design: 5, anti: 5, responsive: 4, interaction: 5, accessibility: 5, style: 5, composition: 5, occupancy: 5, mobile: 4 },
     gaps: []
   },
   "plant-ops": {
     research_refs: ["design-prompts-style-reference", "google-a2ui", "figma-better-ai-prompts"],
-    scores: { design: 5, anti: 5, responsive: 4, interaction: 5, accessibility: 5, style: 5, composition: 5, occupancy: 5, mobile: 4 },
     gaps: [
       {
         category: "warning-governance",
@@ -419,7 +364,7 @@ function buildRuntimeTrace(scenario, meta) {
     remediation_plan: remediationStepsForScenario(scenario, meta),
     runtime_limitations: [
       "The harness now emits deterministic benchmark traces, but Foundry's core design runtime still does not natively emit this provenance.",
-      "Remediation routing is derived automatically here, but execution still depends on downstream workflow support rather than a shared native remediation executor.",
+      "Harness remediation execution is now available, but the same execution path still needs to be promoted into shared native Foundry runtime support.",
     ],
   };
 }
@@ -447,45 +392,116 @@ function buildPromptTrace(scenario, meta) {
       .filter((step) => step.status === "required")
       .map((step) => step.skill),
     benchmark_lane_results: runtimeTrace.lanes,
+    remediation_execution_path: `ui-testing/reports/scenarios/${scenario.id}/remediation-execution.json`,
     runtime_trace: runtimeTrace,
     fixture_stack: "static-html",
     trace_generated_from_runtime: true
   };
 }
 
-function buildScorecard(scenario, meta) {
+function autoDetectedGaps(scenario, analysis) {
+  const gaps = [];
+  if (analysis.scores.style <= 4.4) {
+    gaps.push({
+      category: "style-fidelity-drift",
+      severity: "medium",
+      symptom: `The ${scenario.id} fixture only partially expresses the intended ${scenario.primary_style_direction} direction when analyzed through typography, geometry, and surface cues.`,
+      likely_root_cause: "The benchmark direction is present, but the style still drifts toward a generic fallback in structure or component language.",
+      foundry_owner_area: "design audit / scoring",
+      recommended_fix: "Add stronger style-family-aware scoring and style-selector checks so partial fallback is caught automatically."
+    });
+  }
+  if (analysis.risks.layoutOccupancy === "high") {
+    gaps.push({
+      category: "layout-occupancy",
+      severity: "high",
+      symptom: `The ${scenario.id} fixture reserves more desktop shell tracks than it meaningfully fills, so the layout reads under-occupied.`,
+      likely_root_cause: "The benchmark shell can still declare desktop complexity without proving that every major track carries real work.",
+      foundry_owner_area: "design audit / layout review",
+      recommended_fix: "Fail layouts whose page-level shell columns exceed the number of meaningful mounted peer zones."
+    });
+  }
+  if (analysis.risks.collision !== "low") {
+    gaps.push({
+      category: "composition-balance",
+      severity: analysis.risks.collision === "high" ? "high" : "medium",
+      symptom: `The ${scenario.id} fixture has elevated optical-collision risk because display scale and shell constraints are not sufficiently bounded.`,
+      likely_root_cause: "The benchmark still depends on manual review to catch headline mass and adjacent module conflicts.",
+      foundry_owner_area: "design audit / layout review",
+      recommended_fix: "Add optical-collision heuristics that penalize oversized display type without max-width or supporting seam control."
+    });
+  }
+  if (analysis.scores.mobile <= 4.1) {
+    gaps.push({
+      category: "mobile-recomposition",
+      severity: "medium",
+      symptom: `The ${scenario.id} fixture relies mostly on column collapse and still shows weak mobile re-staging signals.`,
+      likely_root_cause: "The current mobile pattern pass changes column count more reliably than it changes hierarchy or order.",
+      foundry_owner_area: "web QA / responsive scoring",
+      recommended_fix: "Require mobile reordering and staged hierarchy changes, not just single-column collapse."
+    });
+  }
+  if (analysis.scores.texture <= 4.2) {
+    gaps.push({
+      category: "texture-discipline",
+      severity: "medium",
+      symptom: `The ${scenario.id} fixture uses enough layered gradients or texture treatment to risk feeling like a reusable harness default.`,
+      likely_root_cause: "Surface differentiation still leans on reusable texture moves instead of style-family-specific structure.",
+      foundry_owner_area: "design audit / visual direction",
+      recommended_fix: "Penalize repeated background texture patterns unless the style family explicitly calls for them."
+    });
+  }
+  return gaps;
+}
+
+function buildScorecard(scenario, meta, analysis) {
   const remediationTrace = remediationStepsForScenario(scenario, meta);
   const remediationSkills = remediationTrace
     .filter((step) => step.status === "required")
     .map((step) => step.skill);
+  const detectedGaps = autoDetectedGaps(scenario, analysis);
+  const combinedGaps = [...commonGaps, ...meta.gaps, ...detectedGaps];
+  const dedupedGaps = [];
+  const seen = new Set();
+  for (const gap of combinedGaps) {
+    const key = `${gap.category}::${gap.recommended_fix}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    dedupedGaps.push(gap);
+  }
 
   return {
     scenario_id: scenario.id,
     style_reference_id: scenario.style_reference_id,
     build_status: "reviewed-remediated-local-fixture",
-    design_intent_score: meta.scores.design,
-    anti_slop_score: meta.scores.anti,
-    responsive_score: meta.scores.responsive,
-    interaction_score: meta.scores.interaction,
-    accessibility_score: meta.scores.accessibility,
-    style_fidelity_score: meta.scores.style,
-    composition_balance_score: meta.scores.composition,
-    layout_occupancy_score: meta.scores.occupancy,
-    mobile_recomposition_score: meta.scores.mobile,
+    design_intent_score: analysis.scores.design,
+    anti_slop_score: analysis.scores.anti,
+    responsive_score: analysis.scores.responsive,
+    interaction_score: analysis.scores.interaction,
+    accessibility_score: analysis.scores.accessibility,
+    style_fidelity_score: analysis.scores.style,
+    composition_balance_score: analysis.scores.composition,
+    layout_occupancy_score: analysis.scores.occupancy,
+    mobile_recomposition_score: analysis.scores.mobile,
+    texture_discipline_score: analysis.scores.texture,
+    geometry_coverage_score: analysis.scores.geometry,
     skills_exercised: [...new Set([...scenario.skills_required, ...remediationSkills])],
     benchmark_lane_results: laneResults(scenario),
     remediation_trace: remediationTrace,
+    analyzer_signals: analysis,
     artifact_paths: [
       `ui-testing/scenarios/${scenario.id}.json`,
       `ui-testing/charters/${scenario.id}.yaml`,
       `ui-testing/fixtures/${scenario.id}/index.html`,
       `ui-testing/reports/scenarios/${scenario.id}/brief.md`,
       `ui-testing/reports/scenarios/${scenario.id}/prompt-trace.json`,
+      `ui-testing/reports/scenarios/${scenario.id}/remediation-pass.md`,
+      `ui-testing/reports/scenarios/${scenario.id}/remediation-execution.json`,
       `ui-testing/reports/scenarios/${scenario.id}/desktop.png`,
       `ui-testing/reports/scenarios/${scenario.id}/mobile-state.png`,
       `ui-testing/reports/scenarios/${scenario.id}/interactive-snapshot.md`
     ],
-    gaps: [...commonGaps, ...meta.gaps]
+    gaps: dedupedGaps
   };
 }
 
@@ -511,11 +527,15 @@ async function main() {
 
     const outDir = path.join(reportsDir, scenario.id);
     const remediationTrace = remediationStepsForScenario(scenario, meta);
+    const analysis = await analyzeFixtureFile(
+      path.join(fixturesDir, scenario.id, "index.html"),
+      scenario,
+    );
 
     await fs.mkdir(outDir, { recursive: true });
     await fs.writeFile(path.join(outDir, "brief.md"), buildBrief(scenario), "utf8");
     await fs.writeFile(path.join(outDir, "prompt-trace.json"), `${JSON.stringify(buildPromptTrace(scenario, meta), null, 2)}\n`, "utf8");
-    await fs.writeFile(path.join(outDir, "scorecard.json"), `${JSON.stringify(buildScorecard(scenario, meta), null, 2)}\n`, "utf8");
+    await fs.writeFile(path.join(outDir, "scorecard.json"), `${JSON.stringify(buildScorecard(scenario, meta, analysis), null, 2)}\n`, "utf8");
 
     try {
       await fs.access(path.join(outDir, "interactive-snapshot.md"));
@@ -547,6 +567,7 @@ async function main() {
         scenarios_refreshed: refreshed,
         atlas_required: args.scope !== "targeted",
         report_targets: [
+          "ui-testing/reports/remediation-runtime.json",
           "ui-testing/reports/ui-testing-gap-report.md",
           "ui-testing/reports/ui-testing-gap-report.json",
           "ui-testing/reports/foundry-ui-benchmark-final-report.md",

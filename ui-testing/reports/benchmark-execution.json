@@ -6,8 +6,11 @@
     "scope": "full-suite"
   },
   "execution": {
-    "started_at": "2026-03-24T02:31:29.300Z",
+    "started_at": "2026-03-25T02:35:33.156Z",
+    "dataset_sync_script": "ui-testing/scripts/sync-runtime-datasets.mjs",
     "sync_script": "ui-testing/scripts/sync-scenario-artifacts.mjs",
+    "remediation_script": "ui-testing/scripts/run-remediation-pass.mjs",
+    "component_system_script": "ui-testing/scripts/build-component-system-report.mjs",
     "aggregate_script": "ui-testing/scripts/aggregate-gap-report.mjs",
     "route_checks": {
       "status": "passed",
@@ -15,84 +18,84 @@
         {
           "id": "hub",
           "route": "/",
-          "url": "http://127.0.0.1:56153/",
+          "url": "http://127.0.0.1:54409/",
           "status": 200,
           "ok": true
         },
         {
           "id": "atelier-stay",
           "route": "/atelier-stay/",
-          "url": "http://127.0.0.1:56153/atelier-stay/",
+          "url": "http://127.0.0.1:54409/atelier-stay/",
           "status": 200,
           "ok": true
         },
         {
           "id": "coach-loop",
           "route": "/coach-loop/",
-          "url": "http://127.0.0.1:56153/coach-loop/",
+          "url": "http://127.0.0.1:54409/coach-loop/",
           "status": 200,
           "ok": true
         },
         {
           "id": "field-notes",
           "route": "/field-notes/",
-          "url": "http://127.0.0.1:56153/field-notes/",
+          "url": "http://127.0.0.1:54409/field-notes/",
           "status": 200,
           "ok": true
         },
         {
           "id": "maison-prive",
           "route": "/maison-prive/",
-          "url": "http://127.0.0.1:56153/maison-prive/",
+          "url": "http://127.0.0.1:54409/maison-prive/",
           "status": 200,
           "ok": true
         },
         {
           "id": "neo-market",
           "route": "/neo-market/",
-          "url": "http://127.0.0.1:56153/neo-market/",
+          "url": "http://127.0.0.1:54409/neo-market/",
           "status": 200,
           "ok": true
         },
         {
           "id": "plant-ops",
           "route": "/plant-ops/",
-          "url": "http://127.0.0.1:56153/plant-ops/",
+          "url": "http://127.0.0.1:54409/plant-ops/",
           "status": 200,
           "ok": true
         },
         {
           "id": "pulse-festival",
           "route": "/pulse-festival/",
-          "url": "http://127.0.0.1:56153/pulse-festival/",
+          "url": "http://127.0.0.1:54409/pulse-festival/",
           "status": 200,
           "ok": true
         },
         {
           "id": "saas-foundry",
           "route": "/saas-foundry/",
-          "url": "http://127.0.0.1:56153/saas-foundry/",
+          "url": "http://127.0.0.1:54409/saas-foundry/",
           "status": 200,
           "ok": true
         },
         {
           "id": "terminal-cloud",
           "route": "/terminal-cloud/",
-          "url": "http://127.0.0.1:56153/terminal-cloud/",
+          "url": "http://127.0.0.1:54409/terminal-cloud/",
           "status": 200,
           "ok": true
         },
         {
           "id": "wealth-ops",
           "route": "/wealth-ops/",
-          "url": "http://127.0.0.1:56153/wealth-ops/",
+          "url": "http://127.0.0.1:54409/wealth-ops/",
           "status": 200,
           "ok": true
         },
         {
           "id": "style-atlas",
           "route": "/style-atlas/",
-          "url": "http://127.0.0.1:56153/style-atlas/",
+          "url": "http://127.0.0.1:54409/style-atlas/",
           "status": 200,
           "ok": true
         }
@@ -195,6 +198,7 @@
     ],
     "atlas_required": true,
     "report_targets": [
+      "ui-testing/reports/remediation-runtime.json",
       "ui-testing/reports/ui-testing-gap-report.md",
       "ui-testing/reports/ui-testing-gap-report.json",
       "ui-testing/reports/foundry-ui-benchmark-final-report.md",
@@ -205,6 +209,11 @@
     {
       "id": "benchmark-runtime",
       "path": "ui-testing/reports/benchmark-runtime.json",
+      "present": true
+    },
+    {
+      "id": "remediation-runtime",
+      "path": "ui-testing/reports/remediation-runtime.json",
       "present": true
     },
     {

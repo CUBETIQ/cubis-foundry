@@ -1,0 +1,155 @@
+{
+  "trace_version": "1.0",
+  "route": {
+    "id": "ui-testing",
+    "command": "/ui-testing",
+    "scope": "suite-remediation"
+  },
+  "scenario_id": "field-notes",
+  "style_reference_id": "newsprint-light-04",
+  "generated_at": "2026-03-25T02:35:33.044Z",
+  "execution_status": "completed-harness-runtime",
+  "provenance_source": "ui-testing/scripts/run-remediation-pass.mjs",
+  "prompt_trace_path": "ui-testing/reports/scenarios/field-notes/prompt-trace.json",
+  "scorecard_path": "ui-testing/reports/scenarios/field-notes/scorecard.json",
+  "remediation_skill_sequence": [
+    "design-audit",
+    "design-arrange",
+    "playwright-web-qa",
+    "ui-testing-harness"
+  ],
+  "required_skills": [
+    "design-audit",
+    "design-arrange",
+    "playwright-web-qa",
+    "ui-testing-harness"
+  ],
+  "steps": [
+    {
+      "order": 1,
+      "skill": "design-audit",
+      "status": "completed",
+      "triggered_by": [
+        "the page cannot waste a full desktop track on empty space",
+        "the manuscript spread and source rail must feel like one editorial system",
+        "lead with the active manuscript and issue chip before source support",
+        "keep source switching accessible without turning the page into a long control dump",
+        "the manuscript remains the emotional center of the page",
+        "source changes update the support language",
+        "the issue planner and publishing queue feel related but not dashboard-like"
+      ],
+      "rationale": "Audit the scenario against its desktop failure checks, mobile expectations, and acceptance checks before any second-pass remediation.",
+      "focus_categories": [],
+      "instruction_summary": "Audit the current surface before any second-pass intervention.",
+      "actions": [
+        "Weakest benchmark signals: composition balance=3.2, geometry coverage=3.5, mobile recomposition=3.6, texture discipline=3.7.",
+        "Current high or medium gaps: runtime-provenance, shared-remediation-runtime, workflow-surface, layout-occupancy, style-fidelity-drift, composition-balance, mobile-recomposition, texture-discipline."
+      ]
+    },
+    {
+      "order": 2,
+      "skill": "design-arrange",
+      "status": "instruction-emitted",
+      "triggered_by": [
+        "layout-occupancy"
+      ],
+      "rationale": "Selected automatically from scenario gap categories: layout-occupancy.",
+      "focus_categories": [
+        "layout-occupancy"
+      ],
+      "instruction_summary": "Recompose shell structure, hierarchy order, and mounted zones before touching styling polish.",
+      "actions": [
+        "Remove dead shell tracks, under-occupied rails, or decorative columns with no operational purpose.",
+        "Reprioritize the mobile order so the first scroll segment carries the primary action and the most important state.",
+        "Keep these desktop failure checks visible: the page cannot waste a full desktop track on empty space; the manuscript spread and source rail must feel like one editorial system."
+      ]
+    },
+    {
+      "order": 3,
+      "skill": "design-typeset",
+      "status": "standby",
+      "triggered_by": [],
+      "rationale": "Not selected by current scenario gaps, but available if browser review surfaces additional issues in this style family.",
+      "focus_categories": [],
+      "instruction_summary": "Recalibrate display scale and reading rhythm so hierarchy survives without optical collisions.",
+      "actions": [
+        "Reduce oversized display type or limit line length when the headline competes with adjacent modules.",
+        "Use type rhythm to reinforce the chosen style family instead of generic product hero typography.",
+        "Preserve these acceptance checks: the manuscript remains the emotional center of the page; source changes update the support language; the issue planner and publishing queue feel related but not dashboard-like."
+      ]
+    },
+    {
+      "order": 4,
+      "skill": "design-bolder",
+      "status": "standby",
+      "triggered_by": [],
+      "rationale": "Not selected by current scenario gaps, but available if browser review surfaces additional issues in this style family.",
+      "focus_categories": [],
+      "instruction_summary": "Increase directional identity only where the chosen style family still feels too safe or under-defined.",
+      "actions": [
+        "Strengthen motif presence through geometry, density, or contrast before adding ornamental accents.",
+        "Keep the primary transaction or operational path more legible than the supporting noise."
+      ]
+    },
+    {
+      "order": 5,
+      "skill": "design-distill",
+      "status": "standby",
+      "triggered_by": [],
+      "rationale": "Not selected by current scenario gaps, but available if browser review surfaces additional issues in this style family.",
+      "focus_categories": [],
+      "instruction_summary": "Remove reusable harness defaults and reduce visual noise that masks the intended style signal.",
+      "actions": [
+        "Strip repeated texture overlays or box-pattern treatments unless the style family explicitly requires them.",
+        "Reduce competing accent moves so the primary component language reads clearly."
+      ]
+    },
+    {
+      "order": 6,
+      "skill": "design-polish",
+      "status": "standby",
+      "triggered_by": [],
+      "rationale": "Not selected by current scenario gaps, but available if browser review surfaces additional issues in this style family.",
+      "focus_categories": [],
+      "instruction_summary": "Polish only after structure, type, and state hierarchy are already coherent.",
+      "actions": [
+        "Tighten spacing, border treatment, and state transitions without changing the layout diagnosis.",
+        "Use polish to clarify the chosen style family, not to hide unresolved shell problems."
+      ]
+    },
+    {
+      "order": 7,
+      "skill": "playwright-web-qa",
+      "status": "ready-for-refresh",
+      "triggered_by": [
+        "refresh deterministic browser evidence after remediation"
+      ],
+      "rationale": "Capture post-remediation screenshots, snapshots, and execution evidence before summarizing the scenario.",
+      "focus_categories": [],
+      "instruction_summary": "Refresh browser evidence after remediation changes are applied.",
+      "actions": [
+        "Re-capture desktop and mobile screenshots.",
+        "Refresh the interactive snapshot and confirm the scenario still serves correctly."
+      ]
+    },
+    {
+      "order": 8,
+      "skill": "ui-testing-harness",
+      "status": "ready-for-refresh",
+      "triggered_by": [
+        "refresh scorecards, reports, and repeated-gap summary"
+      ],
+      "rationale": "Update the benchmark outputs and consolidated Foundry gap summary after the evidence pass.",
+      "focus_categories": [],
+      "instruction_summary": "Roll the scenario back into the suite-level artifacts.",
+      "actions": [
+        "Refresh the scenario scorecard and prompt trace.",
+        "Regenerate the consolidated benchmark and gap reports."
+      ]
+    }
+  ],
+  "shared_runtime_limitations": [
+    "This remediation executor runs at the harness-runtime layer.",
+    "Shared Foundry runtime still needs to adopt the same remediation execution path natively."
+  ]
+}

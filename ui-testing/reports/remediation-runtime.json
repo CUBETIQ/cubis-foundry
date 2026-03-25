@@ -1,0 +1,136 @@
+{
+  "trace_version": "1.0",
+  "execution_source": "ui-testing/scripts/run-remediation-pass.mjs",
+  "scope": "full-suite",
+  "scenarios": [
+    {
+      "scenario_id": "atelier-stay",
+      "execution_status": "completed-harness-runtime",
+      "required_skills": [
+        "design-audit",
+        "design-arrange",
+        "design-typeset",
+        "playwright-web-qa",
+        "ui-testing-harness"
+      ],
+      "markdown_path": "ui-testing/reports/scenarios/atelier-stay/remediation-pass.md",
+      "json_path": "ui-testing/reports/scenarios/atelier-stay/remediation-execution.json"
+    },
+    {
+      "scenario_id": "coach-loop",
+      "execution_status": "completed-harness-runtime",
+      "required_skills": [
+        "design-audit",
+        "design-arrange",
+        "playwright-web-qa",
+        "ui-testing-harness"
+      ],
+      "markdown_path": "ui-testing/reports/scenarios/coach-loop/remediation-pass.md",
+      "json_path": "ui-testing/reports/scenarios/coach-loop/remediation-execution.json"
+    },
+    {
+      "scenario_id": "field-notes",
+      "execution_status": "completed-harness-runtime",
+      "required_skills": [
+        "design-audit",
+        "design-arrange",
+        "playwright-web-qa",
+        "ui-testing-harness"
+      ],
+      "markdown_path": "ui-testing/reports/scenarios/field-notes/remediation-pass.md",
+      "json_path": "ui-testing/reports/scenarios/field-notes/remediation-execution.json"
+    },
+    {
+      "scenario_id": "maison-prive",
+      "execution_status": "completed-harness-runtime",
+      "required_skills": [
+        "design-audit",
+        "design-arrange",
+        "design-polish",
+        "playwright-web-qa",
+        "ui-testing-harness"
+      ],
+      "markdown_path": "ui-testing/reports/scenarios/maison-prive/remediation-pass.md",
+      "json_path": "ui-testing/reports/scenarios/maison-prive/remediation-execution.json"
+    },
+    {
+      "scenario_id": "neo-market",
+      "execution_status": "completed-harness-runtime",
+      "required_skills": [
+        "design-audit",
+        "design-bolder",
+        "design-distill",
+        "playwright-web-qa",
+        "ui-testing-harness"
+      ],
+      "markdown_path": "ui-testing/reports/scenarios/neo-market/remediation-pass.md",
+      "json_path": "ui-testing/reports/scenarios/neo-market/remediation-execution.json"
+    },
+    {
+      "scenario_id": "plant-ops",
+      "execution_status": "completed-harness-runtime",
+      "required_skills": [
+        "design-audit",
+        "design-distill",
+        "design-polish",
+        "playwright-web-qa",
+        "ui-testing-harness"
+      ],
+      "markdown_path": "ui-testing/reports/scenarios/plant-ops/remediation-pass.md",
+      "json_path": "ui-testing/reports/scenarios/plant-ops/remediation-execution.json"
+    },
+    {
+      "scenario_id": "pulse-festival",
+      "execution_status": "completed-harness-runtime",
+      "required_skills": [
+        "design-audit",
+        "design-arrange",
+        "playwright-web-qa",
+        "ui-testing-harness"
+      ],
+      "markdown_path": "ui-testing/reports/scenarios/pulse-festival/remediation-pass.md",
+      "json_path": "ui-testing/reports/scenarios/pulse-festival/remediation-execution.json"
+    },
+    {
+      "scenario_id": "saas-foundry",
+      "execution_status": "completed-harness-runtime",
+      "required_skills": [
+        "design-audit",
+        "design-distill",
+        "design-polish",
+        "playwright-web-qa",
+        "ui-testing-harness"
+      ],
+      "markdown_path": "ui-testing/reports/scenarios/saas-foundry/remediation-pass.md",
+      "json_path": "ui-testing/reports/scenarios/saas-foundry/remediation-execution.json"
+    },
+    {
+      "scenario_id": "terminal-cloud",
+      "execution_status": "completed-harness-runtime",
+      "required_skills": [
+        "design-audit",
+        "playwright-web-qa",
+        "ui-testing-harness"
+      ],
+      "markdown_path": "ui-testing/reports/scenarios/terminal-cloud/remediation-pass.md",
+      "json_path": "ui-testing/reports/scenarios/terminal-cloud/remediation-execution.json"
+    },
+    {
+      "scenario_id": "wealth-ops",
+      "execution_status": "completed-harness-runtime",
+      "required_skills": [
+        "design-audit",
+        "design-arrange",
+        "design-typeset",
+        "playwright-web-qa",
+        "ui-testing-harness"
+      ],
+      "markdown_path": "ui-testing/reports/scenarios/wealth-ops/remediation-pass.md",
+      "json_path": "ui-testing/reports/scenarios/wealth-ops/remediation-execution.json"
+    }
+  ],
+  "shared_runtime_limitations": [
+    "Harness remediation execution is now available.",
+    "Shared native runtime adoption is still pending."
+  ]
+}

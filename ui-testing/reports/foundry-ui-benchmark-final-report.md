@@ -1,6 +1,6 @@
 # Foundry UI Benchmark Final Report
 
-Date: March 24, 2026
+Date: March 25, 2026
 
 ## Scope
 
@@ -38,7 +38,8 @@ This final report summarizes the current web UI benchmark pass across:
 ### 2. Style fidelity is better than before, but still weakly enforced
 
 - The benchmark can now describe style drift clearly.
-- The runtime still does not score style fidelity, geometry variation, or texture discipline automatically.
+- The harness runtime now scores style fidelity, geometry variation, and texture discipline automatically.
+- Those signals are still not native shared `design-audit` primitives outside the harness layer.
 
 ### 3. Provenance exists at the harness layer, but not in the core design runtime
 
@@ -48,12 +49,14 @@ This final report summarizes the current web UI benchmark pass across:
 ### 4. Remediation routing exists at the harness layer, but not as native execution
 
 - The harness can now derive second-pass remediation steps from scenario gaps and review criteria.
-- Foundry still has no shared runtime that can execute that routing end-to-end after a weak UI pass.
+- The harness now also executes a remediation pass and emits remediation execution artifacts per scenario.
+- Foundry still has no shared runtime that can expose that execution path end-to-end outside the benchmark layer.
 
 ### 5. Responsive evidence exists, but mobile quality is still under-scored
 
 - Mobile screenshots and state captures exist for every scenario.
-- The runtime still cannot automatically distinguish real mobile re-staging from a compressed desktop stack.
+- The harness runtime can now distinguish real mobile re-staging from a compressed desktop stack heuristically.
+- Shared QA primitives still do not expose that scoring outside the benchmark layer.
 
 ### 6. Page mocks were not enough on their own
 
@@ -61,6 +64,7 @@ This final report summarizes the current web UI benchmark pass across:
   - too much hard-edge geometry
   - missing rounded/Material-like language
   - repeated background texture fallback
+- The atlas is now a required benchmark artifact and emits a separate component-system summary.
 
 ## Required Foundry Updates
 
@@ -68,16 +72,16 @@ This final report summarizes the current web UI benchmark pass across:
 
 1. Keep the shared `ui-testing` workflow as the canonical benchmark entrypoint for scenario runs, atlas capture, screenshots, score aggregation, and report updates.
 2. Promote the repo-local benchmark runner into a native runtime executor behind that route.
-3. Add a remediation runtime that starts from `design-audit` and routes into the correct second-pass skills automatically.
+3. Promote the harness remediation executor into a shared runtime that starts from `design-audit` and routes into the correct second-pass skills automatically.
 4. Promote prompt trace and dataset provenance from harness-derived artifacts into first-class design runtime artifacts.
 
 ### Near-term
 
-1. Add style-fidelity scoring to `design-audit`.
-2. Add geometry-coverage scoring so rounded/tactile systems and hard-edge systems are both represented intentionally.
-3. Add texture-discipline checks so repeated grid overlays and generic atmosphere tricks fail review.
-4. Add layout-occupancy and optical-collision checks as first-class audit failures.
-5. Add mobile-recomposition scoring that can tell re-staging apart from simple stacking.
+1. Promote harness scoring logic into shared `design-audit` and web QA primitives.
+2. Add geometry-coverage scoring so rounded/tactile systems and hard-edge systems are both represented intentionally across shared runtime reviews.
+3. Add texture-discipline checks so repeated grid overlays and generic atmosphere tricks fail review outside the benchmark harness.
+4. Add layout-occupancy and optical-collision checks as first-class shared audit failures.
+5. Add mobile-recomposition scoring that can tell re-staging apart from simple stacking outside the benchmark harness.
 
 ### Dataset and design-system updates
 
@@ -98,4 +102,4 @@ This final report summarizes the current web UI benchmark pass across:
 
 ## Conclusion
 
-Foundry is now materially better at exposing UI quality gaps than it was at the start of this pass. The biggest remaining problem is no longer “can it make a page,” but “can it promote harness-level workflow, provenance, and remediation behavior into native runtime guarantees.” The benchmark suite is now good enough to drive those fixes directly.
+Foundry is now materially better at exposing UI quality gaps than it was at the start of this pass. The benchmark harness now has runtime dataset sync, analyzer-backed scoring, atlas-aware reporting, a remediation executor, and a single end-to-end runner. The biggest remaining problem is no longer “can it make a page,” but “can it promote harness-level workflow, provenance, scoring, and remediation behavior into native shared runtime guarantees.” The benchmark suite is now good enough to drive those fixes directly.

@@ -1,0 +1,46 @@
+{
+  "lane_count": 6,
+  "rounded_lane_count": 4,
+  "hard_edge_lane_count": 2,
+  "tactile_lane_count": 6,
+  "background_gradient_count": 2,
+  "lanes": [
+    {
+      "id": "monochrome",
+      "rounded": false,
+      "tactile": true,
+      "component_count": 13
+    },
+    {
+      "id": "saas",
+      "rounded": true,
+      "tactile": true,
+      "component_count": 13
+    },
+    {
+      "id": "material",
+      "rounded": true,
+      "tactile": true,
+      "component_count": 14
+    },
+    {
+      "id": "luxury",
+      "rounded": true,
+      "tactile": true,
+      "component_count": 13
+    },
+    {
+      "id": "brutal",
+      "rounded": false,
+      "tactile": true,
+      "component_count": 13
+    },
+    {
+      "id": "terminal",
+      "rounded": true,
+      "tactile": true,
+      "component_count": 13
+    }
+  ],
+  "geometry_diversity_score": 5
+}

@@ -22,6 +22,7 @@ function parseArgs(argv) {
     port: 0,
     skipRouteChecks: false,
     skipAggregate: false,
+    skipRemediation: false,
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -59,6 +60,10 @@ function parseArgs(argv) {
     }
     if (arg === "--skip-aggregate") {
       args.skipAggregate = true;
+      continue;
+    }
+    if (arg === "--skip-remediation") {
+      args.skipRemediation = true;
     }
   }
 
@@ -156,8 +161,10 @@ async function readJson(filePath) {
 async function validateSupplementaryArtifacts(includeAtlas) {
   const atlasNote = path.join(reportsRoot, "style-atlas.md");
   const atlasScreenshot = path.join(reportsRoot, "style-atlas-desktop.png");
+  const remediationRuntime = path.join(reportsRoot, "remediation-runtime.json");
   const checks = [
     { id: "benchmark-runtime", path: benchmarkRuntimePath },
+    { id: "remediation-runtime", path: remediationRuntime },
   ];
 
   if (includeAtlas) {
@@ -185,9 +192,17 @@ async function main() {
   const scope = args.scenario ? "targeted" : "full-suite";
   const includeAtlas = scope === "full-suite";
   const syncScript = path.join(root, "scripts", "sync-scenario-artifacts.mjs");
+  const syncRuntimeDatasetsScript = path.join(root, "scripts", "sync-runtime-datasets.mjs");
+  const remediationScript = path.join(root, "scripts", "run-remediation-pass.mjs");
+  const buildComponentSystemReportScript = path.join(root, "scripts", "build-component-system-report.mjs");
   const aggregateScript = path.join(root, "scripts", "aggregate-gap-report.mjs");
 
+  await runNodeScript(syncRuntimeDatasetsScript);
   await runNodeScript(syncScript, args.scenario ? ["--scenario", args.scenario] : []);
+  if (!args.skipRemediation) {
+    await runNodeScript(remediationScript, args.scenario ? ["--scenario", args.scenario] : []);
+  }
+  await runNodeScript(buildComponentSystemReportScript);
 
   let fixtureServer;
   let routeResults = [];
@@ -215,7 +230,10 @@ async function main() {
     },
     execution: {
       started_at: new Date().toISOString(),
+      dataset_sync_script: "ui-testing/scripts/sync-runtime-datasets.mjs",
       sync_script: "ui-testing/scripts/sync-scenario-artifacts.mjs",
+      remediation_script: args.skipRemediation ? null : "ui-testing/scripts/run-remediation-pass.mjs",
+      component_system_script: "ui-testing/scripts/build-component-system-report.mjs",
       aggregate_script: args.skipAggregate ? null : "ui-testing/scripts/aggregate-gap-report.mjs",
       route_checks: args.skipRouteChecks
         ? { status: "skipped", results: [] }

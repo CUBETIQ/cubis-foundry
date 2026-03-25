@@ -8,6 +8,8 @@ Each scenario report directory should contain:
 
 - `brief.md`
 - `prompt-trace.json`
+- `remediation-pass.md`
+- `remediation-execution.json`
 - `scorecard.json`
 - optional screenshots and snapshots
 
@@ -20,6 +22,8 @@ Each benchmark pass should also include:
 - a short `style-atlas.md` note that explains which style families, geometry types, and component systems are represented
 - one `benchmark-runtime.json` artifact that records route scope, refreshed scenarios, and report targets
 - one `benchmark-execution.json` artifact that records the executed runner steps, route checks, and supplementary artifact validation
+- one `remediation-runtime.json` artifact that records the executed remediation pass across the in-scope scenarios
+- one component-system summary package under `ui-testing/reports/` that isolates geometry, tactile-system, and atlas-lane findings
 
 ## `brief.md`
 
@@ -45,6 +49,7 @@ Record:
 - benchmark lane results
 - runtime trace metadata
 - remediation plan metadata
+- remediation execution artifact path, if the scenario passed through the remediation executor
 - runtime limitations, if the harness still had to derive behavior the core design runtime does not emit itself
 
 This file is for traceability, not for end-user prose.
@@ -91,6 +96,7 @@ Recommended sections:
 
 - Harness summary
 - Supplementary harness artifacts
+- Component-system summary
 - Style-family coverage
 - Scenario results table
 - Repeated gaps

@@ -39,6 +39,7 @@
       "status": "active"
     }
   ],
+  "remediation_execution_path": "ui-testing/reports/scenarios/pulse-festival/remediation-execution.json",
   "runtime_trace": {
     "trace_version": "1.0",
     "route": {
@@ -174,7 +175,7 @@
     ],
     "runtime_limitations": [
       "The harness now emits deterministic benchmark traces, but Foundry's core design runtime still does not natively emit this provenance.",
-      "Remediation routing is derived automatically here, but execution still depends on downstream workflow support rather than a shared native remediation executor."
+      "Harness remediation execution is now available, but the same execution path still needs to be promoted into shared native Foundry runtime support."
     ]
   },
   "fixture_stack": "static-html",

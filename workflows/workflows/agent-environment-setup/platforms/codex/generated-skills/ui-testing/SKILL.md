@@ -35,6 +35,7 @@ Use when the goal is to benchmark Foundry's frontend design workflow across the 
 - Provide whether the run is full-suite or targeted, which scenarios are in scope, and whether remediation is allowed during the same pass.
 - The route must treat `ui-testing/fixtures/style-atlas/` and its report artifacts as required benchmark inputs, not optional extras.
 - Prefer repo-local benchmark artifacts under `ui-testing/` and report the exact file paths that were refreshed or left stale.
+- Use the remediation executor when remediation is allowed during the same pass so the run emits remediation execution artifacts, not just a planned routing trace.
 
 ## Runtime contract
 
@@ -42,6 +43,7 @@ Use when the goal is to benchmark Foundry's frontend design workflow across the 
 - Treat `ui-testing/reports/scenarios/` as the per-scenario artifact root and `ui-testing/reports/ui-testing-gap-report.md` as the consolidated report target.
 - Require `ui-testing/reports/style-atlas.md` and `ui-testing/reports/style-atlas-desktop.png` during full-suite benchmark runs.
 - Prefer `node ui-testing/scripts/run-benchmark.mjs` as the repo-local benchmark executor when the route is operating against this repository.
+- Prefer `node ui-testing/scripts/run-remediation-pass.mjs` as the repo-local remediation executor for targeted second-pass runs.
 - Route failed fixtures through `design-audit` first, then choose the targeted remediation step instead of applying generic polish.
 - Refresh report-ready artifacts before summarizing findings.
 
@@ -51,7 +53,7 @@ Use when the goal is to benchmark Foundry's frontend design workflow across the 
 2. Load the canonical scenario matrix from `ui-testing/scenarios/` and the atlas expectations from the UI testing harness contract.
 3. Refresh scenario artifacts with the benchmark sync path and ensure scorecards, prompt traces, and screenshots are current.
 4. Verify the supplementary atlas artifact set and fail the route when required atlas outputs are missing.
-5. If a scenario fails review, run `design-audit` and apply the most specific remediation route before the final evidence pass.
+5. If a scenario fails review, run `design-audit`, emit the remediation execution artifact, and apply the most specific remediation route before the final evidence pass.
 6. Regenerate the consolidated UI benchmark reports and summarize repeated Foundry gaps, blocked reasons, and next fixes.
 
 ## Verification

@@ -194,14 +194,15 @@ The goal is to track the gaps that still need product or tooling fixes inside Fo
   - add viewport-aware scoring hooks to the web QA or UI testing workflow
   - surface responsive drift as a structured report dimension instead of a freeform reviewer note
 
-### 20. Design remediation now has guided routing in the harness, but not native execution
-- Problem: Foundry now has a usable command layer for second-pass UI remediation, and the harness can derive which remediation steps are needed, but the shared runtime still cannot execute that loop end-to-end after a weak first pass.
+### 20. Design remediation now executes in the harness, but not in shared native runtime
+- Problem: Foundry now has a usable command layer for second-pass UI remediation, and the harness can both derive and execute the remediation pass, but the shared runtime still cannot expose that loop end-to-end after a weak first pass.
 - Evidence:
   - scenario scorecards and prompt traces now emit `remediation_trace` data derived from scenario gaps and review criteria
   - the benchmark runtime can name which scenarios require `design-arrange`, `design-typeset`, `design-bolder`, `design-distill`, or `design-polish`
-  - operators still need downstream workflow support to actually execute that routing as a native runtime behavior
+  - the remediation executor now writes per-scenario `remediation-pass.md` and `remediation-execution.json` artifacts
+  - operators still need shared runtime support to expose that routing as a native platform behavior outside the benchmark harness
 - Fix direction:
-  - add a first-class remediation workflow that runs `design-audit` first and executes the right follow-on skills
+  - promote the harness remediation executor into a first-class remediation workflow that runs `design-audit` first and executes the right follow-on skills
   - keep emitting remediation traces automatically so the harness can prove how a weak surface was improved
 
 ### 21. Optical collision detection is still manual
@@ -224,32 +225,32 @@ The goal is to track the gaps that still need product or tooling fixes inside Fo
   - add layout-occupancy checks to `design-audit` and the UI harness
   - fail layouts that reserve major desktop columns or rails without meaningful mounted content
 
-### 23. Style fidelity is still judged manually
-- Problem: the expanded harness now scores style fidelity, but the score is still authored by hand in scorecards rather than emitted by runtime heuristics.
+### 23. Style fidelity scoring exists in the harness but not yet in shared design runtime
+- Problem: the expanded harness now emits analyzer-backed style fidelity scores, but shared `design-audit` primitives still do not expose those checks outside the benchmark layer.
 - Evidence:
   - restrained scenarios such as `saas-foundry` need different failure checks than editorial, neo-brutalist, or industrial surfaces
-  - the harness can describe drift back to generic UI defaults, but current Foundry tooling cannot score that drift automatically
+  - the harness can now score drift back to generic UI defaults, but current shared Foundry runtime tooling cannot reuse that scoring directly
 - Fix direction:
-  - add style-family-aware checks to `design-audit`
-  - treat regression to generic startup UI, generic luxury styling, or generic enterprise BI as explicit scoring failures
+  - promote style-family-aware checks from the harness into shared `design-audit`
+  - treat regression to generic startup UI, generic luxury styling, or generic enterprise BI as explicit runtime scoring failures
 
-### 24. The web harness lacked a first-class style component atlas
-- Problem: the harness compared full pages, but it did not initially provide one place to inspect how each style family treats core component primitives such as buttons, cards, chips, inputs, tabs, drawers, and action clusters.
+### 24. The web harness now has a first-class component atlas, but atlas review is still harness-scoped
+- Problem: the harness now provides one place to inspect how each style family treats core component primitives such as buttons, cards, chips, inputs, tabs, drawers, and action clusters, but that review path is still owned by the benchmark layer rather than shared runtime reporting.
 - Evidence:
   - browser review repeatedly surfaced geometry and component-language complaints that were hard to isolate from full-page composition issues
-  - it was difficult to compare restrained SaaS, editorial, brutalist, industrial, and Material-like systems side by side without a dedicated atlas surface
+  - the new `style-atlas` surface and `component-system-summary` report solved that problem inside the harness
 - Fix direction:
-  - add a first-class component-atlas page or workflow to the UI harness
-  - score geometry, density, and interaction-state variation at the component-system layer, not just the page-shell layer
+  - promote component-atlas review into broader Foundry reporting and runtime review surfaces
+  - keep geometry, density, and interaction-state variation visible at the component-system layer, not just the page-shell layer
 
-### 25. Rounded and tactile system coverage was underrepresented
-- Problem: the expanded harness over-indexed on hard-edge, low-radius visual systems, so it did not adequately benchmark rounded and tactile directions such as Material-style product surfaces.
+### 25. Rounded and tactile system coverage now exists, but shared selector/runtime adoption is still partial
+- Problem: the benchmark no longer over-indexes exclusively on hard-edge systems, but rounded and tactile directions such as Material-style product surfaces are still adopted mainly through the harness and atlas workflow.
 - Evidence:
-  - multiple benchmark pages used sharp borders and rule-driven geometry
-  - user review correctly called out the lack of radius diversity and asked where Material design fit into the benchmark matrix
+  - canonical datasets now include `material-expressive` and matching motif/layout coverage
+  - the `style-atlas` surface now compares rounded, hard-edge, and tactile systems side by side
 - Fix direction:
-  - add canonical rounded-system coverage to the style datasets
-  - ensure at least one benchmark or atlas lane exercises Material-like surfaces, chips, FABs, sheets, and rounded cards
+  - make shared design workflows query and use the rounded-system dataset entries directly
+  - ensure benchmark and non-benchmark design flows can choose Material-like surfaces, chips, FABs, sheets, and rounded cards without harness-only logic
 
 ### 26. Texture overlays are too easy to overuse
 - Problem: several fixture pages used faint grid or box textures as a quick stylistic differentiator, but repeated use made the backgrounds feel like a harness default instead of a deliberate style choice.
@@ -266,7 +267,7 @@ The goal is to track the gaps that still need product or tooling fixes inside Fo
 2. Ship a first-class mobile QA workflow with emulator/device preflight and Android MCP or ADB evidence capture.
 3. Promote prompt-trace provenance and structured execution tracing for routes, skills, references, and tool gating.
 4. Promote the new design remediation command layer into a guided runtime with explicit traces.
-5. Ship a first-class web UI testing workflow that composes scenario manifests, QA charters, scorecards, remediation passes, and consolidated reporting.
-6. Promote external style-reference normalization into a reusable runtime dataset pipeline.
-7. Add style-fidelity scoring, optical-collision checks, and layout-occupancy checks to the design remediation and scoring loop.
-8. Expand the web style dataset, add a first-class component-atlas workflow, and add responsive/mobile-recomposition scoring hooks.
+5. Promote the current script-backed web UI testing workflow into a shared native executor that composes scenario manifests, QA charters, scorecards, remediation passes, and consolidated reporting.
+6. Adopt the runtime style-reference catalog and rounded-system coverage across shared design workflows instead of only in the harness.
+7. Promote harness scoring for style fidelity, optical collision, layout occupancy, texture discipline, and mobile recomposition into the shared remediation and scoring loop.
+8. Feed the component-atlas workflow and component-system summary into broader Foundry review surfaces.

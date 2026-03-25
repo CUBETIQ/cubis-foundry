@@ -15,6 +15,9 @@ const atlasReportPath = path.resolve(root, "reports", "style-atlas.md");
 const atlasScreenshotPath = path.resolve(root, "reports", "style-atlas-desktop.png");
 const benchmarkRuntimePath = path.resolve(root, "reports", "benchmark-runtime.json");
 const benchmarkExecutionPath = path.resolve(root, "reports", "benchmark-execution.json");
+const remediationRuntimePath = path.resolve(root, "reports", "remediation-runtime.json");
+const componentSummaryJsonPath = path.resolve(root, "reports", "component-system-summary.json");
+const componentSummaryMdPath = path.resolve(root, "reports", "component-system-summary.md");
 
 async function loadScenarioMap() {
   const files = (await fs.readdir(scenariosRoot)).filter((file) => file.endsWith(".json")).sort();
@@ -40,12 +43,15 @@ async function loadScorecards() {
 }
 
 async function loadSupplementaryArtifacts() {
-  const [atlasFixture, atlasNote, atlasShot, benchmarkRuntime, benchmarkExecution] = await Promise.all([
+  const [atlasFixture, atlasNote, atlasShot, benchmarkRuntime, benchmarkExecution, remediationRuntime, componentJson, componentMd] = await Promise.all([
     fs.access(atlasPath).then(() => true).catch(() => false),
     fs.access(atlasReportPath).then(() => true).catch(() => false),
     fs.access(atlasScreenshotPath).then(() => true).catch(() => false),
     fs.access(benchmarkRuntimePath).then(() => true).catch(() => false),
     fs.access(benchmarkExecutionPath).then(() => true).catch(() => false),
+    fs.access(remediationRuntimePath).then(() => true).catch(() => false),
+    fs.access(componentSummaryJsonPath).then(() => true).catch(() => false),
+    fs.access(componentSummaryMdPath).then(() => true).catch(() => false),
   ]);
 
   return {
@@ -64,6 +70,16 @@ async function loadSupplementaryArtifacts() {
     benchmark_execution: {
       present: benchmarkExecution,
       path: "ui-testing/reports/benchmark-execution.json",
+    },
+    remediation_runtime: {
+      present: remediationRuntime,
+      path: "ui-testing/reports/remediation-runtime.json",
+    },
+    component_system: {
+      json_present: componentJson,
+      md_present: componentMd,
+      json_path: "ui-testing/reports/component-system-summary.json",
+      md_path: "ui-testing/reports/component-system-summary.md",
     },
   };
 }
@@ -141,15 +157,17 @@ function summarize(scorecards, scenarioMap) {
     composition_balance: average(scorecards.map((card) => card.composition_balance_score)),
     layout_occupancy: average(scorecards.map((card) => card.layout_occupancy_score)),
     mobile_recomposition: average(scorecards.map((card) => card.mobile_recomposition_score)),
+    texture_discipline: average(scorecards.map((card) => card.texture_discipline_score || 0)),
+    geometry_coverage: average(scorecards.map((card) => card.geometry_coverage_score || 0)),
   };
 
   const fixOrder = [
     "promote harness-derived prompt traces and design execution traces into the core design runtime",
-    "add a native remediation executor that routes audit output into arrange, typeset, bolder, distill, and polish",
+    "promote the harness remediation executor into shared runtime support so audit output can route into arrange, typeset, bolder, distill, and polish outside the benchmark layer",
     "promote the shared ui-testing route from script-backed orchestration into a native runtime executor",
-    "promote Design Prompts-style normalization into a reusable Foundry style catalog",
-    "add style-fidelity scoring, optical-collision checks, and layout-occupancy checks to design-audit",
-    "add viewport-aware mobile recomposition scoring and shell-track occupancy failure rules",
+    "wire the harness scoring heuristics into shared design-audit and web-qa primitives so route-local logic is no longer the only scorer",
+    "teach shared design workflows to query the runtime style-reference catalog directly instead of relying on harness-only normalization",
+    "reduce remaining fixture-level regressions in mobile recomposition, texture discipline, and style-fidelity drift",
   ];
 
   return {
@@ -188,6 +206,9 @@ function buildMarkdown(scorecards, summary, scenarioMap, supplementary) {
   lines.push(`- Style atlas screenshot present: ${supplementary.style_atlas.screenshot ? "yes" : "no"} (${supplementary.style_atlas.screenshot_path})`);
   lines.push(`- Benchmark runtime artifact present: ${supplementary.benchmark_runtime.present ? "yes" : "no"} (${supplementary.benchmark_runtime.path})`);
   lines.push(`- Benchmark execution artifact present: ${supplementary.benchmark_execution.present ? "yes" : "no"} (${supplementary.benchmark_execution.path})`);
+  lines.push(`- Remediation runtime artifact present: ${supplementary.remediation_runtime.present ? "yes" : "no"} (${supplementary.remediation_runtime.path})`);
+  lines.push(`- Component system summary JSON present: ${supplementary.component_system.json_present ? "yes" : "no"} (${supplementary.component_system.json_path})`);
+  lines.push(`- Component system summary note present: ${supplementary.component_system.md_present ? "yes" : "no"} (${supplementary.component_system.md_path})`);
   lines.push("");
   lines.push("## Score Summary");
   lines.push("");
@@ -200,6 +221,8 @@ function buildMarkdown(scorecards, summary, scenarioMap, supplementary) {
   lines.push(`- Composition balance: ${summary.scoreSummary.composition_balance}`);
   lines.push(`- Layout occupancy: ${summary.scoreSummary.layout_occupancy}`);
   lines.push(`- Mobile recomposition: ${summary.scoreSummary.mobile_recomposition}`);
+  lines.push(`- Texture discipline: ${summary.scoreSummary.texture_discipline}`);
+  lines.push(`- Geometry coverage: ${summary.scoreSummary.geometry_coverage}`);
   lines.push("");
   lines.push("## Scenario Results");
   lines.push("");
@@ -211,6 +234,11 @@ function buildMarkdown(scorecards, summary, scenarioMap, supplementary) {
       `| ${card.scenario_id} | ${scenario?.primary_style_direction || "unknown"} | ${card.design_intent_score} | ${card.anti_slop_score} | ${card.style_fidelity_score} | ${card.composition_balance_score} | ${card.layout_occupancy_score} | ${card.mobile_recomposition_score} | ${card.responsive_score} | ${card.interaction_score} | ${card.accessibility_score} |`,
     );
   }
+  lines.push("");
+  lines.push("## Component-System Summary");
+  lines.push("");
+  lines.push("- Use `ui-testing/reports/component-system-summary.md` for geometry, tactile-system, and atlas-lane review.");
+  lines.push("- Treat component-language failures separately from page-shell composition failures.");
   lines.push("");
   lines.push("## Style-Family Coverage");
   lines.push("");

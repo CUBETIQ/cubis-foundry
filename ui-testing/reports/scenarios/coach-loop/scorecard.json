@@ -3,14 +3,16 @@
   "style_reference_id": "swiss-minimalist-light-08",
   "build_status": "reviewed-remediated-local-fixture",
   "design_intent_score": 5,
-  "anti_slop_score": 5,
-  "responsive_score": 4,
+  "anti_slop_score": 4.8,
+  "responsive_score": 4.1,
   "interaction_score": 5,
   "accessibility_score": 5,
   "style_fidelity_score": 5,
-  "composition_balance_score": 5,
-  "layout_occupancy_score": 4,
-  "mobile_recomposition_score": 4,
+  "composition_balance_score": 3.2,
+  "layout_occupancy_score": 5,
+  "mobile_recomposition_score": 3.6,
+  "texture_discipline_score": 3.7,
+  "geometry_coverage_score": 4,
   "skills_exercised": [
     "design-context-capture",
     "frontend-design-style-selector",
@@ -101,72 +103,70 @@
       "rationale": "Update the benchmark outputs and consolidated Foundry gap summary after the evidence pass."
     }
   ],
+  "analyzer_signals": {
+    "metrics": {
+      "gradients": 4,
+      "borderRadiusUses": 1,
+      "pillRadiusUses": 1,
+      "zeroRadiusUses": 0,
+      "buttonCount": 11,
+      "sectionCount": 7,
+      "articleCount": 6,
+      "headingCount": 9,
+      "shellColumns": 1,
+      "shellChildren": 1,
+      "h1Max": 5.8,
+      "h1HasMaxWidth": false,
+      "mediaReorders": 0,
+      "mediaColumnResets": 2,
+      "semanticCount": 26
+    },
+    "risks": {
+      "layoutOccupancy": "low",
+      "collision": "high"
+    },
+    "scores": {
+      "design": 5,
+      "anti": 4.8,
+      "responsive": 4.1,
+      "interaction": 5,
+      "accessibility": 5,
+      "style": 5,
+      "composition": 3.2,
+      "occupancy": 5,
+      "mobile": 3.6,
+      "texture": 3.7,
+      "geometry": 4
+    }
+  },
   "artifact_paths": [
     "ui-testing/scenarios/coach-loop.json",
     "ui-testing/charters/coach-loop.yaml",
     "ui-testing/fixtures/coach-loop/index.html",
     "ui-testing/reports/scenarios/coach-loop/brief.md",
     "ui-testing/reports/scenarios/coach-loop/prompt-trace.json",
+    "ui-testing/reports/scenarios/coach-loop/remediation-pass.md",
+    "ui-testing/reports/scenarios/coach-loop/remediation-execution.json",
     "ui-testing/reports/scenarios/coach-loop/desktop.png",
     "ui-testing/reports/scenarios/coach-loop/mobile-state.png",
     "ui-testing/reports/scenarios/coach-loop/interactive-snapshot.md"
   ],
   "gaps": [
     {
-      "category": "component-atlas-coverage",
-      "severity": "medium",
-      "symptom": "The harness benchmarked full pages but did not originally include a first-class component atlas showing how each style treats buttons, inputs, chips, cards, rails, and interactive states.",
-      "likely_root_cause": "Foundry review has focused on full-surface composition more than cross-style component-system comparison.",
-      "foundry_owner_area": "design-system guidance / ui-testing",
-      "recommended_fix": "Add a first-class style atlas workflow that compares component behavior, geometry, state language, and density across style families alongside full-page fixtures."
-    },
-    {
-      "category": "style-geometry-coverage",
-      "severity": "medium",
-      "symptom": "The current harness over-indexed on hard-edge, low-radius component geometry and underrepresented rounded systems such as Material-style surfaces.",
-      "likely_root_cause": "The style catalog favored editorial, enterprise, and brutalist directions before adding a tactile rounded-system benchmark.",
-      "foundry_owner_area": "design datasets / style-selector",
-      "recommended_fix": "Expand canonical style coverage to include rounded, tactile systems and make geometry variation a first-class style-fidelity check."
-    },
-    {
-      "category": "texture-discipline",
-      "severity": "medium",
-      "symptom": "Background texture patterns were reused too freely as a quick way to differentiate surfaces, which made several pages feel templated instead of style-specific.",
-      "likely_root_cause": "The runtime and harness do not yet distinguish between a deliberate surface texture and a generic grid-overlay fallback.",
-      "foundry_owner_area": "design audit / visual direction",
-      "recommended_fix": "Teach design-audit to flag repeated texture overlays and require surface texture to be justified by the chosen style family."
-    },
-    {
-      "category": "style-catalog-normalization",
-      "severity": "medium",
-      "symptom": "The harness now depends on a large external style reference intake, but Foundry still lacks a first-class normalized style catalog that the design runtime can query directly.",
-      "likely_root_cause": "Style research is being normalized inside the repo harness instead of inside a reusable runtime data layer shared by design workflows.",
-      "foundry_owner_area": "design datasets / runtime data",
-      "recommended_fix": "Promote Design Prompts-style normalization into a first-class Foundry dataset pipeline with explicit source metadata, mappings, and anti-pattern fields."
-    },
-    {
-      "category": "style-fidelity-scoring",
-      "severity": "medium",
-      "symptom": "The harness can describe style drift, but style fidelity still depends on manually assigned scorecard numbers rather than a runtime scoring dimension.",
-      "likely_root_cause": "Foundry QA primitives capture evidence and screenshots, but they do not yet score whether a surface remained faithful to a restrained, editorial, industrial, or other chosen style family.",
-      "foundry_owner_area": "design audit / scoring",
-      "recommended_fix": "Add style-fidelity checks to design-audit and the UI harness so each scenario can fail when it drifts back to generic product defaults."
-    },
-    {
       "category": "runtime-provenance",
       "severity": "medium",
-      "symptom": "The UI harness can now emit derived runtime traces, but Foundry's underlying design runtime still does not natively emit first-class provenance for style selection, exclusions, remediation steps, and dataset usage.",
-      "likely_root_cause": "Benchmark routing can derive trace artifacts from scenario contracts, but the design engine itself still lacks a runtime-native provenance layer.",
+      "symptom": "The UI harness now emits runtime-derived traces, but Foundry's underlying design runtime still does not natively emit first-class provenance for style selection, exclusions, remediation steps, and dataset usage outside the harness layer.",
+      "likely_root_cause": "Benchmark routing can derive trace artifacts from scenario contracts, but the design engine itself still lacks a runtime-native provenance layer shared across routes and skills.",
       "foundry_owner_area": "design-engine runtime",
       "recommended_fix": "Promote prompt-trace generation into the core design runtime and attach dataset ids, exclusions, remediation skills, and style reference ids automatically."
     },
     {
-      "category": "design-command-orchestration",
+      "category": "shared-remediation-runtime",
       "severity": "medium",
-      "symptom": "The UI harness can now derive remediation routing, but Foundry still lacks a native runtime that executes second-pass design remediation automatically after a weak first pass.",
-      "likely_root_cause": "Foundry has a command layer for design remediation and harness-level routing, but no shared runtime that can diagnose a surface and execute the right second-pass skills end-to-end.",
+      "symptom": "The UI harness now executes guided remediation passes, but Foundry still lacks a shared native runtime that exposes the same second-pass design remediation path outside the benchmark layer.",
+      "likely_root_cause": "Foundry now has a harness-runtime remediation executor, but the command layer has not yet been promoted into a shared route/runtime capability.",
       "foundry_owner_area": "design-engine runtime / workflow routing",
-      "recommended_fix": "Add a first-class design remediation runtime that chains audit, layout repair, typography repair, intensity adjustment, simplification, and polish with explicit execution traces."
+      "recommended_fix": "Promote the harness remediation executor into a shared design remediation runtime that chains audit, layout repair, typography repair, intensity adjustment, simplification, and polish with explicit execution traces."
     },
     {
       "category": "workflow-surface",
@@ -177,20 +177,36 @@
       "recommended_fix": "Promote the repo-local benchmark runner into a native ui-testing runtime or CLI surface that the shared route can execute directly."
     },
     {
-      "category": "responsive-scoring",
-      "severity": "medium",
-      "symptom": "Responsive quality is visible in screenshots but not automatically scored by existing Foundry QA primitives.",
-      "likely_root_cause": "Web QA captures evidence but lacks a built-in rubric for mobile re-composition quality.",
-      "foundry_owner_area": "web QA / scoring",
-      "recommended_fix": "Add viewport-aware scoring hooks and responsive heuristics to the harness workflow."
-    },
-    {
       "category": "layout-occupancy",
       "severity": "high",
       "symptom": "The first coach-loop desktop shell reserved a full right-side grid track with no mounted content, creating a large dead zone until the shell structure was manually corrected.",
       "likely_root_cause": "Foundry can validate CSS structure and visual style without checking whether major grid tracks are actually occupied by meaningful interface content.",
       "foundry_owner_area": "design remediation / layout audit",
       "recommended_fix": "Add layout-occupancy checks to design-audit and the UI harness so empty reserved rails or underfilled desktop columns fail review."
+    },
+    {
+      "category": "composition-balance",
+      "severity": "high",
+      "symptom": "The coach-loop fixture has elevated optical-collision risk because display scale and shell constraints are not sufficiently bounded.",
+      "likely_root_cause": "The benchmark still depends on manual review to catch headline mass and adjacent module conflicts.",
+      "foundry_owner_area": "design audit / layout review",
+      "recommended_fix": "Add optical-collision heuristics that penalize oversized display type without max-width or supporting seam control."
+    },
+    {
+      "category": "mobile-recomposition",
+      "severity": "medium",
+      "symptom": "The coach-loop fixture relies mostly on column collapse and still shows weak mobile re-staging signals.",
+      "likely_root_cause": "The current mobile pattern pass changes column count more reliably than it changes hierarchy or order.",
+      "foundry_owner_area": "web QA / responsive scoring",
+      "recommended_fix": "Require mobile reordering and staged hierarchy changes, not just single-column collapse."
+    },
+    {
+      "category": "texture-discipline",
+      "severity": "medium",
+      "symptom": "The coach-loop fixture uses enough layered gradients or texture treatment to risk feeling like a reusable harness default.",
+      "likely_root_cause": "Surface differentiation still leans on reusable texture moves instead of style-family-specific structure.",
+      "foundry_owner_area": "design audit / visual direction",
+      "recommended_fix": "Penalize repeated background texture patterns unless the style family explicitly calls for them."
     }
   ]
 }

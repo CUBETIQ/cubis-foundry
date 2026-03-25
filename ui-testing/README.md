@@ -12,6 +12,10 @@ This folder is the repo-local harness for evaluating whether Foundry can produce
 - `scripts/` - local helpers for serving fixtures and aggregating reports
 - `fixtures/style-atlas/` - cross-style component board for geometry, state, and Material coverage review
 
+Runtime-facing dataset output:
+
+- `workflows/design-datasets/style-reference-catalog.json` - normalized style-reference catalog promoted from harness research into a runtime-readable dataset
+
 ## Benchmark scenarios
 
 1. `wealth-ops` - finance operations webapp
@@ -38,6 +42,8 @@ The benchmark runtime now also emits:
 
 - `ui-testing/reports/benchmark-runtime.json`, which records route scope, refreshed scenarios, remediation requirements, and report targets
 - `ui-testing/reports/benchmark-execution.json`, which records the executed runner steps, route checks, and supplementary artifact validation
+- `ui-testing/reports/remediation-runtime.json`, which records the executed remediation pass across the in-scope scenarios
+- `ui-testing/reports/component-system-summary.{md,json}`, which isolate geometry, tactile-system, and atlas-lane findings
 
 ## Run locally
 
@@ -80,6 +86,8 @@ Every scenario should have:
 - a charter
 - `brief.md`
 - `prompt-trace.json`
+- `remediation-pass.md`
+- `remediation-execution.json`
 - `scorecard.json`
 
 Use this harness to expose Foundry workflow gaps, not to nitpick copy in sample apps.

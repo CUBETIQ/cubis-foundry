@@ -94,6 +94,7 @@
   ],
   "atlas_required": true,
   "report_targets": [
+    "ui-testing/reports/remediation-runtime.json",
     "ui-testing/reports/ui-testing-gap-report.md",
     "ui-testing/reports/ui-testing-gap-report.json",
     "ui-testing/reports/foundry-ui-benchmark-final-report.md",

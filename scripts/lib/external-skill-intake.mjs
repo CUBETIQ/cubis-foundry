@@ -83,6 +83,7 @@ function normalizeEntry(entry, index) {
     status,
     canonical_skill_id: canonicalSkillId,
     source_path: sourcePath,
+    source_exists: true,
     license,
     reason,
   };
@@ -111,11 +112,7 @@ export async function readAnthropicSkillIntakeManifest() {
     seen.add(key);
 
     const absoluteSourcePath = path.join(ROOT, entry.source_path);
-    if (!(await pathExists(absoluteSourcePath))) {
-      throw new Error(
-        `Anthropic intake entry '${entry.external_id}' points to a missing source file: ${entry.source_path}`,
-      );
-    }
+    entry.source_exists = await pathExists(absoluteSourcePath);
   }
 
   return {
@@ -249,9 +246,9 @@ export function buildAnthropicSkillIntakeReport(input) {
       status: entry.status,
       canonical_skill_id: canonicalId,
       source_path: entry.source_path,
+      source_exists: entry.source_exists !== false,
       license: entry.license,
       reason: entry.reason,
-      source_exists: true,
       canonical_skill_exists: canonicalExists,
       action:
         entry.status === "reject" || entry.status === "legal-review"

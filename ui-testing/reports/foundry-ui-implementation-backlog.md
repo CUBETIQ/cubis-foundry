@@ -1,6 +1,6 @@
 # Foundry UI Implementation Backlog
 
-Date: March 24, 2026
+Date: March 25, 2026
 
 This backlog converts the current UI benchmark findings into execution-ready work for Foundry.
 
@@ -34,9 +34,9 @@ This backlog converts the current UI benchmark findings into execution-ready wor
 ### `P0` Add a guided design remediation workflow
 
 - Owner area: design-engine runtime / workflow routing
-- Status: derived routing complete, native execution pending
+- Status: harness-runtime execution complete, shared runtime adoption pending
 - Problem:
-  - `design-audit`, `design-arrange`, `design-typeset`, `design-bolder`, `design-distill`, and `design-polish` still require manual routing
+  - `design-audit`, `design-arrange`, `design-typeset`, `design-bolder`, `design-distill`, and `design-polish` no longer require manual routing inside the harness, but shared runtime ownership is still missing
 - Deliverable:
   - a remediation runtime that starts from `design-audit` and routes to the right second-pass skills automatically
 - Acceptance criteria:
@@ -47,8 +47,9 @@ This backlog converts the current UI benchmark findings into execution-ready wor
 ### `P1` Add benchmark-lane orchestration
 
 - Owner area: workflow routing / comparison lanes
+- Status: harness-runtime orchestration complete
 - Problem:
-  - `local-authored`, `stitch`, and `playwright-interactive` lanes exist conceptually but are not orchestrated uniformly
+  - `local-authored`, `stitch`, and `playwright-interactive` lanes now exist in scorecards and benchmark runtime artifacts, but shared runtime ownership is still absent
 - Deliverable:
   - lane-aware benchmark execution and reporting
 - Acceptance criteria:
@@ -78,8 +79,9 @@ This backlog converts the current UI benchmark findings into execution-ready wor
 ### `P1` Add atlas-aware consolidated reporting
 
 - Owner area: reporting / ui-testing
+- Status: harness-runtime reporting complete
 - Problem:
-  - component-system review is now required, but many Foundry report surfaces still think only in terms of page fixtures
+  - component-system review is now required, and the harness emits it correctly, but broader Foundry report surfaces still assume page-fixture-first reporting
 - Deliverable:
   - reporting schema that treats the atlas as a first-class harness artifact
 - Acceptance criteria:
@@ -91,8 +93,9 @@ This backlog converts the current UI benchmark findings into execution-ready wor
 ### `P0` Add style-fidelity scoring to `design-audit`
 
 - Owner area: design audit / scoring
+- Status: harness-runtime scoring complete, shared `design-audit` adoption pending
 - Problem:
-  - style fidelity is currently judged manually
+  - style fidelity is no longer manual in the harness, but the scoring logic still lives in benchmark analysis rather than shared `design-audit`
 - Deliverable:
   - explicit style-family-aware scoring inside `design-audit`
 - Acceptance criteria:
@@ -102,8 +105,9 @@ This backlog converts the current UI benchmark findings into execution-ready wor
 ### `P0` Add layout-occupancy and optical-collision checks
 
 - Owner area: design audit / layout review
+- Status: harness-runtime scoring complete, shared `design-audit` adoption pending
 - Problem:
-  - dead desktop tracks and visual collisions still rely on manual browser review
+  - dead desktop tracks and visual collisions no longer rely on manual browser review in the harness, but shared audit primitives still do not expose these checks
 - Deliverable:
   - formal audit checks for:
     - empty page-level rails or columns
@@ -115,8 +119,9 @@ This backlog converts the current UI benchmark findings into execution-ready wor
 ### `P1` Add mobile-recomposition scoring
 
 - Owner area: web QA / responsive scoring
+- Status: harness-runtime scoring complete, shared QA adoption pending
 - Problem:
-  - the harness captures mobile screenshots but cannot tell real re-staging from desktop stacking
+  - the harness can now tell real re-staging from desktop stacking heuristically, but shared QA primitives still do not expose this scoring
 - Deliverable:
   - viewport-aware responsive scoring hooks
 - Acceptance criteria:
@@ -126,8 +131,9 @@ This backlog converts the current UI benchmark findings into execution-ready wor
 ### `P1` Add texture-discipline and geometry-coverage checks
 
 - Owner area: design audit / visual direction
+- Status: harness-runtime scoring complete
 - Problem:
-  - repeated grid overlays and repeated hard-edge geometry became hidden defaults
+  - repeated grid overlays and repeated hard-edge geometry are now benchmarked, but the shared design runtime has not adopted those checks yet
 - Deliverable:
   - checks for:
     - unjustified repeated background textures
@@ -141,8 +147,9 @@ This backlog converts the current UI benchmark findings into execution-ready wor
 ### `P0` Promote external style normalization into runtime datasets
 
 - Owner area: design datasets / runtime data
+- Status: harness-runtime dataset complete
 - Problem:
-  - Design Prompts normalization still lives inside the harness layer
+  - Design Prompts normalization now reaches a runtime-readable dataset, but shared design workflows have not adopted it yet
 - Deliverable:
   - a runtime-native style catalog pipeline with source metadata, anti-patterns, and Foundry mappings
 - Acceptance criteria:
@@ -152,8 +159,9 @@ This backlog converts the current UI benchmark findings into execution-ready wor
 ### `P1` Expand canonical rounded-system coverage
 
 - Owner area: design datasets / style-selector
+- Status: dataset expansion complete
 - Problem:
-  - rounded and tactile systems were underrepresented until `material-expressive` and the atlas were added
+  - rounded and tactile systems are now represented in datasets and atlas coverage, but selector/runtime usage needs broader adoption
 - Deliverable:
   - canonical rounded-system support for:
     - Material-like surfaces
@@ -180,8 +188,9 @@ This backlog converts the current UI benchmark findings into execution-ready wor
 ### `P0` Make `style-atlas` a first-class benchmark artifact in runtime
 
 - Owner area: design-system guidance / ui-testing
+- Status: harness-runtime artifact handling complete
 - Problem:
-  - the atlas is documented and live, but runtime support is still implicit
+  - the atlas is now documented, live, and enforced by the harness runtime, but shared runtime support is still implicit outside the benchmark executor
 - Deliverable:
   - benchmark runtime knows it must check:
     - atlas route
@@ -194,8 +203,9 @@ This backlog converts the current UI benchmark findings into execution-ready wor
 ### `P1` Add explicit component-system review output
 
 - Owner area: ui-testing / QA
+- Status: harness-runtime reporting complete
 - Problem:
-  - page mocks and atlas review still share the same general reporting voice
+  - page mocks and atlas review are now separated in harness output, but broader Foundry outputs do not yet consume the component summary directly
 - Deliverable:
   - a separate component-system summary in benchmark output
 - Acceptance criteria:
@@ -205,14 +215,14 @@ This backlog converts the current UI benchmark findings into execution-ready wor
 ## 6. Recommended Delivery Sequence
 
 1. `P0` Ship the first-class `ui-testing` workflow.
-2. `P0` Ship guided remediation routing from `design-audit`.
+2. `P0` Promote harness remediation execution from `design-audit` into shared runtime support.
 3. `P0` Emit runtime provenance and dataset trace data.
-4. `P0` Add style-fidelity, layout-occupancy, and optical-collision checks.
-5. `P0` Make the atlas a runtime-required benchmark artifact.
-6. `P0` Promote external style normalization into runtime datasets.
-7. `P1` Add mobile-recomposition, geometry-coverage, and texture-discipline scoring.
-8. `P1` Expand rounded-system coverage and benchmark-lane orchestration.
-9. `P1` Add dedicated component-system review outputs.
+4. `P0` Promote harness scoring into shared `design-audit` and QA primitives.
+5. `P0` Promote the atlas and benchmark runner from harness scope into shared runtime support.
+6. `P0` Adopt the runtime style-reference catalog across shared design workflows.
+7. `P1` Harden shared mobile-recomposition, geometry-coverage, and texture-discipline scoring.
+8. `P1` Broaden rounded-system usage and benchmark-lane execution ownership across the shared runtime.
+9. `P1` Feed dedicated component-system review outputs into broader Foundry reporting surfaces.
 10. `P2` Expand atlas-oriented motifs and layouts once the core runtime is stable.
 
 ## Canonical References
