@@ -42,47 +42,47 @@ generated/                   # Generated outputs (gitignored)
 
 ### Task 1: Create compiler types and pipeline scaffolding
 
-- [ ] Create `src/cli/compiler/types.ts` — define `CompilationContext`, `CompiledAssets`, `Asset`, `RecompileReason`
-- [ ] Create `src/cli/compiler/pipeline.ts` — orchestrator that runs 5 stages in sequence
-- [ ] Create `src/cli/compiler/stages/load.ts` — load catalog + selected adapter
-- [ ] Write failing test: `compiler.test.ts` — compile() throws "not implemented"
-- [ ] Run test: verify it fails with expected error
-- [ ] Implement minimal pipeline stub that returns empty CompiledAssets
-- [ ] Run tests: verify pipeline stub works
-- [ ] Commit
+- [x] Create `src/cli/compiler/types.ts` — define `CompilationContext`, `CompiledAssets`, `Asset`, `RecompileReason`
+- [x] Create `src/cli/compiler/pipeline.ts` — orchestrator that runs 5 stages in sequence
+- [x] Create `src/cli/compiler/stages/load.ts` — load catalog + selected adapter
+- [x] Write failing test: `compiler.test.ts` — compile() throws "not implemented"
+- [x] Run test: verify it fails with expected error
+- [x] Implement minimal pipeline stub that returns empty CompiledAssets
+- [x] Run tests: verify pipeline stub works
+- [x] Commit
 
 ### Task 2: Implement Transform stage
 
-- [ ] Create `src/cli/compiler/templates/renderer.ts` — minimal Jinja2-like renderer with `{{ }}` interpolation, `{% for %}`, `{% if %}`
-- [ ] Create `src/cli/compiler/templates/helpers.ts` — built-ins: `detect_packages`, `detect_patterns`, `npm_scripts`
+- [x] Create `src/cli/compiler/templates/renderer.ts` — minimal Jinja2-like renderer with `{{ }}` interpolation, `{% for %}`, `{% if %}`
+- [x] Create `src/cli/compiler/templates/helpers.ts` — built-ins: `detect_packages`, `detect_patterns`, `npm_scripts`
 - [ ] Implement `transform.ts` — for each module with a capability, generate outputs using adapter's capabilityProjection rules
-- [ ] Write test: capability with template renders correctly
-- [ ] Run test: verify rendering
-- [ ] Commit
+- [x] Write test: capability with template renders correctly
+- [x] Run test: verify rendering
+- [x] Commit
 
 ### Task 3: Implement Emit stage
 
-- [ ] Implement `src/cli/compiler/stages/emit.ts` — write CompiledAssets to `generated/runtime-assets/<platform>/`
-- [ ] Implement checksum calculation for each asset
-- [ ] Write test: emit writes files and calculates checksums
-- [ ] Run test: verify files written
-- [ ] Commit
+- [x] Implement `src/cli/compiler/stages/emit.ts` — write CompiledAssets to `generated/runtime-assets/<platform>/`
+- [x] Implement checksum calculation for each asset
+- [x] Write test: emit writes files and calculates checksums
+- [x] Run test: verify files written
+- [x] Commit
 
 ### Task 4: Implement Resolve stage (dependency ordering)
 
-- [ ] Implement `src/cli/compiler/stages/resolve.ts` — topologically sort modules by dependencies
-- [ ] Detect circular dependencies and error
-- [ ] Write test: resolves correct order, detects cycles
-- [ ] Run tests: verify
-- [ ] Commit
+- [x] Implement `src/cli/compiler/stages/resolve.ts` — topologically sort modules by dependencies
+- [x] Detect circular dependencies and error
+- [x] Write test: resolves correct order, detects cycles
+- [x] Run tests: verify
+- [x] Commit
 
 ### Task 5: Wire compiler into CLI
 
-- [ ] Create `scripts/build-catalog.mjs` — runs full compilation for all platforms
-- [ ] Add `cbx catalog build` command to CLI core
-- [ ] Add `cbx catalog build --platform <id>` for single platform
-- [ ] Run `cbx catalog build` and verify `generated/runtime-assets/` is populated
-- [ ] Commit
+- [x] Create `scripts/build-catalog.mjs` — runs full compilation for all platforms
+- [x] Add `cbx catalog build` command to CLI core
+- [x] Add `cbx catalog build --platform <id>` for single platform
+- [x] Run `cbx catalog build` and verify `generated/runtime-assets/` is populated
+- [x] Commit
 
 ---
 
