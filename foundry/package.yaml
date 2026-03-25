@@ -1,0 +1,70 @@
+schemaVersion: 1
+version: 1.0.0
+name: foundry
+description: Unified AI agent environment installer
+
+supportedRuntimes:
+  - id: codex
+    label: OpenAI Codex
+    since: 1.0.0
+  - id: claude
+    label: Anthropic Claude Code
+    since: 1.0.0
+  - id: copilot
+    label: GitHub Copilot
+    since: 1.0.0
+  - id: gemini
+    label: Google Gemini CLI
+    since: 1.0.0
+  - id: antigravity
+    label: Antigravity (Gemini)
+    since: 1.0.0
+
+installProfiles:
+  - id: core
+    label: Core
+    description: Minimal install for quick setup
+    modules: [rules-core, agents-core, contexts-core]
+  - id: developer
+    label: Developer
+    description: Full developer workflow
+    modules: [rules-core, agents-core, workflows-core, skills-core, contexts-core, mcp-core]
+  - id: security
+    label: Security
+    description: Security-focused install
+    modules: [rules-core, rules-security, agents-core, contexts-core]
+  - id: research
+    label: Research
+    description: Research and prototyping
+    modules: [rules-core, agents-core, research-core]
+
+installComponents:
+  - id: rules-core
+    label: Core Rules
+    description: Steering rules for all platforms
+  - id: rules-security
+    label: Security Rules
+    description: Additional security-focused steering
+  - id: agents-core
+    label: Core Agents
+    description: Shared agent workflows
+  - id: workflows-core
+    label: Workflows
+    description: Common workflow definitions
+  - id: skills-core
+    label: Skills
+    description: Skill catalog
+  - id: contexts-core
+    label: Context Docs
+    description: AI-context documents
+  - id: mcp-core
+    label: MCP Servers
+    description: MCP server configurations
+  - id: research-core
+    label: Research Capabilities
+    description: Research-oriented skills and workflows
+
+buildOutputs:
+  runtimeAssets: generated/runtime-assets
+  cliDist: dist/cli
+  docs: docs/generated
