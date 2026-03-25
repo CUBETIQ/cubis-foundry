@@ -22,3 +22,4 @@ TECH_SCANNER_TEST_RESULTS.md
 dist/
 mcp/coverage/
 !workflows/workflows/agent-environment-setup/platforms/codex/rules/AGENTS.md
+generated/
