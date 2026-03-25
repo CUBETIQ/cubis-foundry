@@ -33,7 +33,7 @@ async function compileForPlatform(
   const transformOutput = await transformStage(ctx, resolveOutput, { repoRoot: root });
 
   // Stage 5: Emit
-  const emitOutput = await emitStage(ctx, transformOutput);
+  const emitOutput = await emitStage(ctx, transformOutput, { repoRoot: root });
 
   const durationMs = Math.round(performance.now() - t0);
 

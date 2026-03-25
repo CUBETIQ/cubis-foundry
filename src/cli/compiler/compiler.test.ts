@@ -1,10 +1,11 @@
-import { mkdtempSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { describe, expect, it } from "vitest";
 import { compile, compileModule, needsRecompile } from "./index.js";
 import { transformStage } from "./stages/transform.js";
-import type { CompilationContext, ResolveStageOutput } from "./types.js";
+import { emitStage } from "./stages/emit.js";
+import type { CompilationContext, TransformStageOutput } from "./types.js";
 import type { Adapter, Catalog, Module, ModuleOutput } from "../catalog/types.js";
 
 const REPO_ROOT = resolve(import.meta.dirname, "../../..");
@@ -238,6 +239,108 @@ describe("compiler", () => {
       const result = await transformStage(ctx, { orderedModules: [] });
 
       expect(result.assets).toEqual([]);
+    });
+  });
+
+  describe("emitStage()", () => {
+    /**
+     * Creates a minimal mock compilation context for the emit stage.
+     */
+    function makeContext(platform: string): CompilationContext {
+      return {
+        catalog: {
+          package: {
+            schemaVersion: 1,
+            version: "0.0.0",
+            name: "test",
+            description: "",
+            supportedRuntimes: [],
+            installProfiles: [],
+            installComponents: [],
+            buildOutputs: { runtimeAssets: "", cliDist: "", docs: "" },
+          },
+          modules: new Map(),
+          adapters: new Map([
+            [
+              platform,
+              {
+                platform: platform as CompilationContext["platform"],
+                label: "Test",
+                rules: { mergeStrategy: "layered", userOverride: "honor", conflictResolution: "user-first" },
+                skills: { capabilityProjection: [] },
+                workflows: { projection: [] },
+                specialists: { projection: [] },
+                contextDocs: {
+                  enabled: true,
+                  outputDir: "docs/foundation",
+                  managedSections: true,
+                  markers: { prefix: "<!-- cbx:", suffix: "-->" },
+                  templates: [],
+                },
+              },
+            ],
+          ]),
+          schemaVersion: 1,
+        },
+        platform: platform as CompilationContext["platform"],
+        adapter: {} as CompilationContext["adapter"],
+        modules: [],
+      };
+    }
+
+    it("writes assets to generated/runtime-assets/<platform>/", async () => {
+      const tmp = mkdtempSync(join(tmpdir(), "foundry-emit-test-"));
+
+      const ctx = makeContext("claude");
+
+      const transformed: TransformStageOutput = {
+        assets: [
+          { path: "docs/foundation/TECH.md", content: "# Hello\n", checksum: "abc123" },
+          { path: "docs/foundation/API.md", content: "# API\n", checksum: "def456" },
+        ],
+      };
+
+      const result = await emitStage(ctx, transformed, { repoRoot: tmp });
+
+      // outputDir should be set correctly.
+      expect(result.outputDir).toBe(join(tmp, "generated", "runtime-assets", "claude"));
+
+      // Both files should be written with the correct content.
+      const techContent = readFileSync(join(tmp, "generated", "runtime-assets", "claude", "docs/foundation", "TECH.md"), "utf8");
+      expect(techContent).toBe("# Hello\n");
+
+      const apiContent = readFileSync(join(tmp, "generated", "runtime-assets", "claude", "docs/foundation", "API.md"), "utf8");
+      expect(apiContent).toBe("# API\n");
+    });
+
+    it("returns all assets from transformed output", async () => {
+      const tmp = mkdtempSync(join(tmpdir(), "foundry-emit-test-"));
+      const ctx = makeContext("claude");
+
+      const assets = [
+        { path: "a.txt", content: "content-a", checksum: "aaa" },
+        { path: "b.txt", content: "content-b", checksum: "bbb" },
+        { path: "c.txt", content: "content-c", checksum: "ccc" },
+      ];
+
+      const transformed: TransformStageOutput = { assets };
+      const result = await emitStage(ctx, transformed, { repoRoot: tmp });
+
+      expect(result.assets).toHaveLength(3);
+      expect(result.assets[0]!.path).toBe("a.txt");
+      expect(result.assets[1]!.path).toBe("b.txt");
+      expect(result.assets[2]!.path).toBe("c.txt");
+    });
+
+    it("handles empty assets array gracefully", async () => {
+      const tmp = mkdtempSync(join(tmpdir(), "foundry-emit-test-"));
+      const ctx = makeContext("claude");
+
+      const transformed: TransformStageOutput = { assets: [] };
+      const result = await emitStage(ctx, transformed, { repoRoot: tmp });
+
+      expect(result.assets).toEqual([]);
+      expect(result.outputDir).toBe(join(tmp, "generated", "runtime-assets", "claude"));
     });
   });
 });
