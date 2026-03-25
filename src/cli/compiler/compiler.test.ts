@@ -5,7 +5,8 @@ import { describe, expect, it } from "vitest";
 import { compile, compileModule, needsRecompile } from "./index.js";
 import { transformStage } from "./stages/transform.js";
 import { emitStage } from "./stages/emit.js";
-import type { CompilationContext, TransformStageOutput } from "./types.js";
+import { resolveStage } from "./stages/resolve.js";
+import type { CompilationContext, ResolveStageOutput, TransformStageOutput } from "./types.js";
 import type { Adapter, Catalog, Module, ModuleOutput } from "../catalog/types.js";
 
 const REPO_ROOT = resolve(import.meta.dirname, "../../..");
@@ -341,6 +342,142 @@ describe("compiler", () => {
 
       expect(result.assets).toEqual([]);
       expect(result.outputDir).toBe(join(tmp, "generated", "runtime-assets", "claude"));
+    });
+  });
+
+  /**
+   * Helper — minimal stub catalog so resolveStage does not need a real catalog file.
+   */
+  function stubCatalog(): CompilationContext["catalog"] {
+    return {
+      package: {
+        schemaVersion: 1,
+        version: "0.0.0",
+        name: "test",
+        description: "",
+        supportedRuntimes: [],
+        installProfiles: [],
+        installComponents: [],
+        buildOutputs: { runtimeAssets: "", cliDist: "", docs: "" },
+      },
+      modules: new Map(),
+      adapters: new Map(),
+      schemaVersion: 1,
+    };
+  }
+
+  /**
+   * Helper — makes a lightweight Module with only the fields resolveStage reads.
+   */
+  function makeModule(id: string, dependencies: string[] = []): Module {
+    return {
+      id,
+      kind: "capability",
+      label: id,
+      description: "",
+      dependencies,
+      profiles: [],
+      stability: "stable",
+    };
+  }
+
+  describe("resolveStage()", () => {
+    it("happy path — no dependencies: modules come out in input order", async () => {
+      const modules = [makeModule("a"), makeModule("b"), makeModule("c")];
+      const ctx: CompilationContext = { catalog: stubCatalog(), platform: "claude", adapter: {} as Adapter, modules };
+      const result = await resolveStage(ctx);
+      expect(result.orderedModules.map((m) => m.id)).toEqual(["a", "b", "c"]);
+    });
+
+    it("happy path — single module with no deps", async () => {
+      const ctx: CompilationContext = { catalog: stubCatalog(), platform: "claude", adapter: {} as Adapter, modules: [makeModule("x")] };
+      const result = await resolveStage(ctx);
+      expect(result.orderedModules).toHaveLength(1);
+      expect(result.orderedModules[0]!.id).toBe("x");
+    });
+
+    it("happy path — empty modules array", async () => {
+      const ctx: CompilationContext = { catalog: stubCatalog(), platform: "claude", adapter: {} as Adapter, modules: [] };
+      const result = await resolveStage(ctx);
+      expect(result.orderedModules).toEqual([]);
+    });
+
+    it("happy path — simple chain A→B→C sorts to C, B, A", async () => {
+      // C has no deps; B depends on C; A depends on B.
+      const modules = [makeModule("a", ["b"]), makeModule("b", ["c"]), makeModule("c", [])];
+      const ctx: CompilationContext = { catalog: stubCatalog(), platform: "claude", adapter: {} as Adapter, modules };
+      const result = await resolveStage(ctx);
+      const ids = result.orderedModules.map((m) => m.id);
+      // C must come before B; B must come before A.
+      expect(ids.indexOf("c")).toBeLessThan(ids.indexOf("b"));
+      expect(ids.indexOf("b")).toBeLessThan(ids.indexOf("a"));
+    });
+
+    it("happy path — diamond A→{B,C}, B→D, C→D sorts D first, then B+C, then A", async () => {
+      // D has no deps; B depends on D; C depends on D; A depends on B and C.
+      const modules = [
+        makeModule("a", ["b", "c"]),
+        makeModule("b", ["d"]),
+        makeModule("c", ["d"]),
+        makeModule("d", []),
+      ];
+      const ctx: CompilationContext = { catalog: stubCatalog(), platform: "claude", adapter: {} as Adapter, modules };
+      const result = await resolveStage(ctx);
+      const ids = result.orderedModules.map((m) => m.id);
+      // D must come before B and C.
+      expect(ids.indexOf("d")).toBeLessThan(ids.indexOf("b"));
+      expect(ids.indexOf("d")).toBeLessThan(ids.indexOf("c"));
+      // B and C must come before A.
+      expect(ids.indexOf("b")).toBeLessThan(ids.indexOf("a"));
+      expect(ids.indexOf("c")).toBeLessThan(ids.indexOf("a"));
+    });
+
+    it("happy path — multiple independent branches resolve correctly", async () => {
+      // Two separate chains: A→B and C→D (no cross-links).
+      const modules = [
+        makeModule("a", ["b"]),
+        makeModule("b", []),
+        makeModule("c", ["d"]),
+        makeModule("d", []),
+      ];
+      const ctx: CompilationContext = { catalog: stubCatalog(), platform: "claude", adapter: {} as Adapter, modules };
+      const result = await resolveStage(ctx);
+      const ids = result.orderedModules.map((m) => m.id);
+      // b before a; d before c.
+      expect(ids.indexOf("b")).toBeLessThan(ids.indexOf("a"));
+      expect(ids.indexOf("d")).toBeLessThan(ids.indexOf("c"));
+    });
+
+    it("cycle detection — A→B→C→A throws a descriptive error", async () => {
+      const modules = [
+        makeModule("a", ["b"]),
+        makeModule("b", ["c"]),
+        makeModule("c", ["a"]),
+      ];
+      const ctx: CompilationContext = { catalog: stubCatalog(), platform: "claude", adapter: {} as Adapter, modules };
+      await expect(resolveStage(ctx)).rejects.toThrow(/Circular dependency detected/i);
+    });
+
+    it("cycle detection — self-referential module throws", async () => {
+      const modules = [makeModule("x", ["x"])];
+      const ctx: CompilationContext = { catalog: stubCatalog(), platform: "claude", adapter: {} as Adapter, modules };
+      await expect(resolveStage(ctx)).rejects.toThrow(/Circular dependency detected/i);
+    });
+
+    it("cycle detection — error message names at least one module in the cycle", async () => {
+      const modules = [
+        makeModule("m1", ["m2"]),
+        makeModule("m2", ["m3"]),
+        makeModule("m3", ["m1"]),
+      ];
+      const ctx: CompilationContext = { catalog: stubCatalog(), platform: "claude", adapter: {} as Adapter, modules };
+      await expect(resolveStage(ctx)).rejects.toThrow(/m[123]/);
+    });
+
+    it("throws when a module declares an unknown dependency", async () => {
+      const modules = [makeModule("a", ["nonexistent"])];
+      const ctx: CompilationContext = { catalog: stubCatalog(), platform: "claude", adapter: {} as Adapter, modules };
+      await expect(resolveStage(ctx)).rejects.toThrow(/unknown dependency/i);
     });
   });
 });
