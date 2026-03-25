@@ -1,0 +1,18 @@
+id: code-review
+kind: skill
+label: Code Review
+description: "Use when conducting code reviews, building review checklists, calibrating review depth, providing structured feedback, or establishing team review practices. Covers review methodology, feedback patterns, automated checks, and batch review strategies."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+    - quality
+  outputs:
+    - type: skill
+      path: foundry/modules/code-review/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

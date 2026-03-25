@@ -19,7 +19,22 @@ skills:
           - filter: code-blocks
           - map: frontmatter
           - merge: capability
-  capabilityProjection: []
+  capabilityProjection:
+    - capability: api-design
+      output: foundry/modules/api-design/SKILL.md
+      template: foundry/modules/api-design/templates/claude.j2
+    - capability: fastapi
+      output: foundry/modules/fastapi/SKILL.md
+      template: foundry/modules/fastapi/templates/claude.j2
+    - capability: typescript-best-practices
+      output: foundry/modules/typescript-best-practices/SKILL.md
+      template: foundry/modules/typescript-best-practices/templates/claude.j2
+    - capability: frontend-design
+      output: foundry/modules/frontend-design/SKILL.md
+      template: foundry/modules/frontend-design/templates/claude.j2
+    - capability: code-review
+      output: foundry/modules/code-review/SKILL.md
+      template: foundry/modules/code-review/templates/claude.j2
 
 workflows:
   projection: []
@@ -55,3 +70,23 @@ contextDocs:
       source: foundry/modules/contexts-core/templates/product.md.j2
       output: docs/foundation/PRODUCT.md
       triggers: [init, sync]
+    - id: api-design-skill
+      source: foundry/modules/api-design/templates/claude.j2
+      output: foundry/modules/api-design/SKILL.md
+      triggers: [build]
+    - id: fastapi-skill
+      source: foundry/modules/fastapi/templates/claude.j2
+      output: foundry/modules/fastapi/SKILL.md
+      triggers: [build]
+    - id: typescript-best-practices-skill
+      source: foundry/modules/typescript-best-practices/templates/claude.j2
+      output: foundry/modules/typescript-best-practices/SKILL.md
+      triggers: [build]
+    - id: frontend-design-skill
+      source: foundry/modules/frontend-design/templates/claude.j2
+      output: foundry/modules/frontend-design/SKILL.md
+      triggers: [build]
+    - id: code-review-skill
+      source: foundry/modules/code-review/templates/claude.j2
+      output: foundry/modules/code-review/SKILL.md
+      triggers: [build]

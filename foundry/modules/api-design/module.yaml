@@ -1,0 +1,18 @@
+id: api-design
+kind: skill
+label: API Design
+description: "API design best practices covering REST, GraphQL, gRPC patterns, versioning strategies, pagination, error contracts, and OpenAPI specifications for robust service interfaces."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - api-design
+    - web
+  outputs:
+    - type: skill
+      path: foundry/modules/api-design/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

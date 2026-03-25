@@ -1,0 +1,19 @@
+id: frontend-design
+kind: skill
+label: Frontend Design
+description: "Create distinctive, production-grade frontend interfaces with strong visual direction. Use for design systems, components, pages, dashboards, landing pages, accessibility, and polished UI work that should avoid generic AI aesthetics."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - frontend
+    - design
+    - web
+  outputs:
+    - type: skill
+      path: foundry/modules/frontend-design/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]
