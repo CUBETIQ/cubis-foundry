@@ -30,7 +30,7 @@ async function compileForPlatform(
   const resolveOutput = await resolveStage(ctx);
 
   // Stage 4: Transform
-  const transformOutput = await transformStage(ctx, resolveOutput);
+  const transformOutput = await transformStage(ctx, resolveOutput, { repoRoot: root });
 
   // Stage 5: Emit
   const emitOutput = await emitStage(ctx, transformOutput);
