@@ -74,7 +74,7 @@ src/cli/core.ts                         # Import and expose catalog subsystem (f
 
 ### Task 1: Create foundry/ directory structure and package.yaml
 
-- [ ] **Step 1: Create foundry/package.yaml**
+- [x] **Step 1: Create foundry/package.yaml**
 
 Create: `foundry/package.yaml`
 
@@ -151,7 +151,7 @@ buildOutputs:
   docs: docs/generated
 ```
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git add foundry/package.yaml
@@ -164,7 +164,7 @@ Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
 
 ### Task 2: Create JSON Schemas for foundry/ YAML files
 
-- [ ] **Step 1: Create foundry/schemas/package.schema.json**
+- [x] **Step 1: Create foundry/schemas/package.schema.json**
 
 Create: `foundry/schemas/package.schema.json`
 
@@ -230,7 +230,7 @@ Create: `foundry/schemas/package.schema.json`
 }
 ```
 
-- [ ] **Step 2: Create foundry/schemas/module.schema.json**
+- [x] **Step 2: Create foundry/schemas/module.schema.json**
 
 Create: `foundry/schemas/module.schema.json`
 
@@ -304,7 +304,7 @@ Create: `foundry/schemas/module.schema.json`
 }
 ```
 
-- [ ] **Step 3: Create foundry/schemas/adapter.schema.json**
+- [x] **Step 3: Create foundry/schemas/adapter.schema.json**
 
 Create: `foundry/schemas/adapter.schema.json`
 
@@ -420,7 +420,7 @@ Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
 
 ### Task 3: Create initial platform adapters
 
-- [ ] **Step 1: Create foundry/adapters/claude.yaml**
+- [x] **Step 1: Create foundry/adapters/claude.yaml**
 
 Create: `foundry/adapters/claude.yaml`
 
@@ -484,11 +484,11 @@ contextDocs:
       triggers: [init, sync]
 ```
 
-- [ ] **Step 2: Create foundry/adapters/codex.yaml, copilot.yaml, gemini.yaml, antigravity.yaml**
+- [x] **Step 2: Create remaining adapters**
 
 Create the remaining four adapters using the same structure as `claude.yaml`, replacing `platform` and `label` appropriately.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add foundry/adapters/
@@ -501,7 +501,7 @@ Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
 
 ### Task 4: Create placeholder module directories
 
-- [ ] **Step 1: Create foundry/modules/rules-core/module.yaml**
+- [x] **Step 1: Create foundry/modules/rules-core/module.yaml**
 
 Create: `foundry/modules/rules-core/module.yaml`
 
@@ -518,7 +518,7 @@ profiles:
   - research
 ```
 
-- [ ] **Step 2: Create foundry/modules/agents-core/module.yaml**
+- [x] **Step 2: Create foundry/modules/agents-core/module.yaml**
 
 Create: `foundry/modules/agents-core/module.yaml`
 
@@ -533,7 +533,7 @@ profiles:
   - developer
 ```
 
-- [ ] **Step 3: Create foundry/modules/contexts-core/module.yaml and templates**
+- [x] **Step 3: Create foundry/modules/contexts-core/module.yaml and templates**
 
 Create: `foundry/modules/contexts-core/module.yaml`
 
@@ -601,7 +601,7 @@ Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
 
 ### Task 5: Build the catalog subsystem (src/cli/catalog/)
 
-- [ ] **Step 1: Create src/cli/catalog/types.ts**
+- [x] **Step 1: Create src/cli/catalog/types.ts**
 
 Create: `src/cli/catalog/types.ts`
 
@@ -754,7 +754,7 @@ export interface Catalog {
 }
 ```
 
-- [ ] **Step 2: Create src/cli/catalog/schemas.ts**
+- [x] **Step 2: Create src/cli/catalog/schemas.ts**
 
 Create: `src/cli/catalog/schemas.ts`
 Derives Zod schemas from the JSON Schemas in `foundry/schemas/`. Uses `z.object`, `z.string`, `z.array`, etc. matching the JSON Schema structures.
@@ -882,7 +882,7 @@ export const AdapterSchema = z.object({
 });
 ```
 
-- [ ] **Step 3: Create src/cli/catalog/loaders/package.ts**
+- [x] **Step 3: Create src/cli/catalog/loaders/package.ts**
 
 Create: `src/cli/catalog/loaders/package.ts`
 
@@ -903,7 +903,7 @@ export async function loadPackage(root: string): Promise<PackageManifest> {
 
 (Install `yaml` package if not already present: `import { parse as parseYaml } from 'yaml'` — check package.json first.)
 
-- [ ] **Step 4: Create src/cli/catalog/loaders/module.ts**
+- [x] **Step 4: Create src/cli/catalog/loaders/module.ts**
 
 Create: `src/cli/catalog/loaders/module.ts`
 
@@ -943,7 +943,7 @@ export async function loadAllModules(root: string): Promise<Map<string, Module>>
 }
 ```
 
-- [ ] **Step 5: Create src/cli/catalog/loaders/adapter.ts**
+- [x] **Step 5: Create src/cli/catalog/loaders/adapter.ts**
 
 Create: `src/cli/catalog/loaders/adapter.ts`
 
@@ -981,7 +981,7 @@ export async function loadAllAdapters(root: string): Promise<Map<string, Adapter
 }
 ```
 
-- [ ] **Step 6: Create src/cli/catalog/loaders/index.ts**
+- [x] **Step 6: Create src/cli/catalog/loaders/index.ts**
 
 Create: `src/cli/catalog/loaders/index.ts`
 
@@ -991,7 +991,7 @@ export { loadModule, loadAllModules } from './module.js';
 export { loadAdapter, loadAllAdapters } from './adapter.js';
 ```
 
-- [ ] **Step 7: Create src/cli/catalog/validators/errors.ts**
+- [x] **Step 7: Create src/cli/catalog/validators/errors.ts**
 
 Create: `src/cli/catalog/validators/errors.ts`
 
@@ -1026,7 +1026,7 @@ export interface ModuleValidationResult {
 }
 ```
 
-- [ ] **Step 8: Create src/cli/catalog/validators/index.ts**
+- [x] **Step 8: Create src/cli/catalog/validators/index.ts**
 
 Create: `src/cli/catalog/validators/index.ts`
 
@@ -1115,7 +1115,7 @@ export function validateCatalog(catalog: Catalog): CatalogValidationResult {
 }
 ```
 
-- [ ] **Step 9: Create src/cli/catalog/index.ts**
+- [x] **Step 9: Create src/cli/catalog/index.ts**
 
 Create: `src/cli/catalog/index.ts`
 
@@ -1150,7 +1150,7 @@ export function resolveProfile(catalog: Catalog, profileId: string) {
 export { validateCatalog, validateModule };
 ```
 
-- [ ] **Step 10: Commit the catalog subsystem**
+- [x] **Step 10: Commit the catalog subsystem**
 
 ```bash
 git add src/cli/catalog/
@@ -1169,7 +1169,7 @@ Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
 
 ### Task 6: Add vitest for CLI tests and write catalog tests
 
-- [ ] **Step 1: Add vitest to package.json**
+- [x] **Step 1: Add vitest to package.json**
 
 Modify: `package.json` — add to devDependencies: `"vitest": "^2.0.0"` (or latest compatible)
 
@@ -1179,7 +1179,7 @@ Add to scripts:
 "test:cli:watch": "vitest",
 ```
 
-- [ ] **Step 2: Create vitest.config.ts at root**
+- [x] **Step 2: Create vitest.config.ts at root**
 
 Create: `vitest.config.ts`
 
@@ -1197,7 +1197,7 @@ export default defineConfig({
 
 (Or extend the existing MCP vitest config if that makes sense — check with `cat mcp/vitest.config.ts`.)
 
-- [ ] **Step 3: Write src/cli/catalog/catalog.test.ts**
+- [x] **Step 3: Write src/cli/catalog/catalog.test.ts**
 
 Create: `src/cli/catalog/catalog.test.ts`
 
@@ -1298,7 +1298,7 @@ describe('catalog', () => {
 });
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 ```bash
 npm run test:cli
@@ -1306,7 +1306,7 @@ npm run test:cli
 
 Expected: All tests pass.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add vitest.config.ts package.json src/cli/catalog/catalog.test.ts
@@ -1319,7 +1319,7 @@ Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
 
 ### Task 7: Wire up cbx catalog validate command
 
-- [ ] **Step 1: Create scripts/validate-catalog.mjs**
+- [x] **Step 1: Create scripts/validate-catalog.mjs**
 
 Create: `scripts/validate-catalog.mjs`
 
@@ -1331,13 +1331,13 @@ A standalone Node.js script (ESM) that:
 
 This script is invoked by `npm run validate:catalog`.
 
-- [ ] **Step 2: Add to package.json scripts**
+- [x] **Step 2: Add to package.json scripts**
 
 ```json
 "validate:catalog": "node scripts/validate-catalog.mjs",
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add scripts/validate-catalog.mjs package.json

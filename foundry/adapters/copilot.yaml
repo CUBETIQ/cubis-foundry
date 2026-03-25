@@ -1,0 +1,57 @@
+platform: copilot
+label: GitHub Copilot
+
+rules:
+  mergeStrategy: layered
+  userOverride: honor
+  conflictResolution: user-first
+  generate:
+    type: skill-merge
+    source: foundry/modules/rules-core/rules.yaml
+    output: .github/copilot-instructions.md
+
+skills:
+  projection:
+    type: markdown-transform
+    transforms:
+      - match: "**/*.md"
+        pipeline:
+          - filter: code-blocks
+          - map: frontmatter
+          - merge: capability
+  capabilityProjection: []
+
+workflows:
+  projection: []
+
+specialists:
+  projection: []
+
+contextDocs:
+  enabled: true
+  outputDir: docs/foundation
+  managedSections: true
+  markers:
+    prefix: "<!-- cbx:"
+    suffix: "-->"
+  templates:
+    - id: tech-md
+      source: foundry/modules/contexts-core/templates/tech.md.j2
+      output: docs/foundation/TECH.md
+      triggers: [init, sync, build]
+    - id: architecture-md
+      source: foundry/modules/contexts-core/templates/architecture.md.j2
+      output: docs/foundation/ARCHITECTURE.md
+      triggers: [init, sync, build]
+    - id: structure-md
+      source: foundry/modules/contexts-core/templates/structure.md.j2
+      output: docs/foundation/STRUCTURE.md
+      triggers: [init, sync]
+    - id: memory-md
+      source: foundry/modules/contexts-core/templates/memory.md.j2
+      output: docs/foundation/MEMORY.md
+      triggers: [init, sync]
+    - id: product-md
+      source: foundry/modules/contexts-core/templates/product.md.j2
+      output: docs/foundation/PRODUCT.md
+      triggers: [init, sync]

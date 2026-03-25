@@ -1,0 +1,7 @@
+id: rules-security
+kind: rule-pack
+label: Security Rules
+description: Additional security-focused steering rules for hardened environments and reviews.
+stability: stable
+profiles:
+  - security

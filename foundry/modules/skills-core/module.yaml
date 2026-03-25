@@ -1,0 +1,7 @@
+id: skills-core
+kind: skill
+label: Core Skills
+description: Canonical skill catalog projection for supported runtimes and install profiles.
+stability: stable
+profiles:
+  - developer

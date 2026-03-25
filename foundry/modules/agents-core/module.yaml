@@ -1,0 +1,8 @@
+id: agents-core
+kind: specialist
+label: Core Agents
+description: Shared specialist agents - orchestrator, planner, implementer, reviewer, debugger, tester, explorer.
+stability: stable
+profiles:
+  - core
+  - developer

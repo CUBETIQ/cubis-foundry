@@ -1,0 +1,157 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Foundry Platform Adapter",
+  "description": "Schema for foundry/adapters/<platform>.yaml",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["platform", "label", "rules", "skills", "workflows", "specialists", "contextDocs"],
+  "properties": {
+    "platform": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mergeStrategy", "userOverride", "conflictResolution"],
+      "properties": {
+        "mergeStrategy": {
+          "type": "string",
+          "enum": ["layered", "replace", "merge"]
+        },
+        "userOverride": {
+          "type": "string",
+          "enum": ["honor", "ignore", "warn"]
+        },
+        "conflictResolution": {
+          "type": "string",
+          "enum": ["user-first", "generated-first", "error"]
+        },
+        "generate": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "type": "string"
+            },
+            "source": {
+              "type": "string"
+            },
+            "output": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "skills": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "projection": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "type": "string"
+            },
+            "transforms": {
+              "type": "array"
+            }
+          }
+        },
+        "capabilityProjection": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "capability": {
+                "type": "string"
+              },
+              "output": {
+                "type": "string"
+              },
+              "template": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "workflows": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "projection": {
+          "type": "array"
+        }
+      }
+    },
+    "specialists": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "projection": {
+          "type": "array"
+        }
+      }
+    },
+    "contextDocs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "outputDir", "managedSections", "markers", "templates"],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "outputDir": {
+          "type": "string"
+        },
+        "managedSections": {
+          "type": "boolean"
+        },
+        "markers": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "prefix": {
+              "type": "string"
+            },
+            "suffix": {
+              "type": "string"
+            }
+          }
+        },
+        "templates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "source", "output", "triggers"],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "source": {
+                "type": "string"
+              },
+              "output": {
+                "type": "string"
+              },
+              "triggers": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

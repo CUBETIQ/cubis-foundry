@@ -1,0 +1,10 @@
+id: rules-core
+kind: rule-pack
+label: Core Rules
+description: Steering rules for all platforms - safety, quality, and collaboration guardrails.
+stability: stable
+profiles:
+  - core
+  - developer
+  - security
+  - research

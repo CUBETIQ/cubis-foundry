@@ -1,0 +1,7 @@
+id: workflows-core
+kind: workflow
+label: Core Workflows
+description: Shared workflow definitions for install, sync, review, and execution routines.
+stability: stable
+profiles:
+  - developer

@@ -1,0 +1,27 @@
+id: contexts-core
+kind: capability
+label: Context Docs
+description: AI-context documents - TECH.md, ARCHITECTURE.md, STRUCTURE.md, MEMORY.md, PRODUCT.md.
+stability: stable
+profiles:
+  - core
+  - developer
+capability:
+  type: tool
+  domains: [documentation, context]
+  outputs:
+    - type: contextDoc
+      path: docs/foundation/TECH.md
+      platforms: [codex, claude, copilot, gemini, antigravity]
+    - type: contextDoc
+      path: docs/foundation/ARCHITECTURE.md
+      platforms: [codex, claude, copilot, gemini, antigravity]
+    - type: contextDoc
+      path: docs/foundation/STRUCTURE.md
+      platforms: [codex, claude, copilot, gemini, antigravity]
+    - type: contextDoc
+      path: docs/foundation/MEMORY.md
+      platforms: [codex, claude, copilot, gemini, antigravity]
+    - type: contextDoc
+      path: docs/foundation/PRODUCT.md
+      platforms: [codex, claude, copilot, gemini, antigravity]

@@ -41,6 +41,8 @@
     "test:all": "npm run test:attributes && npm run test:cli-help && npm run test:build-architecture && npm run test:smoke",
     "test:all:strict": "npm run test:attributes:strict && npm run test:cli-help && npm run test:build-architecture && npm run test:smoke",
     "test:ci": "npm run check:generated-assets && npm run test:all",
+    "test:cli": "vitest run",
+    "test:cli:watch": "vitest",
     "ui-testing:run": "node ui-testing/scripts/run-benchmark.mjs",
     "ui-testing:sync-datasets": "node ui-testing/scripts/sync-runtime-datasets.mjs",
     "ui-testing:components": "node ui-testing/scripts/build-component-system-report.mjs",
@@ -72,9 +74,11 @@
     "check:mcp-rules:claude": "node scripts/generate-mcp-rules-block.mjs --check workflows/workflows/agent-environment-setup/platforms/claude/rules/CLAUDE.md",
     "check:mcp-rules:all": "npm run check:mcp-rules:codex && npm run check:mcp-rules:antigravity && npm run check:mcp-rules:gemini && npm run check:mcp-rules:copilot && npm run check:mcp-rules:claude",
     "generate:all": "npm run generate:platform-assets && npm run sync:skill-mirrors && npm run generate:skills-index && npm run generate:skill-catalog && npm run generate:mcp-manifest && npm run inject:mcp-rules:all",
+    "build:catalog": "node scripts/build-catalog.mjs",
     "validate:mcp-skills": "node scripts/validate-mcp-skills.mjs",
     "validate:mcp-skills:strict": "node scripts/validate-mcp-skills.mjs --strict",
     "validate:mcp-manifest": "node scripts/generate-mcp-manifest.mjs --check",
+    "validate:catalog": "node scripts/validate-catalog.mjs",
     "generate:powers": "node \"workflows/scripts/generate-powers.mjs\"",
     "generate:powers:force": "node \"workflows/scripts/generate-powers.mjs\" --force",
     "generate:powers:from-skills": "node \"workflows/scripts/generate-powers.mjs\" --from-skills",
@@ -105,10 +109,12 @@
     "@modelcontextprotocol/sdk": "^1.27.1",
     "commander": "^14.0.1",
     "jsonc-parser": "^3.3.1",
+    "yaml": "^2.8.3",
     "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/node": "^20.14.0",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "vitest": "^2.1.9"
   }
 }

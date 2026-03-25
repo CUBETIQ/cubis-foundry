@@ -1,0 +1,112 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Foundry Package Manifest",
+  "description": "Schema for foundry/package.yaml",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "version",
+    "name",
+    "supportedRuntimes",
+    "installProfiles",
+    "installComponents",
+    "buildOutputs"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "supportedRuntimes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "since"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": ["codex", "claude", "copilot", "gemini", "antigravity"]
+          },
+          "label": {
+            "type": "string"
+          },
+          "since": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "installProfiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "description", "modules"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "modules": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "installComponents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "description"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "buildOutputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runtimeAssets", "cliDist", "docs"],
+      "properties": {
+        "runtimeAssets": {
+          "type": "string"
+        },
+        "cliDist": {
+          "type": "string"
+        },
+        "docs": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
