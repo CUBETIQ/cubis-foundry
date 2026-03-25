@@ -1,0 +1,17 @@
+id: design-audit
+kind: skill
+label: Design Audit
+description: "Diagnose why a UI feels generic, uneven, or hard to validate before making edits. Use for screenshot-first or live-browser review of composition, typography, states, responsiveness, and anti-slop failures."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - design
+  outputs:
+    - type: skill
+      path: foundry/modules/design-audit/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

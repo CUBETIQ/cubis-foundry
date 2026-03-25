@@ -1,0 +1,17 @@
+id: unit-testing
+kind: skill
+label: Unit Testing
+description: "Unit testing best practices covering test design, mocking strategies, coverage analysis, TDD workflow, and assertion patterns."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - quality
+  outputs:
+    - type: skill
+      path: foundry/modules/unit-testing/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

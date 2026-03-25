@@ -1,0 +1,27 @@
+id: qa
+kind: capability
+label: QA
+description: "Comprehensive QA capability covering UI testing harness, Playwright web QA, and Flutter mobile QA. Use when running quality assurance tests, building test infrastructure, or performing browser/mobile automation."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - quality
+    - testing
+  outputs:
+    - type: skill
+      path: workflows/skills/ui-testing-harness/SKILL.md
+      mode: ui-harness
+      platforms: [claude, codex, copilot, gemini, antigravity]
+    - type: skill
+      path: workflows/skills/playwright-web-qa/SKILL.md
+      mode: playwright-web
+      platforms: [claude, codex, copilot, gemini, antigravity]
+    - type: skill
+      path: workflows/skills/flutter-mobile-qa/SKILL.md
+      mode: flutter-mobile
+      platforms: [claude, codex, copilot, gemini, antigravity]

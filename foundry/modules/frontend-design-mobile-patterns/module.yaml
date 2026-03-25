@@ -1,0 +1,18 @@
+id: frontend-design-mobile-patterns
+kind: skill
+label: Frontend Design Mobile Patterns
+description: "Adapt the design engine to mobile and Flutter surfaces using Foundry normalized mobile-pattern dataset and implementation-first constraints."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - frontend
+    - design
+  outputs:
+    - type: skill
+      path: foundry/modules/frontend-design-mobile-patterns/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

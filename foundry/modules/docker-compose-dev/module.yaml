@@ -1,0 +1,17 @@
+id: docker-compose-dev
+kind: skill
+label: Docker Compose Dev
+description: "Build or maintain Docker Compose development environments: multi-service orchestration, volume mounts for hot reload, custom networking, debugging containers, health checks, and production-parity configuration."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/docker-compose-dev/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

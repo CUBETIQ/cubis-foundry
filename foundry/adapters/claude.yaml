@@ -35,6 +35,150 @@ skills:
     - capability: code-review
       output: foundry/modules/code-review/SKILL.md
       template: foundry/modules/code-review/templates/claude.j2
+    - capability: architecture-doc
+      output: foundry/modules/architecture-doc/SKILL.md
+      template: foundry/modules/architecture-doc/templates/claude.j2
+    - capability: ci-cd-pipeline
+      output: foundry/modules/ci-cd-pipeline/SKILL.md
+      template: foundry/modules/ci-cd-pipeline/templates/claude.j2
+    - capability: csharp-best-practices
+      output: foundry/modules/csharp-best-practices/SKILL.md
+      template: foundry/modules/csharp-best-practices/templates/claude.j2
+    - capability: database-design
+      output: foundry/modules/database-design/SKILL.md
+      template: foundry/modules/database-design/templates/claude.j2
+    - capability: deep-research
+      output: foundry/modules/deep-research/SKILL.md
+      template: foundry/modules/deep-research/templates/claude.j2
+    - capability: design-audit
+      output: foundry/modules/design-audit/SKILL.md
+      template: foundry/modules/design-audit/templates/claude.j2
+    - capability: django-drf
+      output: foundry/modules/django-drf/SKILL.md
+      template: foundry/modules/django-drf/templates/claude.j2
+    - capability: docker-compose-dev
+      output: foundry/modules/docker-compose-dev/SKILL.md
+      template: foundry/modules/docker-compose-dev/templates/claude.j2
+    - capability: expo-app
+      output: foundry/modules/expo-app/SKILL.md
+      template: foundry/modules/expo-app/templates/claude.j2
+    - capability: git-workflow
+      output: foundry/modules/git-workflow/SKILL.md
+      template: foundry/modules/git-workflow/templates/claude.j2
+    - capability: golang-best-practices
+      output: foundry/modules/golang-best-practices/SKILL.md
+      template: foundry/modules/golang-best-practices/templates/claude.j2
+    - capability: integration-testing
+      output: foundry/modules/integration-testing/SKILL.md
+      template: foundry/modules/integration-testing/templates/claude.j2
+    - capability: java-best-practices
+      output: foundry/modules/java-best-practices/SKILL.md
+      template: foundry/modules/java-best-practices/templates/claude.j2
+    - capability: kaizen-iteration
+      output: foundry/modules/kaizen-iteration/SKILL.md
+      template: foundry/modules/kaizen-iteration/templates/claude.j2
+    - capability: kotlin-best-practices
+      output: foundry/modules/kotlin-best-practices/SKILL.md
+      template: foundry/modules/kotlin-best-practices/templates/claude.j2
+    - capability: kubernetes-deploy
+      output: foundry/modules/kubernetes-deploy/SKILL.md
+      template: foundry/modules/kubernetes-deploy/templates/claude.j2
+    - capability: mcp-server-builder
+      output: foundry/modules/mcp-server-builder/SKILL.md
+      template: foundry/modules/mcp-server-builder/templates/claude.j2
+    - capability: nestjs
+      output: foundry/modules/nestjs/SKILL.md
+      template: foundry/modules/nestjs/templates/claude.j2
+    - capability: nextjs
+      output: foundry/modules/nextjs/SKILL.md
+      template: foundry/modules/nextjs/templates/claude.j2
+    - capability: observability
+      output: foundry/modules/observability/SKILL.md
+      template: foundry/modules/observability/templates/claude.j2
+    - capability: owasp-security-review
+      output: foundry/modules/owasp-security-review/SKILL.md
+      template: foundry/modules/owasp-security-review/templates/claude.j2
+    - capability: pentest-skill
+      output: foundry/modules/pentest-skill/SKILL.md
+      template: foundry/modules/pentest-skill/templates/claude.j2
+    - capability: playwright-interactive
+      output: foundry/modules/playwright-interactive/SKILL.md
+      template: foundry/modules/playwright-interactive/templates/claude.j2
+    - capability: prisma
+      output: foundry/modules/prisma/SKILL.md
+      template: foundry/modules/prisma/templates/claude.j2
+    - capability: prompt-engineering
+      output: foundry/modules/prompt-engineering/SKILL.md
+      template: foundry/modules/prompt-engineering/templates/claude.j2
+    - capability: python-best-practices
+      output: foundry/modules/python-best-practices/SKILL.md
+      template: foundry/modules/python-best-practices/templates/claude.j2
+    - capability: react
+      output: foundry/modules/react/SKILL.md
+      template: foundry/modules/react/templates/claude.j2
+    - capability: rust-best-practices
+      output: foundry/modules/rust-best-practices/SKILL.md
+      template: foundry/modules/rust-best-practices/templates/claude.j2
+    - capability: secret-management
+      output: foundry/modules/secret-management/SKILL.md
+      template: foundry/modules/secret-management/templates/claude.j2
+    - capability: skill-creator
+      output: foundry/modules/skill-creator/SKILL.md
+      template: foundry/modules/skill-creator/templates/claude.j2
+    - capability: spec-driven-delivery
+      output: foundry/modules/spec-driven-delivery/SKILL.md
+      template: foundry/modules/spec-driven-delivery/templates/claude.j2
+    - capability: spring-boot
+      output: foundry/modules/spring-boot/SKILL.md
+      template: foundry/modules/spring-boot/templates/claude.j2
+    - capability: sqlalchemy
+      output: foundry/modules/sqlalchemy/SKILL.md
+      template: foundry/modules/sqlalchemy/templates/claude.j2
+    - capability: svelte-sveltekit
+      output: foundry/modules/svelte-sveltekit/SKILL.md
+      template: foundry/modules/svelte-sveltekit/templates/claude.j2
+    - capability: swift-best-practices
+      output: foundry/modules/swift-best-practices/SKILL.md
+      template: foundry/modules/swift-best-practices/templates/claude.j2
+    - capability: system-design
+      output: foundry/modules/system-design/SKILL.md
+      template: foundry/modules/system-design/templates/claude.j2
+    - capability: systematic-debugging
+      output: foundry/modules/systematic-debugging/SKILL.md
+      template: foundry/modules/systematic-debugging/templates/claude.j2
+    - capability: tech-doc
+      output: foundry/modules/tech-doc/SKILL.md
+      template: foundry/modules/tech-doc/templates/claude.j2
+    - capability: unit-testing
+      output: foundry/modules/unit-testing/SKILL.md
+      template: foundry/modules/unit-testing/templates/claude.j2
+    - capability: frontend-design-core
+      output: foundry/modules/frontend-design-core/SKILL.md
+      template: foundry/modules/frontend-design-core/templates/claude.j2
+    - capability: frontend-design-implementation-handoff
+      output: foundry/modules/frontend-design-implementation-handoff/SKILL.md
+      template: foundry/modules/frontend-design-implementation-handoff/templates/claude.j2
+    - capability: frontend-design-mobile-patterns
+      output: foundry/modules/frontend-design-mobile-patterns/SKILL.md
+      template: foundry/modules/frontend-design-mobile-patterns/templates/claude.j2
+    - capability: frontend-design-screen-brief
+      output: foundry/modules/frontend-design-screen-brief/SKILL.md
+      template: foundry/modules/frontend-design-screen-brief/templates/claude.j2
+    - capability: frontend-design-style-selector
+      output: foundry/modules/frontend-design-style-selector/SKILL.md
+      template: foundry/modules/frontend-design-style-selector/templates/claude.j2
+    - capability: frontend-design-system
+      output: foundry/modules/frontend-design-system/SKILL.md
+      template: foundry/modules/frontend-design-system/templates/claude.j2
+    - capability: design
+      output: foundry/modules/design/SKILL.md
+      template: foundry/modules/design/templates/claude.j2
+    - capability: qa
+      output: foundry/modules/qa/SKILL.md
+      template: foundry/modules/qa/templates/claude.j2
+    - capability: stitch
+      output: foundry/modules/stitch/SKILL.md
+      template: foundry/modules/stitch/templates/claude.j2
 
 workflows:
   projection: []
@@ -89,4 +233,196 @@ contextDocs:
     - id: code-review-skill
       source: foundry/modules/code-review/templates/claude.j2
       output: foundry/modules/code-review/SKILL.md
+      triggers: [build]
+    - id: architecture-doc-skill
+      source: foundry/modules/architecture-doc/templates/claude.j2
+      output: foundry/modules/architecture-doc/SKILL.md
+      triggers: [build]
+    - id: ci-cd-pipeline-skill
+      source: foundry/modules/ci-cd-pipeline/templates/claude.j2
+      output: foundry/modules/ci-cd-pipeline/SKILL.md
+      triggers: [build]
+    - id: csharp-best-practices-skill
+      source: foundry/modules/csharp-best-practices/templates/claude.j2
+      output: foundry/modules/csharp-best-practices/SKILL.md
+      triggers: [build]
+    - id: database-design-skill
+      source: foundry/modules/database-design/templates/claude.j2
+      output: foundry/modules/database-design/SKILL.md
+      triggers: [build]
+    - id: deep-research-skill
+      source: foundry/modules/deep-research/templates/claude.j2
+      output: foundry/modules/deep-research/SKILL.md
+      triggers: [build]
+    - id: design-audit-skill
+      source: foundry/modules/design-audit/templates/claude.j2
+      output: foundry/modules/design-audit/SKILL.md
+      triggers: [build]
+    - id: django-drf-skill
+      source: foundry/modules/django-drf/templates/claude.j2
+      output: foundry/modules/django-drf/SKILL.md
+      triggers: [build]
+    - id: docker-compose-dev-skill
+      source: foundry/modules/docker-compose-dev/templates/claude.j2
+      output: foundry/modules/docker-compose-dev/SKILL.md
+      triggers: [build]
+    - id: expo-app-skill
+      source: foundry/modules/expo-app/templates/claude.j2
+      output: foundry/modules/expo-app/SKILL.md
+      triggers: [build]
+    - id: git-workflow-skill
+      source: foundry/modules/git-workflow/templates/claude.j2
+      output: foundry/modules/git-workflow/SKILL.md
+      triggers: [build]
+    - id: golang-best-practices-skill
+      source: foundry/modules/golang-best-practices/templates/claude.j2
+      output: foundry/modules/golang-best-practices/SKILL.md
+      triggers: [build]
+    - id: integration-testing-skill
+      source: foundry/modules/integration-testing/templates/claude.j2
+      output: foundry/modules/integration-testing/SKILL.md
+      triggers: [build]
+    - id: java-best-practices-skill
+      source: foundry/modules/java-best-practices/templates/claude.j2
+      output: foundry/modules/java-best-practices/SKILL.md
+      triggers: [build]
+    - id: kaizen-iteration-skill
+      source: foundry/modules/kaizen-iteration/templates/claude.j2
+      output: foundry/modules/kaizen-iteration/SKILL.md
+      triggers: [build]
+    - id: kotlin-best-practices-skill
+      source: foundry/modules/kotlin-best-practices/templates/claude.j2
+      output: foundry/modules/kotlin-best-practices/SKILL.md
+      triggers: [build]
+    - id: kubernetes-deploy-skill
+      source: foundry/modules/kubernetes-deploy/templates/claude.j2
+      output: foundry/modules/kubernetes-deploy/SKILL.md
+      triggers: [build]
+    - id: mcp-server-builder-skill
+      source: foundry/modules/mcp-server-builder/templates/claude.j2
+      output: foundry/modules/mcp-server-builder/SKILL.md
+      triggers: [build]
+    - id: nestjs-skill
+      source: foundry/modules/nestjs/templates/claude.j2
+      output: foundry/modules/nestjs/SKILL.md
+      triggers: [build]
+    - id: nextjs-skill
+      source: foundry/modules/nextjs/templates/claude.j2
+      output: foundry/modules/nextjs/SKILL.md
+      triggers: [build]
+    - id: observability-skill
+      source: foundry/modules/observability/templates/claude.j2
+      output: foundry/modules/observability/SKILL.md
+      triggers: [build]
+    - id: owasp-security-review-skill
+      source: foundry/modules/owasp-security-review/templates/claude.j2
+      output: foundry/modules/owasp-security-review/SKILL.md
+      triggers: [build]
+    - id: pentest-skill-skill
+      source: foundry/modules/pentest-skill/templates/claude.j2
+      output: foundry/modules/pentest-skill/SKILL.md
+      triggers: [build]
+    - id: playwright-interactive-skill
+      source: foundry/modules/playwright-interactive/templates/claude.j2
+      output: foundry/modules/playwright-interactive/SKILL.md
+      triggers: [build]
+    - id: prisma-skill
+      source: foundry/modules/prisma/templates/claude.j2
+      output: foundry/modules/prisma/SKILL.md
+      triggers: [build]
+    - id: prompt-engineering-skill
+      source: foundry/modules/prompt-engineering/templates/claude.j2
+      output: foundry/modules/prompt-engineering/SKILL.md
+      triggers: [build]
+    - id: python-best-practices-skill
+      source: foundry/modules/python-best-practices/templates/claude.j2
+      output: foundry/modules/python-best-practices/SKILL.md
+      triggers: [build]
+    - id: react-skill
+      source: foundry/modules/react/templates/claude.j2
+      output: foundry/modules/react/SKILL.md
+      triggers: [build]
+    - id: rust-best-practices-skill
+      source: foundry/modules/rust-best-practices/templates/claude.j2
+      output: foundry/modules/rust-best-practices/SKILL.md
+      triggers: [build]
+    - id: secret-management-skill
+      source: foundry/modules/secret-management/templates/claude.j2
+      output: foundry/modules/secret-management/SKILL.md
+      triggers: [build]
+    - id: skill-creator-skill
+      source: foundry/modules/skill-creator/templates/claude.j2
+      output: foundry/modules/skill-creator/SKILL.md
+      triggers: [build]
+    - id: spec-driven-delivery-skill
+      source: foundry/modules/spec-driven-delivery/templates/claude.j2
+      output: foundry/modules/spec-driven-delivery/SKILL.md
+      triggers: [build]
+    - id: spring-boot-skill
+      source: foundry/modules/spring-boot/templates/claude.j2
+      output: foundry/modules/spring-boot/SKILL.md
+      triggers: [build]
+    - id: sqlalchemy-skill
+      source: foundry/modules/sqlalchemy/templates/claude.j2
+      output: foundry/modules/sqlalchemy/SKILL.md
+      triggers: [build]
+    - id: svelte-sveltekit-skill
+      source: foundry/modules/svelte-sveltekit/templates/claude.j2
+      output: foundry/modules/svelte-sveltekit/SKILL.md
+      triggers: [build]
+    - id: swift-best-practices-skill
+      source: foundry/modules/swift-best-practices/templates/claude.j2
+      output: foundry/modules/swift-best-practices/SKILL.md
+      triggers: [build]
+    - id: system-design-skill
+      source: foundry/modules/system-design/templates/claude.j2
+      output: foundry/modules/system-design/SKILL.md
+      triggers: [build]
+    - id: systematic-debugging-skill
+      source: foundry/modules/systematic-debugging/templates/claude.j2
+      output: foundry/modules/systematic-debugging/SKILL.md
+      triggers: [build]
+    - id: tech-doc-skill
+      source: foundry/modules/tech-doc/templates/claude.j2
+      output: foundry/modules/tech-doc/SKILL.md
+      triggers: [build]
+    - id: unit-testing-skill
+      source: foundry/modules/unit-testing/templates/claude.j2
+      output: foundry/modules/unit-testing/SKILL.md
+      triggers: [build]
+    - id: frontend-design-core-skill
+      source: foundry/modules/frontend-design-core/templates/claude.j2
+      output: foundry/modules/frontend-design-core/SKILL.md
+      triggers: [build]
+    - id: frontend-design-implementation-handoff-skill
+      source: foundry/modules/frontend-design-implementation-handoff/templates/claude.j2
+      output: foundry/modules/frontend-design-implementation-handoff/SKILL.md
+      triggers: [build]
+    - id: frontend-design-mobile-patterns-skill
+      source: foundry/modules/frontend-design-mobile-patterns/templates/claude.j2
+      output: foundry/modules/frontend-design-mobile-patterns/SKILL.md
+      triggers: [build]
+    - id: frontend-design-screen-brief-skill
+      source: foundry/modules/frontend-design-screen-brief/templates/claude.j2
+      output: foundry/modules/frontend-design-screen-brief/SKILL.md
+      triggers: [build]
+    - id: frontend-design-style-selector-skill
+      source: foundry/modules/frontend-design-style-selector/templates/claude.j2
+      output: foundry/modules/frontend-design-style-selector/SKILL.md
+      triggers: [build]
+    - id: frontend-design-system-skill
+      source: foundry/modules/frontend-design-system/templates/claude.j2
+      output: foundry/modules/frontend-design-system/SKILL.md
+      triggers: [build]
+    - id: design-skill
+      source: foundry/modules/design/templates/claude.j2
+      output: foundry/modules/design/SKILL.md
+      triggers: [build]
+    - id: qa-skill
+      source: foundry/modules/qa/templates/claude.j2
+      output: foundry/modules/qa/SKILL.md
+      triggers: [build]
+    - id: stitch-skill
+      source: foundry/modules/stitch/templates/claude.j2
+      output: foundry/modules/stitch/SKILL.md
       triggers: [build]

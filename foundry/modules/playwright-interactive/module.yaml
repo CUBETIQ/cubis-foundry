@@ -1,0 +1,17 @@
+id: playwright-interactive
+kind: skill
+label: Playwright Interactive
+description: "Build interactive Playwright suites for browser automation, visual regression, accessibility audits, network interception, and collaborative test workflows."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - quality
+  outputs:
+    - type: skill
+      path: foundry/modules/playwright-interactive/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

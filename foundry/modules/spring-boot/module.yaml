@@ -1,0 +1,17 @@
+id: spring-boot
+kind: skill
+label: Spring Boot
+description: "Build Spring Boot 3.4+ applications with Java records, virtual threads, Spring Security 6, Spring Data JPA, reactive WebFlux patterns, and production-grade testing strategies."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/spring-boot/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

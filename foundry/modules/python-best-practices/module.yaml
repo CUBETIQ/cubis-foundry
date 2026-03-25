@@ -1,0 +1,17 @@
+id: python-best-practices
+kind: skill
+label: Python Best Practices
+description: "Write production Python 3.12–3.14 code: modern typing with PEP 695/696 syntax, async service patterns, packaging with pyproject.toml, pytest-based testing, and standard-library-first design."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/python-best-practices/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

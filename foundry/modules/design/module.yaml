@@ -1,0 +1,43 @@
+id: design
+kind: capability
+label: Design
+description: "Comprehensive design capability covering audit, arrangement, bolding, distillation, polishing, typesetting, and design context capture. Use when working on visual design, UI composition, typography, or design system coherence."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - design
+    - frontend
+  outputs:
+    - type: skill
+      path: workflows/skills/design-audit/SKILL.md
+      mode: audit
+      platforms: [claude, codex, copilot, gemini, antigravity]
+    - type: skill
+      path: workflows/skills/design-arrange/SKILL.md
+      mode: arrange
+      platforms: [claude, codex, copilot, gemini, antigravity]
+    - type: skill
+      path: workflows/skills/design-bolder/SKILL.md
+      mode: bolde
+      platforms: [claude, codex, copilot, gemini, antigravity]
+    - type: skill
+      path: workflows/skills/design-distill/SKILL.md
+      mode: distill
+      platforms: [claude, codex, copilot, gemini, antigravity]
+    - type: skill
+      path: workflows/skills/design-polish/SKILL.md
+      mode: polish
+      platforms: [claude, codex, copilot, gemini, antigravity]
+    - type: skill
+      path: workflows/skills/design-typeset/SKILL.md
+      mode: typeset
+      platforms: [claude, codex, copilot, gemini, antigravity]
+    - type: skill
+      path: workflows/skills/design-context-capture/SKILL.md
+      mode: context-capture
+      platforms: [claude, codex, copilot, gemini, antigravity]

@@ -1,0 +1,37 @@
+{% if module %}{{ module.label }}{% endif %}
+<!-- cbx:skill:stitch:start -->
+---
+name: stitch
+description: "Compatibility wrapper for explicit stitch requests. Routes older docs or users naming stitch directly into the design-first Stitch sequence: frontend-design, prompt enhancement, design-system sync, Stitch orchestration, and implementation handoff."
+license: MIT
+metadata:
+  author: cubis-foundry
+  version: "3.0"
+compatibility: "Claude Code, Codex, GitHub Copilot, Gemini CLI, Antigravity"
+---
+
+# Stitch (Compat-Alias)
+
+This is a compatibility alias for the Stitch design-orchestration workflow. For new work, use `frontend-design` directly.
+
+## Stitch Sub-Skills
+
+| Component | Skill |
+| --- | --- |
+| Orchestration | [stitch-design-orchestrator](workflows/skills/stitch-design-orchestrator/SKILL.md) |
+| Design System | [stitch-design-system](workflows/skills/stitch-design-system/SKILL.md) |
+| Prompt Enhancement | [stitch-prompt-enhancement](workflows/skills/stitch-prompt-enhancement/SKILL.md) |
+| Implementation Handoff | [stitch-implementation-handoff](workflows/skills/stitch-implementation-handoff/SKILL.md) |
+
+## Routing
+
+When `stitch` is requested, the following sub-skills are available:
+1. `stitch-design-orchestrator` — orchestrate the full Stitch generation sequence
+2. `stitch-design-system` — maintain Stitch-compatible design system context
+3. `stitch-prompt-enhancement` — transform rough UI intent into Stitch-ready prompts
+4. `stitch-implementation-handoff` — convert Stitch artifacts into repo-native frontend changes
+
+## Reference Skill
+
+- [workflows/skills/stitch/SKILL.md](workflows/skills/stitch/SKILL.md)
+<!-- cbx:skill:stitch:end -->

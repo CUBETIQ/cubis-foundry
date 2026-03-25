@@ -1,0 +1,17 @@
+id: rust-best-practices
+kind: skill
+label: Rust Best Practices
+description: "Write production Rust (2024 edition): ownership and borrowing patterns, async with tokio, error handling with thiserror/anyhow, comprehensive testing, and disciplined use of unsafe."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/rust-best-practices/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

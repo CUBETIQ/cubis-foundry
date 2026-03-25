@@ -1,0 +1,18 @@
+id: frontend-design-style-selector
+kind: skill
+label: Frontend Design Style Selector
+description: "Select a non-generic visual direction from Foundry normalized design datasets and align it to the product domain, audience, and platform."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - frontend
+    - design
+  outputs:
+    - type: skill
+      path: foundry/modules/frontend-design-style-selector/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

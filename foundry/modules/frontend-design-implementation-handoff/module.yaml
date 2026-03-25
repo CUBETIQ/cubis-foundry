@@ -1,0 +1,18 @@
+id: frontend-design-implementation-handoff
+kind: skill
+label: Frontend Design Implementation Handoff
+description: "Translate design-engine output into repo-native implementation work, preferring real components, Flutter widgets, and existing tokens over pasted generated markup."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - frontend
+    - design
+  outputs:
+    - type: skill
+      path: foundry/modules/frontend-design-implementation-handoff/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

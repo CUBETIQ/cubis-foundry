@@ -1,0 +1,17 @@
+id: nextjs
+kind: skill
+label: Next.js
+description: "Build web applications with Next.js 15+. Invoke for App Router, Server Components, Server Actions, caching strategies, Partial Prerendering, parallel routes, middleware, and deployment."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/nextjs/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

@@ -1,0 +1,17 @@
+id: integration-testing
+kind: skill
+label: Integration Testing
+description: "Integration testing patterns for verifying component interactions across test boundaries, databases, APIs, test containers, and fixture management."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - quality
+  outputs:
+    - type: skill
+      path: foundry/modules/integration-testing/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

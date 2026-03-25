@@ -1,0 +1,18 @@
+id: frontend-design-screen-brief
+kind: skill
+label: Frontend Design Screen Brief
+description: "Turn canonical design state plus overlays into a compact, high-signal screen brief for Stitch, frontend implementation, or Flutter/mobile work."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - frontend
+    - design
+  outputs:
+    - type: skill
+      path: foundry/modules/frontend-design-screen-brief/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]
