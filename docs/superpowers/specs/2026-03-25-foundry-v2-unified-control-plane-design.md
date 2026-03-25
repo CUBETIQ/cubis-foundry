@@ -939,12 +939,10 @@ Per platform:
 
 ---
 
-## 12. Open Questions
+## 12. Open Questions (Resolved)
 
-1. **V1 compatibility bridge** — How long to keep the old `workflows/` sources valid during migration?
-2. **Third-party modules** — Any appetite for `foundry/modules/` to accept external contributions?
-3. **IDE integration** — Any need for LSP/language server support for module.yaml?
-4. **Research pipeline** — Is the automated monthly research pipeline worth the complexity, or is manual review sufficient?
-5. **Eval infrastructure** — Should evals run in CI on every PR, or on a scheduled basis?
-6. **Skill version pinning** — Should skills declare minimum tool versions (e.g., "requires Node 20+")?
-7. **Team vs. personal install** — Should there be a team-level install state alongside personal state?
+1. **V1 compatibility bridge** — **Decision: No bridge.** Complete migration to V2. The old `workflows/` sources are deprecated and removed in Phase 3. No dual-maintenance period.
+
+2. **Research pipeline** — **Decision: Automated pipeline.** Implement the monthly research workflow in `.github/workflows/research.yml`. Manual review is insufficient given the scope of language/framework coverage. Pipeline opens PRs when significant changes detected.
+
+3. **Eval schedule** — **Decision: CI on every PR for changed capabilities.** Evals run in CI on affected capabilities only (detected via git diff). Full eval suite runs weekly on a schedule.
