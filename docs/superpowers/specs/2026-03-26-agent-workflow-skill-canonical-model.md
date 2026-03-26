@@ -421,10 +421,73 @@ foundry/modules/hooks-core/
 
 ---
 
-## 11. Open Questions
+## 12. Platform Model Constraints
 
-1. **Copilot custom agents** — `.github/agents/*.agent.md` format needs verification. Is the frontmatter schema documented? What fields are required vs optional?
-2. **Codex TOML agents** — `.codex/agents/*.toml` format needs verification. Does Foundry currently generate these? What's the exact TOML schema?
-3. **Gemini TOML commands** — Foundry already generates these. Is the current template correct? Does it need updating?
-4. **ECC new agents** — the ECC repo has 28 agents vs Foundry's 8. Should we adopt all ECC agents or select a subset? Priority list?
+Each platform supports a specific set of models. The canonical agent frontmatter specifies `model` as a hint; the adapter projection replaces it with the platform-appropriate model.
+
+### Model Maps
+
+| Platform | Available Models | Routing Guidance |
+|----------|---|---|
+| Claude | `sonnet`, `opus`, `haiku` | `sonnet` for most work; `opus` for architecture/security/debugging; `haiku` for simple tasks |
+| Codex | `gpt-5.4`, `gpt-5.4-mini` | `gpt-5.4-mini` for most work; `gpt-5.4` for complex reasoning, architecture, security |
+| Copilot | Platform-managed (not user-specified in agent frontmatter) | Agents on Copilot do not accept explicit model in frontmatter |
+| Gemini | Platform-managed (not user-specified in agent frontmatter) | Agents on Gemini do not accept explicit model in frontmatter |
+| Antigravity | Platform-managed | Same as Gemini |
+
+### Codex Agent Model Overrides
+
+Codex is the **only platform with hard model constraints**. The canonical `model` field in the agent frontmatter is a **suggestion** for Claude; it is **ignored** for Codex projections. Codex adapters always use:
+
+| Agent type | Codex model |
+|---|---|
+| `orchestrator`, `planner` | `gpt-5.4` |
+| `reviewer`, `debugger`, `tester` | `gpt-5.4` |
+| `implementer`, `explorer` | `gpt-5.4-mini` |
+| `explorer` (research-heavy) | `gpt-5.4` |
+
+### Frontmatter `model` Field
+
+The `model` field in canonical agent frontmatter is:
+
+- **Claude**: respected — directly projected
+- **Codex**: ignored — replaced by model map in adapter
+- **Copilot**: ignored — platform manages model selection
+- **Gemini**: ignored — platform manages model selection
+- **Antigravity**: ignored — platform manages model selection
+
+Canonical agents should default to `sonnet` for model (the Claude default) unless a specific agent type requires a different model.
+
+```yaml
+---
+name: reviewer
+model: sonnet   # Canonical hint (used for Claude; Codex uses model map)
+---
+```
+
+### Codex TOML Schema
+
+```toml
+name = "reviewer"
+description = "Code review agent..."
+model = "gpt-5.4"           # Always replaced per Codex model map
+model_reasoning_effort = "high"  # Set per agent type
+sandbox_mode = "read-only"   # Read-only agents only; implementer uses workspace-write
+developer_instructions = """
+[Full markdown body]
+"""
+```
+
+`sandbox_mode` values:
+- `read-only` — reviewer, debugger, tester, explorer, planner
+- `workspace-write` — implementer (and only implementer)
+
+---
+
+## 13. Open Questions
+
+1. **Copilot custom agents** — `.github/agents/*.agent.md` format — is the frontmatter schema documented anywhere official? What fields are required vs optional?
+2. **Codex TOML agents** — is `model_reasoning_effort` the only reasoning control, or are there others?
+3. **Gemini TOML commands** — does the current template need updating? Is there a `mode` or `temperature` field?
+4. **ECC new agents** — the ECC repo has 28 agents vs Foundry's 8. Should we adopt all ECC agents or select a subset?
 5. **Language rules** — should rules for Python, TypeScript, Go, etc. be in `foundry/modules/rules-core/rules/` or in separate `foundry/modules/<lang>-rules/` modules?
