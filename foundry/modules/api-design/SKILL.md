@@ -1,11 +1,28 @@
 ---
 name: api-design
-description: API design best practices covering REST, GraphQL, gRPC patterns, versioning strategies, pagination, error contracts, and OpenAPI specifications for robust service interfaces.
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: API design best practices covering REST, GraphQL, gRPC patterns,
+  versioning strategies, pagination, error contracts, and OpenAPI specifications
+  for robust service interfaces.
+triggers:
+  - api design
+  - backend
+  - architecture
+  - REST
+  - graphQL
+  - gRPC patterns
+  - versioning strategies
+  - pagination
+domains:
+  - backend
+  - architecture
+whenToUse: When designing a new REST API with resource-oriented endpoints.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # API Design

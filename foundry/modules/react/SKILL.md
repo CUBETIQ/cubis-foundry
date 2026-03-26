@@ -1,11 +1,27 @@
 ---
 name: react
-description: "Use when building user interfaces with React 19+. Invoke for Server Components, the use() hook, Suspense, Actions, concurrent features, ref callbacks, and component architecture."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: "Claude Code, Codex, GitHub Copilot"
+description: Use when building user interfaces with React 19+. Invoke for Server
+  Components, the use() hook, Suspense, Actions, concurrent features, ref
+  callbacks, and component architecture.
+triggers:
+  - react
+  - frontend
+  - user interfaces
+  - the use() hook
+  - suspense
+  - actions
+  - concurrent features
+  - ref callbacks
+domains:
+  - frontend
+whenToUse: When building new React components using React 19 features.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # React 19+

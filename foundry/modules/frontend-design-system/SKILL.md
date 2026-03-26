@@ -1,11 +1,28 @@
 ---
 name: frontend-design-system
-description: Build or refresh the canonical design-system state for a repo, including DESIGN.md, overlays, token language, and platform-specific adaptation notes.
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "1.0"
-compatibility: Claude Code, Codex, GitHub Copilot, Gemini CLI, Antigravity
+description: Build or refresh the canonical design-system state for a repo,
+  including DESIGN.md, overlays, token language, and platform-specific
+  adaptation notes.
+triggers:
+  - frontend design system
+  - frontend
+  - design
+  - build
+  - overlays
+  - token language
+  - stale
+  - component vocabulary
+domains:
+  - frontend
+  - design
+whenToUse: When `docs/foundation/DESIGN.md` is missing or stale.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Frontend Design System

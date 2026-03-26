@@ -1,11 +1,27 @@
 ---
 name: frontend-design-style-selector
-description: Select a non-generic visual direction from Foundry's normalized design datasets and align it to the product's domain, audience, and platform.
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "1.0"
-compatibility: Claude Code, Codex, GitHub Copilot, Gemini CLI, Antigravity
+description: Select a non-generic visual direction from Foundry's normalized
+  design datasets and align it to the product's domain, audience, and platform.
+triggers:
+  - frontend design style selector
+  - frontend
+  - design
+  - new design system
+  - screen family
+  - consistent mood
+  - style
+  - selector
+domains:
+  - frontend
+  - design
+whenToUse: When starting a new design system or screen family.
+priority: secondary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Frontend Design Style Selector

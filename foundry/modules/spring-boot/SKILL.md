@@ -1,11 +1,28 @@
 ---
 name: spring-boot
-description: "Use when building Spring Boot 3.4+ applications with Java records, virtual threads, Spring Security 6, Spring Data JPA, reactive WebFlux patterns, and production-grade testing strategies."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: Use when building Spring Boot 3.4+ applications with Java records,
+  virtual threads, Spring Security 6, Spring Data JPA, reactive WebFlux
+  patterns, and production-grade testing strategies.
+triggers:
+  - spring boot
+  - backend
+  - virtual threads
+  - spring Security 6
+  - spring Data JPA
+  - reactive WebFlux patterns
+  - rEST controllers
+  - service layers
+domains:
+  - backend
+whenToUse: When scaffolding a new Spring Boot application or adding feature
+  modules to an existing one.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Spring Boot

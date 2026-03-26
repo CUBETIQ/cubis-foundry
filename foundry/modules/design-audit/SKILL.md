@@ -1,11 +1,28 @@
 ---
 name: design-audit
-description: Diagnose why a UI feels generic, uneven, or hard to validate before making edits. Use for screenshot-first or live-browser review of composition, typography, states, responsiveness, and anti-slop failures.
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "1.0"
-compatibility: Claude Code, Codex, GitHub Copilot, Gemini CLI, Antigravity
+description: Diagnose why a UI feels generic, uneven, or hard to validate before
+  making edits. Use for screenshot-first or live-browser review of composition,
+  typography, states, responsiveness, and anti-slop failures.
+triggers:
+  - design audit
+  - design
+  - frontend
+  - uneven
+  - typography
+  - states
+  - responsiveness
+  - anti-slop failures
+domains:
+  - design
+  - frontend
+whenToUse: When a UI feels bland, slop-like, or inconsistent.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Design Audit

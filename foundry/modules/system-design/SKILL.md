@@ -1,11 +1,28 @@
 ---
 name: system-design
-description: System design and architecture guidance covering distributed systems, scalability, reliability, CAP theorem, load balancing, and caching strategies for production infrastructure.
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: System design and architecture guidance covering distributed
+  systems, scalability, reliability, CAP theorem, load balancing, and caching
+  strategies for production infrastructure.
+triggers:
+  - system design
+  - architecture
+  - infrastructure
+  - distributed systems
+  - scalability
+  - reliability
+  - cAP theorem
+  - load balancing
+domains:
+  - architecture
+  - infrastructure
+whenToUse: When designing a new system or service from scratch with scale requirements.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # System Design

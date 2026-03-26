@@ -1,11 +1,28 @@
 ---
 name: nestjs
-description: "Use when building NestJS 11+ applications with TypeScript decorators, dependency injection, modular architecture, guards, interceptors, pipes, microservices, and GraphQL integration."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: Use when building NestJS 11+ applications with TypeScript
+  decorators, dependency injection, modular architecture, guards, interceptors,
+  pipes, microservices, and GraphQL integration.
+triggers:
+  - nestjs
+  - backend
+  - nestJS 11+ applications
+  - dependency injection
+  - modular architecture
+  - guards
+  - interceptors
+  - pipes
+domains:
+  - backend
+whenToUse: When scaffolding a new NestJS application or adding feature modules
+  to an existing one.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # NestJS

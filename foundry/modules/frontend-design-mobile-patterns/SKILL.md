@@ -1,11 +1,28 @@
 ---
 name: frontend-design-mobile-patterns
-description: Adapt the design engine to mobile and Flutter surfaces using Foundry's normalized mobile-pattern dataset and implementation-first constraints.
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "1.0"
-compatibility: Claude Code, Codex, GitHub Copilot, Gemini CLI, Antigravity
+description: Adapt the design engine to mobile and Flutter surfaces using
+  Foundry's normalized mobile-pattern dataset and implementation-first
+  constraints.
+triggers:
+  - frontend design mobile patterns
+  - frontend
+  - design
+  - flutter surfaces
+  - flutter screens
+  - flows
+  - navigation
+  - thumb-driven interaction
+domains:
+  - frontend
+  - design
+whenToUse: When designing Flutter screens, flows, or navigation.
+priority: secondary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Frontend Design Mobile Patterns

@@ -1,11 +1,28 @@
 ---
 name: django-drf
-description: "Use when building Django 5.1+ REST APIs with Django REST Framework 3.15+, covering serializers, viewsets, permissions, filtering, pagination, and async support."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: Use when building Django 5.1+ REST APIs with Django REST Framework
+  3.15+, covering serializers, viewsets, permissions, filtering, pagination, and
+  async support.
+triggers:
+  - django drf
+  - backend
+  - serializers
+  - viewsets
+  - permissions
+  - pagination
+  - async support
+  - custom permission classes
+domains:
+  - backend
+whenToUse: When building or extending Django REST Framework APIs with
+  ModelSerializers and ViewSets.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Django DRF

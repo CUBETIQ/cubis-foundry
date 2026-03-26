@@ -1,11 +1,29 @@
 ---
 name: observability
-description: "Use when implementing observability and monitoring: OpenTelemetry instrumentation, structured logging, metrics design, distributed tracing, alerting strategies, SLO/SLI definitions, dashboards, and incident response runbooks."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: "Use when implementing observability and monitoring: OpenTelemetry
+  instrumentation, structured logging, metrics design, distributed tracing,
+  alerting strategies, SLO/SLI definitions, dashboards, and incident response
+  runbooks."
+triggers:
+  - observability
+  - infrastructure
+  - structured logging
+  - metrics design
+  - distributed tracing
+  - alerting strategies
+  - sLO/SLI definitions
+  - dashboards
+domains:
+  - infrastructure
+whenToUse: When instrumenting an application with OpenTelemetry for traces,
+  metrics, and logs.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Observability and Monitoring

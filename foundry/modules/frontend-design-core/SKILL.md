@@ -1,11 +1,28 @@
 ---
 name: frontend-design-core
-description: Establish the design-engine execution order, canonical design-state model, and the repo-first constraints for serious frontend or mobile design work.
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "1.0"
-compatibility: Claude Code, Codex, GitHub Copilot, Gemini CLI, Antigravity
+description: Establish the design-engine execution order, canonical design-state
+  model, and the repo-first constraints for serious frontend or mobile design
+  work.
+triggers:
+  - frontend design core
+  - frontend
+  - design
+  - canonical design-state model
+  - repo-first constraints
+  - mobile design work
+  - design-heavy feature
+  - redesign
+domains:
+  - frontend
+  - design
+whenToUse: When starting a design-heavy feature, redesign, or new screen set.
+priority: secondary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Frontend Design Core

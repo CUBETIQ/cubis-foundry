@@ -1,11 +1,29 @@
 ---
 name: docker-compose-dev
-description: "Use when building or maintaining Docker Compose development environments: multi-service orchestration, volume mounts for hot reload, custom networking, debugging containers, health checks, and production-parity configuration."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: "Use when building or maintaining Docker Compose development
+  environments: multi-service orchestration, volume mounts for hot reload,
+  custom networking, debugging containers, health checks, and production-parity
+  configuration."
+triggers:
+  - docker compose dev
+  - infrastructure
+  - multi-service orchestration
+  - volume mounts
+  - custom networking
+  - debugging containers
+  - health checks
+  - adding hot-reload support
+domains:
+  - infrastructure
+whenToUse: When setting up a new multi-service development environment with
+  Docker Compose.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Docker Compose for Development Environments

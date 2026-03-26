@@ -1,11 +1,29 @@
 ---
 name: sqlalchemy
-description: "Use when building or refactoring Python data layers with SQLAlchemy 2.0+ declarative models, async sessions, Alembic migrations, relationship loading strategies, and ORM testing patterns."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: Use when building or refactoring Python data layers with SQLAlchemy
+  2.0+ declarative models, async sessions, Alembic migrations, relationship
+  loading strategies, and ORM testing patterns.
+triggers:
+  - sqlalchemy
+  - backend
+  - data
+  - async sessions
+  - alembic migrations
+  - oRM testing patterns
+  - mapped_column
+  - async database sessions
+domains:
+  - backend
+  - data
+whenToUse: When designing or refactoring SQLAlchemy 2.0+ declarative models with
+  `Mapped` and `mapped_column`.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # SQLAlchemy ORM

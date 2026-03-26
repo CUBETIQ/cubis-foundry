@@ -1,11 +1,27 @@
 ---
 name: csharp-best-practices
-description: "Use when writing, reviewing, or refactoring modern C#/.NET code, including minimal APIs, records, async streams, pattern matching, DI lifetimes, and memory-efficient performance tuning."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: Use when writing, reviewing, or refactoring modern C#/.NET code,
+  including minimal APIs, records, async streams, pattern matching, DI
+  lifetimes, and memory-efficient performance tuning.
+triggers:
+  - csharp best practices
+  - backend
+  - records
+  - async streams
+  - pattern matching
+  - dI lifetimes
+  - new .NET 9 APIs
+  - workers
+domains:
+  - backend
+whenToUse: When building new .NET 9 APIs, workers, or services with minimal API patterns.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # C# Best Practices

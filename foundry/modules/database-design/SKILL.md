@@ -1,11 +1,28 @@
 ---
 name: database-design
-description: "Use when designing database schemas, normalization strategies, indexing plans, query optimization, and migration workflows for relational, document, or hybrid data stores."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: Use when designing database schemas, normalization strategies,
+  indexing plans, query optimization, and migration workflows for relational,
+  document, or hybrid data stores.
+triggers:
+  - database design
+  - backend
+  - data
+  - database schemas
+  - normalization strategies
+  - indexing plans
+  - query optimization
+  - migration workflows
+domains:
+  - backend
+  - data
+whenToUse: When designing a new database schema or data model from scratch.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Database Design

@@ -1,11 +1,29 @@
 ---
 name: code-review
-description: "Use when conducting code reviews, building review checklists, calibrating review depth, providing structured feedback, or establishing team review practices. Covers review methodology, feedback patterns, automated checks, and batch review strategies."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: "Claude Code, Codex, GitHub Copilot"
+description: Use when conducting code reviews, building review checklists,
+  calibrating review depth, providing structured feedback, or establishing team
+  review practices. Covers review methodology, feedback patterns, automated
+  checks, and batch review strategies.
+triggers:
+  - code review
+  - quality
+  - code reviews
+  - building review checklists
+  - calibrating review depth
+  - feedback patterns
+  - automated checks
+  - batch review strategies
+domains:
+  - quality
+whenToUse: When reviewing a pull request for correctness, security, performance,
+  and maintainability.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Code Review

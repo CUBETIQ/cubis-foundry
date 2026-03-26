@@ -1,17 +1,30 @@
-import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { tmpdir } from "node:os";
-import { describe, expect, it } from "vitest";
+import { homedir, tmpdir } from "node:os";
+import { afterEach, describe, expect, it } from "vitest";
 import { compile, compileModule, needsRecompile } from "./index.js";
 import { transformStage } from "./stages/transform.js";
 import { emitStage } from "./stages/emit.js";
 import { resolveStage } from "./stages/resolve.js";
 import type { CompilationContext, ResolveStageOutput, TransformStageOutput } from "./types.js";
 import type { Adapter, Catalog, Module, ModuleOutput } from "../catalog/types.js";
+import { loadCatalog } from "../catalog/index.js";
+import { setFoundryHomedir } from "../state/platform-state.js";
+import { writeState } from "../state/index.js";
 
 const REPO_ROOT = resolve(import.meta.dirname, "../../..");
 
+function cloneFoundryFixture(): string {
+  const tmp = mkdtempSync(join(tmpdir(), "foundry-compiler-fixture-"));
+  cpSync(join(REPO_ROOT, "foundry"), join(tmp, "foundry"), { recursive: true });
+  return tmp;
+}
+
 describe("compiler", () => {
+  afterEach(() => {
+    setFoundryHomedir(homedir());
+  });
+
   describe("compile()", () => {
     it("compiles for a specific platform", async () => {
       const results = await compile(REPO_ROOT, "claude");
@@ -41,16 +54,111 @@ describe("compiler", () => {
   });
 
   describe("compileModule()", () => {
-    it("returns an empty array (not yet implemented)", async () => {
-      const results = await compileModule(REPO_ROOT, "rules-core", "claude");
-      expect(results).toEqual([]);
+    it("compiles only assets owned by the requested module", async () => {
+      const root = cloneFoundryFixture();
+
+      const results = await compileModule(root, "rules-core", "claude");
+
+      expect(results).toHaveLength(1);
+      expect(results[0]!.platform).toBe("claude");
+
+      const paths = results[0]!.assets.map((asset) => asset.path);
+      expect(paths).toContain("CLAUDE.md");
+      expect(paths).toContain(".claude/skills/rules-core/SKILL.md");
+      expect(paths).not.toContain(".claude/skills/api-design/SKILL.md");
+      expect(paths.some((path) => path.startsWith(".claude/hooks/"))).toBe(false);
+      expect(paths.some((path) => path.startsWith(".claude/agents/"))).toBe(false);
+      expect(paths.some((path) => path.includes("/workflow-"))).toBe(false);
     });
   });
 
   describe("needsRecompile()", () => {
-    it("returns an empty array (not yet implemented)", async () => {
-      const reasons = await needsRecompile(REPO_ROOT, "claude");
+    it("returns no reasons when generated assets and install state match", async () => {
+      const root = cloneFoundryFixture();
+      const stateHome = mkdtempSync(join(tmpdir(), "foundry-state-home-"));
+      setFoundryHomedir(stateHome);
+
+      const [bundle] = await compile(root, "claude");
+      const catalog = await loadCatalog(root);
+
+      writeState("claude", {
+        schemaVersion: 1,
+        platform: "claude",
+        version: catalog.package.version,
+        installedAt: "2026-03-26T00:00:00.000Z",
+        assets: bundle!.assets.map((asset) => ({
+          path: asset.path,
+          checksum: asset.checksum,
+          installedAt: "2026-03-26T00:00:00.000Z",
+          sourceModule: "test",
+        })),
+      });
+
+      const reasons = await needsRecompile(root, "claude");
+
       expect(reasons).toEqual([]);
+    });
+
+    it("reports stale state and stale generated assets", async () => {
+      const root = cloneFoundryFixture();
+      const stateHome = mkdtempSync(join(tmpdir(), "foundry-state-home-"));
+      setFoundryHomedir(stateHome);
+
+      const [bundle] = await compile(root, "claude");
+      const catalog = await loadCatalog(root);
+      const firstAsset = bundle!.assets[0]!;
+
+      writeState("claude", {
+        schemaVersion: 1,
+        platform: "claude",
+        version: catalog.package.version,
+        installedAt: "2026-03-26T00:00:00.000Z",
+        assets: bundle!.assets.map((asset, index) => ({
+          path: asset.path,
+          checksum: index === 0 ? "deadbeef" : asset.checksum,
+          installedAt: "2026-03-26T00:00:00.000Z",
+          sourceModule: "test",
+        })),
+      });
+
+      writeFileSync(
+        join(bundle!.outputDir, firstAsset.path),
+        `${firstAsset.content}\n# tampered\n`,
+        "utf8",
+      );
+
+      const reasons = await needsRecompile(root, "claude");
+
+      expect(reasons).toContain("module-modified");
+      expect(reasons).toContain("stale-asset");
+    });
+
+    it("reports a missing output directory when generated assets are absent", async () => {
+      const root = cloneFoundryFixture();
+      const stateHome = mkdtempSync(join(tmpdir(), "foundry-state-home-"));
+      setFoundryHomedir(stateHome);
+
+      const [bundle] = await compile(root, "claude");
+      const catalog = await loadCatalog(root);
+
+      writeState("claude", {
+        schemaVersion: 1,
+        platform: "claude",
+        version: catalog.package.version,
+        installedAt: "2026-03-26T00:00:00.000Z",
+        assets: bundle!.assets.map((asset) => ({
+          path: asset.path,
+          checksum: asset.checksum,
+          installedAt: "2026-03-26T00:00:00.000Z",
+          sourceModule: "test",
+        })),
+      });
+
+      rmSync(bundle!.outputDir, { recursive: true, force: true });
+
+      const reasons = await needsRecompile(root, "claude");
+
+      expect(reasons).toContain("output-dir-missing");
     });
   });
 
@@ -215,6 +323,7 @@ describe("compiler", () => {
     });
 
     it("returns empty assets when no module has a capability", async () => {
+      const tmp = mkdtempSync(join(tmpdir(), "foundry-renderer-test-empty-"));
       const adapter = makeAdapter("/nonexistent");
       const ctx: CompilationContext = {
         catalog: {
@@ -237,7 +346,7 @@ describe("compiler", () => {
         modules: [],
       };
 
-      const result = await transformStage(ctx, { orderedModules: [] });
+      const result = await transformStage(ctx, { orderedModules: [] }, { repoRoot: tmp });
 
       expect(result.assets).toEqual([]);
     });

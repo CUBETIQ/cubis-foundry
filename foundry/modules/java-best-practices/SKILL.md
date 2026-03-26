@@ -1,11 +1,27 @@
 ---
 name: java-best-practices
-description: "Use when writing, refactoring, or reviewing modern Java (21+) code. Covers records, sealed classes, pattern matching, virtual threads, structured concurrency, and production testing with JUnit 5. Replaces java-pro."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: Use when writing, refactoring, or reviewing modern Java (21+) code.
+  Covers records, sealed classes, pattern matching, virtual threads, structured
+  concurrency, and production testing with JUnit 5. Replaces java-pro.
+triggers:
+  - java best practices
+  - backend
+  - sealed classes
+  - pattern matching
+  - virtual threads
+  - structured concurrency
+  - production testing
+  - new Java services
+domains:
+  - backend
+whenToUse: When building new Java services or libraries targeting JDK 21+.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Java Best Practices

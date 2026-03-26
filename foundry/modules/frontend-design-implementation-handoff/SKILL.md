@@ -1,11 +1,28 @@
 ---
 name: frontend-design-implementation-handoff
-description: Translate design-engine output into repo-native implementation work, preferring real components, Flutter widgets, and existing tokens over pasted generated markup.
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "1.0"
-compatibility: Claude Code, Codex, GitHub Copilot, Gemini CLI, Antigravity
+description: Translate design-engine output into repo-native implementation
+  work, preferring real components, Flutter widgets, and existing tokens over
+  pasted generated markup.
+triggers:
+  - frontend design implementation handoff
+  - frontend
+  - design
+  - preferring real components
+  - flutter widgets
+  - react
+  - another real UI stack
+  - implementation
+domains:
+  - frontend
+  - design
+whenToUse: When after Stitch returns a screen artifact.
+priority: secondary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Frontend Design Implementation Handoff

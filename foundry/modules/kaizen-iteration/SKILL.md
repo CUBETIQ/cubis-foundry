@@ -1,11 +1,27 @@
 ---
 name: kaizen-iteration
-description: "Use when running retrospectives, analyzing team metrics, performing root-cause analysis, and driving incremental process improvement."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: "Claude Code, Codex, GitHub Copilot"
+description: Use when running retrospectives, analyzing team metrics, performing
+  root-cause analysis, and driving incremental process improvement.
+triggers:
+  - kaizen iteration
+  - delivery
+  - running retrospectives
+  - analyzing team metrics
+  - running a sprint
+  - project retrospective
+  - need structured facilitation
+  - analyzing team velocity
+domains:
+  - delivery
+whenToUse: When running a sprint or project retrospective and need structured
+  facilitation.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Kaizen Iteration

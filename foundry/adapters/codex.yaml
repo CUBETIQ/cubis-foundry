@@ -6,25 +6,36 @@ rules:
   userOverride: honor
   conflictResolution: user-first
   generate:
-    type: skill-merge
-    source: foundry/modules/rules-core/rules.yaml
+    type: markdown-merge
+    source: foundry/modules/rules-core/rules
     output: AGENTS.md
 
 skills:
   projection:
     type: markdown-transform
     transforms:
-      - match: "**/*.md"
+      - match: "**/SKILL.md"
         pipeline:
-          - filter: code-blocks
-          - map: frontmatter
-          - merge: capability
+          - filter: frontmatter
+          - normalize: markdown
   capabilityProjection: []
 
 workflows:
-  projection: []
+  projection:
+    - format: skill-markdown
+      outputPattern: .agents/skills/workflow-{id}/SKILL.md
 
 specialists:
+  projection:
+    - format: codex-agent-toml
+      outputPattern: .codex/agents/{id}.toml
+
+agents:
+  projection:
+    - format: codex-agent-toml
+      outputPattern: .codex/agents/{id}.toml
+
+hooks:
   projection: []
 
 contextDocs:

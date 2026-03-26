@@ -1,11 +1,28 @@
 ---
 name: nextjs
-description: "Use when building web applications with Next.js 15+. Invoke for App Router, Server Components, Server Actions, caching strategies, Partial Prerendering, parallel routes, middleware, and deployment."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: "Claude Code, Codex, GitHub Copilot"
+description: Use when building web applications with Next.js 15+. Invoke for App
+  Router, Server Components, Server Actions, caching strategies, Partial
+  Prerendering, parallel routes, middleware, and deployment.
+triggers:
+  - nextjs
+  - frontend
+  - web applications
+  - server Components
+  - server Actions
+  - caching strategies
+  - partial Prerendering
+  - parallel routes
+domains:
+  - frontend
+whenToUse: When creating or migrating Next.js projects to the App Router from
+  Pages Router.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Next.js 15+ App Router

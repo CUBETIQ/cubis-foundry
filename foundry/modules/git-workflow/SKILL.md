@@ -1,11 +1,26 @@
 ---
 name: git-workflow
-description: "Use when defining git branching, commit conventions, merge or rebase policy, release flow, or monorepo collaboration patterns."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: "Claude Code, Codex, GitHub Copilot"
+description: Use when defining git branching, commit conventions, merge or
+  rebase policy, release flow, or monorepo collaboration patterns.
+triggers:
+  - git workflow
+  - delivery
+  - git branching
+  - commit conventions
+  - merge
+  - rebase policy
+  - release flow
+  - new repository's branching
+domains:
+  - delivery
+whenToUse: When setting up a new repository's branching and merge strategy.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Git Workflow

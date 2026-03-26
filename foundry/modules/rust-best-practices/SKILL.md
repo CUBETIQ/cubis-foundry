@@ -1,11 +1,28 @@
 ---
 name: rust-best-practices
-description: "Use when writing production Rust (2024 edition): ownership and borrowing patterns, async with tokio, error handling with thiserror/anyhow, comprehensive testing, and disciplined use of unsafe."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: "Use when writing production Rust (2024 edition): ownership and
+  borrowing patterns, async with tokio, error handling with thiserror/anyhow,
+  comprehensive testing, and disciplined use of unsafe."
+triggers:
+  - rust best practices
+  - backend
+  - ownership
+  - borrowing patterns
+  - async
+  - error handling
+  - comprehensive testing
+  - disciplined use of unsafe
+domains:
+  - backend
+whenToUse: When building services, CLIs, libraries, or systems-level code in
+  Rust 2024 edition.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Rust Best Practices

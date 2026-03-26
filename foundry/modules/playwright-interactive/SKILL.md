@@ -1,11 +1,28 @@
 ---
 name: playwright-interactive
-description: "Use when building interactive Playwright suites for browser automation, visual regression, accessibility audits, network interception, and collaborative test workflows."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: "Claude Code, Codex, GitHub Copilot"
+description: Use when building interactive Playwright suites for browser
+  automation, visual regression, accessibility audits, network interception, and
+  collaborative test workflows.
+triggers:
+  - playwright interactive
+  - quality
+  - visual regression
+  - accessibility audits
+  - network interception
+  - collaborative test workflows
+  - tests
+  - drag-and-drop
+domains:
+  - quality
+whenToUse: When writing tests for complex interactive flows (multi-step forms,
+  drag-and-drop, real-time updates).
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Playwright Interactive

@@ -6,26 +6,39 @@ rules:
   userOverride: honor
   conflictResolution: user-first
   generate:
-    type: skill-merge
-    source: foundry/modules/rules-core/rules.yaml
+    type: markdown-merge
+    source: foundry/modules/rules-core/rules
     output: .github/copilot-instructions.md
 
 skills:
   projection:
     type: markdown-transform
     transforms:
-      - match: "**/*.md"
+      - match: "**/SKILL.md"
         pipeline:
-          - filter: code-blocks
-          - map: frontmatter
-          - merge: capability
+          - filter: frontmatter
+          - normalize: markdown
   capabilityProjection: []
 
 workflows:
-  projection: []
+  projection:
+    - format: copilot-prompt-markdown
+      outputPattern: .github/prompts/{id}.prompt.md
 
 specialists:
-  projection: []
+  projection:
+    - format: copilot-agent-markdown
+      outputPattern: .github/agents/{id}.agent.md
+
+agents:
+  projection:
+    - format: copilot-agent-markdown
+      outputPattern: .github/agents/{id}.agent.md
+
+hooks:
+  projection:
+    - format: hooks-bundle
+      outputDir: .github/hooks
 
 contextDocs:
   enabled: true

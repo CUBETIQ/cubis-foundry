@@ -1,11 +1,28 @@
 ---
 name: frontend-design-screen-brief
-description: Turn canonical design state plus overlays into a compact, high-signal screen brief for Stitch, frontend implementation, or Flutter/mobile work.
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "1.0"
-compatibility: Claude Code, Codex, GitHub Copilot, Gemini CLI, Antigravity
+description: Turn canonical design state plus overlays into a compact,
+  high-signal screen brief for Stitch, frontend implementation, or
+  Flutter/mobile work.
+triggers:
+  - frontend design screen brief
+  - frontend
+  - design
+  - high-signal screen brief
+  - frontend implementation
+  - flutter/mobile work
+  - stitch generation
+  - edit prompt
+domains:
+  - frontend
+  - design
+whenToUse: When preparing a Stitch generation or edit prompt.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Frontend Design Screen Brief

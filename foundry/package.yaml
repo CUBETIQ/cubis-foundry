@@ -28,7 +28,7 @@ installProfiles:
   - id: developer
     label: Developer
     description: Full developer workflow
-    modules: [rules-core, agents-core, workflows-core, skills-core, contexts-core, mcp-core]
+    modules: [rules-core, agents-core, workflows-core, skills-core, contexts-core, hooks-core, mcp-core]
   - id: security
     label: Security
     description: Security-focused install
@@ -57,6 +57,9 @@ installComponents:
   - id: contexts-core
     label: Context Docs
     description: AI-context documents
+  - id: hooks-core
+    label: Hooks
+    description: Platform-native hook recipes and scripts
   - id: mcp-core
     label: MCP Servers
     description: MCP server configurations

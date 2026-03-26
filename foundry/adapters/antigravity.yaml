@@ -6,25 +6,36 @@ rules:
   userOverride: honor
   conflictResolution: user-first
   generate:
-    type: skill-merge
-    source: foundry/modules/rules-core/rules.yaml
-    output: GEMINI.md
+    type: markdown-merge
+    source: foundry/modules/rules-core/rules
+    output: .gemini/GEMINI.md
 
 skills:
   projection:
     type: markdown-transform
     transforms:
-      - match: "**/*.md"
+      - match: "**/SKILL.md"
         pipeline:
-          - filter: code-blocks
-          - map: frontmatter
-          - merge: capability
+          - filter: frontmatter
+          - normalize: markdown
   capabilityProjection: []
 
 workflows:
-  projection: []
+  projection:
+    - format: gemini-command-toml
+      outputPattern: .gemini/commands/{id}.toml
 
 specialists:
+  projection:
+    - format: gemini-command-toml
+      outputPattern: .gemini/commands/agent-{id}.toml
+
+agents:
+  projection:
+    - format: gemini-command-toml
+      outputPattern: .gemini/commands/agent-{id}.toml
+
+hooks:
   projection: []
 
 contextDocs:

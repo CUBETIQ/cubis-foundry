@@ -1,11 +1,27 @@
 ---
 name: mcp-server-builder
-description: "Use when building MCP servers with spec-compliant tools, structured outputs, resource providers, transport configuration, and server testing."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: Use when building MCP servers with spec-compliant tools, structured
+  outputs, resource providers, transport configuration, and server testing.
+triggers:
+  - mcp server builder
+  - infrastructure
+  - mCP servers
+  - structured outputs
+  - resource providers
+  - transport configuration
+  - server testing
+  - resources
+domains:
+  - infrastructure
+whenToUse: When building a new MCP server to expose tools, resources, or prompts
+  to AI agents.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # MCP Server Builder

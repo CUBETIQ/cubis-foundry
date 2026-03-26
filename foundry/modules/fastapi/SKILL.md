@@ -1,11 +1,30 @@
 ---
 name: fastapi
-description: "Use when building FastAPI 0.115+ applications with Pydantic v2 models, async endpoints, dependency injection, OpenAPI documentation, background tasks, and security patterns."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: Use when building FastAPI 0.115+ applications with Pydantic v2
+  models, async endpoints, dependency injection, OpenAPI documentation,
+  background tasks, and security patterns.
+triggers:
+  - fastapi
+  - python
+  - backend
+  - architecture
+  - fastAPI 0.115+ applications
+  - async endpoints
+  - dependency injection
+  - openAPI documentation
+domains:
+  - python
+  - backend
+  - architecture
+whenToUse: When scaffolding a new FastAPI application or adding routers to an
+  existing one.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # FastAPI

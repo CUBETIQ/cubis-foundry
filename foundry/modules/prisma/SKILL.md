@@ -1,11 +1,29 @@
 ---
 name: prisma
-description: "Use when working with Prisma 6+ for schema design, database migrations, client queries, relation modeling, edge deployment, and type-safe database access in TypeScript and Node.js applications."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: Use when working with Prisma 6+ for schema design, database
+  migrations, client queries, relation modeling, edge deployment, and type-safe
+  database access in TypeScript and Node.js applications.
+triggers:
+  - prisma
+  - backend
+  - data
+  - database migrations
+  - client queries
+  - relation modeling
+  - edge deployment
+  - node.js applications
+domains:
+  - backend
+  - data
+whenToUse: When designing a new Prisma schema with models, relations, enums, and
+  composite types.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Prisma

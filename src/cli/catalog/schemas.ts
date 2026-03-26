@@ -89,6 +89,16 @@ export const ContextDocTemplateSchema = z.object({
   triggers: z.array(z.string()),
 });
 
+export const ProjectionRuleSchema = z
+  .object({
+    format: z.string(),
+    outputPattern: z.string().optional(),
+    outputDir: z.string().optional(),
+    settingsPath: z.string().optional(),
+    enabled: z.boolean().optional(),
+  })
+  .passthrough();
+
 export const AdapterSchema = z.object({
   platform: RuntimeIdSchema,
   label: z.string(),
@@ -122,11 +132,21 @@ export const AdapterSchema = z.object({
       .optional(),
   }),
   workflows: z.object({
-    projection: z.array(z.unknown()),
+    projection: z.array(ProjectionRuleSchema),
   }),
   specialists: z.object({
-    projection: z.array(z.unknown()),
+    projection: z.array(ProjectionRuleSchema),
   }),
+  agents: z
+    .object({
+      projection: z.array(ProjectionRuleSchema),
+    })
+    .optional(),
+  hooks: z
+    .object({
+      projection: z.array(ProjectionRuleSchema),
+    })
+    .optional(),
   contextDocs: z.object({
     enabled: z.boolean(),
     outputDir: z.string(),

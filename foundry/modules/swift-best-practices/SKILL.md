@@ -1,11 +1,28 @@
 ---
 name: swift-best-practices
-description: "Use when writing, reviewing, or refactoring modern Swift, including strict concurrency, actors, SwiftUI with @Observable, structured concurrency, protocol-oriented design, and SPM modules."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: Use when writing, reviewing, or refactoring modern Swift, including
+  strict concurrency, actors, SwiftUI with @Observable, structured concurrency,
+  protocol-oriented design, and SPM modules.
+triggers:
+  - swift best practices
+  - backend
+  - refactoring modern Swift
+  - actors
+  - swiftUI
+  - structured concurrency
+  - protocol-oriented design
+  - sPM modules
+domains:
+  - backend
+whenToUse: When building new Swift applications, packages, or frameworks
+  targeting Swift 6.0+.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Swift Best Practices

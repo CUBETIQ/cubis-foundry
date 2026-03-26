@@ -1,11 +1,27 @@
 ---
 name: python-best-practices
-description: "Use when writing production Python 3.12–3.14 code: modern typing with PEP 695/696 syntax, async service patterns, packaging with pyproject.toml, pytest-based testing, and standard-library-first design."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: "Use when writing production Python 3.12–3.14 code: modern typing
+  with PEP 695/696 syntax, async service patterns, packaging with
+  pyproject.toml, pytest-based testing, and standard-library-first design."
+triggers:
+  - python best practices
+  - backend
+  - modern typing
+  - async service patterns
+  - pytest-based testing
+  - new Python services
+  - libraries
+  - cLI tools targeting 3.12+
+domains:
+  - backend
+whenToUse: When writing new Python services, libraries, or CLI tools targeting 3.12+.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Python Best Practices

@@ -1,11 +1,29 @@
 ---
 name: frontend-design
-description: Create distinctive, production-grade frontend interfaces with strong visual direction. Use for design systems, components, pages, dashboards, landing pages, accessibility, and polished UI work that should avoid generic AI aesthetics.
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.2"
-compatibility: Claude Code, Codex, GitHub Copilot, Gemini CLI, Antigravity
+description: Create distinctive, production-grade frontend interfaces with
+  strong visual direction. Use for design systems, components, pages,
+  dashboards, landing pages, accessibility, and polished UI work that should
+  avoid generic AI aesthetics.
+triggers:
+  - frontend design
+  - frontend
+  - design
+  - create distinctive
+  - components
+  - pages
+  - dashboards
+  - landing pages
+domains:
+  - frontend
+  - design
+whenToUse: When designing or reviewing component architecture for a frontend application.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Frontend Design

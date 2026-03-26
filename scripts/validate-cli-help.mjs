@@ -45,6 +45,7 @@ assertIncludes(
 assertIncludes(normalizedRootHelp, "init", "root help");
 assertIncludes(normalizedRootHelp, "workflows", "root help");
 assertIncludes(normalizedRootHelp, "build", "root help");
+assertIncludes(normalizedRootHelp, "doctor", "root help");
 assertIncludes(normalizedRootHelp, "mobile", "root help");
 assertIncludes(normalizedRootHelp, "web", "root help");
 assertIncludes(normalizedRootHelp, "web", "root help");
@@ -216,5 +217,4 @@ if (failures.length > 0) {
 }
 
 console.log("CLI help validation passed.");
-
 

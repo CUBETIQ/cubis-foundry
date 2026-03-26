@@ -1,11 +1,27 @@
 ---
 name: owasp-security-review
-description: "Use when performing OWASP-aligned security reviews, including vulnerability analysis, secure code review, threat modeling, and SAST/DAST integration."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: "Claude Code, Codex, GitHub Copilot"
+description: Use when performing OWASP-aligned security reviews, including
+  vulnerability analysis, secure code review, threat modeling, and SAST/DAST
+  integration.
+triggers:
+  - owasp security review
+  - security
+  - secure code review
+  - threat modeling
+  - sAST/DAST integration
+  - auditing a web application
+  - pull requests
+  - refining a threat model
+domains:
+  - security
+whenToUse: When auditing a web application or API against OWASP Top 10 categories.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # OWASP Security Review

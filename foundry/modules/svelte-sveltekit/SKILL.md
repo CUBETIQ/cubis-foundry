@@ -1,11 +1,27 @@
 ---
 name: svelte-sveltekit
-description: "Use when building web applications with Svelte 5 and SvelteKit. Invoke for rune-based reactivity ($state, $derived, $effect), file-based routing, form actions, server-side rendering, load functions, and deployment."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: "Claude Code, Codex, GitHub Copilot"
+description: Use when building web applications with Svelte 5 and SvelteKit.
+  Invoke for rune-based reactivity ($state, $derived, $effect), file-based
+  routing, form actions, server-side rendering, load functions, and deployment.
+triggers:
+  - svelte sveltekit
+  - frontend
+  - web applications
+  - svelteKit. Invoke
+  - $derived
+  - $effect)
+  - file-based routing
+  - form actions
+domains:
+  - frontend
+whenToUse: When creating or migrating Svelte components to Svelte 5 runes syntax.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Svelte 5 + SvelteKit

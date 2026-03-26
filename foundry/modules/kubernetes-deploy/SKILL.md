@@ -1,11 +1,29 @@
 ---
 name: kubernetes-deploy
-description: "Use when designing or managing Kubernetes deployments: Deployment and StatefulSet configurations, Service and Ingress routing, Helm chart authoring, resource requests and limits, health checks, rolling updates, and production hardening."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: "Use when designing or managing Kubernetes deployments: Deployment
+  and StatefulSet configurations, Service and Ingress routing, Helm chart
+  authoring, resource requests and limits, health checks, rolling updates, and
+  production hardening."
+triggers:
+  - kubernetes deploy
+  - infrastructure
+  - deployment
+  - statefulSet configurations
+  - service
+  - ingress routing
+  - helm chart authoring
+  - resource requests
+domains:
+  - infrastructure
+whenToUse: When designing Deployment, StatefulSet, or DaemonSet manifests for a
+  new service.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Kubernetes Deployment Patterns

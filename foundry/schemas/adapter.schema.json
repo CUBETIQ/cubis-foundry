@@ -100,6 +100,24 @@
         }
       }
     },
+    "agents": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "projection": {
+          "type": "array"
+        }
+      }
+    },
+    "hooks": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "projection": {
+          "type": "array"
+        }
+      }
+    },
     "contextDocs": {
       "type": "object",
       "additionalProperties": false,

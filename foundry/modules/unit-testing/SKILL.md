@@ -1,11 +1,28 @@
 ---
 name: unit-testing
-description: "Unit testing best practices covering test design, mocking strategies, coverage analysis, TDD workflow, and assertion patterns. Use when writing, reviewing, or improving unit tests."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: "Claude Code, Codex, GitHub Copilot"
+description: Unit testing best practices covering test design, mocking
+  strategies, coverage analysis, TDD workflow, and assertion patterns. Use when
+  writing, reviewing, or improving unit tests.
+triggers:
+  - unit testing
+  - quality
+  - testing
+  - unit tests
+  - new unit tests
+  - methods
+  - classes
+  - existing test suites
+domains:
+  - quality
+  - testing
+whenToUse: When writing new unit tests for functions, methods, or classes.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Unit Testing Best Practices

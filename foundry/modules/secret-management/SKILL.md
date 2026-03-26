@@ -1,11 +1,28 @@
 ---
 name: secret-management
-description: "Design and implement secret and credential management strategies including vault integration, environment variable handling, rotation policies, secret scanning, and zero-trust credential distribution."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: "Claude Code, Codex, GitHub Copilot"
+description: Design and implement secret and credential management strategies
+  including vault integration, environment variable handling, rotation policies,
+  secret scanning, and zero-trust credential distribution.
+triggers:
+  - secret management
+  - security
+  - design
+  - implement secret
+  - rotation policies
+  - secret scanning
+  - aWS Secrets Manager
+  - gCP Secret Manager
+domains:
+  - security
+whenToUse: When setting up a secrets vault (HashiCorp Vault, AWS Secrets
+  Manager, GCP Secret Manager, Azure Key Vault).
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Secret Management

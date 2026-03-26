@@ -1,11 +1,29 @@
 ---
 name: ci-cd-pipeline
-description: "Use when designing, optimizing, or debugging CI/CD pipelines: GitHub Actions workflows, GitLab CI configurations, pipeline caching strategies, matrix builds, deployment gates, artifact management, and release automation."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: "Use when designing, optimizing, or debugging CI/CD pipelines:
+  GitHub Actions workflows, GitLab CI configurations, pipeline caching
+  strategies, matrix builds, deployment gates, artifact management, and release
+  automation."
+triggers:
+  - ci cd pipeline
+  - infrastructure
+  - gitHub Actions workflows
+  - gitLab CI configurations
+  - pipeline caching strategies
+  - matrix builds
+  - deployment gates
+  - artifact management
+domains:
+  - infrastructure
+whenToUse: When designing a new CI/CD pipeline for a project or migrating from
+  one CI system to another.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # CI/CD Pipeline

@@ -1,11 +1,28 @@
 ---
 name: skill-creator
-description: "Use when creating or updating skills, evaluating skill performance, or benchmarking instruction quality. Covers skill authoring, edits, eval design, and iterative improvement of skill behavior."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: Use when creating or updating skills, evaluating skill performance,
+  or benchmarking instruction quality. Covers skill authoring, edits, eval
+  design, and iterative improvement of skill behavior.
+triggers:
+  - skill creator
+  - delivery
+  - skills
+  - evaluating skill performance
+  - edits
+  - eval design
+  - new skill from scratch
+  - custom project
+domains:
+  - delivery
+whenToUse: When creating a new skill from scratch for the Foundry library or a
+  custom project.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Skill Creator

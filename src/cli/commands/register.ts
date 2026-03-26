@@ -9,6 +9,7 @@ import { registerWorkflowCommands } from "../workflows/commands.js";
 import { registerMcpCommands } from "../mcp/commands.js";
 import { registerRulesCommands } from "../rules/commands.js";
 import { registerBuildCommands } from "../build/commands.js";
+import { registerDoctorCommands } from "../doctor/commands.js";
 import { registerMobileCommands } from "../mobile/commands.js";
 import { registerWebCommands } from "../web/commands.js";
 import { registerCatalogCommands } from "../catalog/commands.js";
@@ -25,6 +26,7 @@ export interface CliRegistrationDeps {
   runWorkflowPruneSkills: WorkflowAction;
   runWorkflowSyncRules: WorkflowAction;
   runWorkflowDoctor: WorkflowDoctorAction;
+  runDoctor: WorkflowDoctorAction;
   runWorkflowConfig: WorkflowAction;
   runInitWizard: WorkflowAction;
   defaultSkillProfile: string;
@@ -302,6 +304,10 @@ export function registerCommands(deps: CliRegistrationDeps) {
     runBuildArchitecture: deps.runBuildArchitecture,
   });
 
+  registerDoctorCommands(program, {
+    runDoctor: deps.runDoctor,
+  });
+
   registerMobileCommands(program, {
     runMobileQa: deps.runMobileQa,
   });
@@ -363,5 +369,4 @@ export function registerCommands(deps: CliRegistrationDeps) {
 
   return program;
 }
-
 

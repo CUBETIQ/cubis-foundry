@@ -1,11 +1,26 @@
 ---
 name: spec-driven-delivery
-description: Use when turning a non-trivial request into a Git-tracked spec pack, maintaining traceability during execution, and updating specs before code when requirements or architecture change.
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "1.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: Use when turning a non-trivial request into a Git-tracked spec
+  pack, maintaining traceability during execution, and updating specs before
+  code when requirements or architecture change.
+triggers:
+  - spec driven delivery
+  - delivery
+  - architecture change
+  - acceptance criteria
+  - traceability
+  - architecture impact in Git
+  - spec
+domains:
+  - delivery
+whenToUse: When planning a medium or large feature before implementation.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Spec-Driven Delivery

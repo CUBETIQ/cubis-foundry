@@ -1,11 +1,28 @@
 ---
 name: golang-best-practices
-description: "Use when writing production Go 1.24+ code: generics with constraints, structured concurrency via errgroup and context, comprehensive error handling with wrapped sentinels, and performance-profiled service design."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: "Use when writing production Go 1.24+ code: generics with
+  constraints, structured concurrency via errgroup and context, comprehensive
+  error handling with wrapped sentinels, and performance-profiled service
+  design."
+triggers:
+  - golang best practices
+  - backend
+  - generics
+  - context
+  - comprehensive error handling
+  - aPIs
+  - workers
+  - cLIs
+domains:
+  - backend
+whenToUse: When building APIs, workers, CLIs, or microservices in Go 1.24+.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Golang Best Practices

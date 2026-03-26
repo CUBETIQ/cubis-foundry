@@ -1,11 +1,28 @@
 ---
 name: integration-testing
-description: "Integration testing patterns for verifying component interactions across test boundaries, databases, APIs, test containers, and fixture management. Use when testing how components work together."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: "Claude Code, Codex, GitHub Copilot"
+description: Integration testing patterns for verifying component interactions
+  across test boundaries, databases, APIs, test containers, and fixture
+  management. Use when testing how components work together.
+triggers:
+  - integration testing
+  - quality
+  - testing
+  - modules
+  - layers
+  - consumer services
+  - test containers
+  - integration
+domains:
+  - quality
+  - testing
+whenToUse: When testing interactions between services, modules, or layers.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Integration Testing Patterns

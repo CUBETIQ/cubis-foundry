@@ -1,11 +1,29 @@
 ---
 name: typescript-best-practices
-description: "Use when writing production TypeScript 5.9+ code: strict configuration, advanced type-level programming, discriminated unions, branded types, and patterns that prepare codebases for TS 6/7 evolution."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: "Use when writing production TypeScript 5.9+ code: strict
+  configuration, advanced type-level programming, discriminated unions, branded
+  types, and patterns that prepare codebases for TS 6/7 evolution."
+triggers:
+  - typescript best practices
+  - typescript
+  - frontend
+  - backend
+  - strict configuration
+  - discriminated unions
+  - branded types
+  - new TypeScript projects
+domains:
+  - typescript
+  - frontend
+  - backend
+whenToUse: When starting new TypeScript projects or migrating JavaScript codebases.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # TypeScript Best Practices

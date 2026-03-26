@@ -1,0 +1,23 @@
+id: hooks-core
+kind: capability
+label: Agent Hooks
+description: Platform-native pre-tool and post-tool hook recipes for Claude, Copilot, and Gemini-family runtimes.
+stability: experimental
+profiles:
+  - developer
+capability:
+  type: tool
+  domains:
+    - hooks
+    - agent
+    - tooling
+  outputs:
+    - type: rules
+      path: generated/hooks/claude
+      platforms: [claude]
+    - type: rules
+      path: generated/hooks/copilot
+      platforms: [copilot]
+    - type: rules
+      path: generated/hooks/gemini
+      platforms: [gemini]

@@ -120,6 +120,14 @@ export interface AdapterSpecialistsConfig {
   projection: unknown[];
 }
 
+export interface AdapterAgentsConfig {
+  projection: unknown[];
+}
+
+export interface AdapterHooksConfig {
+  projection: unknown[];
+}
+
 export interface ContextDocTemplate {
   id: string;
   source: string;
@@ -145,6 +153,8 @@ export interface Adapter {
   skills: AdapterSkillsConfig;
   workflows: AdapterWorkflowsConfig;
   specialists: AdapterSpecialistsConfig;
+  agents?: AdapterAgentsConfig;
+  hooks?: AdapterHooksConfig;
   contextDocs: AdapterContextDocsConfig;
 }
 

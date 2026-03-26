@@ -1,11 +1,28 @@
 ---
 name: architecture-doc
-description: "Use when creating architecture documentation including C4 model diagrams, Architecture Decision Records, system context views, deployment diagrams, and quality attribute specifications."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: Use when creating architecture documentation including C4 model
+  diagrams, Architecture Decision Records, system context views, deployment
+  diagrams, and quality attribute specifications.
+triggers:
+  - architecture doc
+  - documentation
+  - architecture documentation
+  - system context views
+  - deployment diagrams
+  - c4 model diagrams (Context
+  - container
+  - component
+domains:
+  - documentation
+whenToUse: When creating or updating C4 model diagrams (Context, Container,
+  Component, Code).
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Architecture Documentation

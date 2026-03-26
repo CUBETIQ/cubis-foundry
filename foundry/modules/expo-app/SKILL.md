@@ -1,11 +1,29 @@
 ---
 name: expo-app
-description: "Use when building or maintaining Expo applications: SDK 52+ features, EAS Build and Submit pipelines, OTA updates with expo-updates, native module integration via config plugins, push notifications with expo-notifications, and cross-platform testing."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: "Use when building or maintaining Expo applications: SDK 52+
+  features, EAS Build and Submit pipelines, OTA updates with expo-updates,
+  native module integration via config plugins, push notifications with
+  expo-notifications, and cross-platform testing."
+triggers:
+  - expo app
+  - mobile
+  - frontend
+  - sDK 52+ features
+  - eAS Build
+  - submit pipelines
+  - oTA updates
+  - push notifications
+domains:
+  - mobile
+  - frontend
+whenToUse: When scaffolding a new Expo project or upgrading an existing one to SDK 52+.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Expo App Development

@@ -1,11 +1,27 @@
 ---
 name: deep-research
-description: Use when investigating latest vendor behavior, comparing tools or platforms, verifying claims beyond the repo, or gathering external evidence before implementation.
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "1.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: Use when investigating latest vendor behavior, comparing tools or
+  platforms, verifying claims beyond the repo, or gathering external evidence
+  before implementation.
+triggers:
+  - deep research
+  - research
+  - comparing tools
+  - latest SDK
+  - CLI
+  - API
+  - platform behavior
+  - frameworks
+domains:
+  - research
+whenToUse: When verifying latest SDK, CLI, API, or platform behavior.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Deep Research

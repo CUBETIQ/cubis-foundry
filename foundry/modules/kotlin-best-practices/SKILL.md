@@ -1,11 +1,28 @@
 ---
 name: kotlin-best-practices
-description: "Use when writing, refactoring, or reviewing modern Kotlin (2.1+) code across JVM, Android, iOS, and multiplatform targets. Covers coroutines, Flow, Compose patterns, KMP architecture, DSL design, and production testing. Replaces kotlin-pro."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: Use when writing, refactoring, or reviewing modern Kotlin (2.1+)
+  code across JVM, Android, iOS, and multiplatform targets. Covers coroutines,
+  Flow, Compose patterns, KMP architecture, DSL design, and production testing.
+  Replaces kotlin-pro.
+triggers:
+  - kotlin best practices
+  - backend
+  - android
+  - iOS
+  - flow
+  - compose patterns
+  - kMP architecture
+  - dSL design
+domains:
+  - backend
+whenToUse: When building Kotlin services, Android apps, or multiplatform shared modules.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Kotlin Best Practices

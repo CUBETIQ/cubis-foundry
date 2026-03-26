@@ -1,11 +1,28 @@
 ---
 name: prompt-engineering
-description: "Use when designing system prompts, crafting few-shot examples, implementing chain-of-thought reasoning, extracting structured output from LLMs, or building tool-use patterns for agent systems."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: Use when designing system prompts, crafting few-shot examples,
+  implementing chain-of-thought reasoning, extracting structured output from
+  LLMs, or building tool-use patterns for agent systems.
+triggers:
+  - prompt engineering
+  - ai
+  - delivery
+  - system prompts
+  - crafting few-shot examples
+  - tool-use patterns
+  - system prompt
+  - agent
+domains:
+  - ai
+  - delivery
+whenToUse: When designing a system prompt for a new LLM-powered feature or agent.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Prompt Engineering

@@ -1,11 +1,25 @@
 ---
 name: systematic-debugging
-description: "Systematic debugging methodology covering root cause analysis, bisection, logging strategies, debugger workflows, and post-mortem documentation. Use when diagnosing complex or elusive bugs."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: "Claude Code, Codex, GitHub Copilot"
+description: Systematic debugging methodology covering root cause analysis,
+  bisection, logging strategies, debugger workflows, and post-mortem
+  documentation. Use when diagnosing complex or elusive bugs.
+triggers:
+  - systematic debugging
+  - complex
+  - elusive bugs
+  - under specific conditions
+  - methodical diagnosis
+  - systematic
+  - debugging
+domains: []
+whenToUse: When a bug report cannot be explained by reading the code.
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Systematic Debugging Methodology

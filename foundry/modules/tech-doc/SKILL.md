@@ -1,11 +1,27 @@
 ---
 name: tech-doc
-description: "Use when writing technical documentation including API references, operational runbooks, onboarding guides, decision logs, and changelog standards."
-license: MIT
-metadata:
-  author: cubis-foundry
-  version: "3.0"
-compatibility: Claude Code, Codex, GitHub Copilot
+description: Use when writing technical documentation including API references,
+  operational runbooks, onboarding guides, decision logs, and changelog
+  standards.
+triggers:
+  - tech doc
+  - documentation
+  - technical documentation
+  - operational runbooks
+  - onboarding guides
+  - decision logs
+  - changelog standards
+  - aPI documentation (REST
+domains:
+  - documentation
+whenToUse: When writing or updating API documentation (REST, GraphQL, gRPC).
+priority: primary
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
 ---
 
 # Technical Documentation

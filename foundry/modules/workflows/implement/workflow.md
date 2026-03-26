@@ -1,0 +1,73 @@
+---
+name: implement
+command: "/implement"
+description: Execute a scoped change end-to-end, using the smallest set of skills and checks required to finish correctly.
+triggers:
+  - implement
+  - build
+  - ship
+  - change
+agentChain:
+  - implementer
+primarySkills:
+  - spec-driven-delivery
+supportingSkills:
+  - unit-testing
+  - integration-testing
+whenToUse: "When the work is already scoped well enough to start editing code or configuration directly."
+priority: high
+compatibility:
+  - claude
+  - codex
+  - copilot
+  - gemini
+  - antigravity
+---
+
+# Implement Workflow
+
+## What this workflow does
+
+Routes directly to delivery, keeping planning overhead low while still enforcing verification and concise reporting.
+
+## When to use
+
+Use this when the task is understood, the acceptance criteria are clear, and the main need is execution rather than discovery.
+
+## Agent chain
+
+`implementer`
+
+## Step details
+
+1. Inspect the target code and nearby tests.
+2. Make the smallest coherent change.
+3. Run focused verification and fix regressions introduced during implementation.
+
+## Skill routing
+
+- Load the domain skill for the affected subsystem.
+- Add `unit-testing` or `integration-testing` when behavior changes or risk is non-trivial.
+
+## Context notes
+
+Provide the acceptance criteria, relevant files, and any verification commands that must pass.
+
+## Verification
+
+Completion requires changed files, executed checks, and a short explanation of behavior change.
+
+## Output contract
+
+```yaml
+IMPLEMENT_WORKFLOW_RESULT:
+  files_changed:
+    - <path>
+  verification:
+    - <command>
+  behavior_change: <summary>
+```
+
+## Follow-up items
+
+Typical next step: `/review` or `/test`
