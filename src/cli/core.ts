@@ -3116,7 +3116,7 @@ function inferRecommendedSkills(snapshot) {
     recommended.add("rust-best-practices");
   }
   if (hasFramework("Flutter")) {
-    recommended.add("flutter-mobile-qa");
+    recommended.add("qa");
     recommended.add("integration-testing");
   }
 
@@ -4551,6 +4551,7 @@ function buildManagedWorkflowBlock(platformId, workflows) {
     lines.push("Prefer native Gemini route surfaces first:");
     lines.push("- Commands: `.gemini/commands/*.toml`");
     lines.push("- Rules: `.gemini/GEMINI.md`");
+    lines.push("- Skills: `.gemini/skills/<skill>/SKILL.md`");
     lines.push("- Route specialists through commands and rule guidance.");
     lines.push("");
   }
@@ -15537,5 +15538,3 @@ export async function runCli(argv = process.argv) {
     process.exit(1);
   }
 }
-
-

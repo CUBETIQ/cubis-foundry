@@ -16,7 +16,7 @@ async function compileForPlatform(
 
   // Stage 1: Load
   const loadOutput = await loadStage(root, platform);
-  const ctx: CompilationContext = buildContext(loadOutput);
+  const ctx: CompilationContext = buildContext(loadOutput, root);
 
   // Stage 2: Validate
   const validateOutput = await validateStage(ctx);

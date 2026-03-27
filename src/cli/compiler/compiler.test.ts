@@ -1,4 +1,4 @@
-import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { homedir, tmpdir } from "node:os";
 import { afterEach, describe, expect, it } from "vitest";
@@ -18,6 +18,37 @@ function cloneFoundryFixture(): string {
   const tmp = mkdtempSync(join(tmpdir(), "foundry-compiler-fixture-"));
   cpSync(join(REPO_ROOT, "foundry"), join(tmp, "foundry"), { recursive: true });
   return tmp;
+}
+
+function writeSkillReference(
+  root: string,
+  moduleId: string,
+  relativePath: string,
+  content: string,
+): void {
+  const filePath = join(root, "foundry", "modules", moduleId, "references", relativePath);
+  mkdirSync(join(filePath, ".."), { recursive: true });
+  writeFileSync(filePath, content, "utf8");
+}
+
+function writeSkillMarkdown(
+  root: string,
+  moduleId: string,
+  content: string,
+): void {
+  const filePath = join(root, "foundry", "modules", moduleId, "SKILL.md");
+  writeFileSync(filePath, content, "utf8");
+}
+
+function writeModuleFile(
+  root: string,
+  moduleId: string,
+  relativePath: string,
+  content: string,
+): void {
+  const filePath = join(root, "foundry", "modules", moduleId, relativePath);
+  mkdirSync(join(filePath, ".."), { recursive: true });
+  writeFileSync(filePath, content, "utf8");
 }
 
 describe("compiler", () => {
@@ -69,6 +100,73 @@ describe("compiler", () => {
       expect(paths.some((path) => path.startsWith(".claude/hooks/"))).toBe(false);
       expect(paths.some((path) => path.startsWith(".claude/agents/"))).toBe(false);
       expect(paths.some((path) => path.includes("/workflow-"))).toBe(false);
+    });
+
+    it("projects sidecar references alongside a claude skill", async () => {
+      const root = cloneFoundryFixture();
+      writeSkillReference(root, "api-design", "rest-design.md", "# REST design\n");
+      writeSkillReference(root, "api-design", "errors/problem-details.md", "# Problem details\n");
+
+      const results = await compileModule(root, "api-design", "claude");
+
+      expect(results).toHaveLength(1);
+      const paths = results[0]!.assets.map((asset) => asset.path);
+      expect(paths).toContain(".claude/skills/api-design/SKILL.md");
+      expect(paths).toContain(".claude/skills/api-design/references/rest-design.md");
+      expect(paths).toContain(
+        ".claude/skills/api-design/references/errors/problem-details.md",
+      );
+    });
+
+    it("projects skills and references to native gemini skill directories", async () => {
+      const root = cloneFoundryFixture();
+      writeSkillReference(root, "api-design", "rest-design.md", "# REST design\n");
+
+      const results = await compileModule(root, "api-design", "gemini");
+
+      expect(results).toHaveLength(1);
+      const paths = results[0]!.assets.map((asset) => asset.path);
+      expect(paths).toContain(".gemini/skills/api-design/SKILL.md");
+      expect(paths).toContain(".gemini/skills/api-design/references/rest-design.md");
+      expect(paths).not.toContain(".agents/skills/api-design/SKILL.md");
+    });
+
+    it("fails when a skill references a missing markdown file", async () => {
+      const root = cloneFoundryFixture();
+      const skillPath = join(root, "foundry", "modules", "api-design", "SKILL.md");
+      const original = readFileSync(skillPath, "utf8");
+      writeSkillMarkdown(
+        root,
+        "api-design",
+        `${original}\n\n## Broken Link Fixture\n\n- \`references/does-not-exist.md\`\n`,
+      );
+
+      await expect(compileModule(root, "api-design", "claude")).rejects.toThrow(
+        /api-design\/SKILL\.md.*references\/does-not-exist\.md/i,
+      );
+    });
+
+    it("fails when a template references a missing markdown file", async () => {
+      const root = cloneFoundryFixture();
+      const templatePath = join(
+        root,
+        "foundry",
+        "modules",
+        "api-design",
+        "templates",
+        "claude.j2",
+      );
+      const original = readFileSync(templatePath, "utf8");
+      writeModuleFile(
+        root,
+        "api-design",
+        "templates/claude.j2",
+        `${original}\n\nSee \`references/template-does-not-exist.md\`.\n`,
+      );
+
+      await expect(compileModule(root, "api-design", "claude")).rejects.toThrow(
+        /api-design\/templates\/claude\.j2.*references\/template-does-not-exist\.md/i,
+      );
     });
   });
 

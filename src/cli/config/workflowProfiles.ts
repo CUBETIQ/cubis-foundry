@@ -137,14 +137,14 @@ export const WORKFLOW_PROFILES = {
     hookSupport: "native",
     project: {
       workflowDirs: [],
-      skillDirs: [],
+      skillDirs: [".gemini/skills"],
       commandDirs: [".gemini/commands"],
       hookDirs: [".gemini/hooks"],
       ruleFilesByPriority: [".gemini/GEMINI.md", "GEMINI.md"],
     },
     global: {
       workflowDirs: [],
-      skillDirs: [],
+      skillDirs: ["~/.gemini/skills"],
       commandDirs: ["~/.gemini/commands"],
       ruleFilesByPriority: ["~/.gemini/GEMINI.md"],
     },

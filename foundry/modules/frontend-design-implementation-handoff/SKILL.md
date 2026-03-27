@@ -43,7 +43,7 @@ Convert the design-engine result into implementation work that matches the repo'
 2. **Translate semantics, not markup** — A generated artifact is a seed. Rebuild it in the target stack using the same hierarchy and state model.
 3. **For Flutter, map into widgets and theme tokens** — Use theme extensions, shared cards, section headers, and navigation widgets instead of porting web structure literally.
 4. **Preserve the brief's anti-slop constraints** — Distinctive typography, component rhythm, and motion rules should survive the handoff.
-5. **Leave QA hooks behind** — Ensure semantics labels, stable copy, and navigable flows are good enough for `flutter-mobile-qa` or frontend tests.
+5. **Leave QA hooks behind** — Ensure semantics labels, stable copy, and navigable flows are good enough for `qa` or frontend tests.
 
 ## Output Format
 
@@ -53,4 +53,3 @@ Deliver:
 2. Components/widgets to create or reuse
 3. Token/theme mapping
 4. QA-readiness notes
-

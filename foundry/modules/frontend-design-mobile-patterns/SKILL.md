@@ -43,7 +43,7 @@ Translate the design engine into mobile-specific decisions that survive real Flu
 2. **Design for thumb reach and scroll rhythm** — Primary actions should stay reachable and section breaks should remain scannable on smaller screens.
 3. **Prefer Flutter-feasible patterns** — Avoid browser-specific assumptions like hover-led navigation or overly dense freeform layouts that do not translate well to Flutter widgets.
 4. **Write implementation cues, not Figma prose** — Specify scaffold usage, navigation model, card rhythm, token usage, and expected widget states.
-5. **Feed the result into `frontend-design-implementation-handoff` and `flutter-mobile-qa`** — Mobile design is not complete until implementation and QA can consume the same brief.
+5. **Feed the result into `frontend-design-implementation-handoff` and `qa`** — Mobile design is not complete until implementation and QA can consume the same brief.
 
 ## Output Format
 
@@ -53,4 +53,3 @@ Deliver:
 2. Navigation and CTA placement rules
 3. Widget/state expectations
 4. Flutter feasibility notes
-

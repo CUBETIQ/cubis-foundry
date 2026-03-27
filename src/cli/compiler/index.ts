@@ -72,7 +72,7 @@ async function prepareCompilation(
   transformed: TransformStageOutput;
 }> {
   const loadOutput = await loadStage(root, platform);
-  const ctx: CompilationContext = buildContext(loadOutput);
+  const ctx: CompilationContext = buildContext(loadOutput, root);
 
   if (moduleId) {
     const selectedModuleIds = collectModuleClosure(ctx.catalog, moduleId);

@@ -921,7 +921,7 @@ const PLATFORM_SPECS = {
     },
     agent_capabilities: {
       native_agent_surface: "degraded via generated command routes",
-      skill_surface: "degraded via shared skill installs",
+      skill_surface: "degraded via .gemini/skills skill installs",
       workflow_entry_surface: ".gemini/commands/*.toml",
       multi_agent: "degraded",
       batch_fanout: "degraded",
@@ -1249,14 +1249,14 @@ const PLATFORM_SURFACE_SPEC = {
         "Foundry treats `.gemini/GEMINI.md` as primary. Root `GEMINI.md` is compatibility/read guidance only.",
     },
     skills: {
-      vendorSupport: "native MCP guidance, no required project skill dir",
-      foundryStatus: "degraded",
-      projectPath: null,
-      globalPath: null,
-      format: "n/a by default",
-      nativeOrProjected: "MCP-loaded guidance with optional hint-only Markdown",
+      vendorSupport: "native",
+      foundryStatus: "native",
+      projectPath: ".gemini/skills/<skill-id>/SKILL.md",
+      globalPath: "~/.gemini/skills/<skill-id>/SKILL.md",
+      format: "Markdown",
+      nativeOrProjected: "native",
       notes:
-        "Foundry does not ship `.gemini/skills`. Optional `.agents/skills/<id>/SKILL.md` hints may exist only when explicitly enabled.",
+        "Foundry now ships native Gemini skill files under `.gemini/skills`, including sidecar references when present.",
     },
     workflows: {
       vendorSupport: "native command files",

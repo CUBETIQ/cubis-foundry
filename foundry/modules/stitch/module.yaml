@@ -1,10 +1,9 @@
 id: stitch
-kind: skill
+kind: compat-alias
 label: Stitch (Compat)
-description: "Compatibility wrapper for explicit stitch requests. Routes older docs or users naming stitch directly into the design-first Stitch sequence: frontend-design, prompt enhancement, design-system sync, Stitch orchestration, and implementation handoff."
+description: "Compatibility wrapper for explicit stitch requests. Routes older docs or users naming stitch directly into the canonical frontend design flow."
 stability: stable
-profiles:
-  - developer
+profiles: []
 dependencies: []
 capability:
   type: tool
@@ -12,10 +11,5 @@ capability:
     - design
   outputs:
     - type: skill
-      path: workflows/skills/stitch/SKILL.md
+      path: foundry/modules/stitch/SKILL.md
       platforms: [claude, codex, copilot, gemini, antigravity]
-      routing:
-        design-orchestrator: workflows/skills/stitch-design-orchestrator/SKILL.md
-        design-system: workflows/skills/stitch-design-system/SKILL.md
-        implementation-handoff: workflows/skills/stitch-implementation-handoff/SKILL.md
-        prompt-enhancement: workflows/skills/stitch-prompt-enhancement/SKILL.md

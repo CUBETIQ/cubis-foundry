@@ -46,7 +46,7 @@ Run a no-edit diagnosis pass on an existing interface. This is the Foundry comma
 4. **Name the exact anti-patterns** — Call out card stacking, anonymous heroes, safe typography, inert state design, weak mobile re-composition, shell-track waste, empty desktop rails, optical collisions, or other specific failures.
 5. **Separate systemic failures from copy nitpicks** — Focus on the visual or behavioral issues that affect the product surface as a whole.
 6. **Audit occupancy as well as composition** — Check whether page-level grids, rails, and desktop columns are actually populated because wasted shell tracks read like spacing bugs and should fail review.
-7. **Tie each finding to a next move** — Route typography fixes to `design-typeset`, layout rhythm problems to `design-arrange`, safe visual energy to `design-bolder`, clutter to `design-distill`, and near-finished cleanup to `design-polish`.
+7. **Tie each finding to a next move** — Route typography, layout, amplification, simplification, and cleanup follow-up through `design`, and call out the specific mode or downstream canonical design skill the next pass should use.
 8. **Use Playwright evidence when available** — Prefer browser artifacts and runtime states over static opinion because repeatable design review needs proof.
 
 ## Output Format
@@ -64,5 +64,5 @@ Deliver:
 | File | Load when |
 | --- | --- |
 | `../frontend-design/references/visual-direction.md` | Checking whether the interface has a clear point of view or collapsed into generic defaults. |
-| `../ui-testing-harness/references/scoring-rubric.md` | Aligning findings with the anti-slop harness score dimensions. |
-| `../playwright-web-qa/SKILL.md` | The audit needs fresh browser evidence instead of existing screenshots. |
+| `references/scoring-rubric.md` | Aligning findings with the anti-slop harness score dimensions. |
+| `../playwright-interactive/SKILL.md` | The audit needs fresh browser evidence instead of existing screenshots. |

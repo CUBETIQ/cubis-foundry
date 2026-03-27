@@ -68,6 +68,29 @@ describe("catalog", () => {
     expect(result.warnings).toHaveLength(0);
   });
 
+  it("routes qa capability outputs to canonical module skill sources", () => {
+    const qa = resolveModule(catalog, "qa");
+    expect(qa?.capability?.outputs.map((output) => output.path)).toEqual([
+      "foundry/modules/qa/SKILL.md",
+      "foundry/modules/playwright-interactive/SKILL.md",
+      "foundry/modules/qa/SKILL.md",
+    ]);
+  });
+
+  it("routes design capability outputs through the canonical design skill", () => {
+    const design = resolveModule(catalog, "design");
+    expect(new Set(design?.capability?.outputs.map((output) => output.path))).toEqual(
+      new Set(["foundry/modules/design/SKILL.md"]),
+    );
+  });
+
+  it("routes stitch compat alias through a canonical stitch wrapper skill", () => {
+    const stitch = resolveModule(catalog, "stitch");
+    expect(stitch?.capability?.outputs.map((output) => output.path)).toEqual([
+      "foundry/modules/stitch/SKILL.md",
+    ]);
+  });
+
   it("catches missing module dependencies", () => {
     const badCatalog = {
       ...catalog,

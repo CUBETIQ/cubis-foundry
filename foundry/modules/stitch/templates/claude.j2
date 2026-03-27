@@ -2,7 +2,7 @@
 <!-- cbx:skill:stitch:start -->
 ---
 name: stitch
-description: "Compatibility wrapper for explicit stitch requests. Routes older docs or users naming stitch directly into the design-first Stitch sequence: frontend-design, prompt enhancement, design-system sync, Stitch orchestration, and implementation handoff."
+description: "Compatibility wrapper for explicit stitch requests. Routes older docs or users naming stitch directly into the canonical frontend design flow."
 license: MIT
 metadata:
   author: cubis-foundry
@@ -12,26 +12,26 @@ compatibility: "Claude Code, Codex, GitHub Copilot, Gemini CLI, Antigravity"
 
 # Stitch (Compat-Alias)
 
-This is a compatibility alias for the Stitch design-orchestration workflow. For new work, use `frontend-design` directly.
+This is a compatibility alias for older Stitch-oriented requests. For new work, use the canonical frontend design modules directly.
 
-## Stitch Sub-Skills
+## Canonical Routes
 
 | Component | Skill |
 | --- | --- |
-| Orchestration | [stitch-design-orchestrator](workflows/skills/stitch-design-orchestrator/SKILL.md) |
-| Design System | [stitch-design-system](workflows/skills/stitch-design-system/SKILL.md) |
-| Prompt Enhancement | [stitch-prompt-enhancement](workflows/skills/stitch-prompt-enhancement/SKILL.md) |
-| Implementation Handoff | [stitch-implementation-handoff](workflows/skills/stitch-implementation-handoff/SKILL.md) |
+| Main design execution | `frontend-design` |
+| Design-system refresh | `frontend-design-system` |
+| Screen brief generation | `frontend-design-screen-brief` |
+| Implementation handoff | `frontend-design-implementation-handoff` |
 
 ## Routing
 
-When `stitch` is requested, the following sub-skills are available:
-1. `stitch-design-orchestrator` — orchestrate the full Stitch generation sequence
-2. `stitch-design-system` — maintain Stitch-compatible design system context
-3. `stitch-prompt-enhancement` — transform rough UI intent into Stitch-ready prompts
-4. `stitch-implementation-handoff` — convert Stitch artifacts into repo-native frontend changes
+When `stitch` is requested:
+1. Start with `frontend-design` as the default canonical route.
+2. Load `frontend-design-system` if the repo's design state or `.stitch/DESIGN.md` mirror is stale.
+3. Load `frontend-design-screen-brief` when the next artifact is a compact screen brief.
+4. Load `frontend-design-implementation-handoff` when a generated artifact must become repo-native UI code.
 
 ## Reference Skill
 
-- [workflows/skills/stitch/SKILL.md](workflows/skills/stitch/SKILL.md)
+- `stitch`
 <!-- cbx:skill:stitch:end -->

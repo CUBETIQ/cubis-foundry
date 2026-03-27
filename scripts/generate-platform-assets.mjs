@@ -281,7 +281,7 @@ const PLATFORM_SKILL_HINT_ROOTS = {
   codex: ".agents/skills",
   copilot: ".github/skills",
   claude: ".claude/skills",
-  gemini: ".agents/skills",
+  gemini: ".gemini/skills",
 };
 
 function buildAttachedSkillsSection(skillIds, platform) {

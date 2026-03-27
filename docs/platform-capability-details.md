@@ -108,7 +108,7 @@ This section is the authoritative Foundry install contract for each platform. It
 | Surface | Vendor Support | Foundry Status | Project Path | Global Path | Format | Native/Projected | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `rules` | native | `native` | .gemini/GEMINI.md | ~/.gemini/GEMINI.md | Markdown | native | Foundry treats `.gemini/GEMINI.md` as primary. Root `GEMINI.md` is compatibility/read guidance only. |
-| `skills` | native MCP guidance, no required project skill dir | `degraded` | n/a | n/a | n/a by default | MCP-loaded guidance with optional hint-only Markdown | Foundry does not ship `.gemini/skills`. Optional `.agents/skills/<id>/SKILL.md` hints may exist only when explicitly enabled. |
+| `skills` | native | `native` | .gemini/skills/<skill-id>/SKILL.md | ~/.gemini/skills/<skill-id>/SKILL.md | Markdown | native | Foundry now ships native Gemini skills, including sidecar `references/` files when present in the canonical module. |
 | `workflows` | native command files | `native` | .gemini/commands/<workflow-id>.toml | ~/.gemini/commands/<workflow-id>.toml | TOML | native/projected command route | This is the canonical shipped workflow surface for Gemini. |
 | `customAgents` | unsupported in current Foundry ship model | `do-not-ship` | n/a | n/a | n/a | do-not-ship | Foundry does not currently ship a Gemini custom-agent file surface. |
 | `subagents` | not shipped in current Foundry adapter | `do-not-ship` | n/a | n/a | n/a | do-not-ship | Specialist routes are rendered as command files until a verified native agent surface is adopted. |
@@ -212,11 +212,11 @@ These entries are intentionally projected through Foundry's control plane rather
 | Gemini | `instructions-override` | .gemini/GEMINI.md | Gemini CLI projects instructions-override in degraded form via .gemini/GEMINI.md and explicit Foundry control-plane guidance. |
 | Gemini | `config-layering` | <workspace>/.gemini/settings.json | Gemini CLI projects config-layering in degraded form via <workspace>/.gemini/settings.json and explicit Foundry control-plane guidance. |
 | Gemini | `config-profiles` | <workspace>/.gemini/settings.json | Gemini CLI projects config-profiles in degraded form via <workspace>/.gemini/settings.json and explicit Foundry control-plane guidance. |
-| Gemini | `supporting-skill` | degraded via shared skill installs | Gemini CLI projects supporting-skill in degraded form via degraded via shared skill installs and explicit Foundry control-plane guidance. |
-| Gemini | `skill-discovery` | degraded via shared skill installs | Gemini CLI projects skill-discovery in degraded form via degraded via shared skill installs and explicit Foundry control-plane guidance. |
-| Gemini | `skill-frontmatter` | degraded via shared skill installs | Gemini CLI projects skill-frontmatter in degraded form via degraded via shared skill installs and explicit Foundry control-plane guidance. |
-| Gemini | `skill-string-substitution` | degraded via shared skill installs | Gemini CLI projects skill-string-substitution in degraded form via degraded via shared skill installs and explicit Foundry control-plane guidance. |
-| Gemini | `skill-forked-execution` | degraded via shared skill installs | Gemini CLI projects skill-forked-execution in degraded form via degraded via shared skill installs and explicit Foundry control-plane guidance. |
+| Gemini | `supporting-skill` | .gemini/skills/<id>/SKILL.md | Gemini CLI projects supporting-skill in degraded form via .gemini/skills/<id>/SKILL.md and explicit Foundry control-plane guidance. |
+| Gemini | `skill-discovery` | .gemini/skills/<id>/SKILL.md | Gemini CLI projects skill-discovery in degraded form via .gemini/skills/<id>/SKILL.md and explicit Foundry control-plane guidance. |
+| Gemini | `skill-frontmatter` | .gemini/skills/<id>/SKILL.md | Gemini CLI projects skill-frontmatter in degraded form via .gemini/skills/<id>/SKILL.md and explicit Foundry control-plane guidance. |
+| Gemini | `skill-string-substitution` | .gemini/skills/<id>/SKILL.md | Gemini CLI projects skill-string-substitution in degraded form via .gemini/skills/<id>/SKILL.md and explicit Foundry control-plane guidance. |
+| Gemini | `skill-forked-execution` | .gemini/skills/<id>/SKILL.md | Gemini CLI projects skill-forked-execution in degraded form via .gemini/skills/<id>/SKILL.md and explicit Foundry control-plane guidance. |
 | Gemini | `agent-registration` | degraded via generated command routes | Gemini CLI projects agent-registration in degraded form via degraded via generated command routes and explicit Foundry control-plane guidance. |
 | Gemini | `specialist-agent` | degraded via generated command routes | Gemini CLI projects specialist-agent in degraded form via degraded via generated command routes and explicit Foundry control-plane guidance. |
 | Gemini | `agent-preloaded-skill` | degraded via generated command routes | Gemini CLI projects agent-preloaded-skill in degraded form via degraded via generated command routes and explicit Foundry control-plane guidance. |

@@ -43,11 +43,13 @@ export async function loadStage(
  */
 export function buildContext(
   loadOutput: LoadStageOutput,
+  repoRoot?: string,
 ): CompilationContext {
   return {
     catalog: loadOutput.catalog,
     platform: loadOutput.adapter.platform,
     adapter: loadOutput.adapter,
+    repoRoot,
     modules: [...loadOutput.catalog.modules.values()],
   };
 }

@@ -42,6 +42,7 @@ export interface CompilationContext {
   catalog: Catalog;
   platform: RuntimeId;
   adapter: Adapter;
+  repoRoot?: string;
   /** Modules that are active for this compilation (may be filtered by profile). */
   modules: Module[];
 }

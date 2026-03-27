@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { basename, dirname, join, relative } from "node:path";
 import type { CompilationContext, ResolveStageOutput, TransformStageOutput } from "../types.js";
 import type { Catalog, Module, ModuleOutput } from "../../catalog/types.js";
@@ -105,9 +106,16 @@ function moduleOwnerId(modulesDir: string, filePath: string): string {
   return relative(modulesDir, filePath).replace(/\\/g, "/").split("/")[0]!;
 }
 
+type CanonicalSkill = {
+  id: string;
+  raw: string;
+  ownerModuleId: string;
+  moduleDir: string;
+};
+
 function discoverCanonicalSkills(
   repoRoot: string,
-): Array<{ id: string; raw: string; ownerModuleId: string }> {
+): CanonicalSkill[] {
   const modulesDir = join(repoRoot, "foundry", "modules");
   return listFilesRecursive(modulesDir, (filePath) => {
     if (!filePath.endsWith("SKILL.md")) return false;
@@ -116,6 +124,19 @@ function discoverCanonicalSkills(
     id: basename(dirname(filePath)),
     raw: readUtf8(filePath),
     ownerModuleId: moduleOwnerId(modulesDir, filePath),
+    moduleDir: dirname(filePath),
+  }));
+}
+
+function discoverSkillReferences(
+  skill: CanonicalSkill,
+): Array<{ relativePath: string; raw: string }> {
+  const referencesDir = join(skill.moduleDir, "references");
+  if (!existsSync(referencesDir)) return [];
+
+  return listFilesRecursive(referencesDir, () => true).map((filePath) => ({
+    relativePath: `references/${relative(referencesDir, filePath).replace(/\\/g, "/")}`,
+    raw: readUtf8(filePath),
   }));
 }
 
@@ -159,15 +180,18 @@ function discoverRootAgents(
   );
 }
 
-function skillOutputPath(platform: CompilationContext["platform"], id: string): string | null {
+function skillOutputDir(platform: CompilationContext["platform"], id: string): string | null {
   switch (platform) {
     case "claude":
-      return `.claude/skills/${id}/SKILL.md`;
+      return `.claude/skills/${id}`;
     case "codex":
+      return `.agents/skills/${id}`;
+    case "gemini":
+      return `.gemini/skills/${id}`;
     case "antigravity":
-      return `.agents/skills/${id}/SKILL.md`;
+      return `.agents/skills/${id}`;
     case "copilot":
-      return `.github/skills/${id}/SKILL.md`;
+      return `.github/skills/${id}`;
     default:
       return null;
   }
@@ -264,9 +288,17 @@ export async function transformStage(
 
   for (const skill of discoverCanonicalSkills(repoRoot)) {
     if (!shouldProjectOwnedModule(activeModuleIds, skill.ownerModuleId, "skills-core")) continue;
-    const outputPath = skillOutputPath(ctx.platform, skill.id);
-    if (!outputPath) continue;
-    pushAsset(assets, seenAssets, outputPath, skill.raw);
+    const outputDir = skillOutputDir(ctx.platform, skill.id);
+    if (!outputDir) continue;
+    pushAsset(assets, seenAssets, `${outputDir}/SKILL.md`, skill.raw);
+    for (const reference of discoverSkillReferences(skill)) {
+      pushAsset(
+        assets,
+        seenAssets,
+        `${outputDir}/${reference.relativePath}`,
+        reference.raw,
+      );
+    }
   }
 
   for (const workflow of discoverCanonicalWorkflows(repoRoot)) {
