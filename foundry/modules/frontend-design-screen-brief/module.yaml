@@ -1,11 +1,9 @@
 id: frontend-design-screen-brief
-kind: skill
+kind: compat-alias
 label: Frontend Design Screen Brief
-description: "Turn canonical design state plus overlays into a compact, high-signal screen brief for Stitch, frontend implementation, or Flutter/mobile work."
+description: "Legacy screen-brief entrypoint. Prefer design first, then route into web-ui-design or mobile-ui-design for current screen work."
 stability: stable
-profiles:
-  - core
-  - developer
+profiles: []
 dependencies: []
 capability:
   type: tool

@@ -230,7 +230,7 @@ function buildStitchPlatformSection(platform, skillId) {
   if (skillId === "stitch") {
     return `## ${platformName} Stitch Compatibility Flow
 
-- Treat this skill as a compatibility wrapper only. Route the real work through \`frontend-design\`, \`stitch-prompt-enhancement\`, \`stitch-design-system\` when needed, \`stitch-design-orchestrator\`, and \`stitch-implementation-handoff\`.
+- Treat this skill as a compatibility wrapper only. Route the real work through \`design\`, then \`web-ui-design\` or \`mobile-ui-design\`, and load \`frontend-design-system\` only when canonical design state or the Stitch mirror is stale.
 - Verify the Foundry Stitch MCP configuration from ${settingsPath} before choosing any Stitch tool path.
 - Prefer the shared \`/implement\` Stitch UI flow for new work so the design-first sequence stays intact on ${platformName}.`;
   }
@@ -247,7 +247,7 @@ function buildStitchPlatformSection(platform, skillId) {
     return `## ${platformName} Stitch Prompt Rules
 
 - Convert vague UI intent into a compact prompt that names the target screen, visual direction, component hierarchy, and exact change scope.
-- Pull design language from \`frontend-design\` and \`docs/foundation/DESIGN.md\` instead of pasting raw repo context or long transcripts into Stitch.
+- Pull design language from \`design\`, \`web-ui-design\` or \`mobile-ui-design\`, and \`docs/foundation/DESIGN.md\` instead of pasting raw repo context or long transcripts into Stitch.
 - Keep edit prompts narrow on ${platformName}: request one or two deltas at a time once a screen already exists.`;
   }
 

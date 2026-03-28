@@ -1,11 +1,9 @@
 id: frontend-design-mobile-patterns
-kind: skill
+kind: compat-alias
 label: Frontend Design Mobile Patterns
-description: "Adapt the design engine to mobile and Flutter surfaces using Foundry normalized mobile-pattern dataset and implementation-first constraints."
+description: "Legacy mobile-pattern entrypoint. Prefer mobile-ui-design for current small-screen and Flutter-oriented design work."
 stability: stable
-profiles:
-  - core
-  - developer
+profiles: []
 dependencies: []
 capability:
   type: tool

@@ -7,29 +7,31 @@ license: MIT
 metadata:
   author: cubis-foundry
   version: "3.0"
+  deprecated: true
+  replaced_by: design
 compatibility: "Claude Code, Codex, GitHub Copilot, Gemini CLI, Antigravity"
 ---
 
 # Stitch (Compat-Alias)
 
-This is a compatibility alias for older Stitch-oriented requests. For new work, use the canonical frontend design modules directly.
+This is a compatibility alias for older Stitch-oriented requests. For new work, use the canonical design trio directly.
 
 ## Canonical Routes
 
 | Component | Skill |
 | --- | --- |
-| Main design execution | `frontend-design` |
+| Main design execution | `design` |
+| Browser-first screen work | `web-ui-design` |
+| Mobile-first screen work | `mobile-ui-design` |
 | Design-system refresh | `frontend-design-system` |
-| Screen brief generation | `frontend-design-screen-brief` |
-| Implementation handoff | `frontend-design-implementation-handoff` |
 
 ## Routing
 
 When `stitch` is requested:
-1. Start with `frontend-design` as the default canonical route.
-2. Load `frontend-design-system` if the repo's design state or `.stitch/DESIGN.md` mirror is stale.
-3. Load `frontend-design-screen-brief` when the next artifact is a compact screen brief.
-4. Load `frontend-design-implementation-handoff` when a generated artifact must become repo-native UI code.
+1. Start with `design` as the default canonical route.
+2. Choose `web-ui-design` for browser-first work unless the request is clearly mobile-first.
+3. Choose `mobile-ui-design` for app-screen or Flutter-oriented work.
+4. Load `frontend-design-system` only if the repo's design state or `.stitch/DESIGN.md` mirror is stale.
 
 ## Reference Skill
 

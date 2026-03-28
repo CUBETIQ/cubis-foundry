@@ -1,11 +1,9 @@
 id: frontend-design
-kind: skill
+kind: compat-alias
 label: Frontend Design
-description: "Create distinctive, production-grade frontend interfaces with strong visual direction. Use for design systems, components, pages, dashboards, landing pages, accessibility, and polished UI work that should avoid generic AI aesthetics."
+description: "Legacy broad frontend-design entrypoint. Route browser-first work to web-ui-design, mobile-first work to mobile-ui-design, and use design as the top-level router."
 stability: stable
-profiles:
-  - core
-  - developer
+profiles: []
 dependencies: []
 capability:
   type: tool

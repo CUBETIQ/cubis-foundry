@@ -1,11 +1,9 @@
 id: frontend-design-implementation-handoff
-kind: skill
+kind: compat-alias
 label: Frontend Design Implementation Handoff
-description: "Translate design-engine output into repo-native implementation work, preferring real components, Flutter widgets, and existing tokens over pasted generated markup."
+description: "Legacy design handoff entrypoint. Prefer design plus web-ui-design or mobile-ui-design for current implementation-aware handoff."
 stability: stable
-profiles:
-  - core
-  - developer
+profiles: []
 dependencies: []
 capability:
   type: tool

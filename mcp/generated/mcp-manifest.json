@@ -1,12 +1,12 @@
 {
   "$schema": "cubis-foundry-mcp-manifest-v1",
-  "generatedAt": "2026-03-28T04:47:18.543Z",
-  "contentHash": "9a68b7c5e2f513e2",
+  "generatedAt": "2026-03-28T05:04:05.025Z",
+  "contentHash": "1872e266da9dfbc7",
   "summary": {
-    "totalSkills": 59,
+    "totalSkills": 61,
     "totalCategories": 10,
-    "totalBytes": 361015,
-    "estimatedTokens": 90254
+    "totalBytes": 351053,
+    "estimatedTokens": 87764
   },
   "categories": [
     {
@@ -35,7 +35,7 @@
     },
     {
       "name": "general",
-      "skillCount": 32
+      "skillCount": 34
     },
     {
       "name": "mcp",
@@ -268,26 +268,27 @@
       "id": "design",
       "name": "design",
       "displayName": null,
-      "description": "Umbrella design skill for choosing the right visual or UX",
+      "description": "Top-level design routing and critique skill for choosing the right",
       "category": "general",
       "keywords": [
         "design"
       ],
       "triggers": [
         "frontend",
-        "umbrella design skill",
-        "ux specialist path",
-        "right design sub-skill",
-        "framing a ui"
+        "design route",
+        "design critique",
+        "audit a ui",
+        "system direction",
+        "choose web or mobile design path"
       ],
       "path": "foundry/modules/design/SKILL.md",
-      "fileBytes": 1853
+      "fileBytes": 2902
     },
     {
       "id": "design-audit",
       "name": "design-audit",
       "displayName": null,
-      "description": "Diagnose why a UI feels generic, uneven, or hard to validate before",
+      "description": "Compatibility wrapper for older design-audit skill requests.",
       "category": "general",
       "keywords": [
         "design-audit",
@@ -296,17 +297,17 @@
       ],
       "triggers": [
         "design audit",
-        "frontend",
-        "uneven",
-        "typography",
-        "states",
-        "responsiveness",
-        "anti-slop failures",
+        "ui audit",
+        "visual audit",
         "design-audit",
         "audit"
       ],
       "path": "foundry/modules/design-audit/SKILL.md",
-      "fileBytes": 3110
+      "metadata": {
+        "deprecated": true,
+        "replaced_by": "design"
+      },
+      "fileBytes": 746
     },
     {
       "id": "django-drf",
@@ -419,7 +420,7 @@
       "id": "frontend-design",
       "name": "frontend-design",
       "displayName": null,
-      "description": "Create distinctive, production-grade frontend interfaces with",
+      "description": "Compatibility wrapper for older broad frontend design requests.",
       "category": "frontend",
       "keywords": [
         "frontend-design",
@@ -428,22 +429,23 @@
       ],
       "triggers": [
         "frontend design",
-        "frontend",
-        "create distinctive",
-        "components",
-        "pages",
-        "dashboards",
-        "landing pages",
-        "frontend-design"
+        "frontend ui design",
+        "legacy frontend design",
+        "frontend-design",
+        "frontend"
       ],
       "path": "foundry/modules/frontend-design/SKILL.md",
-      "fileBytes": 10329
+      "metadata": {
+        "deprecated": true,
+        "replaced_by": "design"
+      },
+      "fileBytes": 1386
     },
     {
       "id": "frontend-design-core",
       "name": "frontend-design-core",
       "displayName": null,
-      "description": "Establish the design-engine execution order, canonical design-state",
+      "description": "Compatibility wrapper for older design-engine routing requests.",
       "category": "frontend",
       "keywords": [
         "frontend-design-core",
@@ -453,23 +455,23 @@
       ],
       "triggers": [
         "frontend design core",
-        "frontend",
-        "canonical design-state model",
-        "repo-first constraints",
-        "mobile design work",
-        "design-heavy feature",
-        "redesign",
+        "design engine core",
         "frontend-design-core",
+        "frontend",
         "core"
       ],
       "path": "foundry/modules/frontend-design-core/SKILL.md",
-      "fileBytes": 2609
+      "metadata": {
+        "deprecated": true,
+        "replaced_by": "design"
+      },
+      "fileBytes": 745
     },
     {
       "id": "frontend-design-implementation-handoff",
       "name": "frontend-design-implementation-handoff",
       "displayName": null,
-      "description": "Translate design-engine output into repo-native implementation",
+      "description": "Compatibility wrapper for older design handoff requests. Prefer",
       "category": "frontend",
       "keywords": [
         "frontend-design-implementation-handoff",
@@ -480,23 +482,24 @@
       ],
       "triggers": [
         "frontend design implementation handoff",
-        "frontend",
-        "preferring real components",
-        "flutter widgets",
-        "react",
-        "another real ui stack",
-        "implementation",
+        "design implementation handoff",
         "frontend-design-implementation-handoff",
+        "frontend",
+        "implementation",
         "handoff"
       ],
       "path": "foundry/modules/frontend-design-implementation-handoff/SKILL.md",
-      "fileBytes": 1889
+      "metadata": {
+        "deprecated": true,
+        "replaced_by": "design"
+      },
+      "fileBytes": 904
     },
     {
       "id": "frontend-design-mobile-patterns",
       "name": "frontend-design-mobile-patterns",
       "displayName": null,
-      "description": "Adapt the design engine to mobile and Flutter surfaces using",
+      "description": "Compatibility wrapper for older mobile-pattern requests. Prefer",
       "category": "frontend",
       "keywords": [
         "frontend-design-mobile-patterns",
@@ -506,23 +509,24 @@
       ],
       "triggers": [
         "frontend design mobile patterns",
-        "frontend",
-        "flutter surfaces",
-        "flutter screens",
-        "flows",
-        "navigation",
-        "thumb-driven interaction",
+        "mobile patterns",
+        "flutter ui patterns",
         "frontend-design-mobile-patterns",
+        "frontend",
         "mobile"
       ],
       "path": "foundry/modules/frontend-design-mobile-patterns/SKILL.md",
-      "fileBytes": 1970
+      "metadata": {
+        "deprecated": true,
+        "replaced_by": "mobile-ui-design"
+      },
+      "fileBytes": 823
     },
     {
       "id": "frontend-design-screen-brief",
       "name": "frontend-design-screen-brief",
       "displayName": null,
-      "description": "Turn canonical design state plus overlays into a compact,",
+      "description": "Compatibility wrapper for older screen-brief requests. Prefer",
       "category": "frontend",
       "keywords": [
         "frontend-design-screen-brief",
@@ -533,24 +537,24 @@
       ],
       "triggers": [
         "frontend design screen brief",
-        "frontend",
-        "high-signal screen brief",
-        "frontend implementation",
-        "flutter/mobile work",
-        "stitch generation",
-        "edit prompt",
+        "screen brief",
         "frontend-design-screen-brief",
+        "frontend",
         "screen",
         "brief"
       ],
       "path": "foundry/modules/frontend-design-screen-brief/SKILL.md",
-      "fileBytes": 1889
+      "metadata": {
+        "deprecated": true,
+        "replaced_by": "design"
+      },
+      "fileBytes": 844
     },
     {
       "id": "frontend-design-style-selector",
       "name": "frontend-design-style-selector",
       "displayName": null,
-      "description": "Select a non-generic visual direction from Foundry's normalized",
+      "description": "Compatibility wrapper for older style-selection requests. Prefer",
       "category": "frontend",
       "keywords": [
         "frontend-design-style-selector",
@@ -561,16 +565,18 @@
       ],
       "triggers": [
         "frontend design style selector",
+        "style selector",
+        "frontend-design-style-selector",
         "frontend",
-        "new design system",
-        "screen family",
-        "consistent mood",
         "style",
-        "selector",
-        "frontend-design-style-selector"
+        "selector"
       ],
       "path": "foundry/modules/frontend-design-style-selector/SKILL.md",
-      "fileBytes": 1912
+      "metadata": {
+        "deprecated": true,
+        "replaced_by": "design"
+      },
+      "fileBytes": 794
     },
     {
       "id": "frontend-design-system",
@@ -863,6 +869,33 @@
       ],
       "path": "foundry/modules/mcp-server-builder/SKILL.md",
       "fileBytes": 6769
+    },
+    {
+      "id": "mobile-ui-design",
+      "name": "mobile-ui-design",
+      "displayName": null,
+      "description": "Design mobile-first interfaces with strong small-screen hierarchy,",
+      "category": "general",
+      "keywords": [
+        "mobile-ui-design",
+        "mobile ui design",
+        "mobile",
+        "ui"
+      ],
+      "triggers": [
+        "mobile ui design",
+        "ios screen",
+        "android screen",
+        "app design",
+        "mobile flow",
+        "flutter ui",
+        "simulator-ready design",
+        "mobile-ui-design",
+        "mobile",
+        "ui"
+      ],
+      "path": "foundry/modules/mobile-ui-design/SKILL.md",
+      "fileBytes": 3014
     },
     {
       "id": "nestjs",
@@ -1349,7 +1382,11 @@
         "design system"
       ],
       "path": "foundry/modules/stitch/SKILL.md",
-      "fileBytes": 1941
+      "metadata": {
+        "deprecated": true,
+        "replaced_by": "design"
+      },
+      "fileBytes": 1970
     },
     {
       "id": "svelte-sveltekit",
@@ -1559,6 +1596,33 @@
       ],
       "path": "foundry/modules/web-testing/SKILL.md",
       "fileBytes": 3694
+    },
+    {
+      "id": "web-ui-design",
+      "name": "web-ui-design",
+      "displayName": null,
+      "description": "Design browser-first interfaces with strong visual direction,",
+      "category": "general",
+      "keywords": [
+        "web-ui-design",
+        "web ui design",
+        "web",
+        "ui"
+      ],
+      "triggers": [
+        "web ui design",
+        "browser ui",
+        "landing page",
+        "dashboard",
+        "browser-first interface",
+        "responsive layout",
+        "web design brief",
+        "web-ui-design",
+        "web",
+        "ui"
+      ],
+      "path": "foundry/modules/web-ui-design/SKILL.md",
+      "fileBytes": 3412
     }
   ],
   "builtinTools": [

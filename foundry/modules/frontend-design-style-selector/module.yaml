@@ -1,11 +1,9 @@
 id: frontend-design-style-selector
-kind: skill
+kind: compat-alias
 label: Frontend Design Style Selector
-description: "Select a non-generic visual direction from Foundry normalized design datasets and align it to the product domain, audience, and platform."
+description: "Legacy style-selection entrypoint. Prefer design for current visual-direction selection and routing."
 stability: stable
-profiles:
-  - core
-  - developer
+profiles: []
 dependencies: []
 capability:
   type: tool

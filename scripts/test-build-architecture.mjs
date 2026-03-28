@@ -547,7 +547,8 @@ async function main() {
           dryRunJson.skillBundle.includes("architecture-doc") &&
           dryRunJson.skillBundle.includes("system-design") &&
           dryRunJson.skillBundle.includes("tech-doc") &&
-          dryRunJson.skillBundle.includes("frontend-design"),
+          dryRunJson.skillBundle.includes("design") &&
+          dryRunJson.skillBundle.includes("web-ui-design"),
         `${platform} dry-run missing core skill bundle`,
       );
       assert(

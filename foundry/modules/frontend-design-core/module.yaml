@@ -1,11 +1,9 @@
 id: frontend-design-core
-kind: skill
+kind: compat-alias
 label: Frontend Design Core
-description: "Establish the design-engine execution order, canonical design-state model, and the repo-first constraints for serious frontend or mobile design work."
+description: "Legacy design-engine routing surface. Prefer design for current routing, critique, and canonical design-state setup."
 stability: stable
-profiles:
-  - core
-  - developer
+profiles: []
 dependencies: []
 capability:
   type: tool

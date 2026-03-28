@@ -256,7 +256,7 @@ async function main() {
     stitchRoutePayload.resolved !== true ||
     stitchRoutePayload.id !== "implement" ||
     stitchRoutePayload.matchedBy !== "stitch-ui-intent" ||
-    stitchRoutePayload.primarySkillHint !== "frontend-design"
+    stitchRoutePayload.primarySkillHint !== "design"
   ) {
     throw new Error("route_resolve failed Stitch UI intent routing");
   }
@@ -342,7 +342,7 @@ async function main() {
   const stitchValidatePayload = parseToolTextPayload(stitchValidateResult);
   if (
     stitchValidatePayload.exists !== true ||
-    stitchValidatePayload.canonicalId !== "stitch-design-orchestrator"
+    stitchValidatePayload.canonicalId !== "design"
   ) {
     throw new Error("skill_validate failed for explicit named skill stitch");
   }

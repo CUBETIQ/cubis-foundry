@@ -1,21 +1,15 @@
 ---
 name: frontend-design-implementation-handoff
-description: Translate design-engine output into repo-native implementation
-  work, preferring real components, Flutter widgets, and existing tokens over
-  pasted generated markup.
+description: Compatibility wrapper for older design handoff requests. Prefer
+  design plus web-ui-design or mobile-ui-design for current implementation-aware
+  handoff.
 triggers:
   - frontend design implementation handoff
-  - frontend
-  - design
-  - preferring real components
-  - flutter widgets
-  - react
-  - another real UI stack
-  - implementation
+  - design implementation handoff
 domains:
   - frontend
   - design
-whenToUse: When after Stitch returns a screen artifact.
+whenToUse: When older docs or prompts explicitly name frontend-design-implementation-handoff.
 priority: secondary
 compatibility:
   - claude
@@ -23,33 +17,17 @@ compatibility:
   - copilot
   - gemini
   - antigravity
+metadata:
+  deprecated: true
+  replaced_by: design
 ---
 
 # Frontend Design Implementation Handoff
 
-## Purpose
+This skill is now a compatibility wrapper. Use `design` to choose the right surface, then use `web-ui-design` or `mobile-ui-design` for the actual implementation-aware handoff.
 
-Convert the design-engine result into implementation work that matches the repo's real stack and components instead of copying raw generated artifacts.
+## References
 
-## When to Use
-
-- After Stitch returns a screen artifact
-- After a design screen brief is approved for implementation
-- When moving from design state into Flutter, React, or another real UI stack
-
-## Instructions
-
-1. **Prefer existing components and tokens first** — Reuse the repo's real primitives before creating new visual fragments.
-2. **Translate semantics, not markup** — A generated artifact is a seed. Rebuild it in the target stack using the same hierarchy and state model.
-3. **For Flutter, map into widgets and theme tokens** — Use theme extensions, shared cards, section headers, and navigation widgets instead of porting web structure literally.
-4. **Preserve the brief's anti-slop constraints** — Distinctive typography, component rhythm, and motion rules should survive the handoff.
-5. **Leave QA hooks behind** — Ensure semantics labels, stable copy, and navigable flows are good enough for `qa` or frontend tests.
-
-## Output Format
-
-Deliver:
-
-1. Implementation plan
-2. Components/widgets to create or reuse
-3. Token/theme mapping
-4. QA-readiness notes
+- `../design/SKILL.md`
+- `../web-ui-design/SKILL.md`
+- `../mobile-ui-design/SKILL.md`

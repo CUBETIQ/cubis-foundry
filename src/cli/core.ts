@@ -13579,7 +13579,8 @@ async function executeContextGeneration(options) {
     "architecture-doc",
     "system-design",
     "tech-doc",
-    "frontend-design",
+    "design",
+    "web-ui-design",
   ];
   const conditionalSkills = resolveArchitectureConditionalSkills(
     snapshot,

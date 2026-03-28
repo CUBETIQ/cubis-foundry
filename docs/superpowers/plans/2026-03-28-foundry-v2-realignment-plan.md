@@ -159,6 +159,13 @@ Status:
 - [ ] Convert `stitch` into alias-only behavior if still needed.
 - [ ] Merge redundant frontend-design content into the new trio.
 
+Status:
+- `web-ui-design` and `mobile-ui-design` now exist as canonical execution surfaces.
+- `design` is now the public router and audit surface.
+- `stitch` is now a deprecated compat alias that routes into `design`.
+- `frontend-design`, `frontend-design-core`, `frontend-design-style-selector`, `frontend-design-screen-brief`, `frontend-design-mobile-patterns`, `frontend-design-implementation-handoff`, and `design-audit` are now deprecated compat aliases at the module and skill-metadata layer.
+- `frontend-design-system` remains the retained support surface for canonical design-state refresh and `.stitch/DESIGN.md` mirroring.
+
 ### Task 8: Upgrade design prompting quality
 
 **Files:**

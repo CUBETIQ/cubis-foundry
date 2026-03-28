@@ -20,6 +20,9 @@ compatibility:
   - copilot
   - gemini
   - antigravity
+metadata:
+  deprecated: true
+  replaced_by: design
 ---
 
 # Stitch
