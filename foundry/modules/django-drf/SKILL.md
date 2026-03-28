@@ -57,6 +57,13 @@ Use when building Django 5.1+ REST APIs with Django REST Framework 3.15+, coveri
 15. **Use async views and async-compatible ORM queries where available in Django 5.1+** because async views eliminate thread-pool exhaustion under high concurrency for I/O-bound endpoints.
 16. **Run `manage.py check --deploy` and `manage.py showmigrations` as verification checkpoints** because these commands surface missing migrations, insecure settings, and deployment configuration gaps before code review.
 
+## Testing Guidance
+
+- Keep Django and DRF boundary and integration guidance in this skill instead of routing new work through the generic `integration-testing` wrapper.
+- Own API client setup, ORM-backed fixtures, auth/session handling, serializer validation, and endpoint boundary checks here because they are Django-runtime concerns.
+- Use the owning Python skill for narrow unit tests that do not need the Django or DRF runtime boundary.
+- Use `../web-testing/SKILL.md` only when the task needs live browser evidence against a Django-backed UI surface.
+
 ## Output Format
 
 Provide implementation guidance, code examples, management commands, and settings snippets as appropriate to the task. Include migration operations when schema changes are involved.

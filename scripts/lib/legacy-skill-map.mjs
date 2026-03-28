@@ -56,7 +56,7 @@ export const LEGACY_SKILL_ID_MAP = Object.freeze({
   "openai-docs": "tech-doc",
   "performance-profiling": "performance-testing",
   "php-pro": "php-best-practices",
-  "playwright-e2e": "playwright-interactive",
+  "playwright-e2e": "web-testing",
   postgres: "database-design",
   "prompt-engineer": "prompt-engineering",
   "python-pro": "python-best-practices",
@@ -76,12 +76,12 @@ export const LEGACY_SKILL_ID_MAP = Object.freeze({
   supabase: "database-design",
   "swift-pro": "swift-best-practices",
   "tailwind-patterns": "frontend-design",
-  "testing-patterns": "unit-testing",
+  "testing-patterns": "qa",
   "typescript-pro": "typescript-best-practices",
   vitess: "database-design",
   "vulnerability-scanner": "owasp-security-review",
   "web-perf": "performance-testing",
-  "webapp-testing": "integration-testing",
+  "webapp-testing": "web-testing",
 });
 
 const LEGACY_SKILL_ID_ENTRIES = Object.entries(LEGACY_SKILL_ID_MAP).sort(

@@ -1,11 +1,9 @@
 id: playwright-interactive
-kind: skill
+kind: compat-alias
 label: Playwright Interactive
-description: "Build interactive Playwright suites for browser automation, visual regression, accessibility audits, network interception, and collaborative test workflows."
+description: "Browser-testing specialist support that sits under web-testing. Keep this for advanced Playwright visual, accessibility, and network-heavy workflows."
 stability: stable
-profiles:
-  - core
-  - developer
+profiles: []
 dependencies: []
 capability:
   type: tool

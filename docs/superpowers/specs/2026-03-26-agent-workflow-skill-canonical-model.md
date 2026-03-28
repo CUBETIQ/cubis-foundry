@@ -1,5 +1,9 @@
 # Foundry V2 — Agent, Workflow, and Skill Canonical Model
 
+> **Superseded for active work:** See `docs/superpowers/specs/2026-03-28-foundry-v2-realignment-spec.md` and `docs/superpowers/plans/2026-03-28-foundry-v2-realignment-plan.md`. Active implementation is happening in `/Users/phumrin/Documents/Cubis Foundry/.worktrees/foundry-v2-plan-a`.
+>
+> Archived historical context only. The body below is not authoritative for current work.
+
 **Date:** 2026-03-26
 **Status:** Draft v1
 **Approach:** Hybrid — ECC Markdown format as canonical, platform-native as projection targets. No STEERING.md routing layer. Agents contain all execution intelligence.
@@ -114,7 +118,7 @@ Before delegating, match the task context against known patterns:
 - Python → `python-best-practices`
 - Go → `golang-best-practices`
 - Rust → `rust-best-practices`
-- Testing patterns → `unit-testing`, `integration-testing`
+- Testing and verification → `web-testing`, `android-emulator-testing`, `ios-simulator-testing`
 - Observability → `observability`
 - MCP server patterns → `mcp-server-builder`
 - Deep research → `deep-research`

@@ -25,7 +25,7 @@ Use for building new features, refactors, documentation refreshes, onboarding ta
 ## Skill Routing
 
 - Primary skills: `api-design`, `typescript-best-practices`
-- Supporting skills (optional): `spec-driven-delivery`, `system-design`, `unit-testing`, `integration-testing`, `playwright-interactive`, `code-review`, `owasp-security-review`, `frontend-design`, `stitch-prompt-enhancement`, `stitch-design-orchestrator`, `stitch-design-system`, `stitch-implementation-handoff`
+- Supporting skills (optional): `spec-driven-delivery`, `system-design`, `web-testing`, `android-emulator-testing`, `ios-simulator-testing`, `playwright-interactive`, `code-review`, `owasp-security-review`, `frontend-design`, `stitch-prompt-enhancement`, `stitch-design-orchestrator`, `stitch-design-system`, `stitch-implementation-handoff`
 
 ## Context notes
 

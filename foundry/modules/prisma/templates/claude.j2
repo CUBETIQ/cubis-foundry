@@ -60,6 +60,13 @@ Guide the design and implementation of production-grade database layers using Pr
 
 16. **Use `prisma.$queryRaw` and `prisma.$executeRaw` only when Prisma Client cannot express the query** because raw queries bypass Prisma's type-safe query builder and return untyped results, losing the compile-time guarantees that are the primary reason for using Prisma over a raw query library. See `references/performance.md`.
 
+## Testing Guidance
+
+- Keep Prisma integration guidance in this skill instead of routing new work through the generic `integration-testing` wrapper.
+- Own schema-coupled tests, client lifecycle checks, migration-aware fixtures, and database-boundary verification here because they are Prisma-runtime concerns.
+- Use the owning TypeScript skill for narrow unit tests that do not need a real database or Prisma client boundary.
+- Use `../web-testing/SKILL.md` only when the task needs live browser evidence against a UI flow that depends on Prisma-backed data behavior.
+
 ## Output Format
 
 Provide schema definitions, migration commands, client queries, middleware configurations, and deployment setup as appropriate. Include the full `schema.prisma` model block when defining or modifying models. When generating queries, show the complete Prisma Client call with `select`, `include`, `where`, and `orderBy` clauses relevant to the task.
@@ -75,5 +82,6 @@ Load only what the current task requires.
 | `references/client-queries.md` | Task involves Prisma Client queries, transactions, raw SQL, aggregations, or batch operations. |
 | `references/edge-deployment.md` | Task involves Prisma Accelerate, driver adapters, edge runtimes, or serverless connection pooling. |
 | `references/performance.md` | Task involves query optimization, N+1 prevention, index tuning, connection pooling, or monitoring. |
+| `references/testing.md` | Task involves schema-coupled fixtures, migration-aware tests, transaction isolation, or Prisma client boundary verification. |
 
 <!-- cbx:skill:prisma:end -->

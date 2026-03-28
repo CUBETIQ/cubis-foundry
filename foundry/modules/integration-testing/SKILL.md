@@ -2,7 +2,8 @@
 name: integration-testing
 description: Integration testing patterns for verifying component interactions
   across test boundaries, databases, APIs, test containers, and fixture
-  management. Use when testing how components work together.
+  management. Prefer the owning framework or platform skill for concrete
+  guidance and keep this as legacy shared support only.
 triggers:
   - integration testing
   - quality
@@ -16,7 +17,7 @@ domains:
   - quality
   - testing
 whenToUse: When testing interactions between services, modules, or layers.
-priority: primary
+priority: secondary
 compatibility:
   - claude
   - codex
@@ -29,7 +30,7 @@ compatibility:
 
 ## Purpose
 
-Provide a structured methodology for writing integration tests that verify correct interaction between components, services, and infrastructure. This skill ensures integration tests are reliable, maintainable, and catch defects that unit tests cannot reach -- particularly at boundaries between systems.
+Provide shared integration-testing heuristics only when the owning framework or platform skill does not already cover the needed guidance. Prefer to keep concrete integration advice with the stack that owns the runtime boundary.
 
 ## When to Use
 
@@ -41,6 +42,12 @@ Provide a structured methodology for writing integration tests that verify corre
 - Investigating failures that only appear when components are assembled.
 - Establishing integration test suites for a new microservices architecture.
 - Validating middleware, authentication, and authorization pipelines.
+- Backfilling guidance while framework and platform skills are still absorbing this content.
+
+## Routing Note
+
+- Prefer the framework or platform skill that owns the integration boundary.
+- Use this legacy shared surface only when that owning skill lacks enough integration guidance today.
 
 ## Instructions
 

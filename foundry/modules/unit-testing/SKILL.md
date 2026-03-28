@@ -1,8 +1,9 @@
 ---
 name: unit-testing
 description: Unit testing best practices covering test design, mocking
-  strategies, coverage analysis, TDD workflow, and assertion patterns. Use when
-  writing, reviewing, or improving unit tests.
+  strategies, coverage analysis, TDD workflow, and assertion patterns. Prefer
+  the owning language or framework skill for concrete guidance and keep this as
+  legacy shared support only.
 triggers:
   - unit testing
   - quality
@@ -16,7 +17,7 @@ domains:
   - quality
   - testing
 whenToUse: When writing new unit tests for functions, methods, or classes.
-priority: primary
+priority: secondary
 compatibility:
   - claude
   - codex
@@ -29,7 +30,7 @@ compatibility:
 
 ## Purpose
 
-Provide a rigorous, repeatable methodology for designing, writing, and maintaining unit tests that maximize defect detection while minimizing maintenance cost. This skill ensures every unit test is fast, isolated, deterministic, and focused on a single behavior.
+Provide shared unit-testing heuristics only when the owning language or framework skill does not already cover the needed guidance. Prefer to keep concrete testing advice with the stack that owns the code under test.
 
 ## When to Use
 
@@ -41,6 +42,12 @@ Provide a rigorous, repeatable methodology for designing, writing, and maintaini
 - Investigating flaky or slow unit tests.
 - Establishing test conventions for a new project or team.
 - Analyzing code coverage reports and identifying meaningful gaps.
+- Backfilling guidance while language/framework skills are still absorbing this content.
+
+## Routing Note
+
+- Prefer the language or framework skill that owns the code under test.
+- Use this legacy shared surface only when that owning skill lacks enough testing guidance today.
 
 ## Instructions
 

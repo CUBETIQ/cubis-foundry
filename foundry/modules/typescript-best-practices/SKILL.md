@@ -74,6 +74,13 @@ Production-grade guidance for TypeScript 5.9+ covering strict compiler configura
 
 16. **Lint with typescript-eslint v8+ and enforce type-aware rules** — enable `@typescript-eslint/strict-type-checked` and `@typescript-eslint/stylistic-type-checked` rule sets. These catch `any` leaks, unsafe returns, and floating promises that tsc alone misses because the linter has access to type information the compiler does not surface as errors.
 
+## Testing Guidance
+
+- Keep type-level checks and unit-test guidance in this skill instead of routing new work through the generic `unit-testing` wrapper.
+- Use the native TypeScript test stack already present in the repo, typically `vitest`, compile-time type assertions, and framework-local helpers.
+- Escalate API, persistence, or full runtime-boundary checks into the owning framework or platform skill instead of the generic `integration-testing` wrapper.
+- Use `../web-testing/SKILL.md`, `../android-emulator-testing/SKILL.md`, or `../ios-simulator-testing/SKILL.md` only when the task needs live browser or device evidence.
+
 ## Output Format
 
 Produces TypeScript code with strict compiler settings, discriminated unions, branded types, and `satisfies` validation. Includes tsconfig.json configuration, type-level tests, and inline comments explaining non-obvious type design choices.
@@ -87,6 +94,7 @@ Produces TypeScript code with strict compiler settings, discriminated unions, br
 | `references/type-guards.md` | Type narrowing, custom type guards, `satisfies`, or branded types needed. |
 | `references/utility-types.md` | Built-in or custom utility types, `Pick`, `Omit`, `Record`, etc. needed. |
 | `references/patterns.md` | Architecture patterns, discriminated unions, builder pattern, or module design needed. |
+| `references/testing.md` | Type-level assertions, Vitest setup, compile-time test patterns, or stack-specific testing ownership needed. |
 
 ## Scripts
 

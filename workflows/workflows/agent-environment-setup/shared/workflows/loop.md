@@ -26,7 +26,7 @@ Use when a task needs repeated attempt, validation, and correction until it sati
 ## Skill Routing
 
 - Primary skills: `kaizen-iteration`, `system-design`
-- Supporting skills (optional): `prompt-engineering`, `unit-testing`, `code-review`, `systematic-debugging`
+- Supporting skills (optional): `prompt-engineering`, `web-testing`, `android-emulator-testing`, `ios-simulator-testing`, `code-review`, `systematic-debugging`
 
 ## Context notes
 

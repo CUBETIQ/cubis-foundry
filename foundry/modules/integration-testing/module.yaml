@@ -1,11 +1,9 @@
 id: integration-testing
-kind: skill
+kind: compat-alias
 label: Integration Testing
-description: "Integration testing patterns for verifying component interactions across test boundaries, databases, APIs, test containers, and fixture management."
+description: "Legacy shared integration-testing guidance. Prefer the owning framework or platform skill for concrete integration advice."
 stability: stable
-profiles:
-  - core
-  - developer
+profiles: []
 dependencies: []
 capability:
   type: tool

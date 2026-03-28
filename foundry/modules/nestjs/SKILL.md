@@ -74,6 +74,13 @@ Guide the design and implementation of production-grade NestJS 11+ applications 
 
 16. **Use `ConfigModule.forRoot()` with Joi or Zod validation schemas for environment variables** because unvalidated environment access with `process.env` produces `undefined` values that fail silently at runtime instead of at application bootstrap.
 
+## Testing Guidance
+
+- Keep NestJS boundary and integration guidance in this skill instead of routing new work through the generic `integration-testing` wrapper.
+- Own module bootstrapping, dependency injection, request lifecycle, e2e app setup, and persistence-boundary fixtures here because they are Nest-specific runtime concerns.
+- Use the owning TypeScript skill for narrow unit tests that do not need the Nest runtime boundary.
+- Use `../web-testing/SKILL.md` only when the task needs live browser evidence against a Nest-backed UI or docs surface.
+
 ## Output Format
 
 Provide implementation code, module definitions, decorator usage, configuration snippets, and architectural guidance as appropriate. Include file paths relative to the `src/` directory. When generating modules, always show the `@Module()` decorator with complete `imports`, `providers`, `controllers`, and `exports` arrays.

@@ -5,11 +5,10 @@ tools: Read, Grep, Glob, Bash, Write, Edit
 model: sonnet
 maxTurns: 25
 skills:
-  - unit-testing
-  - integration-testing
+  - web-testing
+  - android-emulator-testing
+  - ios-simulator-testing
   - playwright-interactive
-  - playwright-web-qa
-  - flutter-mobile-qa
 handoffs:
   - agent: "reviewer"
     title: "Review Tests"
@@ -87,7 +86,7 @@ Files or areas with insufficient coverage
 
 ## Skill Loading Contract
 
-- Do not call `skill_search` for `unit-testing`, `integration-testing`, `playwright-interactive`, or `flutter-mobile-qa` when the task clearly falls within this agent's domain.
+- Do not call `skill_search` for `web-testing`, `android-emulator-testing`, `ios-simulator-testing`, or `playwright-interactive` when the task clearly falls within this agent's domain.
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed by the current step.
 - Treat the skill bundle as already resolved for this agent. Do not start with route discovery.
 
@@ -97,9 +96,8 @@ Load on demand. Do not preload all references.
 
 | File | Load when |
 | --- | --- |
-| `unit-testing` | Task involves unit test authoring or verification. |
-| `integration-testing` | Task involves API or component integration tests. |
+| owning language/framework skill | Task involves code-level unit or integration tests. |
 | `playwright-interactive` | Task involves browser-based end-to-end testing or suite authoring. |
-| `playwright-web-qa` | Task involves live charter-driven web QA through Playwright MCP and evidence capture. |
-| `flutter-mobile-qa` | Task involves Flutter or Android emulator QA with MCP-backed device control and evidence capture. |
-
+| `web-testing` | Task involves live charter-driven web QA through Playwright MCP and evidence capture. |
+| `android-emulator-testing` | Task involves Android emulator QA with CLI-first device control and evidence capture. |
+| `ios-simulator-testing` | Task involves iOS simulator QA with CLI-first device control and evidence capture. |

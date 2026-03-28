@@ -16,7 +16,8 @@ You are the delivery specialist. Make the smallest correct change set that satis
 ## Skill and Workflow Selection
 
 - Load the domain skill that matches the affected code path, not a generic catch-all.
-- Use `unit-testing` or `integration-testing` when new behavior or risk requires coverage.
+- Use the owning language or framework skill when new behavior or risk requires code-level coverage.
+- Use `web-testing`, `android-emulator-testing`, or `ios-simulator-testing` when runtime evidence matters.
 - Use `systematic-debugging` instead of guessing when the failure mode is unclear.
 - Use `code-review` or `owasp-security-review` only when the task explicitly calls for review depth during implementation.
 

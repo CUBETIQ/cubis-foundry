@@ -2,7 +2,7 @@
 <!-- cbx:skill:qa:start -->
 ---
 name: qa
-description: "Comprehensive QA capability covering general acceptance testing, Playwright-driven browser QA, and mobile QA planning. Use when running quality assurance tests, building test infrastructure, or performing release-readiness verification."
+description: "Compatibility wrapper for broad QA requests. Route browser work to web-testing, native mobile work to android-emulator-testing or ios-simulator-testing, and code-level testing to the owning language or framework skill."
 license: MIT
 metadata:
   author: cubis-foundry
@@ -10,20 +10,27 @@ metadata:
 compatibility: "Claude Code, Codex, GitHub Copilot, Gemini CLI, Antigravity"
 ---
 
-# QA Capability
+# QA Compatibility Wrapper
 
-This capability provides 3 focused QA modes. Select the mode appropriate for the current QA task.
+Use this only when the request says "QA" generically. Route immediately into the canonical testing surface.
 
 ## Modes
 
 | Mode | Skill | When to Use |
 | --- | --- | --- |
-| `ui-harness` | `qa` | Building or reviewing a Foundry-owned UI evaluation harness or broader acceptance checklist |
-| `playwright-web` | `playwright-interactive` | Running charter-driven web QA through Playwright-based browser automation |
-| `flutter-mobile` | `qa` | Planning mobile QA coverage and release-readiness checks until a dedicated Flutter QA skill lands |
+| `ui-harness` | `qa` | Making the routing decision for a broad QA request |
+| `web` | `web-testing` | Running browser QA through Playwright MCP and the canonical web-testing skill |
+| `android` | `android-emulator-testing` | Running Android emulator QA through the CLI-first Android testing skill |
+| `ios` | `ios-simulator-testing` | Running iOS simulator QA through the CLI-first iOS testing skill |
+
+## Code-level Testing
+
+Do not route code-level unit or integration coverage here. Load the language or framework skill that owns the code under test and keep testing guidance with that stack.
 
 ## Skill References
 
 - `qa`
-- `playwright-interactive`
+- `web-testing`
+- `android-emulator-testing`
+- `ios-simulator-testing`
 <!-- cbx:skill:qa:end -->

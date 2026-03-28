@@ -78,6 +78,13 @@ Provide authoritative guidance on building production Next.js 15+ applications u
 
 16. **Pin `next` and `react` versions together** and test upgrades in a branch, because Next.js canary releases tightly couple React features (like Server Components and `use()`) and version mismatches cause cryptic hydration errors.
 
+## Testing Guidance
+
+- Keep Next.js unit-test conventions in this skill and the owning TypeScript skill instead of routing new work through the generic `unit-testing` wrapper.
+- Own Next.js integration checks here when they depend on routing, Server Components, middleware, API routes, caching, or app-router boundaries.
+- Use `../web-testing/SKILL.md` for live browser QA, route verification, and Playwright-MCP-driven evidence.
+- Use `../playwright-interactive/SKILL.md` only when `web-testing` needs deeper browser specialist support.
+
 ## Output Format
 
 When delivering Next.js 15+ code:
@@ -100,3 +107,4 @@ Load detailed guidance based on context:
 | Caching | `references/caching.md` | Request memoization, Data Cache, Full Route Cache, Router Cache |
 | Routing | `references/routing.md` | Parallel routes, intercepting routes, route groups, middleware |
 | Performance | `references/performance.md` | Images, fonts, metadata, streaming, Partial Prerendering |
+| Testing | `references/testing.md` | Route handlers, server actions, middleware seams, app-router tests, or browser QA handoff rules |

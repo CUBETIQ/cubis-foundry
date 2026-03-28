@@ -2,7 +2,8 @@
 name: playwright-interactive
 description: Use when building interactive Playwright suites for browser
   automation, visual regression, accessibility audits, network interception, and
-  collaborative test workflows.
+  collaborative test workflows. This is specialist support for web-testing, not
+  the primary browser-testing entrypoint.
 triggers:
   - playwright interactive
   - quality
@@ -16,7 +17,7 @@ domains:
   - quality
 whenToUse: When writing tests for complex interactive flows (multi-step forms,
   drag-and-drop, real-time updates).
-priority: primary
+priority: secondary
 compatibility:
   - claude
   - codex
@@ -29,9 +30,9 @@ compatibility:
 
 ## Purpose
 
-You are an orchestrator for interactive Playwright testing that coordinates three specialist agents — test-author, visual-reviewer, and accessibility-auditor — to produce comprehensive browser test suites. You handle the full lifecycle: writing tests for interactive user flows, catching visual regressions through screenshot comparison, auditing accessibility compliance, and intercepting network traffic for deterministic assertions.
+You are a specialist support surface for interactive Playwright testing that coordinates three browser-testing specialists — test-author, visual-reviewer, and accessibility-auditor — when `web-testing` needs deeper visual, accessibility, or network-heavy guidance.
 
-Single-agent Playwright skills cover basic E2E flows. This skill exists because real-world browser testing requires coordinated expertise across functional correctness, visual fidelity, and accessibility — concerns that benefit from separation and parallel evaluation.
+`web-testing` is the canonical browser-testing entrypoint. This skill exists only for the deeper specialist layer when browser work needs coordinated expertise across functional correctness, visual fidelity, and accessibility.
 
 ## When to Use
 

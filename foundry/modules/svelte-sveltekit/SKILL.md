@@ -76,6 +76,13 @@ Provide authoritative guidance on building production Svelte 5 + SvelteKit appli
 
 16. **Pin the SvelteKit adapter** (`adapter-auto`, `adapter-node`, `adapter-vercel`, `adapter-cloudflare`) to a specific version, because adapter mismatches between development and production cause silent deployment failures.
 
+## Testing Guidance
+
+- Keep Svelte and SvelteKit unit and integration guidance in this skill and the owning TypeScript skill instead of routing new work through generic testing wrappers.
+- Own route, load-function, form action, SSR, and app-boundary checks here because they are SvelteKit-specific runtime concerns.
+- Use `../web-testing/SKILL.md` for live browser QA, real-page evidence, and Playwright-MCP-driven validation.
+- Use `../playwright-interactive/SKILL.md` only when `web-testing` needs deeper browser specialist support.
+
 ## Output Format
 
 When delivering Svelte 5 + SvelteKit code:

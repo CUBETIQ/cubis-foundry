@@ -12,8 +12,7 @@ agentChain:
 primarySkills:
   - spec-driven-delivery
 supportingSkills:
-  - unit-testing
-  - integration-testing
+  - web-testing
 whenToUse: "When the work is already scoped well enough to start editing code or configuration directly."
 priority: high
 compatibility:
@@ -47,7 +46,8 @@ Use this when the task is understood, the acceptance criteria are clear, and the
 ## Skill routing
 
 - Load the domain skill for the affected subsystem.
-- Add `unit-testing` or `integration-testing` when behavior changes or risk is non-trivial.
+- Add the owning language or framework skill when code-level verification is needed.
+- Add `web-testing`, `android-emulator-testing`, or `ios-simulator-testing` when user-visible runtime verification is needed.
 
 ## Context notes
 

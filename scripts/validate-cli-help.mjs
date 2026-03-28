@@ -155,7 +155,7 @@ const mobileHelp = mobileCommand
 const normalizedMobileHelp = normalizeWhitespace(mobileHelp);
 assertIncludes(
   normalizedMobileHelp,
-  "first-class mobile QA workflows",
+  "CLI-first mobile QA workflows",
   "mobile help",
 );
 const mobileQaCommand = mobileCommand
@@ -169,6 +169,11 @@ const mobileQaRunHelp = mobileQaRunCommand
   : "";
 const normalizedMobileQaRunHelp = normalizeWhitespace(mobileQaRunHelp);
 assertIncludes(
+  normalizedMobileQaRunHelp,
+  "--android-mcp",
+  "mobile qa run help",
+);
+assertExcludes(
   normalizedMobileQaRunHelp,
   "--allow-adb-fallback",
   "mobile qa run help",
@@ -217,4 +222,3 @@ if (failures.length > 0) {
 }
 
 console.log("CLI help validation passed.");
-

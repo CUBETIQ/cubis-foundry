@@ -69,6 +69,13 @@ Production-grade guidance for Go 1.24+ covering generics with practical constrai
 
 14. **Instrument with OpenTelemetry** — add tracing spans at service boundaries and structured logging with `slog` (Go 1.21+). Attach trace IDs, request IDs, and operation names to every log entry because correlated telemetry is the fastest path to diagnosing production incidents.
 
+## Testing Guidance
+
+- Keep Go unit-test guidance in this skill instead of routing new work through the generic `unit-testing` wrapper.
+- Prefer `go test`, table-driven cases, subtests, and native test helpers before reaching for cross-stack wrappers.
+- Escalate database, HTTP, queue, or service-boundary checks into the owning framework or platform skill instead of the generic `integration-testing` wrapper.
+- Use `../web-testing/SKILL.md`, `../android-emulator-testing/SKILL.md`, or `../ios-simulator-testing/SKILL.md` only when the task needs live browser or device evidence.
+
 ## Output Format
 
 Produces Go code following standard project layout with explicit error handling, context propagation, errgroup-based concurrency, and table-driven tests. Includes module structure guidance, benchmark setups, and inline comments explaining concurrency and error design choices.

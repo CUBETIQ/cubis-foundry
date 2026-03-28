@@ -24,7 +24,7 @@ Use for bug reports, error investigations, test failures, and any issue where th
 ## Skill Routing
 
 - Primary skills: `systematic-debugging`, `deep-research`
-- Supporting skills (optional): `unit-testing`, `flutter-mobile-qa`, `code-review`
+- Supporting skills (optional): `web-testing`, `android-emulator-testing`, `ios-simulator-testing`, `code-review`
 
 ## Context notes
 

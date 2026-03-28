@@ -73,6 +73,13 @@ Production-grade guidance for Rust 2024 edition covering ownership and borrowing
 
 16. **Leverage edition 2024 features** — use `gen` blocks for custom iterators (when stabilized), `async fn` in traits (RPITIT), and the updated borrow checker with NLL improvements. The 2024 edition tightens `unsafe` requirements (`unsafe_op_in_unsafe_fn` is warn by default) so existing code may need `// SAFETY:` annotations when migrating.
 
+## Testing Guidance
+
+- Keep Rust unit-test guidance in this skill instead of routing new work through the generic `unit-testing` wrapper.
+- Prefer `cargo test`, focused module tests, and trait-boundary checks before adding broader runtime scaffolding.
+- Escalate network, storage, or multi-process boundary checks into the owning framework or platform skill instead of the generic `integration-testing` wrapper.
+- Use `../web-testing/SKILL.md`, `../android-emulator-testing/SKILL.md`, or `../ios-simulator-testing/SKILL.md` only when the task needs live browser or device evidence.
+
 ## Output Format
 
 Produces Rust code using 2024 edition idioms with explicit ownership design, `thiserror`/`anyhow` error handling, tokio-based async patterns, and multi-level test suites. Includes `// SAFETY:` comments for any unsafe blocks and doc comments on all public APIs.

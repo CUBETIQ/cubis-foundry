@@ -1,14 +1,14 @@
 ---
 command: "/mobile-qa"
-description: "Run charter-driven mobile QA through Android MCP first, capture deterministic evidence, and use ADB only as explicit fallback."
-triggers: ["mobile qa", "android qa", "flutter qa", "emulator qa", "adb qa"]
+description: "Run charter-driven mobile QA on the CLI-first Android emulator or iOS simulator path, with Android MCP available only as an optional integration."
+triggers: ["mobile qa", "android qa", "flutter qa", "emulator qa", "adb qa", "ios qa", "simulator qa"]
 ---
 
 # Mobile QA Workflow
 
 ## When to use
 
-Use when validating a real mobile flow on Android and the main outcome is execution evidence, not test-suite authoring.
+Use when validating a real mobile flow on Android or iOS and the main outcome is execution evidence, not test-suite authoring.
 
 ## Agent Chain
 
@@ -16,32 +16,32 @@ Use when validating a real mobile flow on Android and the main outcome is execut
 
 ## Routing
 
-1. **Explore**: `@explorer` confirms the app target, charter inputs, Android MCP availability, and any APK/device prerequisites.
-2. **Test**: `@tester` runs the mobile QA charter, captures screenshots/UI trees/logs, and applies the fallback rule only when needed.
+1. **Explore**: `@explorer` confirms the app target, charter inputs, simulator or emulator prerequisites, and whether Android MCP has been explicitly requested.
+2. **Test**: `@tester` runs the mobile QA charter, captures screenshots/UI trees/logs, and stays on the CLI-first device path unless Android MCP has been explicitly enabled.
 3. **Review**: `@reviewer` checks whether the evidence actually proves pass, fail, or blocked status.
 
 ## Skill Routing
 
-- Primary skills: `flutter-mobile-qa`
-- Supporting skills (optional): `integration-testing`, `code-review`
+- Primary skills: `android-emulator-testing`, `ios-simulator-testing`
+- Supporting skills (optional): `code-review`
 
 ## Context notes
 
-- Provide the charter path, package or APK target, and whether ADB fallback is allowed.
+- Provide the charter path, package or APK target, and the intended device path.
 - This route is for live QA execution and evidence capture, not generalized suite authoring.
 ## Runtime contract
 
-- Prefer Android MCP as the primary execution path.
-- Allow direct ADB only when the operator explicitly enables fallback.
+- Prefer the CLI-first Android emulator or iOS simulator path.
+- Treat Android MCP as optional and opt-in only.
 - Save artifacts under `artifacts/mobile-qa/`.
 - Stop after one controlled retry and report evidence.
 
 ## Workflow steps
 
-1. Confirm the charter, package target, and environment readiness.
-2. Run the Android MCP-driven QA flow and capture baseline evidence.
+1. Confirm the charter, package target, device path, and environment readiness.
+2. Start on the CLI-first Android emulator or iOS simulator path and capture baseline evidence.
 3. Execute each charter step and persist screenshots, UI trees, and logs.
-4. If Android MCP is unavailable and fallback is allowed, run the bounded ADB fallback path.
+4. Use Android MCP only when the operator explicitly enabled it for Android work.
 5. Review the evidence and summarize pass/fail/blocked findings.
 
 ## Verification
@@ -56,9 +56,8 @@ Use when validating a real mobile flow on Android and the main outcome is execut
 WORKFLOW_RESULT:
   primary_agent: tester
   supporting_agents: [explorer, reviewer]
-  provider_used: <android-mcp|adb>
+  provider_used: <adb|android-mcp|simctl>
   artifacts: [<path>]
   blocked_reasons: [<string>] | []
   follow_up_items: [<string>] | []
 ```
-

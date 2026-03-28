@@ -41,15 +41,15 @@ The goal is to track the gaps that still need product or tooling fixes inside Fo
   - reuse screens with `edit_screens` whenever a matching concept already exists
   - expose “reuse or create” explicitly in the user-facing runtime logs
 
-### 4. Android MCP is not yet integrated as a first-class Foundry runtime
-- Problem: Foundry can install Android MCP config, but the actual validation work still required direct `adb` and emulator management outside a unified Foundry workflow.
+### 4. Android MCP remains an optional integration for CLI-first mobile QA
+- Problem: Foundry can install Android MCP config, but the intended mobile validation path stays on adb/CLI by default and Android MCP remains an opt-in integration rather than the canonical runtime.
 - Evidence:
   - real emulator/device checks were done with `adb` and Flutter tooling
-  - Android MCP concepts exist in skills and setup, but there is no single Foundry command that orchestrates build, install, screenshot, UI tree, and logs end-to-end
+  - Android MCP concepts exist in skills and setup, but the current native `cbx mobile qa` flow still does not orchestrate build, install, screenshot, UI tree, and logs end-to-end across the full mobile path
 - Fix direction:
-  - add a native `cbx mobile qa` or equivalent workflow
-  - standardize screenshot, UI tree, log capture, and app install/launch in one place
-  - support both direct ADB fallback and Android MCP server mode
+  - keep the default mobile path on `adb`, emulator tooling, and Flutter CLI flows
+  - keep improving the native `cbx mobile qa` workflow around the CLI-first path
+  - treat Android MCP as an optional integration point that can be enabled when it materially helps
 
 ### 5. Emulator reliability is a real bottleneck and Foundry does not manage it yet
 - Problem: slow or stale emulators caused false negatives, install failures, and boot timing issues that Foundry currently leaves entirely to the operator.
@@ -137,13 +137,13 @@ The goal is to track the gaps that still need product or tooling fixes inside Fo
 - Fix direction:
   - add structured execution traces for routes, loaded skills, selected references, and blocked tool calls
 
-### 14. Mobile QA should be an explicit first-class workflow, not just a skill plus manual steps
-- Problem: the current skill content is useful, but the operator still had to manually sequence build, install, integration, screenshot, UI tree, and logs.
+### 14. Mobile QA is now first-class, but still needs deeper orchestration
+- Problem: Foundry now has a native mobile QA workflow, but the operator still has to fill in too much sequencing and platform-specific recovery detail.
 - Evidence:
   - the successful validation process was repeatable, but not yet encapsulated as one Foundry workflow
 - Fix direction:
-  - introduce a dedicated mobile QA workflow for Flutter/Android validation
-  - make artifact output paths deterministic
+  - keep strengthening the dedicated mobile QA workflow for Flutter/Android validation
+  - make artifact output paths and recovery hints more deterministic
 
 ### 15. UI harness provenance is now harness-emitted, but not design-runtime-native
 - Problem: the web UI testing harness can now emit dataset ids, exclusions, lane status, and remediation traces through its benchmark runtime, but the core design runtime still does not emit that provenance natively.
@@ -264,7 +264,7 @@ The goal is to track the gaps that still need product or tooling fixes inside Fo
 ## Recommended Fix Order
 
 1. Ship a first-class Stitch executor with design gating, project reuse, and timeout recovery.
-2. Ship a first-class mobile QA workflow with emulator/device preflight and Android MCP or ADB evidence capture.
+2. Keep strengthening the first-class mobile QA workflow with emulator/device preflight, CLI-first ADB evidence capture, and optional Android MCP integration only where it materially helps.
 3. Promote prompt-trace provenance and structured execution tracing for routes, skills, references, and tool gating.
 4. Promote the new design remediation command layer into a guided runtime with explicit traces.
 5. Promote the current script-backed web UI testing workflow into a shared native executor that composes scenario manifests, QA charters, scorecards, remediation passes, and consolidated reporting.

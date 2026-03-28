@@ -446,7 +446,7 @@ function chooseQaRoute(intent: string, manifest: RouteManifest): RouteEntry | nu
   const normalizedIntent = normalize(intent);
   const wantsMobileQa =
     includesAnyPhrase(normalizedIntent, MOBILE_QA_SIGNALS) ||
-    (/\b(android|flutter|emulator|adb)\b/.test(normalizedIntent) && /\b(test|qa|verify|validation)\b/.test(normalizedIntent));
+    (/\b(android|flutter|emulator|adb|ios|iphone|ipad|simulator|simctl)\b/.test(normalizedIntent) && /\b(test|qa|verify|validation)\b/.test(normalizedIntent));
   if (wantsMobileQa) {
     return (
       manifest.routes.find(
@@ -558,22 +558,30 @@ export async function handleRouteResolve(
 
   const qaRoute = chooseQaRoute(intent, routeManifest);
   if (qaRoute) {
+    const isWebQaRoute = qaRoute.id === "web-qa";
+    const isIosIntent = /\b(ios|iphone|ipad|simulator|simctl)\b/i.test(intent);
+    const mobilePrimarySkill = isIosIntent
+      ? "ios-simulator-testing"
+      : "android-emulator-testing";
+    const mobilePrimarySkills = isIosIntent
+      ? ["ios-simulator-testing", "android-emulator-testing"]
+      : ["android-emulator-testing", "ios-simulator-testing"];
     const payload = buildResolvedPayload(
       intent,
       qaRoute,
       "qa-runtime-intent",
       detectedLanguageSkill,
       {
-        primarySkillHint: qaRoute.id === "web-qa" ? "playwright-web-qa" : "flutter-mobile-qa",
-        primarySkills:
-          qaRoute.id === "web-qa"
-            ? ["playwright-web-qa", "playwright-interactive"]
-            : ["flutter-mobile-qa"],
+        primarySkillHint: isWebQaRoute ? "web-testing" : mobilePrimarySkill,
+        primarySkills: isWebQaRoute
+          ? ["web-testing", "playwright-interactive"]
+          : mobilePrimarySkills,
         supportingSkills: qaRoute.supportingSkills,
-        explanation:
-          qaRoute.id === "web-qa"
-            ? "Matched web QA intent and routed to /web-qa so Playwright MCP execution, evidence capture, and QA reporting stay on the dedicated web runtime path."
-            : "Matched mobile QA intent and routed to /mobile-qa so Android MCP execution, emulator evidence capture, and fallback rules stay on the dedicated mobile runtime path.",
+        explanation: isWebQaRoute
+          ? "Matched browser QA intent and routed to /web-qa so Playwright MCP execution, evidence capture, and QA reporting stay on the canonical web-testing runtime path."
+          : isIosIntent
+            ? "Matched iOS simulator QA intent and routed to /mobile-qa so the CLI-first iOS testing path stays primary while Android coverage remains available when needed."
+            : "Matched mobile QA intent and routed to /mobile-qa so the CLI-first Android testing path stays primary while iOS simulator coverage remains available when needed.",
       },
     );
     return {
@@ -695,4 +703,3 @@ export async function handleRouteResolve(
     structuredContent: payload,
   };
 }
-

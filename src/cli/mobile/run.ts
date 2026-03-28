@@ -42,8 +42,8 @@ export async function runMobileQa(options: AnyOptions) {
     if (options.avd) {
       args.push("--avd", String(options.avd));
     }
-    if (options.allowAdbFallback) {
-      args.push("--allow-adb-fallback");
+    if (options.androidMcp) {
+      args.push("--android-mcp");
     }
     if (options.dryRun) {
       args.push("--dry-run");

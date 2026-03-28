@@ -145,8 +145,8 @@ go-fiber, nestjs, fastapi, express-nodejs, gin-golang, laravel, django-drf, spri
 ### Category C — Design/Architecture (7)
 frontend-design, system-design, microservices-design, api-design, database-design, architecture-doc, tech-doc
 
-### Category D — Testing/QA (7)
-playwright-interactive, playwright-persistent-browser, electron-qa, unit-testing, integration-testing, performance-testing, systematic-debugging
+### Category D — Testing/QA (6)
+web-testing, android-emulator-testing, ios-simulator-testing, qa, playwright-interactive, systematic-debugging
 
 ### Category E — Security (5)
 owasp-security-review, pentest-skill, vibesec, secret-management, sanitize-pii

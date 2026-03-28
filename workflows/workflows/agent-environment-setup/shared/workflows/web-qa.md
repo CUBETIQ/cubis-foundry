@@ -22,8 +22,8 @@ Use when validating a real browser flow with Playwright MCP and the main outcome
 
 ## Skill Routing
 
-- Primary skills: `playwright-web-qa`
-- Supporting skills (optional): `playwright-interactive`, `integration-testing`, `code-review`
+- Primary skills: `web-testing`
+- Supporting skills (optional): `playwright-interactive`, `code-review`
 
 ## Context notes
 
@@ -61,4 +61,3 @@ WORKFLOW_RESULT:
   blocked_reasons: [<string>] | []
   follow_up_items: [<string>] | []
 ```
-

@@ -3116,8 +3116,7 @@ function inferRecommendedSkills(snapshot) {
     recommended.add("rust-best-practices");
   }
   if (hasFramework("Flutter")) {
-    recommended.add("qa");
-    recommended.add("integration-testing");
+    recommended.add("android-emulator-testing");
   }
 
   // Language-level signals when no framework match already added the skill
@@ -3144,10 +3143,7 @@ function inferRecommendedSkills(snapshot) {
 
   // Testing signals
   if (hasFramework("Playwright")) {
-    recommended.add("playwright-interactive");
-  }
-  if (hasFramework("Vitest") || hasFramework("Jest")) {
-    recommended.add("unit-testing");
+    recommended.add("web-testing");
   }
 
   // Database signals
@@ -5958,7 +5954,7 @@ async function applyPostmanMcpForPlatform({
   }
   if (includeAndroidMcp) {
     warnings.push(
-      `Android MCP uses '${ANDROID_MCP_PACKAGE_SPEC}' over stdio. Ensure Android SDK platform-tools are installed and ANDROID_HOME is available when SDK auto-discovery is unavailable.`,
+      `Android MCP is an optional integration and uses '${ANDROID_MCP_PACKAGE_SPEC}' over stdio. Android and iOS default to CLI-first testing; install Android SDK platform-tools and set ANDROID_HOME only when you want the optional Android MCP wiring and SDK auto-discovery is unavailable.`,
     );
   }
 
@@ -6602,7 +6598,7 @@ async function resolvePostmanInstallSelection({
       transport: "stdio",
     };
     warnings.push(
-      "Android ADB MCP uses the external android-mcp-server package. Ensure Android SDK platform-tools are installed and ANDROID_HOME is set when auto-discovery is unavailable.",
+      "Android MCP is an optional integration and uses the external android-mcp-server package. Android and iOS default to CLI-first testing; set up Android SDK platform-tools and ANDROID_HOME only when you want the optional Android MCP wiring and auto-discovery is unavailable.",
     );
   }
 
@@ -8111,12 +8107,12 @@ function printPostmanSetupSummary({ postmanSetup }) {
   console.log(`- MCP scope: ${postmanSetup.mcpScope}`);
   if (postmanSetup.playwrightEnabled) {
     console.log(
-      `- Playwright MCP: enabled (${postmanSetup.playwrightMcpUrl || PLAYWRIGHT_MCP_URL})`,
+      `- Playwright MCP (canonical browser-testing runtime): enabled (${postmanSetup.playwrightMcpUrl || PLAYWRIGHT_MCP_URL})`,
     );
   }
   if (postmanSetup.androidEnabled) {
     console.log(
-      `- Android ADB MCP: enabled (${postmanSetup.androidMcpPackage || ANDROID_MCP_PACKAGE_SPEC})`,
+      `- Android MCP integration (optional): enabled (${postmanSetup.androidMcpPackage || ANDROID_MCP_PACKAGE_SPEC})`,
     );
   }
   if (postmanSetup.postmanEnabled && postmanSetup.postmanMode) {
@@ -8287,10 +8283,10 @@ function withInstallOptions(command) {
       "--stitch",
       "optional: configure Stitch profiles and gateway-backed Foundry MCP wiring",
     )
-    .option("--playwright", "optional: include Playwright MCP server wiring")
+    .option("--playwright", "optional: include Playwright MCP browser-testing wiring (canonical browser-testing runtime)")
     .option(
       "--android",
-      `optional: include Android ADB MCP wiring via ${ANDROID_MCP_PACKAGE_SPEC}`,
+      `optional: include Android MCP wiring via ${ANDROID_MCP_PACKAGE_SPEC} (CLI-first mobile testing remains the default)`,
     )
     .option(
       "--postman-api-key <key>",
@@ -14047,12 +14043,7 @@ async function runInitWizard(options) {
         ? normalizePostmanWorkspaceId(options.postmanWorkspaceId)
         : null;
     const defaultMcpSelections = normalizeInitMcpSelections(options.mcps);
-    if (
-      defaultMcpSelections.length === 0 &&
-      detectedStack.stack === "mobile"
-    ) {
-      defaultMcpSelections.push("android");
-    }
+    // Mobile stacks default to CLI-first testing; Android MCP stays opt-in.
     const defaultPlatforms = normalizeInitPlatforms(options.platforms);
     const defaultMcpRuntime = normalizeMcpRuntime(
       options.mcpRuntime,
@@ -14102,9 +14093,7 @@ async function runInitWizard(options) {
         ? await promptInitMcpSelection(defaultMcpSelections)
         : defaultMcpSelections.length > 0
           ? defaultMcpSelections
-          : detectedStack.stack === "mobile"
-            ? ["android"]
-            : ["cubis-foundry"],
+          : ["cubis-foundry"],
       skillsScope: defaultSkillsScope,
       mcpScope: defaultMcpScope,
       mcpRuntime: defaultMcpRuntime,
@@ -14195,6 +14184,8 @@ async function runInitWizard(options) {
     const initSummary = [
       formatInitSummary(selections),
       "",
+      "Browser testing runtime: Playwright MCP is the canonical browser-testing runtime.",
+      "Mobile testing: Android and iOS default to CLI-first testing; Android MCP is optional.",
       `Workspace profile: ${selections.profile}`,
       `Detected stack: ${selections.stack} (${detectedStack.confidence})`,
       `Stack evidence: ${detectedStack.evidence.join(", ") || "(none)"}`,

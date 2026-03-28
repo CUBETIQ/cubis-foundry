@@ -79,7 +79,7 @@ export async function promptInitSkillProfile(
 
 export async function promptInitMcpSelection(defaultMcps: InitMcpId[]) {
   return checkbox<InitMcpId>({
-    message: "Select which MCP integrations to configure:",
+    message: "Select which optional MCP integrations to configure:",
     choices: [
       {
         name: "Cubis Foundry",
@@ -97,12 +97,12 @@ export async function promptInitMcpSelection(defaultMcps: InitMcpId[]) {
         checked: defaultMcps.includes("stitch"),
       },
       {
-        name: "Playwright",
+        name: "Playwright (canonical browser-testing runtime)",
         value: "playwright",
         checked: defaultMcps.includes("playwright"),
       },
       {
-        name: "Android ADB (android-mcp-server)",
+        name: "Android MCP (optional integration, android-mcp-server)",
         value: "android",
         checked: defaultMcps.includes("android"),
       },

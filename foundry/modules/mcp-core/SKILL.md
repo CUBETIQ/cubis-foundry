@@ -38,11 +38,14 @@ Define how Foundry should treat MCP integrations as first-class runtime assets. 
 1. Treat the canonical manifest as the source of truth and derive runtime-specific config from it.
 2. Keep platform-specific differences explicit instead of hiding them behind hand-written config drift.
 3. Verify both generated artifacts and the consumer runtime expectations.
+4. Treat Playwright MCP as the canonical browser-testing runtime.
+5. Treat Android MCP as optional and non-default; Android and iOS testing should default to CLI-first runtime paths unless a workflow explicitly opts into another surface.
 
 ## Anti-patterns
 
 - Do not edit generated MCP config by hand and pretend it is canonical.
 - Do not assume every runtime supports the same MCP surface.
+- Do not imply Android MCP is required for mobile testing.
 
 ## Output Format
 

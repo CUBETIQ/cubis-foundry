@@ -1,11 +1,9 @@
 id: unit-testing
-kind: skill
+kind: compat-alias
 label: Unit Testing
-description: "Unit testing best practices covering test design, mocking strategies, coverage analysis, TDD workflow, and assertion patterns."
+description: "Legacy shared unit-testing guidance. Prefer the owning language or framework skill for concrete testing advice."
 stability: stable
-profiles:
-  - core
-  - developer
+profiles: []
 dependencies: []
 capability:
   type: tool

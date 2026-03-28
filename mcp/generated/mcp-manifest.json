@@ -1,12 +1,12 @@
 {
   "$schema": "cubis-foundry-mcp-manifest-v1",
-  "generatedAt": "2026-03-25T02:22:06.151Z",
-  "contentHash": "4db7e3e5aa670eb0",
+  "generatedAt": "2026-03-28T04:47:18.543Z",
+  "contentHash": "9a68b7c5e2f513e2",
   "summary": {
-    "totalSkills": 70,
-    "totalCategories": 11,
-    "totalBytes": 404122,
-    "estimatedTokens": 101031
+    "totalSkills": 59,
+    "totalCategories": 10,
+    "totalBytes": 361015,
+    "estimatedTokens": 90254
   },
   "categories": [
     {
@@ -35,19 +35,15 @@
     },
     {
       "name": "general",
-      "skillCount": 39
+      "skillCount": 32
     },
     {
       "name": "mcp",
-      "skillCount": 3
-    },
-    {
-      "name": "mobile",
-      "skillCount": 1
+      "skillCount": 2
     },
     {
       "name": "testing",
-      "skillCount": 4
+      "skillCount": 2
     },
     {
       "name": "tooling",
@@ -56,10 +52,39 @@
   ],
   "skills": [
     {
+      "id": "android-emulator-testing",
+      "name": "android-emulator-testing",
+      "displayName": null,
+      "description": "Canonical CLI-first skill for Android emulator testing, adb control,",
+      "category": "general",
+      "keywords": [
+        "android-emulator-testing",
+        "android emulator testing",
+        "android",
+        "emulator",
+        "testing"
+      ],
+      "triggers": [
+        "android testing",
+        "android emulator",
+        "adb",
+        "ui tree",
+        "logcat",
+        "emulator qa",
+        "android-emulator-testing",
+        "android emulator testing",
+        "android",
+        "emulator",
+        "testing"
+      ],
+      "path": "foundry/modules/android-emulator-testing/SKILL.md",
+      "fileBytes": 3995
+    },
+    {
       "id": "api-design",
       "name": "api-design",
       "displayName": null,
-      "description": "API design best practices covering REST, GraphQL, gRPC patterns, versioning strategies, pagination, error contracts, and OpenAPI specifications for robust service interfaces.",
+      "description": "API design best practices covering REST, GraphQL, gRPC patterns,",
       "category": "api",
       "keywords": [
         "api-design",
@@ -67,22 +92,24 @@
         "api"
       ],
       "triggers": [
-        "api-design",
         "api design",
+        "backend",
+        "rest",
+        "graphql",
+        "grpc patterns",
+        "versioning strategies",
+        "pagination",
+        "api-design",
         "api"
       ],
-      "path": "workflows/skills/api-design/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 6823
+      "path": "foundry/modules/api-design/SKILL.md",
+      "fileBytes": 7053
     },
     {
       "id": "architecture-doc",
       "name": "architecture-doc",
       "displayName": null,
-      "description": "Use when creating architecture documentation including C4 model diagrams, Architecture Decision Records, system context views, deployment diagrams, and quality attribute specifications.",
+      "description": "Use when creating architecture documentation including C4 model",
       "category": "architecture",
       "keywords": [
         "architecture-doc",
@@ -90,22 +117,25 @@
         "doc"
       ],
       "triggers": [
-        "architecture-doc",
         "architecture doc",
+        "documentation",
+        "architecture documentation",
+        "system context views",
+        "deployment diagrams",
+        "c4 model diagrams (context",
+        "container",
+        "component",
+        "architecture-doc",
         "doc"
       ],
-      "path": "workflows/skills/architecture-doc/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 6170
+      "path": "foundry/modules/architecture-doc/SKILL.md",
+      "fileBytes": 6462
     },
     {
       "id": "ci-cd-pipeline",
       "name": "ci-cd-pipeline",
       "displayName": null,
-      "description": "Use when designing, optimizing, or debugging CI/CD pipelines: GitHub Actions workflows, GitLab CI configurations, pipeline caching strategies, matrix builds, deployment gates, artifact management, and release automation.",
+      "description": "Use when designing, optimizing, or debugging CI/CD pipelines:",
       "category": "general",
       "keywords": [
         "ci-cd-pipeline",
@@ -115,51 +145,51 @@
         "pipeline"
       ],
       "triggers": [
-        "ci-cd-pipeline",
         "ci cd pipeline",
+        "infrastructure",
+        "github actions workflows",
+        "gitlab ci configurations",
+        "pipeline caching strategies",
+        "matrix builds",
+        "deployment gates",
+        "artifact management",
+        "ci-cd-pipeline",
         "ci",
         "cd",
         "pipeline"
       ],
-      "path": "workflows/skills/ci-cd-pipeline/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 6714,
-      "warnings": [
-        "description too long (220 chars)"
-      ]
+      "path": "foundry/modules/ci-cd-pipeline/SKILL.md",
+      "fileBytes": 7035
     },
     {
       "id": "code-review",
       "name": "code-review",
       "displayName": null,
-      "description": "Use when conducting code reviews, building review checklists, calibrating review depth, providing structured feedback, or establishing team review practices. Covers review methodology, feedback patterns, automated checks, and batch review strategies.",
+      "description": "Use when conducting code reviews, building review checklists,",
       "category": "general",
       "keywords": [
         "code-review",
         "code review"
       ],
       "triggers": [
-        "code-review",
-        "code review"
+        "code review",
+        "quality",
+        "code reviews",
+        "building review checklists",
+        "calibrating review depth",
+        "feedback patterns",
+        "automated checks",
+        "batch review strategies",
+        "code-review"
       ],
-      "path": "workflows/skills/code-review/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 5550,
-      "warnings": [
-        "description too long (250 chars)"
-      ]
+      "path": "foundry/modules/code-review/SKILL.md",
+      "fileBytes": 5842
     },
     {
       "id": "csharp-best-practices",
       "name": "csharp-best-practices",
       "displayName": null,
-      "description": "Use when writing, reviewing, or refactoring modern C#/.NET code, including minimal APIs, records, async streams, pattern matching, DI lifetimes, and memory-efficient performance tuning.",
+      "description": "Use when writing, reviewing, or refactoring modern C#/.NET code,",
       "category": "backend",
       "keywords": [
         "csharp-best-practices",
@@ -167,22 +197,25 @@
         "csharp"
       ],
       "triggers": [
-        "csharp-best-practices",
         "csharp best practices",
+        "backend",
+        "records",
+        "async streams",
+        "pattern matching",
+        "di lifetimes",
+        "new .net 9 apis",
+        "workers",
+        "csharp-best-practices",
         "csharp"
       ],
-      "path": "workflows/skills/csharp-best-practices/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 8279
+      "path": "foundry/modules/csharp-best-practices/SKILL.md",
+      "fileBytes": 9129
     },
     {
       "id": "database-design",
       "name": "database-design",
       "displayName": null,
-      "description": "Use when designing database schemas, normalization strategies, indexing plans, query optimization, and migration workflows for relational, document, or hybrid data stores.",
+      "description": "Use when designing database schemas, normalization strategies,",
       "category": "data",
       "keywords": [
         "database-design",
@@ -190,22 +223,25 @@
         "database"
       ],
       "triggers": [
-        "database-design",
         "database design",
+        "backend",
+        "data",
+        "database schemas",
+        "normalization strategies",
+        "indexing plans",
+        "query optimization",
+        "migration workflows",
+        "database-design",
         "database"
       ],
-      "path": "workflows/skills/database-design/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 5691
+      "path": "foundry/modules/database-design/SKILL.md",
+      "fileBytes": 5945
     },
     {
       "id": "deep-research",
       "name": "deep-research",
       "displayName": null,
-      "description": "Use when investigating latest vendor behavior, comparing tools or platforms, verifying claims beyond the repo, or gathering external evidence before implementation.",
+      "description": "Use when investigating latest vendor behavior, comparing tools or",
       "category": "general",
       "keywords": [
         "deep-research",
@@ -214,46 +250,44 @@
         "research"
       ],
       "triggers": [
-        "deep-research",
         "deep research",
-        "deep",
-        "research"
+        "research",
+        "comparing tools",
+        "latest sdk",
+        "cli",
+        "api",
+        "platform behavior",
+        "frameworks",
+        "deep-research",
+        "deep"
       ],
-      "path": "workflows/skills/deep-research/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0"
-      },
-      "fileBytes": 5130
+      "path": "foundry/modules/deep-research/SKILL.md",
+      "fileBytes": 5334
     },
     {
-      "id": "design-arrange",
-      "name": "design-arrange",
+      "id": "design",
+      "name": "design",
       "displayName": null,
-      "description": "Repair layout, spacing, and visual rhythm when a UI has the right ingredients but the composition still feels templated, monotonous, or badly prioritized.",
+      "description": "Umbrella design skill for choosing the right visual or UX",
       "category": "general",
       "keywords": [
-        "design-arrange",
-        "design arrange",
-        "arrange"
+        "design"
       ],
       "triggers": [
-        "design-arrange",
-        "design arrange",
-        "arrange"
+        "frontend",
+        "umbrella design skill",
+        "ux specialist path",
+        "right design sub-skill",
+        "framing a ui"
       ],
-      "path": "workflows/skills/design-arrange/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0"
-      },
-      "fileBytes": 2237
+      "path": "foundry/modules/design/SKILL.md",
+      "fileBytes": 1853
     },
     {
       "id": "design-audit",
       "name": "design-audit",
       "displayName": null,
-      "description": "Diagnose why a UI feels generic, uneven, or hard to validate before making edits. Use for screenshot-first or live-browser review of composition, typography, states, responsiveness, and anti-slop failures.",
+      "description": "Diagnose why a UI feels generic, uneven, or hard to validate before",
       "category": "general",
       "keywords": [
         "design-audit",
@@ -261,142 +295,24 @@
         "audit"
       ],
       "triggers": [
-        "design-audit",
         "design audit",
+        "frontend",
+        "uneven",
+        "typography",
+        "states",
+        "responsiveness",
+        "anti-slop failures",
+        "design-audit",
         "audit"
       ],
-      "path": "workflows/skills/design-audit/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0"
-      },
-      "fileBytes": 2955,
-      "warnings": [
-        "description too long (205 chars)"
-      ]
-    },
-    {
-      "id": "design-bolder",
-      "name": "design-bolder",
-      "displayName": null,
-      "description": "Increase visual conviction when a UI is safe, bland, or too polite. Use to strengthen hierarchy, contrast, motif repetition, and brand character without making the surface chaotic.",
-      "category": "general",
-      "keywords": [
-        "design-bolder",
-        "design bolder",
-        "bolder"
-      ],
-      "triggers": [
-        "design-bolder",
-        "design bolder",
-        "bolder"
-      ],
-      "path": "workflows/skills/design-bolder/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0"
-      },
-      "fileBytes": 2002
-    },
-    {
-      "id": "design-context-capture",
-      "name": "design-context-capture",
-      "displayName": null,
-      "description": "Capture or refresh the project's canonical design context in `docs/foundation/DESIGN.md` so downstream design, implementation, and QA skills stop relying on vague taste or one-off prompts.",
-      "category": "general",
-      "keywords": [
-        "design-context-capture",
-        "design context capture",
-        "context",
-        "capture"
-      ],
-      "triggers": [
-        "design-context-capture",
-        "design context capture",
-        "context",
-        "capture"
-      ],
-      "path": "workflows/skills/design-context-capture/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0"
-      },
-      "fileBytes": 3124
-    },
-    {
-      "id": "design-distill",
-      "name": "design-distill",
-      "displayName": null,
-      "description": "Remove clutter and reduce visual noise so the strongest parts of the interface can lead. Use when a UI is overbuilt, over-labeled, over-boxed, or trying to say too many things at once.",
-      "category": "general",
-      "keywords": [
-        "design-distill",
-        "design distill",
-        "distill"
-      ],
-      "triggers": [
-        "design-distill",
-        "design distill",
-        "distill"
-      ],
-      "path": "workflows/skills/design-distill/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0"
-      },
-      "fileBytes": 2078
-    },
-    {
-      "id": "design-polish",
-      "name": "design-polish",
-      "displayName": null,
-      "description": "Run the final design cleanup pass on a functionally complete UI. Use when the direction is already chosen and the remaining work is alignment, state completeness, consistency, and ship-quality detail.",
-      "category": "general",
-      "keywords": [
-        "design-polish",
-        "design polish",
-        "polish"
-      ],
-      "triggers": [
-        "design-polish",
-        "design polish",
-        "polish"
-      ],
-      "path": "workflows/skills/design-polish/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0"
-      },
-      "fileBytes": 2328
-    },
-    {
-      "id": "design-typeset",
-      "name": "design-typeset",
-      "displayName": null,
-      "description": "Repair or strengthen typography so text has hierarchy, voice, and readability instead of defaulting to generic app copy styling. Use for headlines, labels, body rhythm, and type-scale decisions.",
-      "category": "general",
-      "keywords": [
-        "design-typeset",
-        "design typeset",
-        "typeset"
-      ],
-      "triggers": [
-        "design-typeset",
-        "design typeset",
-        "typeset"
-      ],
-      "path": "workflows/skills/design-typeset/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0"
-      },
-      "fileBytes": 2262
+      "path": "foundry/modules/design-audit/SKILL.md",
+      "fileBytes": 3110
     },
     {
       "id": "django-drf",
       "name": "django-drf",
       "displayName": null,
-      "description": "Use when building Django 5.1+ REST APIs with Django REST Framework 3.15+, covering serializers, viewsets, permissions, filtering, pagination, and async support.",
+      "description": "Use when building Django 5.1+ REST APIs with Django REST Framework",
       "category": "general",
       "keywords": [
         "django-drf",
@@ -405,51 +321,26 @@
         "drf"
       ],
       "triggers": [
-        "django-drf",
         "django drf",
+        "backend",
+        "serializers",
+        "viewsets",
+        "permissions",
+        "pagination",
+        "async support",
+        "custom permission classes",
+        "django-drf",
         "django",
         "drf"
       ],
-      "path": "workflows/skills/django-drf/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 5670
-    },
-    {
-      "id": "doc coauthoring",
-      "name": "doc coauthoring",
-      "displayName": "doc coauthoring",
-      "description": "Use when writing technical documentation including API references, operational runbooks, onboarding guides, decision logs, and changelog standards.",
-      "category": "general",
-      "keywords": [],
-      "triggers": [],
-      "path": "workflows/skills/tech-doc/SKILL.md",
-      "metadata": {
-        "alias_of": "tech-doc"
-      },
-      "fileBytes": 6589
-    },
-    {
-      "id": "doc-coauthoring",
-      "name": "doc-coauthoring",
-      "displayName": "doc-coauthoring",
-      "description": "Use when writing technical documentation including API references, operational runbooks, onboarding guides, decision logs, and changelog standards.",
-      "category": "general",
-      "keywords": [],
-      "triggers": [],
-      "path": "workflows/skills/tech-doc/SKILL.md",
-      "metadata": {
-        "alias_of": "tech-doc"
-      },
-      "fileBytes": 6589
+      "path": "foundry/modules/django-drf/SKILL.md",
+      "fileBytes": 6478
     },
     {
       "id": "docker-compose-dev",
       "name": "docker-compose-dev",
       "displayName": null,
-      "description": "Use when building or maintaining Docker Compose development environments: multi-service orchestration, volume mounts for hot reload, custom networking, debugging containers, health checks, and production-parity configuration.",
+      "description": "Use when building or maintaining Docker Compose development",
       "category": "general",
       "keywords": [
         "docker-compose-dev",
@@ -459,27 +350,27 @@
         "dev"
       ],
       "triggers": [
-        "docker-compose-dev",
         "docker compose dev",
+        "infrastructure",
+        "multi-service orchestration",
+        "volume mounts",
+        "custom networking",
+        "debugging containers",
+        "health checks",
+        "adding hot-reload support",
+        "docker-compose-dev",
         "docker",
         "compose",
         "dev"
       ],
-      "path": "workflows/skills/docker-compose-dev/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 7090,
-      "warnings": [
-        "description too long (225 chars)"
-      ]
+      "path": "foundry/modules/docker-compose-dev/SKILL.md",
+      "fileBytes": 7394
     },
     {
       "id": "expo-app",
       "name": "expo-app",
       "displayName": null,
-      "description": "Use when building or maintaining Expo applications: SDK 52+ features, EAS Build and Submit pipelines, OTA updates with expo-updates, native module integration via config plugins, push notifications with expo-notifications, and cross-platform testing.",
+      "description": "Use when building or maintaining Expo applications: SDK 52+",
       "category": "general",
       "keywords": [
         "expo-app",
@@ -488,72 +379,47 @@
         "app"
       ],
       "triggers": [
-        "expo-app",
         "expo app",
+        "mobile",
+        "frontend",
+        "sdk 52+ features",
+        "eas build",
+        "submit pipelines",
+        "ota updates",
+        "push notifications",
+        "expo-app",
         "expo",
         "app"
       ],
-      "path": "workflows/skills/expo-app/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 6270,
-      "warnings": [
-        "description too long (250 chars)"
-      ]
+      "path": "foundry/modules/expo-app/SKILL.md",
+      "fileBytes": 7313
     },
     {
       "id": "fastapi",
       "name": "fastapi",
       "displayName": null,
-      "description": "Use when building FastAPI 0.115+ applications with Pydantic v2 models, async endpoints, dependency injection, OpenAPI documentation, background tasks, and security patterns.",
+      "description": "Use when building FastAPI 0.115+ applications with Pydantic v2",
       "category": "backend",
       "keywords": [
         "fastapi"
       ],
       "triggers": [
-        "fastapi"
+        "fastapi",
+        "python",
+        "backend",
+        "fastapi 0.115+ applications",
+        "async endpoints",
+        "dependency injection",
+        "openapi documentation"
       ],
-      "path": "workflows/skills/fastapi/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 6640
-    },
-    {
-      "id": "flutter-mobile-qa",
-      "name": "flutter-mobile-qa",
-      "displayName": null,
-      "description": "Use when planning or running Flutter mobile QA with Android MCP as the primary device path, explicit ADB fallback, screenshot/UI-tree evidence, logcat triage, and structured test reporting.",
-      "category": "mobile",
-      "keywords": [
-        "flutter-mobile-qa",
-        "flutter mobile qa",
-        "flutter",
-        "mobile",
-        "qa"
-      ],
-      "triggers": [
-        "flutter-mobile-qa",
-        "flutter mobile qa",
-        "flutter",
-        "mobile",
-        "qa"
-      ],
-      "path": "workflows/skills/flutter-mobile-qa/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0"
-      },
-      "fileBytes": 6797
+      "path": "foundry/modules/fastapi/SKILL.md",
+      "fileBytes": 7486
     },
     {
       "id": "frontend-design",
       "name": "frontend-design",
       "displayName": null,
-      "description": "Create distinctive, production-grade frontend interfaces with strong visual direction. Use for design systems, components, pages, dashboards, landing pages, accessibility, and polished UI work that should avoid generic AI aesthetics.",
+      "description": "Create distinctive, production-grade frontend interfaces with",
       "category": "frontend",
       "keywords": [
         "frontend-design",
@@ -561,25 +427,23 @@
         "frontend"
       ],
       "triggers": [
-        "frontend-design",
         "frontend design",
-        "frontend"
+        "frontend",
+        "create distinctive",
+        "components",
+        "pages",
+        "dashboards",
+        "landing pages",
+        "frontend-design"
       ],
-      "path": "workflows/skills/frontend-design/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.2"
-      },
-      "fileBytes": 10083,
-      "warnings": [
-        "description too long (233 chars)"
-      ]
+      "path": "foundry/modules/frontend-design/SKILL.md",
+      "fileBytes": 10329
     },
     {
       "id": "frontend-design-core",
       "name": "frontend-design-core",
       "displayName": null,
-      "description": "Establish the design-engine execution order, canonical design-state model, and the repo-first constraints for serious frontend or mobile design work.",
+      "description": "Establish the design-engine execution order, canonical design-state",
       "category": "frontend",
       "keywords": [
         "frontend-design-core",
@@ -588,23 +452,24 @@
         "core"
       ],
       "triggers": [
-        "frontend-design-core",
         "frontend design core",
         "frontend",
+        "canonical design-state model",
+        "repo-first constraints",
+        "mobile design work",
+        "design-heavy feature",
+        "redesign",
+        "frontend-design-core",
         "core"
       ],
-      "path": "workflows/skills/frontend-design-core/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0"
-      },
-      "fileBytes": 2358
+      "path": "foundry/modules/frontend-design-core/SKILL.md",
+      "fileBytes": 2609
     },
     {
       "id": "frontend-design-implementation-handoff",
       "name": "frontend-design-implementation-handoff",
       "displayName": null,
-      "description": "Translate design-engine output into repo-native implementation work, preferring real components, Flutter widgets, and existing tokens over pasted generated markup.",
+      "description": "Translate design-engine output into repo-native implementation",
       "category": "frontend",
       "keywords": [
         "frontend-design-implementation-handoff",
@@ -614,24 +479,24 @@
         "handoff"
       ],
       "triggers": [
-        "frontend-design-implementation-handoff",
         "frontend design implementation handoff",
         "frontend",
+        "preferring real components",
+        "flutter widgets",
+        "react",
+        "another real ui stack",
         "implementation",
+        "frontend-design-implementation-handoff",
         "handoff"
       ],
-      "path": "workflows/skills/frontend-design-implementation-handoff/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0"
-      },
-      "fileBytes": 1673
+      "path": "foundry/modules/frontend-design-implementation-handoff/SKILL.md",
+      "fileBytes": 1889
     },
     {
       "id": "frontend-design-mobile-patterns",
       "name": "frontend-design-mobile-patterns",
       "displayName": null,
-      "description": "Adapt the design engine to mobile and Flutter surfaces using Foundry's normalized mobile-pattern dataset and implementation-first constraints.",
+      "description": "Adapt the design engine to mobile and Flutter surfaces using",
       "category": "frontend",
       "keywords": [
         "frontend-design-mobile-patterns",
@@ -640,23 +505,24 @@
         "mobile"
       ],
       "triggers": [
-        "frontend-design-mobile-patterns",
         "frontend design mobile patterns",
         "frontend",
+        "flutter surfaces",
+        "flutter screens",
+        "flows",
+        "navigation",
+        "thumb-driven interaction",
+        "frontend-design-mobile-patterns",
         "mobile"
       ],
-      "path": "workflows/skills/frontend-design-mobile-patterns/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0"
-      },
-      "fileBytes": 1763
+      "path": "foundry/modules/frontend-design-mobile-patterns/SKILL.md",
+      "fileBytes": 1970
     },
     {
       "id": "frontend-design-screen-brief",
       "name": "frontend-design-screen-brief",
       "displayName": null,
-      "description": "Turn canonical design state plus overlays into a compact, high-signal screen brief for Stitch, frontend implementation, or Flutter/mobile work.",
+      "description": "Turn canonical design state plus overlays into a compact,",
       "category": "frontend",
       "keywords": [
         "frontend-design-screen-brief",
@@ -666,24 +532,25 @@
         "brief"
       ],
       "triggers": [
-        "frontend-design-screen-brief",
         "frontend design screen brief",
         "frontend",
+        "high-signal screen brief",
+        "frontend implementation",
+        "flutter/mobile work",
+        "stitch generation",
+        "edit prompt",
+        "frontend-design-screen-brief",
         "screen",
         "brief"
       ],
-      "path": "workflows/skills/frontend-design-screen-brief/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0"
-      },
-      "fileBytes": 1650
+      "path": "foundry/modules/frontend-design-screen-brief/SKILL.md",
+      "fileBytes": 1889
     },
     {
       "id": "frontend-design-style-selector",
       "name": "frontend-design-style-selector",
       "displayName": null,
-      "description": "Select a non-generic visual direction from Foundry's normalized design datasets and align it to the product's domain, audience, and platform.",
+      "description": "Select a non-generic visual direction from Foundry's normalized",
       "category": "frontend",
       "keywords": [
         "frontend-design-style-selector",
@@ -693,24 +560,23 @@
         "selector"
       ],
       "triggers": [
-        "frontend-design-style-selector",
         "frontend design style selector",
         "frontend",
+        "new design system",
+        "screen family",
+        "consistent mood",
         "style",
-        "selector"
+        "selector",
+        "frontend-design-style-selector"
       ],
-      "path": "workflows/skills/frontend-design-style-selector/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0"
-      },
-      "fileBytes": 1706
+      "path": "foundry/modules/frontend-design-style-selector/SKILL.md",
+      "fileBytes": 1912
     },
     {
       "id": "frontend-design-system",
       "name": "frontend-design-system",
       "displayName": null,
-      "description": "Build or refresh the canonical design-system state for a repo, including DESIGN.md, overlays, token language, and platform-specific adaptation notes.",
+      "description": "Build or refresh the canonical design-system state for a repo,",
       "category": "frontend",
       "keywords": [
         "frontend-design-system",
@@ -718,22 +584,23 @@
         "frontend"
       ],
       "triggers": [
-        "frontend-design-system",
         "frontend design system",
-        "frontend"
+        "frontend",
+        "build",
+        "overlays",
+        "token language",
+        "stale",
+        "component vocabulary",
+        "frontend-design-system"
       ],
-      "path": "workflows/skills/frontend-design-system/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0"
-      },
-      "fileBytes": 2052
+      "path": "foundry/modules/frontend-design-system/SKILL.md",
+      "fileBytes": 2246
     },
     {
       "id": "git-workflow",
       "name": "git-workflow",
       "displayName": null,
-      "description": "Use when defining git branching, commit conventions, merge or rebase policy, release flow, or monorepo collaboration patterns.",
+      "description": "Use when defining git branching, commit conventions, merge or",
       "category": "tooling",
       "keywords": [
         "git-workflow",
@@ -741,22 +608,25 @@
         "git"
       ],
       "triggers": [
-        "git-workflow",
         "git workflow",
+        "delivery",
+        "git branching",
+        "commit conventions",
+        "merge",
+        "rebase policy",
+        "release flow",
+        "new repository's branching",
+        "git-workflow",
         "git"
       ],
-      "path": "workflows/skills/git-workflow/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 6310
+      "path": "foundry/modules/git-workflow/SKILL.md",
+      "fileBytes": 6542
     },
     {
       "id": "golang-best-practices",
       "name": "golang-best-practices",
       "displayName": null,
-      "description": "Use when writing production Go 1.24+ code: generics with constraints, structured concurrency via errgroup and context, comprehensive error handling with wrapped sentinels, and performance-profiled service design.",
+      "description": "Use when writing production Go 1.24+ code: generics with",
       "category": "backend",
       "keywords": [
         "golang-best-practices",
@@ -764,25 +634,25 @@
         "golang"
       ],
       "triggers": [
-        "golang-best-practices",
         "golang best practices",
+        "backend",
+        "generics",
+        "context",
+        "comprehensive error handling",
+        "apis",
+        "workers",
+        "clis",
+        "golang-best-practices",
         "golang"
       ],
-      "path": "workflows/skills/golang-best-practices/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 7208,
-      "warnings": [
-        "description too long (212 chars)"
-      ]
+      "path": "foundry/modules/golang-best-practices/SKILL.md",
+      "fileBytes": 8008
     },
     {
       "id": "integration-testing",
       "name": "integration-testing",
       "displayName": null,
-      "description": "Integration testing patterns for verifying component interactions across test boundaries, databases, APIs, test containers, and fixture management. Use when testing how components work together.",
+      "description": "Integration testing patterns for verifying component interactions",
       "category": "general",
       "keywords": [
         "integration-testing",
@@ -791,23 +661,53 @@
         "testing"
       ],
       "triggers": [
-        "integration-testing",
         "integration testing",
+        "quality",
+        "testing",
+        "modules",
+        "layers",
+        "consumer services",
+        "test containers",
         "integration",
+        "integration-testing"
+      ],
+      "path": "foundry/modules/integration-testing/SKILL.md",
+      "fileBytes": 7085
+    },
+    {
+      "id": "ios-simulator-testing",
+      "name": "ios-simulator-testing",
+      "displayName": null,
+      "description": "Canonical CLI-first skill for iOS simulator testing, build",
+      "category": "general",
+      "keywords": [
+        "ios-simulator-testing",
+        "ios simulator testing",
+        "ios",
+        "simulator",
         "testing"
       ],
-      "path": "workflows/skills/integration-testing/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 6574
+      "triggers": [
+        "ios testing",
+        "simulator testing",
+        "simctl",
+        "xcodebuild",
+        "ios simulator",
+        "accessibility tree",
+        "ios-simulator-testing",
+        "ios simulator testing",
+        "ios",
+        "simulator",
+        "testing"
+      ],
+      "path": "foundry/modules/ios-simulator-testing/SKILL.md",
+      "fileBytes": 4279
     },
     {
       "id": "java-best-practices",
       "name": "java-best-practices",
       "displayName": null,
-      "description": "Use when writing, refactoring, or reviewing modern Java (21+) code. Covers records, sealed classes, pattern matching, virtual threads, structured concurrency, and production testing with JUnit 5. Replaces java-pro.",
+      "description": "Use when writing, refactoring, or reviewing modern Java (21+) code.",
       "category": "backend",
       "keywords": [
         "java-best-practices",
@@ -815,25 +715,25 @@
         "java"
       ],
       "triggers": [
-        "java-best-practices",
         "java best practices",
+        "backend",
+        "sealed classes",
+        "pattern matching",
+        "virtual threads",
+        "structured concurrency",
+        "production testing",
+        "new java services",
+        "java-best-practices",
         "java"
       ],
-      "path": "workflows/skills/java-best-practices/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 8850,
-      "warnings": [
-        "description too long (214 chars)"
-      ]
+      "path": "foundry/modules/java-best-practices/SKILL.md",
+      "fileBytes": 9691
     },
     {
       "id": "kaizen-iteration",
       "name": "kaizen-iteration",
       "displayName": null,
-      "description": "Use when running retrospectives, analyzing team metrics, performing root-cause analysis, and driving incremental process improvement.",
+      "description": "Use when running retrospectives, analyzing team metrics, performing",
       "category": "general",
       "keywords": [
         "kaizen-iteration",
@@ -842,23 +742,26 @@
         "iteration"
       ],
       "triggers": [
-        "kaizen-iteration",
         "kaizen iteration",
+        "delivery",
+        "running retrospectives",
+        "analyzing team metrics",
+        "running a sprint",
+        "project retrospective",
+        "need structured facilitation",
+        "analyzing team velocity",
+        "kaizen-iteration",
         "kaizen",
         "iteration"
       ],
-      "path": "workflows/skills/kaizen-iteration/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 6704
+      "path": "foundry/modules/kaizen-iteration/SKILL.md",
+      "fileBytes": 7003
     },
     {
       "id": "kotlin-best-practices",
       "name": "kotlin-best-practices",
       "displayName": null,
-      "description": "Use when writing, refactoring, or reviewing modern Kotlin (2.1+) code across JVM, Android, iOS, and multiplatform targets. Covers coroutines, Flow, Compose patterns, KMP architecture, DSL design, and production testing. Replaces kotlin-pro.",
+      "description": "Use when writing, refactoring, or reviewing modern Kotlin (2.1+)",
       "category": "backend",
       "keywords": [
         "kotlin-best-practices",
@@ -866,25 +769,25 @@
         "kotlin"
       ],
       "triggers": [
-        "kotlin-best-practices",
         "kotlin best practices",
+        "backend",
+        "android",
+        "ios",
+        "flow",
+        "compose patterns",
+        "kmp architecture",
+        "dsl design",
+        "kotlin-best-practices",
         "kotlin"
       ],
-      "path": "workflows/skills/kotlin-best-practices/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 10113,
-      "warnings": [
-        "description too long (240 chars)"
-      ]
+      "path": "foundry/modules/kotlin-best-practices/SKILL.md",
+      "fileBytes": 10973
     },
     {
       "id": "kubernetes-deploy",
       "name": "kubernetes-deploy",
       "displayName": null,
-      "description": "Use when designing or managing Kubernetes deployments: Deployment and StatefulSet configurations, Service and Ingress routing, Helm chart authoring, resource requests and limits, health checks, rolling updates, and production hardening.",
+      "description": "Use when designing or managing Kubernetes deployments: Deployment",
       "category": "general",
       "keywords": [
         "kubernetes-deploy",
@@ -893,143 +796,145 @@
         "deploy"
       ],
       "triggers": [
-        "kubernetes-deploy",
         "kubernetes deploy",
+        "infrastructure",
+        "deployment",
+        "statefulset configurations",
+        "service",
+        "ingress routing",
+        "helm chart authoring",
+        "resource requests",
+        "kubernetes-deploy",
         "kubernetes",
         "deploy"
       ],
-      "path": "workflows/skills/kubernetes-deploy/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 7716,
-      "warnings": [
-        "description too long (236 chars)"
-      ]
+      "path": "foundry/modules/kubernetes-deploy/SKILL.md",
+      "fileBytes": 8000
     },
     {
-      "id": "mcp builder",
-      "name": "mcp builder",
-      "displayName": "mcp builder",
-      "description": "Use when building MCP servers with spec-compliant tools, structured outputs, resource providers, transport configuration, and server testing.",
+      "id": "mcp-core",
+      "name": "mcp-core",
+      "displayName": null,
+      "description": "Core guidance for representing MCP servers, manifests, and runtime",
       "category": "mcp",
-      "keywords": [],
-      "triggers": [],
-      "path": "workflows/skills/mcp-server-builder/SKILL.md",
-      "metadata": {
-        "alias_of": "mcp-server-builder"
-      },
-      "fileBytes": 6490
-    },
-    {
-      "id": "mcp-builder",
-      "name": "mcp-builder",
-      "displayName": "mcp-builder",
-      "description": "Use when building MCP servers with spec-compliant tools, structured outputs, resource providers, transport configuration, and server testing.",
-      "category": "mcp",
-      "keywords": [],
-      "triggers": [],
-      "path": "workflows/skills/mcp-server-builder/SKILL.md",
-      "metadata": {
-        "alias_of": "mcp-server-builder"
-      },
-      "fileBytes": 6490
+      "keywords": [
+        "mcp-core",
+        "mcp core",
+        "mcp",
+        "core"
+      ],
+      "triggers": [
+        "mcp core",
+        "infrastructure",
+        "manifests",
+        "manifest generation",
+        "runtime wiring",
+        "mcp-core",
+        "mcp",
+        "core"
+      ],
+      "path": "foundry/modules/mcp-core/SKILL.md",
+      "fileBytes": 1823
     },
     {
       "id": "mcp-server-builder",
       "name": "mcp-server-builder",
       "displayName": null,
-      "description": "Use when building MCP servers with spec-compliant tools, structured outputs, resource providers, transport configuration, and server testing.",
+      "description": "Use when building MCP servers with spec-compliant tools, structured",
       "category": "mcp",
       "keywords": [
-        "mcp builder",
-        "mcp-builder",
         "mcp-server-builder",
         "mcp server builder",
         "mcp",
         "server"
       ],
       "triggers": [
-        "mcp builder",
-        "mcp-builder",
-        "mcp-server-builder",
         "mcp server builder",
+        "infrastructure",
+        "mcp servers",
+        "structured outputs",
+        "resource providers",
+        "transport configuration",
+        "server testing",
+        "resources",
+        "mcp-server-builder",
         "mcp",
         "server"
       ],
-      "path": "workflows/skills/mcp-server-builder/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 6490
+      "path": "foundry/modules/mcp-server-builder/SKILL.md",
+      "fileBytes": 6769
     },
     {
       "id": "nestjs",
       "name": "nestjs",
       "displayName": null,
-      "description": "Use when building NestJS 11+ applications with TypeScript decorators, dependency injection, modular architecture, guards, interceptors, pipes, microservices, and GraphQL integration.",
+      "description": "Use when building NestJS 11+ applications with TypeScript",
       "category": "backend",
       "keywords": [
         "nestjs"
       ],
       "triggers": [
-        "nestjs"
+        "nestjs",
+        "backend",
+        "nestjs 11+ applications",
+        "dependency injection",
+        "modular architecture",
+        "guards",
+        "interceptors",
+        "pipes"
       ],
-      "path": "workflows/skills/nestjs/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 6699
+      "path": "foundry/modules/nestjs/SKILL.md",
+      "fileBytes": 7507
     },
     {
       "id": "nextjs",
       "name": "nextjs",
       "displayName": null,
-      "description": "Use when building web applications with Next.js 15+. Invoke for App Router, Server Components, Server Actions, caching strategies, Partial Prerendering, parallel routes, middleware, and deployment.",
+      "description": "Use when building web applications with Next.js 15+. Invoke for App",
       "category": "frontend",
       "keywords": [
         "nextjs"
       ],
       "triggers": [
-        "nextjs"
+        "nextjs",
+        "frontend",
+        "web applications",
+        "server components",
+        "server actions",
+        "caching strategies",
+        "partial prerendering",
+        "parallel routes"
       ],
-      "path": "workflows/skills/nextjs/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 6993
+      "path": "foundry/modules/nextjs/SKILL.md",
+      "fileBytes": 7927
     },
     {
       "id": "observability",
       "name": "observability",
       "displayName": null,
-      "description": "Use when implementing observability and monitoring: OpenTelemetry instrumentation, structured logging, metrics design, distributed tracing, alerting strategies, SLO/SLI definitions, dashboards, and incident response runbooks.",
+      "description": "Use when implementing observability and monitoring: OpenTelemetry",
       "category": "general",
       "keywords": [
         "observability"
       ],
       "triggers": [
-        "observability"
+        "observability",
+        "infrastructure",
+        "structured logging",
+        "metrics design",
+        "distributed tracing",
+        "alerting strategies",
+        "slo/sli definitions",
+        "dashboards"
       ],
-      "path": "workflows/skills/observability/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 8163,
-      "warnings": [
-        "description too long (225 chars)"
-      ]
+      "path": "foundry/modules/observability/SKILL.md",
+      "fileBytes": 8449
     },
     {
       "id": "owasp-security-review",
       "name": "owasp-security-review",
       "displayName": null,
-      "description": "Use when performing OWASP-aligned security reviews, including vulnerability analysis, secure code review, threat modeling, and SAST/DAST integration.",
+      "description": "Use when performing OWASP-aligned security reviews, including",
       "category": "general",
       "keywords": [
         "owasp-security-review",
@@ -1038,23 +943,25 @@
         "security"
       ],
       "triggers": [
-        "owasp-security-review",
         "owasp security review",
-        "owasp",
-        "security"
+        "security",
+        "secure code review",
+        "threat modeling",
+        "sast/dast integration",
+        "auditing a web application",
+        "pull requests",
+        "refining a threat model",
+        "owasp-security-review",
+        "owasp"
       ],
-      "path": "workflows/skills/owasp-security-review/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 6342
+      "path": "foundry/modules/owasp-security-review/SKILL.md",
+      "fileBytes": 6621
     },
     {
       "id": "pentest-skill",
       "name": "pentest-skill",
       "displayName": null,
-      "description": "Guide authorized penetration testing engagements using PTES methodology. Covers reconnaissance, vulnerability scanning, exploitation, post-exploitation, and professional reporting. Requires explicit authorization before any testing activity.",
+      "description": "Guide authorized penetration testing engagements using PTES",
       "category": "general",
       "keywords": [
         "pentest-skill",
@@ -1062,100 +969,72 @@
         "pentest"
       ],
       "triggers": [
-        "pentest-skill",
         "pentest skill",
-        "pentest"
+        "security",
+        "vulnerability scanning",
+        "exploitation",
+        "post-exploitation",
+        "pentest",
+        "pentest-skill"
       ],
-      "path": "workflows/skills/pentest-skill/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 6389,
-      "warnings": [
-        "description too long (241 chars)"
-      ]
+      "path": "foundry/modules/pentest-skill/SKILL.md",
+      "fileBytes": 6591
     },
     {
       "id": "playwright-interactive",
       "name": "playwright-interactive",
       "displayName": null,
-      "description": "Use when building interactive Playwright suites for browser automation, visual regression, accessibility audits, network interception, and collaborative test workflows.",
+      "description": "Use when building interactive Playwright suites for browser",
       "category": "testing",
       "keywords": [
-        "webapp testing",
-        "webapp-testing",
         "playwright-interactive",
         "playwright interactive",
         "playwright",
         "interactive"
       ],
       "triggers": [
-        "webapp testing",
-        "webapp-testing",
-        "playwright-interactive",
         "playwright interactive",
+        "quality",
+        "visual regression",
+        "accessibility audits",
+        "network interception",
+        "collaborative test workflows",
+        "tests",
+        "drag-and-drop",
+        "playwright-interactive",
         "playwright",
         "interactive"
       ],
-      "path": "workflows/skills/playwright-interactive/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 6807
-    },
-    {
-      "id": "playwright-web-qa",
-      "name": "playwright-web-qa",
-      "displayName": null,
-      "description": "Use when running charter-driven web QA through Playwright MCP with deterministic evidence, runtime traces, and report-ready browser artifacts.",
-      "category": "testing",
-      "keywords": [
-        "playwright-web-qa",
-        "playwright web qa",
-        "playwright",
-        "web",
-        "qa"
-      ],
-      "triggers": [
-        "playwright-web-qa",
-        "playwright web qa",
-        "playwright",
-        "web",
-        "qa"
-      ],
-      "path": "workflows/skills/playwright-web-qa/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0"
-      },
-      "fileBytes": 2364
+      "path": "foundry/modules/playwright-interactive/SKILL.md",
+      "fileBytes": 6982
     },
     {
       "id": "prisma",
       "name": "prisma",
       "displayName": null,
-      "description": "Use when working with Prisma 6+ for schema design, database migrations, client queries, relation modeling, edge deployment, and type-safe database access in TypeScript and Node.js applications.",
+      "description": "Use when working with Prisma 6+ for schema design, database",
       "category": "general",
       "keywords": [
         "prisma"
       ],
       "triggers": [
-        "prisma"
+        "prisma",
+        "backend",
+        "data",
+        "database migrations",
+        "client queries",
+        "relation modeling",
+        "edge deployment",
+        "node.js applications"
       ],
-      "path": "workflows/skills/prisma/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 7914
+      "path": "foundry/modules/prisma/SKILL.md",
+      "fileBytes": 8901
     },
     {
       "id": "prompt-engineering",
       "name": "prompt-engineering",
       "displayName": null,
-      "description": "Use when designing system prompts, crafting few-shot examples, implementing chain-of-thought reasoning, extracting structured output from LLMs, or building tool-use patterns for agent systems.",
+      "description": "Use when designing system prompts, crafting few-shot examples,",
       "category": "ai",
       "keywords": [
         "prompt-engineering",
@@ -1163,22 +1042,25 @@
         "prompt"
       ],
       "triggers": [
-        "prompt-engineering",
         "prompt engineering",
+        "ai",
+        "delivery",
+        "system prompts",
+        "crafting few-shot examples",
+        "tool-use patterns",
+        "system prompt",
+        "agent",
+        "prompt-engineering",
         "prompt"
       ],
-      "path": "workflows/skills/prompt-engineering/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 6637
+      "path": "foundry/modules/prompt-engineering/SKILL.md",
+      "fileBytes": 6882
     },
     {
       "id": "python-best-practices",
       "name": "python-best-practices",
       "displayName": null,
-      "description": "Use when writing production Python 3.12–3.14 code: modern typing with PEP 695/696 syntax, async service patterns, packaging with pyproject.toml, pytest-based testing, and standard-library-first design.",
+      "description": "Use when writing production Python 3.12–3.14 code: modern typing",
       "category": "backend",
       "keywords": [
         "python-best-practices",
@@ -1186,44 +1068,120 @@
         "python"
       ],
       "triggers": [
-        "python-best-practices",
         "python best practices",
+        "backend",
+        "modern typing",
+        "async service patterns",
+        "pytest-based testing",
+        "new python services",
+        "libraries",
+        "cli tools targeting 3.12+",
+        "python-best-practices",
         "python"
       ],
-      "path": "workflows/skills/python-best-practices/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 7326,
-      "warnings": [
-        "description too long (201 chars)"
-      ]
+      "path": "foundry/modules/python-best-practices/SKILL.md",
+      "fileBytes": 8174
+    },
+    {
+      "id": "qa",
+      "name": "qa",
+      "displayName": null,
+      "description": "Legacy QA alias for broad quality requests. Route browser work to",
+      "category": "testing",
+      "keywords": [
+        "qa"
+      ],
+      "triggers": [
+        "qa",
+        "quality",
+        "testing",
+        "regression risk"
+      ],
+      "path": "foundry/modules/qa/SKILL.md",
+      "fileBytes": 1964
     },
     {
       "id": "react",
       "name": "react",
       "displayName": null,
-      "description": "Use when building user interfaces with React 19+. Invoke for Server Components, the use() hook, Suspense, Actions, concurrent features, ref callbacks, and component architecture.",
+      "description": "Use when building user interfaces with React 19+. Invoke for Server",
       "category": "frontend",
       "keywords": [
         "react"
       ],
       "triggers": [
-        "react"
+        "react",
+        "frontend",
+        "user interfaces",
+        "the use() hook",
+        "suspense",
+        "actions",
+        "concurrent features",
+        "ref callbacks"
       ],
-      "path": "workflows/skills/react/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 6909
+      "path": "foundry/modules/react/SKILL.md",
+      "fileBytes": 7892
+    },
+    {
+      "id": "research-core",
+      "name": "research-core",
+      "displayName": null,
+      "description": "Research workflow guidance for turning vague questions into scoped,",
+      "category": "general",
+      "keywords": [
+        "research-core",
+        "research core",
+        "research",
+        "core"
+      ],
+      "triggers": [
+        "research core",
+        "research",
+        "source-backed findings",
+        "evidence labeling",
+        "investigating public apis",
+        "platform behavior",
+        "product comparisons",
+        "source-backed answer",
+        "research-core",
+        "core"
+      ],
+      "path": "foundry/modules/research-core/SKILL.md",
+      "fileBytes": 1538
+    },
+    {
+      "id": "rules-core",
+      "name": "rules-core",
+      "displayName": null,
+      "description": "Shared engineering rules covering correctness, testing, security,",
+      "category": "general",
+      "keywords": [
+        "rules-core",
+        "rules core",
+        "rules",
+        "core"
+      ],
+      "triggers": [
+        "rules core",
+        "delivery",
+        "correctness",
+        "security",
+        "file hygiene",
+        "shared engineering rules",
+        "codex",
+        "copilot",
+        "rules-core",
+        "rules",
+        "core"
+      ],
+      "path": "foundry/modules/rules-core/SKILL.md",
+      "fileBytes": 1969
     },
     {
       "id": "rust-best-practices",
       "name": "rust-best-practices",
       "displayName": null,
-      "description": "Use when writing production Rust (2024 edition): ownership and borrowing patterns, async with tokio, error handling with thiserror/anyhow, comprehensive testing, and disciplined use of unsafe.",
+      "description": "Use when writing production Rust (2024 edition): ownership and",
       "category": "backend",
       "keywords": [
         "rust-best-practices",
@@ -1231,22 +1189,25 @@
         "rust"
       ],
       "triggers": [
-        "rust-best-practices",
         "rust best practices",
+        "backend",
+        "ownership",
+        "borrowing patterns",
+        "async",
+        "error handling",
+        "comprehensive testing",
+        "disciplined use of unsafe",
+        "rust-best-practices",
         "rust"
       ],
-      "path": "workflows/skills/rust-best-practices/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 8458
+      "path": "foundry/modules/rust-best-practices/SKILL.md",
+      "fileBytes": 9311
     },
     {
       "id": "secret-management",
       "name": "secret-management",
       "displayName": null,
-      "description": "Design and implement secret and credential management strategies including vault integration, environment variable handling, rotation policies, secret scanning, and zero-trust credential distribution.",
+      "description": "Design and implement secret and credential management strategies",
       "category": "general",
       "keywords": [
         "secret-management",
@@ -1255,23 +1216,25 @@
         "management"
       ],
       "triggers": [
-        "secret-management",
         "secret management",
+        "security",
+        "implement secret",
+        "rotation policies",
+        "secret scanning",
+        "aws secrets manager",
+        "gcp secret manager",
+        "secret-management",
         "secret",
         "management"
       ],
-      "path": "workflows/skills/secret-management/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 6554
+      "path": "foundry/modules/secret-management/SKILL.md",
+      "fileBytes": 6843
     },
     {
       "id": "skill-creator",
       "name": "skill-creator",
       "displayName": null,
-      "description": "Use when creating or updating skills, evaluating skill performance, or benchmarking instruction quality. Covers skill authoring, edits, eval design, and iterative improvement of skill behavior.",
+      "description": "Use when creating or updating skills, evaluating skill performance,",
       "category": "general",
       "keywords": [
         "skill-creator",
@@ -1279,22 +1242,24 @@
         "creator"
       ],
       "triggers": [
-        "skill-creator",
         "skill creator",
+        "delivery",
+        "evaluating skill performance",
+        "edits",
+        "eval design",
+        "new skill from scratch",
+        "custom project",
+        "skill-creator",
         "creator"
       ],
-      "path": "workflows/skills/skill-creator/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 9072
+      "path": "foundry/modules/skill-creator/SKILL.md",
+      "fileBytes": 9295
     },
     {
       "id": "spec-driven-delivery",
       "name": "spec-driven-delivery",
       "displayName": null,
-      "description": "Use when turning a non-trivial request into a Git-tracked spec pack, maintaining traceability during execution, and updating specs before code when requirements or architecture change.",
+      "description": "Use when turning a non-trivial request into a Git-tracked spec",
       "category": "general",
       "keywords": [
         "spec-driven-delivery",
@@ -1304,24 +1269,24 @@
         "delivery"
       ],
       "triggers": [
-        "spec-driven-delivery",
         "spec driven delivery",
+        "delivery",
+        "architecture change",
+        "acceptance criteria",
+        "traceability",
+        "architecture impact in git",
         "spec",
-        "driven",
-        "delivery"
+        "spec-driven-delivery",
+        "driven"
       ],
-      "path": "workflows/skills/spec-driven-delivery/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0"
-      },
-      "fileBytes": 4019
+      "path": "foundry/modules/spec-driven-delivery/SKILL.md",
+      "fileBytes": 4251
     },
     {
       "id": "spring-boot",
       "name": "spring-boot",
       "displayName": null,
-      "description": "Use when building Spring Boot 3.4+ applications with Java records, virtual threads, Spring Security 6, Spring Data JPA, reactive WebFlux patterns, and production-grade testing strategies.",
+      "description": "Use when building Spring Boot 3.4+ applications with Java records,",
       "category": "general",
       "keywords": [
         "spring-boot",
@@ -1330,172 +1295,67 @@
         "boot"
       ],
       "triggers": [
-        "spring-boot",
         "spring boot",
+        "backend",
+        "virtual threads",
+        "spring security 6",
+        "spring data jpa",
+        "reactive webflux patterns",
+        "rest controllers",
+        "service layers",
+        "spring-boot",
         "spring",
         "boot"
       ],
-      "path": "workflows/skills/spring-boot/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 6977
+      "path": "foundry/modules/spring-boot/SKILL.md",
+      "fileBytes": 7822
     },
     {
       "id": "sqlalchemy",
       "name": "sqlalchemy",
       "displayName": null,
-      "description": "Use when building or refactoring Python data layers with SQLAlchemy 2.0+ declarative models, async sessions, Alembic migrations, relationship loading strategies, and ORM testing patterns.",
+      "description": "Use when building or refactoring Python data layers with SQLAlchemy",
       "category": "general",
       "keywords": [
         "sqlalchemy"
       ],
       "triggers": [
-        "sqlalchemy"
+        "sqlalchemy",
+        "backend",
+        "data",
+        "async sessions",
+        "alembic migrations",
+        "orm testing patterns",
+        "mapped_column",
+        "async database sessions"
       ],
-      "path": "workflows/skills/sqlalchemy/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 6673
+      "path": "foundry/modules/sqlalchemy/SKILL.md",
+      "fileBytes": 7524
     },
     {
       "id": "stitch",
       "name": "stitch",
       "displayName": null,
-      "description": "Compatibility wrapper for explicit `stitch` requests. Use this when older docs or users name `stitch` directly and route them into the design-first Stitch sequence: frontend-design, prompt enhancement, design-system sync, Stitch orchestration, and implementation handoff.",
+      "description": "Use when older docs or prompts explicitly ask for Stitch and the",
       "category": "general",
       "keywords": [
         "stitch"
       ],
       "triggers": [
-        "stitch"
-      ],
-      "path": "workflows/skills/stitch/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "2.0",
-        "deprecated": true,
-        "replaced_by": "stitch-design-orchestrator",
-        "removal_target": "4.0"
-      },
-      "fileBytes": 3765,
-      "warnings": [
-        "description too long (271 chars)"
-      ]
-    },
-    {
-      "id": "stitch-design-orchestrator",
-      "name": "stitch-design-orchestrator",
-      "displayName": null,
-      "description": "Orchestrate safe, design-first Google Stitch generation and editing by sequencing frontend-design, prompt enhancement, design-system sync, Stitch MCP tool selection, and implementation handoff.",
-      "category": "general",
-      "keywords": [
-        "stitch-design-orchestrator",
-        "stitch design orchestrator",
         "stitch",
-        "orchestrator"
+        "compatibility wrapper",
+        "frontend design",
+        "screen brief",
+        "design system"
       ],
-      "triggers": [
-        "stitch-design-orchestrator",
-        "stitch design orchestrator",
-        "stitch",
-        "orchestrator"
-      ],
-      "path": "workflows/skills/stitch-design-orchestrator/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0"
-      },
-      "fileBytes": 5523
-    },
-    {
-      "id": "stitch-design-system",
-      "name": "stitch-design-system",
-      "displayName": null,
-      "description": "Create or refresh a Stitch-compatible design-system context by maintaining docs/foundation/DESIGN.md as the canonical source and mirroring it to .stitch/DESIGN.md when Stitch flows need persistent visual consistency.",
-      "category": "general",
-      "keywords": [
-        "stitch-design-system",
-        "stitch design system",
-        "stitch"
-      ],
-      "triggers": [
-        "stitch-design-system",
-        "stitch design system",
-        "stitch"
-      ],
-      "path": "workflows/skills/stitch-design-system/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0"
-      },
-      "fileBytes": 3537,
-      "warnings": [
-        "description too long (216 chars)"
-      ]
-    },
-    {
-      "id": "stitch-implementation-handoff",
-      "name": "stitch-implementation-handoff",
-      "displayName": null,
-      "description": "Convert final Stitch screen artifacts into minimal, repo-native frontend changes by reusing local components, preserving validated logic, and documenting any intentional drift from the design source.",
-      "category": "general",
-      "keywords": [
-        "stitch-implementation-handoff",
-        "stitch implementation handoff",
-        "stitch",
-        "implementation",
-        "handoff"
-      ],
-      "triggers": [
-        "stitch-implementation-handoff",
-        "stitch implementation handoff",
-        "stitch",
-        "implementation",
-        "handoff"
-      ],
-      "path": "workflows/skills/stitch-implementation-handoff/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0"
-      },
-      "fileBytes": 3805
-    },
-    {
-      "id": "stitch-prompt-enhancement",
-      "name": "stitch-prompt-enhancement",
-      "displayName": null,
-      "description": "Transform rough UI intent into compact, Stitch-ready prompts that encode visual direction, component structure, design-system context, and constrained change scope.",
-      "category": "general",
-      "keywords": [
-        "stitch-prompt-enhancement",
-        "stitch prompt enhancement",
-        "stitch",
-        "prompt",
-        "enhancement"
-      ],
-      "triggers": [
-        "stitch-prompt-enhancement",
-        "stitch prompt enhancement",
-        "stitch",
-        "prompt",
-        "enhancement"
-      ],
-      "path": "workflows/skills/stitch-prompt-enhancement/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0"
-      },
-      "fileBytes": 3413
+      "path": "foundry/modules/stitch/SKILL.md",
+      "fileBytes": 1941
     },
     {
       "id": "svelte-sveltekit",
       "name": "svelte-sveltekit",
       "displayName": null,
-      "description": "Use when building web applications with Svelte 5 and SvelteKit. Invoke for rune-based reactivity ($state, $derived, $effect), file-based routing, form actions, server-side rendering, load functions, and deployment.",
+      "description": "Use when building web applications with Svelte 5 and SvelteKit.",
       "category": "general",
       "keywords": [
         "svelte-sveltekit",
@@ -1504,26 +1364,26 @@
         "sveltekit"
       ],
       "triggers": [
-        "svelte-sveltekit",
         "svelte sveltekit",
+        "frontend",
+        "web applications",
+        "sveltekit. invoke",
+        "$derived",
+        "$effect)",
+        "file-based routing",
+        "form actions",
+        "svelte-sveltekit",
         "svelte",
         "sveltekit"
       ],
-      "path": "workflows/skills/svelte-sveltekit/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 6088,
-      "warnings": [
-        "description too long (214 chars)"
-      ]
+      "path": "foundry/modules/svelte-sveltekit/SKILL.md",
+      "fileBytes": 6860
     },
     {
       "id": "swift-best-practices",
       "name": "swift-best-practices",
       "displayName": null,
-      "description": "Use when writing, reviewing, or refactoring modern Swift, including strict concurrency, actors, SwiftUI with @Observable, structured concurrency, protocol-oriented design, and SPM modules.",
+      "description": "Use when writing, reviewing, or refactoring modern Swift, including",
       "category": "general",
       "keywords": [
         "swift-best-practices",
@@ -1531,43 +1391,48 @@
         "swift"
       ],
       "triggers": [
-        "swift-best-practices",
         "swift best practices",
+        "backend",
+        "refactoring modern swift",
+        "actors",
+        "swiftui",
+        "structured concurrency",
+        "protocol-oriented design",
+        "spm modules",
+        "swift-best-practices",
         "swift"
       ],
-      "path": "workflows/skills/swift-best-practices/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 7869
+      "path": "foundry/modules/swift-best-practices/SKILL.md",
+      "fileBytes": 8697
     },
     {
       "id": "system-design",
       "name": "system-design",
       "displayName": null,
-      "description": "System design and architecture guidance covering distributed systems, scalability, reliability, CAP theorem, load balancing, and caching strategies for production infrastructure.",
+      "description": "System design and architecture guidance covering distributed",
       "category": "general",
       "keywords": [
         "system-design",
         "system design"
       ],
       "triggers": [
-        "system-design",
-        "system design"
+        "system design",
+        "infrastructure",
+        "distributed systems",
+        "scalability",
+        "reliability",
+        "cap theorem",
+        "load balancing",
+        "system-design"
       ],
-      "path": "workflows/skills/system-design/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 6636
+      "path": "foundry/modules/system-design/SKILL.md",
+      "fileBytes": 6907
     },
     {
       "id": "systematic-debugging",
       "name": "systematic-debugging",
       "displayName": null,
-      "description": "Systematic debugging methodology covering root cause analysis, bisection, logging strategies, debugger workflows, and post-mortem documentation. Use when diagnosing complex or elusive bugs.",
+      "description": "Systematic debugging methodology covering root cause analysis,",
       "category": "general",
       "keywords": [
         "systematic-debugging",
@@ -1576,52 +1441,51 @@
         "debugging"
       ],
       "triggers": [
-        "systematic-debugging",
         "systematic debugging",
+        "complex",
+        "elusive bugs",
+        "under specific conditions",
+        "methodical diagnosis",
         "systematic",
-        "debugging"
+        "debugging",
+        "systematic-debugging"
       ],
-      "path": "workflows/skills/systematic-debugging/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 6882
+      "path": "foundry/modules/systematic-debugging/SKILL.md",
+      "fileBytes": 7091
     },
     {
       "id": "tech-doc",
       "name": "tech-doc",
       "displayName": null,
-      "description": "Use when writing technical documentation including API references, operational runbooks, onboarding guides, decision logs, and changelog standards.",
+      "description": "Use when writing technical documentation including API references,",
       "category": "general",
       "keywords": [
-        "doc coauthoring",
-        "doc-coauthoring",
         "tech-doc",
         "tech doc",
         "tech",
         "doc"
       ],
       "triggers": [
-        "doc coauthoring",
-        "doc-coauthoring",
-        "tech-doc",
         "tech doc",
+        "documentation",
+        "technical documentation",
+        "operational runbooks",
+        "onboarding guides",
+        "decision logs",
+        "changelog standards",
+        "api documentation (rest",
+        "tech-doc",
         "tech",
         "doc"
       ],
-      "path": "workflows/skills/tech-doc/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 6589
+      "path": "foundry/modules/tech-doc/SKILL.md",
+      "fileBytes": 6860
     },
     {
       "id": "typescript-best-practices",
       "name": "typescript-best-practices",
       "displayName": null,
-      "description": "Use when writing production TypeScript 5.9+ code: strict configuration, advanced type-level programming, discriminated unions, branded types, and patterns that prepare codebases for TS 6/7 evolution.",
+      "description": "Use when writing production TypeScript 5.9+ code: strict",
       "category": "backend",
       "keywords": [
         "typescript-best-practices",
@@ -1629,52 +1493,24 @@
         "typescript"
       ],
       "triggers": [
-        "typescript-best-practices",
         "typescript best practices",
-        "typescript"
+        "typescript",
+        "frontend",
+        "backend",
+        "strict configuration",
+        "discriminated unions",
+        "branded types",
+        "new typescript projects",
+        "typescript-best-practices"
       ],
-      "path": "workflows/skills/typescript-best-practices/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 7574
-    },
-    {
-      "id": "ui-testing-harness",
-      "name": "ui-testing-harness",
-      "displayName": null,
-      "description": "Use when building or reviewing a Foundry-owned UI evaluation harness, generating anti-slop web fixtures, scoring design outputs with deterministic evidence, or turning multi-scenario UI findings into concrete Foundry gaps.",
-      "category": "general",
-      "keywords": [
-        "ui-testing-harness",
-        "ui testing harness",
-        "ui",
-        "testing",
-        "harness"
-      ],
-      "triggers": [
-        "ui-testing-harness",
-        "ui testing harness",
-        "ui",
-        "testing",
-        "harness"
-      ],
-      "path": "workflows/skills/ui-testing-harness/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "1.0"
-      },
-      "fileBytes": 7389,
-      "warnings": [
-        "description too long (222 chars)"
-      ]
+      "path": "foundry/modules/typescript-best-practices/SKILL.md",
+      "fileBytes": 8637
     },
     {
       "id": "unit-testing",
       "name": "unit-testing",
       "displayName": null,
-      "description": "Unit testing best practices covering test design, mocking strategies, coverage analysis, TDD workflow, and assertion patterns. Use when writing, reviewing, or improving unit tests.",
+      "description": "Unit testing best practices covering test design, mocking",
       "category": "general",
       "keywords": [
         "unit-testing",
@@ -1683,45 +1519,46 @@
         "testing"
       ],
       "triggers": [
-        "unit-testing",
         "unit testing",
-        "unit",
+        "quality",
+        "testing",
+        "unit tests",
+        "new unit tests",
+        "methods",
+        "classes",
+        "existing test suites",
+        "unit-testing",
+        "unit"
+      ],
+      "path": "foundry/modules/unit-testing/SKILL.md",
+      "fileBytes": 6439
+    },
+    {
+      "id": "web-testing",
+      "name": "web-testing",
+      "displayName": null,
+      "description": "Use when running browser QA in a real web session with Playwright",
+      "category": "general",
+      "keywords": [
+        "web-testing",
+        "web testing",
+        "web",
         "testing"
       ],
-      "path": "workflows/skills/unit-testing/SKILL.md",
-      "metadata": {
-        "author": "cubis-foundry",
-        "version": "3.0"
-      },
-      "fileBytes": 5924
-    },
-    {
-      "id": "webapp testing",
-      "name": "webapp testing",
-      "displayName": "webapp testing",
-      "description": "Use when building interactive Playwright suites for browser automation, visual regression, accessibility audits, network interception, and collaborative test workflows.",
-      "category": "testing",
-      "keywords": [],
-      "triggers": [],
-      "path": "workflows/skills/playwright-interactive/SKILL.md",
-      "metadata": {
-        "alias_of": "playwright-interactive"
-      },
-      "fileBytes": 6807
-    },
-    {
-      "id": "webapp-testing",
-      "name": "webapp-testing",
-      "displayName": "webapp-testing",
-      "description": "Use when building interactive Playwright suites for browser automation, visual regression, accessibility audits, network interception, and collaborative test workflows.",
-      "category": "testing",
-      "keywords": [],
-      "triggers": [],
-      "path": "workflows/skills/playwright-interactive/SKILL.md",
-      "metadata": {
-        "alias_of": "playwright-interactive"
-      },
-      "fileBytes": 6807
+      "triggers": [
+        "web testing",
+        "browser qa",
+        "playwright mcp",
+        "console evidence",
+        "network evidence",
+        "accessibility snapshots",
+        "failure reproduction",
+        "web-testing",
+        "web",
+        "testing"
+      ],
+      "path": "foundry/modules/web-testing/SKILL.md",
+      "fileBytes": 3694
     }
   ],
   "builtinTools": [

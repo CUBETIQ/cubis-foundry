@@ -76,6 +76,13 @@ Guide the design and implementation of production-grade FastAPI 0.115+ applicati
 
 16. **Run the application with `uvicorn` behind a reverse proxy and configure CORS, trusted hosts, and HTTPS redirect middleware** because FastAPI does not enforce transport security by default, and missing CORS headers cause silent failures in browser-based API consumers.
 
+## Testing Guidance
+
+- Keep FastAPI boundary and integration guidance in this skill instead of routing new work through the generic `integration-testing` wrapper.
+- Own async client setup, dependency overrides, auth fixtures, and test-database wiring here because they are FastAPI-specific runtime concerns.
+- Use the owning Python skill for narrow unit tests that do not need ASGI, dependency injection, or persistence boundaries.
+- Use `../web-testing/SKILL.md` only when the task needs live browser evidence against a FastAPI-backed UI or docs surface.
+
 ## Output Format
 
 Provide implementation code, Pydantic model definitions, dependency functions, configuration snippets, and architectural guidance as appropriate. Include file paths relative to the project root. When generating endpoints, always show the Pydantic request/response models alongside the path operation function.

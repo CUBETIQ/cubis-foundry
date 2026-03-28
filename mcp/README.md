@@ -224,8 +224,8 @@ Resolve an explicit workflow command, explicit custom agent, compatibility alias
   "id": "test",
   "command": "/test",
   "agent": "tester",
-  "primarySkills": ["unit-testing", "integration-testing"],
-  "supportingSkills": ["deep-research", "playwright-interactive", "flutter-mobile-qa", "code-review"],
+  "primarySkills": ["web-testing", "android-emulator-testing", "ios-simulator-testing"],
+  "supportingSkills": ["deep-research", "playwright-interactive", "code-review"],
   "fallbackSkillSearchRecommended": false,
   "matchedBy": "trigger-match"
 }
@@ -286,7 +286,7 @@ Search skills by keyword after route resolution fails or when a user explicitly 
 **Input**:
 
 ```json
-{ "query": "flutter" }
+{ "query": "android emulator" }
 ```
 
 **Output**:
@@ -296,9 +296,9 @@ Search skills by keyword after route resolution fails or when a user explicitly 
   "query": "flutter",
   "results": [
     {
-      "id": "flutter-mobile-qa",
+      "id": "android-emulator-testing",
       "category": "mobile",
-      "description": "Use when planning or running Flutter mobile QA with an Android emulator, ADB-backed MCP tooling, screenshot/UI-tree evidence, logcat triage, and structured test reporting."
+      "description": "Use when planning or running Android app QA in an emulator with adb-backed launch, input, UI-tree inspection, screenshots, logcat capture, and structured test reporting."
     }
   ],
   "count": 3
@@ -312,22 +312,22 @@ Validate an exact skill ID before loading it.
 **Input**:
 
 ```json
-{ "id": "flutter-mobile-qa" }
+{ "id": "android-emulator-testing" }
 ```
 
 **Output**:
 
 ```json
 {
-  "id": "flutter-mobile-qa",
+  "id": "android-emulator-testing",
   "exists": true,
-  "canonicalId": "flutter-mobile-qa",
+  "canonicalId": "android-emulator-testing",
   "category": "mobile",
-  "description": "Use when planning or running Flutter mobile QA with an Android emulator, ADB-backed MCP tooling, screenshot/UI-tree evidence, logcat triage, and structured test reporting.",
+  "description": "Use when planning or running Android app QA in an emulator with adb-backed launch, input, UI-tree inspection, screenshots, logcat capture, and structured test reporting.",
   "isWrapper": false,
   "isAlias": false,
   "replacementId": null,
-  "availableReferences": ["references/platform-setup.md", "references/flutter-readiness.md"]
+  "availableReferences": ["references/platform-setup.md", "references/adb-cheatsheet.md"]
 }
 ```
 
@@ -354,7 +354,7 @@ Get one validated markdown sidecar file for a skill.
 
 ```json
 {
-  "id": "flutter-mobile-qa",
+  "id": "android-emulator-testing",
   "path": "references/platform-setup.md"
 }
 ```

@@ -77,6 +77,13 @@ Provide authoritative guidance on building production React 19+ applications. Th
 
 16. **Keep custom hooks focused on a single concern** and prefix them with `use`, because single-purpose hooks compose cleanly, are independently testable, and their naming convention enables React to enforce the Rules of Hooks.
 
+## Testing Guidance
+
+- Keep React component and hook unit tests in this skill and the owning TypeScript skill instead of routing new work through the generic `unit-testing` wrapper.
+- Own React integration checks here when they depend on rendering, client/server boundaries, Suspense behavior, or React-specific fixtures.
+- Use `../web-testing/SKILL.md` for live browser QA, real-page evidence, accessibility snapshots, and Playwright-MCP-driven validation.
+- Use `../playwright-interactive/SKILL.md` only when `web-testing` needs deeper browser specialist support such as visual regression or heavy interaction authoring.
+
 ## Output Format
 
 When delivering React 19+ code:
@@ -99,3 +106,4 @@ Load detailed guidance based on context:
 | Actions & Forms | `references/actions-forms.md` | useActionState, useOptimistic, form action prop, progressive enhancement |
 | Concurrent Features | `references/concurrent-features.md` | useTransition, useDeferredValue, Suspense streaming, selective hydration |
 | Component Patterns | `references/component-patterns.md` | Composition, ref forwarding, Error Boundaries, performance optimization |
+| Testing | `references/testing.md` | React Testing Library patterns, hook tests, action/server-component test seams, or browser QA handoff rules |

@@ -1,0 +1,20 @@
+id: ios-simulator-testing
+kind: skill
+label: iOS Simulator Testing
+description: "Canonical CLI-first skill for iOS simulator testing with xcodebuild, simctl, and helper scripts."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - quality
+    - testing
+    - mobile
+    - ios
+  outputs:
+    - type: skill
+      path: foundry/modules/ios-simulator-testing/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

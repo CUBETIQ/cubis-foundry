@@ -6,7 +6,7 @@ model: sonnet
 maxTurns: 25
 skills:
   - systematic-debugging
-  - unit-testing
+  - web-testing
 handoffs:
   - agent: "tester"
     title: "Verify Fix"
@@ -80,7 +80,7 @@ You are a debugging agent. You systematically isolate failures, identify root ca
 
 ## Skill Loading Contract
 
-- Do not call `skill_search` for `systematic-debugging`, `unit-testing` when the task clearly falls within this agent's domain.
+- Do not call `skill_search` for `systematic-debugging` or the live testing skills when the task clearly falls within this agent's domain.
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed by the current step.
 - Treat the skill bundle as already resolved for this agent. Do not start with route discovery.
 
@@ -91,4 +91,7 @@ Load on demand. Do not preload all references.
 | File | Load when |
 | --- | --- |
 | `systematic-debugging` | Debugging requires structured root cause analysis. |
-| `unit-testing` | Fix verification requires writing or running unit tests. |
+| owning language/framework skill | Fix verification requires code-level unit or integration tests. |
+| `web-testing` | Fix verification requires live browser evidence. |
+| `android-emulator-testing` | Fix verification requires live Android emulator evidence. |
+| `ios-simulator-testing` | Fix verification requires live iOS simulator evidence. |

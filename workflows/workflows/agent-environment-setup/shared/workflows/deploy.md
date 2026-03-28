@@ -24,7 +24,7 @@ Use for CI/CD pipeline setup, Docker configuration, Kubernetes manifests, deploy
 ## Skill Routing
 
 - Primary skills: `ci-cd-pipeline`, `docker-compose-dev`
-- Supporting skills (optional): `kubernetes-deploy`, `integration-testing`, `code-review`, `owasp-security-review`
+- Supporting skills (optional): `kubernetes-deploy`, `code-review`, `owasp-security-review`
 
 ## Context notes
 

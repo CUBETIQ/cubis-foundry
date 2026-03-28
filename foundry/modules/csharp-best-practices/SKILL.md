@@ -73,6 +73,13 @@ Production-grade guidance for C# 13 and .NET 9 application engineering. Covers m
 
 16. **Run Roslyn analyzers and .NET SDK analyzers in CI** because static analysis catches threading bugs, API misuse, and security issues that tests miss. Enable `<AnalysisLevel>latest-all</AnalysisLevel>` and add `Microsoft.CodeAnalysis.NetAnalyzers` with `<TreatWarningsAsErrors>true</TreatWarningsAsErrors>`.
 
+## Testing Guidance
+
+- Keep C# unit-test guidance in this skill instead of routing new work through the generic `unit-testing` wrapper.
+- Prefer the repo's native .NET test stack, usually xUnit/NUnit/MSTest with framework-local fixture and mocking patterns.
+- Escalate ASP.NET, persistence, HTTP, container, or other runtime-boundary checks into the owning framework or platform skill instead of the generic `integration-testing` wrapper.
+- Use `../web-testing/SKILL.md`, `../android-emulator-testing/SKILL.md`, or `../ios-simulator-testing/SKILL.md` only when the task needs live browser or device evidence.
+
 ## Output Format
 
 Produces C# 13/.NET 9 code using records, pattern matching, minimal APIs with TypedResults, async streams, and explicit DI lifetimes. Includes nullable annotations, structured error handling, and test examples where relevant.

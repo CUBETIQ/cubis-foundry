@@ -10,9 +10,10 @@ triggers:
 agentChain:
   - tester
 primarySkills:
-  - unit-testing
+  - web-testing
 supportingSkills:
-  - integration-testing
+  - android-emulator-testing
+  - ios-simulator-testing
 whenToUse: "When behavior needs stronger proof, especially after code changes or bug fixes."
 priority: high
 compatibility:
@@ -45,8 +46,10 @@ Use this when the implementation exists but verification is weak, missing, or to
 
 ## Skill routing
 
-- Use `unit-testing` for narrow logic.
-- Add `integration-testing` when multiple components or external interfaces are involved.
+- Route browser QA to `web-testing`.
+- Route Android emulator work to `android-emulator-testing`.
+- Route iOS simulator work to `ios-simulator-testing`.
+- For code-level unit or integration coverage, load the owning language or framework skill instead of generic testing wrappers.
 
 ## Context notes
 

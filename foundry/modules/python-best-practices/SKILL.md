@@ -72,6 +72,13 @@ Production-grade guidance for Python 3.12–3.14 covering the modern type system
 
 16. **Log with `structlog` or stdlib `logging`** — use structured key-value logging (JSON in production, console in development). Attach request IDs, trace context, and operation names to every log entry because grep-friendly logs cut incident response time.
 
+## Testing Guidance
+
+- Keep Python unit-test guidance in this skill instead of routing new work through the generic `unit-testing` wrapper.
+- Prefer the repo's native Python test stack, usually `pytest`, fixtures, parametrization, and async test helpers.
+- Escalate API, ORM, or service-boundary checks into the owning framework or platform skill instead of the generic `integration-testing` wrapper.
+- Use `../web-testing/SKILL.md`, `../android-emulator-testing/SKILL.md`, or `../ios-simulator-testing/SKILL.md` only when the task needs live browser or device evidence.
+
 ## Output Format
 
 Produces Python code using PEP 695 type syntax, asyncio structured concurrency, pytest test suites, and pyproject.toml packaging. Includes type annotations on all public APIs, structured error hierarchies, and inline comments explaining non-obvious design choices.

@@ -1,7 +1,9 @@
 ---
 name: qa
-description: Quality-assurance guidance for validating end-user behavior,
-  regression risk, and release readiness beyond narrow unit assertions.
+description: Legacy QA alias for broad quality requests. Route browser work to
+  web-testing, native mobile work to android-emulator-testing or
+  ios-simulator-testing, and code-level testing to the owning language or
+  framework skill.
 triggers:
   - qa
   - quality
@@ -10,9 +12,9 @@ triggers:
 domains:
   - quality
   - testing
-whenToUse: When the task needs acceptance-level verification, regression sweeps,
-  or release-oriented quality checks.
-priority: primary
+whenToUse: When the request says QA generically and you need to choose the
+  correct canonical testing surface.
+priority: secondary
 compatibility:
   - claude
   - codex
@@ -25,30 +27,35 @@ compatibility:
 
 ## Purpose
 
-Provide a higher-level verification lens than isolated unit tests. Use this skill to evaluate whether a change is actually ready for handoff, rollout, or review from a user-impact perspective.
+Provide a thin compatibility layer for generic QA requests. Do not stay in this skill if a more specific testing surface is available.
 
 ## When to Use
 
-- Validating acceptance criteria across multiple surfaces
-- Running pre-release regression checks
-- Reviewing quality gaps that are broader than one test file
+- The request says "QA" or "testing" without naming the correct surface yet
+- You need to route browser testing into `web-testing`
+- You need to route native mobile testing into `android-emulator-testing` or `ios-simulator-testing`
+- You need to route code-level unit or integration coverage into the owning language or framework skill
 
 ## Instructions
 
-1. Start from user-visible behavior and acceptance criteria.
-2. Cover the highest-risk paths first.
-3. Record what was verified, what was sampled, and what remains unverified.
+1. Decide whether the testing need is browser, native mobile, or code-level.
+2. Route browser QA to `../web-testing/SKILL.md`.
+3. Route Android emulator work to `../android-emulator-testing/SKILL.md`.
+4. Route iOS simulator work to `../ios-simulator-testing/SKILL.md`.
+5. Route unit and integration coverage into the language or framework skill that owns the code under test.
 
 ## Anti-patterns
 
-- Do not confuse code coverage with release readiness.
-- Do not hide known gaps behind a generic “looks good”.
+- Do not treat this wrapper as the final testing surface.
+- Do not send browser automation back through `playwright-interactive` as the primary entrypoint.
+- Do not keep unit or integration guidance detached from the owning stack.
 
 ## Output Format
 
-Return tested flows, evidence gathered, blocked areas, and a clear release-readiness recommendation.
+Return the chosen canonical testing surface, why it was selected, and any release-readiness gaps that still matter.
 
 ## References
 
-- `../unit-testing/SKILL.md`
-- `../integration-testing/SKILL.md`
+- `../web-testing/SKILL.md`
+- `../android-emulator-testing/SKILL.md`
+- `../ios-simulator-testing/SKILL.md`

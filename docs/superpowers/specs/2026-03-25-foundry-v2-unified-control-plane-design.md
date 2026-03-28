@@ -1,5 +1,9 @@
 # Foundry V2 — Comprehensive Product & Technical Specification
 
+> **Superseded for active work:** See `docs/superpowers/specs/2026-03-28-foundry-v2-realignment-spec.md` and `docs/superpowers/plans/2026-03-28-foundry-v2-realignment-plan.md`. Active implementation is happening in `/Users/phumrin/Documents/Cubis Foundry/.worktrees/foundry-v2-plan-a`.
+>
+> Archived historical context only. The body below is not authoritative for current work.
+
 **Date:** 2026-03-25
 **Status:** Draft v2
 **Approach:** Middle-out, medium-grained modules, pipeline-based compiler, staged-diff installer

@@ -1,5 +1,4 @@
 import { execFile } from "node:child_process";
-import { promisify } from "node:util";
 import path from "node:path";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -12,17 +11,19 @@ import {
   persistExecutionTrace,
 } from "../runtime/executionTrace.js";
 
-const execFileAsync = promisify(execFile);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const mobileQaRunName = "mobile_qa_run";
 
 export const mobileQaRunDescription =
-  "Run the mobile QA charter runtime with Android MCP as the primary device path, explicit ADB fallback, and persisted execution traces.";
+  "Run the mobile QA charter runtime with CLI-first ADB execution by default, optional Android MCP opt-in, and persisted execution traces.";
 
 export const mobileQaRunSchema = z.object({
   charterPath: z.string().min(1).describe("Path to the YAML charter file."),
-  apkPath: z.string().optional().describe("Optional APK path to install before running."),
+  apkPath: z
+    .string()
+    .optional()
+    .describe("Optional APK path to install before running."),
   packageId: z.string().optional().describe("Optional package override."),
   avdName: z.string().optional().describe("Optional AVD name to target."),
   artifactsDir: z
@@ -30,7 +31,10 @@ export const mobileQaRunSchema = z.object({
     .optional()
     .describe("Artifacts directory. Default: artifacts/mobile-qa"),
   scope: z.enum(["auto", "global", "project"]).optional(),
-  allowAdbFallback: z.boolean().optional(),
+  androidMcp: z
+    .boolean()
+    .optional()
+    .describe("Opt in to Android MCP-assisted execution."),
   dryRun: z.boolean().optional(),
 });
 
@@ -50,6 +54,45 @@ function resolveRunnerPath(): string {
   return path.join(runtimeRoot, "mobile-qa-runner.mjs");
 }
 
+function parseRunnerErrorOutput(error: unknown): Record<string, unknown> | null {
+  const rawStdout =
+    error && typeof error === "object" && "stdout" in error
+      ? (error as { stdout?: unknown }).stdout
+      : undefined;
+  const stdout =
+    typeof rawStdout === "string"
+      ? rawStdout
+      : Buffer.isBuffer(rawStdout)
+        ? rawStdout.toString("utf8")
+        : null;
+  if (stdout == null || stdout.trim().length === 0) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(stdout) as Record<string, unknown>;
+    return parsed && typeof parsed === "object" ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+async function execRunner(commandArgs: string[]) {
+  return await new Promise<{ stdout: string }>((resolve, reject) => {
+    execFile(process.execPath, commandArgs, { cwd: process.cwd() }, (error, stdout) => {
+      if (error) {
+        const runnerError = error as Error & { stdout?: string | Buffer };
+        if (runnerError.stdout == null && stdout != null) {
+          runnerError.stdout = stdout;
+        }
+        reject(runnerError);
+        return;
+      }
+      resolve({ stdout: String(stdout ?? "") });
+    });
+  });
+}
+
 function isAndroidConfigured(scope: "auto" | "global" | "project") {
   const effective = readEffectiveConfig(scope);
   const androidConfig =
@@ -67,6 +110,8 @@ export function createMobileQaRunHandler(ctx: ToolRuntimeContext) {
   ) {
     const scope = args.scope ?? "auto";
     const androidConfigured = isAndroidConfigured(scope);
+    const androidMcpOptIn = Boolean(args.androidMcp);
+    const providerPreference = androidMcpOptIn ? "android-mcp" : "adb";
     const trace = createExecutionTrace(mobileQaRunName, {
       charterPath: args.charterPath,
       apkPath: args.apkPath ?? null,
@@ -74,13 +119,12 @@ export function createMobileQaRunHandler(ctx: ToolRuntimeContext) {
       avdName: args.avdName ?? null,
       artifactsDir: args.artifactsDir ?? "artifacts/mobile-qa",
       scope,
-      allowAdbFallback: Boolean(args.allowAdbFallback),
+      androidMcpOptIn,
       dryRun: Boolean(args.dryRun),
     });
-    trace.selectedSkills.push("flutter-mobile-qa");
+    trace.selectedSkills.push("android-emulator-testing");
     trace.selectedReferences.push(
-      "workflows/skills/flutter-mobile-qa/SKILL.md",
-      "workflows/skills/flutter-mobile-qa/references/android-mcp-tools.md",
+      "foundry/modules/android-emulator-testing/SKILL.md",
     );
 
     const gatewayStatus = ctx.gatewayManager.getStatus();
@@ -94,60 +138,49 @@ export function createMobileQaRunHandler(ctx: ToolRuntimeContext) {
         : "Create the QA charter YAML file and rerun mobile_qa_run.",
     });
     trace.gates.push({
-      name: "gateway_initialized",
-      passed: Boolean(gatewayStatus.providers.android),
-      detail: gatewayStatus.providers.android?.lastError ?? "Gateway loaded.",
-    });
-    trace.gates.push({
-      name: "android_mcp_configured",
-      passed: androidConfigured,
-      detail: androidConfigured
-        ? "Android MCP is configured in cbx_config.json."
-        : "Android MCP is not configured in cbx_config.json.",
-      action: androidConfigured
+      name: "android_mcp_opt_in",
+      passed: true,
+      detail: androidMcpOptIn
+        ? "Android MCP opt-in is enabled for this run."
+        : "Android MCP opt-in is disabled; ADB will be used first.",
+      action: androidMcpOptIn
         ? undefined
-        : "Enable android in cbx_config.json or rerun with allowAdbFallback=true.",
+        : "Use --android-mcp only when you want the optional Android MCP path.",
     });
-    trace.gates.push({
-      name: "android_enabled_tools",
-      passed: Boolean(androidTools.available),
-      detail: androidTools.available
-        ? `Enabled tools: ${androidTools.enabledCount}`
-        : String(androidTools.lastError || "Android upstream unavailable."),
-      action: androidTools.available
-        ? undefined
-        : args.allowAdbFallback
-          ? "Android MCP is unavailable, so this run may fall back to ADB."
-          : "Start the Android MCP server or rerun with allowAdbFallback=true.",
-    });
-    trace.gates.push({
-      name: "adb_fallback_allowed",
-      passed: Boolean(args.allowAdbFallback),
-      detail: args.allowAdbFallback
-        ? "ADB fallback is enabled for this run."
-        : "ADB fallback is disabled for this run.",
-    });
+    if (androidMcpOptIn) {
+      trace.gates.push({
+        name: "gateway_initialized",
+        passed: Boolean(gatewayStatus.providers.android),
+        detail: gatewayStatus.providers.android?.lastError ?? "Gateway loaded.",
+      });
+      trace.gates.push({
+        name: "android_mcp_configured",
+        passed: androidConfigured,
+        detail: androidConfigured
+          ? "Android MCP is configured in cbx_config.json."
+          : "Android MCP is not configured in cbx_config.json.",
+        action: androidConfigured
+          ? undefined
+          : "Enable android in cbx_config.json if you want the optional Android MCP path.",
+      });
+      trace.gates.push({
+        name: "android_enabled_tools",
+        passed: Boolean(androidTools.available),
+        detail: androidTools.available
+          ? `Enabled tools: ${androidTools.enabledCount}`
+          : String(androidTools.lastError || "Android upstream unavailable."),
+        action: androidTools.available
+          ? undefined
+          : "Android MCP tools are unavailable; the run will continue on the default ADB path.",
+      });
+    }
 
     if (!existsSync(path.resolve(args.charterPath))) {
       const blockedResult = {
         status: "blocked",
-        providerPreference: androidConfigured ? "android-mcp" : "adb",
+        providerPreference,
         providerUsed: null,
         nextSuggestedAction: "Create the QA charter file first.",
-      };
-      const tracePath = await persistExecutionTrace(
-        finishExecutionTrace(trace, blockedResult),
-      );
-      return textResult({ ...blockedResult, tracePath });
-    }
-
-    if (!androidConfigured && !args.allowAdbFallback) {
-      const blockedResult = {
-        status: "blocked",
-        providerPreference: "android-mcp",
-        providerUsed: null,
-        nextSuggestedAction:
-          "Enable Android MCP in cbx_config.json or rerun with allowAdbFallback=true.",
       };
       const tracePath = await persistExecutionTrace(
         finishExecutionTrace(trace, blockedResult),
@@ -165,8 +198,8 @@ export function createMobileQaRunHandler(ctx: ToolRuntimeContext) {
       "--scope",
       scope,
     ];
-    if (args.allowAdbFallback) {
-      commandArgs.push("--allow-adb-fallback");
+    if (androidMcpOptIn) {
+      commandArgs.push("--android-mcp");
     }
     if (args.apkPath) {
       commandArgs.push("--apk", path.resolve(args.apkPath));
@@ -193,9 +226,7 @@ export function createMobileQaRunHandler(ctx: ToolRuntimeContext) {
     });
 
     try {
-      const { stdout } = await execFileAsync(process.execPath, commandArgs, {
-        cwd: process.cwd(),
-      });
+      const { stdout } = await execRunner(commandArgs);
       const parsed = JSON.parse(String(stdout || "{}")) as Record<string, unknown>;
       trace.toolCalls[trace.toolCalls.length - 1].outcome = "success";
       if (typeof parsed.reportPath === "string") {
@@ -207,8 +238,8 @@ export function createMobileQaRunHandler(ctx: ToolRuntimeContext) {
       }
       const result = {
         status: parsed.status ?? "success",
-        providerPreference: androidConfigured ? "android-mcp" : "adb",
-        providerUsed: parsed.providerUsed ?? (androidConfigured ? "android-mcp" : "adb"),
+        providerPreference: parsed.providerPreference ?? providerPreference,
+        providerUsed: parsed.providerUsed ?? providerPreference,
         artifactSummary: parsed.artifacts ?? {},
         reportPath: parsed.reportPath ?? null,
         runnerResult: parsed,
@@ -220,10 +251,21 @@ export function createMobileQaRunHandler(ctx: ToolRuntimeContext) {
     } catch (error) {
       trace.toolCalls[trace.toolCalls.length - 1].outcome = "failed";
       trace.errors.push({ message: String(error) });
+      const parsed = parseRunnerErrorOutput(error);
+      if (typeof parsed?.reportPath === "string") {
+        trace.artifacts.push({
+          kind: "report",
+          path: parsed.reportPath,
+          description: "Mobile QA report",
+        });
+      }
       const failedResult = {
-        status: "failed",
-        providerPreference: androidConfigured ? "android-mcp" : "adb",
-        providerUsed: androidConfigured ? "android-mcp" : "adb",
+        status: parsed?.status ?? "failed",
+        providerPreference: parsed?.providerPreference ?? providerPreference,
+        providerUsed: parsed?.providerUsed ?? providerPreference,
+        artifactSummary: parsed?.artifacts ?? {},
+        reportPath: parsed?.reportPath ?? null,
+        runnerResult: parsed,
         error: String(error),
       };
       const tracePath = await persistExecutionTrace(

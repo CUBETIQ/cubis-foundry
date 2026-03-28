@@ -74,6 +74,13 @@ Production-grade guidance for modern Kotlin development using Kotlin 2.1+ featur
 
 16. **Manage dependencies with version catalogs and BOM alignment** because transitive dependency conflicts cause runtime `NoSuchMethodError` and `ClassNotFoundException`. Use Gradle version catalogs (`libs.versions.toml`) for centralized version management. Align Kotlin, coroutines, and serialization versions using the Kotlin BOM. Use `dependencyResolutionManagement` in `settings.gradle.kts` to enforce repository declarations. Run `./gradlew dependencies` to audit the resolution tree.
 
+## Testing Guidance
+
+- Keep Kotlin unit-test guidance in this skill instead of routing new work through the generic `unit-testing` wrapper.
+- Prefer the repo's native Kotlin/JVM or Android test stack, usually JUnit, coroutine test helpers, and framework-local tooling.
+- Escalate Spring, Android runtime, networking, persistence, or other boundary-spanning checks into the owning framework or platform skill instead of the generic `integration-testing` wrapper.
+- Use `../web-testing/SKILL.md`, `../android-emulator-testing/SKILL.md`, or `../ios-simulator-testing/SKILL.md` only when the task needs live browser or device evidence.
+
 ## Output Format
 
 Produces Kotlin code using data classes, sealed hierarchies, structured coroutines with explicit scope ownership, and Flow-based reactive patterns. Code follows non-null-by-default conventions, uses value classes for type safety, and separates platform-specific implementations behind expect/actual declarations. Includes coroutine-aware test patterns.

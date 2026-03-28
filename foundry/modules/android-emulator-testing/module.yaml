@@ -1,0 +1,20 @@
+id: android-emulator-testing
+kind: skill
+label: Android Emulator Testing
+description: "Canonical CLI-first skill for Android emulator testing with emulator boot/selection, adb, UI tree inspection, screenshots, logcat, and deterministic evidence capture."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - quality
+    - testing
+    - mobile
+    - android
+  outputs:
+    - type: skill
+      path: foundry/modules/android-emulator-testing/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

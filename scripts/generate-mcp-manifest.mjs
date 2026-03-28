@@ -32,8 +32,6 @@ import {
 } from "./lib/skill-catalog.mjs";
 import {
   ROOT,
-  SKILLS_ROOT,
-  listTopLevelSkillDirs,
   pathExists,
 } from "./lib/skill-inventory.mjs";
 import {
@@ -44,6 +42,7 @@ import {
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = path.join(ROOT, "mcp", "generated");
 const OUT_FILE = path.join(OUT_DIR, "mcp-manifest.json");
+const SKILLS_ROOT = path.join(ROOT, "foundry", "modules");
 
 // ─── Arg parsing ────────────────────────────────────────────
 
@@ -58,6 +57,15 @@ function parseArgs(argv) {
 
 function normalizeLineEndings(text) {
   return String(text || "").replace(/\r\n/g, "\n");
+}
+
+async function listTopLevelSkillDirs(rootDir = SKILLS_ROOT) {
+  if (!(await pathExists(rootDir))) return [];
+  const entries = await fs.readdir(rootDir, { withFileTypes: true });
+  return entries
+    .filter((entry) => entry.isDirectory() && !entry.name.startsWith("."))
+    .map((entry) => entry.name)
+    .sort((a, b) => a.localeCompare(b));
 }
 
 function parseInlineList(text) {

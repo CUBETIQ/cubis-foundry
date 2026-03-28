@@ -1,0 +1,19 @@
+id: web-testing
+kind: skill
+label: Web Testing
+description: "Run browser QA in a real web session using Playwright MCP first for navigation, deterministic interaction, screenshots, console evidence, network evidence, and accessibility snapshots."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - quality
+    - testing
+  outputs:
+    - type: skill
+      path: foundry/modules/web-testing/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]
+

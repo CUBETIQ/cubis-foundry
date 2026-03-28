@@ -75,6 +75,13 @@ Guide developers through production-grade SQLAlchemy 2.0+ usage including declar
 
 16. **Use `relationship()` with explicit `back_populates` instead of `backref`** because `back_populates` is explicit, type-checker friendly, and makes the bidirectional nature of the relationship visible in both model files rather than hidden in one.
 
+## Testing Guidance
+
+- Keep SQLAlchemy integration guidance in this skill instead of routing new work through the generic `integration-testing` wrapper.
+- Own session lifecycle tests, transaction fixtures, migration-coupled checks, and database-boundary verification here because they are ORM-runtime concerns.
+- Use the owning Python skill for narrow unit tests that do not need a real database or ORM session boundary.
+- Use `../web-testing/SKILL.md` only when the task needs live browser evidence against a UI flow that depends on SQLAlchemy-backed data behavior.
+
 ## Output Format
 
 Provide implementation guidance, code examples, and configuration as appropriate to the task. Include complete model definitions, session configuration, migration scripts, and test fixtures when the task requires them. Annotate code with type hints consistent with SQLAlchemy 2.0 `Mapped[]` conventions.

@@ -1,8 +1,8 @@
 # Foundry V2 — Unified Implementation Plan
 
-> **Supersedes:** Plans A (Control Plane Bootstrap), B (Compiler Pipeline), C (Capability Migration), D (CLI Subsystem Split), E (Documentation System)
+> **Superseded for active work:** See `docs/superpowers/specs/2026-03-28-foundry-v2-realignment-spec.md` and `docs/superpowers/plans/2026-03-28-foundry-v2-realignment-plan.md`. Active implementation is happening in `/Users/phumrin/Documents/Cubis Foundry/.worktrees/foundry-v2-plan-a`.
 >
-> **Source of truth:** `docs/superpowers/specs/2026-03-26-agent-workflow-skill-canonical-model.md`
+> Historical context only. Do not execute this plan for current work. The new realignment spec and plan are the source of truth.
 >
 > **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:subagent-driven-development` (recommended) or `superpowers:executing-plans` to implement this plan task-by-task.
 

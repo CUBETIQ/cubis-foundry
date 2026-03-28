@@ -12,7 +12,7 @@ agentChain:
 primarySkills:
   - spec-driven-delivery
 supportingSkills:
-  - unit-testing
+  - web-testing
 whenToUse: "When the task can be decomposed into a short execute-verify-adjust loop without repeated user intervention."
 priority: medium
 compatibility:
@@ -46,7 +46,8 @@ Use this for contained tasks that benefit from repeated tighten-and-verify passe
 ## Skill routing
 
 - Load only the skills needed for the current slice.
-- Add testing skills when verification must be automated to keep the loop honest.
+- Add the owning language or framework skill for code-level verification.
+- Add `web-testing`, `android-emulator-testing`, or `ios-simulator-testing` when the loop needs runtime evidence.
 
 ## Context notes
 

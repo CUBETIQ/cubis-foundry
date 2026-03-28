@@ -59,6 +59,13 @@ Guide the design and implementation of production-grade Expo applications using 
 
 16. **Monitor OTA update adoption with `expo-updates` runtime API** because you need to know what percentage of users have received an update and whether any update caused a crash spike before rolling forward.
 
+## Testing Guidance
+
+- Keep Expo cross-platform boundary guidance in this skill instead of routing new work through the generic `integration-testing` wrapper.
+- Own app bootstrapping, navigation, OTA update validation, native-module seams, and platform-specific test setup here because they are Expo-runtime concerns.
+- Use the owning TypeScript skill for narrow unit tests that do not need the Expo or device runtime boundary.
+- Use `../android-emulator-testing/SKILL.md` for live Android device evidence, `../ios-simulator-testing/SKILL.md` for live iOS simulator evidence, and `../web-testing/SKILL.md` only for browser-targeted Expo web flows.
+
 ## Output Format
 
 ```
@@ -85,6 +92,7 @@ Guide the design and implementation of production-grade Expo applications using 
 | `references/eas-build-config.md`   | Configuring EAS Build profiles, signing credentials, or environment variables.             |
 | `references/over-the-air-updates.md` | Setting up expo-updates channels, runtime versioning, or monitoring update adoption.     |
 | `references/native-modules.md`     | Adding config plugins, using Expo Modules API, or integrating third-party native code.     |
+| `references/testing.md`            | Expo unit-test setup, platform-specific test ownership, OTA validation, or mobile runtime handoff rules. |
 
 ## Examples
 

@@ -78,6 +78,13 @@ Production-grade guidance for Swift 6.0+ application and systems engineering. Co
 
 18. **Keep SwiftUI view bodies pure and side-effect-free** because SwiftUI may evaluate body multiple times and in any order. Trigger side effects in `.task` modifiers (which auto-cancel on view disappearance) or in observable object methods, never in computed body properties.
 
+## Testing Guidance
+
+- Keep Swift unit-test guidance in this skill instead of routing new work through the generic `unit-testing` wrapper.
+- Prefer XCTest, focused module tests, and native Apple-platform test utilities before introducing broader wrappers.
+- Escalate simulator-boundary or application-runtime checks into the owning platform skill instead of the generic `integration-testing` wrapper.
+- Use `../ios-simulator-testing/SKILL.md` for live simulator evidence and `../web-testing/SKILL.md` only when the task truly crosses into browser behavior.
+
 ## Output Format
 
 Produces Swift 6.0+ code with strict concurrency annotations, actor isolation, @Observable state management, structured error handling with typed throws, and protocol-oriented architecture. Includes Package.swift configuration and test examples where relevant.

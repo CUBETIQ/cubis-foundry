@@ -73,6 +73,13 @@ Production-grade guidance for modern Java development using JDK 21+ features inc
 
 16. **Log structurally with correlation IDs** because grep-based log analysis breaks at scale. Use SLF4J with Logback or Log4j2 as the backend. Include request/trace IDs via MDC (Mapped Diagnostic Context). Use structured JSON logging in production. Do not log sensitive data (passwords, tokens, PII). Do not use `System.out.println` or `e.printStackTrace()` because they bypass the logging framework.
 
+## Testing Guidance
+
+- Keep Java unit-test guidance in this skill instead of routing new work through the generic `unit-testing` wrapper.
+- Prefer the repo's native JVM test stack, usually JUnit, AssertJ, Mockito, and build-tool-native test runners.
+- Escalate Spring, HTTP, persistence, or container-boundary checks into the owning framework or platform skill instead of the generic `integration-testing` wrapper.
+- Use `../web-testing/SKILL.md`, `../android-emulator-testing/SKILL.md`, or `../ios-simulator-testing/SKILL.md` only when the task needs live browser or device evidence.
+
 ## Output Format
 
 Produces Java code using records, sealed types, pattern matching switch expressions, and virtual threads where applicable. Code follows explicit null handling with Optional returns, layer-separated architecture, and JUnit 5 test patterns. Includes structured logging and defensive API boundaries.

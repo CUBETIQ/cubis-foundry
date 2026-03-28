@@ -56,10 +56,10 @@ export function createWebQaRunHandler(_ctx: ToolRuntimeContext) {
       scope,
       dryRun: Boolean(args.dryRun),
     });
-    trace.selectedSkills.push("playwright-web-qa");
+    trace.selectedSkills.push("web-testing");
     trace.selectedReferences.push(
-      "workflows/skills/playwright-web-qa/SKILL.md",
-      "workflows/skills/playwright-interactive/SKILL.md",
+      "foundry/modules/web-testing/SKILL.md",
+      "foundry/modules/playwright-interactive/SKILL.md",
     );
 
     const gatewayStatus = _ctx.gatewayManager.getStatus();

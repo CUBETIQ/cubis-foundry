@@ -12,8 +12,9 @@ agentChain:
 primarySkills:
   - systematic-debugging
 supportingSkills:
-  - unit-testing
-  - integration-testing
+  - web-testing
+  - android-emulator-testing
+  - ios-simulator-testing
 whenToUse: "When the current behavior is wrong and the root cause is not yet proven."
 priority: high
 compatibility:
@@ -48,6 +49,8 @@ Use this when reproduction, diagnosis, and evidence matter more than immediately
 
 - Always load `systematic-debugging`.
 - Add the relevant domain skill only after the failure surface is known.
+- Keep code-level unit and integration checks inside the owning language or framework skill.
+- Use `web-testing`, `android-emulator-testing`, or `ios-simulator-testing` when the bug only proves out in a live browser or device runtime.
 
 ## Context notes
 

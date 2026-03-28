@@ -74,6 +74,13 @@ Guide the design and implementation of production-grade Spring Boot 3.4+ applica
 
 16. **Configure structured logging with `spring.application.name`, correlation IDs, and JSON output for production** because unstructured text logs are unparseable by observability platforms, and correlation IDs are required to trace requests across microservice boundaries.
 
+## Testing Guidance
+
+- Keep Spring Boot boundary and integration guidance in this skill instead of routing new work through the generic `integration-testing` wrapper.
+- Own application-context startup, slice tests, HTTP boundary checks, persistence fixtures, and container-backed integration setup here because they are Spring-runtime concerns.
+- Use the owning Java or Kotlin skill for narrow unit tests that do not need the Spring runtime boundary.
+- Use `../web-testing/SKILL.md` only when the task needs live browser evidence against a Spring-backed UI surface.
+
 ## Output Format
 
 Provide implementation code, configuration properties, bean definitions, and architectural guidance as appropriate. Include file paths relative to `src/main/java/` and `src/test/java/`. When generating controllers, always show the record DTOs, service interface, and security configuration alongside the endpoint.

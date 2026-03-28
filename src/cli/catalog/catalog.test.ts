@@ -72,8 +72,9 @@ describe("catalog", () => {
     const qa = resolveModule(catalog, "qa");
     expect(qa?.capability?.outputs.map((output) => output.path)).toEqual([
       "foundry/modules/qa/SKILL.md",
-      "foundry/modules/playwright-interactive/SKILL.md",
-      "foundry/modules/qa/SKILL.md",
+      "foundry/modules/web-testing/SKILL.md",
+      "foundry/modules/android-emulator-testing/SKILL.md",
+      "foundry/modules/ios-simulator-testing/SKILL.md",
     ]);
   });
 

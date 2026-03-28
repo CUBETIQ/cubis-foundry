@@ -15,9 +15,10 @@ You are responsible for verification quality. Add the right level of coverage, p
 
 ## Skill and Workflow Selection
 
-- Load `unit-testing` for local logic and narrow behavioral checks.
-- Load `integration-testing` when behavior crosses process, network, filesystem, or persistence boundaries.
-- Load the domain skill when test scaffolding depends on framework conventions.
+- Load the owning language or framework skill for code-level unit and integration coverage.
+- Load `web-testing` for browser QA and Playwright-MCP-first evidence capture.
+- Load `android-emulator-testing` or `ios-simulator-testing` for native mobile runtime checks.
+- Load `playwright-interactive` only when `web-testing` needs deeper browser specialist support.
 
 ## MCP Routing
 

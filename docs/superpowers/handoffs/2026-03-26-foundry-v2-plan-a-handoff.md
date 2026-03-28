@@ -7,7 +7,27 @@ Remote: `origin https://github.com/CUBETIQ/cubis-foundry.git`
 
 ## Why This File Exists
 
-This is a resume point for continuing the Foundry V2 migration from another session or machine. It captures the important decisions, current branch state, fresh verification evidence, and the next recommended work.
+This is a resume point for continuing the Foundry V2 realignment from another session or machine. It captures the important decisions, current branch state, fresh verification evidence, and the next recommended work.
+
+## Current Resume Status
+
+- Active source of truth now lives in:
+  - `docs/superpowers/specs/2026-03-28-foundry-v2-realignment-spec.md`
+  - `docs/superpowers/plans/2026-03-28-foundry-v2-realignment-plan.md`
+- Phase 1 and Phase 2 Tasks 1-4 are complete in the active worktree.
+- Phase 2 Task 5 is now complete.
+- The current checkpoint demotes the old testing wrappers:
+  - `qa` is now a compat alias that routes to `web-testing`, `android-emulator-testing`, and `ios-simulator-testing`
+  - `playwright-interactive` is now specialist browser support under `web-testing`
+  - workflows and core agent prompts now reference the new testing stack instead of generic `unit-testing` / `integration-testing` wrappers for user-facing routing
+- The current checkpoint also redistributes testing ownership:
+  - language skills now explicitly own unit-test guidance
+  - framework and platform skills now explicitly own integration-test guidance
+- Shared workflow and agent scaffolds have also been updated to prefer `web-testing`, `android-emulator-testing`, and `ios-simulator-testing` over the retired generic testing routes.
+- The old MCP alias layer has also been cleaned:
+  - `mcp/README.md` examples now use the canonical Android testing skill
+  - `scripts/lib/legacy-skill-map.mjs` now routes broad historical testing patterns through `qa` instead of `unit-testing`
+  - `scripts/generate-mcp-manifest.mjs` now scans `foundry/modules` so generated alias entries point at real canonical `SKILL.md` paths instead of stale `workflows/skills/*` paths
 
 ## Work Completed In This Branch
 
@@ -103,6 +123,49 @@ Observed results:
 Additional verification snapshot:
 - expanded authoring-surface markdown scan: `323` files checked, `0` missing refs
 
+## Verification Run For The Current Testing Checkpoint
+
+These commands were run successfully in this branch on 2026-03-28:
+
+```bash
+npm --prefix mcp test -- src/tools/mobileQaRun.test.ts src/tools/registry.test.ts
+node dist/cli/index.js catalog validate
+node dist/cli/index.js catalog build
+```
+
+Observed results:
+- `mobileQaRun` wrapper fix passed its targeted tests, including the failure-path provider-preservation regression test
+- MCP registry tests passed
+- repo-local catalog validation still passed: `Catalog is valid.`
+- repo-local catalog build still compiled all 5 platforms successfully:
+  - `codex`: `289` assets
+  - `claude`: `305` assets
+  - `copilot`: `294` assets
+  - `gemini`: `295` assets
+  - `antigravity`: `289` assets
+
+## Verification Run For The Task 5 Cleanup Closeout
+
+These commands were run successfully in this branch on 2026-03-28:
+
+```bash
+node scripts/generate-mcp-manifest.mjs
+npm --prefix mcp test -- src/tools/skillTools.test.ts src/tools/mobileQaRun.test.ts src/tools/registry.test.ts
+node dist/cli/index.js catalog validate
+node dist/cli/index.js catalog build
+```
+
+Observed results:
+- MCP skill tooling tests passed: `51/51`
+- regenerated `mcp/generated/mcp-manifest.json` now points alias and canonical skill entries at `foundry/modules/*/SKILL.md`
+- the redistributed testing guidance across language/framework skills still passed repo-local catalog validation
+- repo-local catalog build still compiled all 5 platforms successfully:
+  - `codex`: `294` assets
+  - `claude`: `310` assets
+  - `copilot`: `299` assets
+  - `gemini`: `300` assets
+  - `antigravity`: `294` assets
+
 ## Branch / Push Notes
 
 - Current branch: `foundry-v2-plan-a`
@@ -152,19 +215,14 @@ Global installed Superpowers skills in `~/.codex/superpowers` were inspected for
 
 ## Recommended Next Work
 
-1. Build the reduction matrix for canonical surfaces:
-   - classify each skill as `keep`, `merge`, `compat-alias`, or `remove`
-   - classify agent docs into core vs domain-specific vs removable
-   - confirm workflows stay at the canonical set of 10 unless a strong gap appears
-2. Reassess whether any global `~/.codex/superpowers` wording still needs updates only after the reduction pass makes the final canonical structure clearer.
-3. Commit the branch, including both modified tracked files and the new untracked canonical reference/agent files.
-4. Push `foundry-v2-plan-a` and open a PR to `v2` when ready.
+1. Move into Phase 3 design-stack realignment from the 2026-03-28 realignment plan.
+2. Collapse the current frontend/design stack into `design`, `web-ui-design`, and `mobile-ui-design`.
+3. Keep `stitch` only as a thin compat alias where explicit backward compatibility is still required.
 
 ## Resume Prompt
 
 Use this prompt in the next session:
 
 ```text
-Continue from docs/superpowers/handoffs/2026-03-26-foundry-v2-plan-a-handoff.md in branch foundry-v2-plan-a. Canonical skills now project sidecar references, Gemini native skill directories, and fail compilation on broken relative markdown links across SKILL.md, templates, references, and agent markdown files. QA, design, and stitch metadata have been repointed to canonical module skill paths, catalog regression tests are green, and repo-local catalog validation/build passed via `node dist/cli/index.js catalog validate` and `node dist/cli/index.js catalog build`. The global `cbx` on PATH does not expose the branch catalog commands, so use the repo-local built CLI while continuing. The next task is to create the reduction matrix for skills, agents, and workflows: classify each surface as keep, merge, compat-alias, or remove. Do not push to main or v2 directly; keep working on foundry-v2-plan-a and integrate via PR.
-When committing, include the new untracked canonical files too: `foundry/modules/*/references/**`, `foundry/modules/playwright-interactive/agents/**`, and `foundry/modules/stitch/SKILL.md`.
+Continue from docs/superpowers/handoffs/2026-03-26-foundry-v2-plan-a-handoff.md in branch foundry-v2-plan-a within the active worktree `/Users/phumrin/Documents/Cubis Foundry/.worktrees/foundry-v2-plan-a`. The 2026-03-28 realignment spec and plan are now the source of truth. Phase 1 and Phase 2 are complete, including the three canonical testing skills, the CLI-first mobile / Playwright-MCP runtime split, the redistributed language/framework testing guidance, and the MCP alias-layer cleanup that reanchors generated manifest paths to `foundry/modules`. The next task is Phase 3 design-stack realignment: collapse the current frontend/design surfaces into `design`, `web-ui-design`, and `mobile-ui-design`, while keeping `stitch` as a thin compat alias only where explicit backward compatibility is still required. Do not switch back to the older migration sequence or treat the main checkout as the active implementation area.
 ```

@@ -1,11 +1,9 @@
 id: qa
-kind: capability
+kind: compat-alias
 label: QA
-description: "Comprehensive QA capability covering general acceptance testing, Playwright-driven browser QA, and mobile QA planning. Use when running quality assurance tests, building test infrastructure, or performing release-readiness verification."
+description: "Compatibility wrapper for broad QA requests. Route browser work to web-testing, native mobile work to android-emulator-testing or ios-simulator-testing, and code-level testing to the owning language or framework skill."
 stability: stable
-profiles:
-  - core
-  - developer
+profiles: []
 dependencies: []
 capability:
   type: tool
@@ -15,13 +13,4 @@ capability:
   outputs:
     - type: skill
       path: foundry/modules/qa/SKILL.md
-      mode: ui-harness
-      platforms: [claude, codex, copilot, gemini, antigravity]
-    - type: skill
-      path: foundry/modules/playwright-interactive/SKILL.md
-      mode: playwright-web
-      platforms: [claude, codex, copilot, gemini, antigravity]
-    - type: skill
-      path: foundry/modules/qa/SKILL.md
-      mode: flutter-mobile
       platforms: [claude, codex, copilot, gemini, antigravity]
