@@ -1,6 +1,6 @@
 # Foundry V2 Plan A Handoff
 
-Date: 2026-03-27
+Date: 2026-03-28
 Repo: `/Users/phumrin/Documents/Cubis Foundry/.worktrees/foundry-v2-plan-a`
 Branch: `foundry-v2-plan-a`
 Remote: `origin https://github.com/CUBETIQ/cubis-foundry.git`
@@ -14,8 +14,8 @@ This is a resume point for continuing the Foundry V2 realignment from another se
 - Active source of truth now lives in:
   - `docs/superpowers/specs/2026-03-28-foundry-v2-realignment-spec.md`
   - `docs/superpowers/plans/2026-03-28-foundry-v2-realignment-plan.md`
-- Phase 1 and Phase 2 Tasks 1-4 are complete in the active worktree.
-- Phase 2 Task 5 is now complete.
+- Phase 1 and Phase 2 Tasks 1-5 are complete in the active worktree.
+- Phase 3 design-stack collapse checkpoint is now complete and pushed.
 - The current checkpoint demotes the old testing wrappers:
   - `qa` is now a compat alias that routes to `web-testing`, `android-emulator-testing`, and `ios-simulator-testing`
   - `playwright-interactive` is now specialist browser support under `web-testing`
@@ -28,6 +28,18 @@ This is a resume point for continuing the Foundry V2 realignment from another se
   - `mcp/README.md` examples now use the canonical Android testing skill
   - `scripts/lib/legacy-skill-map.mjs` now routes broad historical testing patterns through `qa` instead of `unit-testing`
   - `scripts/generate-mcp-manifest.mjs` now scans `foundry/modules` so generated alias entries point at real canonical `SKILL.md` paths instead of stale `workflows/skills/*` paths
+- The current pushed checkpoint also removes the visible legacy design module folders from `foundry/modules`:
+  - deleted: `frontend-design*`
+  - deleted: `design-audit`
+  - retained canonical public surfaces:
+    - `design`
+    - `web-ui-design`
+    - `mobile-ui-design`
+    - `design-system`
+- Compatibility for old design skill IDs is now synthetic at build/projection time:
+  - `src/cli/compiler/stages/transform.ts` generates alias skill bundles from canonical skill metadata
+  - generated runtime assets still expose old IDs like `frontend-design`, `frontend-design-system`, and `design-audit`
+  - the old source module folders are no longer needed for that backward compatibility
 
 ## Work Completed In This Branch
 
@@ -86,15 +98,35 @@ This is a resume point for continuing the Foundry V2 realignment from another se
    - `node dist/cli/index.js catalog validate`
    - `node dist/cli/index.js catalog build`
 17. Confirmed the global `cbx` on PATH is not the correct binary for this branch's catalog commands. Use the repo-local built CLI while continuing this worktree.
+18. Collapsed the legacy design skill source tree:
+   - removed `foundry/modules/frontend-design/**`
+   - removed `foundry/modules/frontend-design-core/**`
+   - removed `foundry/modules/frontend-design-implementation-handoff/**`
+   - removed `foundry/modules/frontend-design-mobile-patterns/**`
+   - removed `foundry/modules/frontend-design-screen-brief/**`
+   - removed `foundry/modules/frontend-design-style-selector/**`
+   - removed `foundry/modules/frontend-design-system/**`
+   - removed `foundry/modules/design-audit/**`
+19. Introduced the canonical design-system surface:
+   - `foundry/modules/design-system/**`
+20. Moved reusable design references onto canonical modules:
+   - `foundry/modules/design/references/`
+   - `foundry/modules/web-ui-design/references/`
+21. Updated shared routing/manifests/docs so the public design surface is now:
+   - `design`
+   - `web-ui-design`
+   - `mobile-ui-design`
+   - `design-system`
+22. Added compiler regression coverage for metadata-driven synthetic alias projection.
 
 ## Important Current Gap
 
 The canonical authoring surfaces now resolve their currently referenced relative markdown files, and the compiler will fail fast if a future canonical skill, template, reference doc, or agent markdown file links to a missing sidecar file or nested markdown dependency.
 
 The remaining migration work is now narrower:
-- the repo still carries too many overlapping skills and wrappers; a reduction pass is still needed to classify skills/agents/workflows into `keep`, `merge`, `compat-alias`, or `remove`
-- some recovered or reference-side content may still mention historical names where the repo intentionally keeps backward-looking terminology for narrative reasons
-- if new canonical skills or templates are added, they must now satisfy the compiler's markdown-link validation rules
+- the design source tree is cleaned up, but the broader reduction pass across language/framework skills, agents, workflows, and rules is still ahead
+- some docs, research ledgers, or generated compatibility manifests still intentionally mention historical names because they serve as alias surfaces or migration records
+- if new canonical skills or templates are added, they must now satisfy the compiler's markdown-link validation rules and synthetic-alias expectations
 
 ## Verification Run Before Handoff
 
@@ -166,6 +198,36 @@ Observed results:
   - `gemini`: `300` assets
   - `antigravity`: `294` assets
 
+## Verification Run For The Design Collapse Checkpoint
+
+These commands were run successfully in this branch on 2026-03-28:
+
+```bash
+npm install
+npm run build:cli
+npm run test:cli -- src/cli/catalog/catalog.test.ts src/cli/compiler/compiler.test.ts
+npm --prefix mcp test -- src/tools/skillTools.test.ts src/tools/registry.test.ts
+npx tsc -p tsconfig.cli.json --noEmit
+node dist/cli/index.js catalog validate
+node dist/cli/index.js catalog build
+node scripts/generate-mcp-manifest.mjs
+```
+
+Observed results:
+- repo-local CLI build passed
+- targeted CLI tests passed: `41/41`
+- targeted MCP tests passed: `49/49`
+- TypeScript CLI no-emit check passed
+- repo-local catalog validation passed: `Catalog is valid.`
+- repo-local catalog build compiled all 5 platforms successfully:
+  - `codex`: `297` assets
+  - `claude`: `313` assets
+  - `copilot`: `302` assets
+  - `gemini`: `303` assets
+  - `antigravity`: `297` assets
+- regenerated MCP manifest now reports `54` skills after collapsing the deleted legacy design source modules
+- rebuilt runtime assets confirm that old IDs like `frontend-design` and `frontend-design-system` are now emitted as synthetic alias wrappers pointing at `design` and `design-system`
+
 ## Branch / Push Notes
 
 - Current branch: `foundry-v2-plan-a`
@@ -179,9 +241,9 @@ Interpretation:
 - pushing directly to `origin/v2` is not a safe fast-forward operation
 
 Recommended safe next move:
-1. Commit the current branch
-2. Push `foundry-v2-plan-a` to origin
-3. Open a PR targeting `v2`
+1. Keep working on `foundry-v2-plan-a`
+2. Push that branch to origin as needed
+3. Open a PR targeting `v2` when the broader realignment is ready
 
 Do not push directly to:
 - `main`
@@ -189,25 +251,18 @@ Do not push directly to:
 
 If you continue from home, keep working on `foundry-v2-plan-a` and only integrate through a PR.
 
-## Worktree Status Note
+## Branch Status Note
 
-The worktree is not clean. It contains both modified tracked files and new untracked files/directories that must be included in the next commit.
+The branch has now been committed and pushed.
 
-Modified tracked areas include:
-- compiler and catalog code under `src/cli/**`
-- platform/runtime generation scripts under `scripts/**`
-- canonical design/qa/stitch skill sources under `foundry/modules/**`
-- this handoff file and related docs
+- Branch: `foundry-v2-plan-a`
+- Latest pushed commit: `24cf98d7 feat(foundry): collapse legacy design skill modules`
+- Local worktree status at handoff time: clean and in sync with `origin/foundry-v2-plan-a`
 
-New untracked content includes:
-- restored canonical `references/` directories for many skills under `foundry/modules/*/references/`
-- restored Playwright sidecar agent docs under `foundry/modules/playwright-interactive/agents/`
-- new compat wrapper at `foundry/modules/stitch/SKILL.md`
-
-When you commit from home, do not stage only modified tracked files. Make sure the new files are added too, especially:
-- `foundry/modules/*/references/**`
-- `foundry/modules/playwright-interactive/agents/**`
-- `foundry/modules/stitch/SKILL.md`
+If you continue from home:
+- fetch and switch to `foundry-v2-plan-a`
+- do not continue from `main`
+- do not continue from `v2`
 
 ## Global Superpowers Note
 
@@ -215,14 +270,18 @@ Global installed Superpowers skills in `~/.codex/superpowers` were inspected for
 
 ## Recommended Next Work
 
-1. Move into Phase 3 design-stack realignment from the 2026-03-28 realignment plan.
-2. Collapse the current frontend/design stack into `design`, `web-ui-design`, and `mobile-ui-design`.
-3. Keep `stitch` only as a thin compat alias where explicit backward compatibility is still required.
+1. Continue from the 2026-03-28 realignment plan after the design collapse checkpoint.
+2. Start the broader reduction pass for:
+   - language/framework skills
+   - agents/subagents
+   - workflows
+   - rules
+3. Keep `stitch` as a compat alias only while the remaining workflow/rule cleanup is still in progress.
 
 ## Resume Prompt
 
 Use this prompt in the next session:
 
 ```text
-Continue from docs/superpowers/handoffs/2026-03-26-foundry-v2-plan-a-handoff.md in branch foundry-v2-plan-a within the active worktree `/Users/phumrin/Documents/Cubis Foundry/.worktrees/foundry-v2-plan-a`. The 2026-03-28 realignment spec and plan are now the source of truth. Phase 1 and Phase 2 are complete, including the three canonical testing skills, the CLI-first mobile / Playwright-MCP runtime split, the redistributed language/framework testing guidance, and the MCP alias-layer cleanup that reanchors generated manifest paths to `foundry/modules`. The next task is Phase 3 design-stack realignment: collapse the current frontend/design surfaces into `design`, `web-ui-design`, and `mobile-ui-design`, while keeping `stitch` as a thin compat alias only where explicit backward compatibility is still required. Do not switch back to the older migration sequence or treat the main checkout as the active implementation area.
+Continue from docs/superpowers/handoffs/2026-03-26-foundry-v2-plan-a-handoff.md in branch foundry-v2-plan-a within the active worktree `/Users/phumrin/Documents/Cubis Foundry/.worktrees/foundry-v2-plan-a`. The 2026-03-28 realignment spec and plan are the source of truth. Phase 1 and Phase 2 are complete. The design collapse checkpoint is also complete and pushed: the visible legacy `frontend-design*` and `design-audit` source modules are gone, canonical design now lives in `design`, `web-ui-design`, `mobile-ui-design`, and `design-system`, and backward compatibility is handled by synthetic alias projection from canonical skill metadata. The next task is the broader reduction pass: clean up language/framework skills, agents/subagents, workflows, and rules around that reduced canonical surface. Do not switch back to the older migration sequence or treat the main checkout as the active implementation area.
 ```
