@@ -11,10 +11,11 @@ agentChain:
   - planner
   - implementer
 primarySkills:
-  - frontend-design-screen-brief
+  - design
+  - web-ui-design
 supportingSkills:
-  - frontend-design-style-selector
-  - frontend-design-implementation-handoff
+  - mobile-ui-design
+  - stitch
 whenToUse: "When a single screen or page needs a deliberate design direction and implementation-ready brief."
 priority: medium
 compatibility:
@@ -29,7 +30,7 @@ compatibility:
 
 ## What this workflow does
 
-Creates a screen-level brief, selects a visual direction, and converts that direction into implementation-ready work.
+Creates a screen-level brief, chooses the correct web or mobile design execution path, and converts that direction into implementation-ready work.
 
 ## When to use
 
@@ -41,15 +42,16 @@ Use this for one screen, page, or view where the main problem is composition, hi
 
 ## Step details
 
-1. Build a screen brief with user goal, content, and constraints.
-2. Choose a style direction and layout approach.
-3. Implement or hand off the design with verification notes.
+1. Route through `design` first to choose browser-first or mobile-first execution.
+2. Build a concrete screen brief with user goal, content, hierarchy, and anti-generic constraints.
+3. Implement or hand off the design with platform-specific verification notes.
 
 ## Skill routing
 
-- `frontend-design-screen-brief` for framing
-- `frontend-design-style-selector` for visual direction
-- `frontend-design-implementation-handoff` for delivery details
+- `design` for routing and system-level critique
+- `web-ui-design` for browser-first screen work
+- `mobile-ui-design` for app-first or phone-first screen work
+- `stitch` only when explicit backward-compatible Stitch phrasing is still in play
 
 ## Context notes
 

@@ -85,6 +85,17 @@ describe("catalog", () => {
     );
   });
 
+  it("exposes the new design execution specializations", () => {
+    const webUiDesign = resolveModule(catalog, "web-ui-design");
+    const mobileUiDesign = resolveModule(catalog, "mobile-ui-design");
+    expect(webUiDesign?.capability?.outputs.map((output) => output.path)).toEqual([
+      "foundry/modules/web-ui-design/SKILL.md",
+    ]);
+    expect(mobileUiDesign?.capability?.outputs.map((output) => output.path)).toEqual([
+      "foundry/modules/mobile-ui-design/SKILL.md",
+    ]);
+  });
+
   it("routes stitch compat alias through a canonical stitch wrapper skill", () => {
     const stitch = resolveModule(catalog, "stitch");
     expect(stitch?.capability?.outputs.map((output) => output.path)).toEqual([

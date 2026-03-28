@@ -157,18 +157,11 @@ const DESIGN_SCREEN_SIGNALS = [
   "mobile screen",
 ];
 const STITCH_UI_SUPPORTING_SKILLS = [
-  "frontend-design-core",
-  "frontend-design-style-selector",
-  "frontend-design-system",
-  "frontend-design-screen-brief",
-  "stitch-prompt-enhancement",
-  "stitch-design-orchestrator",
-  "stitch-design-system",
-  "stitch-implementation-handoff",
+  "web-ui-design",
+  "stitch",
 ];
 const MOBILE_DESIGN_SUPPORTING_SKILLS = [
-  "frontend-design-mobile-patterns",
-  "frontend-design-implementation-handoff",
+  "mobile-ui-design",
 ];
 const MOBILE_QA_SIGNALS = [
   "mobile qa",
@@ -600,9 +593,9 @@ export async function handleRouteResolve(
         "stitch-ui-intent",
         detectedLanguageSkill,
         {
-          primarySkillHint: "frontend-design",
+          primarySkillHint: "design",
           primarySkills: [
-            "frontend-design",
+            "design",
             ...(needsMobilePatterns ? MOBILE_DESIGN_SUPPORTING_SKILLS : []),
             ...STITCH_UI_SUPPORTING_SKILLS,
           ],
@@ -622,28 +615,19 @@ export async function handleRouteResolve(
     const designRoute = chooseDesignRoute(intent, routeManifest);
     if (designRoute) {
       const needsMobilePatterns = /\b(mobile|flutter|android|ios)\b/i.test(intent);
-      const primarySkills = [
-        "frontend-design",
-        "frontend-design-core",
-      ];
+      const primarySkills = ["design"];
       if (designRoute.id === "design-system") {
-        primarySkills.push("frontend-design-style-selector", "frontend-design-system");
+        primarySkills.push(needsMobilePatterns ? "mobile-ui-design" : "web-ui-design");
       } else if (designRoute.id === "design-audit") {
-        primarySkills.push("frontend-design-style-selector");
+        primarySkills.push(needsMobilePatterns ? "mobile-ui-design" : "web-ui-design");
       } else if (designRoute.id === "design-refresh") {
         primarySkills.push(
-          "frontend-design-style-selector",
-          "frontend-design-system",
-          "frontend-design-screen-brief",
+          needsMobilePatterns ? "mobile-ui-design" : "web-ui-design",
         );
       } else {
         primarySkills.push(
-          "frontend-design-style-selector",
-          "frontend-design-screen-brief",
+          needsMobilePatterns ? "mobile-ui-design" : "web-ui-design",
         );
-      }
-      if (needsMobilePatterns) {
-        primarySkills.push(...MOBILE_DESIGN_SUPPORTING_SKILLS);
       }
 
       const payload = buildResolvedPayload(
@@ -652,7 +636,7 @@ export async function handleRouteResolve(
         "design-intent",
         detectedLanguageSkill,
         {
-          primarySkillHint: "frontend-design",
+          primarySkillHint: "design",
           primarySkills,
           supportingSkills: designRoute.supportingSkills,
           explanation:

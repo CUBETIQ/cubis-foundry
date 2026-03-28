@@ -25,7 +25,7 @@ Use for building new features, refactors, documentation refreshes, onboarding ta
 ## Skill Routing
 
 - Primary skills: `api-design`, `typescript-best-practices`
-- Supporting skills (optional): `spec-driven-delivery`, `system-design`, `web-testing`, `android-emulator-testing`, `ios-simulator-testing`, `playwright-interactive`, `code-review`, `owasp-security-review`, `frontend-design`, `stitch-prompt-enhancement`, `stitch-design-orchestrator`, `stitch-design-system`, `stitch-implementation-handoff`
+- Supporting skills (optional): `spec-driven-delivery`, `system-design`, `web-testing`, `android-emulator-testing`, `ios-simulator-testing`, `playwright-interactive`, `code-review`, `owasp-security-review`, `design`, `web-ui-design`, `mobile-ui-design`, `stitch`, `frontend-design-system`
 
 ## Context notes
 
@@ -38,16 +38,16 @@ Use for building new features, refactors, documentation refreshes, onboarding ta
 
 Use `/implement` only after `/design-screen` or `/design-system` resolved the design state and the work now needs implementation or implementation handoff.
 
-1. Load `frontend-design` first, starting with `visual-direction` and `design-tokens`.
-2. Load `stitch-prompt-enhancement` before any Stitch tool call.
-3. If `docs/foundation/DESIGN.md` is missing, stale, or the work spans multiple screens, run `stitch-design-system` and mirror the result to `.stitch/DESIGN.md`.
+1. Load `design` first, then choose `web-ui-design` or `mobile-ui-design` based on the actual surface.
+2. Treat `stitch` as a compat alias only, not the primary design surface.
+3. If `docs/foundation/DESIGN.md` is missing, stale, or the work spans multiple screens, run `frontend-design-system` and mirror the result to `.stitch/DESIGN.md`.
 4. Verify `stitch_get_status`, `mcp_gateway_status`, and `stitch_list_enabled_tools`.
 5. Reuse an existing Stitch project when the work belongs to the same app or feature line. Call `list_projects` before `create_project`, and call `list_screens` before deciding whether the next step is a fresh generation or an edit.
 6. Choose the smallest Stitch tool path: `generate_screen_from_text`, `edit_screens`, `generate_variants`, or design-system tools only when the design system itself is the task.
 7. Default to `GEMINI_3_1_PRO` for complex or multi-screen UI work. Use `GEMINI_3_FLASH` only for speed-first drafts or narrow edits.
 8. Surface Stitch suggestions before retrying. Allow at most two automatic retries with backoff.
 9. If a Stitch generation call times out, check `list_screens` before treating it as failed.
-10. Fetch the final artifact with `get_screen`, then run `stitch-implementation-handoff` before normal implementation, test, and review.
+10. Fetch the final artifact with `get_screen`, then translate it through the chosen `web-ui-design` or `mobile-ui-design` handoff before normal implementation, test, and review.
 
 ## Workflow steps
 

@@ -1,21 +1,21 @@
 ---
 name: design
-description: Umbrella design skill for choosing the right visual or UX
-  specialist path and keeping interface work coherent across screens and
-  systems.
+description: Top-level design routing and critique skill for choosing the right
+  web or mobile design path, running audit-first diagnosis, and keeping system
+  direction coherent across screens and products.
 triggers:
   - design
   - frontend
-  - umbrella design skill
-  - uX specialist path
-  - systems
-  - right design sub-skill
-  - framing a UI
+  - design route
+  - design critique
+  - audit a ui
+  - system direction
+  - choose web or mobile design path
 domains:
   - design
   - frontend
 whenToUse: When a task is primarily about visual hierarchy, interaction quality,
-  or selecting the right downstream design skill.
+  or selecting the right downstream web or mobile design path.
 priority: primary
 compatibility:
   - claude
@@ -29,33 +29,44 @@ compatibility:
 
 ## Purpose
 
-Provide the top-level routing skill for design work. Use it to decide whether the task needs critique, canonical design-system work, screen briefing, mobile adaptation, or implementation handoff rather than jumping straight into an arbitrary visual change.
+Provide the top-level routing and critique skill for design work. Use it to decide whether the task needs audit, system-direction work, browser-first design execution, mobile-first design execution, or a tighter implementation handoff rather than jumping straight into arbitrary visual changes.
 
 ## When to Use
 
-- Selecting the right canonical design route
-- Framing a UI or UX task before implementation
+- Diagnosing why a UI feels generic, inconsistent, or weak before making edits
+- Choosing between browser-first and mobile-first design execution
+- Establishing or refreshing system-level visual direction before screen work
 - Keeping multiple design improvements aligned under one direction
 
 ## Instructions
 
-1. Start by identifying whether the problem is critique, system definition, screen briefing, mobile adaptation, or implementation handoff.
-2. Route to the narrowest canonical design skill that matches the actual need.
-3. Keep design output tied to user goals, not surface decoration alone.
+1. Start with the problem shape: audit, system direction, web-first execution, or mobile-first execution.
+2. Run audit-first when the interface already exists and quality is uncertain. Use the scoring cues in `../design-audit/references/scoring-rubric.md`.
+3. Choose `web-ui-design` when the output is a browser screen, landing page, dashboard, or desktop/tablet-heavy surface.
+4. Choose `mobile-ui-design` when the output is a phone-first screen, app flow, or Flutter/native-sensitive surface.
+5. Keep design output tied to user goals, hierarchy, state communication, and system coherence, not decoration alone.
+6. Use `../frontend-design-core/SKILL.md` and `../frontend-design-system/SKILL.md` only as supporting references for canonical system setup, not as the public primary route.
+7. End by naming the exact next design surface and the artifact it should produce.
 
 ## Anti-patterns
 
-- Do not give generic style advice detached from product purpose.
+- Do not give generic style advice detached from product purpose, state design, or interaction cost.
 - Do not skip hierarchy, readability, or affordance in favor of pure aesthetics.
+- Do not keep users on the fragmented `frontend-design*` stack when a simpler route through `web-ui-design` or `mobile-ui-design` is clearer.
 
 ## Output Format
 
-Return the chosen design route, the reason for it, and the concrete design outcomes expected next.
+Return:
+
+1. The chosen design route
+2. Why that route fits the task
+3. The concrete artifact expected next
+4. The anti-generic constraints that must survive downstream execution
 
 ## References
 
-- `../design-audit/SKILL.md`
+- `../design-audit/references/scoring-rubric.md`
+- `../frontend-design-core/SKILL.md`
 - `../frontend-design-system/SKILL.md`
-- `../frontend-design-screen-brief/SKILL.md`
-- `../frontend-design-mobile-patterns/SKILL.md`
-- `../frontend-design-implementation-handoff/SKILL.md`
+- `../web-ui-design/SKILL.md`
+- `../mobile-ui-design/SKILL.md`

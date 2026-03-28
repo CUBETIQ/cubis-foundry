@@ -22,8 +22,8 @@ Use when an interface exists and needs a design-system, UX, or anti-slop audit b
 
 ## Skill Routing
 
-- Primary skills: `frontend-design`, `frontend-design-core`
-- Supporting skills (optional): `frontend-design-style-selector`, `frontend-design-mobile-patterns`, `code-review`
+- Primary skills: `design`
+- Supporting skills (optional): `web-ui-design`, `mobile-ui-design`, `code-review`
 
 ## Context notes
 

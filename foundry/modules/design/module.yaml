@@ -1,7 +1,7 @@
 id: design
 kind: capability
 label: Design
-description: "Merged design capability with routing modes for critique, system work, screen briefs, and implementation handoff. Use when working on visual design, UI composition, typography, or design system coherence."
+description: "Top-level design routing and critique skill. Use it to choose the right web or mobile design path, run audit-first diagnosis, and keep system-level design decisions coherent."
 stability: stable
 profiles:
   - core

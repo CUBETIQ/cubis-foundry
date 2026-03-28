@@ -36,11 +36,11 @@ Provide a compatibility wrapper for explicit Stitch requests. Use it to translat
 
 ## Instructions
 
-1. Treat `frontend-design` as the main execution surface for Stitch-like UI generation work.
-2. Use `frontend-design-system` when the canonical design state or `.stitch/DESIGN.md` mirror needs to be refreshed first.
-3. Use `frontend-design-screen-brief` when the next step is generating or editing a concrete screen brief.
-4. Use `frontend-design-implementation-handoff` when a Stitch-style artifact must be translated into repo-native UI work.
-5. Prefer canonical frontend modules over retired Stitch sub-skill names in all follow-up guidance.
+1. Treat `design` as the main routing surface for Stitch-like UI generation work.
+2. Prefer `web-ui-design` for browser-style screen generation unless the request is explicitly mobile-first.
+3. Prefer `mobile-ui-design` when the Stitch-like request is really about an app screen, mobile flow, or Flutter-oriented output.
+4. Use `../frontend-design-system/SKILL.md` only when the canonical design state or `.stitch/DESIGN.md` mirror genuinely needs to be refreshed first.
+5. Prefer the new design trio over fragmented `frontend-design*` names in all follow-up guidance.
 
 ## Output Format
 
@@ -52,7 +52,7 @@ Return:
 
 ## References
 
-- `../frontend-design/SKILL.md`
+- `../design/SKILL.md`
+- `../web-ui-design/SKILL.md`
+- `../mobile-ui-design/SKILL.md`
 - `../frontend-design-system/SKILL.md`
-- `../frontend-design-screen-brief/SKILL.md`
-- `../frontend-design-implementation-handoff/SKILL.md`

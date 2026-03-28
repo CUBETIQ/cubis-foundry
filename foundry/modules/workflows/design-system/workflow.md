@@ -11,9 +11,9 @@ agentChain:
   - implementer
 primarySkills:
   - design
-  - frontend-design-system
+  - web-ui-design
 supportingSkills:
-  - frontend-design-core
+  - mobile-ui-design
 whenToUse: "When UI work needs reusable system decisions rather than one-off screen tweaks."
 priority: medium
 compatibility:
@@ -28,7 +28,7 @@ compatibility:
 
 ## What this workflow does
 
-Guides systematic UI work around tokens, components, states, and interaction patterns rather than isolated screen polish.
+Guides systematic UI work around tokens, components, states, interaction patterns, and cross-surface visual direction rather than isolated screen polish.
 
 ## When to use
 
@@ -40,15 +40,15 @@ Use this when a request affects multiple screens or requires consistent system-l
 
 ## Step details
 
-1. Audit the current design system surface.
-2. Define the reusable tokens, primitives, or component changes needed.
+1. Audit the current design system surface and canonical direction.
+2. Define the reusable tokens, primitives, or component changes needed for the main target surface.
 3. Apply and verify the system-level update in code or documentation.
 
 ## Skill routing
 
 - `design` for direction and visual judgment
-- `frontend-design-system` for reusable component structure
-- `frontend-design-core` for execution details
+- `web-ui-design` for browser-first system structure and component vocabulary
+- `mobile-ui-design` when the system change must survive app-first surfaces too
 
 ## Context notes
 

@@ -245,16 +245,12 @@ function createStitchRouteManifest(): RouteManifest {
         primaryAgent: "implementer",
         supportingAgents: ["explorer", "planner"],
         primarySkills: [
-          "frontend-design",
-          "frontend-design-core",
-          "frontend-design-style-selector",
-          "frontend-design-screen-brief",
+          "design",
+          "web-ui-design",
         ],
         supportingSkills: [
-          "stitch-prompt-enhancement",
-          "stitch-design-orchestrator",
-          "stitch-design-system",
-          "stitch-implementation-handoff",
+          "mobile-ui-design",
+          "stitch",
         ],
         artifacts: {
           codex: { compatibilityAlias: "$workflow-design-screen", workflowFile: "design-screen.md" },
@@ -761,19 +757,13 @@ describe("skill tools", () => {
       kind: "workflow",
       id: "design-screen",
       command: "/design-screen",
-      primarySkillHint: "frontend-design",
+      primarySkillHint: "design",
       matchedBy: "stitch-ui-intent",
     });
     expect(result.primarySkills).toEqual([
-      "frontend-design",
-      "frontend-design-core",
-      "frontend-design-style-selector",
-      "frontend-design-system",
-      "frontend-design-screen-brief",
-      "stitch-prompt-enhancement",
-      "stitch-design-orchestrator",
-      "stitch-design-system",
-      "stitch-implementation-handoff",
+      "design",
+      "web-ui-design",
+      "stitch",
     ]);
   });
 
@@ -792,21 +782,14 @@ describe("skill tools", () => {
       kind: "workflow",
       id: "design-screen",
       command: "/design-screen",
-      primarySkillHint: "frontend-design",
+      primarySkillHint: "design",
       matchedBy: "stitch-ui-intent",
     });
     expect(result.primarySkills).toEqual([
-      "frontend-design",
-      "frontend-design-mobile-patterns",
-      "frontend-design-implementation-handoff",
-      "frontend-design-core",
-      "frontend-design-style-selector",
-      "frontend-design-system",
-      "frontend-design-screen-brief",
-      "stitch-prompt-enhancement",
-      "stitch-design-orchestrator",
-      "stitch-design-system",
-      "stitch-implementation-handoff",
+      "design",
+      "mobile-ui-design",
+      "web-ui-design",
+      "stitch",
     ]);
   });
 

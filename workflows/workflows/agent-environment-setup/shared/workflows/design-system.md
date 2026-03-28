@@ -22,8 +22,8 @@ Use when the project needs a durable design foundation before screen generation 
 
 ## Skill Routing
 
-- Primary skills: `frontend-design`, `frontend-design-core`, `frontend-design-style-selector`, `frontend-design-system`
-- Supporting skills (optional): `frontend-design-mobile-patterns`, `stitch-design-system`, `tech-doc`
+- Primary skills: `design`, `web-ui-design`
+- Supporting skills (optional): `mobile-ui-design`, `frontend-design-system`, `tech-doc`
 
 ## Context notes
 

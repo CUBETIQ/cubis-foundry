@@ -10,9 +10,10 @@ triggers:
 agentChain:
   - reviewer
 primarySkills:
-  - design-audit
-supportingSkills:
   - design
+supportingSkills:
+  - web-ui-design
+  - mobile-ui-design
 whenToUse: "When an interface exists already and the task is to critique, prioritize, and improve it."
 priority: medium
 compatibility:
@@ -45,8 +46,8 @@ Use this when the product is built enough to inspect and the user wants critique
 
 ## Skill routing
 
-- `design-audit` is primary.
-- `design` supports broader system-level visual reasoning when needed.
+- `design` is primary in audit mode.
+- `web-ui-design` or `mobile-ui-design` support the remediation route once the audit identifies the failing surface.
 
 ## Context notes
 

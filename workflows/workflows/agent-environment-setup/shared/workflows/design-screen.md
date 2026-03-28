@@ -22,14 +22,14 @@ Use when the task is about shaping a concrete page or screen, especially before 
 
 ## Skill Routing
 
-- Primary skills: `frontend-design`, `frontend-design-core`, `frontend-design-style-selector`, `frontend-design-screen-brief`
-- Supporting skills (optional): `frontend-design-mobile-patterns`, `stitch-prompt-enhancement`, `stitch-design-system`, `stitch-design-orchestrator`, `frontend-design-implementation-handoff`, `stitch-implementation-handoff`
+- Primary skills: `design`, `web-ui-design`
+- Supporting skills (optional): `mobile-ui-design`, `stitch`, `frontend-design-system`
 
 ## Stitch Gate
 
 Do not call Stitch until:
 
-1. `frontend-design` has run
+1. `design` has run
 2. the canonical design state exists or is refreshed in the same run
 3. the screen brief is ready
 4. Stitch status/tool discovery succeeds
