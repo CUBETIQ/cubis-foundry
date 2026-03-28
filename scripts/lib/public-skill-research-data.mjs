@@ -742,7 +742,7 @@ export const CURRENT_SKILL_REWRITE_SPECS = {
       "FastAPI skills are most valuable when they stay clearly separate from generic Python and generic API design.",
     ],
   },
-  "frontend-design": {
+  "design": {
     action: "keep-and-tighten",
     cluster: "api-and-frontend",
     benchmarkRepoIds: ["Jeffallan/claude-skills", "travisvn/awesome-claude-skills", "VoltAgent/awesome-agent-skills"],

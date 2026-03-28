@@ -23,7 +23,7 @@ Use when the project needs a durable design foundation before screen generation 
 ## Skill Routing
 
 - Primary skills: `design`, `web-ui-design`
-- Supporting skills (optional): `mobile-ui-design`, `frontend-design-system`, `tech-doc`
+- Supporting skills (optional): `mobile-ui-design`, `design-system`, `tech-doc`
 
 ## Context notes
 

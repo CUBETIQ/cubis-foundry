@@ -23,7 +23,7 @@ Use when the product direction changed and the design system, overlays, or Stitc
 
 ## Skill Routing
 
-- Primary skills: `design`, `web-ui-design`, `frontend-design-system`
+- Primary skills: `design`, `web-ui-design`, `design-system`
 - Supporting skills (optional): `mobile-ui-design`, `stitch`, `tech-doc`
 
 ## Context notes

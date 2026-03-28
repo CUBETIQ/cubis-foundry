@@ -23,6 +23,14 @@ compatibility:
   - copilot
   - gemini
   - antigravity
+metadata:
+  aliases:
+    - frontend-design
+    - frontend-design-core
+    - frontend-design-implementation-handoff
+    - frontend-design-screen-brief
+    - frontend-design-style-selector
+    - design-audit
 ---
 
 # Design
@@ -41,11 +49,11 @@ Provide the top-level routing and critique skill for design work. Use it to deci
 ## Instructions
 
 1. Start with the problem shape: audit, system direction, web-first execution, or mobile-first execution.
-2. Run audit-first when the interface already exists and quality is uncertain. Use the scoring cues in `../design-audit/references/scoring-rubric.md`.
+2. Run audit-first when the interface already exists and quality is uncertain. Use the scoring cues in `references/scoring-rubric.md`.
 3. Choose `web-ui-design` when the output is a browser screen, landing page, dashboard, or desktop/tablet-heavy surface.
 4. Choose `mobile-ui-design` when the output is a phone-first screen, app flow, or Flutter/native-sensitive surface.
 5. Keep design output tied to user goals, hierarchy, state communication, and system coherence, not decoration alone.
-6. Use `../frontend-design-core/SKILL.md` and `../frontend-design-system/SKILL.md` only as supporting references for canonical system setup, not as the public primary route.
+6. Use `../design-system/SKILL.md` only when canonical design state needs to be refreshed before screen work, not as the default public route.
 7. End by naming the exact next design surface and the artifact it should produce.
 
 ## Anti-patterns
@@ -65,8 +73,9 @@ Return:
 
 ## References
 
-- `../design-audit/references/scoring-rubric.md`
-- `../frontend-design-core/SKILL.md`
-- `../frontend-design-system/SKILL.md`
+- `references/scoring-rubric.md`
+- `references/visual-direction.md`
+- `references/design-tokens.md`
+- `../design-system/SKILL.md`
 - `../web-ui-design/SKILL.md`
 - `../mobile-ui-design/SKILL.md`

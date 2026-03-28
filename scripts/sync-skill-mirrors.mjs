@@ -230,7 +230,7 @@ function buildStitchPlatformSection(platform, skillId) {
   if (skillId === "stitch") {
     return `## ${platformName} Stitch Compatibility Flow
 
-- Treat this skill as a compatibility wrapper only. Route the real work through \`design\`, then \`web-ui-design\` or \`mobile-ui-design\`, and load \`frontend-design-system\` only when canonical design state or the Stitch mirror is stale.
+- Treat this skill as a compatibility wrapper only. Route the real work through \`design\`, then \`web-ui-design\` or \`mobile-ui-design\`, and load \`design-system\` only when canonical design state or the Stitch mirror is stale.
 - Verify the Foundry Stitch MCP configuration from ${settingsPath} before choosing any Stitch tool path.
 - Prefer the shared \`/implement\` Stitch UI flow for new work so the design-first sequence stays intact on ${platformName}.`;
   }

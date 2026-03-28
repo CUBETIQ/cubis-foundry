@@ -23,7 +23,7 @@ This is a compatibility alias for older Stitch-oriented requests. For new work, 
 | Main design execution | `design` |
 | Browser-first screen work | `web-ui-design` |
 | Mobile-first screen work | `mobile-ui-design` |
-| Design-system refresh | `frontend-design-system` |
+| Design-system refresh | `design-system` |
 
 ## Routing
 
@@ -31,7 +31,7 @@ When `stitch` is requested:
 1. Start with `design` as the default canonical route.
 2. Choose `web-ui-design` for browser-first work unless the request is clearly mobile-first.
 3. Choose `mobile-ui-design` for app-screen or Flutter-oriented work.
-4. Load `frontend-design-system` only if the repo's design state or `.stitch/DESIGN.md` mirror is stale.
+4. Load `design-system` only if the repo's design state or `.stitch/DESIGN.md` mirror is stale.
 
 ## Reference Skill
 

@@ -1,5 +1,5 @@
 ---
-name: frontend-design-system
+name: design-system
 description: Build or refresh the canonical design-system state for a repo,
   including DESIGN.md, overlays, token language, and platform-specific
   adaptation notes.
@@ -23,9 +23,12 @@ compatibility:
   - copilot
   - gemini
   - antigravity
+metadata:
+  aliases:
+    - frontend-design-system
 ---
 
-# Frontend Design System
+# Design System
 
 ## Purpose
 

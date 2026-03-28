@@ -23,6 +23,9 @@ compatibility:
   - copilot
   - gemini
   - antigravity
+metadata:
+  aliases:
+    - frontend-design-mobile-patterns
 ---
 
 # Mobile UI Design
@@ -41,11 +44,11 @@ Provide the mobile-first execution surface for design work. Use it when the task
 ## Instructions
 
 1. Start from the canonical direction chosen in `design`, then adapt it to mobile constraints instead of shrinking a web layout.
-2. Load `../frontend-design-mobile-patterns/SKILL.md` logic implicitly: thumb reach, section staging, CTA placement, navigation rhythm, and scan-friendly composition must shape the result.
+2. Treat thumb reach, section staging, CTA placement, navigation rhythm, and scan-friendly composition as first-class constraints rather than afterthoughts.
 3. Prefer mobile-feasible patterns over browser habits. Avoid hover-led behavior, dense side rails, or desktop-first shell thinking.
 4. Specify mobile states and flow transitions clearly: entry state, empty state, success/error feedback, keyboard impact, safe-area behavior, and primary-action placement.
 5. When the task needs implementation translation, include widget-, theme-, or component-level cues so the output can survive Flutter or native UI work.
-6. Keep visual direction deliberate. Reuse `../frontend-design/references/visual-direction.md` and `../frontend-design/references/design-tokens.md` only when they materially affect the mobile design choice.
+6. Keep visual direction deliberate. Reuse `../design/references/visual-direction.md` and `../design/references/design-tokens.md` only when they materially affect the mobile design choice.
 7. End with a handoff that QA and implementation can consume: layout rhythm, navigation model, interaction states, anti-slop constraints, and platform-sensitive notes.
 
 ## Anti-patterns
@@ -67,6 +70,5 @@ Return:
 ## References
 
 - `../design/SKILL.md`
-- `../frontend-design-mobile-patterns/SKILL.md`
-- `../frontend-design/references/visual-direction.md`
-- `../frontend-design/references/design-tokens.md`
+- `../design/references/visual-direction.md`
+- `../design/references/design-tokens.md`

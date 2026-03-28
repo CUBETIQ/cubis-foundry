@@ -68,13 +68,10 @@ describe("catalog", () => {
     expect(result.warnings).toHaveLength(0);
   });
 
-  it("routes qa capability outputs to canonical module skill sources", () => {
+  it("routes qa capability outputs through the canonical alias surface", () => {
     const qa = resolveModule(catalog, "qa");
     expect(qa?.capability?.outputs.map((output) => output.path)).toEqual([
       "foundry/modules/qa/SKILL.md",
-      "foundry/modules/web-testing/SKILL.md",
-      "foundry/modules/android-emulator-testing/SKILL.md",
-      "foundry/modules/ios-simulator-testing/SKILL.md",
     ]);
   });
 

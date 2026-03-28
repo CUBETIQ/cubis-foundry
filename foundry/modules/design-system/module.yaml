@@ -1,6 +1,6 @@
-id: frontend-design-system
+id: design-system
 kind: skill
-label: Frontend Design System
+label: Design System
 description: "Build or refresh the canonical design-system state for a repo, including DESIGN.md, overlays, token language, and platform-specific adaptation notes."
 stability: stable
 profiles:
@@ -14,5 +14,5 @@ capability:
     - design
   outputs:
     - type: skill
-      path: foundry/modules/frontend-design-system/SKILL.md
+      path: foundry/modules/design-system/SKILL.md
       platforms: [claude, codex, copilot, gemini, antigravity]

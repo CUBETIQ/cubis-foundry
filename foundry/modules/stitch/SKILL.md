@@ -42,7 +42,7 @@ Provide a compatibility wrapper for explicit Stitch requests. Use it to translat
 1. Treat `design` as the main routing surface for Stitch-like UI generation work.
 2. Prefer `web-ui-design` for browser-style screen generation unless the request is explicitly mobile-first.
 3. Prefer `mobile-ui-design` when the Stitch-like request is really about an app screen, mobile flow, or Flutter-oriented output.
-4. Use `../frontend-design-system/SKILL.md` only when the canonical design state or `.stitch/DESIGN.md` mirror genuinely needs to be refreshed first.
+4. Use `../design-system/SKILL.md` only when the canonical design state or `.stitch/DESIGN.md` mirror genuinely needs to be refreshed first.
 5. Prefer the new design trio over fragmented `frontend-design*` names in all follow-up guidance.
 
 ## Output Format
@@ -58,4 +58,4 @@ Return:
 - `../design/SKILL.md`
 - `../web-ui-design/SKILL.md`
 - `../mobile-ui-design/SKILL.md`
-- `../frontend-design-system/SKILL.md`
+- `../design-system/SKILL.md`

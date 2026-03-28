@@ -66,7 +66,7 @@ export const FRAMEWORK_IDS = new Set([
   "next-upgrade",
   "react-expert",
   "react-best-practices",
-  "frontend-design",
+  "design",
   "design-system-builder",
   "ux-ui-consistency",
   "tailwind-patterns",

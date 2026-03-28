@@ -41,12 +41,12 @@ Provide the browser-first execution surface for design work. Use it when the tas
 ## Instructions
 
 1. Start from the canonical direction chosen in `design`, then turn it into a browser-specific screen or system decision.
-2. Commit to one strong visual direction before choosing components or layout patterns. Use `../frontend-design/references/visual-direction.md`.
+2. Commit to one strong visual direction before choosing components or layout patterns. Use `../design/references/visual-direction.md`.
 3. Prefer web-native layout logic: hierarchy, information density, grid rhythm, container-aware composition, and browser accessibility.
-4. Keep component boundaries explicit. Use `../frontend-design/references/component-architecture.md` when the task needs reusable primitives, composites, or layout shells.
-5. Make token usage concrete. Use `../frontend-design/references/design-tokens.md` when color, spacing, typography, or semantic aliasing needs to be defined or refreshed.
-6. Add responsive and accessibility guidance only when it changes the real design decision. Use `../frontend-design/references/responsive-patterns.md` and `../frontend-design/references/accessibility.md` selectively.
-7. When motion matters, specify why it exists, what it communicates, and how it degrades. Use `../frontend-design/references/animation.md` only when the request genuinely depends on motion.
+4. Keep component boundaries explicit. Use `references/component-architecture.md` when the task needs reusable primitives, composites, or layout shells.
+5. Make token usage concrete. Use `../design/references/design-tokens.md` when color, spacing, typography, or semantic aliasing needs to be defined or refreshed.
+6. Add responsive and accessibility guidance only when it changes the real design decision. Use `references/responsive-patterns.md` and `references/accessibility.md` selectively.
+7. When motion matters, specify why it exists, what it communicates, and how it degrades. Use `references/animation.md` only when the request genuinely depends on motion.
 8. End with a web-ready handoff: layout summary, component vocabulary, interaction states, anti-generic constraints, and implementation cues that a real frontend engineer can build.
 
 ## Anti-patterns
@@ -68,9 +68,9 @@ Return:
 ## References
 
 - `../design/SKILL.md`
-- `../frontend-design/references/visual-direction.md`
-- `../frontend-design/references/design-tokens.md`
-- `../frontend-design/references/component-architecture.md`
-- `../frontend-design/references/responsive-patterns.md`
-- `../frontend-design/references/accessibility.md`
-- `../frontend-design/references/animation.md`
+- `../design/references/visual-direction.md`
+- `../design/references/design-tokens.md`
+- `references/component-architecture.md`
+- `references/responsive-patterns.md`
+- `references/accessibility.md`
+- `references/animation.md`

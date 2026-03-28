@@ -131,6 +131,24 @@ describe("compiler", () => {
       expect(paths).not.toContain(".agents/skills/api-design/SKILL.md");
     });
 
+    it("projects metadata aliases as compatibility skill wrappers", async () => {
+      const root = cloneFoundryFixture();
+
+      const results = await compileModule(root, "design", "claude");
+
+      expect(results).toHaveLength(1);
+      const aliasAsset = results[0]!.assets.find(
+        (asset) => asset.path === ".claude/skills/frontend-design/SKILL.md",
+      );
+      expect(aliasAsset).toBeDefined();
+      expect(results[0]!.assets.map((asset) => asset.path)).toContain(
+        ".claude/skills/design-audit/SKILL.md",
+      );
+      expect(aliasAsset!.content).toContain("name: frontend-design");
+      expect(aliasAsset!.content).toContain("replaced_by: design");
+      expect(aliasAsset!.content).toContain("`../design/SKILL.md`");
+    });
+
     it("fails when a skill references a missing markdown file", async () => {
       const root = cloneFoundryFixture();
       const skillPath = join(root, "foundry", "modules", "api-design", "SKILL.md");

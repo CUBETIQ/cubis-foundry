@@ -11,6 +11,7 @@ import {
   parseMarkdownDocument,
   readUtf8,
   renderOutputPattern,
+  stringifyMarkdownDocument,
 } from "../projectors/utils.js";
 import { projectCodexAgent } from "../projectors/codex-agent.js";
 import { projectGeminiCommand } from "../projectors/gemini-command.js";
@@ -111,6 +112,7 @@ type CanonicalSkill = {
   raw: string;
   ownerModuleId: string;
   moduleDir: string;
+  frontmatter: Record<string, unknown>;
 };
 
 function discoverCanonicalSkills(
@@ -125,7 +127,81 @@ function discoverCanonicalSkills(
     raw: readUtf8(filePath),
     ownerModuleId: moduleOwnerId(modulesDir, filePath),
     moduleDir: dirname(filePath),
+    frontmatter: parseMarkdownDocument(readUtf8(filePath)).frontmatter,
   }));
+}
+
+function extractSkillAliases(skill: CanonicalSkill): string[] {
+  const metadata = skill.frontmatter.metadata;
+  if (!metadata || typeof metadata !== "object" || Array.isArray(metadata)) {
+    return [];
+  }
+
+  const aliases = (metadata as Record<string, unknown>).aliases;
+  if (!Array.isArray(aliases)) return [];
+
+  const seen = new Set<string>();
+  const values: string[] = [];
+  for (const alias of aliases) {
+    if (typeof alias !== "string") continue;
+    const normalized = alias.trim();
+    if (!normalized || normalized === skill.id || seen.has(normalized)) continue;
+    seen.add(normalized);
+    values.push(normalized);
+  }
+  return values;
+}
+
+function extractStringList(
+  frontmatter: Record<string, unknown>,
+  key: string,
+): string[] | undefined {
+  const value = frontmatter[key];
+  if (!Array.isArray(value)) return undefined;
+  const list = value.filter((item): item is string => typeof item === "string");
+  return list.length > 0 ? list : undefined;
+}
+
+function buildAliasSkillMarkdown(skill: CanonicalSkill, aliasId: string): string {
+  const description =
+    `Compatibility alias for \`${skill.id}\`. Prefer \`${skill.id}\` for current guidance.`;
+  const canonicalName =
+    typeof skill.frontmatter.name === "string" && skill.frontmatter.name.trim()
+      ? skill.frontmatter.name.trim()
+      : skill.id;
+  const title = aliasId
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+
+  const frontmatter: Record<string, unknown> = {
+    name: aliasId,
+    description,
+    triggers: [aliasId],
+    whenToUse: `When older docs or prompts explicitly name ${aliasId}.`,
+    priority: "secondary",
+    metadata: {
+      deprecated: true,
+      replaced_by: skill.id,
+      alias_of: skill.id,
+    },
+  };
+  const domains = extractStringList(skill.frontmatter, "domains");
+  if (domains) frontmatter.domains = domains;
+  const compatibility = extractStringList(skill.frontmatter, "compatibility");
+  if (compatibility) frontmatter.compatibility = compatibility;
+
+  const body = [
+    `# ${title}`,
+    "",
+    `This skill is now a compatibility alias. Use \`${canonicalName}\` for the current canonical flow.`,
+    "",
+    "## References",
+    "",
+    `- \`../${skill.id}/SKILL.md\``,
+  ].join("\n");
+
+  return stringifyMarkdownDocument(frontmatter, body);
 }
 
 function discoverSkillReferences(
@@ -297,6 +373,17 @@ export async function transformStage(
         seenAssets,
         `${outputDir}/${reference.relativePath}`,
         reference.raw,
+      );
+    }
+
+    for (const aliasId of extractSkillAliases(skill)) {
+      const aliasOutputDir = skillOutputDir(ctx.platform, aliasId);
+      if (!aliasOutputDir) continue;
+      pushAsset(
+        assets,
+        seenAssets,
+        `${aliasOutputDir}/SKILL.md`,
+        buildAliasSkillMarkdown(skill, aliasId),
       );
     }
   }

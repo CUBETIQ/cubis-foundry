@@ -23,7 +23,7 @@ Use when the task is about shaping a concrete page or screen, especially before 
 ## Skill Routing
 
 - Primary skills: `design`, `web-ui-design`
-- Supporting skills (optional): `mobile-ui-design`, `stitch`, `frontend-design-system`
+- Supporting skills (optional): `mobile-ui-design`, `stitch`, `design-system`
 
 ## Stitch Gate
 
