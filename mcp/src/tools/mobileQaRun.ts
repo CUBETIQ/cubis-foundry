@@ -39,7 +39,9 @@ export const mobileQaRunSchema = z.object({
   androidMcp: z
     .boolean()
     .optional()
-    .describe("Opt in to Android MCP-assisted mobile testing execution."),
+    .describe(
+      "Legacy compatibility opt-in for the older Android MCP execution path.",
+    ),
   dryRun: z.boolean().optional(),
 });
 
@@ -146,11 +148,11 @@ export function createMobileQaRunHandler(ctx: ToolRuntimeContext) {
       name: "android_mcp_opt_in",
       passed: true,
       detail: androidMcpOptIn
-        ? "Android MCP opt-in is enabled for this run."
-        : "Android MCP opt-in is disabled; ADB will be used first.",
+        ? "Legacy Android MCP opt-in is enabled for this run."
+        : "Legacy Android MCP opt-in is disabled; CLI-first ADB will be used first and mobile-mcp remains the preferred semantic runtime.",
       action: androidMcpOptIn
         ? undefined
-        : "Use --android-mcp only when you want the optional Android MCP path.",
+        : "Use --android-mcp only when you explicitly need the older Android MCP compatibility path.",
     });
     if (androidMcpOptIn) {
       trace.gates.push({
@@ -162,11 +164,11 @@ export function createMobileQaRunHandler(ctx: ToolRuntimeContext) {
         name: "android_mcp_configured",
         passed: androidConfigured,
         detail: androidConfigured
-          ? "Android MCP is configured in cbx_config.json."
-          : "Android MCP is not configured in cbx_config.json.",
+          ? "Legacy Android MCP is configured in cbx_config.json."
+          : "Legacy Android MCP is not configured in cbx_config.json.",
         action: androidConfigured
           ? undefined
-          : "Enable android in cbx_config.json if you want the optional Android MCP path.",
+          : "Enable android in cbx_config.json only if you explicitly need the older Android MCP compatibility path.",
       });
       trace.gates.push({
         name: "android_enabled_tools",
@@ -176,7 +178,7 @@ export function createMobileQaRunHandler(ctx: ToolRuntimeContext) {
           : String(androidTools.lastError || "Android upstream unavailable."),
         action: androidTools.available
           ? undefined
-          : "Android MCP tools are unavailable; the run will continue on the default ADB path.",
+          : "Legacy Android MCP tools are unavailable; the run will continue on the default CLI-first ADB path.",
       });
     }
 

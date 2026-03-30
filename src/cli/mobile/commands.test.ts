@@ -17,6 +17,8 @@ describe("registerMobileCommands()", () => {
     expect(qa?.description()).toContain("android-emulator-testing");
     expect(qa?.description()).toContain("ios-simulator-testing");
     expect(qa?.description()).toContain("mobile-mcp");
+    expect(help).toContain("--android-mcp");
+    expect(help).toContain("legacy compatibility flag");
     expect(help).toContain("--artifacts-dir <path>");
     expect(help).toContain(
       "artifact root directory (default: artifacts/mobile-qa",

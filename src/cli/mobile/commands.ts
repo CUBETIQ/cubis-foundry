@@ -18,7 +18,7 @@ export function registerMobileCommands(
   const qaCommand = mobileCommand
     .command("qa")
     .description(
-      "Compatibility command for mobile testing via android-emulator-testing, ios-simulator-testing, and mobile-mcp fallback paths",
+      "Compatibility command for mobile testing via android-emulator-testing, ios-simulator-testing, and mobile-mcp",
     );
 
   qaCommand
@@ -39,7 +39,7 @@ export function registerMobileCommands(
     .option("--scope <scope>", "auto|global|project", "auto")
     .option(
       "--android-mcp",
-      "opt in to Android MCP-assisted mobile testing; CLI-first ADB remains the default",
+      "legacy compatibility flag for the older Android MCP path; prefer mobile-mcp and keep CLI-first ADB as the default fallback",
     )
     .option("--dry-run", "validate inputs and emit the planned artifact paths")
     .action(deps.runMobileQa);
