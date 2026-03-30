@@ -639,19 +639,18 @@ describe("skill tools", () => {
     });
   });
 
-  it("maps a legacy workflow command to the canonical workflow route", async () => {
+  it("does not resolve removed legacy workflow aliases", async () => {
     const result = payload(
       await handleRouteResolve({ intent: "/brainstorm" }, createRouteManifest()),
     );
     expect(result).toMatchObject({
-      resolved: true,
-      kind: "workflow",
-      id: "plan",
-      matchedBy: "legacy-workflow-alias",
+      resolved: false,
+      fallbackSkillSearchRecommended: false,
+      matchedBy: "invalid-explicit-workflow-command",
     });
   });
 
-  it("maps a legacy agent mention to the canonical agent route", async () => {
+  it("does not resolve removed legacy agent aliases", async () => {
     const result = payload(
       await handleRouteResolve(
         { intent: "@qa-automation-engineer" },
@@ -659,10 +658,9 @@ describe("skill tools", () => {
       ),
     );
     expect(result).toMatchObject({
-      resolved: true,
-      kind: "agent",
-      id: "test-engineer",
-      matchedBy: "legacy-agent-alias",
+      resolved: false,
+      fallbackSkillSearchRecommended: false,
+      matchedBy: "invalid-explicit-agent",
     });
   });
 

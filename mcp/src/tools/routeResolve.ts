@@ -112,20 +112,6 @@ const LANGUAGE_SIGNAL_FILES: Array<{ skillId: string; files: string[] }> = [
   { skillId: "swift-pro", files: ["Package.swift"] },
 ];
 
-const LEGACY_WORKFLOW_ALIASES: Record<string, string> = {
-  brainstorm: "plan",
-  qa: "test",
-  incident: "devops",
-  postman: "backend",
-};
-
-const LEGACY_AGENT_ALIASES: Record<string, string> = {
-  "penetration-tester": "security-auditor",
-  "qa-automation-engineer": "test-engineer",
-  "product-owner": "product-manager",
-  "explorer-agent": "code-archaeologist",
-};
-
 const DELETED_SKILL_IDS = new Set([
   "qa",
   "unit-testing",
@@ -291,7 +277,10 @@ function buildSearchText(route: RouteEntry): string {
 function findExplicitRoute(
   intent: string,
   manifest: RouteManifest,
-): { route: RouteEntry; matchedBy: string } | null {
+):
+  | { route: RouteEntry; matchedBy: string }
+  | { invalidExplicitRoute: true; matchedBy: string; explanation: string }
+  | null {
   const trimmed = intent.trim();
 
   if (trimmed.startsWith("/")) {
@@ -301,14 +290,12 @@ function findExplicitRoute(
         entry.command?.toLowerCase() === trimmed.toLowerCase(),
     );
     if (route) return { route, matchedBy: "explicit-workflow-command" };
-
-    const legacyWorkflowId = LEGACY_WORKFLOW_ALIASES[trimmed.slice(1).toLowerCase()];
-    if (legacyWorkflowId) {
-      const legacyRoute = manifest.routes.find(
-        (entry) => entry.kind === "workflow" && entry.id === legacyWorkflowId,
-      );
-      if (legacyRoute) return { route: legacyRoute, matchedBy: "legacy-workflow-alias" };
-    }
+    return {
+      invalidExplicitRoute: true,
+      matchedBy: "invalid-explicit-workflow-command",
+      explanation:
+        "Explicit workflow command did not match any installed workflow. Do not reroute from free text; ask for a valid workflow or continue without explicit route syntax.",
+    };
   }
 
   if (trimmed.startsWith("@")) {
@@ -317,14 +304,12 @@ function findExplicitRoute(
       (entry) => entry.kind === "agent" && entry.id.toLowerCase() === normalizedAgent,
     );
     if (route) return { route, matchedBy: "explicit-agent" };
-
-    const legacyAgentId = LEGACY_AGENT_ALIASES[normalizedAgent];
-    if (legacyAgentId) {
-      const legacyRoute = manifest.routes.find(
-        (entry) => entry.kind === "agent" && entry.id.toLowerCase() === legacyAgentId,
-      );
-      if (legacyRoute) return { route: legacyRoute, matchedBy: "legacy-agent-alias" };
-    }
+    return {
+      invalidExplicitRoute: true,
+      matchedBy: "invalid-explicit-agent",
+      explanation:
+        "Explicit agent mention did not match any installed custom agent. Do not reroute from free text; ask for a valid agent or continue without explicit agent syntax.",
+    };
   }
 
   if (trimmed.startsWith("$")) {
@@ -334,6 +319,12 @@ function findExplicitRoute(
         entry.artifacts.codex?.compatibilityAlias?.toLowerCase() === normalizedAlias,
     );
     if (route) return { route, matchedBy: "compatibility-alias" };
+    return {
+      invalidExplicitRoute: true,
+      matchedBy: "invalid-compatibility-alias",
+      explanation:
+        "Explicit compatibility alias did not match any installed route. Do not reroute from free text; use a valid alias or a canonical workflow or agent name.",
+    };
   }
 
   return null;
@@ -427,16 +418,42 @@ function buildResolvedPayload(
         ? `Matched explicit workflow command ${route.command}.`
         : matchedBy === "explicit-agent"
           ? `Matched explicit agent @${route.id}.`
-          : matchedBy === "legacy-workflow-alias"
-            ? `Matched legacy workflow alias and routed to canonical workflow '${route.id}'.`
-            : matchedBy === "legacy-agent-alias"
-              ? `Matched legacy agent alias and routed to canonical agent @${route.id}.`
-              : matchedBy === "compatibility-alias"
-                ? `Matched compatibility alias ${route.artifacts.codex?.compatibilityAlias}.`
-                : matchedBy === "skill-creator-intent"
-                  ? `Matched workflow '${route.id}' and selected skill-creator as the primary skill hint for skill package work.`
-                  : `Matched ${route.kind} '${route.id}' from installed route metadata.`),
+          : matchedBy === "compatibility-alias"
+            ? `Matched compatibility alias ${route.artifacts.codex?.compatibilityAlias}.`
+            : matchedBy === "skill-creator-intent"
+              ? `Matched workflow '${route.id}' and selected skill-creator as the primary skill hint for skill package work.`
+              : `Matched ${route.kind} '${route.id}' from installed route metadata.`),
     artifacts: route.artifacts,
+  };
+}
+
+function buildUnresolvedPayload(
+  input: string,
+  detectedLanguageSkill: string | null,
+  options: Partial<{
+    fallbackSkillSearchRecommended: boolean;
+    matchedBy: string;
+    explanation: string;
+  }> = {},
+) {
+  return {
+    input,
+    resolved: false,
+    kind: null,
+    id: null,
+    command: null,
+    agent: null,
+    primarySkillHint: null,
+    primarySkills: [],
+    supportingSkills: [],
+    detectedLanguageSkill,
+    fallbackSkillSearchRecommended:
+      options.fallbackSkillSearchRecommended ?? true,
+    matchedBy: options.matchedBy ?? "none",
+    explanation:
+      options.explanation ??
+      "No workflow or custom agent matched the current intent. Inspect locally first, then use one narrow skill_search only if the domain is still unclear.",
+    artifacts: null,
   };
 }
 
@@ -538,6 +555,17 @@ export async function handleRouteResolve(
   const detectedLanguageSkill = await detectLanguageSkillHint();
   const explicit = findExplicitRoute(intent, routeManifest);
   if (explicit) {
+    if ("invalidExplicitRoute" in explicit) {
+      const payload = buildUnresolvedPayload(intent, detectedLanguageSkill, {
+        fallbackSkillSearchRecommended: false,
+        matchedBy: explicit.matchedBy,
+        explanation: explicit.explanation,
+      });
+      return {
+        content: [{ type: "text" as const, text: JSON.stringify(payload, null, 2) }],
+        structuredContent: payload,
+      };
+    }
     const payload = buildResolvedPayload(
       intent,
       explicit.route,
@@ -677,23 +705,7 @@ export async function handleRouteResolve(
     };
   }
 
-  const payload = {
-    input: intent,
-    resolved: false,
-    kind: null,
-    id: null,
-    command: null,
-    agent: null,
-    primarySkillHint: null,
-    primarySkills: [],
-    supportingSkills: [],
-    detectedLanguageSkill,
-    fallbackSkillSearchRecommended: true,
-    matchedBy: "none",
-    explanation:
-      "No workflow or custom agent matched the current intent. Inspect locally first, then use one narrow skill_search only if the domain is still unclear.",
-    artifacts: null,
-  };
+  const payload = buildUnresolvedPayload(intent, detectedLanguageSkill);
 
   return {
     content: [{ type: "text" as const, text: JSON.stringify(payload, null, 2) }],
