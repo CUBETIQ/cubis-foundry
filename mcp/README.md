@@ -35,6 +35,8 @@ This server exposes built-in tools plus dynamic passthrough tools discovered fro
 
 The MCP layer now uses a **route-first, lazy content model**: workflow/custom-agent intent resolves through `route_resolve` first, exact skill selection is validated via `skill_validate`, `skill_get` loads the core `SKILL.md`, and sidecar markdown is loaded only when needed via `skill_get_reference`.
 
+Stitch remains here only as an upstream MCP service namespace. It is not a Foundry skill surface and it is not tied to the removed `.stitch/DESIGN.md` mirror contract.
+
 Web testing is intentionally anchored on the canonical `web-testing` skill and Playwright MCP. Browser-specialist aliases are no longer part of the public surface, so route resolution and skill loading should point at `web-testing` directly.
 
 Mobile testing is intentionally dual-path. `mobile-mcp` is the preferred semantic runtime for Android and iOS when you need richer inspection, element-level interaction, or agentic navigation. CLI-first Android/iOS tooling remains the fallback for deterministic evidence capture, recovery flows, and environments where the heavier upstream stack is unavailable.

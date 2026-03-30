@@ -743,7 +743,7 @@ describe("skill tools", () => {
     expect(["trigger-match", "intent-match"]).toContain(result.matchedBy);
   });
 
-  it("routes Stitch UI intent to design-screen with the canonical design skill sequence", async () => {
+  it("routes design-generation intent to design-screen with the canonical design skill sequence", async () => {
     const result = payload(
       await handleRouteResolve(
         { intent: "use Stitch to generate a dashboard screen" },
@@ -756,7 +756,7 @@ describe("skill tools", () => {
       id: "design-screen",
       command: "/design-screen",
       primarySkillHint: "design",
-      matchedBy: "stitch-ui-intent",
+      matchedBy: "design-generation-intent",
     });
     expect(result.primarySkills).toEqual([
       "design",
@@ -781,7 +781,7 @@ describe("skill tools", () => {
       id: "design-screen",
       command: "/design-screen",
       primarySkillHint: "design",
-      matchedBy: "stitch-ui-intent",
+      matchedBy: "design-generation-intent",
     });
     expect(result.primarySkills).toEqual([
       "design",

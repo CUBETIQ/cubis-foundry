@@ -123,7 +123,7 @@ const DELETED_SKILL_IDS = new Set([
   "rules-core",
 ]);
 
-const STITCH_REQUIRED_SIGNALS = ["stitch"];
+const DESIGN_GENERATION_SERVICE_SIGNALS = ["stitch"];
 const DESIGN_SYSTEM_SIGNALS = [
   "design system",
   "design-system",
@@ -157,7 +157,7 @@ const DESIGN_SCREEN_SIGNALS = [
   "desktop app design",
   "workspace design",
 ];
-const STITCH_INTENT_SUPPORTING_SKILLS = [
+const DESIGN_GENERATION_SUPPORTING_SKILLS = [
   "web-ui-design",
   "design-system",
 ];
@@ -220,9 +220,9 @@ function isSkillCreatorIntent(intent: string): boolean {
   return includesAnyPhrase(normalizedIntent, SKILL_CREATOR_ACTION_SIGNALS);
 }
 
-function isStitchUiIntent(intent: string): boolean {
+function isDesignGenerationIntent(intent: string): boolean {
   const normalizedIntent = normalize(intent);
-  return includesAnyPhrase(normalizedIntent, STITCH_REQUIRED_SIGNALS);
+  return includesAnyPhrase(normalizedIntent, DESIGN_GENERATION_SERVICE_SIGNALS);
 }
 
 function isDesignIntent(intent: string): boolean {
@@ -489,7 +489,7 @@ function buildUnresolvedPayload(
   };
 }
 
-function chooseStitchUiRoute(manifest: RouteManifest): RouteEntry | null {
+function chooseDesignGenerationRoute(manifest: RouteManifest): RouteEntry | null {
   return (
     manifest.routes.find(
       (entry) =>
@@ -656,25 +656,25 @@ export async function handleRouteResolve(
     };
   }
 
-  if (isStitchUiIntent(intent)) {
-    const stitchRoute = chooseStitchUiRoute(routeManifest);
-    if (stitchRoute) {
+  if (isDesignGenerationIntent(intent)) {
+    const designGenerationRoute = chooseDesignGenerationRoute(routeManifest);
+    if (designGenerationRoute) {
       const needsMobilePatterns = /\b(mobile|flutter|android|ios)\b/i.test(intent);
       const payload = buildResolvedPayload(
         intent,
-        stitchRoute,
-        "stitch-ui-intent",
+        designGenerationRoute,
+        "design-generation-intent",
         detectedLanguageSkill,
         {
           primarySkillHint: "design",
           primarySkills: [
             "design",
             ...(needsMobilePatterns ? MOBILE_DESIGN_SUPPORTING_SKILLS : []),
-            ...STITCH_INTENT_SUPPORTING_SKILLS,
+            ...DESIGN_GENERATION_SUPPORTING_SKILLS,
           ],
-          supportingSkills: stitchRoute.supportingSkills,
+          supportingSkills: designGenerationRoute.supportingSkills,
           explanation:
-            "Matched Stitch UI intent and routed to /design-screen so the design engine resolves canonical design state, builds the screen brief, and only then runs the Stitch sequence.",
+            "Matched design-generation intent and routed to /design-screen so the design engine resolves canonical design state, builds the screen brief, and only then runs the Stitch MCP sequence.",
         },
       );
       return {
