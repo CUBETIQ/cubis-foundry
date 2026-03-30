@@ -47,11 +47,12 @@ This skill should stay truly phone-first. It should optimize for thumb reach, sa
 
 1. Start from the canonical direction chosen in `design`, then restate the mobile job to be done before proposing structure.
 2. Recompose for thumb reach, safe areas, section staging, CTA placement, navigation rhythm, and scan-friendly composition instead of shrinking a web layout.
-3. Prefer mobile-feasible patterns over browser habits. Avoid hover-led behavior, dense side rails, or desktop-first shell thinking.
+3. Prefer mobile-feasible patterns over browser habits. Use `../design/references/mobile-app-ui-design.md` when navigation, forms, feedback, or one-handed behavior needs a sharper mobile-native frame. Avoid hover-led behavior, dense side rails, or desktop-first shell thinking. Design for interrupted attention and limited viewport memory.
 4. Specify mobile-native state transitions clearly: entry state, empty state, success/error feedback, keyboard impact, orientation impact, safe-area behavior, and primary-action placement.
-5. When the task needs implementation translation, include widget-, theme-, or component-level cues so the output can survive Flutter or native UI work.
-6. Keep visual direction deliberate. Reuse `../design/references/visual-direction.md`, `../design/references/design-tokens.md`, and `../design/references/execution-contract.md` only when they materially affect the mobile design choice.
-7. End with a handoff that QA and implementation can consume: layout rhythm, navigation model, interaction states, anti-slop constraints, and platform-sensitive notes.
+5. Treat phone-to-tablet adaptation as adaptive structure, not bigger cards. Use `../design/references/responsive-adaptive-systems.md` when tablet, foldable, or large-phone behavior matters.
+6. When the task needs implementation translation, include widget-, theme-, or component-level cues so the output can survive Flutter or native UI work.
+7. Keep visual direction deliberate. Reuse `../design/references/visual-direction.md`, `../design/references/design-tokens.md`, `../design/references/execution-contract.md`, `../design/references/output-template.md`, and `../design/references/polish-accessibility-motion.md` only when they materially affect the mobile design choice.
+8. End with a handoff that QA and implementation can consume: layout rhythm, navigation model, interaction states, anti-slop constraints, and platform-sensitive notes.
 
 ## Mobile Direction Rules
 
@@ -81,5 +82,10 @@ Return:
 
 - `../design/SKILL.md`
 - `../design/references/execution-contract.md`
+- `../design/references/foundation.md`
+- `../design/references/mobile-app-ui-design.md`
+- `../design/references/output-template.md`
+- `../design/references/polish-accessibility-motion.md`
+- `../design/references/responsive-adaptive-systems.md`
 - `../design/references/visual-direction.md`
 - `../design/references/design-tokens.md`

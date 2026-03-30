@@ -17,6 +17,9 @@ describe("canonical UI skill content", () => {
     expect(content).toContain("../design-system/SKILL.md");
     expect(content).toContain("../web-ui-design/SKILL.md");
     expect(content).toContain("../mobile-ui-design/SKILL.md");
+    expect(content).toContain("../desktop-ui-design/SKILL.md");
+    expect(content).toContain("references/foundation.md");
+    expect(content).toContain("references/responsive-adaptive-systems.md");
     expect(content).toContain("Route-First Constraints");
   });
 
@@ -48,6 +51,16 @@ describe("canonical UI skill content", () => {
     expect(content).toContain("mobile-native state transitions");
     expect(content).toContain("no desktop compression disguised as mobile design");
     expect(content).toContain("mobile-feasible patterns over browser habits");
+    expect(content).toContain("phone-to-tablet adaptation");
+  });
+
+  it("adds a desktop UI design surface for multi-pane and keyboard-first work", () => {
+    const content = readSkill("foundry/modules/desktop-ui-design/SKILL.md");
+    expect(content).toContain("desktop is not a blown-up mobile app");
+    expect(content).toContain("multi-pane structure");
+    expect(content).toContain("keyboard");
+    expect(content).toContain("persistent context");
+    expect(content).toContain("../design/references/responsive-adaptive-systems.md");
   });
 
   it("keeps the design-system contract out of screen execution and preserves downstream refresh rules", () => {
@@ -60,6 +73,7 @@ describe("canonical UI skill content", () => {
       expect(content).toContain("typography system");
       expect(content).toContain("interaction/state language");
       expect(content).toContain("Keep screen execution out of this surface");
+      expect(content).toContain("web, mobile, and desktop");
       expect(content).toContain("semantic aliases");
       expect(content).toContain("downstream surfaces should consume the refresh");
       expect(content).toContain(".stitch/DESIGN.md");
@@ -68,6 +82,7 @@ describe("canonical UI skill content", () => {
     expect(contractContent).toContain("design-system");
     expect(contractContent).toContain("browser execution surface");
     expect(contractContent).toContain("mobile execution surface");
+    expect(contractContent).toContain("desktop execution surface");
     expect(contractContent).toContain("typography system");
     expect(contractContent).toContain("interaction/state language");
   });

@@ -1,7 +1,7 @@
 ---
 name: design
 description: Top-level design routing and critique skill for choosing the right
-  system, web, or mobile design path, running audit-first diagnosis, and
+  system, web, mobile, or desktop design path, running audit-first diagnosis, and
   keeping downstream execution aligned to one clear contract.
 triggers:
   - design
@@ -38,7 +38,7 @@ metadata:
 
 ## Purpose
 
-Provide the top-level routing and critique skill for design work. Use it to decide whether the task needs audit, canonical systemization, browser-first execution, mobile-first execution, or a tighter implementation handoff rather than jumping straight into arbitrary visual changes.
+Provide the top-level routing and critique skill for design work. Use it to decide whether the task needs audit, canonical systemization, browser-first execution, mobile-first execution, desktop-first execution, or a tighter implementation handoff rather than jumping straight into arbitrary visual changes.
 
 ## Working Model
 
@@ -50,10 +50,12 @@ Before any execution route is chosen, require three explicit inputs:
 
 Use these to keep the request focused on the real design problem instead of drifting into generic visual advice.
 
+Normalize the brief before routing when the request is messy. Capture product, users, top tasks, target surfaces, states, accessibility target, motion tolerance, and brand adjectives using `references/foundation.md`, `references/output-template.md`, and `assets/brief-template.json`.
+
 ## When to Use
 
 - Diagnosing why a UI feels generic, inconsistent, or weak before making edits
-- Choosing between browser-first and mobile-first design execution
+- Choosing between browser-first, mobile-first, and desktop-first design execution
 - Establishing or refreshing system-level visual direction before screen work
 - Keeping multiple design improvements aligned under one direction
 
@@ -61,10 +63,16 @@ Use these to keep the request focused on the real design problem instead of drif
 
 1. Start by classifying the request as routing/critique, systemization, browser execution, or mobile execution.
 2. Run audit-first when the interface already exists and quality is uncertain. Use the scoring cues in `references/scoring-rubric.md` and name the primary gap before anything else.
-3. Use `../design-system/SKILL.md` when the canonical visual language, token language, or component vocabulary needs to be refreshed before screen work.
-4. Choose `../web-ui-design/SKILL.md` for browser-first execution and `../mobile-ui-design/SKILL.md` for phone-first execution. Do not mix the two paths.
-5. Keep this surface at the routing/critique layer: return the route, why it fits, the next owning surface, and the non-negotiable constraints.
-6. Use `references/execution-contract.md` when the answer needs a stricter handoff contract.
+3. Load `references/foundation.md` first when the task spans more than one surface so shared nouns, tokens, and state language are settled before platform-specific execution.
+4. Use `../design-system/SKILL.md` when the canonical visual language, token language, or component vocabulary needs to be refreshed before screen work.
+5. Choose `../web-ui-design/SKILL.md` for browser-first execution, `../mobile-ui-design/SKILL.md` for phone-first execution, and `../desktop-ui-design/SKILL.md` for desktop-first execution. Do not flatten those surfaces into one copied layout.
+6. Use `references/responsive-adaptive-systems.md` plus the surface-specific reference docs when the same product spans more than one surface family or major size class.
+7. Keep this surface at the routing/critique layer: return the route, why it fits, the next owning surface, and the non-negotiable constraints.
+8. Use `references/execution-contract.md` and `references/output-template.md` when the answer needs a stricter handoff contract.
+
+## Deterministic Helper
+
+When the user needs a structured audit, adaptive matrix, or reusable prompt pack for multiple surfaces, use `scripts/ui_blueprint_tool.py` with `assets/brief-template.json` or `assets/sample-brief.json` instead of improvising the schema each time.
 
 ## Route-First Constraints
 
@@ -78,7 +86,7 @@ Use these to keep the request focused on the real design problem instead of drif
 - Do not give generic style advice detached from product purpose, state design, or interaction cost.
 - Do not skip hierarchy, readability, or affordance in favor of pure aesthetics.
 - Do not collapse routing, systemization, and execution into one blended answer.
-- Do not keep users on the fragmented `frontend-design*` stack when a simpler route through `design`, `design-system`, `web-ui-design`, or `mobile-ui-design` is clearer.
+- Do not keep users on the fragmented `frontend-design*` stack when a simpler route through `design`, `design-system`, `web-ui-design`, `mobile-ui-design`, or `desktop-ui-design` is clearer.
 
 ## Output Format
 
@@ -92,9 +100,22 @@ Return:
 ## References
 
 - `references/scoring-rubric.md`
+- `references/foundation.md`
+- `references/design-directions.md`
+- `references/web-ui-design.md`
+- `references/mobile-app-ui-design.md`
+- `references/desktop-app-ui-design.md`
+- `references/responsive-adaptive-systems.md`
+- `references/output-template.md`
+- `references/agent-driven-ui.md`
+- `references/polish-accessibility-motion.md`
 - `references/visual-direction.md`
 - `references/design-tokens.md`
 - `references/execution-contract.md`
 - `../design-system/SKILL.md`
 - `../web-ui-design/SKILL.md`
 - `../mobile-ui-design/SKILL.md`
+- `../desktop-ui-design/SKILL.md`
+- `assets/brief-template.json`
+- `assets/sample-brief.json`
+- `scripts/ui_blueprint_tool.py`

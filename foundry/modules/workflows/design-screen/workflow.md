@@ -15,6 +15,7 @@ primarySkills:
   - web-ui-design
 supportingSkills:
   - mobile-ui-design
+  - desktop-ui-design
   - design-system
 whenToUse: "When a single screen or page needs a deliberate design direction and implementation-ready brief."
 priority: medium
@@ -51,6 +52,7 @@ Use this for one screen, page, or view where the main problem is composition, hi
 - `design` for routing and system-level critique
 - `web-ui-design` for browser-first screen work
 - `mobile-ui-design` for app-first or phone-first screen work
+- `desktop-ui-design` for workspace-first, multi-pane, or expert-oriented desktop work
 - `design-system` when the screen depends on shared tokens, components, or canonical system guidance
 
 ## Context notes

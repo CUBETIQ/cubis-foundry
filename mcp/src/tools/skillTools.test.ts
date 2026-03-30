@@ -791,6 +791,27 @@ describe("skill tools", () => {
     ]);
   });
 
+  it("routes desktop workspace design intent through the desktop execution surface", async () => {
+    const result = payload(
+      await handleRouteResolve(
+        { intent: "design a desktop trading workspace with inspector panes and keyboard shortcuts" },
+        createStitchRouteManifest(),
+      ),
+    );
+    expect(result).toMatchObject({
+      resolved: true,
+      kind: "workflow",
+      id: "design-screen",
+      command: "/design-screen",
+      primarySkillHint: "design",
+      matchedBy: "design-intent",
+    });
+    expect(result.primarySkills).toEqual([
+      "design",
+      "desktop-ui-design",
+    ]);
+  });
+
   it("routes browser QA intent to web-testing", async () => {
     const result = payload(
       await handleRouteResolve(

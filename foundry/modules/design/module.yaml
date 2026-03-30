@@ -1,7 +1,7 @@
 id: design
 kind: capability
 label: Design
-description: "Top-level design routing and critique skill. Use it to choose the right web or mobile design path, run audit-first diagnosis, and keep system-level design decisions coherent."
+description: "Top-level design routing and critique skill. Use it to choose the right web, mobile, or desktop design path, run audit-first diagnosis, and keep system-level design decisions coherent."
 stability: stable
 profiles:
   - core

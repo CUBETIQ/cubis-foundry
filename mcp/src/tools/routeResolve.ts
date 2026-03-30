@@ -152,6 +152,10 @@ const DESIGN_SCREEN_SIGNALS = [
   "landing page",
   "redesign",
   "mobile screen",
+  "desktop ui",
+  "desktop design",
+  "desktop app design",
+  "workspace design",
 ];
 const STITCH_INTENT_SUPPORTING_SKILLS = [
   "web-ui-design",
@@ -159,6 +163,9 @@ const STITCH_INTENT_SUPPORTING_SKILLS = [
 ];
 const MOBILE_DESIGN_SUPPORTING_SKILLS = [
   "mobile-ui-design",
+];
+const DESKTOP_DESIGN_SUPPORTING_SKILLS = [
+  "desktop-ui-design",
 ];
 const MOBILE_QA_SIGNALS = [
   "mobile qa",
@@ -223,8 +230,32 @@ function isDesignIntent(intent: string): boolean {
     includesAnyPhrase(normalizedIntent, DESIGN_SYSTEM_SIGNALS) ||
     includesAnyPhrase(normalizedIntent, DESIGN_AUDIT_SIGNALS) ||
     includesAnyPhrase(normalizedIntent, DESIGN_REFRESH_SIGNALS) ||
-    includesAnyPhrase(normalizedIntent, DESIGN_SCREEN_SIGNALS)
+    includesAnyPhrase(normalizedIntent, DESIGN_SCREEN_SIGNALS) ||
+    (/\bdesign\b/i.test(normalizedIntent) &&
+      /\b(desktop|mobile|web|ui|screen|workspace|landing page|redesign)\b/i.test(
+        normalizedIntent,
+      ))
   );
+}
+
+function designSurfaceSkills(intent: string): string[] {
+  const normalizedIntent = normalize(intent);
+  const needsMobilePatterns = /\b(mobile|flutter|android|ios|tablet|phone)\b/i.test(
+    normalizedIntent,
+  );
+  const needsDesktopPatterns = /\b(desktop|mac|macos|windows|electron|workspace|inspector|sidebar|pane|multi pane|multi-pane)\b/i.test(
+    normalizedIntent,
+  );
+
+  if (needsDesktopPatterns) {
+    return DESKTOP_DESIGN_SUPPORTING_SKILLS;
+  }
+
+  if (needsMobilePatterns) {
+    return MOBILE_DESIGN_SUPPORTING_SKILLS;
+  }
+
+  return ["web-ui-design"];
 }
 
 function chooseSkillCreatorRoute(
@@ -655,21 +686,8 @@ export async function handleRouteResolve(
   if (isDesignIntent(intent)) {
     const designRoute = chooseDesignRoute(intent, routeManifest);
     if (designRoute) {
-      const needsMobilePatterns = /\b(mobile|flutter|android|ios)\b/i.test(intent);
       const primarySkills = ["design"];
-      if (designRoute.id === "design-system") {
-        primarySkills.push(needsMobilePatterns ? "mobile-ui-design" : "web-ui-design");
-      } else if (designRoute.id === "design-audit") {
-        primarySkills.push(needsMobilePatterns ? "mobile-ui-design" : "web-ui-design");
-      } else if (designRoute.id === "design-refresh") {
-        primarySkills.push(
-          needsMobilePatterns ? "mobile-ui-design" : "web-ui-design",
-        );
-      } else {
-        primarySkills.push(
-          needsMobilePatterns ? "mobile-ui-design" : "web-ui-design",
-        );
-      }
+      primarySkills.push(...designSurfaceSkills(intent));
 
       const payload = buildResolvedPayload(
         intent,

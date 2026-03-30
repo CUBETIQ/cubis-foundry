@@ -14,6 +14,7 @@ primarySkills:
 supportingSkills:
   - web-ui-design
   - mobile-ui-design
+  - desktop-ui-design
 whenToUse: "When an interface exists already and the task is to critique, prioritize, and improve it."
 priority: medium
 compatibility:
@@ -47,7 +48,7 @@ Use this when the product is built enough to inspect and the user wants critique
 ## Skill routing
 
 - `design` is primary in audit mode.
-- `web-ui-design` or `mobile-ui-design` support the remediation route once the audit identifies the failing surface.
+- `web-ui-design`, `mobile-ui-design`, or `desktop-ui-design` support the remediation route once the audit identifies the failing surface.
 
 ## Context notes
 

@@ -44,12 +44,14 @@ This skill should produce work that feels deliberate and current, not generic Sa
 
 1. Start from the canonical direction chosen in `design`, then restate the browser-specific job to be done before proposing layout.
 2. Commit to one strong visual direction before choosing components or layout patterns. Use `../design/references/visual-direction.md` and `../design/references/execution-contract.md` when the contract needs to stay strict.
-3. Lock hierarchy, density, and navigation before component selection. Prefer web-native layout logic: information density, grid rhythm, container-aware composition, and browser accessibility.
-4. Keep component boundaries explicit. Use `references/component-architecture.md` when the task needs reusable primitives, composites, or layout shells.
-5. Make token usage concrete. Use `../design/references/design-tokens.md` when color, spacing, typography, or semantic aliasing needs to be defined or refreshed.
-6. Add responsive and accessibility guidance only when it changes the real design decision. Use `references/responsive-patterns.md` and `references/accessibility.md` selectively.
-7. When motion matters, specify why it exists, what it communicates, and how it degrades. Use `references/animation.md` only when the request genuinely depends on motion. Favor 2-3 intentional motions over scattered micro-interactions.
-8. End with a web-ready handoff: layout summary, component vocabulary, interaction states, anti-generic constraints, and implementation cues that a real frontend engineer can build.
+3. Classify the surface before composing it: landing, product app, admin console, documentation, or marketplace. Use `../design/references/web-ui-design.md` when the surface type, navigation model, or content density needs a sharper browser-specific frame. Do not apply landing-page patterns to data-heavy product screens.
+4. Lock hierarchy, density, and navigation before component selection. Prefer web-native layout logic: information density, grid rhythm, container-aware composition, and browser accessibility.
+5. Keep component boundaries explicit. Use `references/component-architecture.md` when the task needs reusable primitives, composites, or layout shells.
+6. Make token usage concrete. Use `../design/references/design-tokens.md` when color, spacing, typography, or semantic aliasing needs to be defined or refreshed.
+7. Add responsive and accessibility guidance only when it changes the real design decision. Use `references/responsive-patterns.md`, `references/accessibility.md`, `../design/references/responsive-adaptive-systems.md`, and `../design/references/polish-accessibility-motion.md` selectively.
+8. Start from content breakpoints, not device marketing names. Collapse secondary actions before collapsing primary information, and rethink tables intentionally on smaller widths.
+9. When motion matters, specify why it exists, what it communicates, and how it degrades. Use `references/animation.md` only when the request genuinely depends on motion. Favor 2-3 intentional motions over scattered micro-interactions.
+10. End with a web-ready handoff using `../design/references/output-template.md`: layout summary, component vocabulary, interaction states, anti-generic constraints, and implementation cues that a real frontend engineer can build.
 
 ## Web Direction Rules
 
@@ -81,6 +83,11 @@ Return:
 
 - `../design/SKILL.md`
 - `../design/references/execution-contract.md`
+- `../design/references/foundation.md`
+- `../design/references/web-ui-design.md`
+- `../design/references/output-template.md`
+- `../design/references/polish-accessibility-motion.md`
+- `../design/references/responsive-adaptive-systems.md`
 - `../design/references/visual-direction.md`
 - `../design/references/design-tokens.md`
 - `references/component-architecture.md`

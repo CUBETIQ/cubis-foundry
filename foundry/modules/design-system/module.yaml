@@ -1,7 +1,7 @@
 id: design-system
 kind: skill
 label: Design System
-description: "Build or refresh the canonical design-system state for a repo, including DESIGN.md, overlays, token language, and platform-specific adaptation notes."
+description: "Build or refresh the canonical design-system state for a repo, including DESIGN.md, overlays, token language, and platform-specific adaptation notes across web, mobile, and desktop."
 stability: stable
 profiles:
   - core

@@ -97,11 +97,15 @@ describe("catalog", () => {
   it("exposes the new design execution specializations", () => {
     const webUiDesign = resolveModule(catalog, "web-ui-design");
     const mobileUiDesign = resolveModule(catalog, "mobile-ui-design");
+    const desktopUiDesign = resolveModule(catalog, "desktop-ui-design");
     expect(webUiDesign?.capability?.outputs.map((output) => output.path)).toEqual([
       "foundry/modules/web-ui-design/SKILL.md",
     ]);
     expect(mobileUiDesign?.capability?.outputs.map((output) => output.path)).toEqual([
       "foundry/modules/mobile-ui-design/SKILL.md",
+    ]);
+    expect(desktopUiDesign?.capability?.outputs.map((output) => output.path)).toEqual([
+      "foundry/modules/desktop-ui-design/SKILL.md",
     ]);
   });
 

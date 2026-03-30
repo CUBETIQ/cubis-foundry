@@ -14,6 +14,7 @@ primarySkills:
   - web-ui-design
 supportingSkills:
   - mobile-ui-design
+  - desktop-ui-design
 whenToUse: "When UI work needs reusable system decisions rather than one-off screen tweaks."
 priority: medium
 compatibility:
@@ -49,6 +50,7 @@ Use this when a request affects multiple screens or requires consistent system-l
 - `design` for direction and visual judgment
 - `web-ui-design` for browser-first system structure and component vocabulary
 - `mobile-ui-design` when the system change must survive app-first surfaces too
+- `desktop-ui-design` when the system change must support multi-pane, keyboard-first, or desktop-grade productivity surfaces
 
 ## Context notes
 

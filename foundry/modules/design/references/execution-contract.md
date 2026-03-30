@@ -8,15 +8,17 @@ Use this contract when a design request needs a strict split between routing, sy
 - `design-system` is the systemizer. It normalizes canonical visual language, tokens, and component vocabulary.
 - `web-ui-design` is the browser execution surface. It turns direction into concrete web layout, hierarchy, states, and handoff cues.
 - `mobile-ui-design` is the mobile execution surface. It turns direction into phone-first flow, reachability, states, and platform-sensitive handoff cues.
+- `desktop-ui-design` is the desktop execution surface. It turns direction into multi-pane structure, expert productivity, dense-but-legible information design, and desktop-specific handoff cues.
 
 ## Sequential Design Steps
 
-1. Classify the request as routing/critique, systemization, web execution, or mobile execution.
+1. Classify the request as routing/critique, systemization, web execution, mobile execution, or desktop execution.
 2. If the interface already exists, diagnose the primary gap before proposing changes.
 3. If the visual language needs to become durable, route to `design-system` before screen work.
 4. If the task is a browser surface, route to `web-ui-design`.
 5. If the task is a phone-first surface, route to `mobile-ui-design`.
-6. Keep each surface inside its own contract. Do not blend critique, systemization, and execution in one answer.
+6. If the task is a desktop-first workspace, route to `desktop-ui-design`.
+7. Keep each surface inside its own contract. Do not blend critique, systemization, and execution in one answer.
 
 ## Deliverable Contracts
 
@@ -41,6 +43,14 @@ Use this contract when a design request needs a strict split between routing, sy
 - Describe flow and reachability before styling.
 - Specify navigation rhythm, primary-action placement, safe-area behavior, and platform-sensitive notes after the flow is clear.
 - Specify states only after the screen or flow structure is stable.
+- End with implementation-ready handoff notes.
+
+### `desktop-ui-design`
+
+- State the desktop job and visual thesis.
+- Describe workspace structure, pane layout, and persistent context before styling.
+- Specify shortcuts, batch actions, comparison views, inspectors, and dense information patterns only after the structural model is clear.
+- Specify states, productivity affordances, and desktop-specific persistence rules after the workspace model is stable.
 - End with implementation-ready handoff notes.
 
 ### `design-system`
