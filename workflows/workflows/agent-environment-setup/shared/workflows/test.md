@@ -23,7 +23,7 @@ Use when adding tests, fixing test failures, or improving test coverage for exis
 ## Skill Routing
 
 - Primary skills: `web-testing`, `android-emulator-testing`, `ios-simulator-testing`
-- Supporting skills (optional): `deep-research`, `playwright-interactive`, `code-review`
+- Supporting skills (optional): `deep-research`, `code-review`
 
 ## Context notes
 

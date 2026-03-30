@@ -8,7 +8,7 @@ triggers: ["design refresh", "refresh design", "refresh tokens", "update design 
 
 ## When to use
 
-Use when the product direction changed and the design system, overlays, or Stitch mirror need a coordinated refresh.
+Use when the product direction changed and the design system, overlays, or compatibility mirror need a coordinated refresh.
 
 ## Agent Chain
 
@@ -24,12 +24,12 @@ Use when the product direction changed and the design system, overlays, or Stitc
 ## Skill Routing
 
 - Primary skills: `design`, `web-ui-design`, `design-system`
-- Supporting skills (optional): `mobile-ui-design`, `stitch`, `tech-doc`
+- Supporting skills (optional): `mobile-ui-design`, `tech-doc`
 
 ## Context notes
 
 - Provide what changed in product direction or UI structure and which downstream surfaces are now stale.
-- This route refreshes design state; it should not silently skip dependent overlays or the Stitch mirror.
+- This route refreshes design state; it should not silently skip dependent overlays or the compatibility mirror.
 
 ## Workflow steps
 
@@ -42,7 +42,7 @@ Use when the product direction changed and the design system, overlays, or Stitc
 
 - Canonical design state and overlays are updated together.
 - Downstream design consumers are told what changed.
-- Stitch compatibility artifacts are refreshed only from canonical state.
+- Compatibility mirror artifacts are refreshed only from canonical state.
 
 ## Output Contract
 
@@ -51,6 +51,6 @@ WORKFLOW_RESULT:
   primary_agent: implementer
   supporting_agents: [explorer, planner, reviewer]
   refreshed_artifacts: [<path>]
-  stitch_mirror_updated: <true|false>
+  compatibility_mirror_updated: <true|false>
   follow_up_items: [<string>] | []
 ```

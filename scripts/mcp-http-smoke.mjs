@@ -333,18 +333,18 @@ async function main() {
     throw new Error("skill_validate failed for skill-creator");
   }
 
-  const stitchValidateResult = await callTool({
+  const designValidateResult = await callTool({
     endpointUrl: endpoint,
     sessionId,
     name: "skill_validate",
-    args: { id: "stitch" },
+    args: { id: "design" },
   });
-  const stitchValidatePayload = parseToolTextPayload(stitchValidateResult);
+  const designValidatePayload = parseToolTextPayload(designValidateResult);
   if (
-    stitchValidatePayload.exists !== true ||
-    stitchValidatePayload.canonicalId !== "design"
+    designValidatePayload.exists !== true ||
+    designValidatePayload.canonicalId !== "design"
   ) {
-    throw new Error("skill_validate failed for explicit named skill stitch");
+    throw new Error("skill_validate failed for explicit named skill design");
   }
 
   const missingSkillValidateResult = await callTool({

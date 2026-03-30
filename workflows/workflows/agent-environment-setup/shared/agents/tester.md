@@ -8,7 +8,6 @@ skills:
   - web-testing
   - android-emulator-testing
   - ios-simulator-testing
-  - playwright-interactive
 handoffs:
   - agent: "reviewer"
     title: "Review Tests"
@@ -86,9 +85,11 @@ Files or areas with insufficient coverage
 
 ## Skill Loading Contract
 
-- Do not call `skill_search` for `web-testing`, `android-emulator-testing`, `ios-simulator-testing`, or `playwright-interactive` when the task clearly falls within this agent's domain.
+- Do not call `skill_search` for `web-testing`, `android-emulator-testing`, or `ios-simulator-testing` when the task clearly falls within this agent's domain.
 - Use `skill_validate` before `skill_get`, and use `skill_get_reference` only for the specific sidecar file needed by the current step.
 - Treat the skill bundle as already resolved for this agent. Do not start with route discovery.
+- Treat browser testing as Playwright-MCP-first.
+- Treat Android/iOS testing as dual-path: `mobile-mcp` for semantic interaction, CLI fallback for deterministic evidence.
 
 ## Skill References
 
@@ -97,7 +98,6 @@ Load on demand. Do not preload all references.
 | File | Load when |
 | --- | --- |
 | owning language/framework skill | Task involves code-level unit or integration tests. |
-| `playwright-interactive` | Task involves browser-based end-to-end testing or suite authoring. |
 | `web-testing` | Task involves live charter-driven web QA through Playwright MCP and evidence capture. |
-| `android-emulator-testing` | Task involves Android emulator QA with CLI-first device control and evidence capture. |
-| `ios-simulator-testing` | Task involves iOS simulator QA with CLI-first device control and evidence capture. |
+| `android-emulator-testing` | Task involves Android emulator QA with `mobile-mcp` or CLI fallback evidence capture. |
+| `ios-simulator-testing` | Task involves iOS simulator QA with `mobile-mcp` or CLI fallback evidence capture. |

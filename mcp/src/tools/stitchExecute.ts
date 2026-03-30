@@ -192,6 +192,9 @@ export function createStitchExecuteHandler(ctx: ToolRuntimeContext) {
     args: z.infer<typeof stitchExecuteSchema>,
   ) {
     const scope = args.scope ?? "auto";
+    const mobileDesignIntent = /\b(mobile|android|ios|iphone|ipad|app|phone|tablet|simulator)\b/i.test(
+      `${args.prompt} ${args.screenTitle ?? ""}`,
+    );
     const trace = createExecutionTrace(stitchExecuteName, {
       mode: args.mode,
       prompt: args.prompt,
@@ -200,10 +203,19 @@ export function createStitchExecuteHandler(ctx: ToolRuntimeContext) {
       screenTitle: args.screenTitle ?? null,
       scope,
     });
-    trace.selectedSkills.push("stitch-design-orchestrator");
+    trace.selectedSkills.push(
+      "design",
+      mobileDesignIntent ? "mobile-ui-design" : "web-ui-design",
+    );
     trace.selectedReferences.push(
-      "workflows/skills/stitch-design-orchestrator/references/tool-selection.md",
-      "workflows/skills/stitch-design-orchestrator/references/anti-abuse.md",
+      "foundry/modules/design/references/execution-contract.md",
+      "foundry/modules/design/references/visual-direction.md",
+      ...(mobileDesignIntent
+        ? []
+        : [
+            "foundry/modules/web-ui-design/references/component-architecture.md",
+            "foundry/modules/web-ui-design/references/animation.md",
+          ]),
     );
 
     const gatewayStatus = ctx.gatewayManager.getStatus();

@@ -251,9 +251,15 @@ Status:
 **Files:**
 - Modify: `foundry/modules/agents-core/agents/*.md`
 
-- [ ] Update routing examples to the new skill names.
-- [ ] Remove dependence on deprecated wrappers.
-- [ ] Tighten MCP-vs-CLI-vs-subagent routing rules.
+- [x] Update routing examples to the new skill names.
+- [x] Remove dependence on deprecated wrappers.
+- [x] Tighten MCP-vs-CLI-vs-subagent routing rules.
+
+Status:
+- First-pass rewrite is complete for the core agent set.
+- `implementer`, `tester`, and `orchestrator` now encode the reduced testing taxonomy and explicit MCP-vs-CLI-vs-delegation boundaries.
+- Regression coverage lives in `src/cli/catalog/agent-surfaces.test.ts`.
+- Task 11 is complete for this worktree checkpoint.
 
 ### Task 12: Keep only justified domain specialists
 
@@ -262,9 +268,14 @@ Status:
   - `foundry/modules/playwright-interactive/agents/*.md`
   - any future design specialists
 
-- [ ] Keep browser specialists only if they materially improve `web-testing`.
-- [ ] Add design specialists only if they materially improve the design stack.
-- [ ] Remove or demote specialist prompts that merely restate a skill.
+- [x] Keep browser specialists only if they materially improve `web-testing`.
+- [x] Add design specialists only if they materially improve the design stack.
+- [x] Remove or demote specialist prompts that merely restate a skill.
+
+Status:
+- Complete for this worktree checkpoint.
+- The active module tree now contains only the 8 core agent prompts under `foundry/modules/agents-core/agents/*.md`.
+- No extra browser- or design-specialist markdown prompts remain in `foundry/modules`.
 
 ---
 
@@ -276,10 +287,16 @@ Status:
 - Modify: `foundry/modules/workflows/*/workflow.md`
 - Modify: `foundry/modules/workflows-core/**`
 
-- [ ] Keep workflow count small and explicit.
-- [ ] Ensure `/test` points into the new testing model.
-- [ ] Ensure design workflows target the new design trio.
-- [ ] Ensure workflow examples no longer mention retired wrappers.
+- [x] Keep workflow count small and explicit.
+- [x] Ensure `/test` points into the new testing model.
+- [x] Ensure design workflows target the new design trio.
+- [x] Ensure workflow examples no longer mention retired wrappers.
+
+Status:
+- Canonical workflow markdown and the shared workflow bundle now align to the reduced taxonomy.
+- The shared scaffold no longer advertises deleted testing or design-wrapper skills, and the manifest no longer emits them.
+- Regression coverage lives in `src/cli/catalog/shared-workflow-bundle.test.ts`.
+- Task 13 is complete for this worktree checkpoint.
 
 ---
 
@@ -292,9 +309,14 @@ Status:
 - Modify: `foundry/modules/rules-security/**`
 - Modify adapter projection outputs as needed
 
-- [ ] Make rules encode routing policy, verification requirements, and tool boundaries.
-- [ ] Avoid duplicating full skill content inside rules.
-- [ ] Improve platform-native instruction quality for Codex, Claude, Gemini, and Copilot.
+- [x] Make rules encode routing policy, verification requirements, and tool boundaries.
+- [x] Avoid duplicating full skill content inside rules.
+- [x] Improve platform-native instruction quality for Codex, Claude, Gemini, and Copilot.
+
+Status:
+- The active steering/rule surfaces now emphasize route honoring, repo-first evidence, verification discipline, and explicit runtime/tool boundaries.
+- `hooks-core` guidance now encodes Playwright-for-web, `mobile-mcp`-first mobile traversal, and CLI fallback for deterministic evidence.
+- Task 14 is complete for this worktree checkpoint.
 
 ### Task 15: Rebuild generated instruction surfaces
 
@@ -305,9 +327,16 @@ Status:
   - `GEMINI.md`
   - Copilot instruction files
 
-- [ ] Make the generated instruction surfaces reflect the reduced taxonomy.
-- [ ] Ensure platform-specific features are represented cleanly.
-- [ ] Keep Playwright MCP guidance for web and remove Android MCP default guidance.
+- [x] Make the generated instruction surfaces reflect the reduced taxonomy.
+- [x] Ensure platform-specific features are represented cleanly.
+- [x] Keep Playwright MCP guidance for web and remove Android MCP default guidance.
+
+Status:
+- The platform-asset generator no longer teaches deleted stitch-skill routing.
+- Generated workflow/agent prompts now carry explicit runtime boundaries: Playwright MCP for web, `mobile-mcp` first for semantic mobile work, CLI fallback for deterministic evidence.
+- Route/research hook templates for Claude and Gemini now reinforce the same web/mobile runtime policy.
+- Regression coverage lives in `src/cli/catalog/generated-instruction-surfaces.test.ts`.
+- Task 15 is complete for this worktree checkpoint.
 
 ---
 
@@ -324,6 +353,11 @@ Status:
 - [ ] Remove stale projections to deprecated skill names.
 - [ ] Ensure aliases project correctly where compatibility must remain.
 - [ ] Ensure generated runtime assets match the reduced taxonomy.
+
+Status:
+- In progress.
+- The shared workflow manifest, platform-asset generator, mirror sync script, and Stitch execution trace now stop projecting deleted skill wrappers into active runtime surfaces.
+- Remaining hits are now mostly intentional legacy maps, workflow names, or historical docs rather than active canonical skill projections.
 
 ### Task 17: Validate migration completeness
 

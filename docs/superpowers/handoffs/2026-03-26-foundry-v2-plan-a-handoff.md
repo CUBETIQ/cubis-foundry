@@ -48,6 +48,11 @@ This is a resume point for continuing the Foundry V2 realignment from another se
   - the framework skills now use the same testing-ownership split, keeping runtime-boundary tests local and making live browser/device evidence routing explicit
   - React, Next.js, FastAPI, NestJS, Django/DRF, Spring Boot, SQLAlchemy, Prisma, SvelteKit, and Expo now point their live QA guidance at the specialized web/mobile testing skills where appropriate
 - Shared workflow and agent scaffolds now prefer `web-testing`, `android-emulator-testing`, and `ios-simulator-testing`.
+- Core agent prompts now encode the reduced testing/runtime taxonomy directly:
+  - Playwright MCP for web
+  - `mobile-mcp` first for semantic mobile traversal
+  - CLI fallback for deterministic device/browser evidence when needed
+- The shared workflow bundle and generated instruction surfaces no longer advertise deleted testing/design wrapper skills.
 - `mobile-mcp` is now a first-class upstream MCP provider in the bundled server.
 - Browser testing remains Playwright-MCP-first through `web-testing`.
 - Android and iOS testing are now explicitly dual-path:
@@ -152,15 +157,60 @@ This is a resume point for continuing the Foundry V2 realignment from another se
    - framework skills now keep runtime-boundary tests local
    - live browser evidence routes through `web-testing`
    - live mobile device evidence routes through `android-emulator-testing` and `ios-simulator-testing`
+26. Rewrote the first-pass core agent surface against the reduced taxonomy:
+   - `foundry/modules/agents-core/agents/implementer.md`
+   - `foundry/modules/agents-core/agents/tester.md`
+   - `foundry/modules/agents-core/agents/orchestrator.md`
+27. Rewrote the shared workflow bundle and manifest so deleted skill IDs no longer appear in the active scaffold:
+   - `workflows/workflows/agent-environment-setup/shared/**`
+   - `workflows/workflows/agent-environment-setup/manifest.json`
+28. Cleaned the remaining generated instruction leaks from the reduced-skill deletion:
+   - `scripts/generate-platform-assets.mjs`
+   - `scripts/mcp-http-smoke.mjs`
+   - `scripts/sync-skill-mirrors.mjs`
+29. Strengthened `hooks-core` guidance so generated rule/hook outputs reinforce:
+   - exact route honoring
+   - repo-first plus official-docs-first research
+   - Playwright MCP for web
+   - `mobile-mcp` first for mobile
+   - CLI fallback for deterministic evidence
+30. Added new catalog regressions for this checkpoint:
+   - `src/cli/catalog/agent-surfaces.test.ts`
+   - `src/cli/catalog/shared-workflow-bundle.test.ts`
+   - `src/cli/catalog/generated-instruction-surfaces.test.ts`
+31. Repointed Stitch runtime traces away from deleted wrapper skills and onto the canonical design surfaces:
+   - `mcp/src/tools/stitchExecute.ts`
+   - `mcp/src/tools/stitchExecute.test.ts`
 
 ## Important Current Gap
 
 The canonical authoring surfaces now resolve their currently referenced relative markdown files, and the compiler will fail fast if a future canonical skill, template, reference doc, or agent markdown file links to a missing sidecar file or nested markdown dependency.
 
 The remaining migration work is now narrower:
-- the design source tree is cleaned up, but the broader reduction pass across language/framework skills, agents, workflows, and rules is still ahead
+- the first-pass agent/workflow/rule/generated-surface rewrite is in place, but domain-specialist cleanup and any deeper prompt quality pass are still ahead
+- Phase 8 cleanup is in progress; the remaining stale-name hits are increasingly concentrated in intentional legacy maps and historical docs rather than active runtime projections
 - some docs and research ledgers still intentionally mention historical names because they serve as migration records
 - if new canonical skills or templates are added, they must now satisfy the compiler's markdown-link validation rules and synthetic-alias expectations
+
+## Verification Run For The Agent/Workflow/Instruction Checkpoint
+
+These commands were run successfully in this branch on 2026-03-30:
+
+```bash
+npm run test:cli -- src/cli/catalog/agent-surfaces.test.ts src/cli/catalog/shared-workflow-bundle.test.ts src/cli/catalog/generated-instruction-surfaces.test.ts
+node dist/cli/index.js catalog validate
+node dist/cli/index.js catalog build
+```
+
+Observed results:
+- targeted catalog regressions passed: `7/7`
+- repo-local catalog validation still passed: `Catalog is valid.`
+- repo-local catalog build still compiled all 5 platforms successfully:
+  - `codex`: `274` assets
+  - `claude`: `280` assets
+  - `copilot`: `279` assets
+  - `gemini`: `280` assets
+  - `antigravity`: `274` assets
 
 ## Verification Run Before Handoff
 

@@ -22,8 +22,8 @@ Use when the goal is to benchmark Foundry's frontend design workflow across the 
 
 ## Skill Routing
 
-- Primary skills: `ui-testing-harness`, `web-testing`
-- Supporting skills (optional): `playwright-interactive`, `design`, `web-ui-design`, `mobile-ui-design`, `design-system`
+- Primary skills: `web-testing`
+- Supporting skills (optional): `design`, `web-ui-design`, `mobile-ui-design`, `design-system`
 
 ## Context notes
 

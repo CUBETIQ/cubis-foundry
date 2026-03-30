@@ -62,7 +62,7 @@ Follow this decision tree for every user request:
 | Direct execution | No routing needed | Small, clear, single-step tasks | Just do it | "rename this variable" |
 | Workflow | Multi-step recipe with verification | Structured task with known pattern | `/plan`, `/implement`, `/debug`, `/test`, `/review`, `/deploy`, `/loop`, `/design-system`, `/design-screen`, `/design-audit`, `/design-refresh` | "plan the auth system" |
 | Agent | Specialist persona with domain skills | Domain expertise needed for execution | `@implementer`, `@reviewer` | "design the API schema" |
-| Named skill | Exact skill selected by the user | User already named the skill and it validates cleanly | `skill_validate` -> `skill_get` | "use stitch for this screen" |
+| Named skill | Exact skill selected by the user | User already named the skill and it validates cleanly | `skill_validate` -> `skill_get` | "use web-testing for this flow" |
 | Skill (MCP) | Supporting domain knowledge | Domain context that a workflow or agent does not cover | `skill_get` after `skill_validate` | loading `typescript-best-practices` |
 | skill_search | Fuzzy discovery tool | Domain unclear, no skill ID known yet | One narrow search after route resolution | "what skill covers Prisma?" |
 | route_resolve | Intent to route mapper | Free-text request does not match any known route | MCP tool call with task description | "I need to optimize my database" |
@@ -84,7 +84,7 @@ Skills are supporting context unless the user explicitly named the exact skill. 
 8. Load reference files one at a time with `skill_get_reference` only when a specific reference is needed.
 9. Do not auto-prime every specialist. Only load what `primarySkills` recommends or the task clearly needs.
 10. Never pass workflow IDs or agent IDs to skill tools.
-11. For Stitch-style UI work, use this order: `design` -> `web-ui-design` or `mobile-ui-design` -> `design-system` only when canonical design state or the Stitch mirror is stale -> `stitch` only as a compat alias for older phrasing.
+11. For design-generation UI work, use this order: `design` -> `web-ui-design` or `mobile-ui-design` -> `design-system` only when canonical design state or the compatibility mirror is stale -> external design-generation tools only after the design state is resolved.
 
 ---
 

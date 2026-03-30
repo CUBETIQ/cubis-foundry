@@ -206,70 +206,6 @@ function injectCompatibilityAliasSection(body, aliases) {
   return `${body.trimEnd()}\n\n${section}\n`;
 }
 
-function buildStitchPlatformSection(platform, skillId) {
-  const platformName =
-    platform === "codex"
-      ? "Codex"
-      : platform === "claude"
-        ? "Claude"
-        : platform === "copilot"
-          ? "Copilot"
-          : platform === "gemini"
-            ? "Gemini"
-            : platform === "antigravity"
-              ? "Antigravity"
-              : "Foundry";
-
-  const settingsPath =
-    platform === "claude"
-      ? "`.mcp.json`"
-      : platform === "copilot" || platform === "codex"
-        ? "`.vscode/mcp.json`"
-        : "`.gemini/settings.json`";
-
-  if (skillId === "stitch") {
-    return `## ${platformName} Stitch Compatibility Flow
-
-- Treat this skill as a compatibility wrapper only. Route the real work through \`design\`, then \`web-ui-design\` or \`mobile-ui-design\`, and load \`design-system\` only when canonical design state or the Stitch mirror is stale.
-- Verify the Foundry Stitch MCP configuration from ${settingsPath} before choosing any Stitch tool path.
-- Prefer the shared \`/implement\` Stitch UI flow for new work so the design-first sequence stays intact on ${platformName}.`;
-  }
-
-  if (skillId === "stitch-design-orchestrator") {
-    return `## ${platformName} Stitch Orchestration
-
-- Run this as a workflow-first sequence: design prep, prompt enhancement, optional design-system refresh, Stitch preflight, minimal tool selection, then implementation handoff.
-- Verify \`stitch_get_status\`, \`mcp_gateway_status\`, and \`stitch_list_enabled_tools\` before any generation or edit call.
-- Treat Stitch as a rate-sensitive remote service on ${platformName}: allow one generation or edit action per turn by default, prefer \`edit_screens\` over full regeneration, and stop after two automatic retries with backoff.`;
-  }
-
-  if (skillId === "stitch-prompt-enhancement") {
-    return `## ${platformName} Stitch Prompt Rules
-
-- Convert vague UI intent into a compact prompt that names the target screen, visual direction, component hierarchy, and exact change scope.
-- Pull design language from \`design\`, \`web-ui-design\` or \`mobile-ui-design\`, and \`docs/foundation/DESIGN.md\` instead of pasting raw repo context or long transcripts into Stitch.
-- Keep edit prompts narrow on ${platformName}: request one or two deltas at a time once a screen already exists.`;
-  }
-
-  if (skillId === "stitch-design-system") {
-    return `## ${platformName} Design Context Sync
-
-- Keep \`docs/foundation/DESIGN.md\` as the canonical project design document and mirror it to \`.stitch/DESIGN.md\` for Stitch-facing flows.
-- Refresh this context only when the design language is missing, stale, or needs to stay consistent across multiple screens.
-- Derive the design system from repo truth first, then use Stitch artifacts only to fill missing visual context on ${platformName}.`;
-  }
-
-  if (skillId === "stitch-implementation-handoff") {
-    return `## ${platformName} Stitch Implementation Handoff
-
-- Pull the final Stitch artifact before coding, then map it into the repo's real framework, tokens, routing, and components.
-- Preserve existing business logic, tests, and accessibility behavior while applying the UI diff.
-- Keep the result repo-native on ${platformName}: reuse local primitives and explain any intentional drift from the Stitch artifact.`;
-  }
-
-  return "";
-}
-
 function buildDeepResearchPlatformSection(platform) {
   if (platform === "codex") {
     return `## Codex Research Flow
@@ -316,15 +252,7 @@ function buildDeepResearchPlatformSection(platform) {
 
 function injectPlatformSpecificSkillGuidance(body, skillId, platform) {
   let section = "";
-  if (
-    skillId === "stitch" ||
-    skillId === "stitch-design-orchestrator" ||
-    skillId === "stitch-prompt-enhancement" ||
-    skillId === "stitch-design-system" ||
-    skillId === "stitch-implementation-handoff"
-  ) {
-    section = buildStitchPlatformSection(platform, skillId);
-  } else if (skillId === "deep-research") {
+  if (skillId === "deep-research") {
     section = buildDeepResearchPlatformSection(platform);
   } else {
     return body;

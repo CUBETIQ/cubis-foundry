@@ -23,7 +23,7 @@ Use when validating a real browser flow with Playwright MCP and the main outcome
 ## Skill Routing
 
 - Primary skills: `web-testing`
-- Supporting skills (optional): `playwright-interactive`, `code-review`
+- Supporting skills (optional): `code-review`
 
 ## Context notes
 

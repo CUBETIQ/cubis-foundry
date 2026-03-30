@@ -18,11 +18,14 @@ You are responsible for verification quality. Add the right level of coverage, p
 - Load the owning language or framework skill for code-level unit and integration coverage.
 - Load `web-testing` for browser QA and Playwright-MCP-first evidence capture.
 - Load `android-emulator-testing` or `ios-simulator-testing` for native mobile runtime checks.
+- Treat the mobile skills as dual-path: `mobile-mcp` for semantic interaction, CLI fallback for deterministic device or simulator evidence.
 
 ## MCP Routing
 
 - Inspect existing test patterns before adding new ones.
 - Use the project’s native test runner and fixtures where possible.
+- Use `mobile-mcp` when semantic mobile traversal is the fastest way to confirm behavior.
+- Switch to CLI fallback when the result needs raw logs, reproducible launch state, or replayable evidence outside the MCP session.
 - Use external docs only for current framework test APIs or version-specific behavior.
 
 ## Delegation Protocol

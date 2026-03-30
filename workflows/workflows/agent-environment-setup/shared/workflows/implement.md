@@ -1,6 +1,6 @@
 ---
 command: "/implement"
-description: "End-to-end feature implementation: explore, plan, implement, test, review, and optionally run the Stitch UI sequence for design-first screen generation."
+description: "End-to-end feature implementation: explore, plan, implement, test, review, and optionally run the design-generation sequence after design state is resolved."
 triggers: ["implement", "build", "feature", "create", "develop", "refactor", "document", "onboard", "redesign"]
 ---
 
@@ -25,28 +25,27 @@ Use for building new features, refactors, documentation refreshes, onboarding ta
 ## Skill Routing
 
 - Primary skills: `api-design`, `typescript-best-practices`
-- Supporting skills (optional): `spec-driven-delivery`, `system-design`, `web-testing`, `android-emulator-testing`, `ios-simulator-testing`, `playwright-interactive`, `code-review`, `owasp-security-review`, `design`, `web-ui-design`, `mobile-ui-design`, `stitch`, `design-system`
+- Supporting skills (optional): `spec-driven-delivery`, `system-design`, `web-testing`, `android-emulator-testing`, `ios-simulator-testing`, `code-review`, `owasp-security-review`, `design`, `web-ui-design`, `mobile-ui-design`, `design-system`
 
 ## Context notes
 
 - Provide the feature requirements, acceptance criteria, and any design constraints.
 - Implementer follows existing codebase patterns and conventions.
 - Use this workflow for doc-only or refactor-heavy work when you want one coordinated pass instead of separate routes.
-- If the task is primarily about shaping a screen, design system, or Stitch prompt, prefer `/design-screen` or `/design-system` first and return here only for implementation/handoff.
+- If the task is primarily about shaping a screen, design system, or design-generation prompt, prefer `/design-screen` or `/design-system` first and return here only for implementation/handoff.
 
-## Stitch UI mode
+## Design generation mode
 
 Use `/implement` only after `/design-screen` or `/design-system` resolved the design state and the work now needs implementation or implementation handoff.
 
 1. Load `design` first, then choose `web-ui-design` or `mobile-ui-design` based on the actual surface.
-2. Treat `stitch` as a compat alias only, not the primary design surface.
-3. If `docs/foundation/DESIGN.md` is missing, stale, or the work spans multiple screens, run `design-system` and mirror the result to `.stitch/DESIGN.md`.
-4. Verify `stitch_get_status`, `mcp_gateway_status`, and `stitch_list_enabled_tools`.
-5. Reuse an existing Stitch project when the work belongs to the same app or feature line. Call `list_projects` before `create_project`, and call `list_screens` before deciding whether the next step is a fresh generation or an edit.
-6. Choose the smallest Stitch tool path: `generate_screen_from_text`, `edit_screens`, `generate_variants`, or design-system tools only when the design system itself is the task.
+2. If `docs/foundation/DESIGN.md` is missing, stale, or the work spans multiple screens, run `design-system` and refresh the compatibility mirror from canonical design state.
+3. Verify the design-generation runtime status, gateway status, and enabled tool list before generating.
+4. Reuse an existing design-generation project when the work belongs to the same app or feature line. List projects and screens before deciding whether the next step is a fresh generation or an edit.
+5. Choose the smallest generation path: create, edit, variant generation, or design-system refresh only when the system itself is the task.
 7. Default to `GEMINI_3_1_PRO` for complex or multi-screen UI work. Use `GEMINI_3_FLASH` only for speed-first drafts or narrow edits.
-8. Surface Stitch suggestions before retrying. Allow at most two automatic retries with backoff.
-9. If a Stitch generation call times out, check `list_screens` before treating it as failed.
+8. Surface tool suggestions before retrying. Allow at most two automatic retries with backoff.
+9. If a generation call times out, check the existing screen list before treating it as failed.
 10. Fetch the final artifact with `get_screen`, then translate it through the chosen `web-ui-design` or `mobile-ui-design` handoff before normal implementation, test, and review.
 
 ## Workflow steps
@@ -63,7 +62,7 @@ Use `/implement` only after `/design-screen` or `/design-system` resolved the de
 - All planned changes implemented and code compiles without errors.
 - Tests pass and cover the new functionality.
 - Code review approved with no critical findings.
-- For Stitch UI mode, design context is resolved before generation and the final implementation reuses repo-native components and tokens.
+- For design generation mode, design context is resolved before generation and the final implementation reuses repo-native components and tokens.
 
 ## Output Contract
 
