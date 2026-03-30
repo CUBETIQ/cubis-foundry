@@ -1,6 +1,6 @@
 ---
 command: "/design-system"
-description: "Establish or refresh canonical design state, token language, overlays, and Stitch compatibility before implementation."
+description: "Establish or refresh canonical design state, token language, and overlays before implementation."
 triggers: ["design-system", "design language", "token system", "design tokens", "theme system", "design foundation"]
 ---
 
@@ -18,7 +18,7 @@ Use when the project needs a durable design foundation before screen generation 
 
 1. **Explore**: `@explorer` reads current UI code, tokens, brand cues, and platform constraints.
 2. **Plan**: `@planner` chooses the design direction and the required design-state files.
-3. **Implement**: `@implementer` writes or refreshes `docs/foundation/DESIGN.md`, overlays, and the Stitch mirror when needed.
+3. **Implement**: `@implementer` writes or refreshes `docs/foundation/DESIGN.md` and overlays when needed.
 
 ## Skill Routing
 
@@ -34,14 +34,14 @@ Use when the project needs a durable design foundation before screen generation 
 
 1. Explorer surveys the current UI code, tokens, and existing design documents.
 2. Planner chooses the visual direction and identifies which canonical docs or overlays need refresh.
-3. Implementer writes or updates `docs/foundation/DESIGN.md`, overlays, and the Stitch mirror when needed.
+3. Implementer writes or updates `docs/foundation/DESIGN.md` and overlays when needed.
 4. The route returns the refreshed design state and the next recommended design or implementation step.
 
 ## Verification
 
 - `docs/foundation/DESIGN.md` exists and is coherent.
 - Overlays exist only when scoped detail is actually needed.
-- `.stitch/DESIGN.md` is synchronized when Stitch work is in scope.
+- Downstream design consumers can read canonical state from `docs/foundation/DESIGN.md` and any scoped overlays.
 
 ## Output Contract
 
@@ -51,6 +51,5 @@ WORKFLOW_RESULT:
   supporting_agents: [explorer, planner]
   design_artifacts: [docs/foundation/DESIGN.md]
   overlays_updated: [<path>] | []
-  stitch_mirror_updated: <true|false>
   follow_up_items: [<string>] | []
 ```

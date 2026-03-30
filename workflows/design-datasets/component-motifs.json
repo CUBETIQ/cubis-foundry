@@ -9,8 +9,15 @@
         "anthropic-front-end-lineage"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web", "mobile", "stitch"],
-      "applicability": ["wellness", "consumer products", "dashboards"],
+      "platformScope": [
+        "web",
+        "mobile"
+      ],
+      "applicability": [
+        "wellness",
+        "consumer products",
+        "dashboards"
+      ],
       "qualityTier": "high",
       "notes": "Round, calm cards with layered elevation and restrained borders instead of harsh separators."
     },
@@ -20,8 +27,15 @@
         "anthropic-front-end-lineage"
       ],
       "licenseStatus": "derived-foundry",
-      "platformScope": ["mobile", "web"],
-      "applicability": ["fitness", "habits", "goal tracking"],
+      "platformScope": [
+        "mobile",
+        "web"
+      ],
+      "applicability": [
+        "fitness",
+        "habits",
+        "goal tracking"
+      ],
       "qualityTier": "medium",
       "notes": "Progress rings should be compact, legible, and paired with a concrete recommendation rather than floating alone."
     },
@@ -31,8 +45,15 @@
         "https://impeccable.style/"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["mobile", "web", "stitch"],
-      "applicability": ["motivation", "reflection", "content-led products"],
+      "platformScope": [
+        "mobile",
+        "web"
+      ],
+      "applicability": [
+        "motivation",
+        "reflection",
+        "content-led products"
+      ],
       "qualityTier": "medium",
       "notes": "Use a distinct accent block for motivational or educational content to break list fatigue."
     },
@@ -43,8 +64,14 @@
         "https://www.figma.com/blog/designer-framework-for-better-ai-prompts/"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web", "stitch"],
-      "applicability": ["editorial landing pages", "hospitality", "campaign pages"],
+      "platformScope": [
+        "web"
+      ],
+      "applicability": [
+        "editorial landing pages",
+        "hospitality",
+        "campaign pages"
+      ],
       "qualityTier": "high",
       "notes": "Anchor the hero with one typographic statement, one framing rule system, and one decisive CTA instead of multiple floating accent cards."
     },
@@ -55,8 +82,16 @@
         "https://developers.googleblog.com/pt-br/stitch-a-new-way-to-design-uis/"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web", "mobile", "stitch"],
-      "applicability": ["operations", "analytics", "event planning", "workflow products"],
+      "platformScope": [
+        "web",
+        "mobile"
+      ],
+      "applicability": [
+        "operations",
+        "analytics",
+        "event planning",
+        "workflow products"
+      ],
       "qualityTier": "medium",
       "notes": "Expose sequence and progress through a numbered side rail or stacked checkpoints rather than burying process context inside anonymous cards."
     },
@@ -67,8 +102,14 @@
         "ui-testing/research/design-prompts-style-catalog.json#monochrome-light-01"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web", "stitch"],
-      "applicability": ["editorial commerce", "hospitality", "publishing"],
+      "platformScope": [
+        "web"
+      ],
+      "applicability": [
+        "editorial commerce",
+        "hospitality",
+        "publishing"
+      ],
       "qualityTier": "high",
       "notes": "Use hard rules, ledger labels, and visible seams to bind narrative panels to operational companion zones."
     },
@@ -79,8 +120,15 @@
         "ui-testing/research/design-prompts-style-catalog.json#newsprint-light-04"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web", "mobile", "stitch"],
-      "applicability": ["publishing", "knowledge work", "writing tools"],
+      "platformScope": [
+        "web",
+        "mobile"
+      ],
+      "applicability": [
+        "publishing",
+        "knowledge work",
+        "writing tools"
+      ],
       "qualityTier": "high",
       "notes": "Pair the primary content surface with a margin or source rail that can update without turning the whole page into a dashboard."
     },
@@ -91,8 +139,14 @@
         "ui-testing/research/design-prompts-style-catalog.json#saas-light-05"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web", "stitch"],
-      "applicability": ["SaaS products", "AI workflow tools", "B2B product marketing"],
+      "platformScope": [
+        "web"
+      ],
+      "applicability": [
+        "SaaS products",
+        "AI workflow tools",
+        "B2B product marketing"
+      ],
       "qualityTier": "high",
       "notes": "Use a compact command or mode ribbon to connect the marketing thesis to a real product preview and stateful work area."
     },
@@ -103,8 +157,14 @@
         "ui-testing/research/design-prompts-style-catalog.json#luxury-light-06"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web", "stitch"],
-      "applicability": ["concierge", "luxury booking", "hospitality"],
+      "platformScope": [
+        "web"
+      ],
+      "applicability": [
+        "concierge",
+        "luxury booking",
+        "hospitality"
+      ],
       "qualityTier": "high",
       "notes": "Stack itinerary notes, service selections, and reservation actions like a curated host ledger instead of standard commerce widgets."
     },
@@ -115,8 +175,15 @@
         "ui-testing/research/design-prompts-style-catalog.json#enterprise-light-24"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web", "mobile"],
-      "applicability": ["operations", "enterprise dashboards", "finance tools"],
+      "platformScope": [
+        "web",
+        "mobile"
+      ],
+      "applicability": [
+        "operations",
+        "enterprise dashboards",
+        "finance tools"
+      ],
       "qualityTier": "high",
       "notes": "Keep high-priority work visible through compact severity strips, queued interventions, and named action slots."
     },
@@ -127,8 +194,14 @@
         "ui-testing/research/design-prompts-style-catalog.json#neo-brutalism-light-13"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web", "stitch"],
-      "applicability": ["creator tools", "marketplaces", "consumer product launches"],
+      "platformScope": [
+        "web"
+      ],
+      "applicability": [
+        "creator tools",
+        "marketplaces",
+        "consumer product launches"
+      ],
       "qualityTier": "high",
       "notes": "Use loud sticker labels, hard-edge cards, and offset stacking to create urgency without losing the product transaction path."
     },
@@ -139,8 +212,14 @@
         "ui-testing/research/design-prompts-style-catalog.json#terminal-dark-07"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web", "stitch"],
-      "applicability": ["devtools", "infra consoles", "security tools"],
+      "platformScope": [
+        "web"
+      ],
+      "applicability": [
+        "devtools",
+        "infra consoles",
+        "security tools"
+      ],
       "qualityTier": "high",
       "notes": "Bind command bars, structured logs, and retry actions into one visible operational ribbon rather than hiding them under generic tabs."
     },
@@ -151,8 +230,15 @@
         "ui-testing/research/design-prompts-style-catalog.json#industrial-light-26"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web", "mobile"],
-      "applicability": ["industrial dashboards", "manufacturing", "maintenance tools"],
+      "platformScope": [
+        "web",
+        "mobile"
+      ],
+      "applicability": [
+        "industrial dashboards",
+        "manufacturing",
+        "maintenance tools"
+      ],
       "qualityTier": "high",
       "notes": "Expose machine state through compact beacons, intervention strips, and warning-led summaries that stay visible under load."
     },
@@ -163,8 +249,14 @@
         "ui-testing/research/design-prompts-style-catalog.json#kinetic-dark-09"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web", "stitch"],
-      "applicability": ["events", "routing tools", "music discovery"],
+      "platformScope": [
+        "web"
+      ],
+      "applicability": [
+        "events",
+        "routing tools",
+        "music discovery"
+      ],
       "qualityTier": "high",
       "notes": "Use a marquee-like spotlight block and route strip so the event planner feels like a designed poster with real navigation consequences."
     },
@@ -175,8 +267,16 @@
         "ui-testing/research/design-prompts-style-catalog.json#material-design-light-12"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web", "mobile", "stitch"],
-      "applicability": ["assistant surfaces", "productivity tools", "consumer settings", "component systems"],
+      "platformScope": [
+        "web",
+        "mobile"
+      ],
+      "applicability": [
+        "assistant surfaces",
+        "productivity tools",
+        "consumer settings",
+        "component systems"
+      ],
       "qualityTier": "high",
       "notes": "Group rounded chips, tonal cards, FABs, and sheet-driven actions into a tactile cluster that clearly communicates state and hierarchy."
     }

@@ -182,8 +182,7 @@ function shouldValidateLink(target) {
   // inside the skill package itself, so packaging validation should not require
   // them to exist relative to the skill directory.
   if (
-    target === "docs/foundation/DESIGN.md" ||
-    target === ".stitch/DESIGN.md"
+    target === "docs/foundation/DESIGN.md"
   ) {
     return false;
   }

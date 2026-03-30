@@ -8,8 +8,15 @@
         "https://impeccable.style/"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web", "mobile"],
-      "applicability": ["dashboard loads", "section reveals", "marketing surfaces"],
+      "platformScope": [
+        "web",
+        "mobile"
+      ],
+      "applicability": [
+        "dashboard loads",
+        "section reveals",
+        "marketing surfaces"
+      ],
       "qualityTier": "medium",
       "notes": "Use short upward fades and restrained stagger to stage content without feeling gimmicky."
     },
@@ -19,8 +26,13 @@
         "anthropic-front-end-lineage"
       ],
       "licenseStatus": "derived-foundry",
-      "platformScope": ["web", "mobile", "stitch"],
-      "applicability": ["all"],
+      "platformScope": [
+        "web",
+        "mobile"
+      ],
+      "applicability": [
+        "all"
+      ],
       "qualityTier": "high",
       "notes": "Prioritize motion for confirmation, focus changes, and continuity. Avoid decorative loops."
     },
@@ -30,11 +42,15 @@
         "anthropic-front-end-lineage"
       ],
       "licenseStatus": "derived-foundry",
-      "platformScope": ["web", "mobile"],
-      "applicability": ["all"],
+      "platformScope": [
+        "web",
+        "mobile"
+      ],
+      "applicability": [
+        "all"
+      ],
       "qualityTier": "high",
       "notes": "Every animated pattern should have a reduced-motion equivalent with zero hidden content dependencies."
     }
   ]
 }
-

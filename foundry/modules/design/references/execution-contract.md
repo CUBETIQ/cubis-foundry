@@ -59,4 +59,4 @@ Use this contract when a design request needs a strict split between routing, sy
 - List the typography system, token language, spacing system, interaction/state language, and component vocabulary.
 - Include usage rules only when they materially change downstream screen work.
 - Call out overlays only when they add real scope.
-- State whether `.stitch/DESIGN.md` was updated and which downstream surfaces should consume the refresh.
+- State which downstream surfaces should consume the refresh.

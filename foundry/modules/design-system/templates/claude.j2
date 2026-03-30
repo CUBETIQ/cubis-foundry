@@ -14,7 +14,7 @@ compatibility: Claude Code, Codex, GitHub Copilot, Gemini CLI, Antigravity
 
 ## Purpose
 
-Author and refresh the project's canonical design-system state so design, Stitch generation, and implementation share the same visual language.
+Author and refresh the project's canonical design-system state so design, generation, and implementation share the same visual language.
 
 This surface should define the typography system, token language, spacing system, interaction/state language, and component vocabulary that downstream screen work must respect across web, mobile, and desktop.
 It is not a screen execution surface.
@@ -34,7 +34,6 @@ It is not a screen execution surface.
 4. **Define adaptive behavior explicitly** — Use `../design/references/responsive-adaptive-systems.md` to record what stays shared and what intentionally diverges across web, mobile, and desktop surfaces.
 5. **Keep screen execution out of this surface** — Summarize the system language, not the UI of an individual page or flow.
 6. **Preserve source metadata in the authoring process, not the final doc body** — The final design docs should be crisp and implementation-oriented, but the chosen direction should come from normalized datasets with source provenance.
-7. **Mirror to `.stitch/DESIGN.md` when Stitch flows are in scope** — The mirror should be generated from the canonical state and applicable overlays, never hand-maintained separately.
 
 ## System Rules
 
@@ -42,7 +41,6 @@ It is not a screen execution surface.
 - keep token language semantic and stable
 - keep interaction/state language explicit enough for implementation and QA
 - keep cross-surface adaptation rules explicit instead of assuming one layout scales everywhere
-- treat `.stitch/DESIGN.md` as a compatibility mirror only
 
 ## Output Format
 
@@ -54,6 +52,5 @@ Deliver:
 4. Cross-surface adaptation notes for web, mobile, and desktop
 5. Overlay files created or refreshed
 6. Which downstream surfaces should consume the refresh
-7. Whether `.stitch/DESIGN.md` was updated
 
 <!-- cbx:skill:design-system:end -->

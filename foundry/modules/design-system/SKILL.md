@@ -31,7 +31,7 @@ compatibility:
 
 ## Purpose
 
-Author and refresh the project's canonical design-system state so design, Stitch generation, and implementation share the same visual language. This is the systemization surface, not a screen execution surface.
+Author and refresh the project's canonical design-system state so design, generation, and implementation share the same visual language. This is the systemization surface, not a screen execution surface.
 
 This surface should define the typography system, token language, spacing system, interaction/state language, and component vocabulary that downstream screen work must respect across web, mobile, and desktop.
 
@@ -50,7 +50,6 @@ This surface should define the typography system, token language, spacing system
 4. **Define adaptive behavior explicitly** — Use `../design/references/responsive-adaptive-systems.md`, `../design/references/web-ui-design.md`, `../design/references/mobile-app-ui-design.md`, and `../design/references/desktop-app-ui-design.md` to record what stays shared and what intentionally diverges across web, mobile, and desktop surfaces.
 5. **Keep screen execution out of this surface** — Summarize the system language, not the UI of an individual page or flow.
 6. **Preserve source metadata in the authoring process, not the final doc body** — The final design docs should be crisp and implementation-oriented, but the chosen direction should come from normalized datasets with source provenance.
-7. **Mirror to `.stitch/DESIGN.md` when Stitch flows are in scope** — The mirror should be generated from the canonical state and applicable overlays, never hand-maintained separately.
 
 ## System Rules
 
@@ -58,7 +57,6 @@ This surface should define the typography system, token language, spacing system
 - keep token language semantic and stable
 - keep interaction/state language explicit enough for implementation and QA
 - keep cross-surface adaptation rules explicit instead of assuming one layout scales everywhere
-- treat `.stitch/DESIGN.md` as a compatibility mirror only
 
 ## Output Format
 
@@ -69,7 +67,7 @@ Deliver:
 3. Component vocabulary and usage rules
 4. Cross-surface adaptation notes for web, mobile, and desktop
 5. Overlay files created or refreshed
-6. Whether `.stitch/DESIGN.md` was updated and which downstream surfaces should consume the refresh
+6. Which downstream surfaces should consume the refresh
 
 ## References
 

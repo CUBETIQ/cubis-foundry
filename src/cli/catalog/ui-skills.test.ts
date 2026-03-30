@@ -76,7 +76,7 @@ describe("canonical UI skill content", () => {
       expect(content).toContain("web, mobile, and desktop");
       expect(content).toContain("semantic aliases");
       expect(content).toContain("downstream surfaces should consume the refresh");
-      expect(content).toContain(".stitch/DESIGN.md");
+      expect(content).not.toContain(".stitch/DESIGN.md");
     }
 
     expect(contractContent).toContain("design-system");

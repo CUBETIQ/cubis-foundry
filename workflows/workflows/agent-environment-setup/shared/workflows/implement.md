@@ -39,7 +39,7 @@ Use for building new features, refactors, documentation refreshes, onboarding ta
 Use `/implement` only after `/design-screen` or `/design-system` resolved the design state and the work now needs implementation or implementation handoff.
 
 1. Load `design` first, then choose `web-ui-design` or `mobile-ui-design` based on the actual surface.
-2. If `docs/foundation/DESIGN.md` is missing, stale, or the work spans multiple screens, run `design-system` and refresh the compatibility mirror from canonical design state.
+2. If `docs/foundation/DESIGN.md` is missing, stale, or the work spans multiple screens, run `design-system` and refresh the canonical design state before implementation.
 3. Verify the design-generation runtime status, gateway status, and enabled tool list before generating.
 4. Reuse an existing design-generation project when the work belongs to the same app or feature line. List projects and screens before deciding whether the next step is a fresh generation or an edit.
 5. Choose the smallest generation path: create, edit, variant generation, or design-system refresh only when the system itself is the task.

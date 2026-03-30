@@ -8,7 +8,7 @@ triggers: ["design refresh", "refresh design", "refresh tokens", "update design 
 
 ## When to use
 
-Use when the product direction changed and the design system, overlays, or compatibility mirror need a coordinated refresh.
+Use when the product direction changed and the design system or overlays need a coordinated refresh.
 
 ## Agent Chain
 
@@ -18,7 +18,7 @@ Use when the product direction changed and the design system, overlays, or compa
 
 1. **Explore**: `@explorer` finds the current design docs, overlays, and implementation surfaces touched by the direction change.
 2. **Plan**: `@planner` decides what must be refreshed and what can stay stable.
-3. **Implement**: `@implementer` updates canonical design state, overlays, and compatibility mirrors.
+3. **Implement**: `@implementer` updates canonical design state and overlays.
 4. **Review**: `@reviewer` checks that the refreshed design state is coherent and ready for downstream implementation.
 
 ## Skill Routing
@@ -29,20 +29,20 @@ Use when the product direction changed and the design system, overlays, or compa
 ## Context notes
 
 - Provide what changed in product direction or UI structure and which downstream surfaces are now stale.
-- This route refreshes design state; it should not silently skip dependent overlays or the compatibility mirror.
+- This route refreshes design state; it should not silently skip dependent overlays.
 
 ## Workflow steps
 
 1. Explorer finds the current design docs, overlays, and implementation surfaces touched by the direction change.
 2. Planner decides what must be refreshed and what can stay stable.
-3. Implementer updates canonical design state, overlays, and compatibility mirrors.
+3. Implementer updates canonical design state and overlays.
 4. Reviewer checks that the refreshed design state is coherent and ready for downstream implementation.
 
 ## Verification
 
 - Canonical design state and overlays are updated together.
 - Downstream design consumers are told what changed.
-- Compatibility mirror artifacts are refreshed only from canonical state.
+- Downstream consumers are told which canonical artifacts changed.
 
 ## Output Contract
 
@@ -51,6 +51,5 @@ WORKFLOW_RESULT:
   primary_agent: implementer
   supporting_agents: [explorer, planner, reviewer]
   refreshed_artifacts: [<path>]
-  compatibility_mirror_updated: <true|false>
   follow_up_items: [<string>] | []
 ```

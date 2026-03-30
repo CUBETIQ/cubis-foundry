@@ -8,8 +8,15 @@
         "https://impeccable.style/"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web", "stitch", "mobile"],
-      "applicability": ["landing", "onboarding", "single-focus screens"],
+      "platformScope": [
+        "web",
+        "mobile"
+      ],
+      "applicability": [
+        "landing",
+        "onboarding",
+        "single-focus screens"
+      ],
       "qualityTier": "high",
       "notes": "Lead with one dominant message block, one hero artifact, and one decisive action."
     },
@@ -19,8 +26,15 @@
         "anthropic-front-end-lineage"
       ],
       "licenseStatus": "derived-foundry",
-      "platformScope": ["web", "mobile"],
-      "applicability": ["dashboards", "analytics", "tracking apps"],
+      "platformScope": [
+        "web",
+        "mobile"
+      ],
+      "applicability": [
+        "dashboards",
+        "analytics",
+        "tracking apps"
+      ],
       "qualityTier": "high",
       "notes": "Use a clear hero metric, a stable card rhythm, and a secondary rail for drills and actions."
     },
@@ -30,8 +44,14 @@
         "anthropic-front-end-lineage"
       ],
       "licenseStatus": "derived-foundry",
-      "platformScope": ["mobile"],
-      "applicability": ["consumer mobile apps", "Flutter", "habit trackers"],
+      "platformScope": [
+        "mobile"
+      ],
+      "applicability": [
+        "consumer mobile apps",
+        "Flutter",
+        "habit trackers"
+      ],
       "qualityTier": "high",
       "notes": "Compose mobile surfaces as vertically staged zones with section headers, high-signal cards, and safe thumb reach."
     },
@@ -42,8 +62,14 @@
         "https://www.figma.com/blog/inside-figma-a-retrospective-on-make-designs/"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web", "stitch"],
-      "applicability": ["hospitality", "luxury commerce", "editorial product storytelling"],
+      "platformScope": [
+        "web"
+      ],
+      "applicability": [
+        "hospitality",
+        "luxury commerce",
+        "editorial product storytelling"
+      ],
       "qualityTier": "high",
       "notes": "Split the surface into one commanding narrative panel and one operational booking or browsing panel so the page feels curated rather than templated."
     },
@@ -54,8 +80,15 @@
         "https://vercel.com/blog/ai-powered-prototyping-with-design-systems"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web"],
-      "applicability": ["webapps", "operations dashboards", "event discovery", "data-heavy commerce"],
+      "platformScope": [
+        "web"
+      ],
+      "applicability": [
+        "webapps",
+        "operations dashboards",
+        "event discovery",
+        "data-heavy commerce"
+      ],
       "qualityTier": "high",
       "notes": "Use a stable control rail, an expressive main canvas, and one secondary decision zone so dense workflows stay legible across desktop and tablet."
     },
@@ -66,8 +99,14 @@
         "ui-testing/research/design-prompts-style-catalog.json#newsprint-light-04"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web", "stitch"],
-      "applicability": ["publishing", "journaling", "editorial apps"],
+      "platformScope": [
+        "web"
+      ],
+      "applicability": [
+        "publishing",
+        "journaling",
+        "editorial apps"
+      ],
       "qualityTier": "high",
       "notes": "Lead with a manuscript or article spread, then pair it with notes, source rails, and issue-planning zones."
     },
@@ -78,8 +117,14 @@
         "ui-testing/research/design-prompts-style-catalog.json#saas-light-05"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web", "stitch"],
-      "applicability": ["SaaS sites", "hybrid marketing-app shells", "AI tools"],
+      "platformScope": [
+        "web"
+      ],
+      "applicability": [
+        "SaaS sites",
+        "hybrid marketing-app shells",
+        "AI tools"
+      ],
       "qualityTier": "high",
       "notes": "Combine a clean product hero, one high-signal preview shell, and one conversion or pricing rail without collapsing into generic marketing cards."
     },
@@ -90,8 +135,14 @@
         "ui-testing/research/design-prompts-style-catalog.json#luxury-light-06"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web", "stitch"],
-      "applicability": ["luxury hospitality", "private concierge", "reservation products"],
+      "platformScope": [
+        "web"
+      ],
+      "applicability": [
+        "luxury hospitality",
+        "private concierge",
+        "reservation products"
+      ],
       "qualityTier": "high",
       "notes": "Split one side into a curated service or residence narrative and the other into ledger-like itinerary, rate, and request surfaces."
     },
@@ -102,8 +153,14 @@
         "ui-testing/research/design-prompts-style-catalog.json#neo-brutalism-light-13"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web"],
-      "applicability": ["marketplaces", "creator tools", "commerce workspaces"],
+      "platformScope": [
+        "web"
+      ],
+      "applicability": [
+        "marketplaces",
+        "creator tools",
+        "commerce workspaces"
+      ],
       "qualityTier": "high",
       "notes": "Use a bold catalog cabinet with a loud selection board, merchandising blocks, and one transactional drawer."
     },
@@ -114,8 +171,14 @@
         "ui-testing/research/design-prompts-style-catalog.json#terminal-dark-07"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web"],
-      "applicability": ["devtools", "infra consoles", "security operations"],
+      "platformScope": [
+        "web"
+      ],
+      "applicability": [
+        "devtools",
+        "infra consoles",
+        "security operations"
+      ],
       "qualityTier": "high",
       "notes": "Cascade command bands, service status boards, and structured logs so the page feels like an operator console rather than a themed dashboard."
     },
@@ -126,8 +189,14 @@
         "ui-testing/research/design-prompts-style-catalog.json#industrial-light-26"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web"],
-      "applicability": ["industrial operations", "manufacturing dashboards", "maintenance planning"],
+      "platformScope": [
+        "web"
+      ],
+      "applicability": [
+        "industrial operations",
+        "manufacturing dashboards",
+        "maintenance planning"
+      ],
       "qualityTier": "high",
       "notes": "Run a twin-board layout with one live line-status canvas and one maintenance or intervention board so the surface can hold real operational tension."
     },
@@ -138,8 +207,14 @@
         "ui-testing/research/design-prompts-style-catalog.json#kinetic-dark-09"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web", "stitch"],
-      "applicability": ["events", "routing tools", "campaign planners"],
+      "platformScope": [
+        "web"
+      ],
+      "applicability": [
+        "events",
+        "routing tools",
+        "campaign planners"
+      ],
       "qualityTier": "high",
       "notes": "Anchor the page with one poster-like spotlight block, then pair it with route, schedule, and venue-pressure canvases."
     },
@@ -150,8 +225,15 @@
         "ui-testing/research/design-prompts-style-catalog.json#material-design-light-12"
       ],
       "licenseStatus": "research-reference-only",
-      "platformScope": ["web", "mobile"],
-      "applicability": ["design systems", "component galleries", "UI testing harnesses"],
+      "platformScope": [
+        "web",
+        "mobile"
+      ],
+      "applicability": [
+        "design systems",
+        "component galleries",
+        "UI testing harnesses"
+      ],
       "qualityTier": "high",
       "notes": "A comparative board layout for showing style-specific component primitives, states, and geometry decisions side by side."
     }

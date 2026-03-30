@@ -77,8 +77,7 @@ The deprecation cleanup plan is in the final stabilization stage.
 
 Next tasks:
 1. Finish the full stale-name sweep and classify any remaining hits as intentional guards, tests, workflow commands, or tombstones.
-2. Decide whether the `.stitch/DESIGN.md` compatibility mirror stays as an intentional supported output or is removed from the remaining design-system contract.
-3. Run the final full verification gate and commit the cleanup finish line.
+2. Run the final full verification gate and commit the cleanup finish line.
 
 ## Resume Guidance
 
@@ -90,11 +89,12 @@ Resume from:
 
 - active deprecated testing and wrapper skill surfaces removed
 - deprecated frontend-design compatibility aliases removed from live skill metadata
+- `.stitch/DESIGN.md` compatibility mirror removed from live design contracts, workflow guidance, workspace-state summaries, and design datasets
 - historical docs collapsed to one active spec, one active plan, one active cleanup plan, and this handoff
 - remaining old-name hits are now concentrated in:
   - intentional negative tests
   - workflow command surfaces such as `/design-audit`
-  - Stitch compatibility docs/config/runtime
+  - valid Stitch MCP service support
   - tombstoned historical notes
 
 Current execution status:

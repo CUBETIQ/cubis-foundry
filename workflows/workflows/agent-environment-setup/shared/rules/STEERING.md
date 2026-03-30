@@ -84,7 +84,7 @@ Skills are supporting context unless the user explicitly named the exact skill. 
 8. Load reference files one at a time with `skill_get_reference` only when a specific reference is needed.
 9. Do not auto-prime every specialist. Only load what `primarySkills` recommends or the task clearly needs.
 10. Never pass workflow IDs or agent IDs to skill tools.
-11. For design-generation UI work, use this order: `design` -> `web-ui-design` or `mobile-ui-design` -> `design-system` only when canonical design state or the compatibility mirror is stale -> external design-generation tools only after the design state is resolved.
+11. For design-generation UI work, use this order: `design` -> `web-ui-design` or `mobile-ui-design` -> `design-system` only when canonical design state is stale -> external design-generation tools only after the design state is resolved.
 
 ---
 
