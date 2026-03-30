@@ -1,6 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 import { registerCommands, type CliRegistrationDeps } from "./register.js";
 
+function normalizeWhitespace(value: string) {
+  return value.replace(/\s+/g, " ").trim();
+}
+
 function makeDeps(): CliRegistrationDeps {
   const noop = vi.fn();
   return {
@@ -46,8 +50,8 @@ function makeDeps(): CliRegistrationDeps {
     runMcpStatus: noop,
     runMcpTest: noop,
     runMcpProxy: noop,
-    runMobileQa: noop,
-    runWebQa: noop,
+    runMobileTesting: noop,
+    runWebTesting: noop,
   };
 }
 
@@ -72,13 +76,12 @@ describe("registerCommands()", () => {
     expect(list?.helpInformation()).toContain("postman|stitch|mobile");
   });
 
-  it("labels the mobile skill profile as a legacy compatibility id in init help", () => {
+  it("labels the mobile skill profile with the canonical mobile-testing name in init help", () => {
     const program = registerCommands(makeDeps());
     const init = program.commands.find((command) => command.name() === "init");
-    const help = init?.helpInformation() ?? "";
+    const help = normalizeWhitespace(init?.helpInformation() ?? "");
 
     expect(help).toContain("--skill-profile <profile>");
-    expect(help).toContain("skills profile: core|web-backend|mobile-qa");
-    expect(help).toContain("(legacy mobile-testing id)|full");
+    expect(help).toContain("skills profile: core|web-backend|mobile-testing|full");
   });
 });

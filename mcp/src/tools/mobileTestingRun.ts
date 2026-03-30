@@ -13,12 +13,12 @@ import {
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export const mobileQaRunName = "mobile_qa_run";
+export const mobileTestingRunName = "mobile_testing_run";
 
-export const mobileQaRunDescription =
-  "Compatibility tool for charter-driven mobile testing across android-emulator-testing, ios-simulator-testing, and mobile-mcp, with CLI-first ADB execution by default and persisted execution traces.";
+export const mobileTestingRunDescription =
+  "Tool for charter-driven mobile testing across android-emulator-testing, ios-simulator-testing, and mobile-mcp, with CLI-first ADB execution by default and persisted execution traces.";
 
-export const mobileQaRunSchema = z.object({
+export const mobileTestingRunSchema = z.object({
   charterPath: z
     .string()
     .min(1)
@@ -33,7 +33,7 @@ export const mobileQaRunSchema = z.object({
     .string()
     .optional()
     .describe(
-      "Artifacts directory. Default: artifacts/mobile-qa (legacy compatibility path).",
+      "Artifacts directory. Default: artifacts/mobile-testing.",
     ),
   scope: z.enum(["auto", "global", "project"]).optional(),
   androidMcp: z
@@ -58,7 +58,7 @@ function textResult(data: Record<string, unknown>) {
 
 function resolveRunnerPath(): string {
   const runtimeRoot = path.resolve(__dirname, "..", "..", "runtime");
-  return path.join(runtimeRoot, "mobile-qa-runner.mjs");
+  return path.join(runtimeRoot, "mobile-testing-runner.mjs");
 }
 
 function parseRunnerErrorOutput(error: unknown): Record<string, unknown> | null {
@@ -111,20 +111,20 @@ function isAndroidConfigured(scope: "auto" | "global" | "project") {
   return Boolean(androidConfig?.enabled ?? effective?.config?.android);
 }
 
-export function createMobileQaRunHandler(ctx: ToolRuntimeContext) {
-  return async function handleMobileQaRun(
-    args: z.infer<typeof mobileQaRunSchema>,
+export function createMobileTestingRunHandler(ctx: ToolRuntimeContext) {
+  return async function handleMobileTestingRun(
+    args: z.infer<typeof mobileTestingRunSchema>,
   ) {
     const scope = args.scope ?? "auto";
     const androidConfigured = isAndroidConfigured(scope);
     const androidMcpOptIn = Boolean(args.androidMcp);
     const providerPreference = androidMcpOptIn ? "android-mcp" : "adb";
-    const trace = createExecutionTrace(mobileQaRunName, {
+    const trace = createExecutionTrace(mobileTestingRunName, {
       charterPath: args.charterPath,
       apkPath: args.apkPath ?? null,
       packageId: args.packageId ?? null,
       avdName: args.avdName ?? null,
-      artifactsDir: args.artifactsDir ?? "artifacts/mobile-qa",
+      artifactsDir: args.artifactsDir ?? "artifacts/mobile-testing",
       scope,
       androidMcpOptIn,
       dryRun: Boolean(args.dryRun),
@@ -142,7 +142,7 @@ export function createMobileQaRunHandler(ctx: ToolRuntimeContext) {
       detail: args.charterPath,
       action: existsSync(path.resolve(args.charterPath))
         ? undefined
-        : "Create the mobile testing charter YAML file and rerun the compatibility tool `mobile_qa_run`.",
+        : "Create the mobile testing charter YAML file and rerun the `mobile_testing_run` tool.",
     });
     trace.gates.push({
       name: "android_mcp_opt_in",
@@ -188,7 +188,7 @@ export function createMobileQaRunHandler(ctx: ToolRuntimeContext) {
         providerPreference,
         providerUsed: null,
         nextSuggestedAction:
-          "Create the mobile testing charter file first, then rerun the compatibility tool `mobile_qa_run`.",
+          "Create the mobile testing charter file first, then rerun the `mobile_testing_run` tool.",
       };
       const tracePath = await persistExecutionTrace(
         finishExecutionTrace(trace, blockedResult),
@@ -202,7 +202,7 @@ export function createMobileQaRunHandler(ctx: ToolRuntimeContext) {
       "--charter",
       path.resolve(args.charterPath),
       "--artifacts-dir",
-      path.resolve(args.artifactsDir ?? "artifacts/mobile-qa"),
+      path.resolve(args.artifactsDir ?? "artifacts/mobile-testing"),
       "--scope",
       scope,
     ];
@@ -223,12 +223,12 @@ export function createMobileQaRunHandler(ctx: ToolRuntimeContext) {
     }
 
     trace.toolCalls.push({
-      name: "mobile-qa-runner",
+      name: "mobile-testing-runner",
       phase: "execute",
       outcome: "planned",
       arguments: {
         charterPath: path.resolve(args.charterPath),
-        artifactsDir: path.resolve(args.artifactsDir ?? "artifacts/mobile-qa"),
+        artifactsDir: path.resolve(args.artifactsDir ?? "artifacts/mobile-testing"),
         dryRun: Boolean(args.dryRun),
       },
     });
@@ -284,4 +284,4 @@ export function createMobileQaRunHandler(ctx: ToolRuntimeContext) {
   };
 }
 
-export const handleMobileQaRun = createMobileQaRunHandler;
+export const handleMobileTestingRun = createMobileTestingRunHandler;

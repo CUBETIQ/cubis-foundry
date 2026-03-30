@@ -7,7 +7,7 @@ import { promisify } from "node:util";
 import { describe, expect, it, vi, afterEach } from "vitest";
 
 const execFileAsync = promisify(execFile);
-const runnerPath = new URL("../../runtime/mobile-qa-runner.mjs", import.meta.url);
+const runnerPath = new URL("../../runtime/mobile-testing-runner.mjs", import.meta.url);
 
 afterEach(() => {
   vi.resetModules();
@@ -17,7 +17,7 @@ afterEach(() => {
 });
 
 async function runDryRunner(args: string[]) {
-  const workingDir = await mkdtemp(path.join(tmpdir(), "foundry-mobile-qa-"));
+    const workingDir = await mkdtemp(path.join(tmpdir(), "foundry-mobile-testing-"));
   const charterPath = path.join(workingDir, "charter.yml");
   await writeFile(
     charterPath,
@@ -41,14 +41,13 @@ async function runDryRunner(args: string[]) {
   }
 }
 
-describe("mobile QA runner", () => {
-  it("describes the MCP tool as a compatibility entrypoint for canonical mobile testing", async () => {
-    const { mobileQaRunDescription } = await import("./mobileQaRun.js");
+describe("mobile testing runner", () => {
+  it("describes the MCP tool as the canonical entrypoint for charter-driven mobile testing", async () => {
+    const { mobileTestingRunDescription } = await import("./mobileTestingRun.js");
 
-    expect(mobileQaRunDescription).toMatch(/compatibility/i);
-    expect(mobileQaRunDescription).toContain("android-emulator-testing");
-    expect(mobileQaRunDescription).toContain("ios-simulator-testing");
-    expect(mobileQaRunDescription).toContain("mobile-mcp");
+    expect(mobileTestingRunDescription).toContain("android-emulator-testing");
+    expect(mobileTestingRunDescription).toContain("ios-simulator-testing");
+    expect(mobileTestingRunDescription).toContain("mobile-mcp");
   });
 
   it("defaults to adb/CLI-first provider selection in dry-run mode", async () => {
@@ -60,7 +59,7 @@ describe("mobile QA runner", () => {
   });
 
   it("preserves providerUsed from structured runner failures", async () => {
-    const workdir = await mkdtemp(path.join(tmpdir(), "foundry-mobile-qa-handler-"));
+    const workdir = await mkdtemp(path.join(tmpdir(), "foundry-mobile-testing-handler-"));
     const charterPath = path.join(workdir, "charter.yml");
     await writeFile(
       charterPath,
@@ -84,8 +83,8 @@ describe("mobile QA runner", () => {
       readEffectiveConfig: () => ({ config: { android: { enabled: true } } }),
     }));
 
-    const { createMobileQaRunHandler } = await import("./mobileQaRun.js");
-    const handler = createMobileQaRunHandler({
+    const { createMobileTestingRunHandler } = await import("./mobileTestingRun.js");
+    const handler = createMobileTestingRunHandler({
       gatewayManager: {
         getStatus: () => ({
           providers: { android: { lastError: null } },
@@ -108,8 +107,8 @@ describe("mobile QA runner", () => {
   });
 
   it("makes compatibility rerun guidance explicit when the charter is missing", async () => {
-    const { createMobileQaRunHandler } = await import("./mobileQaRun.js");
-    const handler = createMobileQaRunHandler({
+    const { createMobileTestingRunHandler } = await import("./mobileTestingRun.js");
+    const handler = createMobileTestingRunHandler({
       gatewayManager: {
         getStatus: () => ({
           providers: { android: { lastError: null } },
@@ -126,13 +125,13 @@ describe("mobile QA runner", () => {
     const data = JSON.parse(result.content[0].text) as Record<string, unknown>;
 
     expect(data.nextSuggestedAction).toBe(
-      "Create the mobile testing charter file first, then rerun the compatibility tool `mobile_qa_run`.",
+      "Create the mobile testing charter file first, then rerun the `mobile_testing_run` tool.",
     );
   });
 
   it("labels the Android MCP branch as legacy compatibility in trace guidance", async () => {
-    const { createMobileQaRunHandler } = await import("./mobileQaRun.js");
-    const handler = createMobileQaRunHandler({
+    const { createMobileTestingRunHandler } = await import("./mobileTestingRun.js");
+    const handler = createMobileTestingRunHandler({
       gatewayManager: {
         getStatus: () => ({
           providers: { android: { lastError: null } },

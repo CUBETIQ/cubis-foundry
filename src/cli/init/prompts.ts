@@ -71,7 +71,7 @@ export async function promptInitSkillProfile(
     choices: [
       { name: "core", value: "core" },
       { name: "web-backend", value: "web-backend" },
-      { name: "mobile-testing (legacy id: mobile-qa)", value: "mobile-qa" },
+      { name: "mobile-testing", value: "mobile-testing" },
       { name: "full", value: "full" },
     ],
   });

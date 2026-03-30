@@ -155,33 +155,33 @@ const mobileHelp = mobileCommand
 const normalizedMobileHelp = normalizeWhitespace(mobileHelp);
 assertIncludes(
   normalizedMobileHelp,
-  "CLI-first mobile QA workflows",
+  "canonical mobile testing flows",
   "mobile help",
 );
-const mobileQaCommand = mobileCommand
-  ? findCommand(mobileCommand, "qa")
+const mobileTestingCommand = mobileCommand
+  ? findCommand(mobileCommand, "test")
   : null;
-const mobileQaRunCommand = mobileQaCommand
-  ? findCommand(mobileQaCommand, "run")
+const mobileTestingRunCommand = mobileTestingCommand
+  ? findCommand(mobileTestingCommand, "run")
   : null;
-const mobileQaRunHelp = mobileQaRunCommand
-  ? mobileQaRunCommand.helpInformation().replace(/\r\n/g, "\n")
+const mobileTestingRunHelp = mobileTestingRunCommand
+  ? mobileTestingRunCommand.helpInformation().replace(/\r\n/g, "\n")
   : "";
-const normalizedMobileQaRunHelp = normalizeWhitespace(mobileQaRunHelp);
+const normalizedMobileTestingRunHelp = normalizeWhitespace(mobileTestingRunHelp);
 assertIncludes(
-  normalizedMobileQaRunHelp,
+  normalizedMobileTestingRunHelp,
   "--android-mcp",
-  "mobile qa run help",
+  "mobile testing run help",
 );
 assertExcludes(
-  normalizedMobileQaRunHelp,
+  normalizedMobileTestingRunHelp,
   "--allow-adb-fallback",
-  "mobile qa run help",
+  "mobile testing run help",
 );
 assertIncludes(
-  normalizedMobileQaRunHelp,
+  normalizedMobileTestingRunHelp,
   "--charter <path>",
-  "mobile qa run help",
+  "mobile testing run help",
 );
 
 const webCommand = findCommand(program, "web");
@@ -191,28 +191,28 @@ const webHelp = webCommand
 const normalizedWebHelp = normalizeWhitespace(webHelp);
 assertIncludes(
   normalizedWebHelp,
-  "first-class web QA workflows",
+  "canonical web testing flows",
   "web help",
 );
-const webQaCommand = webCommand
-  ? findCommand(webCommand, "qa")
+const webTestingCommand = webCommand
+  ? findCommand(webCommand, "test")
   : null;
-const webQaRunCommand = webQaCommand
-  ? findCommand(webQaCommand, "run")
+const webTestingRunCommand = webTestingCommand
+  ? findCommand(webTestingCommand, "run")
   : null;
-const webQaRunHelp = webQaRunCommand
-  ? webQaRunCommand.helpInformation().replace(/\r\n/g, "\n")
+const webTestingRunHelp = webTestingRunCommand
+  ? webTestingRunCommand.helpInformation().replace(/\r\n/g, "\n")
   : "";
-const normalizedWebQaRunHelp = normalizeWhitespace(webQaRunHelp);
+const normalizedWebTestingRunHelp = normalizeWhitespace(webTestingRunHelp);
 assertIncludes(
-  normalizedWebQaRunHelp,
+  normalizedWebTestingRunHelp,
   "--charter <path>",
-  "web qa run help",
+  "web testing run help",
 );
 assertIncludes(
-  normalizedWebQaRunHelp,
-  "artifacts/web-qa",
-  "web qa run help",
+  normalizedWebTestingRunHelp,
+  "artifacts/web-testing",
+  "web testing run help",
 );
 if (failures.length > 0) {
   for (const failure of failures) {

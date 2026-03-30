@@ -5,11 +5,11 @@ import { spawn } from "node:child_process";
 import { expandPath, packageRoot } from "../pathing.js";
 import type { AnyOptions } from "../types.js";
 
-function resolveWebQaRunnerPath() {
-  return path.join(packageRoot(), "mcp", "runtime", "web-qa-runner.mjs");
+function resolveWebTestingRunnerPath() {
+  return path.join(packageRoot(), "mcp", "runtime", "web-testing-runner.mjs");
 }
 
-export async function runWebQa(options: AnyOptions) {
+export async function runWebTesting(options: AnyOptions) {
   try {
     const cwd = process.cwd();
     const charterValue = String(options.charter || "").trim();
@@ -17,7 +17,7 @@ export async function runWebQa(options: AnyOptions) {
       throw new Error("--charter is required.");
     }
 
-    const runnerPath = resolveWebQaRunnerPath();
+    const runnerPath = resolveWebTestingRunnerPath();
     if (!existsSync(runnerPath)) {
       throw new Error(
         `Web testing compatibility runner not found at ${runnerPath}. Reinstall or rebuild the package so mcp/runtime assets are present.`,
@@ -29,7 +29,7 @@ export async function runWebQa(options: AnyOptions) {
       "--charter",
       expandPath(charterValue, cwd),
       "--artifacts-dir",
-      expandPath(String(options.artifactsDir || "artifacts/web-qa"), cwd),
+      expandPath(String(options.artifactsDir || "artifacts/web-testing"), cwd),
       "--scope",
       String(options.scope || "auto"),
     ];
@@ -49,7 +49,7 @@ export async function runWebQa(options: AnyOptions) {
         if (signal) {
           reject(
             new Error(
-              `Web testing compatibility runner terminated by signal ${signal}.`,
+              `Web testing runner terminated by signal ${signal}.`,
             ),
           );
           return;
@@ -57,7 +57,7 @@ export async function runWebQa(options: AnyOptions) {
         if (code && code !== 0) {
           reject(
             new Error(
-              `Web testing compatibility runner exited with status ${code}.`,
+              `Web testing runner exited with status ${code}.`,
             ),
           );
           return;

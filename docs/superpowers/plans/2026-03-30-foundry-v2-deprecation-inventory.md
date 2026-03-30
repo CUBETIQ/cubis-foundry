@@ -18,11 +18,9 @@ Definitions:
 - `workflows/workflows/agent-environment-setup/shared/rules/STEERING.md` — still carries explicit Stitch/design-generation compatibility wording that should be collapsed if Stitch is no longer treated as a first-class user route.
 - `workflows/workflows/agent-environment-setup/shared/workflows/{mobile-qa.md,web-qa.md,ui-testing.md,test.md,implement.md,design-screen.md,design-refresh.md}` — shared workflow docs still carry stale QA naming or design-generation compatibility wording.
 - `workflows/design-datasets/{component-motifs.json,layout-patterns.json,mobile-patterns.json,motion-patterns.json,style-directions.json,token-language.json}` — design datasets still encode `stitch` in `platformScope`, which keeps deprecated design-generation labeling alive in active data.
-- `foundry/modules/design/SKILL.md` — still carries `frontend-design*` and `design-audit` compatibility aliases plus anti-pattern wording tied to the fragmented stack.
 - `foundry/modules/design/references/execution-contract.md` — still treats `.stitch/DESIGN.md` as a downstream deliverable and needs an explicit keep-as-compatibility-only or remove decision.
 - `foundry/modules/design-system/SKILL.md` — still instructs users to mirror canonical state into `.stitch/DESIGN.md`; keep only if the compatibility mirror remains an intentional supported output.
 - `foundry/modules/design-system/templates/claude.j2` — mirrors the same `.stitch/DESIGN.md` compatibility contract as the canonical skill body and must stay aligned with the final decision.
-- `foundry/modules/mobile-ui-design/SKILL.md` — still exposes the `frontend-design-mobile-patterns` compatibility alias even though the fragmented module tree is gone.
 - `scripts/{generate-mcp-manifest.mjs,generate-mcp-rules-block.mjs,generate-platform-assets.mjs,mcp-http-smoke.mjs,validate-cli-help.mjs}` — generator/help scripts still teach, assert, or reinforce stale names.
 - `scripts/validate-skill-packaging.mjs` — packaging validation still treats `.stitch/DESIGN.md` as a special compatibility path and should be kept only if that mirror survives final cleanup.
 

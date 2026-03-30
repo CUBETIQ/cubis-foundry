@@ -10,17 +10,16 @@ afterEach(() => {
   vi.unmock("../runtime/executionTrace.js");
 });
 
-describe("web QA run", () => {
-  it("describes the MCP tool as a compatibility entrypoint for canonical web testing", async () => {
-    const { webQaRunDescription } = await import("./webQaRun.js");
+describe("web testing run", () => {
+  it("describes the MCP tool as the canonical entrypoint for charter-driven web testing", async () => {
+    const { webTestingRunDescription } = await import("./webTestingRun.js");
 
-    expect(webQaRunDescription).toMatch(/compatibility/i);
-    expect(webQaRunDescription).toContain("web-testing");
-    expect(webQaRunDescription).toContain("Playwright MCP");
+    expect(webTestingRunDescription).toContain("web-testing");
+    expect(webTestingRunDescription).toContain("Playwright MCP");
   });
 
   it("keeps the trace pinned to web-testing and its canonical reference", async () => {
-    const workingDir = await mkdtemp(path.join(tmpdir(), "foundry-web-qa-"));
+    const workingDir = await mkdtemp(path.join(tmpdir(), "foundry-web-testing-"));
     const charterPath = path.join(workingDir, "charter.yml");
     await writeFile(
       charterPath,
@@ -74,8 +73,8 @@ describe("web QA run", () => {
       },
     }));
 
-    const { createWebQaRunHandler } = await import("./webQaRun.js");
-    const handler = createWebQaRunHandler({
+    const { createWebTestingRunHandler } = await import("./webTestingRun.js");
+    const handler = createWebTestingRunHandler({
       gatewayManager: {
         getStatus: () => ({
           providers: {
@@ -119,8 +118,8 @@ describe("web QA run", () => {
     }
   });
 
-  it("makes compatibility rerun guidance explicit when Playwright is unavailable", async () => {
-    const workingDir = await mkdtemp(path.join(tmpdir(), "foundry-web-qa-blocked-"));
+  it("makes rerun guidance explicit when Playwright is unavailable", async () => {
+    const workingDir = await mkdtemp(path.join(tmpdir(), "foundry-web-testing-blocked-"));
     const charterPath = path.join(workingDir, "charter.yml");
     await writeFile(
       charterPath,
@@ -128,8 +127,8 @@ describe("web QA run", () => {
       "utf8",
     );
 
-    const { createWebQaRunHandler } = await import("./webQaRun.js");
-    const handler = createWebQaRunHandler({
+    const { createWebTestingRunHandler } = await import("./webTestingRun.js");
+    const handler = createWebTestingRunHandler({
       gatewayManager: {
         getStatus: () => ({
           providers: {
@@ -162,7 +161,7 @@ describe("web QA run", () => {
       const payload = JSON.parse(response.content[0].text) as Record<string, unknown>;
 
       expect(payload.nextSuggestedAction).toBe(
-        "Start the Playwright MCP server and rerun the compatibility tool `web_qa_run`.",
+        "Start the Playwright MCP server and rerun the `web_testing_run` tool.",
       );
     } finally {
       await rm(workingDir, { recursive: true, force: true });

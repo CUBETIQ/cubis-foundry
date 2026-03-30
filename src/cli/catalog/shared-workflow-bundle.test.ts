@@ -30,7 +30,7 @@ describe("shared workflow bundle", () => {
     const files = [
       "workflows/workflows/agent-environment-setup/shared/agents/tester.md",
       "workflows/workflows/agent-environment-setup/shared/workflows/test.md",
-      "workflows/workflows/agent-environment-setup/shared/workflows/web-qa.md",
+      "workflows/workflows/agent-environment-setup/shared/workflows/web-testing.md",
       "workflows/workflows/agent-environment-setup/shared/workflows/implement.md",
       "workflows/workflows/agent-environment-setup/shared/workflows/ui-testing.md",
       "workflows/workflows/agent-environment-setup/shared/workflows/design-screen.md",

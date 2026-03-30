@@ -166,18 +166,17 @@ export {
 } from "./mobileGetStatus.js";
 
 export {
-  mobileQaRunName,
-  mobileQaRunDescription,
-  mobileQaRunSchema,
-  createMobileQaRunHandler,
-  handleMobileQaRun,
-} from "./mobileQaRun.js";
+  mobileTestingRunName,
+  mobileTestingRunDescription,
+  mobileTestingRunSchema,
+  createMobileTestingRunHandler,
+  handleMobileTestingRun,
+} from "./mobileTestingRun.js";
 
 export {
-  webQaRunName,
-  webQaRunDescription,
-  webQaRunSchema,
-  createWebQaRunHandler,
-  handleWebQaRun,
-} from "./webQaRun.js";
-
+  webTestingRunName,
+  webTestingRunDescription,
+  webTestingRunSchema,
+  createWebTestingRunHandler,
+  handleWebTestingRun,
+} from "./webTestingRun.js";

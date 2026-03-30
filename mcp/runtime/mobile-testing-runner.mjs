@@ -27,7 +27,7 @@ function parseArgs(argv) {
     apk: null,
     packageId: null,
     avd: null,
-    artifactsDir: path.resolve("artifacts", "mobile-qa"),
+    artifactsDir: path.resolve("artifacts", "mobile-testing"),
     scope: "auto",
     androidMcp: false,
     dryRun: false,

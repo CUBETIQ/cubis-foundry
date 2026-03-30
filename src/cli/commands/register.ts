@@ -57,8 +57,8 @@ export interface CliRegistrationDeps {
   runMcpStatus: WorkflowAction;
   runMcpTest: WorkflowTargetAction;
   runMcpProxy: WorkflowAction;
-  runMobileQa: WorkflowAction;
-  runWebQa: WorkflowAction;
+  runMobileTesting: WorkflowAction;
+  runWebTesting: WorkflowAction;
 }
 
 export function registerCommands(deps: CliRegistrationDeps) {
@@ -91,7 +91,7 @@ export function registerCommands(deps: CliRegistrationDeps) {
     )
     .option(
       "--skill-profile <profile>",
-      "skills profile: core|web-backend|mobile-qa (legacy mobile-testing id)|full",
+      "skills profile: core|web-backend|mobile-testing|full",
     )
     .option(
       "--skills-scope <scope>",
@@ -309,11 +309,11 @@ export function registerCommands(deps: CliRegistrationDeps) {
   });
 
   registerMobileCommands(program, {
-    runMobileQa: deps.runMobileQa,
+    runMobileTesting: deps.runMobileTesting,
   });
 
   registerWebCommands(program, {
-    runWebQa: deps.runWebQa,
+    runWebTesting: deps.runWebTesting,
   });
 
   registerCatalogCommands(program);

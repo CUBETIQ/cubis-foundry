@@ -116,11 +116,12 @@ These remain first-class because users naturally search by these names and they 
 - `mobile-mcp` is the first-class semantic mobile runtime in the default testing architecture
 - `qa`, `unit-testing`, `integration-testing`, and `playwright-interactive` are removed as skill surfaces after their content is redistributed into the canonical testing, language, and framework skills
 
-### 3.3 Design is reduced to one master, two explicit specializations, and one canonical support surface
+### 3.3 Design is reduced to one master, three explicit specializations, and one canonical support surface
 
 - `design` — master design skill
 - `web-ui-design`
 - `mobile-ui-design`
+- `desktop-ui-design`
 - `design-system` — canonical systemization support surface
 
 Supporting design content can still exist, but it should not create more top-level user-facing names unless absolutely necessary.
@@ -249,7 +250,18 @@ Responsibilities:
 - mobile navigation and density
 - implementation-ready handoff for iOS and Android surfaces
 
-### 5.4 Design-system support surface
+### 5.4 Desktop specialization
+
+Canonical skill: `desktop-ui-design`
+
+Responsibilities:
+
+- multi-pane workspace execution
+- desktop productivity patterns
+- dense data and inspector layouts
+- keyboard-first and comparison-oriented handoff for desktop-grade products
+
+### 5.5 Design-system support surface
 
 Canonical skill: `design-system`
 

@@ -281,47 +281,47 @@ function createStitchRouteManifest(): RouteManifest {
   };
 }
 
-function createQaRouteManifest(): RouteManifest {
+function createTestingRouteManifest(): RouteManifest {
   return {
     $schema: "cubis-foundry-route-manifest-v1",
     generatedAt: new Date(0).toISOString(),
-    contentHash: "qa-test",
+    contentHash: "testing-test",
     summary: { totalRoutes: 2, workflows: 2, agents: 0 },
     routes: [
       {
         kind: "workflow",
-        id: "web-qa",
-        command: "/web-qa",
-        displayName: "Web QA Workflow",
-        description: "Run browser QA through the canonical web-testing path",
-        triggers: ["web qa", "browser qa", "playwright"],
+        id: "web-testing",
+        command: "/web-testing",
+        displayName: "Web Testing Workflow",
+        description: "Run browser testing through the canonical web-testing path",
+        triggers: ["web testing", "browser testing", "playwright"],
         primaryAgent: "tester",
         supportingAgents: [],
         primarySkills: ["web-testing"],
         supportingSkills: [],
         artifacts: {
-          codex: { compatibilityAlias: "$workflow-web-qa", workflowFile: "web-qa.md" },
-          copilot: { workflowFile: "web-qa.md", promptFile: "web-qa.prompt.md" },
-          antigravity: { workflowFile: "web-qa.md", commandFile: "web-qa.toml" },
-          claude: { workflowFile: "web-qa.md" },
+          codex: { compatibilityAlias: "$workflow-web-testing", workflowFile: "web-testing.md" },
+          copilot: { workflowFile: "web-testing.md", promptFile: "web-testing.prompt.md" },
+          antigravity: { workflowFile: "web-testing.md", commandFile: "web-testing.toml" },
+          claude: { workflowFile: "web-testing.md" },
         },
       },
       {
         kind: "workflow",
-        id: "mobile-qa",
-        command: "/mobile-qa",
-        displayName: "Mobile QA Workflow",
-        description: "Run CLI-first mobile QA through canonical Android and iOS testing paths",
-        triggers: ["mobile qa", "android qa", "ios qa"],
+        id: "mobile-testing",
+        command: "/mobile-testing",
+        displayName: "Mobile Testing Workflow",
+        description: "Run CLI-first mobile testing through canonical Android and iOS testing paths",
+        triggers: ["mobile testing", "android testing", "ios testing"],
         primaryAgent: "tester",
         supportingAgents: [],
         primarySkills: ["android-emulator-testing", "ios-simulator-testing"],
         supportingSkills: [],
         artifacts: {
-          codex: { compatibilityAlias: "$workflow-mobile-qa", workflowFile: "mobile-qa.md" },
-          copilot: { workflowFile: "mobile-qa.md", promptFile: "mobile-qa.prompt.md" },
-          antigravity: { workflowFile: "mobile-qa.md", commandFile: "mobile-qa.toml" },
-          claude: { workflowFile: "mobile-qa.md" },
+          codex: { compatibilityAlias: "$workflow-mobile-testing", workflowFile: "mobile-testing.md" },
+          copilot: { workflowFile: "mobile-testing.md", promptFile: "mobile-testing.prompt.md" },
+          antigravity: { workflowFile: "mobile-testing.md", commandFile: "mobile-testing.toml" },
+          claude: { workflowFile: "mobile-testing.md" },
         },
       },
     ],
@@ -812,34 +812,34 @@ describe("skill tools", () => {
     ]);
   });
 
-  it("routes browser QA intent to web-testing", async () => {
+  it("routes browser testing intent to web-testing", async () => {
     const result = payload(
       await handleRouteResolve(
         { intent: "test the checkout flow in the browser with playwright" },
-        createQaRouteManifest(),
+        createTestingRouteManifest(),
       ),
     );
     expect(result).toMatchObject({
       resolved: true,
       kind: "workflow",
       primarySkillHint: "web-testing",
-      matchedBy: "qa-runtime-intent",
+      matchedBy: "testing-runtime-intent",
     });
     expect(result.primarySkills).toEqual(["web-testing"]);
   });
 
-  it("routes iOS simulator QA intent to the canonical iOS testing skill", async () => {
+  it("routes iOS simulator testing intent to the canonical iOS testing skill", async () => {
     const result = payload(
       await handleRouteResolve(
-        { intent: "qa the ios login flow on simulator with simctl" },
-        createQaRouteManifest(),
+        { intent: "test the ios login flow on simulator with simctl" },
+        createTestingRouteManifest(),
       ),
     );
     expect(result).toMatchObject({
       resolved: true,
       kind: "workflow",
       primarySkillHint: "ios-simulator-testing",
-      matchedBy: "qa-runtime-intent",
+      matchedBy: "testing-runtime-intent",
     });
     expect(result.primarySkills).toEqual([
       "ios-simulator-testing",

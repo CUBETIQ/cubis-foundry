@@ -23,9 +23,6 @@ compatibility:
   - copilot
   - gemini
   - antigravity
-metadata:
-  aliases:
-    - frontend-design-mobile-patterns
 ---
 
 # Mobile UI Design

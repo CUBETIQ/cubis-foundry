@@ -164,12 +164,12 @@
         "design-system.toml",
         "implement.toml",
         "loop.toml",
-        "mobile-qa.toml",
+        "mobile-testing.toml",
         "plan.toml",
         "review.toml",
         "test.toml",
         "ui-testing.toml",
-        "web-qa.toml",
+        "web-testing.toml",
         "agent-debugger.toml",
         "agent-explorer.toml",
         "agent-implementer.toml",
@@ -250,12 +250,12 @@
         "design-system",
         "implement",
         "loop",
-        "mobile-qa",
+        "mobile-testing",
         "plan",
         "review",
         "test",
         "ui-testing",
-        "web-qa"
+        "web-testing"
       ],
       "rulesTemplate": "platforms/codex/rules/AGENTS.md",
       "hooks": [
@@ -367,12 +367,12 @@
         "design-system.prompt.md",
         "implement.prompt.md",
         "loop.prompt.md",
-        "mobile-qa.prompt.md",
+        "mobile-testing.prompt.md",
         "plan.prompt.md",
         "review.prompt.md",
         "test.prompt.md",
         "ui-testing.prompt.md",
-        "web-qa.prompt.md"
+        "web-testing.prompt.md"
       ]
     },
     "claude": {
@@ -446,12 +446,12 @@
         "design-system",
         "implement",
         "loop",
-        "mobile-qa",
+        "mobile-testing",
         "plan",
         "review",
         "test",
         "ui-testing",
-        "web-qa"
+        "web-testing"
       ],
       "rulesTemplate": "platforms/claude/rules/CLAUDE.md",
       "hooks": [
@@ -533,12 +533,12 @@
         "design-system.toml",
         "implement.toml",
         "loop.toml",
-        "mobile-qa.toml",
+        "mobile-testing.toml",
         "plan.toml",
         "review.toml",
         "test.toml",
         "ui-testing.toml",
-        "web-qa.toml",
+        "web-testing.toml",
         "agent-debugger.toml",
         "agent-explorer.toml",
         "agent-implementer.toml",

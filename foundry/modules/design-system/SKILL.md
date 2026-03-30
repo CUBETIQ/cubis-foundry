@@ -25,9 +25,6 @@ compatibility:
   - copilot
   - gemini
   - antigravity
-metadata:
-  aliases:
-    - frontend-design-system
 ---
 
 # Design System

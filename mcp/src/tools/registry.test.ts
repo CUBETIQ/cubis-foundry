@@ -185,8 +185,8 @@ describe("tool registry", () => {
     expect(names).toContain("mobile_get_mode");
     expect(names).toContain("mobile_set_profile");
     expect(names).toContain("mobile_get_status");
-    expect(names).toContain("mobile_qa_run");
-    expect(names).toContain("web_qa_run");
+    expect(names).toContain("mobile_testing_run");
+    expect(names).toContain("web_testing_run");
   });
 
   it("has exactly 25 built-in tools", () => {
@@ -286,7 +286,6 @@ describe("tool registry", () => {
     }
   });
 });
-
 
 
 

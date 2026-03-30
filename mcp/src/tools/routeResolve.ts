@@ -167,17 +167,18 @@ const MOBILE_DESIGN_SUPPORTING_SKILLS = [
 const DESKTOP_DESIGN_SUPPORTING_SKILLS = [
   "desktop-ui-design",
 ];
-const MOBILE_QA_SIGNALS = [
-  "mobile qa",
-  "android qa",
-  "flutter qa",
-  "emulator qa",
+const MOBILE_TESTING_SIGNALS = [
+  "mobile testing",
+  "android testing",
+  "flutter testing",
+  "emulator testing",
+  "simulator testing",
 ];
-const WEB_QA_SIGNALS = [
-  "web qa",
-  "browser qa",
-  "playwright qa",
-  "website qa",
+const WEB_TESTING_SIGNALS = [
+  "web testing",
+  "browser testing",
+  "playwright testing",
+  "website testing",
 ];
 
 function normalize(value: string): string {
@@ -498,26 +499,26 @@ function chooseStitchUiRoute(manifest: RouteManifest): RouteEntry | null {
   );
 }
 
-function chooseQaRoute(intent: string, manifest: RouteManifest): RouteEntry | null {
+function chooseTestingRoute(intent: string, manifest: RouteManifest): RouteEntry | null {
   const normalizedIntent = normalize(intent);
-  const wantsMobileQa =
-    includesAnyPhrase(normalizedIntent, MOBILE_QA_SIGNALS) ||
-    (/\b(android|flutter|emulator|adb|ios|iphone|ipad|simulator|simctl)\b/.test(normalizedIntent) && /\b(test|qa|verify|validation)\b/.test(normalizedIntent));
-  if (wantsMobileQa) {
+  const wantsMobileTesting =
+    includesAnyPhrase(normalizedIntent, MOBILE_TESTING_SIGNALS) ||
+    (/\b(android|flutter|emulator|adb|ios|iphone|ipad|simulator|simctl)\b/.test(normalizedIntent) && /\b(test|verify|validation)\b/.test(normalizedIntent));
+  if (wantsMobileTesting) {
     return (
       manifest.routes.find(
-        (entry) => entry.kind === "workflow" && entry.id === "mobile-qa",
+        (entry) => entry.kind === "workflow" && entry.id === "mobile-testing",
       ) || null
     );
   }
 
-  const wantsWebQa =
-    includesAnyPhrase(normalizedIntent, WEB_QA_SIGNALS) ||
-    (/\b(playwright|browser|web|website|page|pages)\b/.test(normalizedIntent) && /\b(test|qa|verify|validation)\b/.test(normalizedIntent));
-  if (wantsWebQa) {
+  const wantsWebTesting =
+    includesAnyPhrase(normalizedIntent, WEB_TESTING_SIGNALS) ||
+    (/\b(playwright|browser|web|website|page|pages)\b/.test(normalizedIntent) && /\b(test|verify|validation)\b/.test(normalizedIntent));
+  if (wantsWebTesting) {
     return (
       manifest.routes.find(
-        (entry) => entry.kind === "workflow" && entry.id === "web-qa",
+        (entry) => entry.kind === "workflow" && entry.id === "web-testing",
       ) || null
     );
   }
@@ -623,9 +624,9 @@ export async function handleRouteResolve(
     };
   }
 
-  const qaRoute = chooseQaRoute(intent, routeManifest);
-  if (qaRoute) {
-    const isWebQaRoute = qaRoute.id === "web-qa";
+  const testingRoute = chooseTestingRoute(intent, routeManifest);
+  if (testingRoute) {
+    const isWebTestingRoute = testingRoute.id === "web-testing";
     const isIosIntent = /\b(ios|iphone|ipad|simulator|simctl)\b/i.test(intent);
     const mobilePrimarySkill = isIosIntent
       ? "ios-simulator-testing"
@@ -635,18 +636,18 @@ export async function handleRouteResolve(
       : ["android-emulator-testing", "ios-simulator-testing"];
     const payload = buildResolvedPayload(
       intent,
-      qaRoute,
-      "qa-runtime-intent",
+      testingRoute,
+      "testing-runtime-intent",
       detectedLanguageSkill,
       {
-        primarySkillHint: isWebQaRoute ? "web-testing" : mobilePrimarySkill,
-        primarySkills: isWebQaRoute ? ["web-testing"] : mobilePrimarySkills,
-        supportingSkills: qaRoute.supportingSkills,
-        explanation: isWebQaRoute
-          ? "Matched browser QA intent and routed to /web-qa so Playwright MCP execution, evidence capture, and QA reporting stay on the canonical web-testing runtime path."
+        primarySkillHint: isWebTestingRoute ? "web-testing" : mobilePrimarySkill,
+        primarySkills: isWebTestingRoute ? ["web-testing"] : mobilePrimarySkills,
+        supportingSkills: testingRoute.supportingSkills,
+        explanation: isWebTestingRoute
+          ? "Matched browser testing intent and routed to /web-testing so Playwright MCP execution, evidence capture, and reporting stay on the canonical web-testing runtime path."
           : isIosIntent
-            ? "Matched iOS simulator QA intent and routed to /mobile-qa so the CLI-first iOS testing path stays primary while Android coverage remains available when needed."
-            : "Matched mobile QA intent and routed to /mobile-qa so the CLI-first Android testing path stays primary while iOS simulator coverage remains available when needed.",
+            ? "Matched iOS simulator testing intent and routed to /mobile-testing so the CLI-first iOS testing path stays primary while Android coverage remains available when needed."
+            : "Matched mobile testing intent and routed to /mobile-testing so the CLI-first Android testing path stays primary while iOS simulator coverage remains available when needed.",
       },
     );
     return {

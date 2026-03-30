@@ -14,12 +14,12 @@ import {
 const execFileAsync = promisify(execFile);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export const webQaRunName = "web_qa_run";
+export const webTestingRunName = "web_testing_run";
 
-export const webQaRunDescription =
-  "Compatibility tool for charter-driven web testing on the canonical web-testing + Playwright MCP runtime, with deterministic artifacts and persisted execution traces.";
+export const webTestingRunDescription =
+  "Tool for charter-driven web testing on the canonical web-testing + Playwright MCP runtime, with deterministic artifacts and persisted execution traces.";
 
-export const webQaRunSchema = z.object({
+export const webTestingRunSchema = z.object({
   charterPath: z
     .string()
     .min(1)
@@ -28,7 +28,7 @@ export const webQaRunSchema = z.object({
     .string()
     .optional()
     .describe(
-      "Artifacts directory. Default: artifacts/web-qa (legacy compatibility path).",
+      "Artifacts directory. Default: artifacts/web-testing.",
     ),
   scope: z.enum(["auto", "global", "project"]).optional(),
   dryRun: z.boolean().optional(),
@@ -47,17 +47,17 @@ function textResult(data: Record<string, unknown>) {
 
 function resolveRunnerPath(): string {
   const runtimeRoot = path.resolve(__dirname, "..", "..", "runtime");
-  return path.join(runtimeRoot, "web-qa-runner.mjs");
+  return path.join(runtimeRoot, "web-testing-runner.mjs");
 }
 
-export function createWebQaRunHandler(_ctx: ToolRuntimeContext) {
-  return async function handleWebQaRun(
-    args: z.infer<typeof webQaRunSchema>,
+export function createWebTestingRunHandler(_ctx: ToolRuntimeContext) {
+  return async function handleWebTestingRun(
+    args: z.infer<typeof webTestingRunSchema>,
   ) {
     const scope = args.scope ?? "auto";
-    const trace = createExecutionTrace(webQaRunName, {
+    const trace = createExecutionTrace(webTestingRunName, {
       charterPath: args.charterPath,
-      artifactsDir: args.artifactsDir ?? "artifacts/web-qa",
+      artifactsDir: args.artifactsDir ?? "artifacts/web-testing",
       scope,
       dryRun: Boolean(args.dryRun),
     });
@@ -72,7 +72,7 @@ export function createWebQaRunHandler(_ctx: ToolRuntimeContext) {
       detail: args.charterPath,
       action: existsSync(path.resolve(args.charterPath))
         ? undefined
-        : "Create the web testing charter YAML file and rerun the compatibility tool `web_qa_run`.",
+        : "Create the web testing charter YAML file and rerun the `web_testing_run` tool.",
     });
     trace.gates.push({
       name: "gateway_initialized",
@@ -96,8 +96,8 @@ export function createWebQaRunHandler(_ctx: ToolRuntimeContext) {
         providerPreference: "playwright-mcp",
         providerUsed: null,
         nextSuggestedAction: !existsSync(path.resolve(args.charterPath))
-          ? "Create the web testing charter file first, then rerun the compatibility tool `web_qa_run`."
-          : "Start the Playwright MCP server and rerun the compatibility tool `web_qa_run`.",
+          ? "Create the web testing charter file first, then rerun the `web_testing_run` tool."
+          : "Start the Playwright MCP server and rerun the `web_testing_run` tool.",
       };
       const tracePath = await persistExecutionTrace(
         finishExecutionTrace(trace, blockedResult),
@@ -111,7 +111,7 @@ export function createWebQaRunHandler(_ctx: ToolRuntimeContext) {
       "--charter",
       path.resolve(args.charterPath),
       "--artifacts-dir",
-      path.resolve(args.artifactsDir ?? "artifacts/web-qa"),
+      path.resolve(args.artifactsDir ?? "artifacts/web-testing"),
       "--scope",
       scope,
     ];
@@ -120,12 +120,12 @@ export function createWebQaRunHandler(_ctx: ToolRuntimeContext) {
     }
 
     trace.toolCalls.push({
-      name: "web-qa-runner",
+      name: "web-testing-runner",
       phase: "execute",
       outcome: "planned",
       arguments: {
         charterPath: path.resolve(args.charterPath),
-        artifactsDir: path.resolve(args.artifactsDir ?? "artifacts/web-qa"),
+        artifactsDir: path.resolve(args.artifactsDir ?? "artifacts/web-testing"),
         dryRun: Boolean(args.dryRun),
       },
     });
@@ -140,7 +140,7 @@ export function createWebQaRunHandler(_ctx: ToolRuntimeContext) {
         trace.artifacts.push({
           kind: "report",
           path: parsed.reportPath,
-          description: "Web QA report",
+          description: "Web testing report",
         });
       }
       const result = {
@@ -172,4 +172,4 @@ export function createWebQaRunHandler(_ctx: ToolRuntimeContext) {
   };
 }
 
-export const handleWebQaRun = createWebQaRunHandler;
+export const handleWebTestingRun = createWebTestingRunHandler;

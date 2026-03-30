@@ -6,7 +6,7 @@ afterEach(() => {
 });
 
 describe("promptInitSkillProfile()", () => {
-  it("shows mobile-qa as a legacy compatibility id instead of the canonical label", async () => {
+  it("shows mobile-testing as the canonical mobile profile label", async () => {
     const select = vi.fn(async ({ choices }) => choices[2]?.value);
     vi.doMock("@inquirer/prompts", () => ({
       checkbox: vi.fn(),
@@ -16,14 +16,14 @@ describe("promptInitSkillProfile()", () => {
     }));
 
     const { promptInitSkillProfile } = await import("./prompts.js");
-    await promptInitSkillProfile("mobile-qa");
+    await promptInitSkillProfile("mobile-testing");
 
     expect(select).toHaveBeenCalledWith(
       expect.objectContaining({
         choices: expect.arrayContaining([
           expect.objectContaining({
-            name: "mobile-testing (legacy id: mobile-qa)",
-            value: "mobile-qa",
+            name: "mobile-testing",
+            value: "mobile-testing",
           }),
         ]),
       }),

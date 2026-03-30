@@ -2,11 +2,11 @@ import { describe, expect, it } from "vitest";
 import { formatInitSummary } from "./execute.js";
 
 describe("formatInitSummary()", () => {
-  it("labels mobile-qa as the legacy id in the init summary", () => {
+  it("labels mobile-testing as the canonical mobile profile in the init summary", () => {
     const summary = formatInitSummary({
       bundleId: "starter",
       platforms: ["codex"],
-      skillProfile: "mobile-qa",
+      skillProfile: "mobile-testing",
       skillsScope: "project",
       mcpScope: "project",
       mcpRuntime: "local",
@@ -16,8 +16,6 @@ describe("formatInitSummary()", () => {
       postmanWorkspaceId: null,
     });
 
-    expect(summary).toContain(
-      "- Skill profile: mobile-testing (legacy id: mobile-qa)",
-    );
+    expect(summary).toContain("- Skill profile: mobile-testing");
   });
 });

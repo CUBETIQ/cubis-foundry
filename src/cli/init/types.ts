@@ -1,5 +1,5 @@
 export type InitScope = "project" | "global";
-export type InitSkillProfile = "core" | "web-backend" | "mobile-qa" | "full";
+export type InitSkillProfile = "core" | "web-backend" | "mobile-testing" | "full";
 export type InitMcpId =
   | "cubis-foundry"
   | "postman"

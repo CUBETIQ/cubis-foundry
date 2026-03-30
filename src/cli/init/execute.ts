@@ -11,9 +11,7 @@ function hasMcpSelection(selectedMcps: InitMcpId[], mcpId: InitMcpId) {
 }
 
 function describeInitSkillProfile(profile: InitSkillProfile) {
-  return profile === "mobile-qa"
-    ? "mobile-testing (legacy id: mobile-qa)"
-    : profile;
+  return profile;
 }
 
 export function buildInitExecutionPlan({

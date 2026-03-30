@@ -26,8 +26,8 @@ import { registerCommands } from "./commands/register.js";
 import { DEFAULT_SKILL_PROFILE } from "./constants.js";
 import { createDoctorReport, printDoctorReport } from "./doctor/index.js";
 import { assertBundledMcpBuildFreshness } from "./mcp/buildFreshness.js";
-import { runMobileQa } from "./mobile/run.js";
-import { runWebQa } from "./web/run.js";
+import { runMobileTesting } from "./mobile/run.js";
+import { runWebTesting } from "./web/run.js";
 import {
   buildInitExecutionPlan,
   formatInitSummary,
@@ -310,7 +310,7 @@ const TECH_RUST_FRAMEWORK_SIGNALS = [
   ["rocket", "Rocket"],
   ["tokio", "Tokio"],
 ];
-const SKILL_PROFILES = new Set(["core", "web-backend", "mobile-qa", "full"]);
+const SKILL_PROFILES = new Set(["core", "web-backend", "mobile-testing", "full"]);
 const REMOVE_ALL_SCOPES = new Set(["project", "global", "all"]);
 const CATALOG_FILES = Object.freeze({
   core: path.join("catalogs", "core.json"),
@@ -380,7 +380,7 @@ function normalizeSkillProfile(value) {
     .toLowerCase();
   if (!SKILL_PROFILES.has(normalized)) {
     throw new Error(
-      `Unknown skill profile '${value}'. Use core|web-backend|mobile-qa (legacy mobile-testing id)|full.`,
+      `Unknown skill profile '${value}'. Use core|web-backend|mobile-testing|full.`,
     );
   }
   return normalized;
@@ -3199,7 +3199,7 @@ function inferContextBudget(snapshot) {
   );
   const hasMcp = snapshot.isMcpServer || snapshot.mcpSignals.length > 0;
   const suggestedProfile =
-    mobileDetected ? "mobile-qa" : webBackendDetected || hasMcp ? "web-backend" : "core";
+    mobileDetected ? "mobile-testing" : webBackendDetected || hasMcp ? "web-backend" : "core";
   return {
     suggestedProfile,
   };
@@ -13955,8 +13955,8 @@ function resolveSkillProfileFromWorkspaceProfile(profile) {
       return "core";
     case "full":
       return "full";
-    case "mobile-qa":
-      return "mobile-qa";
+    case "mobile-testing":
+      return "mobile-testing";
     case "research":
       return "core";
     case "developer":
@@ -14052,7 +14052,7 @@ async function runInitWizard(options) {
 
     const inferredSkillProfile =
       detectedStack.stack === "mobile"
-        ? "mobile-qa"
+        ? "mobile-testing"
         : resolveSkillProfileFromWorkspaceProfile(defaultProfile);
     const defaultSkillProfile = normalizeSkillProfile(
       options.skillProfile || inferredSkillProfile,
@@ -15512,8 +15512,8 @@ export function buildCliProgram() {
     runMcpStatus,
     runMcpTest,
     runMcpProxy,
-    runMobileQa,
-    runWebQa,
+    runMobileTesting,
+    runWebTesting,
   });
 }
 

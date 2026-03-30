@@ -149,7 +149,7 @@ export async function runAndroidMcpSession({ args, charter, directories }) {
   }
 
   const client = await connectStdioClient({
-    name: "foundry-mobile-qa",
+    name: "foundry-mobile-testing",
     command: androidConfig.command,
     args: androidConfig.args,
     env: { ...process.env, ...androidConfig.env },

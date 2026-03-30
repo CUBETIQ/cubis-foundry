@@ -24,14 +24,6 @@ compatibility:
   - copilot
   - gemini
   - antigravity
-metadata:
-  aliases:
-    - frontend-design
-    - frontend-design-core
-    - frontend-design-implementation-handoff
-    - frontend-design-screen-brief
-    - frontend-design-style-selector
-    - design-audit
 ---
 
 # Design

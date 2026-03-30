@@ -5,11 +5,11 @@ import { spawn } from "node:child_process";
 import { expandPath, packageRoot } from "../pathing.js";
 import type { AnyOptions } from "../types.js";
 
-function resolveMobileQaRunnerPath() {
-  return path.join(packageRoot(), "mcp", "runtime", "mobile-qa-runner.mjs");
+function resolveMobileTestingRunnerPath() {
+  return path.join(packageRoot(), "mcp", "runtime", "mobile-testing-runner.mjs");
 }
 
-export async function runMobileQa(options: AnyOptions) {
+export async function runMobileTesting(options: AnyOptions) {
   try {
     const cwd = process.cwd();
     const charterValue = String(options.charter || "").trim();
@@ -17,7 +17,7 @@ export async function runMobileQa(options: AnyOptions) {
       throw new Error("--charter is required.");
     }
 
-    const runnerPath = resolveMobileQaRunnerPath();
+    const runnerPath = resolveMobileTestingRunnerPath();
     if (!existsSync(runnerPath)) {
       throw new Error(
         `Mobile testing compatibility runner not found at ${runnerPath}. Reinstall or rebuild the package so mcp/runtime assets are present.`,
@@ -29,7 +29,7 @@ export async function runMobileQa(options: AnyOptions) {
       "--charter",
       expandPath(charterValue, cwd),
       "--artifacts-dir",
-      expandPath(String(options.artifactsDir || "artifacts/mobile-qa"), cwd),
+      expandPath(String(options.artifactsDir || "artifacts/mobile-testing"), cwd),
       "--scope",
       String(options.scope || "auto"),
     ];
@@ -61,7 +61,7 @@ export async function runMobileQa(options: AnyOptions) {
         if (signal) {
           reject(
             new Error(
-              `Mobile testing compatibility runner terminated by signal ${signal}.`,
+              `Mobile testing runner terminated by signal ${signal}.`,
             ),
           );
           return;
@@ -69,7 +69,7 @@ export async function runMobileQa(options: AnyOptions) {
         if (code && code !== 0) {
           reject(
             new Error(
-              `Mobile testing compatibility runner exited with status ${code}.`,
+              `Mobile testing runner exited with status ${code}.`,
             ),
           );
           return;

@@ -50,7 +50,7 @@ const TOOL_CANDIDATES = {
 function parseArgs(argv) {
   const args = {
     charter: null,
-    artifactsDir: path.resolve("artifacts", "web-qa"),
+    artifactsDir: path.resolve("artifacts", "web-testing"),
     scope: "auto",
     dryRun: false,
   };
@@ -328,11 +328,11 @@ function resolvePlaywrightConfig(configValue) {
   };
 }
 
-async function runWebQa(args, charter, directories) {
+async function runWebTesting(args, charter, directories) {
   const effective = await readEffectiveConfig(args.scope);
   const playwright = resolvePlaywrightConfig(effective?.config || {});
   const client = await connectHttpClient({
-    name: "foundry-web-qa",
+    name: "foundry-web-testing",
     mcpUrl: playwright.mcpUrl,
   });
 
@@ -422,7 +422,7 @@ async function main() {
   let lastError = null;
   for (let attempt = 1; attempt <= 2; attempt += 1) {
     try {
-      const execution = await runWebQa(args, charter, directories);
+      const execution = await runWebTesting(args, charter, directories);
       const result = {
         ...execution,
         flow: charter.flow,

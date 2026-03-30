@@ -1,10 +1,10 @@
 ---
-command: "/web-qa"
-description: "Run charter-driven web QA through Playwright MCP with deterministic browser evidence and report-ready artifacts."
-triggers: ["web qa", "browser qa", "playwright qa", "website qa", "page qa"]
+command: "/web-testing"
+description: "Run charter-driven web testing through Playwright MCP with deterministic browser evidence and report-ready artifacts."
+triggers: ["web testing", "browser testing", "playwright testing", "website testing", "page testing"]
 ---
 
-# Web QA Workflow
+# Web Testing Workflow
 
 ## When to use
 
@@ -28,11 +28,11 @@ Use when validating a real browser flow with Playwright MCP and the main outcome
 ## Context notes
 
 - Provide the charter path, base URL, and any required starting route or environment assumption.
-- This route is for live QA execution and evidence capture, not generalized suite authoring.
+- This route is for live testing execution and evidence capture, not generalized suite authoring.
 ## Runtime contract
 
 - Prefer Playwright MCP as the execution path.
-- Save artifacts under `artifacts/web-qa/`.
+- Save artifacts under `artifacts/web-testing/`.
 - Capture deterministic screenshots, DOM snapshots, console logs, network evidence, and accessibility evidence when requested.
 - Stop after one controlled retry and report evidence.
 

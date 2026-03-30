@@ -187,17 +187,17 @@ import {
   handleMobileGetStatus,
 } from "./mobileGetStatus.js";
 import {
-  mobileQaRunName,
-  mobileQaRunDescription,
-  mobileQaRunSchema,
-  createMobileQaRunHandler,
-} from "./mobileQaRun.js";
+  mobileTestingRunName,
+  mobileTestingRunDescription,
+  mobileTestingRunSchema,
+  createMobileTestingRunHandler,
+} from "./mobileTestingRun.js";
 import {
-  webQaRunName,
-  webQaRunDescription,
-  webQaRunSchema,
-  createWebQaRunHandler,
-} from "./webQaRun.js";
+  webTestingRunName,
+  webTestingRunDescription,
+  webTestingRunSchema,
+  createWebTestingRunHandler,
+} from "./webTestingRun.js";
 
 import {
   mcpGatewayStatusName,
@@ -501,23 +501,23 @@ export const TOOL_REGISTRY: readonly ToolRegistryEntry[] = [
       ),
   },
   {
-    name: mobileQaRunName,
-    description: mobileQaRunDescription,
-    schema: mobileQaRunSchema,
+    name: mobileTestingRunName,
+    description: mobileTestingRunDescription,
+    schema: mobileTestingRunSchema,
     category: "mobile",
     createHandler: (ctx) => async (args) =>
-      createMobileQaRunHandler(ctx)(
-        args as z.infer<typeof mobileQaRunSchema>,
+      createMobileTestingRunHandler(ctx)(
+        args as z.infer<typeof mobileTestingRunSchema>,
       ),
   },
   {
-    name: webQaRunName,
-    description: webQaRunDescription,
-    schema: webQaRunSchema,
+    name: webTestingRunName,
+    description: webTestingRunDescription,
+    schema: webTestingRunSchema,
     category: "playwright",
     createHandler: (ctx) => async (args) =>
-      createWebQaRunHandler(ctx)(
-        args as z.infer<typeof webQaRunSchema>,
+      createWebTestingRunHandler(ctx)(
+        args as z.infer<typeof webTestingRunSchema>,
       ),
   },
 ];
@@ -561,5 +561,4 @@ export function buildRegistrySummary(): {
 
   return { categories, totalTools: TOOL_REGISTRY.length };
 }
-
 
