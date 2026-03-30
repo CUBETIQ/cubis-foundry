@@ -1,0 +1,74 @@
+description = "Add or harden verification so the target behavior is covered by repeatable tests and focused checks."
+prompt = '''
+Execute the native projection of the /test workflow.
+
+Add or harden verification so the target behavior is covered by repeatable tests and focused checks.
+
+Execution contract:
+1. Treat route selection as already resolved by this command; do not begin with skill discovery.
+2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.
+Attached skills:
+- Load these exact skill IDs first: `web-testing`, `android-emulator-testing`, `ios-simulator-testing`.
+- Local skill file hints if installed: `.gemini/skills/web-testing/SKILL.md`, `.gemini/skills/android-emulator-testing/SKILL.md`, `.gemini/skills/ios-simulator-testing/SKILL.md`.
+- Treat the skill bundle as already resolved for this workflow. Do not start with route discovery.
+3. Confirm the request fits the workflow's "When to use" section before acting.
+4. Execute according to "Workflow steps" and apply "Context notes".
+5. Complete "Verification" checks and report concrete evidence.
+6. If freshness, public comparison, or explicit research needs appear, pause implementation and load `deep-research` or route to research first.
+7. For outside evidence: repo first, official docs next, Reddit/community only as labeled secondary evidence.
+8. Keep runtime boundaries explicit: use Playwright MCP for web flows, prefer `mobile-mcp` for semantic mobile flows, and switch to CLI fallback when you need deterministic logs, build state, or replayable evidence.
+
+Workflow source:
+# Test Workflow
+
+## What this workflow does
+
+Chooses the right test layer, adds or improves coverage, and records what behavior is now verified.
+
+## When to use
+
+Use this when the implementation exists but verification is weak, missing, or too manual.
+
+## Agent chain
+
+`tester`
+
+## Step details
+
+1. Identify the behavior that must be proven.
+2. Add the narrowest useful tests or checks.
+3. Run them and report both coverage added and remaining gaps.
+
+## Skill routing
+
+- Route browser QA to `web-testing`.
+- Route Android emulator work to `android-emulator-testing`.
+- Route iOS simulator work to `ios-simulator-testing`.
+- For code-level unit or integration coverage, load the owning language or framework skill instead of generic testing wrappers.
+
+## Context notes
+
+Provide the change summary, risk areas, and any known flaky or expensive checks.
+
+## Verification
+
+Completion requires executed evidence, not just proposed test ideas.
+
+## Output contract
+
+```yaml
+TEST_WORKFLOW_RESULT:
+  coverage_added:
+    - <test>
+  commands_run:
+    - <command>
+  remaining_gaps:
+    - <gap>
+```
+
+## Follow-up items
+
+Typical next step: `/review`
+
+If command arguments are provided, treat them as additional user context.
+'''

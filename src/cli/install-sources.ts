@@ -36,26 +36,6 @@ export function resolveInstallSourcePath({
     return bundleSource;
   }
 
-  const runtimeCandidates = [
-    ...(workspaceRelativeDestinationPath
-      ? [workspaceRelativeDestinationPath]
-      : []),
-    ...((workspaceRelativeDestinationPaths || []).filter(Boolean) as string[]),
-  ];
-
-  for (const runtimeCandidate of runtimeCandidates) {
-    const runtimeSource = join(
-      repoRoot,
-      "generated",
-      "runtime-assets",
-      platform,
-      runtimeCandidate,
-    );
-    if (existsSync(runtimeSource)) {
-      return runtimeSource;
-    }
-  }
-
   const repoCandidates = [
     ...(repoRelativeFallbackPath ? [repoRelativeFallbackPath] : []),
     ...((repoRelativeFallbackPaths || []).filter(Boolean) as string[]),

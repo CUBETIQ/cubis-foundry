@@ -1,0 +1,72 @@
+description = "Execute a scoped change end-to-end, using the smallest set of skills and checks required to finish correctly."
+prompt = '''
+Execute the native projection of the /implement workflow.
+
+Execute a scoped change end-to-end, using the smallest set of skills and checks required to finish correctly.
+
+Execution contract:
+1. Treat route selection as already resolved by this command; do not begin with skill discovery.
+2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.
+Attached skills:
+- Load these exact skill IDs first: `spec-driven-delivery`, `web-testing`.
+- Local skill file hints if installed: `.gemini/skills/spec-driven-delivery/SKILL.md`, `.gemini/skills/web-testing/SKILL.md`.
+- Treat the skill bundle as already resolved for this workflow. Do not start with route discovery.
+3. Confirm the request fits the workflow's "When to use" section before acting.
+4. Execute according to "Workflow steps" and apply "Context notes".
+5. Complete "Verification" checks and report concrete evidence.
+6. If freshness, public comparison, or explicit research needs appear, pause implementation and load `deep-research` or route to research first.
+7. For outside evidence: repo first, official docs next, Reddit/community only as labeled secondary evidence.
+8. Keep runtime boundaries explicit: use Playwright MCP for web flows, prefer `mobile-mcp` for semantic mobile flows, and switch to CLI fallback when you need deterministic logs, build state, or replayable evidence.
+
+Workflow source:
+# Implement Workflow
+
+## What this workflow does
+
+Routes directly to delivery, keeping planning overhead low while still enforcing verification and concise reporting.
+
+## When to use
+
+Use this when the task is understood, the acceptance criteria are clear, and the main need is execution rather than discovery.
+
+## Agent chain
+
+`implementer`
+
+## Step details
+
+1. Inspect the target code and nearby tests.
+2. Make the smallest coherent change.
+3. Run focused verification and fix regressions introduced during implementation.
+
+## Skill routing
+
+- Load the domain skill for the affected subsystem.
+- Add the owning language or framework skill when code-level verification is needed.
+- Add `web-testing`, `android-emulator-testing`, or `ios-simulator-testing` when user-visible runtime verification is needed.
+
+## Context notes
+
+Provide the acceptance criteria, relevant files, and any verification commands that must pass.
+
+## Verification
+
+Completion requires changed files, executed checks, and a short explanation of behavior change.
+
+## Output contract
+
+```yaml
+IMPLEMENT_WORKFLOW_RESULT:
+  files_changed:
+    - <path>
+  verification:
+    - <command>
+  behavior_change: <summary>
+```
+
+## Follow-up items
+
+Typical next step: `/review` or `/test`
+
+If command arguments are provided, treat them as additional user context.
+'''

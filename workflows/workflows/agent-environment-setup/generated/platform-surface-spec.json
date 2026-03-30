@@ -201,13 +201,13 @@
         "notes": "Foundry treats `.gemini/GEMINI.md` as primary. Root `GEMINI.md` is compatibility/read guidance only."
       },
       "skills": {
-        "vendorSupport": "native MCP guidance, no required project skill dir",
-        "foundryStatus": "degraded",
-        "projectPath": null,
-        "globalPath": null,
-        "format": "n/a by default",
-        "nativeOrProjected": "MCP-loaded guidance with optional hint-only Markdown",
-        "notes": "Foundry does not ship `.gemini/skills`. Optional `.agents/skills/<id>/SKILL.md` hints may exist only when explicitly enabled."
+        "vendorSupport": "native",
+        "foundryStatus": "native",
+        "projectPath": ".gemini/skills/<skill-id>/SKILL.md",
+        "globalPath": "~/.gemini/skills/<skill-id>/SKILL.md",
+        "format": "Markdown",
+        "nativeOrProjected": "native",
+        "notes": "Foundry now ships native Gemini skill files under `.gemini/skills`, including sidecar references when present."
       },
       "workflows": {
         "vendorSupport": "native command files",

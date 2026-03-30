@@ -4,8 +4,8 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 export ROOT_DIR
 CLI="$ROOT_DIR/bin/cubis.js"
-EXPECTED_WORKFLOW_COUNT="$(find "$ROOT_DIR/workflows/workflows/agent-environment-setup/shared/workflows" -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')"
-EXPECTED_AGENT_COUNT="$(find "$ROOT_DIR/workflows/workflows/agent-environment-setup/shared/agents" -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')"
+EXPECTED_WORKFLOW_COUNT="$(find "$ROOT_DIR/foundry/modules/workflows" -maxdepth 2 -type f -name 'workflow.md' | wc -l | tr -d ' ')"
+EXPECTED_AGENT_COUNT="$(find "$ROOT_DIR/foundry/modules/agents-core/agents" -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')"
 EXPECTED_ROUTE_COMMAND_COUNT="$((EXPECTED_WORKFLOW_COUNT + EXPECTED_AGENT_COUNT))"
 export EXPECTED_WORKFLOW_COUNT EXPECTED_AGENT_COUNT EXPECTED_ROUTE_COMMAND_COUNT
 
@@ -107,8 +107,8 @@ node "$CLI" add codex --yes >/tmp/cbx-a2.log
 [ -d .codex/agents ]
 [ -f .codex/agents/implementer.toml ]
 [ -f .codex/agents/reviewer.toml ]
-[ -f .agents/skills/implement/SKILL.md ]
-[ -f .agents/skills/loop/SKILL.md ]
+[ -f .agents/skills/workflow-implement/SKILL.md ]
+[ -f .agents/skills/workflow-loop/SKILL.md ]
 if [ "$(find .codex/agents -maxdepth 1 -type f -name '*.toml' | wc -l | tr -d ' ')" -ne "$EXPECTED_AGENT_COUNT" ]; then
   fail_step "Codex expected exactly $EXPECTED_AGENT_COUNT agent files"
 fi

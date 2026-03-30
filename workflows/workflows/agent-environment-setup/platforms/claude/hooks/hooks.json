@@ -1,0 +1,79 @@
+{
+  "claude": {
+    "manifest": {
+      "version": 1,
+      "hooks": [
+        {
+          "id": "route-guard-pre-tool",
+          "event": "PreToolUse",
+          "script": "scripts/pre-tool-example.mjs"
+        },
+        {
+          "id": "verification-reminder-post-tool",
+          "event": "PostToolUse",
+          "script": "scripts/post-tool-example.mjs"
+        }
+      ]
+    },
+    "settings": {
+      "hooks": {
+        "PreToolUse": [
+          {
+            "matcher": "*",
+            "command": "node .claude/hooks/scripts/pre-tool-example.mjs"
+          }
+        ],
+        "PostToolUse": [
+          {
+            "matcher": "*",
+            "command": "node .claude/hooks/scripts/post-tool-example.mjs"
+          }
+        ]
+      }
+    }
+  },
+  "copilot": {
+    "manifest": {
+      "version": 1,
+      "hooks": [
+        {
+          "id": "route-guard-pre-tool",
+          "event": "PreToolUse",
+          "script": "scripts/pre-tool-example.mjs"
+        },
+        {
+          "id": "verification-reminder-post-tool",
+          "event": "PostToolUse",
+          "script": "scripts/post-tool-example.mjs"
+        }
+      ]
+    }
+  },
+  "gemini": {
+    "manifest": {
+      "version": 1,
+      "hooks": [
+        {
+          "id": "route-guard-pre-tool",
+          "event": "PreToolUse",
+          "script": "scripts/pre-tool-example.mjs"
+        },
+        {
+          "id": "verification-reminder-post-tool",
+          "event": "PostToolUse",
+          "script": "scripts/post-tool-example.mjs"
+        }
+      ]
+    },
+    "settings": {
+      "hooks": {
+        "preToolUse": [
+          "node .gemini/hooks/scripts/pre-tool-example.mjs"
+        ],
+        "postToolUse": [
+          "node .gemini/hooks/scripts/post-tool-example.mjs"
+        ]
+      }
+    }
+  }
+}

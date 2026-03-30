@@ -36,13 +36,26 @@ const BUNDLE_ROOT = path.join(
   "agent-environment-setup",
 );
 const SHARED_ROOT = path.join(BUNDLE_ROOT, "shared");
-const SHARED_AGENTS_DIR = path.join(SHARED_ROOT, "agents");
-const SHARED_WORKFLOWS_DIR = path.join(SHARED_ROOT, "workflows");
+const CANONICAL_MODULES_DIR = path.join(ROOT, "foundry", "modules");
+const CANONICAL_AGENTS_DIR = path.join(
+  CANONICAL_MODULES_DIR,
+  "agents-core",
+  "agents",
+);
+const CANONICAL_WORKFLOWS_DIR = path.join(
+  CANONICAL_MODULES_DIR,
+  "workflows",
+);
+const CANONICAL_HOOKS_DIR = path.join(
+  CANONICAL_MODULES_DIR,
+  "hooks-core",
+  "hooks",
+);
 const GENERATED_DIR = path.join(BUNDLE_ROOT, "generated");
 const ROUTE_MANIFEST_FILE = "route-manifest.json";
 const ROUTE_MANIFEST_SCHEMA_FILE = "cubis-foundry-route-manifest-v2.schema.json";
 const BUNDLE_MANIFEST_FILE = "manifest.json";
-const CANONICAL_SKILLS_DIR = path.join(ROOT, "workflows", "skills");
+const CANONICAL_SKILLS_DIR = CANONICAL_MODULES_DIR;
 const DOCS_DIR = path.join(ROOT, "docs");
 const PATTERN_REGISTRY_SCHEMA_FILE =
   "cubis-foundry-pattern-registry-v1.schema.json";
@@ -60,6 +73,21 @@ const PLATFORM_DIRS = {
   claude: path.join(BUNDLE_ROOT, "platforms", "claude"),
   gemini: path.join(BUNDLE_ROOT, "platforms", "gemini"),
 };
+
+const RULE_SOURCE_FILES = {
+  antigravity: path.join(ROOT, ".agents", "rules", "GEMINI.md"),
+  codex: path.join(ROOT, "AGENTS.md"),
+  copilot: path.join(ROOT, ".github", "copilot-instructions.md"),
+  claude: path.join(ROOT, "CLAUDE.md"),
+  gemini: path.join(ROOT, ".gemini", "GEMINI.md"),
+};
+
+const CANONICAL_HOOK_ENTRIES = [
+  "hooks.json",
+  "pre-tool.md",
+  "post-tool.md",
+  "scripts",
+];
 
 const COPILOT_ALLOWED_AGENT_KEYS = new Set([
   "agents",
@@ -108,8 +136,16 @@ function unique(values) {
   return [...new Set(values)];
 }
 
+function escapeRegex(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 function normalizeMarkdownId(fileName) {
   return path.basename(fileName, ".md").trim();
+}
+
+function workflowGeneratedSkillId(workflowId) {
+  return `workflow-${workflowId}`;
 }
 
 function toCopilotAgentFileName(fileName) {
@@ -135,8 +171,24 @@ function getArray(frontmatter, key) {
     return unique(parseInlineArray(bracketMatch[1]));
   }
 
+  const blockMatch = frontmatter.match(
+    new RegExp(
+      `^\\s*${escapeRegex(key)}\\s*:\\s*\\n((?:\\s*[-*]\\s*.+(?:\\n|$))+)`,
+      "m",
+    ),
+  );
+  if (blockMatch) {
+    return unique(
+      blockMatch[1]
+        .split(/\r?\n/)
+        .map((line) => line.replace(/^\s*[-*]\s*/, "").trim())
+        .map((item) => stripQuotes(item))
+        .filter(Boolean),
+    );
+  }
+
   const singleLine = frontmatter.match(
-    new RegExp(`^\\s*${key}\\s*:\\s*(.+)$`, "m"),
+    new RegExp(`^\\s*${escapeRegex(key)}\\s*:\\s*(.+)$`, "m"),
   );
   if (!singleLine) return [];
   return unique(parseInlineArray(singleLine[1]));
@@ -161,7 +213,9 @@ function normalizeMarkdownSkillReferences(markdown) {
 }
 
 function hasSection(markdownBody, heading) {
-  return new RegExp(`^##\\s+${heading}$`, "m").test(markdownBody);
+  return new RegExp(`^##\\s+${escapeRegex(heading)}\\s*$`, "im").test(
+    markdownBody,
+  );
 }
 
 function sanitizeFrontmatterByAllowedKeys(frontmatter, allowedKeys) {
@@ -222,7 +276,10 @@ function buildSkillRoutingSection(skills) {
 
 function extractSection(body, heading) {
   const match = body.match(
-    new RegExp(`^##\\s+${heading}\\s*\\n([\\s\\S]*?)(?=^##\\s+|\\Z)`, "m"),
+    new RegExp(
+      `^##\\s+${escapeRegex(heading)}\\s*\\n([\\s\\S]*?)(?=^##\\s+|\\Z)`,
+      "im",
+    ),
   );
   return match ? match[1].trim() : "";
 }
@@ -242,8 +299,30 @@ function parseInlineCodeList(value) {
   );
 }
 
-function parseWorkflowRouting(body) {
-  const routing = extractSection(body, "Routing");
+function parseWorkflowRouting(workflow) {
+  const fromFrontmatter = normalizeSkillIds(getArray(workflow.frontmatter, "agentChain"));
+  if (fromFrontmatter.length > 0) {
+    return {
+      primaryAgent: fromFrontmatter[0],
+      supportingAgents: fromFrontmatter.slice(1),
+    };
+  }
+
+  const agentChain = extractSection(workflow.body, "Agent chain");
+  const chainAgents = unique(
+    [...agentChain.matchAll(/`?([A-Za-z0-9_-]+)`?/g)]
+      .map((match) => match[1])
+      .filter(Boolean)
+      .filter((value) => value !== "->"),
+  );
+  if (chainAgents.length > 0) {
+    return {
+      primaryAgent: chainAgents[0],
+      supportingAgents: chainAgents.slice(1),
+    };
+  }
+
+  const routing = extractSection(workflow.body, "Routing");
   const referencedAgents = unique(
     [...routing.matchAll(/@([A-Za-z0-9_-]+)/g)].map((match) => match[1]),
   );
@@ -252,24 +331,35 @@ function parseWorkflowRouting(body) {
   );
   const primaryAgent =
     primaryMatch?.[1] || referencedAgents[0] || "orchestrator";
-  const supportingAgents = unique(
-    referencedAgents.filter((agentId) => agentId !== primaryAgent),
-  );
-
-  return { primaryAgent, supportingAgents };
+  return {
+    primaryAgent,
+    supportingAgents: unique(
+      referencedAgents.filter((agentId) => agentId !== primaryAgent),
+    ),
+  };
 }
 
-function parseWorkflowSkillRouting(body) {
-  const skillRouting = extractSection(body, "Skill Routing");
+function parseWorkflowSkillRouting(workflow) {
+  const primarySkills = normalizeSkillIds(
+    getArray(workflow.frontmatter, "primarySkills"),
+  );
+  const supportingSkills = normalizeSkillIds(
+    getArray(workflow.frontmatter, "supportingSkills"),
+  );
+  if (primarySkills.length > 0 || supportingSkills.length > 0) {
+    return { primarySkills, supportingSkills };
+  }
+
+  const skillRouting =
+    extractSection(workflow.body, "Skill routing") ||
+    extractSection(workflow.body, "Skill Routing");
   const primaryMatch = skillRouting.match(/Primary skills:\s*(.+)$/im);
   const supportingMatch = skillRouting.match(
     /Supporting skills(?:\s*\(optional\))?:\s*(.+)$/im,
   );
 
   return {
-    primarySkills: normalizeSkillIds(
-      parseInlineCodeList(primaryMatch?.[1] || ""),
-    ),
+    primarySkills: normalizeSkillIds(parseInlineCodeList(primaryMatch?.[1] || "")),
     supportingSkills: normalizeSkillIds(
       parseInlineCodeList(supportingMatch?.[1] || ""),
     ),
@@ -307,9 +397,7 @@ function buildAttachedSkillsSection(skillIds, platform) {
 }
 
 function buildWorkflowAttachedSkillsSection(workflow, platform) {
-  const { primarySkills, supportingSkills } = parseWorkflowSkillRouting(
-    workflow.body,
-  );
+  const { primarySkills, supportingSkills } = parseWorkflowSkillRouting(workflow);
   return buildAttachedSkillsSection(
     [...primarySkills, ...supportingSkills],
     platform,
@@ -348,12 +436,8 @@ function parseAgentTriggers(agent) {
 
 function buildRouteManifest({ sharedAgents, sharedWorkflows }) {
   const workflowRoutes = sharedWorkflows.map((workflow) => {
-    const { primaryAgent, supportingAgents } = parseWorkflowRouting(
-      workflow.body,
-    );
-    const { primarySkills, supportingSkills } = parseWorkflowSkillRouting(
-      workflow.body,
-    );
+    const { primaryAgent, supportingAgents } = parseWorkflowRouting(workflow);
+    const { primarySkills, supportingSkills } = parseWorkflowSkillRouting(workflow);
     const commandId = normalizeRouteCommandId(workflow.command);
 
     return {
@@ -723,6 +807,46 @@ async function listTopLevelCanonicalSkillIds() {
   return skillIds.sort((a, b) => a.localeCompare(b));
 }
 
+async function loadCanonicalWorkflows(requiredSections = []) {
+  const entries = await fs.readdir(CANONICAL_WORKFLOWS_DIR, {
+    withFileTypes: true,
+  });
+  const items = [];
+
+  for (const entry of entries) {
+    if (!entry.isDirectory() || entry.name.startsWith(".")) continue;
+    const fileName = "workflow.md";
+    const fullPath = path.join(CANONICAL_WORKFLOWS_DIR, entry.name, fileName);
+    if (!(await pathExists(fullPath))) continue;
+    const raw = (await fs.readFile(fullPath, "utf8")).replace(/\r\n/g, "\n");
+    const parsed = parseFrontmatter(raw);
+    if (!parsed) {
+      throw new Error(`Missing frontmatter: ${fullPath}`);
+    }
+
+    for (const section of requiredSections) {
+      if (!hasSection(parsed.body, section)) {
+        throw new Error(
+          `Missing required section "${section}" in ${fullPath}`,
+        );
+      }
+    }
+
+    items.push({
+      id: entry.name,
+      fileName,
+      raw,
+      frontmatter: parsed.raw,
+      body: parsed.body,
+      command: getScalar(parsed.raw, "command") || `/${entry.name}`,
+      description:
+        getScalar(parsed.raw, "description") || `${entry.name} workflow`,
+    });
+  }
+
+  return items.sort((a, b) => a.id.localeCompare(b.id));
+}
+
 function buildBundleManifest({
   sharedAgents,
   sharedWorkflows,
@@ -730,7 +854,7 @@ function buildBundleManifest({
   platformCapabilityContracts,
 }) {
   const workflowSkillDirs = sharedWorkflows
-    .map((workflow) => workflow.id)
+    .map((workflow) => workflowGeneratedSkillId(workflow.id))
     .sort((a, b) => a.localeCompare(b));
   const codexAgentFiles = sharedAgents
     .map((agent) => `${normalizeMarkdownId(agent.fileName)}.toml`)
@@ -750,100 +874,6 @@ function buildBundleManifest({
   const promptFiles = sharedWorkflows
     .map((workflow) => `${workflow.id}.prompt.md`)
     .sort((a, b) => a.localeCompare(b));
-  const defaultHooks = [
-    {
-      type: "conductor-reference",
-      optional: true,
-      description:
-        "If Conductor artifacts exist, workflows can reference them as supporting context.",
-    },
-  ];
-  const geminiHooks = [
-    ...defaultHooks,
-    {
-      type: "template",
-      event: "BeforeAgent",
-      file: "README.md",
-      optional: true,
-      description: "Usage guide for the Gemini route/research and security hook templates.",
-    },
-    {
-      type: "template",
-      event: "BeforeAgent",
-      file: "settings.snippet.json",
-      optional: true,
-      description:
-        "Settings snippet that wires route/research and shell-security hooks into Gemini CLI.",
-    },
-    {
-      type: "template",
-      event: "BeforeAgent",
-      file: "route-research-guard.mjs",
-      optional: true,
-      description:
-        "Hook script template that reinforces explicit-route honoring and research escalation before planning.",
-    },
-    {
-      type: "template",
-      event: "BeforeTool",
-      file: "preflight-security-guard.mjs",
-      optional: true,
-      description:
-        "Hook script template that denies destructive shell commands before Gemini executes them.",
-    },
-  ];
-  const copilotHooks = [
-    ...defaultHooks,
-    {
-      type: "template",
-      event: "preToolUse",
-      file: "README.md",
-      optional: true,
-      description: "Usage guide for the Copilot security hook templates.",
-    },
-    {
-      type: "template",
-      event: "preToolUse",
-      file: "guardrails.json",
-      optional: true,
-      description:
-        "Repository hook configuration that wires the pre-tool security guard into GitHub Copilot.",
-    },
-    {
-      type: "template",
-      event: "preToolUse",
-      file: "pre-tool-security-guard.mjs",
-      optional: true,
-      description:
-        "Hook script template that denies destructive shell commands before Copilot tool execution.",
-    },
-  ];
-  const claudeHooks = [
-    ...defaultHooks,
-    {
-      type: "template",
-      event: "UserPromptSubmit",
-      file: "README.md",
-      optional: true,
-      description: "Usage guide for the Claude route/research hook templates.",
-    },
-    {
-      type: "template",
-      event: "UserPromptSubmit",
-      file: "settings.snippet.json",
-      optional: true,
-      description:
-        "Settings snippet that wires the route/research reminder hook into Claude Code.",
-    },
-    {
-      type: "template",
-      event: "UserPromptSubmit",
-      file: "route-research-guard.mjs",
-      optional: true,
-      description:
-        "Hook script template that reinforces explicit-route honoring and research escalation.",
-    },
-  ];
   const blockingSummary = buildBlockingSummary(platformCapabilityContracts);
 
   return (
@@ -870,7 +900,7 @@ function buildBundleManifest({
             skills: topLevelSkillIds,
             generatedSkills: [],
             rulesTemplate: "platforms/antigravity/rules/GEMINI.md",
-            hooks: defaultHooks,
+            hooks: [],
             commands: [...workflowCommandFiles, ...agentCommandFiles],
           },
           codex: {
@@ -879,7 +909,7 @@ function buildBundleManifest({
             skills: topLevelSkillIds,
             generatedSkills: workflowSkillDirs,
             rulesTemplate: "platforms/codex/rules/AGENTS.md",
-            hooks: defaultHooks,
+            hooks: [],
           },
           copilot: {
             workflows: [],
@@ -887,7 +917,7 @@ function buildBundleManifest({
             skills: topLevelSkillIds,
             generatedSkills: [],
             rulesTemplate: "platforms/copilot/rules/copilot-instructions.md",
-            hooks: copilotHooks,
+            hooks: CANONICAL_HOOK_ENTRIES,
             prompts: promptFiles,
           },
           claude: {
@@ -896,15 +926,15 @@ function buildBundleManifest({
             skills: topLevelSkillIds,
             generatedSkills: workflowSkillDirs,
             rulesTemplate: "platforms/claude/rules/CLAUDE.md",
-            hooks: claudeHooks,
+            hooks: CANONICAL_HOOK_ENTRIES,
           },
           gemini: {
             workflows: [],
             agents: [],
-            skills: [],
+            skills: topLevelSkillIds,
             generatedSkills: [],
             rulesTemplate: "platforms/gemini/rules/GEMINI.md",
-            hooks: geminiHooks,
+            hooks: CANONICAL_HOOK_ENTRIES,
             commands: [...workflowCommandFiles, ...agentCommandFiles],
           },
         },
@@ -1720,6 +1750,11 @@ async function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
   const copilotHooks = new Map();
   const claudeHooks = new Map();
   const geminiHooks = new Map();
+  const codexRules = new Map();
+  const antigravityRules = new Map();
+  const copilotRules = new Map();
+  const claudeRules = new Map();
+  const geminiRules = new Map();
   const generated = new Map();
   const docs = new Map();
   const topLevelSkillIds = await listTopLevelCanonicalSkillIds();
@@ -1753,6 +1788,46 @@ async function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
     const transformed = buildCopilotAgentMarkdown(agent.raw);
     copilotAgents.set(toCopilotAgentFileName(agent.fileName), transformed.markdown);
   }
+
+  const canonicalHooks = await readFileMap(CANONICAL_HOOKS_DIR);
+  for (const [name, content] of canonicalHooks.entries()) {
+    copilotHooks.set(name, content);
+    claudeHooks.set(name, content);
+    geminiHooks.set(name, content);
+  }
+
+  codexRules.set(
+    "AGENTS.md",
+    (await fs.readFile(RULE_SOURCE_FILES.codex, "utf8")).replace(/\r\n/g, "\n"),
+  );
+  antigravityRules.set(
+    "GEMINI.md",
+    (await fs.readFile(RULE_SOURCE_FILES.antigravity, "utf8")).replace(
+      /\r\n/g,
+      "\n",
+    ),
+  );
+  copilotRules.set(
+    "copilot-instructions.md",
+    (await fs.readFile(RULE_SOURCE_FILES.copilot, "utf8")).replace(
+      /\r\n/g,
+      "\n",
+    ),
+  );
+  claudeRules.set(
+    "CLAUDE.md",
+    (await fs.readFile(RULE_SOURCE_FILES.claude, "utf8")).replace(
+      /\r\n/g,
+      "\n",
+    ),
+  );
+  geminiRules.set(
+    "GEMINI.md",
+    (await fs.readFile(RULE_SOURCE_FILES.gemini, "utf8")).replace(
+      /\r\n/g,
+      "\n",
+    ),
+  );
 
   generated.set(
     ROUTE_MANIFEST_FILE,
@@ -1859,26 +1934,6 @@ async function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
     );
   }
 
-  claudeHooks.set("README.md", buildClaudeHookReadme());
-  claudeHooks.set("settings.snippet.json", buildClaudeHookSettingsSnippet());
-  claudeHooks.set("route-research-guard.mjs", buildClaudeHookScript());
-  geminiHooks.set("README.md", buildGeminiHookReadme());
-  geminiHooks.set("settings.snippet.json", buildGeminiHookSettingsSnippet());
-  geminiHooks.set(
-    "route-research-guard.mjs",
-    buildGeminiRouteResearchHookScript(),
-  );
-  geminiHooks.set(
-    "preflight-security-guard.mjs",
-    buildGeminiSecurityHookScript(),
-  );
-  copilotHooks.set("README.md", buildCopilotHookReadme());
-  copilotHooks.set("guardrails.json", buildCopilotHookConfig());
-  copilotHooks.set(
-    "pre-tool-security-guard.mjs",
-    buildCopilotSecurityHookScript(),
-  );
-
   return {
     codexAgents,
     codexGeneratedSkills,
@@ -1897,6 +1952,11 @@ async function buildExpectedMaps({ sharedAgents, sharedWorkflows }) {
     copilotHooks,
     claudeHooks,
     geminiHooks,
+    codexRules,
+    antigravityRules,
+    copilotRules,
+    claudeRules,
+    geminiRules,
     generated,
     docs,
   };
@@ -1909,6 +1969,12 @@ function buildTargets(maps) {
       dir: path.join(PLATFORM_DIRS.codex, "agents"),
       expected: maps.codexAgents,
       filter: (name) => name.endsWith(".toml"),
+    },
+    {
+      label: "codex rules",
+      dir: path.join(PLATFORM_DIRS.codex, "rules"),
+      expected: maps.codexRules,
+      filter: (name) => maps.codexRules.has(name),
     },
     {
       label: "codex generated skills",
@@ -1935,10 +2001,22 @@ function buildTargets(maps) {
       filter: () => true,
     },
     {
+      label: "antigravity rules",
+      dir: path.join(PLATFORM_DIRS.antigravity, "rules"),
+      expected: maps.antigravityRules,
+      filter: (name) => maps.antigravityRules.has(name),
+    },
+    {
       label: "antigravity commands",
       dir: path.join(PLATFORM_DIRS.antigravity, "commands"),
       expected: maps.antigravityCommands,
       filter: (name) => name.endsWith(".toml"),
+    },
+    {
+      label: "copilot rules",
+      dir: path.join(PLATFORM_DIRS.copilot, "rules"),
+      expected: maps.copilotRules,
+      filter: (name) => maps.copilotRules.has(name),
     },
     {
       label: "copilot agents",
@@ -1962,10 +2040,13 @@ function buildTargets(maps) {
       label: "copilot hooks",
       dir: path.join(PLATFORM_DIRS.copilot, "hooks"),
       expected: maps.copilotHooks,
-      filter: (name) =>
-        name === "README.md" ||
-        name === "guardrails.json" ||
-        name === "pre-tool-security-guard.mjs",
+      filter: (name) => maps.copilotHooks.has(name),
+    },
+    {
+      label: "claude rules",
+      dir: path.join(PLATFORM_DIRS.claude, "rules"),
+      expected: maps.claudeRules,
+      filter: (name) => maps.claudeRules.has(name),
     },
     {
       label: "claude agents",
@@ -1989,10 +2070,13 @@ function buildTargets(maps) {
       label: "claude hooks",
       dir: path.join(PLATFORM_DIRS.claude, "hooks"),
       expected: maps.claudeHooks,
-      filter: (name) =>
-        name === "README.md" ||
-        name === "settings.snippet.json" ||
-        name === "route-research-guard.mjs",
+      filter: (name) => maps.claudeHooks.has(name),
+    },
+    {
+      label: "gemini rules",
+      dir: path.join(PLATFORM_DIRS.gemini, "rules"),
+      expected: maps.geminiRules,
+      filter: (name) => maps.geminiRules.has(name),
     },
     {
       label: "gemini workflows",
@@ -2010,11 +2094,7 @@ function buildTargets(maps) {
       label: "gemini hooks",
       dir: path.join(PLATFORM_DIRS.gemini, "hooks"),
       expected: maps.geminiHooks,
-      filter: (name) =>
-        name === "README.md" ||
-        name === "settings.snippet.json" ||
-        name === "route-research-guard.mjs" ||
-        name === "preflight-security-guard.mjs",
+      filter: (name) => maps.geminiHooks.has(name),
     },
     {
       label: "generated route manifest",
@@ -2084,10 +2164,9 @@ function formatDriftMessage(drift) {
 }
 
 export async function checkPlatformAssets() {
-  const sharedAgents = await loadSharedFiles(SHARED_AGENTS_DIR);
-  const sharedWorkflows = await loadSharedFiles(SHARED_WORKFLOWS_DIR, [
+  const sharedAgents = await loadSharedFiles(CANONICAL_AGENTS_DIR);
+  const sharedWorkflows = await loadCanonicalWorkflows([
     "When to use",
-    "Workflow steps",
     "Context notes",
     "Verification",
   ]);
@@ -2134,15 +2213,20 @@ export async function run({ checkOnly = false } = {}) {
     return;
   }
 
-  const sharedAgents = await loadSharedFiles(SHARED_AGENTS_DIR);
-  const sharedWorkflows = await loadSharedFiles(SHARED_WORKFLOWS_DIR, [
+  const sharedAgents = await loadSharedFiles(CANONICAL_AGENTS_DIR);
+  const sharedWorkflows = await loadCanonicalWorkflows([
     "When to use",
-    "Workflow steps",
     "Context notes",
     "Verification",
   ]);
   const maps = await buildExpectedMaps({ sharedAgents, sharedWorkflows });
   const written = [];
+  written.push(
+    ...(await applyOutputMap({
+      rootDir: path.join(PLATFORM_DIRS.codex, "rules"),
+      fileMap: maps.codexRules,
+    })),
+  );
   written.push(
     ...(await applyOutputMap({
       rootDir: path.join(PLATFORM_DIRS.codex, "agents"),
@@ -2163,6 +2247,12 @@ export async function run({ checkOnly = false } = {}) {
   );
   written.push(
     ...(await applyOutputMap({
+      rootDir: path.join(PLATFORM_DIRS.antigravity, "rules"),
+      fileMap: maps.antigravityRules,
+    })),
+  );
+  written.push(
+    ...(await applyOutputMap({
       rootDir: path.join(PLATFORM_DIRS.antigravity, "agents"),
       fileMap: maps.antigravityAgents,
     })),
@@ -2177,6 +2267,12 @@ export async function run({ checkOnly = false } = {}) {
     ...(await applyOutputMap({
       rootDir: path.join(PLATFORM_DIRS.antigravity, "commands"),
       fileMap: maps.antigravityCommands,
+    })),
+  );
+  written.push(
+    ...(await applyOutputMap({
+      rootDir: path.join(PLATFORM_DIRS.copilot, "rules"),
+      fileMap: maps.copilotRules,
     })),
   );
   written.push(
@@ -2205,6 +2301,12 @@ export async function run({ checkOnly = false } = {}) {
   );
   written.push(
     ...(await applyOutputMap({
+      rootDir: path.join(PLATFORM_DIRS.claude, "rules"),
+      fileMap: maps.claudeRules,
+    })),
+  );
+  written.push(
+    ...(await applyOutputMap({
       rootDir: path.join(PLATFORM_DIRS.claude, "agents"),
       fileMap: maps.claudeAgents,
     })),
@@ -2225,6 +2327,12 @@ export async function run({ checkOnly = false } = {}) {
     ...(await applyOutputMap({
       rootDir: path.join(PLATFORM_DIRS.claude, "hooks"),
       fileMap: maps.claudeHooks,
+    })),
+  );
+  written.push(
+    ...(await applyOutputMap({
+      rootDir: path.join(PLATFORM_DIRS.gemini, "rules"),
+      fileMap: maps.geminiRules,
     })),
   );
   written.push(

@@ -15,7 +15,7 @@ import {
 
 const DEFAULT_TARGETS = {
   canonical: {
-    roots: [path.join(ROOT, "workflows", "skills")],
+    roots: [path.join(ROOT, "foundry", "modules")],
     outFile: path.join(ROOT, "workflows", "skills", "skills_index.json"),
     indexPathPrefix: ".agents/skills",
   },
@@ -23,11 +23,10 @@ const DEFAULT_TARGETS = {
     roots: [
       path.join(
         ROOT,
-        "workflows",
-        "workflows",
-        "agent-environment-setup",
-        "platforms",
+        "generated",
+        "runtime-assets",
         "copilot",
+        ".github",
         "skills",
       ),
     ],
@@ -47,11 +46,10 @@ const DEFAULT_TARGETS = {
     roots: [
       path.join(
         ROOT,
-        "workflows",
-        "workflows",
-        "agent-environment-setup",
-        "platforms",
+        "generated",
+        "runtime-assets",
         "claude",
+        ".claude",
         "skills",
       ),
     ],

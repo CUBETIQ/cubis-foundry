@@ -1,0 +1,73 @@
+description = "Run a bounded autonomous iteration loop that keeps executing, verifying, and tightening scope until the task is done or blocked."
+prompt = '''
+Execute the native projection of the /loop workflow.
+
+Run a bounded autonomous iteration loop that keeps executing, verifying, and tightening scope until the task is done or blocked.
+
+Execution contract:
+1. Treat route selection as already resolved by this command; do not begin with skill discovery.
+2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.
+Attached skills:
+- Load these exact skill IDs first: `spec-driven-delivery`, `web-testing`.
+- Local skill file hints if installed: `.agents/skills/spec-driven-delivery/SKILL.md`, `.agents/skills/web-testing/SKILL.md`.
+- Treat the skill bundle as already resolved for this workflow. Do not start with route discovery.
+3. Confirm the request fits the workflow's "When to use" section before acting.
+4. Execute according to "Workflow steps" and apply "Context notes".
+5. Complete "Verification" checks and report concrete evidence.
+6. If freshness, public comparison, or explicit research needs appear, pause implementation and load `deep-research` or route to research first.
+7. For outside evidence: repo first, official docs next, Reddit/community only as labeled secondary evidence.
+8. Keep runtime boundaries explicit: use Playwright MCP for web flows, prefer `mobile-mcp` for semantic mobile flows, and switch to CLI fallback when you need deterministic logs, build state, or replayable evidence.
+
+Workflow source:
+# Loop Workflow
+
+## What this workflow does
+
+Keeps a bounded execution cycle moving through small units of work, verifying each iteration before deciding whether to continue.
+
+## When to use
+
+Use this for contained tasks that benefit from repeated tighten-and-verify passes, not for open-ended product exploration.
+
+## Agent chain
+
+`orchestrator`
+
+## Step details
+
+1. Define the finish line and iteration limit.
+2. Execute a small slice of work.
+3. Verify, adjust scope, and continue until done or blocked.
+
+## Skill routing
+
+- Load only the skills needed for the current slice.
+- Add the owning language or framework skill for code-level verification.
+- Add `web-testing`, `android-emulator-testing`, or `ios-simulator-testing` when the loop needs runtime evidence.
+
+## Context notes
+
+Provide the target outcome, hard stop conditions, and any constraints on time or scope.
+
+## Verification
+
+Each loop must end with evidence. If progress stalls, the workflow should stop rather than hiding failure.
+
+## Output contract
+
+```yaml
+LOOP_WORKFLOW_RESULT:
+  iterations: <count>
+  completed:
+    - <item>
+  evidence:
+    - <verification>
+  stopped_reason: <done | blocked | limit-reached>
+```
+
+## Follow-up items
+
+Typical next step: `/review` or user escalation
+
+If command arguments are provided, treat them as additional user context.
+'''

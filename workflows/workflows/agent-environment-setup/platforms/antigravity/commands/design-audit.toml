@@ -1,0 +1,72 @@
+description = "Diagnose visual and UX weaknesses in an existing interface and return prioritized, concrete remediation guidance."
+prompt = '''
+Execute the native projection of the /design-audit workflow.
+
+Diagnose visual and UX weaknesses in an existing interface and return prioritized, concrete remediation guidance.
+
+Execution contract:
+1. Treat route selection as already resolved by this command; do not begin with skill discovery.
+2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.
+Attached skills:
+- Load these exact skill IDs first: `design`, `web-ui-design`, `mobile-ui-design`, `desktop-ui-design`.
+- Local skill file hints if installed: `.agents/skills/design/SKILL.md`, `.agents/skills/web-ui-design/SKILL.md`, `.agents/skills/mobile-ui-design/SKILL.md`, `.agents/skills/desktop-ui-design/SKILL.md`.
+- Treat the skill bundle as already resolved for this workflow. Do not start with route discovery.
+3. Confirm the request fits the workflow's "When to use" section before acting.
+4. Execute according to "Workflow steps" and apply "Context notes".
+5. Complete "Verification" checks and report concrete evidence.
+6. If freshness, public comparison, or explicit research needs appear, pause implementation and load `deep-research` or route to research first.
+7. For outside evidence: repo first, official docs next, Reddit/community only as labeled secondary evidence.
+8. Keep runtime boundaries explicit: use Playwright MCP for web flows, prefer `mobile-mcp` for semantic mobile flows, and switch to CLI fallback when you need deterministic logs, build state, or replayable evidence.
+
+Workflow source:
+# Design Audit Workflow
+
+## What this workflow does
+
+Reviews an existing interface for hierarchy, layout, typography, affordance, and consistency issues, then prioritizes fixes.
+
+## When to use
+
+Use this when the product is built enough to inspect and the user wants critique or remediation guidance.
+
+## Agent chain
+
+`reviewer`
+
+## Step details
+
+1. Inspect the relevant screens or UI implementation.
+2. Identify the highest-impact design defects.
+3. Return prioritized findings with concrete remediation guidance.
+
+## Skill routing
+
+- `design` is primary in audit mode.
+- `web-ui-design`, `mobile-ui-design`, or `desktop-ui-design` support the remediation route once the audit identifies the failing surface.
+
+## Context notes
+
+Provide screenshots, page routes, or component references and note whether the ask is critique-only or critique plus implementation.
+
+## Verification
+
+The result should prioritize specific issues rather than offering generic taste-based feedback.
+
+## Output contract
+
+```yaml
+DESIGN_AUDIT_WORKFLOW_RESULT:
+  findings:
+    - severity: high | medium | low
+      issue: <problem>
+      fix: <recommended action>
+  strengths:
+    - <what already works>
+```
+
+## Follow-up items
+
+Typical next step: `/design-screen` or `/implement`
+
+If command arguments are provided, treat them as additional user context.
+'''

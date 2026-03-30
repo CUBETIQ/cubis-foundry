@@ -400,7 +400,7 @@ export function deriveDescriptor({
     package_id: packageId,
     catalog_id: relativeSkillDir,
     kind: relativeSkillDir === packageId ? "skill" : "subskill",
-    path: `workflows/skills/${relativeSkillDir}/SKILL.md`,
+    path: `foundry/modules/${relativeSkillDir}/SKILL.md`,
     name: getScalar(fm.raw, "name") || id,
     description: getScalar(fm.raw, "description") || "",
     canonical,

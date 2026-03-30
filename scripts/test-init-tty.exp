@@ -36,7 +36,7 @@ expect -re "Select the AI that should author context docs:" {} timeout { fail "M
 press_enter
 expect -re "Select optional capability packs:" {} timeout { fail "Missing prompt: Select optional capability packs:" }
 press_enter
-expect -re "Select which MCP integrations to configure:" {} timeout { fail "Missing prompt: Select which MCP integrations to configure:" }
+expect -re "Select which (optional )?MCP integrations to configure:" {} timeout { fail "Missing prompt: Select which optional MCP integrations to configure:" }
 press_enter
 expect -re "Select MCP runtime mode:" {} timeout { fail "Missing prompt: Select MCP runtime mode:" }
 press_enter

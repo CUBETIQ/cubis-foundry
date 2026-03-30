@@ -40,19 +40,8 @@ describe("resolveInstallSourcePath()", () => {
     expect(resolved).toBe(bundleSource);
   });
 
-  it("falls back to generated runtime assets when the bundle platform tree is absent", () => {
+  it("returns the bundle path when the bundle platform tree is absent so callers fail on missing generated sources", () => {
     const root = makeTempRoot("foundry-install-source");
-    const runtimeSource = join(
-      root,
-      "generated",
-      "runtime-assets",
-      "codex",
-      ".codex",
-      "agents",
-      "debugger.toml",
-    );
-    mkdirSync(join(runtimeSource, ".."), { recursive: true });
-    writeFileSync(runtimeSource, "runtime-source", "utf8");
 
     const resolved = resolveInstallSourcePath({
       repoRoot: root,
@@ -62,7 +51,18 @@ describe("resolveInstallSourcePath()", () => {
       workspaceRelativeDestinationPath: ".codex/agents/debugger.toml",
     });
 
-    expect(resolved).toBe(runtimeSource);
+    expect(resolved).toBe(
+      join(
+        root,
+        "workflows",
+        "workflows",
+        "agent-environment-setup",
+        "platforms",
+        "codex",
+        "agents",
+        "debugger.toml",
+      ),
+    );
   });
 
   it("returns the legacy bundle path when neither source exists so callers preserve current error reporting", () => {
@@ -90,7 +90,7 @@ describe("resolveInstallSourcePath()", () => {
     );
   });
 
-  it("tries multiple runtime destination candidates in order", () => {
+  it("does not use runtime destination candidates once the bundle source tree is authoritative again", () => {
     const root = makeTempRoot("foundry-install-source");
     const runtimeSource = join(
       root,
@@ -114,10 +114,22 @@ describe("resolveInstallSourcePath()", () => {
       ],
     });
 
-    expect(resolved).toBe(runtimeSource);
+    expect(resolved).not.toBe(runtimeSource);
+    expect(resolved).toBe(
+      join(
+        root,
+        "workflows",
+        "workflows",
+        "agent-environment-setup",
+        "platforms",
+        "codex",
+        "generated-skills",
+        "plan",
+      ),
+    );
   });
 
-  it("falls back to a repo-relative source when runtime assets are absent", () => {
+  it("falls back to a repo-relative source when the bundle source is intentionally rooted elsewhere", () => {
     const root = makeTempRoot("foundry-install-source");
     const repoSource = join(root, "AGENTS.md");
     writeFileSync(repoSource, "# Rules\n", "utf8");

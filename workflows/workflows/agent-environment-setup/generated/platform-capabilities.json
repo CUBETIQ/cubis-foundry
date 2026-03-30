@@ -1762,7 +1762,7 @@
       },
       "agent_capabilities": {
         "native_agent_surface": "degraded via generated command routes",
-        "skill_surface": "degraded via shared skill installs",
+        "skill_surface": "degraded via .gemini/skills skill installs",
         "workflow_entry_surface": ".gemini/commands/*.toml",
         "multi_agent": "degraded",
         "batch_fanout": "degraded"
@@ -1894,8 +1894,8 @@
         {
           "pattern_id": "supporting-skill",
           "support_level": "degraded",
-          "projection_surface": "degraded via shared skill installs",
-          "behavior_notes": "Gemini CLI projects supporting-skill in degraded form via degraded via shared skill installs and explicit Foundry control-plane guidance.",
+          "projection_surface": "degraded via .gemini/skills skill installs",
+          "behavior_notes": "Gemini CLI projects supporting-skill in degraded form via degraded via .gemini/skills skill installs and explicit Foundry control-plane guidance.",
           "hard_limits": [
             "Degraded projection for supporting-skill is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1910,8 +1910,8 @@
         {
           "pattern_id": "skill-discovery",
           "support_level": "degraded",
-          "projection_surface": "degraded via shared skill installs",
-          "behavior_notes": "Gemini CLI projects skill-discovery in degraded form via degraded via shared skill installs and explicit Foundry control-plane guidance.",
+          "projection_surface": "degraded via .gemini/skills skill installs",
+          "behavior_notes": "Gemini CLI projects skill-discovery in degraded form via degraded via .gemini/skills skill installs and explicit Foundry control-plane guidance.",
           "hard_limits": [
             "Degraded projection for skill-discovery is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1926,8 +1926,8 @@
         {
           "pattern_id": "skill-frontmatter",
           "support_level": "degraded",
-          "projection_surface": "degraded via shared skill installs",
-          "behavior_notes": "Gemini CLI projects skill-frontmatter in degraded form via degraded via shared skill installs and explicit Foundry control-plane guidance.",
+          "projection_surface": "degraded via .gemini/skills skill installs",
+          "behavior_notes": "Gemini CLI projects skill-frontmatter in degraded form via degraded via .gemini/skills skill installs and explicit Foundry control-plane guidance.",
           "hard_limits": [
             "Degraded projection for skill-frontmatter is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1942,8 +1942,8 @@
         {
           "pattern_id": "skill-string-substitution",
           "support_level": "degraded",
-          "projection_surface": "degraded via shared skill installs",
-          "behavior_notes": "Gemini CLI projects skill-string-substitution in degraded form via degraded via shared skill installs and explicit Foundry control-plane guidance.",
+          "projection_surface": "degraded via .gemini/skills skill installs",
+          "behavior_notes": "Gemini CLI projects skill-string-substitution in degraded form via degraded via .gemini/skills skill installs and explicit Foundry control-plane guidance.",
           "hard_limits": [
             "Degraded projection for skill-string-substitution is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1958,8 +1958,8 @@
         {
           "pattern_id": "skill-forked-execution",
           "support_level": "degraded",
-          "projection_surface": "degraded via shared skill installs",
-          "behavior_notes": "Gemini CLI projects skill-forked-execution in degraded form via degraded via shared skill installs and explicit Foundry control-plane guidance.",
+          "projection_surface": "degraded via .gemini/skills skill installs",
+          "behavior_notes": "Gemini CLI projects skill-forked-execution in degraded form via degraded via .gemini/skills skill installs and explicit Foundry control-plane guidance.",
           "hard_limits": [
             "Degraded projection for skill-forked-execution is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."

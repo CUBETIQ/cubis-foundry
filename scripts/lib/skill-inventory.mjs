@@ -10,11 +10,22 @@ import {
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const ROOT = path.resolve(__dirname, "..", "..");
-export const SKILLS_ROOT = path.join(ROOT, "workflows", "skills");
-export const SKILLS_GENERATED_ROOT = path.join(SKILLS_ROOT, "generated");
+export const SKILLS_ROOT = path.join(ROOT, "foundry", "modules");
+export const SKILLS_GENERATED_ROOT = path.join(
+  ROOT,
+  "workflows",
+  "skills",
+  "generated",
+);
 export const SKILL_PROFILE_FILES = {
-  core: path.join(SKILLS_ROOT, "catalogs", "core.json"),
-  "web-backend": path.join(SKILLS_ROOT, "catalogs", "web-backend.json"),
+  core: path.join(ROOT, "foundry", "catalogs", "skill-profiles", "core.json"),
+  "web-backend": path.join(
+    ROOT,
+    "foundry",
+    "catalogs",
+    "skill-profiles",
+    "web-backend.json",
+  ),
 };
 export const EXCLUDED_TOP_LEVEL_SKILL_DIRS = new Set(["catalogs", "generated"]);
 

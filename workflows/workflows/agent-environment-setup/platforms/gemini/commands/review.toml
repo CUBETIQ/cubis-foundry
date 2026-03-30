@@ -1,0 +1,72 @@
+description = "Audit a change set for correctness, regression risk, missing tests, and security issues."
+prompt = '''
+Execute the native projection of the /review workflow.
+
+Audit a change set for correctness, regression risk, missing tests, and security issues.
+
+Execution contract:
+1. Treat route selection as already resolved by this command; do not begin with skill discovery.
+2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.
+Attached skills:
+- Load these exact skill IDs first: `code-review`, `owasp-security-review`.
+- Local skill file hints if installed: `.gemini/skills/code-review/SKILL.md`, `.gemini/skills/owasp-security-review/SKILL.md`.
+- Treat the skill bundle as already resolved for this workflow. Do not start with route discovery.
+3. Confirm the request fits the workflow's "When to use" section before acting.
+4. Execute according to "Workflow steps" and apply "Context notes".
+5. Complete "Verification" checks and report concrete evidence.
+6. If freshness, public comparison, or explicit research needs appear, pause implementation and load `deep-research` or route to research first.
+7. For outside evidence: repo first, official docs next, Reddit/community only as labeled secondary evidence.
+8. Keep runtime boundaries explicit: use Playwright MCP for web flows, prefer `mobile-mcp` for semantic mobile flows, and switch to CLI fallback when you need deterministic logs, build state, or replayable evidence.
+
+Workflow source:
+# Review Workflow
+
+## What this workflow does
+
+Performs a findings-first review of a change set, concentrating on defects, regressions, and missing verification.
+
+## When to use
+
+Use this on PR review, before handoff, or whenever the user asks for a code review rather than implementation.
+
+## Agent chain
+
+`reviewer`
+
+## Step details
+
+1. Inspect the diff and affected files.
+2. Identify correctness, coverage, and security concerns.
+3. Return findings ordered by severity with concrete references.
+
+## Skill routing
+
+- `code-review` is mandatory.
+- Add `owasp-security-review` when the change touches auth, secrets, input handling, or external boundaries.
+
+## Context notes
+
+Provide the diff, branch, or file list under review and any known concerns.
+
+## Verification
+
+The result should cite code evidence and avoid speculative or preference-only feedback.
+
+## Output contract
+
+```yaml
+REVIEW_WORKFLOW_RESULT:
+  findings:
+    - severity: high | medium | low
+      file: <path>
+      issue: <problem>
+  residual_risks:
+    - <risk>
+```
+
+## Follow-up items
+
+Typical next step: `/implement`
+
+If command arguments are provided, treat them as additional user context.
+'''
