@@ -1,0 +1,23 @@
+{
+  "profile": "core",
+  "description": "Default cross-domain Foundry skill bundle for planning, design, testing, and verification.",
+  "skills": [
+    "api-design",
+    "code-review",
+    "database-design",
+    "deep-research",
+    "design",
+    "design-system",
+    "desktop-ui-design",
+    "mobile-ui-design",
+    "prompt-engineering",
+    "spec-driven-delivery",
+    "system-design",
+    "systematic-debugging",
+    "tech-doc",
+    "web-testing",
+    "web-ui-design",
+    "android-emulator-testing",
+    "ios-simulator-testing"
+  ]
+}

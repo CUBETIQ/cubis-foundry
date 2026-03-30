@@ -1,0 +1,17 @@
+{
+  "profile": "mobile-testing",
+  "description": "Canonical mobile testing bundle for Android, iOS, browser-adjacent verification, and UI evidence capture.",
+  "skills": [
+    "android-emulator-testing",
+    "ios-simulator-testing",
+    "web-testing",
+    "design",
+    "design-system",
+    "mobile-ui-design",
+    "deep-research",
+    "code-review",
+    "spec-driven-delivery",
+    "systematic-debugging",
+    "tech-doc"
+  ]
+}

@@ -21,5 +21,9 @@ TECH.md
 TECH_SCANNER_TEST_RESULTS.md
 dist/
 mcp/coverage/
+!AGENTS.md
+!.agents/
+!.agents/rules/
+!.agents/rules/GEMINI.md
 !workflows/workflows/agent-environment-setup/platforms/codex/rules/AGENTS.md
 generated/

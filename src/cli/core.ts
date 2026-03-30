@@ -72,6 +72,8 @@ import {
   packageRoot,
   workflowSkillsRoot,
 } from "./pathing.js";
+import { resolveInstallSourcePath } from "./install-sources.js";
+import { listCanonicalSkillIds, resolveSkillProfileIds } from "./skill-profiles.js";
 import {
   AUDIT_RUNTIME_DIR,
   DEFAULT_HOOK_PROFILE,
@@ -311,11 +313,6 @@ const TECH_RUST_FRAMEWORK_SIGNALS = [
 ];
 const SKILL_PROFILES = new Set(["core", "web-backend", "mobile-testing", "full"]);
 const REMOVE_ALL_SCOPES = new Set(["project", "global", "all"]);
-const CATALOG_FILES = Object.freeze({
-  core: path.join("catalogs", "core.json"),
-  "web-backend": path.join("catalogs", "web-backend.json"),
-});
-
 function platformInstallsCustomAgents(platformId) {
   const profile = WORKFLOW_PROFILES[platformId];
   return Boolean(profile && profile.installsCustomAgents !== false);
@@ -3799,7 +3796,9 @@ function extractSkillIdFromIndexPath(indexPathValue) {
 async function resolveTopLevelSkillIdsFromIndex() {
   const skillsRoot = workflowSkillsRoot();
   const indexPath = path.join(skillsRoot, "skills_index.json");
-  if (!(await pathExists(indexPath))) return [];
+  if (!(await pathExists(indexPath))) {
+    return listCanonicalSkillIds();
+  }
 
   let parsed;
   try {
@@ -3881,31 +3880,28 @@ async function listTopLevelSkillIdsFromRoot(rootPath) {
   return out.sort((a, b) => a.localeCompare(b));
 }
 
+function canonicalSkillSourceRoots() {
+  return [
+    path.join(packageRoot(), "foundry", "modules"),
+    workflowSkillsRoot(),
+  ];
+}
+
 async function resolveSkillSourceDirectory(skillId) {
   const normalized = String(skillId || "").trim();
   if (!normalized) return null;
-  const candidate = path.join(workflowSkillsRoot(), normalized);
-  const skillFile = path.join(candidate, "SKILL.md");
-  if ((await pathExists(candidate)) && (await pathExists(skillFile))) {
-    return candidate;
+  for (const rootPath of canonicalSkillSourceRoots()) {
+    const candidate = path.join(rootPath, normalized);
+    const skillFile = path.join(candidate, "SKILL.md");
+    if ((await pathExists(candidate)) && (await pathExists(skillFile))) {
+      return candidate;
+    }
   }
   return null;
 }
 
 async function resolveCatalogSkillIds({ profile }) {
-  const workflowCatalogPath = path.join(
-    workflowSkillsRoot(),
-    CATALOG_FILES[profile] || "",
-  );
-  const workflowCatalogIds = await readSkillCatalogIds(workflowCatalogPath);
-  const workflowProfileIds =
-    workflowCatalogIds.length > 0
-      ? workflowCatalogIds
-      : profile === "full"
-        ? await listTopLevelSkillIdsFromRoot(workflowSkillsRoot())
-        : [];
-
-  return workflowProfileIds;
+  return resolveSkillProfileIds(profile);
 }
 
 async function resolveInstallSkillIds({
@@ -3919,11 +3915,17 @@ async function resolveInstallSkillIds({
   const catalogSelectedIds = await resolveCatalogSkillIds({
     profile: normalizeSkillProfile(skillProfile),
   });
+  const existingManifestSkillIds = [];
+  for (const skillId of fallbackManifestSkillIds) {
+    if (await resolveSkillSourceDirectory(skillId)) {
+      existingManifestSkillIds.push(skillId);
+    }
+  }
 
   let selected =
     catalogSelectedIds.length > 0
       ? catalogSelectedIds
-      : fallbackManifestSkillIds;
+      : existingManifestSkillIds;
   if (selected.length === 0) {
     const indexedSkillIds = await resolveTopLevelSkillIdsFromIndex();
     selected = indexedSkillIds;
@@ -7342,6 +7344,60 @@ async function installBundleArtifacts({
 
   const bundleRoot = path.join(agentAssetsRoot(), "workflows", bundleId);
   const platformRoot = path.join(bundleRoot, "platforms", platform);
+  const workspaceRoot = findWorkspaceRoot(cwd);
+  const runtimePlatformRoot = path.join(
+    packageRoot(),
+    "generated",
+    "runtime-assets",
+    platform,
+  );
+  const useRuntimePlatformAssets =
+    scope === "project" &&
+    !(await pathExists(platformRoot)) &&
+    (await pathExists(runtimePlatformRoot));
+
+  const relativeToWorkspace = (destinationPath) =>
+    scope === "project"
+      ? path.relative(workspaceRoot, destinationPath).replace(/\\/g, "/")
+      : null;
+
+  const sourceFor = (
+    relativeSourcePath,
+    destinationPath,
+    {
+      workspaceRelativeDestinationPaths = null,
+      repoRelativeFallbackPath = null,
+      repoRelativeFallbackPaths = null,
+    } = {},
+  ) =>
+    resolveInstallSourcePath({
+      repoRoot: packageRoot(),
+      bundleId,
+      platform,
+      relativeSourcePath,
+      workspaceRelativeDestinationPath: relativeToWorkspace(destinationPath),
+      workspaceRelativeDestinationPaths,
+      repoRelativeFallbackPath,
+      repoRelativeFallbackPaths,
+    });
+
+  const listRuntimeEntries = async (destinationDir, entryType = "file") => {
+    if (!useRuntimePlatformAssets || !destinationDir) return null;
+    const relativeDir = relativeToWorkspace(destinationDir);
+    if (!relativeDir) return null;
+    const sourceDir = path.join(runtimePlatformRoot, relativeDir);
+    if (!(await pathExists(sourceDir))) return [];
+    const entries = await readdir(sourceDir, { withFileTypes: true });
+    return entries
+      .filter((entry) => {
+        if (entry.name.startsWith(".")) return false;
+        if (entryType === "file") return entry.isFile();
+        if (entryType === "dir") return entry.isDirectory();
+        return true;
+      })
+      .map((entry) => entry.name)
+      .sort((a, b) => a.localeCompare(b));
+  };
 
   const installed = [];
   const skipped = [];
@@ -7357,13 +7413,28 @@ async function installBundleArtifacts({
   // Bind useSymlinks into copyArtifact so every call site inherits it
   const copyArt = (args) => copyArtifact({ ...args, useSymlinks });
 
-  for (const workflowFile of workflowFiles) {
+  const effectiveWorkflowFiles =
+    (await listRuntimeEntries(profilePaths.workflowsDir, "file")) ||
+    workflowFiles.map((entry) => path.basename(entry));
+  const effectiveAgentFiles =
+    (await listRuntimeEntries(profilePaths.agentsDir, "file")) ||
+    agentFiles.map((entry) => path.basename(entry));
+  const effectiveCommandFiles =
+    (await listRuntimeEntries(profilePaths.commandsDir, "file")) ||
+    commandFiles.map((entry) => path.basename(entry));
+  const effectivePromptFiles =
+    (await listRuntimeEntries(profilePaths.promptsDir, "file")) ||
+    promptFiles.map((entry) => path.basename(entry));
+  const effectiveHookEntries =
+    (await listRuntimeEntries(profilePaths.hooksDir, "any")) || hookFiles;
+
+  for (const workflowFile of effectiveWorkflowFiles) {
     if (!profilePaths.workflowsDir) continue;
-    const source = path.join(platformRoot, "workflows", workflowFile);
     const destination = path.join(
       profilePaths.workflowsDir,
       path.basename(workflowFile),
     );
+    const source = sourceFor(path.join("workflows", workflowFile), destination);
 
     if (!(await pathExists(source))) {
       throw new Error(`Missing workflow source file: ${source}`);
@@ -7381,13 +7452,13 @@ async function installBundleArtifacts({
     else installed.push(destination);
   }
 
-  for (const agentFile of agentFiles) {
+  for (const agentFile of effectiveAgentFiles) {
     if (!profilePaths.agentsDir) continue;
-    const source = path.join(platformRoot, "agents", agentFile);
     const destination = path.join(
       profilePaths.agentsDir,
       path.basename(agentFile),
     );
+    const source = sourceFor(path.join("agents", agentFile), destination);
 
     if (!(await pathExists(source))) {
       throw new Error(`Missing agent source file: ${source}`);
@@ -7405,13 +7476,13 @@ async function installBundleArtifacts({
     else installed.push(destination);
   }
 
-  for (const commandFile of commandFiles) {
+  for (const commandFile of effectiveCommandFiles) {
     if (!profilePaths.commandsDir) continue;
-    const source = path.join(platformRoot, "commands", commandFile);
     const destination = path.join(
       profilePaths.commandsDir,
       path.basename(commandFile),
     );
+    const source = sourceFor(path.join("commands", commandFile), destination);
 
     if (!(await pathExists(source))) {
       throw new Error(`Missing command source file: ${source}`);
@@ -7429,13 +7500,13 @@ async function installBundleArtifacts({
     else installed.push(destination);
   }
 
-  for (const promptFile of promptFiles) {
+  for (const promptFile of effectivePromptFiles) {
     if (!profilePaths.promptsDir) continue;
-    const source = path.join(platformRoot, "prompts", promptFile);
     const destination = path.join(
       profilePaths.promptsDir,
       path.basename(promptFile),
     );
+    const source = sourceFor(path.join("prompts", promptFile), destination);
 
     if (!(await pathExists(source))) {
       throw new Error(`Missing prompt source file: ${source}`);
@@ -7452,13 +7523,13 @@ async function installBundleArtifacts({
       skipped.push(destination);
     else installed.push(destination);
   }
-  for (const hookFile of hookFiles) {
+  for (const hookFile of effectiveHookEntries) {
     if (!profilePaths.hooksDir) continue;
-    const source = path.join(platformRoot, "hooks", hookFile);
     const destination = path.join(
       profilePaths.hooksDir,
       path.basename(hookFile),
     );
+    const source = sourceFor(path.join("hooks", hookFile), destination);
 
     if (!(await pathExists(source))) {
       throw new Error(`Missing hook source file: ${source}`);
@@ -7494,7 +7565,7 @@ async function installBundleArtifacts({
           continue;
         }
         throw new Error(
-          `Missing skill source directory for '${skillId}' (checked ${workflowSkillsRoot()}).`,
+          `Missing skill source directory for '${skillId}' (checked ${canonicalSkillSourceRoots().join(", ")}).`,
         );
       }
 
@@ -7533,18 +7604,47 @@ async function installBundleArtifacts({
       else installed.push(skillsIndexDest);
     }
 
-    for (const generatedSkillDir of generatedSkillDirs) {
-      const source = path.join(
-        platformRoot,
-        "generated-skills",
-        generatedSkillDir,
-      );
-      const destination = path.join(
-        profilePaths.skillsDir,
-        path.basename(generatedSkillDir),
+    const runtimeGeneratedSkillDirs = useRuntimePlatformAssets
+      ? ((await listRuntimeEntries(profilePaths.skillsDir, "dir")) || []).filter(
+          (entry) => entry.startsWith("workflow-"),
+        )
+      : null;
+    const effectiveGeneratedSkillDirs =
+      runtimeGeneratedSkillDirs ||
+      generatedSkillDirs.map((entry) => {
+        const normalized = path.basename(entry);
+        return normalized.startsWith("workflow-")
+          ? normalized
+          : `workflow-${normalized}`;
+      });
+
+    for (const generatedSkillDir of effectiveGeneratedSkillDirs) {
+      const destination = path.join(profilePaths.skillsDir, generatedSkillDir);
+      const source = sourceFor(
+        path.join(
+          "generated-skills",
+          generatedSkillDir.startsWith("workflow-")
+            ? generatedSkillDir.replace(/^workflow-/, "")
+            : generatedSkillDir,
+        ),
+        destination,
+        {
+          workspaceRelativeDestinationPaths: [
+            relativeToWorkspace(destination),
+            relativeToWorkspace(
+              path.join(
+                profilePaths.skillsDir,
+                generatedSkillDir.replace(/^workflow-/, ""),
+              ),
+            ),
+          ].filter(Boolean),
+        },
       );
 
       if (!(await pathExists(source))) {
+        if (useRuntimePlatformAssets) {
+          continue;
+        }
         throw new Error(`Missing generated skill source directory: ${source}`);
       }
 
@@ -7621,12 +7721,21 @@ async function seedRuleFileFromTemplateIfMissing({
   if ((await pathExists(ruleFilePath)) && !overwrite)
     return { ruleFilePath, action: "exists" };
 
-  const templatePath = path.join(
-    agentAssetsRoot(),
-    "workflows",
+  const workspaceRoot = findWorkspaceRoot(cwd);
+  const templatePath = resolveInstallSourcePath({
+    repoRoot: packageRoot(),
     bundleId,
-    platformSpec.rulesTemplate,
-  );
+    platform,
+    relativeSourcePath: platformSpec.rulesTemplate,
+    workspaceRelativeDestinationPath:
+      scope === "project"
+        ? path.relative(workspaceRoot, ruleFilePath).replace(/\\/g, "/")
+        : null,
+    repoRelativeFallbackPath:
+      scope === "project"
+        ? path.relative(workspaceRoot, ruleFilePath).replace(/\\/g, "/")
+        : null,
+  });
   if (!(await pathExists(templatePath)))
     return { ruleFilePath, action: "missing-template" };
 
