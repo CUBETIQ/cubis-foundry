@@ -17,7 +17,8 @@ Current runtime note:
 
 ## Scope and Working Copy
 
-- Active worktree: `/Users/phumrin/Documents/Cubis Foundry/.worktrees/foundry-v2-plan-a`
+- Active checkout: `/Users/phumrin/Documents/Cubis Foundry`
+- Active branch: `v2`
 - Source-of-truth spec: `docs/superpowers/specs/2026-03-28-foundry-v2-realignment-spec.md`
 - This plan supersedes the older active migration path for day-to-day work, but older plans remain in repo as historical context.
 - Progress snapshot on 2026-03-28:

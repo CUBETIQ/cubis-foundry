@@ -2,7 +2,8 @@
 
 **Date:** 2026-03-28
 **Status:** Draft v1
-**Working tree:** `/Users/phumrin/Documents/Cubis Foundry/.worktrees/foundry-v2-plan-a`
+**Working tree:** `/Users/phumrin/Documents/Cubis Foundry`
+**Branch:** `v2`
 
 > **Supersedes for active work:** `docs/superpowers/specs/2026-03-25-foundry-v2-unified-control-plane-design.md` and `docs/superpowers/specs/2026-03-26-agent-workflow-skill-canonical-model.md`
 
@@ -408,9 +409,9 @@ Compat aliases are temporary and should be used only when:
 
 All active planning and implementation for this rewrite is happening in:
 
-`/Users/phumrin/Documents/Cubis Foundry/.worktrees/foundry-v2-plan-a`
+`/Users/phumrin/Documents/Cubis Foundry`
 
-Do not assume the main checkout is the active implementation location.
+This checkout on branch `v2` is the active implementation location.
 
 ---
 
