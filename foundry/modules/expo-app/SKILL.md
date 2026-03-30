@@ -77,7 +77,7 @@ Guide the design and implementation of production-grade Expo applications using 
 
 ## Testing Guidance
 
-- Keep Expo cross-platform boundary guidance in this skill instead of routing new work through the generic `integration-testing` wrapper.
+- Keep Expo app-runtime and platform-boundary tests in this skill instead of routing new work through a separate generic runtime-testing skill.
 - Own app bootstrapping, navigation, OTA update validation, native-module seams, and platform-specific test setup here because they are Expo-runtime concerns.
 - Use the owning TypeScript skill for narrow unit tests that do not need the Expo or device runtime boundary.
 - Use `../android-emulator-testing/SKILL.md` for live Android device evidence, `../ios-simulator-testing/SKILL.md` for live iOS simulator evidence, and `../web-testing/SKILL.md` only for browser-targeted Expo web flows.

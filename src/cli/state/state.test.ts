@@ -69,7 +69,7 @@ describe("state", () => {
             path: "docs/rules.md",
             checksum: "abc123def456",
             installedAt: "2026-01-15T10:00:01.000Z",
-            sourceModule: "rules-core",
+            sourceModule: "design-system",
           },
         ],
       };
@@ -138,7 +138,7 @@ describe("state", () => {
             path: "rules/CORE.md",
             checksum: "deadbeef",
             installedAt: new Date().toISOString(),
-            sourceModule: "rules-core",
+            sourceModule: "design-system",
           },
         ],
       }));

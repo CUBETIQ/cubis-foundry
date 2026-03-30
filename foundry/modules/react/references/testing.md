@@ -7,7 +7,7 @@ Load this when React work needs component tests, hook tests, client/server bound
 - Keep component and hook tests in the React skill.
 - Keep shared TypeScript utility tests in `typescript-best-practices`.
 - Use `web-testing` for real browser evidence, route validation, accessibility snapshots, or end-to-end user flows.
-- Use `playwright-interactive` only when browser work needs deeper suite authoring or specialist visual/a11y support.
+- Use `web-testing` when browser work needs deeper Playwright-MCP-driven suite authoring, visual regression evidence, or specialist accessibility support.
 
 ## Component tests
 

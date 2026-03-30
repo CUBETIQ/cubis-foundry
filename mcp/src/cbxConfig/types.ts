@@ -8,6 +8,10 @@ export interface ServiceProfile {
   name?: string;
   mcpUrl?: string;
   url?: string;
+  command?: string;
+  args?: string[];
+  cwd?: string;
+  env?: Record<string, string>;
   workspaceId?: string | null;
   defaultWorkspaceId?: string | null;
   apiKey?: string;
@@ -47,11 +51,24 @@ export interface AndroidConfig {
   env?: Record<string, string>;
 }
 
+export interface MobileConfig {
+  enabled?: boolean;
+  mcpUrl?: string;
+  url?: string;
+  activeProfileName?: string;
+  command?: string;
+  args?: string[];
+  cwd?: string;
+  env?: Record<string, string>;
+  profiles?: ServiceProfile[] | Record<string, ServiceProfile>;
+}
+
 export interface CbxConfig {
   postman?: PostmanConfig;
   stitch?: StitchConfig;
   playwright?: PlaywrightConfig;
   android?: AndroidConfig | boolean;
+  mobile?: MobileConfig;
   [key: string]: unknown;
 }
 

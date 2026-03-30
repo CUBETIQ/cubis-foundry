@@ -14,11 +14,12 @@ import {
   parseStitchState,
   parsePlaywrightState,
   parseAndroidState,
+  parseMobileState,
   readEffectiveConfig,
 } from "../cbxConfig/index.js";
 import type { CbxConfig, ConfigScope } from "../cbxConfig/types.js";
 
-type ServiceId = "postman" | "stitch" | "playwright" | "android";
+type ServiceId = "postman" | "stitch" | "playwright" | "android" | "mobile";
 
 const STITCH_ENV_FALLBACKS = ["STITCH_API_KEY_DEFAULT", "STITCH_API_KEY"];
 const STITCH_LONG_RUNNING_TIMEOUT_MS = 8 * 60 * 1000;
@@ -196,6 +197,59 @@ function getServiceAuth(
         state.enabled && state.command
           ? undefined
           : "Android MCP is not enabled in cbx_config.json",
+    };
+  }
+
+  if (service === "mobile") {
+    if (config.mobile === undefined) {
+      return {
+        transport: "stdio",
+        mcpUrl: null,
+        activeProfileName: null,
+        envVar: null,
+        headers: {},
+        configured: false,
+        error: "Mobile MCP is not configured in cbx_config.json",
+      };
+    }
+    const state = parseMobileState(config);
+    if (!state.enabled) {
+      return {
+        transport: "stdio",
+        mcpUrl: null,
+        activeProfileName: null,
+        envVar: null,
+        headers: {},
+        configured: false,
+        error: "Mobile MCP is not configured in cbx_config.json",
+      };
+    }
+    const activeProfile = state.activeProfile;
+    const resolvedUrl = state.mcpUrl ?? activeProfile?.url ?? null;
+    if (resolvedUrl) {
+      return {
+        transport: "http",
+        mcpUrl: resolvedUrl,
+        activeProfileName: state.activeProfileName,
+        envVar: null,
+        headers: {},
+        configured: true,
+      };
+    }
+    return {
+      transport: "stdio",
+      mcpUrl: null,
+      activeProfileName: state.activeProfileName,
+      envVar: null,
+      headers: {},
+      command: activeProfile?.command,
+      args: activeProfile?.args,
+      env: activeProfile?.env,
+      cwd: activeProfile?.cwd,
+      configured: Boolean(activeProfile?.command),
+      error: activeProfile?.command
+        ? undefined
+        : "Mobile MCP is not configured in cbx_config.json",
     };
   }
 
@@ -538,6 +592,7 @@ export async function discoverUpstreamCatalogs(
   stitch: UpstreamCatalog;
   playwright: UpstreamCatalog;
   android: UpstreamCatalog;
+  mobile: UpstreamCatalog;
 }> {
   const effective = readEffectiveConfig(scope);
   if (!effective) {
@@ -562,11 +617,16 @@ export async function discoverUpstreamCatalogs(
       ...missing,
       service: "android",
     };
+    const missingMobile: UpstreamCatalog = {
+      ...missing,
+      service: "mobile",
+    };
     return {
       postman: missing,
       stitch: missingStitch,
       playwright: missingPlaywright,
       android: missingAndroid,
+      mobile: missingMobile,
     };
   }
 
@@ -654,6 +714,7 @@ export async function discoverUpstreamCatalogs(
     stitch: await discoverOne("stitch"),
     playwright: await discoverOne("playwright"),
     android: await discoverOne("android"),
+    mobile: await discoverOne("mobile"),
   };
 }
 

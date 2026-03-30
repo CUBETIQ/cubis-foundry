@@ -200,6 +200,7 @@ const LEGACY_POSTMAN_CONFIG_FILENAME = ["postman", "setting.json"].join("_");
 const DEFAULT_CREDENTIAL_PROFILE_NAME = "default";
 const RESERVED_CREDENTIAL_PROFILE_NAMES = new Set(["all"]);
 const CREDENTIAL_SERVICES = new Set(["postman", "stitch"]);
+const MCP_CATALOG_SERVICES = new Set(["postman", "stitch", "mobile"]);
 const MCP_RUNTIMES = new Set(["docker", "local"]);
 const ARCHITECTURE_BUILD_PLATFORMS = new Set([
   "antigravity",
@@ -675,6 +676,18 @@ function normalizeCredentialService(value, { allowAll = false } = {}) {
   if (!CREDENTIAL_SERVICES.has(normalized)) {
     throw new Error(
       `Unknown credential service '${value}'. Use ${allowAll ? "postman|stitch|all" : "postman|stitch"}.`,
+    );
+  }
+  return normalized;
+}
+
+function normalizeMcpCatalogService(value, { allowAll = false } = {}) {
+  if (!value) return allowAll ? "all" : "postman";
+  const normalized = String(value).trim().toLowerCase();
+  if (allowAll && normalized === "all") return "all";
+  if (!MCP_CATALOG_SERVICES.has(normalized)) {
+    throw new Error(
+      `Unknown MCP catalog service '${value}'. Use ${allowAll ? "postman|stitch|mobile|all" : "postman|stitch|mobile"}.`,
     );
   }
   return normalized;
@@ -5954,7 +5967,7 @@ async function applyPostmanMcpForPlatform({
   }
   if (includeAndroidMcp) {
     warnings.push(
-      `Android MCP is an optional integration and uses '${ANDROID_MCP_PACKAGE_SPEC}' over stdio. Android and iOS default to CLI-first testing; install Android SDK platform-tools and set ANDROID_HOME only when you want the optional Android MCP wiring and SDK auto-discovery is unavailable.`,
+      `Android MCP is a legacy optional integration and uses '${ANDROID_MCP_PACKAGE_SPEC}' over stdio. The preferred semantic mobile runtime is mobile-mcp through the bundled Foundry MCP server, while Android/iOS CLI tooling remains the deterministic fallback. Install Android SDK platform-tools and set ANDROID_HOME only when you still need the legacy Android MCP wiring and SDK auto-discovery is unavailable.`,
     );
   }
 
@@ -6598,7 +6611,7 @@ async function resolvePostmanInstallSelection({
       transport: "stdio",
     };
     warnings.push(
-      "Android MCP is an optional integration and uses the external android-mcp-server package. Android and iOS default to CLI-first testing; set up Android SDK platform-tools and ANDROID_HOME only when you want the optional Android MCP wiring and auto-discovery is unavailable.",
+      "Android MCP is a legacy optional integration via the external android-mcp-server package. The preferred semantic mobile runtime is mobile-mcp through the bundled Foundry MCP server, while Android/iOS CLI tooling remains the deterministic fallback. Set up Android SDK platform-tools and ANDROID_HOME only when you still need the legacy Android MCP wiring and auto-discovery is unavailable.",
     );
   }
 
@@ -8286,7 +8299,7 @@ function withInstallOptions(command) {
     .option("--playwright", "optional: include Playwright MCP browser-testing wiring (canonical browser-testing runtime)")
     .option(
       "--android",
-      `optional: include Android MCP wiring via ${ANDROID_MCP_PACKAGE_SPEC} (CLI-first mobile testing remains the default)`,
+      `optional: include legacy Android MCP wiring via ${ANDROID_MCP_PACKAGE_SPEC} (preferred semantic mobile runtime is mobile-mcp; CLI tooling remains the fallback)`,
     )
     .option(
       "--postman-api-key <key>",
@@ -11498,6 +11511,15 @@ async function syncMcpToolCatalogs({
 }) {
   const syncResults = [];
   for (const serviceId of services) {
+    if (serviceId === "mobile") {
+      syncResults.push({
+        service: serviceId,
+        action: "skipped",
+        reason:
+          "mobile catalog discovery is handled by the bundled MCP gateway runtime",
+      });
+      continue;
+    }
     if (
       serviceId === "stitch" &&
       (!configValue?.stitch ||
@@ -11563,22 +11585,24 @@ async function runMcpToolsSync(options) {
     const cwd = process.cwd();
     await loadManagedCredentialsEnv();
     const scope = normalizeMcpScope(opts.scope, "global");
-    const service = normalizeCredentialService(opts.service || "all", {
+    const service = normalizeMcpCatalogService(opts.service || "all", {
       allowAll: true,
     });
-    const services = service === "all" ? ["postman", "stitch"] : [service];
-    const { configPath, existing, existingValue } = await loadConfigForScope({
+    const services =
+      service === "all" ? ["postman", "stitch", "mobile"] : [service];
+    const configState = await loadConfigForScope({
       scope,
       cwd,
     });
-    if (!existing.exists) {
-      throw new Error(`Config file is missing at ${configPath}.`);
+    const requiresConfig = services.some((serviceId) => serviceId !== "mobile");
+    if (requiresConfig && !configState.existing.exists) {
+      throw new Error(`Config file is missing at ${configState.configPath}.`);
     }
 
     const syncResults = await syncMcpToolCatalogs({
       scope,
       services,
-      configValue: existingValue,
+      configValue: configState.existingValue,
       cwd,
       dryRun: Boolean(opts.dryRun),
     });
@@ -11603,10 +11627,15 @@ async function runMcpToolsList(options) {
     const opts = resolveActionOptions(options);
     const cwd = process.cwd();
     const scope = normalizeMcpScope(opts.scope, "global");
-    const service = normalizeCredentialService(opts.service);
+    const service = normalizeMcpCatalogService(opts.service);
     const catalogPath = resolveMcpCatalogPath({ service, scope, cwd });
     const catalog = await readJsonFileIfExists(catalogPath);
     if (!catalog.exists || !catalog.value) {
+      if (service === "mobile") {
+        throw new Error(
+          `Catalog not found at ${catalogPath}. Mobile catalogs are generated by the bundled MCP gateway. Start 'cbx mcp serve --scope ${scope}' or 'cbx mcp runtime up --scope ${scope}' first.`,
+        );
+      }
       throw new Error(
         `Catalog not found at ${catalogPath}. Run 'cbx mcp tools sync --service ${service} --scope ${scope}' first.`,
       );
@@ -14186,7 +14215,7 @@ async function runInitWizard(options) {
       formatInitSummary(selections),
       "",
       "Browser testing runtime: Playwright MCP is the canonical browser-testing runtime.",
-      "Mobile testing: Android and iOS default to CLI-first testing; Android MCP is optional.",
+      "Mobile testing runtime: mobile-mcp is the preferred semantic runtime; Android and iOS CLI tooling remains the deterministic fallback.",
       `Workspace profile: ${selections.profile}`,
       `Detected stack: ${selections.stack} (${detectedStack.confidence})`,
       `Stack evidence: ${detectedStack.evidence.join(", ") || "(none)"}`,
@@ -15381,7 +15410,7 @@ async function runMcpTest(toolArg, options) {
       throw new Error("Missing <tool> name.");
     }
     const matches = [];
-    for (const service of ["postman", "stitch"]) {
+    for (const service of ["postman", "stitch", "mobile"]) {
       const catalogPath = resolveMcpCatalogPath({ service, scope, cwd });
       const catalog = await readJsonFileIfExists(catalogPath);
       if (!catalog.exists || !catalog.value) continue;
@@ -15410,7 +15439,7 @@ async function runMcpTest(toolArg, options) {
     }
     if (matches.length === 0) {
       throw new Error(
-        `Tool '${toolArg}' was not found in local MCP catalogs. Run 'cbx mcp tools sync --service all --scope ${scope}' first.`,
+        `Tool '${toolArg}' was not found in local MCP catalogs. Run 'cbx mcp tools sync --service all --scope ${scope}' for Postman/Stitch catalogs, or start the bundled MCP gateway to generate mobile catalogs.`,
       );
     }
     console.log(`Tool query: ${toolArg}`);

@@ -1,6 +1,6 @@
 # Cubis Foundry MCP Server
 
-Standalone MCP (Model Context Protocol) server for the Cubis Foundry skill vault, config tools, and dynamic Postman/Stitch passthrough tool namespaces.
+Standalone MCP (Model Context Protocol) server for the Cubis Foundry skill vault, config tools, and dynamic Postman/Stitch/Mobile passthrough tool namespaces.
 
 ## Table of Contents
 
@@ -20,7 +20,7 @@ Standalone MCP (Model Context Protocol) server for the Cubis Foundry skill vault
 
 ## Overview
 
-This server exposes built-in tools plus dynamic passthrough tools discovered from upstream Postman/Stitch MCP servers:
+This server exposes built-in tools plus dynamic passthrough tools discovered from upstream Postman, Stitch, and Mobile MCP servers:
 
 | Domain      | Tools | Purpose                                                       |
 | ----------- | ----- | ------------------------------------------------------------- |
@@ -28,10 +28,18 @@ This server exposes built-in tools plus dynamic passthrough tools discovered fro
 | **Skills**               | 7        | Browse/search/validate/get + targeted reference loading for skills  |
 | **Postman config**       | 3        | Read/write Postman MCP mode in `cbx_config.json`                   |
 | **Stitch config**        | 3        | Read/write Stitch active profile in `cbx_config.json`              |
+| **Mobile config**        | 3        | Read/write Mobile MCP active profile and status in `cbx_config.json` |
 | **Postman passthrough**  | dynamic  | `postman.<tool_name>` for all discovered upstream Postman tools    |
 | **Stitch passthrough**   | dynamic  | `stitch.<tool_name>` for all discovered upstream Stitch tools       |
+| **Mobile passthrough**   | dynamic  | `mobile.<tool_name>` for all discovered upstream Mobile MCP tools   |
 
 The MCP layer now uses a **route-first, lazy content model**: workflow/custom-agent intent resolves through `route_resolve` first, exact skill selection is validated via `skill_validate`, `skill_get` loads the core `SKILL.md`, and sidecar markdown is loaded only when needed via `skill_get_reference`.
+
+Web QA is intentionally anchored on the canonical `web-testing` skill and Playwright MCP. Browser-specialist aliases are no longer part of the public surface, so route resolution and skill loading should point at `web-testing` directly.
+
+Mobile QA is intentionally dual-path. `mobile-mcp` is the preferred semantic runtime for Android and iOS when you need richer inspection, element-level interaction, or agentic navigation. CLI-first Android/iOS tooling remains the fallback for deterministic evidence capture, recovery flows, and environments where the heavier upstream stack is unavailable.
+
+iOS setup is expected to be heavier than browser or Android automation because Simulator semantics still depend on native Apple tooling and WebDriverAgent-class setup. Treat that path as deliberate infrastructure, not zero-config automation.
 
 At startup, the server scans the vault for concrete skill files and merges that with `mcp/generated/mcp-manifest.json` so browse/search can use indexed descriptions, keywords, and triggers instead of rereading every `SKILL.md`.
 
@@ -198,7 +206,7 @@ On each startup the server prints fixed token savings metrics:
 └──────────────────────────────────────────────┘
 ```
 
-Followed by Postman/Stitch config status (or a warning if `cbx_config.json` is missing).
+Followed by Postman/Stitch/Mobile config status (or a warning if `cbx_config.json` is missing).
 
 ## Tool Reference
 
@@ -225,7 +233,7 @@ Resolve an explicit workflow command, explicit custom agent, compatibility alias
   "command": "/test",
   "agent": "tester",
   "primarySkills": ["web-testing", "android-emulator-testing", "ios-simulator-testing"],
-  "supportingSkills": ["deep-research", "playwright-interactive", "code-review"],
+  "supportingSkills": ["deep-research", "code-review"],
   "fallbackSkillSearchRecommended": false,
   "matchedBy": "trigger-match"
 }
@@ -567,6 +575,7 @@ On startup, the server discovers upstream tools and registers namespaced passthr
 
 - `postman.<tool_name>`
 - `stitch.<tool_name>`
+- `mobile.<tool_name>`
 
 Examples:
 - `postman.getAuthenticatedUser`
@@ -575,8 +584,8 @@ Examples:
 - `stitch.get_screen_code`
 
 Discovered non-secret catalogs are persisted to:
-- Global config: `~/.cbx/mcp/catalog/postman.json` and `~/.cbx/mcp/catalog/stitch.json`
-- Project config: `<workspace>/.cbx/mcp/catalog/postman.json` and `<workspace>/.cbx/mcp/catalog/stitch.json`
+- Global config: `~/.cbx/mcp/catalog/postman.json`, `~/.cbx/mcp/catalog/stitch.json`, and gateway-generated `mobile.json`
+- Project config: `<workspace>/.cbx/mcp/catalog/postman.json`, `<workspace>/.cbx/mcp/catalog/stitch.json`, and gateway-generated `mobile.json`
 
 ## Token Savings
 

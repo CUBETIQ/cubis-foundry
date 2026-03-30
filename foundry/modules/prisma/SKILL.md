@@ -78,7 +78,7 @@ Guide the design and implementation of production-grade database layers using Pr
 
 ## Testing Guidance
 
-- Keep Prisma integration guidance in this skill instead of routing new work through the generic `integration-testing` wrapper.
+- Keep Prisma schema-coupled and database-boundary tests in this skill instead of routing new work through a separate generic runtime-testing skill.
 - Own schema-coupled tests, client lifecycle checks, migration-aware fixtures, and database-boundary verification here because they are Prisma-runtime concerns.
 - Use the owning TypeScript skill for narrow unit tests that do not need a real database or Prisma client boundary.
 - Use `../web-testing/SKILL.md` only when the task needs live browser evidence against a UI flow that depends on Prisma-backed data behavior.

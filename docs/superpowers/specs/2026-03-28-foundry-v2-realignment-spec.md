@@ -44,6 +44,9 @@ Reduce top-level names for users, but keep real technical boundaries where the n
 - a small explicit workflow set
 - a small core agent set
 - platform-native instruction outputs
+- Playwright MCP as the canonical browser runtime
+- `mobile-mcp` as a first-class semantic mobile runtime
+- CLI-first mobile fallback for deterministic device/simulator evidence
 
 ---
 
@@ -103,22 +106,27 @@ These remain first-class because users naturally search by these names and they 
 #### Testing policy
 
 - `web-testing` uses Playwright MCP as the primary runtime
-- `android-emulator-testing` is CLI-first using `adb` and emulator tooling
-- `ios-simulator-testing` is CLI-first using `xcrun simctl`, Xcode tooling, and Python helper scripts
-- Android MCP is removed from the default testing architecture
-- `qa`, `unit-testing`, `integration-testing`, and `playwright-interactive` stop being primary user-facing testing entry points
+- `android-emulator-testing` is dual-path:
+  - preferred semantic runtime: `mobile-mcp`
+  - deterministic fallback runtime: `adb` and emulator tooling
+- `ios-simulator-testing` is dual-path:
+  - preferred semantic runtime: `mobile-mcp`
+  - deterministic fallback runtime: `xcrun simctl`, Xcode tooling, and Python helper scripts
+- `mobile-mcp` is the first-class semantic mobile runtime in the default testing architecture
+- `qa`, `unit-testing`, `integration-testing`, and `playwright-interactive` are removed as skill surfaces after their content is redistributed into the canonical testing, language, and framework skills
 
-### 3.3 Design is reduced to one master plus two explicit specializations
+### 3.3 Design is reduced to one master, two explicit specializations, and one canonical support surface
 
 - `design` — master design skill
 - `web-ui-design`
 - `mobile-ui-design`
+- `design-system` — canonical systemization support surface
 
 Supporting design content can still exist, but it should not create more top-level user-facing names unless absolutely necessary.
 
 ### 3.4 Skills to demote or absorb
 
-These should stop being primary user-facing names:
+These legacy names were evaluated for demotion or absorption:
 
 - `qa`
 - `unit-testing`
@@ -127,17 +135,15 @@ These should stop being primary user-facing names:
 - `frontend-design-core`
 - `frontend-design-screen-brief`
 - `frontend-design-style-selector`
-- `frontend-design-system`
 - `frontend-design-implementation-handoff`
 - `frontend-design-mobile-patterns`
+- `frontend-design-system`
 - `stitch`
 - `skills-core`
 
-They should become one of:
+Current outcome:
 
 - merged content inside a stronger canonical skill
-- compat alias
-- internal supporting reference content
 - removed entirely
 
 ---
@@ -148,7 +154,7 @@ They should become one of:
 
 Canonical skill: `web-testing`
 
-Primary runtime:
+Runtime model:
 
 - Playwright MCP for browser automation
 
@@ -160,37 +166,32 @@ Responsibilities:
 - screenshots and accessibility snapshots
 - deterministic reproduction of web flows
 
-This replaces generic browser QA guidance and absorbs the useful parts of `playwright-interactive`.
+This replaces generic browser QA guidance.
 
 ### 4.2 Android testing
 
 Canonical skill: `android-emulator-testing`
 
-Primary runtime:
+Runtime model:
 
-- `adb`
-- emulator CLI
-- Android UI dump / helper scripts
+- preferred semantic runtime via `mobile-mcp`
+- deterministic fallback via `adb`, emulator CLI, and Android UI dump/helper scripts
 
 Responsibilities:
 
-- boot or select emulator
-- build/install/launch app
-- drive deterministic input
-- inspect UI tree
-- capture screenshot and logcat evidence
-
-Android MCP is not part of the default canonical path.
+- preferred semantic runtime via `mobile-mcp` when element-level interaction or richer inspection is needed
+- deterministic fallback via emulator lifecycle, `adb`, UI tree inspection, screenshots, and logcat evidence
+- explicit guidance on when to prefer semantic MCP interaction versus low-level CLI evidence capture
 
 ### 4.3 iOS testing
 
 Canonical skill: `ios-simulator-testing`
 
-Primary runtime:
+Runtime model:
 
-- `xcrun simctl`
-- `xcodebuild`
-- Python helper scripts from the iOS sample skill set
+- preferred semantic runtime via `mobile-mcp`
+- deterministic fallback via `xcrun simctl`, `xcodebuild`, and Python helper scripts from the iOS sample skill set
+- expected heavier setup for semantic iOS automation because it depends on Apple tooling and WebDriverAgent-class infrastructure
 
 Responsibilities:
 
@@ -204,7 +205,7 @@ The Python helper inventory already present under `sample/Test iOS Skills Full/i
 
 ### 4.4 Testing guidance folded into language/framework skills
 
-`unit-testing` and `integration-testing` cease to be top-level user-facing skills. Their content is redistributed into:
+`unit-testing`, `integration-testing`, and `playwright-interactive` are not top-level skills anymore. Their content is redistributed into:
 
 - language skills for language-specific test patterns
 - framework skills for framework-specific test setup
@@ -220,11 +221,10 @@ Canonical skill: `design`
 
 Responsibilities:
 
-- visual direction
-- typography
-- spacing and layout
-- design critique
-- selecting the right specialization
+- routing and critique
+- audit-first diagnosis
+- choosing the right downstream design surface
+- preserving the non-negotiable constraints that must survive execution
 
 ### 5.2 Web specialization
 
@@ -232,10 +232,10 @@ Canonical skill: `web-ui-design`
 
 Responsibilities:
 
-- desktop and responsive browser UI
-- component architecture
+- desktop and responsive browser UI execution
+- component architecture for browser-first surfaces
 - web interaction patterns
-- design systems for browser-first experiences
+- implementation-ready handoff for browser products
 
 ### 5.3 Mobile specialization
 
@@ -244,18 +244,29 @@ Canonical skill: `mobile-ui-design`
 Responsibilities:
 
 - small-screen interaction patterns
-- touch ergonomics
+- touch ergonomics and reachability
 - mobile navigation and density
-- iOS and Android UI adaptation patterns
+- implementation-ready handoff for iOS and Android surfaces
 
-### 5.4 Design quality bar
+### 5.4 Design-system support surface
+
+Canonical skill: `design-system`
+
+Responsibilities:
+
+- canonical visual language
+- semantic tokens
+- component vocabulary
+- overlays and durable design-state refresh
+
+### 5.5 Design quality bar
 
 The design stack should be upgraded using current OpenAI and Anthropic prompting guidance:
 
-- explicit output structure
+- explicit sequential design steps
+- stricter deliverable contracts
 - concrete visual direction choices
-- stronger constraint-based instruction writing
-- specialist subagents for critique, system design, and implementation handoff instead of one overloaded prompt
+- cleaner role separation between routing/critique, systemization, and web/mobile execution
 
 Reference sources:
 
@@ -370,15 +381,13 @@ They should not try to re-document every skill.
 ### Keep
 
 - Playwright MCP for web testing
+- `mobile-mcp` as the first-class semantic mobile runtime
 - existing MCP server builder and MCP integration capabilities
 
-### Remove from default testing path
+### Keep as deterministic fallback path
 
-- Android MCP as the canonical mobile testing route
-
-### Do not add unless justified later
-
-- an iOS MCP layer that duplicates the existing CLI-first simulator tooling
+- CLI-first Android tooling (`adb`, emulator control, screenshots, logcat)
+- CLI-first iOS tooling (`simctl`, `xcodebuild`, Python helper scripts)
 
 ---
 

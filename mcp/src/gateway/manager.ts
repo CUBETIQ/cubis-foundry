@@ -37,7 +37,8 @@ interface ProviderRuntime {
 function emptyProviderState(provider: UpstreamProvider): UpstreamState {
   return {
     provider,
-    transport: provider === "android" ? "stdio" : "http",
+    transport:
+      provider === "android" || provider === "mobile" ? "stdio" : "http",
     mcpUrl: null,
     authEnvVar: null,
     authConfigured: false,
@@ -127,12 +128,23 @@ export class GatewayManager {
         env: {},
         cwd: null,
       },
+      mobile: {
+        transport: "stdio",
+        mcpUrl: null,
+        headers: {},
+        authEnvVar: null,
+        command: null,
+        args: [],
+        env: {},
+        cwd: null,
+      },
     };
   private readonly providerState: Record<UpstreamProvider, UpstreamState> = {
     postman: emptyProviderState("postman"),
     stitch: emptyProviderState("stitch"),
     playwright: emptyProviderState("playwright"),
     android: emptyProviderState("android"),
+    mobile: emptyProviderState("mobile"),
   };
 
   private scope: GatewayStatus["scope"] = null;
@@ -155,6 +167,7 @@ export class GatewayManager {
       this.syncProvider("stitch", resolved.providers.stitch),
       this.syncProvider("playwright", resolved.providers.playwright),
       this.syncProvider("android", resolved.providers.android),
+      this.syncProvider("mobile", resolved.providers.mobile),
     ]);
   }
 
@@ -173,6 +186,7 @@ export class GatewayManager {
         stitch: this.providerState.stitch,
         playwright: this.providerState.playwright,
         android: this.providerState.android,
+        mobile: this.providerState.mobile,
       },
     };
   }
@@ -344,4 +358,3 @@ export class GatewayManager {
     this.providerState[provider] = state;
   }
 }
-

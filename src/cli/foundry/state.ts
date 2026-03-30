@@ -485,7 +485,6 @@ export async function buildWorkspaceManifest({
     installedPlatforms: platforms,
     installedPacks: packs,
     installedModules: existing.installedModules || [
-      "rules-core",
       "agents-core",
       "workflows-core",
       "skills-core",

@@ -145,5 +145,35 @@ export function redactConfig(config: CbxConfig): CbxConfig {
       }
     }
   }
+
+  if (redacted.mobile && typeof redacted.mobile === "object") {
+    const mobile = redacted.mobile as Record<string, unknown>;
+    if (mobile.env && typeof mobile.env === "object") {
+      for (const key of Object.keys(mobile.env as Record<string, unknown>)) {
+        (mobile.env as Record<string, unknown>)[key] = "***REDACTED***";
+      }
+    }
+    if (Array.isArray(mobile.profiles)) {
+      for (const rawProfile of mobile.profiles) {
+        if (!rawProfile || typeof rawProfile !== "object") continue;
+        const profile = rawProfile as Record<string, unknown>;
+        if (profile.env && typeof profile.env === "object") {
+          for (const key of Object.keys(profile.env as Record<string, unknown>)) {
+            (profile.env as Record<string, unknown>)[key] = "***REDACTED***";
+          }
+        }
+      }
+    } else if (mobile.profiles && typeof mobile.profiles === "object") {
+      for (const profile of Object.values(
+        mobile.profiles as Record<string, Record<string, unknown>>,
+      )) {
+        if (profile.env && typeof profile.env === "object") {
+          for (const key of Object.keys(profile.env as Record<string, unknown>)) {
+            (profile.env as Record<string, unknown>)[key] = "***REDACTED***";
+          }
+        }
+      }
+    }
+  }
   return redacted;
 }

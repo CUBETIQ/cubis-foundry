@@ -24,24 +24,21 @@ installProfiles:
   - id: core
     label: Core
     description: Minimal install for quick setup
-    modules: [rules-core, agents-core, contexts-core]
+    modules: [agents-core, contexts-core]
   - id: developer
     label: Developer
     description: Full developer workflow
-    modules: [rules-core, agents-core, workflows-core, skills-core, contexts-core, hooks-core, mcp-core]
+    modules: [agents-core, workflows-core, skills-core, contexts-core, hooks-core]
   - id: security
     label: Security
     description: Security-focused install
-    modules: [rules-core, rules-security, agents-core, contexts-core]
+    modules: [rules-security, agents-core, contexts-core]
   - id: research
     label: Research
     description: Research and prototyping
-    modules: [rules-core, agents-core, research-core]
+    modules: [agents-core]
 
 installComponents:
-  - id: rules-core
-    label: Core Rules
-    description: Steering rules for all platforms
   - id: rules-security
     label: Security Rules
     description: Additional security-focused steering
@@ -60,12 +57,6 @@ installComponents:
   - id: hooks-core
     label: Hooks
     description: Platform-native hook recipes and scripts
-  - id: mcp-core
-    label: MCP Servers
-    description: MCP server configurations
-  - id: research-core
-    label: Research Capabilities
-    description: Research-oriented skills and workflows
 
 buildOutputs:
   runtimeAssets: generated/runtime-assets

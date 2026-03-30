@@ -134,7 +134,7 @@ Run evals multiple times, compute variance, and identify flaky assertions.
 |-----------|-----------|--------|
 ```
 
-## Skill Library Reference (65 Skills)
+## Skill Library Reference
 
 ### Category A — Languages (10)
 python-best-practices, typescript-best-practices, golang-best-practices, rust-best-practices, javascript-best-practices, java-best-practices, kotlin-best-practices, swift-best-practices, csharp-best-practices, php-best-practices
@@ -145,8 +145,8 @@ go-fiber, nestjs, fastapi, express-nodejs, gin-golang, laravel, django-drf, spri
 ### Category C — Design/Architecture (7)
 design, system-design, microservices-design, api-design, database-design, architecture-doc, tech-doc
 
-### Category D — Testing/QA (6)
-web-testing, android-emulator-testing, ios-simulator-testing, qa, playwright-interactive, systematic-debugging
+### Category D — Testing/Runtime (4)
+web-testing, android-emulator-testing, ios-simulator-testing, systematic-debugging
 
 ### Category E — Security (5)
 owasp-security-review, pentest-skill, vibesec, secret-management, sanitize-pii

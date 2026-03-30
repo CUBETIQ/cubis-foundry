@@ -76,7 +76,7 @@ Guide the design and implementation of production-grade Spring Boot 3.4+ applica
 
 ## Testing Guidance
 
-- Keep Spring Boot boundary and integration guidance in this skill instead of routing new work through the generic `integration-testing` wrapper.
+- Keep Spring Boot slice and runtime-boundary tests in this skill instead of routing new work through a separate generic runtime-testing skill.
 - Own application-context startup, slice tests, HTTP boundary checks, persistence fixtures, and container-backed integration setup here because they are Spring-runtime concerns.
 - Use the owning Java or Kotlin skill for narrow unit tests that do not need the Spring runtime boundary.
 - Use `../web-testing/SKILL.md` only when the task needs live browser evidence against a Spring-backed UI surface.

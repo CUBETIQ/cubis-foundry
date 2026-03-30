@@ -75,9 +75,9 @@ Production-grade guidance for C# 13 and .NET 9 application engineering. Covers m
 
 ## Testing Guidance
 
-- Keep C# unit-test guidance in this skill instead of routing new work through the generic `unit-testing` wrapper.
-- Prefer the repo's native .NET test stack, usually xUnit/NUnit/MSTest with framework-local fixture and mocking patterns.
-- Escalate ASP.NET, persistence, HTTP, container, or other runtime-boundary checks into the owning framework or platform skill instead of the generic `integration-testing` wrapper.
+- Keep C# unit-test guidance in this skill instead of routing new work through a separate generic testing skill.
+- Use the repo's native .NET test stack, usually xUnit, NUnit, or MSTest with project-local fixtures, assertions, and snapshots for code-level checks.
+- Escalate ASP.NET, persistence, HTTP, container, or other runtime-boundary checks into the owning framework or platform skill instead of a separate generic runtime-testing skill.
 - Use `../web-testing/SKILL.md`, `../android-emulator-testing/SKILL.md`, or `../ios-simulator-testing/SKILL.md` only when the task needs live browser or device evidence.
 
 ## Output Format

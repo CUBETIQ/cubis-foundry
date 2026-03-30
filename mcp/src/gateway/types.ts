@@ -4,7 +4,12 @@
 
 import type { ConfigScope } from "../cbxConfig/types.js";
 
-export type UpstreamProvider = "postman" | "stitch" | "playwright" | "android";
+export type UpstreamProvider =
+  | "postman"
+  | "stitch"
+  | "playwright"
+  | "android"
+  | "mobile";
 export type GatewayScope = ConfigScope | "auto";
 export type UpstreamTransport = "http" | "stdio";
 

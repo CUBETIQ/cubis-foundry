@@ -60,4 +60,15 @@ describe("registerCommands()", () => {
     expect(doctor).toBeDefined();
     expect(doctor?.description()).toContain("health report");
   });
+
+  it("exposes mobile in mcp tool service help surfaces", () => {
+    const program = registerCommands(makeDeps());
+    const mcp = program.commands.find((command) => command.name() === "mcp");
+    const tools = mcp?.commands.find((command) => command.name() === "tools");
+    const sync = tools?.commands.find((command) => command.name() === "sync");
+    const list = tools?.commands.find((command) => command.name() === "list");
+
+    expect(sync?.helpInformation()).toContain("postman|stitch|mobile|all");
+    expect(list?.helpInformation()).toContain("postman|stitch|mobile");
+  });
 });

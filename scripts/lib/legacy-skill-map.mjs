@@ -76,7 +76,7 @@ export const LEGACY_SKILL_ID_MAP = Object.freeze({
   supabase: "database-design",
   "swift-pro": "swift-best-practices",
   "tailwind-patterns": "web-ui-design",
-  "testing-patterns": "qa",
+  "testing-patterns": "web-testing",
   "typescript-pro": "typescript-best-practices",
   vitess: "database-design",
   "vulnerability-scanner": "owasp-security-review",

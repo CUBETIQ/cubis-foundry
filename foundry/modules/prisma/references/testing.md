@@ -7,7 +7,7 @@ Load this when Prisma work needs database-boundary verification, migration-aware
 - Keep schema-coupled and client-boundary tests in the Prisma skill.
 - Keep narrow TypeScript utility tests in `typescript-best-practices`.
 - Keep UI-facing release-readiness checks in `web-testing` or the mobile testing skills.
-- Do not route Prisma database checks through the generic `integration-testing` wrapper.
+- Do not route Prisma database checks through a separate generic runtime-testing skill.
 
 ## Database-boundary tests
 

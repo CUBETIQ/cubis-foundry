@@ -8,6 +8,11 @@
 
 **Tech Stack:** Markdown specs and plans, Foundry module YAML + `SKILL.md`, agent/workflow/rule authoring files, catalog/compiler CLI, Playwright MCP, Android `adb`, iOS `simctl` and Python helper scripts.
 
+Current runtime note:
+- `mobile-mcp` is now part of the active MCP/runtime plan as a first-class provider.
+- Web remains Playwright-MCP-first.
+- Android/iOS testing guidance is dual-path: semantic MCP first where available, CLI-first fallback for deterministic evidence and recovery.
+
 ---
 
 ## Scope and Working Copy
@@ -18,7 +23,8 @@
 - Progress snapshot on 2026-03-28:
   - Tasks 1-4 are complete.
   - Task 5 is complete.
-  - Current checkpoint: `qa` is now a compat alias, `playwright-interactive` is demoted to browser specialist support under `web-testing`, workflow/agent/runtime references now prefer the three canonical testing skills, and the MCP alias layer has been reanchored to `foundry/modules`.
+  - Current checkpoint: the deprecated/internal testing and core skill modules are physically deleted, the old names no longer resolve, workflow/agent/runtime references now prefer the reduced canonical surfaces, and the MCP alias layer has been reanchored to `foundry/modules`.
+  - `catalog build` now clears stale platform output before writing regenerated runtime assets, so deleted skills do not linger in `generated/runtime-assets`.
 
 ---
 
@@ -80,10 +86,10 @@
 
 - [x] Keep Playwright MCP as the canonical browser-testing runtime.
 - [x] Remove Android MCP from the default testing path.
-- [x] Document that Android and iOS default to CLI-first testing.
+- [x] Document that Android and iOS are dual-path: `mobile-mcp` preferred for semantic interaction, CLI retained as deterministic fallback.
 - [x] Ensure generated guidance no longer implies Android MCP is required for mobile testing.
 
-### Task 5: Demote old testing wrappers
+### Task 5: Remove old testing wrappers and fold their content into the reduced taxonomy
 
 **Files:**
 - Modify or demote:
@@ -92,14 +98,13 @@
   - `foundry/modules/integration-testing/**`
   - `foundry/modules/playwright-interactive/**`
 
-- [x] Convert `qa` into a thin alias or supporting verifier surface.
+- [x] Remove `qa`, `unit-testing`, `integration-testing`, and `playwright-interactive` as skill surfaces after their content was redistributed.
 - [x] Fold unit-test guidance into language/framework skills.
 - [x] Fold integration-test guidance into framework/platform skills.
-- [x] Retain only the Playwright-specialist content that is still useful under `web-testing`.
+- [x] Retain only the browser and device guidance that is still useful under the canonical testing skills.
 
 Status:
-- `qa` alias rewrite is done.
-- `playwright-interactive` is demoted to specialist support and `web-testing` is now the canonical browser runtime surface.
+- `web-testing` is now the canonical browser runtime surface.
 - Unit-test guidance now lives explicitly in the language skills:
   - `typescript-best-practices`
   - `python-best-practices`
@@ -122,24 +127,27 @@ Status:
   - `expo-app`
 - Task 5 closeout is complete:
   - stale MCP docs/examples were updated to the canonical testing IDs
-  - the broad testing alias map now routes historical testing-pattern requests through `qa`
+  - the broad testing alias map now routes historical testing-pattern requests through `web-testing`, `android-emulator-testing`, and `ios-simulator-testing`
   - generated MCP manifest paths now point at `foundry/modules/*/SKILL.md`, which clears the old alias-manifest test failures
+  - the deleted testing skill IDs no longer resolve or emit runtime assets
 
 ---
 
 ## Phase 3 — Rebuild the Design Stack
 
-### Task 6: Create the new canonical design trio
+### Task 6: Create the new canonical design quartet
 
 **Files:**
 - Rebuild:
   - `foundry/modules/design/**`
   - `foundry/modules/web-ui-design/**`
   - `foundry/modules/mobile-ui-design/**`
+  - `foundry/modules/design-system/**`
 
-- [ ] Make `design` the master routing and critique skill.
-- [ ] Make `web-ui-design` the browser-first design specialization.
-- [ ] Make `mobile-ui-design` the small-screen specialization.
+- [x] Make `design` the master routing and critique skill.
+- [x] Make `web-ui-design` the browser-first design specialization.
+- [x] Make `mobile-ui-design` the small-screen specialization.
+- [x] Make `design-system` the canonical systemization support surface.
 
 ### Task 7: Absorb or demote fragmented frontend design skills
 
@@ -155,27 +163,35 @@ Status:
   - `foundry/modules/design-audit/**`
   - `foundry/modules/stitch/**`
 
-- [ ] Keep `design-audit` only if it remains a clearly distinct review surface.
-- [ ] Convert `stitch` into alias-only behavior if still needed.
-- [ ] Merge redundant frontend-design content into the new trio.
+- [x] Keep `design-audit` only if it remains a clearly distinct review surface.
+- [x] Remove `stitch` as a skill surface after design routing was absorbed by `design`, `web-ui-design`, `mobile-ui-design`, and `design-system`.
+- [x] Merge redundant frontend-design content into the new trio.
 
 Status:
 - `web-ui-design` and `mobile-ui-design` now exist as canonical execution surfaces.
 - `design` is now the public router and audit surface.
-- `stitch` is now a deprecated compat alias that routes into `design`.
-- `frontend-design`, `frontend-design-core`, `frontend-design-style-selector`, `frontend-design-screen-brief`, `frontend-design-mobile-patterns`, `frontend-design-implementation-handoff`, and `design-audit` are now deprecated compat aliases at the module and skill-metadata layer.
-- `frontend-design-system` remains the retained support surface for canonical design-state refresh and `.stitch/DESIGN.md` mirroring.
+- `design-system` is now the canonical systemization support surface.
+- Legacy frontend-design slices have been collapsed into the canonical design quartet.
 
 ### Task 8: Upgrade design prompting quality
 
 **Files:**
-- Modify: design skill prompts and any supporting agent prompts
-- Add: references capturing strong UI-generation patterns
+- Modify: `foundry/modules/design/SKILL.md`
+- Modify: `foundry/modules/web-ui-design/SKILL.md`
+- Modify: `foundry/modules/mobile-ui-design/SKILL.md`
+- Modify: `foundry/modules/design-system/SKILL.md`
+- Add: `foundry/modules/design/references/execution-contract.md`
 
-- [ ] Encode stronger visual-direction constraints.
-- [ ] Add explicit mobile and web output structure.
-- [ ] Add better specialist-role separation for critique, systemization, and handoff.
-- [ ] Use official OpenAI and Anthropic prompting guidance to tighten output contracts.
+- [x] Encode stronger visual-direction constraints.
+- [x] Add explicit mobile and web output structure.
+- [x] Add clearer specialist-role separation for critique, systemization, and handoff.
+- [x] Add a shared execution-contract reference only where it materially improves the prompt quality.
+- [x] Tighten the canonical design prompts without widening into agent or workflow rewrites.
+
+Status:
+- The canonical design surfaces now separate routing/critique, systemization, and web/mobile execution more cleanly.
+- The shared `references/execution-contract.md` payload now gives the four design surfaces a common deliverable contract.
+- Task 8 is complete.
 
 ---
 
@@ -194,9 +210,13 @@ Status:
   - `foundry/modules/swift-best-practices/**`
   - `foundry/modules/csharp-best-practices/**`
 
-- [ ] Decide whether to rename module IDs now or retain IDs and only change user-facing naming first.
-- [ ] Fold unit-test guidance into each language skill where appropriate.
-- [ ] Remove generic duplicated testing sections that no longer belong at top level.
+- [x] Retain module IDs for now and normalize the user-facing naming first.
+- [x] Fold unit-test guidance into each language skill where appropriate.
+- [x] Remove generic duplicated testing sections that no longer belong at top level.
+
+Decision:
+- Retain the existing module IDs for now and normalize the user-facing language-level guidance first.
+- Keep the language skills owning unit-test guidance, but push framework, platform, and runtime-boundary checks out to the appropriate specialized skills.
 
 ### Task 10: Normalize framework skills
 
@@ -213,9 +233,14 @@ Status:
   - `svelte-sveltekit`
   - `expo-app`
 
-- [ ] Fold framework-specific testing guidance into each framework skill.
-- [ ] Remove overlap with the deleted top-level testing wrappers.
-- [ ] Keep framework skills concrete and user-searchable.
+- [x] Fold framework-specific testing guidance into each framework skill.
+- [x] Remove overlap with the deleted top-level testing wrappers.
+- [x] Keep framework skills concrete and user-searchable.
+
+Status:
+- First-pass normalization is complete for the framework skills listed in this task.
+- The framework layer now keeps runtime-boundary tests local while making live browser and device evidence explicit through `web-testing`, `android-emulator-testing`, and `ios-simulator-testing` where applicable.
+- Task 10 is complete for this worktree checkpoint.
 
 ---
 

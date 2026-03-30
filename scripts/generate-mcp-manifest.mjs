@@ -43,6 +43,16 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = path.join(ROOT, "mcp", "generated");
 const OUT_FILE = path.join(OUT_DIR, "mcp-manifest.json");
 const SKILLS_ROOT = path.join(ROOT, "foundry", "modules");
+const DELETED_SKILL_IDS = new Set([
+  "integration-testing",
+  "mcp-core",
+  "playwright-interactive",
+  "qa",
+  "research-core",
+  "rules-core",
+  "stitch",
+  "unit-testing",
+]);
 
 // ─── Arg parsing ────────────────────────────────────────────
 
@@ -63,7 +73,12 @@ async function listTopLevelSkillDirs(rootDir = SKILLS_ROOT) {
   if (!(await pathExists(rootDir))) return [];
   const entries = await fs.readdir(rootDir, { withFileTypes: true });
   return entries
-    .filter((entry) => entry.isDirectory() && !entry.name.startsWith("."))
+    .filter(
+      (entry) =>
+        entry.isDirectory() &&
+        !entry.name.startsWith(".") &&
+        !DELETED_SKILL_IDS.has(entry.name),
+    )
     .map((entry) => entry.name)
     .sort((a, b) => a.localeCompare(b));
 }
@@ -359,9 +374,11 @@ const CATEGORY_MAP = {
   "red-team": "security",
   vulnerability: "security",
   secure: "security",
+  "web-testing": "testing",
+  "android-emulator-testing": "testing",
+  "ios-simulator-testing": "testing",
   test: "testing",
   playwright: "testing",
-  qa: "testing",
   tdd: "testing",
   "find-bugs": "testing",
   "fix-review": "testing",

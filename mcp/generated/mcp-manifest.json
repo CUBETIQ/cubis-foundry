@@ -1,12 +1,12 @@
 {
   "$schema": "cubis-foundry-mcp-manifest-v1",
-  "generatedAt": "2026-03-28T06:01:20.083Z",
-  "contentHash": "c4a04ee5ea4de9f7",
+  "generatedAt": "2026-03-30T02:15:19.470Z",
+  "contentHash": "fce32f0561677489",
   "summary": {
-    "totalSkills": 54,
+    "totalSkills": 46,
     "totalCategories": 11,
-    "totalBytes": 344735,
-    "estimatedTokens": 86184
+    "totalBytes": 316634,
+    "estimatedTokens": 79159
   },
   "categories": [
     {
@@ -39,15 +39,15 @@
     },
     {
       "name": "general",
-      "skillCount": 33
+      "skillCount": 25
     },
     {
       "name": "mcp",
-      "skillCount": 2
+      "skillCount": 1
     },
     {
       "name": "testing",
-      "skillCount": 2
+      "skillCount": 3
     },
     {
       "name": "tooling",
@@ -60,7 +60,7 @@
       "name": "android-emulator-testing",
       "displayName": null,
       "description": "Canonical CLI-first skill for Android emulator testing, adb control,",
-      "category": "general",
+      "category": "testing",
       "keywords": [
         "android-emulator-testing",
         "android emulator testing",
@@ -213,7 +213,7 @@
         "csharp"
       ],
       "path": "foundry/modules/csharp-best-practices/SKILL.md",
-      "fileBytes": 9129
+      "fileBytes": 9158
     },
     {
       "id": "database-design",
@@ -283,6 +283,7 @@
         "design critique",
         "audit a ui",
         "system direction",
+        "design system routing",
         "choose web or mobile design path"
       ],
       "path": "foundry/modules/design/SKILL.md",
@@ -296,7 +297,7 @@
           "design-audit"
         ]
       },
-      "fileBytes": 3066
+      "fileBytes": 3314
     },
     {
       "id": "design-system",
@@ -310,14 +311,15 @@
       ],
       "triggers": [
         "frontend design system",
+        "design system",
+        "canonical design system",
         "frontend",
         "build",
         "overlays",
         "token language",
         "stale",
         "component vocabulary",
-        "design-system",
-        "design system"
+        "design-system"
       ],
       "path": "foundry/modules/design-system/SKILL.md",
       "metadata": {
@@ -325,7 +327,7 @@
           "frontend-design-system"
         ]
       },
-      "fileBytes": 2278
+      "fileBytes": 2733
     },
     {
       "id": "django-drf",
@@ -353,7 +355,7 @@
         "drf"
       ],
       "path": "foundry/modules/django-drf/SKILL.md",
-      "fileBytes": 6478
+      "fileBytes": 6454
     },
     {
       "id": "docker-compose-dev",
@@ -411,7 +413,7 @@
         "app"
       ],
       "path": "foundry/modules/expo-app/SKILL.md",
-      "fileBytes": 7313
+      "fileBytes": 7320
     },
     {
       "id": "fastapi",
@@ -432,7 +434,7 @@
         "openapi documentation"
       ],
       "path": "foundry/modules/fastapi/SKILL.md",
-      "fileBytes": 7486
+      "fileBytes": 7491
     },
     {
       "id": "git-workflow",
@@ -484,40 +486,14 @@
         "golang"
       ],
       "path": "foundry/modules/golang-best-practices/SKILL.md",
-      "fileBytes": 8008
-    },
-    {
-      "id": "integration-testing",
-      "name": "integration-testing",
-      "displayName": null,
-      "description": "Integration testing patterns for verifying component interactions",
-      "category": "general",
-      "keywords": [
-        "integration-testing",
-        "integration testing",
-        "integration",
-        "testing"
-      ],
-      "triggers": [
-        "integration testing",
-        "quality",
-        "testing",
-        "modules",
-        "layers",
-        "consumer services",
-        "test containers",
-        "integration",
-        "integration-testing"
-      ],
-      "path": "foundry/modules/integration-testing/SKILL.md",
-      "fileBytes": 7085
+      "fileBytes": 8057
     },
     {
       "id": "ios-simulator-testing",
       "name": "ios-simulator-testing",
       "displayName": null,
       "description": "Canonical CLI-first skill for iOS simulator testing, build",
-      "category": "general",
+      "category": "testing",
       "keywords": [
         "ios-simulator-testing",
         "ios simulator testing",
@@ -565,7 +541,7 @@
         "java"
       ],
       "path": "foundry/modules/java-best-practices/SKILL.md",
-      "fileBytes": 9691
+      "fileBytes": 9731
     },
     {
       "id": "kaizen-iteration",
@@ -619,7 +595,7 @@
         "kotlin"
       ],
       "path": "foundry/modules/kotlin-best-practices/SKILL.md",
-      "fileBytes": 10973
+      "fileBytes": 11005
     },
     {
       "id": "kubernetes-deploy",
@@ -648,31 +624,6 @@
       ],
       "path": "foundry/modules/kubernetes-deploy/SKILL.md",
       "fileBytes": 8000
-    },
-    {
-      "id": "mcp-core",
-      "name": "mcp-core",
-      "displayName": null,
-      "description": "Core guidance for representing MCP servers, manifests, and runtime",
-      "category": "mcp",
-      "keywords": [
-        "mcp-core",
-        "mcp core",
-        "mcp",
-        "core"
-      ],
-      "triggers": [
-        "mcp core",
-        "infrastructure",
-        "manifests",
-        "manifest generation",
-        "runtime wiring",
-        "mcp-core",
-        "mcp",
-        "core"
-      ],
-      "path": "foundry/modules/mcp-core/SKILL.md",
-      "fileBytes": 1823
     },
     {
       "id": "mcp-server-builder",
@@ -732,7 +683,7 @@
           "frontend-design-mobile-patterns"
         ]
       },
-      "fileBytes": 2957
+      "fileBytes": 3181
     },
     {
       "id": "nestjs",
@@ -754,7 +705,7 @@
         "pipes"
       ],
       "path": "foundry/modules/nestjs/SKILL.md",
-      "fileBytes": 7507
+      "fileBytes": 7502
     },
     {
       "id": "nextjs",
@@ -776,7 +727,7 @@
         "parallel routes"
       ],
       "path": "foundry/modules/nextjs/SKILL.md",
-      "fileBytes": 7927
+      "fileBytes": 7941
     },
     {
       "id": "observability",
@@ -851,34 +802,6 @@
       "fileBytes": 6591
     },
     {
-      "id": "playwright-interactive",
-      "name": "playwright-interactive",
-      "displayName": null,
-      "description": "Use when building interactive Playwright suites for browser",
-      "category": "testing",
-      "keywords": [
-        "playwright-interactive",
-        "playwright interactive",
-        "playwright",
-        "interactive"
-      ],
-      "triggers": [
-        "playwright interactive",
-        "quality",
-        "visual regression",
-        "accessibility audits",
-        "network interception",
-        "collaborative test workflows",
-        "tests",
-        "drag-and-drop",
-        "playwright-interactive",
-        "playwright",
-        "interactive"
-      ],
-      "path": "foundry/modules/playwright-interactive/SKILL.md",
-      "fileBytes": 6982
-    },
-    {
       "id": "prisma",
       "name": "prisma",
       "displayName": null,
@@ -898,7 +821,7 @@
         "node.js applications"
       ],
       "path": "foundry/modules/prisma/SKILL.md",
-      "fileBytes": 8901
+      "fileBytes": 8923
     },
     {
       "id": "prompt-engineering",
@@ -950,25 +873,7 @@
         "python"
       ],
       "path": "foundry/modules/python-best-practices/SKILL.md",
-      "fileBytes": 8174
-    },
-    {
-      "id": "qa",
-      "name": "qa",
-      "displayName": null,
-      "description": "Legacy QA alias for broad quality requests. Route browser work to",
-      "category": "testing",
-      "keywords": [
-        "qa"
-      ],
-      "triggers": [
-        "qa",
-        "quality",
-        "testing",
-        "regression risk"
-      ],
-      "path": "foundry/modules/qa/SKILL.md",
-      "fileBytes": 1964
+      "fileBytes": 8218
     },
     {
       "id": "react",
@@ -990,62 +895,7 @@
         "ref callbacks"
       ],
       "path": "foundry/modules/react/SKILL.md",
-      "fileBytes": 7892
-    },
-    {
-      "id": "research-core",
-      "name": "research-core",
-      "displayName": null,
-      "description": "Research workflow guidance for turning vague questions into scoped,",
-      "category": "general",
-      "keywords": [
-        "research-core",
-        "research core",
-        "research",
-        "core"
-      ],
-      "triggers": [
-        "research core",
-        "research",
-        "source-backed findings",
-        "evidence labeling",
-        "investigating public apis",
-        "platform behavior",
-        "product comparisons",
-        "source-backed answer",
-        "research-core",
-        "core"
-      ],
-      "path": "foundry/modules/research-core/SKILL.md",
-      "fileBytes": 1538
-    },
-    {
-      "id": "rules-core",
-      "name": "rules-core",
-      "displayName": null,
-      "description": "Shared engineering rules covering correctness, testing, security,",
-      "category": "general",
-      "keywords": [
-        "rules-core",
-        "rules core",
-        "rules",
-        "core"
-      ],
-      "triggers": [
-        "rules core",
-        "delivery",
-        "correctness",
-        "security",
-        "file hygiene",
-        "shared engineering rules",
-        "codex",
-        "copilot",
-        "rules-core",
-        "rules",
-        "core"
-      ],
-      "path": "foundry/modules/rules-core/SKILL.md",
-      "fileBytes": 1969
+      "fileBytes": 7897
     },
     {
       "id": "rust-best-practices",
@@ -1071,7 +921,7 @@
         "rust"
       ],
       "path": "foundry/modules/rust-best-practices/SKILL.md",
-      "fileBytes": 9311
+      "fileBytes": 9374
     },
     {
       "id": "secret-management",
@@ -1178,7 +1028,7 @@
         "boot"
       ],
       "path": "foundry/modules/spring-boot/SKILL.md",
-      "fileBytes": 7822
+      "fileBytes": 7821
     },
     {
       "id": "sqlalchemy",
@@ -1200,30 +1050,7 @@
         "async database sessions"
       ],
       "path": "foundry/modules/sqlalchemy/SKILL.md",
-      "fileBytes": 7524
-    },
-    {
-      "id": "stitch",
-      "name": "stitch",
-      "displayName": null,
-      "description": "Use when older docs or prompts explicitly ask for Stitch and the",
-      "category": "general",
-      "keywords": [
-        "stitch"
-      ],
-      "triggers": [
-        "stitch",
-        "compatibility wrapper",
-        "frontend design",
-        "screen brief",
-        "design system"
-      ],
-      "path": "foundry/modules/stitch/SKILL.md",
-      "metadata": {
-        "deprecated": true,
-        "replaced_by": "design"
-      },
-      "fileBytes": 1952
+      "fileBytes": 7539
     },
     {
       "id": "svelte-sveltekit",
@@ -1251,7 +1078,7 @@
         "sveltekit"
       ],
       "path": "foundry/modules/svelte-sveltekit/SKILL.md",
-      "fileBytes": 6860
+      "fileBytes": 6858
     },
     {
       "id": "swift-best-practices",
@@ -1277,7 +1104,7 @@
         "swift"
       ],
       "path": "foundry/modules/swift-best-practices/SKILL.md",
-      "fileBytes": 8697
+      "fileBytes": 8728
     },
     {
       "id": "system-design",
@@ -1378,41 +1205,14 @@
         "typescript-best-practices"
       ],
       "path": "foundry/modules/typescript-best-practices/SKILL.md",
-      "fileBytes": 8637
-    },
-    {
-      "id": "unit-testing",
-      "name": "unit-testing",
-      "displayName": null,
-      "description": "Unit testing best practices covering test design, mocking",
-      "category": "general",
-      "keywords": [
-        "unit-testing",
-        "unit testing",
-        "unit",
-        "testing"
-      ],
-      "triggers": [
-        "unit testing",
-        "quality",
-        "testing",
-        "unit tests",
-        "new unit tests",
-        "methods",
-        "classes",
-        "existing test suites",
-        "unit-testing",
-        "unit"
-      ],
-      "path": "foundry/modules/unit-testing/SKILL.md",
-      "fileBytes": 6439
+      "fileBytes": 8665
     },
     {
       "id": "web-testing",
       "name": "web-testing",
       "displayName": null,
       "description": "Use when running browser QA in a real web session with Playwright",
-      "category": "general",
+      "category": "testing",
       "keywords": [
         "web-testing",
         "web testing",
@@ -1459,7 +1259,7 @@
         "ui"
       ],
       "path": "foundry/modules/web-ui-design/SKILL.md",
-      "fileBytes": 3224
+      "fileBytes": 3596
     }
   ],
   "builtinTools": [

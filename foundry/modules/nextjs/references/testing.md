@@ -24,4 +24,3 @@ Load this when Next.js work needs route-handler tests, server-action checks, mid
 ## Escalation rules
 
 - Move into `web-testing` when the task requires real browser navigation, DOM evidence, accessibility snapshots, or visual proof.
-- Move into `playwright-interactive` only when deeper browser suite authoring is needed after `web-testing` has already been selected as the runtime surface.

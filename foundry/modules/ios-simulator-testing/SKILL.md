@@ -1,7 +1,7 @@
 ---
 name: ios-simulator-testing
-description: Canonical CLI-first skill for iOS simulator testing, build
-  automation, and accessibility-driven UI verification.
+description: Canonical dual-path skill for iOS simulator testing, mobile-mcp
+  guidance, build automation, and accessibility-driven UI verification.
 triggers:
   - ios testing
   - simulator testing
@@ -26,7 +26,9 @@ compatibility:
 
 # iOS Simulator Testing
 
-Use this skill for iOS Simulator work that should stay close to the command line: `xcodebuild`, `xcrun simctl`, and the bundled Python and shell helpers.
+Use this skill for iOS Simulator testing. The preferred path is `mobile-mcp`
+for semantic interaction. The fallback path is `simctl`, `xcodebuild`, and the
+bundled Python helpers.
 
 Resolve `<module-root>` to the installed `ios-simulator-testing` skill
 directory before using sidecars. Set `PYTHON_BIN` to a Python 3.10+ interpreter
@@ -38,8 +40,33 @@ fall back to raw `simctl` and `xcodebuild` commands until one is installed.
 - Reproduce a simulator-only bug.
 - Build, install, launch, and inspect an app with CLI tools.
 - Capture logs, screenshots, accessibility trees, and test evidence.
+- Keep native simulator work in scope. Do not route web flows here.
 
-## Default workflow
+## Path selection
+- Preferred path: `mobile-mcp`.
+- Fallback path: `simctl` + `xcodebuild` + Python helpers.
+- Choose semantic MCP interaction when the simulator is ready and you want fast
+  intent-level exploration across screens and controls.
+- Choose the fallback when you need deterministic build/install control,
+  structured local evidence, or the semantic stack is not healthy.
+- iOS setup is heavier than Android. Expect WebDriverAgent-class assumptions,
+  simulator readiness checks, and more environment drift.
+
+## Preferred path
+1. Verify the simulator is booted and responsive.
+2. Start or attach the semantic runtime:
+   - `npx @mobilenext/mobile-mcp@latest`
+3. Confirm the required iOS bridge is healthy before trusting semantic actions.
+4. Use semantic MCP interaction for screen understanding and intent-driven
+   actions.
+5. If the environment is unstable, drop to the fallback path and collect local
+   evidence there.
+
+Load `<module-root>/references/mobile-mcp.md` for the short iOS semantic flow.
+Load `<module-root>/references/mobile-mcp-setup.md` when `mobile-mcp` or the
+iOS bridge is not ready.
+
+## Fallback workflow
 1. Check the environment first:
    - `bash <module-root>/scripts/sim_health_check.sh`
 2. List and pick or boot a simulator:
@@ -60,17 +87,22 @@ fall back to raw `simctl` and `xcodebuild` commands until one is installed.
 7. Bundle evidence for a defect report when needed:
    - `$PYTHON_BIN <module-root>/scripts/app_state_capture.py --app-bundle-id <bundle-id>`
 
-## CLI-first rules
+## Operating rules
+- `mobile-mcp` is the preferred semantic mobile runtime.
+- CLI remains the deterministic fallback.
 - Prefer `simctl` and `xcodebuild` for deterministic build and device control.
 - Use the Python helpers when they give structured output, semantic UI lookup, or progressive disclosure.
 - Use screenshots for verification, not as the primary navigation source.
 - Prefer accessibility labels, element types, and IDs over coordinates.
 - Reuse one booted simulator when possible.
+- Keep semantic findings and fallback evidence separate in the report.
 
 ## References
 
 | File | Load when |
 | --- | --- |
+| `<module-root>/references/mobile-mcp.md` | Running the preferred semantic iOS flow through `mobile-mcp`. |
+| `<module-root>/references/mobile-mcp-setup.md` | Diagnosing WebDriverAgent, simulator readiness, or environment issues before using `mobile-mcp`. |
 | `<module-root>/scripts/sim_health_check.sh` | Verifying Xcode, CoreSimulator, and the local simulator environment before a test run. |
 | `<module-root>/scripts/build_and_test.py` | Building or testing from the CLI with structured output instead of raw `xcodebuild` logs. |
 | `<module-root>/scripts/app_launcher.py` | Installing, launching, terminating, or deep-linking the app under test. |
@@ -84,5 +116,7 @@ fall back to raw `simctl` and `xcodebuild` commands until one is installed.
 ## Guardrails
 - If `simctl` reports CoreSimulator failures, fix the simulator service before continuing.
 - Record the simulator name, UDID, runtime, scheme, and bundle ID when you report results.
-- Treat `idb` as an optional sidecar, not the default path.
+- Treat `idb` as an optional helper, not the default path.
+- Treat WebDriverAgent or equivalent iOS automation bridges as environment
+  prerequisites for semantic automation, not guaranteed defaults.
 - Keep outputs concise unless you explicitly need verbose or JSON mode.

@@ -8,6 +8,16 @@ import {
 } from "./index.js";
 
 const REPO_ROOT = resolve(import.meta.dirname, "../../..");
+const DELETED_MODULE_IDS = [
+  "qa",
+  "unit-testing",
+  "integration-testing",
+  "playwright-interactive",
+  "stitch",
+  "mcp-core",
+  "research-core",
+  "rules-core",
+] as const;
 
 describe("catalog", () => {
   let catalog: Awaited<ReturnType<typeof loadCatalog>>;
@@ -31,19 +41,20 @@ describe("catalog", () => {
     expect(catalog.adapters.has("antigravity")).toBe(true);
   });
 
-  it("loads placeholder modules", () => {
+  it("loads current modules and excludes deleted module ids", () => {
     expect(catalog.modules.size).toBeGreaterThanOrEqual(8);
-    expect(catalog.modules.has("rules-core")).toBe(true);
     expect(catalog.modules.has("agents-core")).toBe(true);
     expect(catalog.modules.has("contexts-core")).toBe(true);
-    expect(catalog.modules.has("mcp-core")).toBe(true);
+    for (const moduleId of DELETED_MODULE_IDS) {
+      expect(catalog.modules.has(moduleId)).toBe(false);
+    }
   });
 
   it("resolves an existing module", () => {
-    const module = resolveModule(catalog, "rules-core");
+    const module = resolveModule(catalog, "agents-core");
     expect(module).toBeDefined();
-    expect(module?.id).toBe("rules-core");
-    expect(module?.kind).toBe("rule-pack");
+    expect(module?.id).toBe("agents-core");
+    expect(module?.kind).toBe("specialist");
   });
 
   it("returns undefined for a missing module", () => {
@@ -54,7 +65,9 @@ describe("catalog", () => {
     const profile = resolveProfile(catalog, "developer");
     expect(profile).toBeDefined();
     expect(profile?.id).toBe("developer");
-    expect(profile?.modules).toContain("rules-core");
+    for (const moduleId of DELETED_MODULE_IDS) {
+      expect(profile?.modules).not.toContain(moduleId);
+    }
   });
 
   it("returns null for a missing install profile", () => {
@@ -68,11 +81,10 @@ describe("catalog", () => {
     expect(result.warnings).toHaveLength(0);
   });
 
-  it("routes qa capability outputs through the canonical alias surface", () => {
-    const qa = resolveModule(catalog, "qa");
-    expect(qa?.capability?.outputs.map((output) => output.path)).toEqual([
-      "foundry/modules/qa/SKILL.md",
-    ]);
+  it("does not resolve deleted capability aliases", () => {
+    for (const moduleId of DELETED_MODULE_IDS) {
+      expect(resolveModule(catalog, moduleId)).toBeUndefined();
+    }
   });
 
   it("routes design capability outputs through the canonical design skill", () => {
@@ -90,13 +102,6 @@ describe("catalog", () => {
     ]);
     expect(mobileUiDesign?.capability?.outputs.map((output) => output.path)).toEqual([
       "foundry/modules/mobile-ui-design/SKILL.md",
-    ]);
-  });
-
-  it("routes stitch compat alias through a canonical stitch wrapper skill", () => {
-    const stitch = resolveModule(catalog, "stitch");
-    expect(stitch?.capability?.outputs.map((output) => output.path)).toEqual([
-      "foundry/modules/stitch/SKILL.md",
     ]);
   });
 

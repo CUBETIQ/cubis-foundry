@@ -77,7 +77,7 @@ Guide developers through production-grade SQLAlchemy 2.0+ usage including declar
 
 ## Testing Guidance
 
-- Keep SQLAlchemy integration guidance in this skill instead of routing new work through the generic `integration-testing` wrapper.
+- Keep SQLAlchemy session and database-boundary tests in this skill instead of routing new work through a separate generic runtime-testing skill.
 - Own session lifecycle tests, transaction fixtures, migration-coupled checks, and database-boundary verification here because they are ORM-runtime concerns.
 - Use the owning Python skill for narrow unit tests that do not need a real database or ORM session boundary.
 - Use `../web-testing/SKILL.md` only when the task needs live browser evidence against a UI flow that depends on SQLAlchemy-backed data behavior.

@@ -75,9 +75,9 @@ Production-grade guidance for modern Java development using JDK 21+ features inc
 
 ## Testing Guidance
 
-- Keep Java unit-test guidance in this skill instead of routing new work through the generic `unit-testing` wrapper.
-- Prefer the repo's native JVM test stack, usually JUnit, AssertJ, Mockito, and build-tool-native test runners.
-- Escalate Spring, HTTP, persistence, or container-boundary checks into the owning framework or platform skill instead of the generic `integration-testing` wrapper.
+- Keep Java unit-test guidance in this skill instead of routing new work through a separate generic testing skill.
+- Use the repo's native JVM test stack, usually JUnit 5, parameterized tests, nested tests, and standard assertion libraries for code-level checks.
+- Escalate Spring, HTTP, persistence, or other runtime-boundary checks into the owning framework or platform skill instead of a separate generic runtime-testing skill.
 - Use `../web-testing/SKILL.md`, `../android-emulator-testing/SKILL.md`, or `../ios-simulator-testing/SKILL.md` only when the task needs live browser or device evidence.
 
 ## Output Format

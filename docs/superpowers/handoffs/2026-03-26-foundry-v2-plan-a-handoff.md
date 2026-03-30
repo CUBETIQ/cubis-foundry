@@ -1,6 +1,6 @@
 # Foundry V2 Plan A Handoff
 
-Date: 2026-03-28
+Date: 2026-03-30
 Repo: `/Users/phumrin/Documents/Cubis Foundry/.worktrees/foundry-v2-plan-a`
 Branch: `foundry-v2-plan-a`
 Remote: `origin https://github.com/CUBETIQ/cubis-foundry.git`
@@ -14,19 +14,48 @@ This is a resume point for continuing the Foundry V2 realignment from another se
 - Active source of truth now lives in:
   - `docs/superpowers/specs/2026-03-28-foundry-v2-realignment-spec.md`
   - `docs/superpowers/plans/2026-03-28-foundry-v2-realignment-plan.md`
+  - `docs/superpowers/specs/2026-03-30-ui-mobile-mcp-enhancement-design.md`
+  - `docs/superpowers/plans/2026-03-30-ui-mobile-mcp-enhancement-plan.md`
 - Phase 1 and Phase 2 Tasks 1-5 are complete in the active worktree.
 - Phase 3 design-stack collapse checkpoint is now complete and pushed.
-- The current checkpoint demotes the old testing wrappers:
-  - `qa` is now a compat alias that routes to `web-testing`, `android-emulator-testing`, and `ios-simulator-testing`
-  - `playwright-interactive` is now specialist browser support under `web-testing`
-  - workflows and core agent prompts now reference the new testing stack instead of generic `unit-testing` / `integration-testing` wrappers for user-facing routing
+- The UI/mobile enhancement plan is now complete in this worktree:
+  - canonical UI skills use the stronger route-first and anti-generic design contract
+  - `web-testing` remains Playwright-MCP-first
+  - `mobile-mcp` is fully wired as a first-class bundled MCP provider
+  - root CLI/help/docs now expose the mobile runtime story cleanly
+  - `android-emulator-testing` and `ios-simulator-testing` are now explicit dual-path skills with `mobile-mcp` references and deterministic CLI fallback guidance
+- The current checkpoint physically deletes the deprecated/internal skill modules:
+  - `qa`
+  - `unit-testing`
+  - `integration-testing`
+  - `playwright-interactive`
+  - `stitch`
+  - `mcp-core`
+  - `research-core`
+  - `rules-core`
+- Those deleted names no longer resolve as skills and no longer emit runtime assets.
+- Verification now routes through the canonical testing skills only:
+  - `web-testing`
+  - `android-emulator-testing`
+  - `ios-simulator-testing`
 - The current checkpoint also redistributes testing ownership:
   - language skills now explicitly own unit-test guidance
-  - framework and platform skills now explicitly own integration-test guidance
-- Shared workflow and agent scaffolds have also been updated to prefer `web-testing`, `android-emulator-testing`, and `ios-simulator-testing` over the retired generic testing routes.
+  - framework and platform skills now explicitly own runtime-boundary guidance
+- New Phase 4 checkpoint:
+  - the eight language skills now use a consistent unit-test guidance shape while retaining their current module IDs
+  - user-facing guidance is normalized first; any module-ID rename pass is deferred
+- New Phase 4 Task 10 checkpoint:
+  - the framework skills now use the same testing-ownership split, keeping runtime-boundary tests local and making live browser/device evidence routing explicit
+  - React, Next.js, FastAPI, NestJS, Django/DRF, Spring Boot, SQLAlchemy, Prisma, SvelteKit, and Expo now point their live QA guidance at the specialized web/mobile testing skills where appropriate
+- Shared workflow and agent scaffolds now prefer `web-testing`, `android-emulator-testing`, and `ios-simulator-testing`.
+- `mobile-mcp` is now a first-class upstream MCP provider in the bundled server.
+- Browser testing remains Playwright-MCP-first through `web-testing`.
+- Android and iOS testing are now explicitly dual-path:
+  - preferred semantic runtime: `mobile-mcp`
+  - deterministic fallback runtime: CLI-first device/simulator tooling
 - The old MCP alias layer has also been cleaned:
   - `mcp/README.md` examples now use the canonical Android testing skill
-  - `scripts/lib/legacy-skill-map.mjs` now routes broad historical testing patterns through `qa` instead of `unit-testing`
+  - `scripts/lib/legacy-skill-map.mjs` now routes broad historical testing patterns through `web-testing`, `android-emulator-testing`, and `ios-simulator-testing`
   - `scripts/generate-mcp-manifest.mjs` now scans `foundry/modules` so generated alias entries point at real canonical `SKILL.md` paths instead of stale `workflows/skills/*` paths
 - The current pushed checkpoint also removes the visible legacy design module folders from `foundry/modules`:
   - deleted: `frontend-design*`
@@ -40,6 +69,7 @@ This is a resume point for continuing the Foundry V2 realignment from another se
   - `src/cli/compiler/stages/transform.ts` generates alias skill bundles from canonical skill metadata
   - generated runtime assets still expose old IDs like `frontend-design`, `frontend-design-system`, and `design-audit`
   - the old source module folders are no longer needed for that backward compatibility
+- Catalog emission now clears each platform output directory before writing regenerated assets, so deleted skills do not linger in `generated/runtime-assets` after a rebuild.
 
 ## Work Completed In This Branch
 
@@ -56,7 +86,7 @@ This is a resume point for continuing the Foundry V2 realignment from another se
 6. Added canonical agent/workflow/rule/hook source directories:
    - `foundry/modules/agents-core/agents/`
    - `foundry/modules/workflows/`
-   - `foundry/modules/rules-core/rules/`
+   - the legacy rules source tree
    - `foundry/modules/hooks-core/hooks/`
 
 ## Work Completed After Initial Handoff
@@ -69,23 +99,16 @@ This is a resume point for continuing the Foundry V2 realignment from another se
    - `foundry/modules/api-design/references/`
    - `foundry/modules/system-design/references/`
    - `foundry/modules/frontend-design/references/`
-   - `foundry/modules/playwright-interactive/references/`
+   - canonical browser testing reference payloads
    - and the remaining exact-match `references/*.md` payloads for the canonical skill modules that already linked to them
-6. Restored `foundry/modules/playwright-interactive/agents/*.md` from legacy history so the canonical skill's internal agent references resolve again.
+6. Restored the browser-specialist agent payloads into the canonical testing surfaces before the hard-delete cleanup.
 7. Added compiler validation for broken relative markdown links inside canonical `SKILL.md` files.
 8. Updated `design-audit` to use current canonical references:
    - local `references/scoring-rubric.md`
-   - `../playwright-interactive/SKILL.md`
-9. Repointed the `qa` capability metadata away from dead legacy workflow skill paths:
-   - `foundry/modules/qa/module.yaml` now targets canonical `foundry/modules/qa/SKILL.md`
-   - Playwright browser mode now targets `foundry/modules/playwright-interactive/SKILL.md`
-   - added a catalog regression test locking those canonical `qa` output paths in place
-10. Repointed the remaining compiler-facing legacy module descriptors:
+9. Repointed the remaining compiler-facing legacy module descriptors:
    - `foundry/modules/design/module.yaml` now routes all capability outputs through canonical `foundry/modules/design/SKILL.md`
-   - `foundry/modules/stitch/module.yaml` now points at canonical `foundry/modules/stitch/SKILL.md`
-11. Added a real canonical `foundry/modules/stitch/SKILL.md` compat wrapper and updated the `design` and `stitch` wrapper content to route into the current frontend design stack instead of retired `workflows/skills/*` sub-skills.
-12. Cleaned stale canonical naming references such as `flutter-mobile-qa` and `stitch-design-system` from the affected design and handoff skills/templates.
-13. Added catalog regression tests locking `design` and `stitch` canonical output paths in place.
+10. Cleaned stale canonical naming references such as `flutter-mobile-qa` from the affected design and handoff skills/templates.
+11. Added catalog regression tests locking the canonical design output paths in place.
 14. Extended compiler validation beyond canonical `SKILL.md` files so relative markdown links are now checked across:
    - `SKILL.md`
    - `templates/*`
@@ -118,6 +141,17 @@ This is a resume point for continuing the Foundry V2 realignment from another se
    - `mobile-ui-design`
    - `design-system`
 22. Added compiler regression coverage for metadata-driven synthetic alias projection.
+23. Upgraded the canonical design prompting contract:
+   - strengthened `foundry/modules/design/SKILL.md`
+   - strengthened `foundry/modules/web-ui-design/SKILL.md`
+   - strengthened `foundry/modules/mobile-ui-design/SKILL.md`
+   - strengthened `foundry/modules/design-system/SKILL.md`
+   - added shared `foundry/modules/design/references/execution-contract.md`
+24. Updated the active realignment docs so Phase 3 now treats `design-system` as part of the canonical design surface and records Task 8 as complete.
+25. Normalized the framework skill/testing split for Phase 4 Task 10:
+   - framework skills now keep runtime-boundary tests local
+   - live browser evidence routes through `web-testing`
+   - live mobile device evidence routes through `android-emulator-testing` and `ios-simulator-testing`
 
 ## Important Current Gap
 
@@ -125,7 +159,7 @@ The canonical authoring surfaces now resolve their currently referenced relative
 
 The remaining migration work is now narrower:
 - the design source tree is cleaned up, but the broader reduction pass across language/framework skills, agents, workflows, and rules is still ahead
-- some docs, research ledgers, or generated compatibility manifests still intentionally mention historical names because they serve as alias surfaces or migration records
+- some docs and research ledgers still intentionally mention historical names because they serve as migration records
 - if new canonical skills or templates are added, they must now satisfy the compiler's markdown-link validation rules and synthetic-alias expectations
 
 ## Verification Run Before Handoff
@@ -228,6 +262,69 @@ Observed results:
 - regenerated MCP manifest now reports `54` skills after collapsing the deleted legacy design source modules
 - rebuilt runtime assets confirm that old IDs like `frontend-design` and `frontend-design-system` are now emitted as synthetic alias wrappers pointing at `design` and `design-system`
 
+## Verification Run For The Design Prompting Checkpoint
+
+These commands were run successfully in this branch on 2026-03-30:
+
+```bash
+npm run build:cli
+npm run test:cli -- src/cli/catalog/catalog.test.ts src/cli/compiler/compiler.test.ts
+npx tsc -p tsconfig.cli.json --noEmit
+node dist/cli/index.js catalog validate
+node dist/cli/index.js catalog build
+```
+
+Observed results:
+- repo-local CLI build passed
+- targeted CLI tests passed: `41/41`
+- TypeScript CLI no-emit check passed
+- repo-local catalog validation still passed: `Catalog is valid.`
+- repo-local catalog build still compiled all 5 platforms successfully:
+  - `codex`: `298` assets
+  - `claude`: `314` assets
+  - `copilot`: `303` assets
+  - `gemini`: `304` assets
+  - `antigravity`: `298` assets
+- the canonical design surfaces now share a stricter routing/systemization/execution contract via `foundry/modules/design/references/execution-contract.md`
+
+## Verification Run For The Language Skill Normalization Checkpoint
+
+These commands were run successfully in this branch on 2026-03-30:
+
+```bash
+node dist/cli/index.js catalog validate
+node dist/cli/index.js catalog build
+```
+
+Observed results:
+- repo-local catalog validation still passed: `Catalog is valid.`
+- repo-local catalog build still compiled all 5 platforms successfully:
+  - `codex`: `298` assets
+  - `claude`: `314` assets
+  - `copilot`: `303` assets
+  - `gemini`: `304` assets
+  - `antigravity`: `298` assets
+- the retained-ID Phase 4 Task 9 pass keeps language-level testing guidance inside the eight language skills while pushing runtime-boundary checks outward to framework and platform surfaces
+
+## Verification Run For The Framework Skill Normalization Checkpoint
+
+These commands were run successfully in this branch on 2026-03-30:
+
+```bash
+node dist/cli/index.js catalog validate
+node dist/cli/index.js catalog build
+```
+
+Observed results:
+- repo-local catalog validation still passed: `Catalog is valid.`
+- repo-local catalog build still compiled all 5 platforms successfully:
+  - `codex`: `298` assets
+  - `claude`: `314` assets
+  - `copilot`: `303` assets
+  - `gemini`: `304` assets
+  - `antigravity`: `298` assets
+- the Phase 4 Task 10 pass keeps framework-native runtime tests local while routing live browser and device evidence through the canonical testing skills
+
 ## Branch / Push Notes
 
 - Current branch: `foundry-v2-plan-a`
@@ -253,11 +350,11 @@ If you continue from home, keep working on `foundry-v2-plan-a` and only integrat
 
 ## Branch Status Note
 
-The branch has now been committed and pushed.
+The latest pushed checkpoint is still the design-collapse handoff refresh, and the current local worktree now contains uncommitted Phase 3 Task 8 plus Phase 4 Task 9 and Task 10 changes.
 
 - Branch: `foundry-v2-plan-a`
-- Latest pushed commit: `24cf98d7 feat(foundry): collapse legacy design skill modules`
-- Local worktree status at handoff time: clean and in sync with `origin/foundry-v2-plan-a`
+- Latest pushed commit: `2c10c73e docs(foundry): refresh handoff for design collapse checkpoint`
+- Local worktree status at handoff update time: dirty with the intended Phase 3 Task 8 and Phase 4 Task 9/10 edits
 
 If you continue from home:
 - fetch and switch to `foundry-v2-plan-a`
@@ -270,18 +367,19 @@ Global installed Superpowers skills in `~/.codex/superpowers` were inspected for
 
 ## Recommended Next Work
 
-1. Continue from the 2026-03-28 realignment plan after the design collapse checkpoint.
-2. Start the broader reduction pass for:
-   - language/framework skills
+1. Commit the current Phase 3 Task 8 plus Phase 4 Task 9/10 checkpoint if you want to preserve the worktree state.
+2. Continue from the 2026-03-28 realignment plan at Phase 5.
+3. Rewrite the core agent and subagent surfaces against the reduced testing and design taxonomy.
+4. After the agent pass, continue the broader reduction pass for:
    - agents/subagents
    - workflows
    - rules
-3. Keep `stitch` as a compat alias only while the remaining workflow/rule cleanup is still in progress.
+5. Keep the remaining compatibility cleanup focused on the reduced canonical surface.
 
 ## Resume Prompt
 
 Use this prompt in the next session:
 
 ```text
-Continue from docs/superpowers/handoffs/2026-03-26-foundry-v2-plan-a-handoff.md in branch foundry-v2-plan-a within the active worktree `/Users/phumrin/Documents/Cubis Foundry/.worktrees/foundry-v2-plan-a`. The 2026-03-28 realignment spec and plan are the source of truth. Phase 1 and Phase 2 are complete. The design collapse checkpoint is also complete and pushed: the visible legacy `frontend-design*` and `design-audit` source modules are gone, canonical design now lives in `design`, `web-ui-design`, `mobile-ui-design`, and `design-system`, and backward compatibility is handled by synthetic alias projection from canonical skill metadata. The next task is the broader reduction pass: clean up language/framework skills, agents/subagents, workflows, and rules around that reduced canonical surface. Do not switch back to the older migration sequence or treat the main checkout as the active implementation area.
+Continue from docs/superpowers/handoffs/2026-03-26-foundry-v2-plan-a-handoff.md in branch foundry-v2-plan-a within the active worktree `/Users/phumrin/Documents/Cubis Foundry/.worktrees/foundry-v2-plan-a`. The 2026-03-28 realignment spec and plan are the source of truth. Phase 1 and Phase 2 are complete. Phase 3 now includes both the design collapse checkpoint and the design prompting upgrade: canonical design now lives in `design`, `web-ui-design`, `mobile-ui-design`, and `design-system`, and the four design surfaces now share the stricter execution contract in `foundry/modules/design/references/execution-contract.md`. Phase 4 Task 9 and Task 10 are also complete in the worktree: the language skills retain their existing module IDs for now but now own language-level testing guidance cleanly, and the framework skills now keep runtime-boundary tests local while routing live browser/device evidence through `web-testing`, `android-emulator-testing`, and `ios-simulator-testing`. The next task is Phase 5: rewrite the agent/subagent, workflow, and rule surfaces around that reduced taxonomy. Do not switch back to the older migration sequence or treat the main checkout as the active implementation area.
 ```

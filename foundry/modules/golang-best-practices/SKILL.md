@@ -71,9 +71,9 @@ Production-grade guidance for Go 1.24+ covering generics with practical constrai
 
 ## Testing Guidance
 
-- Keep Go unit-test guidance in this skill instead of routing new work through the generic `unit-testing` wrapper.
-- Prefer `go test`, table-driven cases, subtests, and native test helpers before reaching for cross-stack wrappers.
-- Escalate database, HTTP, queue, or service-boundary checks into the owning framework or platform skill instead of the generic `integration-testing` wrapper.
+- Keep Go unit-test guidance in this skill instead of routing new work through a separate generic testing skill.
+- Use the repo's native Go test stack, usually `go test`, table-driven cases, subtests, and helpers from the standard `testing` package for code-level checks.
+- Escalate database, HTTP, queue, or other runtime-boundary checks into the owning framework or platform skill instead of a separate generic runtime-testing skill.
 - Use `../web-testing/SKILL.md`, `../android-emulator-testing/SKILL.md`, or `../ios-simulator-testing/SKILL.md` only when the task needs live browser or device evidence.
 
 ## Output Format

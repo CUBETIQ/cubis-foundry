@@ -78,10 +78,9 @@ Provide authoritative guidance on building production Svelte 5 + SvelteKit appli
 
 ## Testing Guidance
 
-- Keep Svelte and SvelteKit unit and integration guidance in this skill and the owning TypeScript skill instead of routing new work through generic testing wrappers.
+- Keep Svelte component, route, and load-function tests in this skill and the owning TypeScript skill.
 - Own route, load-function, form action, SSR, and app-boundary checks here because they are SvelteKit-specific runtime concerns.
 - Use `../web-testing/SKILL.md` for live browser QA, real-page evidence, and Playwright-MCP-driven validation.
-- Use `../playwright-interactive/SKILL.md` only when `web-testing` needs deeper browser specialist support.
 
 ## Output Format
 

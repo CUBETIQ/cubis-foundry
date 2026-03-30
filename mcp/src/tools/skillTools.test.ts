@@ -199,8 +199,8 @@ function createRouteManifest(): RouteManifest {
         triggers: ["test", "qa", "regression", "playwright"],
         primaryAgent: "test-engineer",
         supportingAgents: [],
-        primarySkills: ["test-master", "playwright-expert"],
-        supportingSkills: ["playwright-interactive"],
+        primarySkills: ["test-master", "web-testing"],
+        supportingSkills: ["code-review"],
         artifacts: {
           codex: { compatibilityAlias: "$agent-test-engineer", agentFile: "test-engineer.md" },
           copilot: { agentFile: "test-engineer.md" },
@@ -250,7 +250,7 @@ function createStitchRouteManifest(): RouteManifest {
         ],
         supportingSkills: [
           "mobile-ui-design",
-          "stitch",
+          "design-system",
         ],
         artifacts: {
           codex: { compatibilityAlias: "$workflow-design-screen", workflowFile: "design-screen.md" },
@@ -298,7 +298,7 @@ function createQaRouteManifest(): RouteManifest {
         primaryAgent: "tester",
         supportingAgents: [],
         primarySkills: ["web-testing"],
-        supportingSkills: ["playwright-interactive"],
+        supportingSkills: [],
         artifacts: {
           codex: { compatibilityAlias: "$workflow-web-qa", workflowFile: "web-qa.md" },
           copilot: { workflowFile: "web-qa.md", promptFile: "web-qa.prompt.md" },
@@ -745,7 +745,7 @@ describe("skill tools", () => {
     expect(["trigger-match", "intent-match"]).toContain(result.matchedBy);
   });
 
-  it("routes Stitch UI intent to design-screen with the design-first Stitch skill sequence", async () => {
+  it("routes Stitch UI intent to design-screen with the canonical design skill sequence", async () => {
     const result = payload(
       await handleRouteResolve(
         { intent: "use Stitch to generate a dashboard screen" },
@@ -763,7 +763,7 @@ describe("skill tools", () => {
     expect(result.primarySkills).toEqual([
       "design",
       "web-ui-design",
-      "stitch",
+      "design-system",
     ]);
   });
 
@@ -789,11 +789,11 @@ describe("skill tools", () => {
       "design",
       "mobile-ui-design",
       "web-ui-design",
-      "stitch",
+      "design-system",
     ]);
   });
 
-  it("routes browser QA intent to web-testing with Playwright specialist support", async () => {
+  it("routes browser QA intent to web-testing", async () => {
     const result = payload(
       await handleRouteResolve(
         { intent: "test the checkout flow in the browser with playwright" },
@@ -808,7 +808,7 @@ describe("skill tools", () => {
       primarySkillHint: "web-testing",
       matchedBy: "qa-runtime-intent",
     });
-    expect(result.primarySkills).toEqual(["web-testing", "playwright-interactive"]);
+    expect(result.primarySkills).toEqual(["web-testing"]);
   });
 
   it("routes iOS simulator QA intent to the canonical iOS testing skill", async () => {

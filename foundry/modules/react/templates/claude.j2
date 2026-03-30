@@ -65,10 +65,9 @@ Provide authoritative guidance on building production React 19+ applications. Th
 
 ## Testing Guidance
 
-- Keep React component and hook unit tests in this skill and the owning TypeScript skill instead of routing new work through the generic `unit-testing` wrapper.
-- Own React integration checks here when they depend on rendering, client/server boundaries, Suspense behavior, or React-specific fixtures.
+- Keep React component and hook unit tests in this skill and the owning TypeScript skill.
+- Own React runtime-boundary checks here when they depend on rendering, client/server boundaries, Suspense behavior, or React-specific fixtures.
 - Use `../web-testing/SKILL.md` for live browser QA, real-page evidence, accessibility snapshots, and Playwright-MCP-driven validation.
-- Use `../playwright-interactive/SKILL.md` only when `web-testing` needs deeper browser specialist support such as visual regression or heavy interaction authoring.
 
 ## Output Format
 

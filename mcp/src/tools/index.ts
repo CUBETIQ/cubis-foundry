@@ -32,6 +32,10 @@ export {
   stitchListEnabledToolsDescription,
   stitchListEnabledToolsSchema,
   handleStitchListEnabledTools,
+  mobileListEnabledToolsName,
+  mobileListEnabledToolsDescription,
+  mobileListEnabledToolsSchema,
+  handleMobileListEnabledTools,
 } from "./mcpGateway.js";
 
 export {
@@ -141,6 +145,27 @@ export {
 } from "./stitchExecute.js";
 
 export {
+  mobileGetModeName,
+  mobileGetModeDescription,
+  mobileGetModeSchema,
+  handleMobileGetMode,
+} from "./mobileGetMode.js";
+
+export {
+  mobileSetProfileName,
+  mobileSetProfileDescription,
+  mobileSetProfileSchema,
+  handleMobileSetProfile,
+} from "./mobileSetProfile.js";
+
+export {
+  mobileGetStatusName,
+  mobileGetStatusDescription,
+  mobileGetStatusSchema,
+  handleMobileGetStatus,
+} from "./mobileGetStatus.js";
+
+export {
   mobileQaRunName,
   mobileQaRunDescription,
   mobileQaRunSchema,
@@ -155,5 +180,4 @@ export {
   createWebQaRunHandler,
   handleWebQaRun,
 } from "./webQaRun.js";
-
 

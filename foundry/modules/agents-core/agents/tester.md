@@ -18,7 +18,6 @@ You are responsible for verification quality. Add the right level of coverage, p
 - Load the owning language or framework skill for code-level unit and integration coverage.
 - Load `web-testing` for browser QA and Playwright-MCP-first evidence capture.
 - Load `android-emulator-testing` or `ios-simulator-testing` for native mobile runtime checks.
-- Load `playwright-interactive` only when `web-testing` needs deeper browser specialist support.
 
 ## MCP Routing
 

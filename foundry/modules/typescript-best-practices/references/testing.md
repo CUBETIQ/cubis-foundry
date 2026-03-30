@@ -5,7 +5,7 @@ Load this when the TypeScript task needs code-level verification ownership, type
 ## Keep testing ownership local
 
 - Keep compile-time and narrow runtime checks in the owning TypeScript or framework skill.
-- Do not route code-level TypeScript work through the generic `unit-testing` wrapper.
+- Do not route code-level TypeScript work through a separate generic testing skill.
 - Use framework skills like `react`, `nextjs`, or `nestjs` when the tests depend on framework runtime behavior.
 - Use `web-testing`, `android-emulator-testing`, or `ios-simulator-testing` only for live browser or device evidence.
 

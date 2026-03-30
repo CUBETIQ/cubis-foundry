@@ -75,9 +75,9 @@ Production-grade guidance for Rust 2024 edition covering ownership and borrowing
 
 ## Testing Guidance
 
-- Keep Rust unit-test guidance in this skill instead of routing new work through the generic `unit-testing` wrapper.
-- Prefer `cargo test`, focused module tests, and trait-boundary checks before adding broader runtime scaffolding.
-- Escalate network, storage, or multi-process boundary checks into the owning framework or platform skill instead of the generic `integration-testing` wrapper.
+- Keep Rust unit-test guidance in this skill instead of routing new work through a separate generic testing skill.
+- Use the repo's native Rust test stack, usually `cargo test`, focused module tests, trait-boundary checks, property-based tests, and snapshot assertions for code-level checks.
+- Escalate network, storage, or other runtime-boundary checks into the owning framework or platform skill instead of a separate generic runtime-testing skill.
 - Use `../web-testing/SKILL.md`, `../android-emulator-testing/SKILL.md`, or `../ios-simulator-testing/SKILL.md` only when the task needs live browser or device evidence.
 
 ## Output Format

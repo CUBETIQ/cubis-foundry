@@ -445,10 +445,7 @@ export async function transformStage(
     }
   }
 
-  if (
-    activeModuleIds.has("rules-core")
-    && ctx.adapter.rules.generate?.type === "markdown-merge"
-  ) {
+  if (ctx.adapter.rules.generate?.type === "markdown-merge") {
     const sourceDir = join(repoRoot, ctx.adapter.rules.generate.source);
     for (const asset of projectRules(
       ctx.platform,

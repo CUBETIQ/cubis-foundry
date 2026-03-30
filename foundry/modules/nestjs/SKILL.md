@@ -76,7 +76,7 @@ Guide the design and implementation of production-grade NestJS 11+ applications 
 
 ## Testing Guidance
 
-- Keep NestJS boundary and integration guidance in this skill instead of routing new work through the generic `integration-testing` wrapper.
+- Keep NestJS module and e2e runtime tests in this skill instead of routing new work through a separate generic runtime-testing skill.
 - Own module bootstrapping, dependency injection, request lifecycle, e2e app setup, and persistence-boundary fixtures here because they are Nest-specific runtime concerns.
 - Use the owning TypeScript skill for narrow unit tests that do not need the Nest runtime boundary.
 - Use `../web-testing/SKILL.md` only when the task needs live browser evidence against a Nest-backed UI or docs surface.

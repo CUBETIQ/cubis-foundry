@@ -120,11 +120,25 @@ function createTestContext(): ToolRuntimeContext {
             syncedAt: null,
             tools: [],
           },
+          mobile: {
+            provider: "mobile",
+            transport: "stdio",
+            mcpUrl: null,
+            authEnvVar: null,
+            authConfigured: false,
+            command: null,
+            available: false,
+            warnings: [],
+            lastError: null,
+            syncedAt: null,
+            tools: [],
+          },
         },
       }),
       listEnabledTools: (provider) => ({
         provider,
-        transport: provider === "android" ? "stdio" : "http",
+        transport:
+          provider === "android" || provider === "mobile" ? "stdio" : "http",
         available: false,
         enabledCount: 0,
         enabledTools: [],
@@ -167,12 +181,16 @@ describe("tool registry", () => {
     expect(names).toContain("stitch_get_status");
     expect(names).toContain("stitch_execute");
     expect(names).toContain("playwright_get_status");
+    expect(names).toContain("mobile_list_enabled_tools");
+    expect(names).toContain("mobile_get_mode");
+    expect(names).toContain("mobile_set_profile");
+    expect(names).toContain("mobile_get_status");
     expect(names).toContain("mobile_qa_run");
     expect(names).toContain("web_qa_run");
   });
 
-  it("has exactly 21 built-in tools", () => {
-    expect(TOOL_REGISTRY).toHaveLength(21);
+  it("has exactly 25 built-in tools", () => {
+    expect(TOOL_REGISTRY).toHaveLength(25);
   });
 
   it("has no duplicate tool names", () => {
@@ -198,7 +216,7 @@ describe("tool registry", () => {
     expect(routeTools).toHaveLength(1);
 
     const gatewayTools = getToolsByCategory("gateway");
-    expect(gatewayTools).toHaveLength(3);
+    expect(gatewayTools).toHaveLength(4);
 
     const skillTools = getToolsByCategory("skill");
     expect(skillTools).toHaveLength(7);
@@ -211,7 +229,7 @@ describe("tool registry", () => {
     expect(stitchTools).toHaveLength(4);
 
     const mobileTools = getToolsByCategory("mobile");
-    expect(mobileTools).toHaveLength(1);
+    expect(mobileTools).toHaveLength(4);
 
     const playwrightTools = getToolsByCategory("playwright");
     expect(playwrightTools).toHaveLength(2);
@@ -244,7 +262,7 @@ describe("tool registry", () => {
 
   it("buildRegistrySummary produces correct structure", () => {
     const summary = buildRegistrySummary();
-    expect(summary.totalTools).toBe(21);
+    expect(summary.totalTools).toBe(25);
     expect(summary.categories).toHaveProperty("route");
     expect(summary.categories).toHaveProperty("gateway");
     expect(summary.categories).toHaveProperty("skill");
@@ -253,12 +271,12 @@ describe("tool registry", () => {
     expect(summary.categories).toHaveProperty("playwright");
     expect(summary.categories).toHaveProperty("mobile");
     expect(summary.categories.route.tools).toHaveLength(1);
-    expect(summary.categories.gateway.tools).toHaveLength(3);
+    expect(summary.categories.gateway.tools).toHaveLength(4);
     expect(summary.categories.skill.tools).toHaveLength(7);
     expect(summary.categories.postman.tools).toHaveLength(3);
     expect(summary.categories.stitch.tools).toHaveLength(4);
     expect(summary.categories.playwright.tools).toHaveLength(2);
-    expect(summary.categories.mobile.tools).toHaveLength(1);
+    expect(summary.categories.mobile.tools).toHaveLength(4);
   });
 
   it("each schema has a valid .shape property", () => {
@@ -268,7 +286,6 @@ describe("tool registry", () => {
     }
   });
 });
-
 
 
 

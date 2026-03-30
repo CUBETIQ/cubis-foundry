@@ -80,9 +80,9 @@ Production-grade guidance for Swift 6.0+ application and systems engineering. Co
 
 ## Testing Guidance
 
-- Keep Swift unit-test guidance in this skill instead of routing new work through the generic `unit-testing` wrapper.
-- Prefer XCTest, focused module tests, and native Apple-platform test utilities before introducing broader wrappers.
-- Escalate simulator-boundary or application-runtime checks into the owning platform skill instead of the generic `integration-testing` wrapper.
+- Keep Swift unit-test guidance in this skill instead of routing new work through a separate generic testing skill.
+- Use the repo's native Swift test stack, usually Swift Testing or XCTest, async tests, and native Apple-platform assertions for code-level checks.
+- Escalate simulator-boundary or application-runtime checks into the owning platform skill instead of a separate generic runtime-testing skill.
 - Use `../ios-simulator-testing/SKILL.md` for live simulator evidence and `../web-testing/SKILL.md` only when the task truly crosses into browser behavior.
 
 ## Output Format

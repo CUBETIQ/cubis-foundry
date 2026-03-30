@@ -76,9 +76,9 @@ Production-grade guidance for modern Kotlin development using Kotlin 2.1+ featur
 
 ## Testing Guidance
 
-- Keep Kotlin unit-test guidance in this skill instead of routing new work through the generic `unit-testing` wrapper.
-- Prefer the repo's native Kotlin/JVM or Android test stack, usually JUnit, coroutine test helpers, and framework-local tooling.
-- Escalate Spring, Android runtime, networking, persistence, or other boundary-spanning checks into the owning framework or platform skill instead of the generic `integration-testing` wrapper.
+- Keep Kotlin unit-test guidance in this skill instead of routing new work through a separate generic testing skill.
+- Use the repo's native Kotlin test stack, usually `kotlin.test` or JUnit, `kotlinx-coroutines-test`, Flow assertions, and framework-local helpers for code-level checks.
+- Escalate Android runtime, networking, persistence, or other runtime-boundary checks into the owning framework or platform skill instead of a separate generic runtime-testing skill.
 - Use `../web-testing/SKILL.md`, `../android-emulator-testing/SKILL.md`, or `../ios-simulator-testing/SKILL.md` only when the task needs live browser or device evidence.
 
 ## Output Format

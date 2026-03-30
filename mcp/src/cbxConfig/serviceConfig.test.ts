@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { parsePostmanState, parseStitchState } from "./serviceConfig.js";
+import {
+  parseMobileState,
+  parsePostmanState,
+  parseStitchState,
+} from "./serviceConfig.js";
 
 describe("service config normalization", () => {
   it("normalizes postman profile arrays", () => {
@@ -38,5 +42,63 @@ describe("service config normalization", () => {
     expect(state.activeProfileName).toBe("prod");
     expect(state.activeProfile?.url).toBe("https://stitch.googleapis.com/mcp");
     expect(state.activeProfile?.apiKeyEnvVar).toBe("STITCH_API_KEY_PROD");
+  });
+
+  it("normalizes mobile profile arrays", () => {
+    const state = parseMobileState({
+      mobile: {
+        mcpUrl: "https://mobile.example.com/mcp",
+        activeProfileName: "team-a",
+        profiles: [
+          {
+            name: "team-a",
+            url: "https://team-a.mobile.example.com/mcp",
+            command: "npx",
+            args: ["-y", "@mobilenext/mobile-mcp@latest"],
+          },
+        ],
+      },
+    });
+
+    expect(state.activeProfileName).toBe("team-a");
+    expect(state.mcpUrl).toBe("https://mobile.example.com/mcp");
+    expect(state.activeProfile?.url).toBe(
+      "https://team-a.mobile.example.com/mcp",
+    );
+    expect(state.activeProfile?.command).toBe("npx");
+    expect(state.activeProfile?.args).toEqual([
+      "-y",
+      "@mobilenext/mobile-mcp@latest",
+    ]);
+  });
+
+  it("treats an empty mobile config as disabled", () => {
+    const state = parseMobileState({
+      mobile: {},
+    });
+
+    expect(state.enabled).toBe(false);
+    expect(state.mcpUrl).toBeNull();
+    expect(state.activeProfileName).toBeNull();
+    expect(state.activeProfile).toBeNull();
+    expect(state.profiles).toEqual([]);
+  });
+
+  it("enables mobile when top-level args are provided", () => {
+    const state = parseMobileState({
+      mobile: {
+        args: ["-y", "@mobilenext/mobile-mcp@latest", "--profile", "ios"],
+      },
+    });
+
+    expect(state.enabled).toBe(true);
+    expect(state.activeProfileName).toBe("default");
+    expect(state.activeProfile?.command).toBe("npx");
+    expect(state.activeProfile?.args).toEqual([
+      "-y",
+      "@mobilenext/mobile-mcp@latest",
+      "--profile",
+      "ios",
+    ]);
   });
 });

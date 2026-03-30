@@ -5,10 +5,6 @@ rules:
   mergeStrategy: layered
   userOverride: honor
   conflictResolution: user-first
-  generate:
-    type: markdown-merge
-    source: foundry/modules/rules-core/rules
-    output: CLAUDE.md
 
 skills:
   projection:

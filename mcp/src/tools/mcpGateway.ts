@@ -15,9 +15,14 @@ export const stitchListEnabledToolsDescription =
   "List currently enabled Stitch upstream passthrough tools and gateway warnings.";
 export const stitchListEnabledToolsSchema = z.object({});
 
+export const mobileListEnabledToolsName = "mobile_list_enabled_tools";
+export const mobileListEnabledToolsDescription =
+  "List currently enabled Mobile MCP upstream passthrough tools and gateway warnings.";
+export const mobileListEnabledToolsSchema = z.object({});
+
 export const mcpGatewayStatusName = "mcp_gateway_status";
 export const mcpGatewayStatusDescription =
-  "Get passthrough gateway status for Postman and Stitch, including warnings and catalog location.";
+  "Get passthrough gateway status for configured upstream providers, including warnings and catalog location.";
 export const mcpGatewayStatusSchema = z.object({});
 
 function text(data: unknown) {
@@ -37,6 +42,10 @@ export function handlePostmanListEnabledTools(gateway: GatewayManager) {
 
 export function handleStitchListEnabledTools(gateway: GatewayManager) {
   return text(gateway.listEnabledTools("stitch"));
+}
+
+export function handleMobileListEnabledTools(gateway: GatewayManager) {
+  return text(gateway.listEnabledTools("mobile"));
 }
 
 export function handleMcpGatewayStatus(gateway: GatewayManager) {

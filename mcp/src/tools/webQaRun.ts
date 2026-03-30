@@ -57,10 +57,7 @@ export function createWebQaRunHandler(_ctx: ToolRuntimeContext) {
       dryRun: Boolean(args.dryRun),
     });
     trace.selectedSkills.push("web-testing");
-    trace.selectedReferences.push(
-      "foundry/modules/web-testing/SKILL.md",
-      "foundry/modules/playwright-interactive/SKILL.md",
-    );
+    trace.selectedReferences.push("foundry/modules/web-testing/SKILL.md");
 
     const gatewayStatus = _ctx.gatewayManager.getStatus();
     const playwrightTools = _ctx.gatewayManager.listEnabledTools("playwright");

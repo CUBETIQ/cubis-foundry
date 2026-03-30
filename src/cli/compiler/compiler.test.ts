@@ -85,21 +85,12 @@ describe("compiler", () => {
   });
 
   describe("compileModule()", () => {
-    it("compiles only assets owned by the requested module", async () => {
+    it("fails when asked to compile a deleted module", async () => {
       const root = cloneFoundryFixture();
 
-      const results = await compileModule(root, "rules-core", "claude");
-
-      expect(results).toHaveLength(1);
-      expect(results[0]!.platform).toBe("claude");
-
-      const paths = results[0]!.assets.map((asset) => asset.path);
-      expect(paths).toContain("CLAUDE.md");
-      expect(paths).toContain(".claude/skills/rules-core/SKILL.md");
-      expect(paths).not.toContain(".claude/skills/api-design/SKILL.md");
-      expect(paths.some((path) => path.startsWith(".claude/hooks/"))).toBe(false);
-      expect(paths.some((path) => path.startsWith(".claude/agents/"))).toBe(false);
-      expect(paths.some((path) => path.includes("/workflow-"))).toBe(false);
+      await expect(compileModule(root, "rules-core", "claude")).rejects.toThrow(
+        /module "rules-core" not found in catalog/i,
+      );
     });
 
     it("projects sidecar references alongside a claude skill", async () => {
@@ -556,6 +547,37 @@ describe("compiler", () => {
       expect(result.assets[0]!.path).toBe("a.txt");
       expect(result.assets[1]!.path).toBe("b.txt");
       expect(result.assets[2]!.path).toBe("c.txt");
+    });
+
+    it("removes stale assets from a previous build before writing the new bundle", async () => {
+      const tmp = mkdtempSync(join(tmpdir(), "foundry-emit-test-"));
+      const ctx = makeContext("claude");
+      const stalePath = join(
+        tmp,
+        "generated",
+        "runtime-assets",
+        "claude",
+        "foundry",
+        "modules",
+        "unit-testing",
+        "SKILL.md",
+      );
+      mkdirSync(join(stalePath, ".."), { recursive: true });
+      writeFileSync(stalePath, "# stale\n", "utf8");
+
+      const transformed: TransformStageOutput = {
+        assets: [{ path: "docs/foundation/TECH.md", content: "# Fresh\n", checksum: "fresh" }],
+      };
+
+      await emitStage(ctx, transformed, { repoRoot: tmp });
+
+      expect(() => readFileSync(stalePath, "utf8")).toThrow();
+      expect(
+        readFileSync(
+          join(tmp, "generated", "runtime-assets", "claude", "docs/foundation", "TECH.md"),
+          "utf8",
+        ),
+      ).toBe("# Fresh\n");
     });
 
     it("handles empty assets array gracefully", async () => {

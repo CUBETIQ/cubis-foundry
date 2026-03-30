@@ -60,9 +60,9 @@ Production-grade guidance for TypeScript 5.9+ covering strict compiler configura
 
 ## Testing Guidance
 
-- Keep type-level checks and unit-test guidance in this skill instead of routing new work through the generic `unit-testing` wrapper.
-- Use the native TypeScript test stack already present in the repo, typically `vitest`, compile-time type assertions, and framework-local helpers.
-- Escalate API, persistence, or full runtime-boundary checks into the owning framework or platform skill instead of the generic `integration-testing` wrapper.
+- Keep TypeScript unit-test and type-test guidance in this skill instead of routing new work through a separate generic testing skill.
+- Use the native TypeScript test stack already present in the repo, typically `vitest`, `expectTypeOf`, `tsd`, and framework-local helpers for code-level checks.
+- Escalate API, persistence, browser, or other runtime-boundary checks into the owning framework or platform skill instead of a separate generic runtime-testing skill.
 - Use `../web-testing/SKILL.md`, `../android-emulator-testing/SKILL.md`, or `../ios-simulator-testing/SKILL.md` only when the task needs live browser or device evidence.
 
 ## Output Format

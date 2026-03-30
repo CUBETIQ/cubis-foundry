@@ -59,7 +59,7 @@ Use when building Django 5.1+ REST APIs with Django REST Framework 3.15+, coveri
 
 ## Testing Guidance
 
-- Keep Django and DRF boundary and integration guidance in this skill instead of routing new work through the generic `integration-testing` wrapper.
+- Keep Django and DRF API tests in this skill instead of routing new work through a separate generic runtime-testing skill.
 - Own API client setup, ORM-backed fixtures, auth/session handling, serializer validation, and endpoint boundary checks here because they are Django-runtime concerns.
 - Use the owning Python skill for narrow unit tests that do not need the Django or DRF runtime boundary.
 - Use `../web-testing/SKILL.md` only when the task needs live browser evidence against a Django-backed UI surface.

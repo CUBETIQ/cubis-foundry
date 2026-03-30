@@ -74,9 +74,9 @@ Production-grade guidance for Python 3.12–3.14 covering the modern type system
 
 ## Testing Guidance
 
-- Keep Python unit-test guidance in this skill instead of routing new work through the generic `unit-testing` wrapper.
-- Prefer the repo's native Python test stack, usually `pytest`, fixtures, parametrization, and async test helpers.
-- Escalate API, ORM, or service-boundary checks into the owning framework or platform skill instead of the generic `integration-testing` wrapper.
+- Keep Python unit-test guidance in this skill instead of routing new work through a separate generic testing skill.
+- Use the repo's native Python test stack, usually `pytest`, fixtures, `@pytest.mark.parametrize`, and async test helpers for code-level checks.
+- Escalate API, persistence, or other runtime-boundary checks into the owning framework or platform skill instead of a separate generic runtime-testing skill.
 - Use `../web-testing/SKILL.md`, `../android-emulator-testing/SKILL.md`, or `../ios-simulator-testing/SKILL.md` only when the task needs live browser or device evidence.
 
 ## Output Format

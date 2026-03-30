@@ -126,6 +126,17 @@ const LEGACY_AGENT_ALIASES: Record<string, string> = {
   "explorer-agent": "code-archaeologist",
 };
 
+const DELETED_SKILL_IDS = new Set([
+  "qa",
+  "unit-testing",
+  "integration-testing",
+  "playwright-interactive",
+  "stitch",
+  "mcp-core",
+  "research-core",
+  "rules-core",
+]);
+
 const STITCH_REQUIRED_SIGNALS = ["stitch"];
 const DESIGN_SYSTEM_SIGNALS = [
   "design system",
@@ -156,9 +167,9 @@ const DESIGN_SCREEN_SIGNALS = [
   "redesign",
   "mobile screen",
 ];
-const STITCH_UI_SUPPORTING_SKILLS = [
+const STITCH_INTENT_SUPPORTING_SKILLS = [
   "web-ui-design",
-  "stitch",
+  "design-system",
 ];
 const MOBILE_DESIGN_SUPPORTING_SKILLS = [
   "mobile-ui-design",
@@ -385,8 +396,12 @@ function buildResolvedPayload(
     explanation: string;
   }> = {},
 ) {
-  const primarySkills = overrides.primarySkills || route.primarySkills;
-  const supportingSkills = overrides.supportingSkills || route.supportingSkills;
+  const primarySkills = (overrides.primarySkills || route.primarySkills).filter(
+    (skillId) => !DELETED_SKILL_IDS.has(skillId),
+  );
+  const supportingSkills = (overrides.supportingSkills || route.supportingSkills).filter(
+    (skillId) => !DELETED_SKILL_IDS.has(skillId),
+  );
   const primarySkillHint =
     overrides.primarySkillHint !== undefined
       ? overrides.primarySkillHint
@@ -566,9 +581,7 @@ export async function handleRouteResolve(
       detectedLanguageSkill,
       {
         primarySkillHint: isWebQaRoute ? "web-testing" : mobilePrimarySkill,
-        primarySkills: isWebQaRoute
-          ? ["web-testing", "playwright-interactive"]
-          : mobilePrimarySkills,
+        primarySkills: isWebQaRoute ? ["web-testing"] : mobilePrimarySkills,
         supportingSkills: qaRoute.supportingSkills,
         explanation: isWebQaRoute
           ? "Matched browser QA intent and routed to /web-qa so Playwright MCP execution, evidence capture, and QA reporting stay on the canonical web-testing runtime path."
@@ -597,7 +610,7 @@ export async function handleRouteResolve(
           primarySkills: [
             "design",
             ...(needsMobilePatterns ? MOBILE_DESIGN_SUPPORTING_SKILLS : []),
-            ...STITCH_UI_SUPPORTING_SKILLS,
+            ...STITCH_INTENT_SUPPORTING_SKILLS,
           ],
           supportingSkills: stitchRoute.supportingSkills,
           explanation:

@@ -169,6 +169,24 @@ import {
   handlePlaywrightGetStatus,
 } from "./playwrightGetStatus.js";
 import {
+  mobileGetModeName,
+  mobileGetModeDescription,
+  mobileGetModeSchema,
+  handleMobileGetMode,
+} from "./mobileGetMode.js";
+import {
+  mobileSetProfileName,
+  mobileSetProfileDescription,
+  mobileSetProfileSchema,
+  handleMobileSetProfile,
+} from "./mobileSetProfile.js";
+import {
+  mobileGetStatusName,
+  mobileGetStatusDescription,
+  mobileGetStatusSchema,
+  handleMobileGetStatus,
+} from "./mobileGetStatus.js";
+import {
   mobileQaRunName,
   mobileQaRunDescription,
   mobileQaRunSchema,
@@ -194,6 +212,10 @@ import {
   stitchListEnabledToolsDescription,
   stitchListEnabledToolsSchema,
   handleStitchListEnabledTools,
+  mobileListEnabledToolsName,
+  mobileListEnabledToolsDescription,
+  mobileListEnabledToolsSchema,
+  handleMobileListEnabledTools,
 } from "./mcpGateway.js";
 
 // ─── Scope helper ───────────────────────────────────────────
@@ -249,6 +271,14 @@ export const TOOL_REGISTRY: readonly ToolRegistryEntry[] = [
     category: "gateway",
     createHandler: (ctx) => async () =>
       handleStitchListEnabledTools(ctx.gatewayManager),
+  },
+  {
+    name: mobileListEnabledToolsName,
+    description: mobileListEnabledToolsDescription,
+    schema: mobileListEnabledToolsSchema,
+    category: "gateway",
+    createHandler: (ctx) => async () =>
+      handleMobileListEnabledTools(ctx.gatewayManager),
   },
 
   // ── Skill vault tools ─────────────────────────────────────
@@ -435,6 +465,42 @@ export const TOOL_REGISTRY: readonly ToolRegistryEntry[] = [
       ),
   },
   {
+    name: mobileGetModeName,
+    description: mobileGetModeDescription,
+    schema: mobileGetModeSchema,
+    category: "mobile",
+    createHandler: (ctx) => async (args) =>
+      handleMobileGetMode(
+        withDefaultScope(args, ctx.defaultConfigScope) as z.infer<
+          typeof mobileGetModeSchema
+        >,
+      ),
+  },
+  {
+    name: mobileSetProfileName,
+    description: mobileSetProfileDescription,
+    schema: mobileSetProfileSchema,
+    category: "mobile",
+    createHandler: (ctx) => async (args) =>
+      handleMobileSetProfile(
+        withDefaultScope(args, ctx.defaultConfigScope) as z.infer<
+          typeof mobileSetProfileSchema
+        >,
+      ),
+  },
+  {
+    name: mobileGetStatusName,
+    description: mobileGetStatusDescription,
+    schema: mobileGetStatusSchema,
+    category: "mobile",
+    createHandler: (ctx) => async (args) =>
+      handleMobileGetStatus(
+        withDefaultScope(args, ctx.defaultConfigScope) as z.infer<
+          typeof mobileGetStatusSchema
+        >,
+      ),
+  },
+  {
     name: mobileQaRunName,
     description: mobileQaRunDescription,
     schema: mobileQaRunSchema,
@@ -495,6 +561,5 @@ export function buildRegistrySummary(): {
 
   return { categories, totalTools: TOOL_REGISTRY.length };
 }
-
 
 

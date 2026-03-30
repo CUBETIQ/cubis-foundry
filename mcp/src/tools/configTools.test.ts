@@ -3,6 +3,9 @@ import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "nod
 import os from "node:os";
 import path from "node:path";
 import { POSTMAN_MODES } from "./postmanModes.js";
+import { handleMobileGetMode } from "./mobileGetMode.js";
+import { handleMobileGetStatus } from "./mobileGetStatus.js";
+import { handleMobileSetProfile } from "./mobileSetProfile.js";
 import { handlePostmanGetMode } from "./postmanGetMode.js";
 import { handlePostmanGetStatus } from "./postmanGetStatus.js";
 import { handlePostmanSetMode } from "./postmanSetMode.js";
@@ -162,5 +165,101 @@ describe("stitch tools", () => {
     const statusText = JSON.stringify(status);
     expect(statusText).not.toContain("secret-value");
     expect(statusText).toContain('"hasApiKey":true');
+  });
+});
+
+describe("mobile tools", () => {
+  it("validates that target mobile profile exists", () => {
+    writeProjectConfig({
+      mobile: {
+        activeProfileName: "ios",
+        profiles: {
+          ios: { command: "npx", args: ["-y", "@mobilenext/mobile-mcp@latest"] },
+        },
+      },
+    });
+
+    expect(() =>
+      handleMobileSetProfile({ profileName: "android", scope: "project" }),
+    ).toThrow('Mobile profile "android" not found');
+  });
+
+  it("updates the active mobile profile", () => {
+    writeProjectConfig({
+      mobile: {
+        activeProfileName: "ios",
+        profiles: {
+          ios: { command: "npx", args: ["-y", "@mobilenext/mobile-mcp@latest"] },
+          android: {
+            command: "npx",
+            args: ["-y", "@mobilenext/mobile-mcp@latest", "--profile", "android"],
+          },
+        },
+      },
+    });
+
+    const setResult = payload(
+      handleMobileSetProfile({ profileName: "android", scope: "project" }),
+    );
+    expect(setResult).toMatchObject({
+      activeProfileName: "android",
+      scope: "project",
+    });
+
+    const mode = payload(handleMobileGetMode({ scope: "project" }));
+    expect(mode).toMatchObject({
+      activeProfileName: "android",
+      availableProfiles: ["ios", "android"],
+      scope: "project",
+    });
+  });
+
+  it("reports mobile status without exposing env values", () => {
+    writeProjectConfig({
+      mobile: {
+        activeProfileName: "ios",
+        profiles: {
+          ios: {
+            command: "npx",
+            args: ["-y", "@mobilenext/mobile-mcp@latest"],
+            env: { MOBILE_MCP_TOKEN: "secret" },
+          },
+        },
+      },
+    });
+
+    const status = payload(handleMobileGetStatus({ scope: "project" }));
+    expect(status).toMatchObject({
+      configured: true,
+      activeProfileName: "ios",
+      totalProfiles: 1,
+      scope: "project",
+    });
+    const statusText = JSON.stringify(status);
+    expect(statusText).not.toContain("secret");
+    expect(statusText).toContain('"hasEnv":true');
+  });
+
+  it("prefers top-level mobile.mcpUrl in mode output", () => {
+    writeProjectConfig({
+      mobile: {
+        mcpUrl: "https://override.mobile.example.com/mcp",
+        activeProfileName: "ios",
+        profiles: {
+          ios: {
+            url: "https://profile.mobile.example.com/mcp",
+            command: "npx",
+            args: ["-y", "@mobilenext/mobile-mcp@latest"],
+          },
+        },
+      },
+    });
+
+    const mode = payload(handleMobileGetMode({ scope: "project" }));
+    expect(mode).toMatchObject({
+      activeProfileName: "ios",
+      activeUrl: "https://override.mobile.example.com/mcp",
+      scope: "project",
+    });
   });
 });

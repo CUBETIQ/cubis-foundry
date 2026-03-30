@@ -78,7 +78,7 @@ export function registerMcpCommands(program: Command, deps: McpCommandDeps) {
   mcpToolsCommand
     .command("sync")
     .description("Discover upstream tools and persist local non-secret catalogs")
-    .option("--service <service>", "postman|stitch|all", "all")
+    .option("--service <service>", "postman|stitch|mobile|all", "all")
     .option(
       "--scope <scope>",
       "config scope: project|workspace|global|user",
@@ -90,7 +90,7 @@ export function registerMcpCommands(program: Command, deps: McpCommandDeps) {
   mcpToolsCommand
     .command("list")
     .description("List cached tool names from local MCP catalog")
-    .requiredOption("--service <service>", "postman|stitch")
+    .requiredOption("--service <service>", "postman|stitch|mobile")
     .option(
       "--scope <scope>",
       "config scope: project|workspace|global|user",

@@ -2,7 +2,11 @@
  * Cubis Foundry MCP Server – upstream gateway config resolution.
  */
 
-import { parseAndroidState, readEffectiveConfig } from "../cbxConfig/index.js";
+import {
+  parseAndroidState,
+  parseMobileState,
+  readEffectiveConfig,
+} from "../cbxConfig/index.js";
 import type {
   ConfigScope,
   ServiceProfile,
@@ -10,6 +14,7 @@ import type {
   StitchConfig,
   PlaywrightConfig,
   AndroidConfig,
+  MobileConfig,
 } from "../cbxConfig/types.js";
 import type { UpstreamConfig, UpstreamProvider } from "./types.js";
 
@@ -309,6 +314,87 @@ function buildAndroidConfig(
   };
 }
 
+function buildMobileConfig(
+  mobile: MobileConfig | undefined,
+  scope: ConfigScope | null,
+  configPath: string | null,
+): UpstreamConfig {
+  const warnings: string[] = [];
+  if (mobile === undefined) {
+    warnings.push("Mobile MCP is not configured in cbx_config.json.");
+    return {
+      provider: "mobile",
+      transport: "stdio",
+      mcpUrl: null,
+      authHeader: {},
+      authEnvVar: null,
+      command: null,
+      args: [],
+      env: {},
+      cwd: null,
+      scope,
+      configPath,
+      warnings,
+    };
+  }
+  const state = parseMobileState({ mobile });
+  if (!state.enabled) {
+    warnings.push("Mobile MCP is not configured in cbx_config.json.");
+    return {
+      provider: "mobile",
+      transport: "stdio",
+      mcpUrl: null,
+      authHeader: {},
+      authEnvVar: null,
+      command: null,
+      args: [],
+      env: {},
+      cwd: null,
+      scope,
+      configPath,
+      warnings,
+    };
+  }
+  const activeProfile = state.activeProfile;
+  const resolvedUrl = state.mcpUrl ?? activeProfile?.url ?? null;
+
+  if (resolvedUrl) {
+    return {
+      provider: "mobile",
+      transport: "http",
+      mcpUrl: resolvedUrl,
+      authHeader: {},
+      authEnvVar: null,
+      command: null,
+      args: [],
+      env: {},
+      cwd: null,
+      scope,
+      configPath,
+      warnings,
+    };
+  }
+
+  if (!activeProfile?.command) {
+    warnings.push("Mobile MCP command is not configured in cbx_config.json.");
+  }
+
+  return {
+    provider: "mobile",
+    transport: "stdio",
+    mcpUrl: null,
+    authHeader: {},
+    authEnvVar: null,
+    command: activeProfile?.command ?? null,
+    args: activeProfile?.args ?? [],
+    env: activeProfile?.env ?? {},
+    cwd: activeProfile?.cwd ?? null,
+    scope,
+    configPath,
+    warnings,
+  };
+}
+
 export function resolveGatewayConfig(
   scope: ConfigScope | "auto" = "auto",
 ): ResolvedGatewayConfig {
@@ -351,6 +437,20 @@ export function resolveGatewayConfig(
         },
         playwright: buildPlaywrightConfig(undefined, null, null),
         android: buildAndroidConfig(undefined, null, null),
+        mobile: {
+          provider: "mobile",
+          transport: "stdio",
+          mcpUrl: null,
+          authHeader: {},
+          authEnvVar: null,
+          command: null,
+          args: [],
+          env: {},
+          cwd: null,
+          scope: null,
+          configPath: null,
+          warnings: [warning],
+        },
       },
     };
   }
@@ -379,9 +479,13 @@ export function resolveGatewayConfig(
         effective.scope,
         effective.path,
       ),
+      mobile: buildMobileConfig(
+        effective.config.mobile,
+        effective.scope,
+        effective.path,
+      ),
     },
   };
 }
 
 export { STITCH_DEFAULT_MCP_URL };
-

@@ -7,6 +7,7 @@ export type {
   StitchConfig,
   PlaywrightConfig,
   AndroidConfig,
+  MobileConfig,
   CbxConfig,
   EffectiveConfig,
 } from "./types.js";
@@ -27,4 +28,5 @@ export {
   parseStitchState,
   parsePlaywrightState,
   parseAndroidState,
+  parseMobileState,
 } from "./serviceConfig.js";
