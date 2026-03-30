@@ -254,8 +254,8 @@ async function main() {
   const stitchRoutePayload = parseToolTextPayload(stitchRouteResolveResult);
   if (
     stitchRoutePayload.resolved !== true ||
-    stitchRoutePayload.id !== "implement" ||
-    stitchRoutePayload.matchedBy !== "stitch-ui-intent" ||
+    stitchRoutePayload.id !== "design-screen" ||
+    stitchRoutePayload.matchedBy !== "design-generation-intent" ||
     stitchRoutePayload.primarySkillHint !== "design"
   ) {
     throw new Error("route_resolve failed Stitch UI intent routing");

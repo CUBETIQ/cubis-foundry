@@ -57,7 +57,10 @@ export class SdkUpstreamClientFactory implements UpstreamClientFactory {
         ? new StdioClientTransport({
             command: params.command || "npx",
             args: params.args || [],
-            env: params.env || {},
+            env: {
+              ...process.env,
+              ...(params.env || {}),
+            },
             cwd: params.cwd || process.cwd(),
             stderr: "pipe",
           })

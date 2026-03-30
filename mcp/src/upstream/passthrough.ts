@@ -346,7 +346,10 @@ async function withUpstreamClient<T>({
       ? new StdioClientTransport({
           command: command || "npx",
           args: args || [],
-          env: env || {},
+          env: {
+            ...process.env,
+            ...(env || {}),
+          },
           cwd: cwd || process.cwd(),
           stderr: "pipe",
         })
