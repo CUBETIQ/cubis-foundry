@@ -4,8 +4,7 @@ export type InitMcpId =
   | "cubis-foundry"
   | "postman"
   | "stitch"
-  | "playwright"
-  | "android";
+  | "playwright";
 export type InitPostmanMode = "full" | "minimal";
 export type InitPlatformId =
   | "codex"

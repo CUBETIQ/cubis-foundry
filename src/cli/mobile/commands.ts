@@ -35,10 +35,6 @@ export function registerMobileCommands(
       "artifacts/mobile-testing",
     )
     .option("--scope <scope>", "auto|global|project", "auto")
-    .option(
-      "--android-mcp",
-      "optional legacy Android MCP path; prefer mobile-mcp and keep CLI-first ADB as the default fallback",
-    )
     .option("--dry-run", "validate inputs and emit the planned artifact paths")
     .action(deps.runMobileTesting);
 

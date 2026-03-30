@@ -8,7 +8,6 @@ export type UpstreamProvider =
   | "postman"
   | "stitch"
   | "playwright"
-  | "android"
   | "mobile";
 export type GatewayScope = ConfigScope | "auto";
 export type UpstreamTransport = "http" | "stdio";

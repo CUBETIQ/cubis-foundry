@@ -42,9 +42,6 @@ export async function runMobileTesting(options: AnyOptions) {
     if (options.avd) {
       args.push("--avd", String(options.avd));
     }
-    if (options.androidMcp) {
-      args.push("--android-mcp");
-    }
     if (options.dryRun) {
       args.push("--dry-run");
     }

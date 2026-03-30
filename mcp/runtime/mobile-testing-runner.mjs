@@ -7,7 +7,6 @@ import os from "node:os";
 import path from "node:path";
 import process from "node:process";
 import { promisify } from "node:util";
-import { runAndroidMcpSession } from "./mobile-mcp-runner.mjs";
 
 const execFile = promisify(execFileCallback);
 const SUPPORTED_STEP_ACTIONS = new Set([
@@ -29,7 +28,6 @@ function parseArgs(argv) {
     avd: null,
     artifactsDir: path.resolve("artifacts", "mobile-testing"),
     scope: "auto",
-    androidMcp: false,
     dryRun: false,
   };
 
@@ -47,8 +45,6 @@ function parseArgs(argv) {
       args.artifactsDir = path.resolve(argv[++index]);
     } else if (arg === "--scope" && argv[index + 1]) {
       args.scope = argv[++index];
-    } else if (arg === "--android-mcp") {
-      args.androidMcp = true;
     } else if (arg === "--dry-run") {
       args.dryRun = true;
     }
@@ -594,7 +590,7 @@ async function main() {
   validateCharter(charter);
   const directories = await ensureArtifactDirs(args.artifactsDir);
   const reportPath = path.join(directories.root, "report.json");
-  const providerPreference = args.androidMcp ? "android-mcp" : "adb";
+  const providerPreference = "adb";
 
   if (args.dryRun) {
     const dryRunResult = {
@@ -625,48 +621,6 @@ async function main() {
   }
 
   const attempts = [];
-
-  if (args.androidMcp) {
-    for (let attempt = 1; attempt <= 2; attempt += 1) {
-      try {
-        const execution = await runAndroidMcpSession({
-          args,
-          charter,
-          directories,
-        });
-        const result = {
-          ...execution,
-          flow: charter.flow,
-          packageId: args.packageId || charter.package,
-          providerPreference: "android-mcp",
-          providerUsed: "android-mcp",
-          attempts,
-          reportPath,
-        };
-        await writeFile(reportPath, `${JSON.stringify(result, null, 2)}\n`, "utf8");
-        process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
-        return;
-      } catch (error) {
-        const evidenceLog = path.join(
-          directories.logs,
-          `android-mcp-attempt-${attempt}-failure.log`,
-        );
-        await writeFile(
-          evidenceLog,
-          `${String(error)}${os.EOL}`,
-          "utf8",
-        );
-        attempts.push({
-          attempt,
-          provider: "android-mcp",
-          status: attempt === 1 ? "retrying" : "fallback",
-          error: String(error),
-          evidenceLog,
-        });
-      }
-    }
-  }
-
   const adbPath = resolveAdbPath();
   let lastError = null;
   for (let attempt = 1; attempt <= 2; attempt += 1) {

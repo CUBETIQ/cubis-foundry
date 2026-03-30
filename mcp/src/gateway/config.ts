@@ -3,7 +3,6 @@
  */
 
 import {
-  parseAndroidState,
   parseMobileState,
   readEffectiveConfig,
 } from "../cbxConfig/index.js";
@@ -13,7 +12,6 @@ import type {
   PostmanConfig,
   StitchConfig,
   PlaywrightConfig,
-  AndroidConfig,
   MobileConfig,
 } from "../cbxConfig/types.js";
 import type { UpstreamConfig, UpstreamProvider } from "./types.js";
@@ -288,32 +286,6 @@ function buildPlaywrightConfig(
   };
 }
 
-function buildAndroidConfig(
-  android: AndroidConfig | boolean | undefined,
-  scope: ConfigScope | null,
-  configPath: string | null,
-): UpstreamConfig {
-  const warnings: string[] = [];
-  const state = parseAndroidState({ android });
-  if (!state.enabled) {
-    warnings.push("Android MCP is not enabled in cbx_config.json.");
-  }
-  return {
-    provider: "android",
-    transport: "stdio",
-    mcpUrl: null,
-    authHeader: {},
-    authEnvVar: null,
-    command: state.command,
-    args: state.args,
-    env: state.env,
-    cwd: state.cwd,
-    scope,
-    configPath,
-    warnings,
-  };
-}
-
 function buildMobileConfig(
   mobile: MobileConfig | undefined,
   scope: ConfigScope | null,
@@ -436,7 +408,6 @@ export function resolveGatewayConfig(
           warnings: [warning],
         },
         playwright: buildPlaywrightConfig(undefined, null, null),
-        android: buildAndroidConfig(undefined, null, null),
         mobile: {
           provider: "mobile",
           transport: "stdio",
@@ -471,11 +442,6 @@ export function resolveGatewayConfig(
       ),
       playwright: buildPlaywrightConfig(
         effective.config.playwright,
-        effective.scope,
-        effective.path,
-      ),
-      android: buildAndroidConfig(
-        effective.config.android,
         effective.scope,
         effective.path,
       ),

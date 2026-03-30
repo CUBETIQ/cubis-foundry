@@ -13,13 +13,12 @@ import {
   parsePostmanState,
   parseStitchState,
   parsePlaywrightState,
-  parseAndroidState,
   parseMobileState,
   readEffectiveConfig,
 } from "../cbxConfig/index.js";
 import type { CbxConfig, ConfigScope } from "../cbxConfig/types.js";
 
-type ServiceId = "postman" | "stitch" | "playwright" | "android" | "mobile";
+type ServiceId = "postman" | "stitch" | "playwright" | "mobile";
 
 const STITCH_ENV_FALLBACKS = ["STITCH_API_KEY_DEFAULT", "STITCH_API_KEY"];
 const STITCH_LONG_RUNNING_TIMEOUT_MS = 8 * 60 * 1000;
@@ -180,26 +179,6 @@ function getServiceAuth(
   configured: boolean;
   error?: string;
 } {
-  if (service === "android") {
-    const state = parseAndroidState(config);
-    return {
-      transport: "stdio",
-      mcpUrl: null,
-      activeProfileName: null,
-      envVar: null,
-      headers: {},
-      command: state.command,
-      args: state.args,
-      env: state.env,
-      cwd: state.cwd,
-      configured: Boolean(state.enabled && state.command),
-      error:
-        state.enabled && state.command
-          ? undefined
-          : "Android MCP is not enabled in cbx_config.json",
-    };
-  }
-
   if (service === "mobile") {
     if (config.mobile === undefined) {
       return {
@@ -591,7 +570,6 @@ export async function discoverUpstreamCatalogs(
   postman: UpstreamCatalog;
   stitch: UpstreamCatalog;
   playwright: UpstreamCatalog;
-  android: UpstreamCatalog;
   mobile: UpstreamCatalog;
 }> {
   const effective = readEffectiveConfig(scope);
@@ -613,10 +591,6 @@ export async function discoverUpstreamCatalogs(
       ...missing,
       service: "playwright",
     };
-    const missingAndroid: UpstreamCatalog = {
-      ...missing,
-      service: "android",
-    };
     const missingMobile: UpstreamCatalog = {
       ...missing,
       service: "mobile",
@@ -625,7 +599,6 @@ export async function discoverUpstreamCatalogs(
       postman: missing,
       stitch: missingStitch,
       playwright: missingPlaywright,
-      android: missingAndroid,
       mobile: missingMobile,
     };
   }
@@ -713,7 +686,6 @@ export async function discoverUpstreamCatalogs(
     postman: await discoverOne("postman"),
     stitch: await discoverOne("stitch"),
     playwright: await discoverOne("playwright"),
-    android: await discoverOne("android"),
     mobile: await discoverOne("mobile"),
   };
 }

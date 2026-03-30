@@ -40,17 +40,6 @@ export interface PlaywrightConfig {
   port?: number;
 }
 
-export interface AndroidConfig {
-  enabled?: boolean;
-  server?: string;
-  package?: string;
-  transport?: "stdio";
-  command?: string;
-  args?: string[];
-  cwd?: string;
-  env?: Record<string, string>;
-}
-
 export interface MobileConfig {
   enabled?: boolean;
   mcpUrl?: string;
@@ -67,7 +56,6 @@ export interface CbxConfig {
   postman?: PostmanConfig;
   stitch?: StitchConfig;
   playwright?: PlaywrightConfig;
-  android?: AndroidConfig | boolean;
   mobile?: MobileConfig;
   [key: string]: unknown;
 }

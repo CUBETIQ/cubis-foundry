@@ -80,11 +80,6 @@ assertIncludes(
 );
 assertIncludes(
   normalizedInstallHelp,
-  "--android",
-  "workflows install help",
-);
-assertIncludes(
-  normalizedInstallHelp,
   'skill install profile: core|web-backend|full (default: "full")',
   "workflows install help",
 );
@@ -106,7 +101,7 @@ assertIncludes(
 );
 assertIncludes(
   normalizedInitHelp,
-  "cubis-foundry,postman,stitch,playwright,android",
+  "cubis-foundry,postman,stitch,playwright",
   "init help",
 );
 assertIncludes(
@@ -168,11 +163,6 @@ const mobileTestingRunHelp = mobileTestingRunCommand
   ? mobileTestingRunCommand.helpInformation().replace(/\r\n/g, "\n")
   : "";
 const normalizedMobileTestingRunHelp = normalizeWhitespace(mobileTestingRunHelp);
-assertIncludes(
-  normalizedMobileTestingRunHelp,
-  "--android-mcp",
-  "mobile testing run help",
-);
 assertExcludes(
   normalizedMobileTestingRunHelp,
   "--allow-adb-fallback",

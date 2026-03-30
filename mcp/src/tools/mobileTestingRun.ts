@@ -3,7 +3,6 @@ import path from "node:path";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { z } from "zod";
-import { readEffectiveConfig } from "../cbxConfig/index.js";
 import type { ToolRuntimeContext } from "./registry.js";
 import {
   createExecutionTrace,
@@ -36,12 +35,6 @@ export const mobileTestingRunSchema = z.object({
       "Artifacts directory. Default: artifacts/mobile-testing.",
     ),
   scope: z.enum(["auto", "global", "project"]).optional(),
-  androidMcp: z
-    .boolean()
-    .optional()
-    .describe(
-      "Legacy compatibility opt-in for the older Android MCP execution path.",
-    ),
   dryRun: z.boolean().optional(),
 });
 
@@ -100,25 +93,12 @@ async function execRunner(commandArgs: string[]) {
   });
 }
 
-function isAndroidConfigured(scope: "auto" | "global" | "project") {
-  const effective = readEffectiveConfig(scope);
-  const androidConfig =
-    effective?.config?.android &&
-    typeof effective.config.android === "object" &&
-    !Array.isArray(effective.config.android)
-      ? (effective.config.android as Record<string, unknown>)
-      : null;
-  return Boolean(androidConfig?.enabled ?? effective?.config?.android);
-}
-
 export function createMobileTestingRunHandler(ctx: ToolRuntimeContext) {
   return async function handleMobileTestingRun(
     args: z.infer<typeof mobileTestingRunSchema>,
   ) {
     const scope = args.scope ?? "auto";
-    const androidConfigured = isAndroidConfigured(scope);
-    const androidMcpOptIn = Boolean(args.androidMcp);
-    const providerPreference = androidMcpOptIn ? "android-mcp" : "adb";
+    const providerPreference = "adb";
     const trace = createExecutionTrace(mobileTestingRunName, {
       charterPath: args.charterPath,
       apkPath: args.apkPath ?? null,
@@ -126,7 +106,6 @@ export function createMobileTestingRunHandler(ctx: ToolRuntimeContext) {
       avdName: args.avdName ?? null,
       artifactsDir: args.artifactsDir ?? "artifacts/mobile-testing",
       scope,
-      androidMcpOptIn,
       dryRun: Boolean(args.dryRun),
     });
     trace.selectedSkills.push("android-emulator-testing");
@@ -135,7 +114,7 @@ export function createMobileTestingRunHandler(ctx: ToolRuntimeContext) {
     );
 
     const gatewayStatus = ctx.gatewayManager.getStatus();
-    const androidTools = ctx.gatewayManager.listEnabledTools("android");
+    const mobileTools = ctx.gatewayManager.listEnabledTools("mobile");
     trace.gates.push({
       name: "charter_exists",
       passed: existsSync(path.resolve(args.charterPath)),
@@ -145,42 +124,17 @@ export function createMobileTestingRunHandler(ctx: ToolRuntimeContext) {
         : "Create the mobile testing charter YAML file and rerun the `mobile_testing_run` tool.",
     });
     trace.gates.push({
-      name: "android_mcp_opt_in",
-      passed: true,
-      detail: androidMcpOptIn
-        ? "Legacy Android MCP opt-in is enabled for this run."
-        : "Legacy Android MCP opt-in is disabled; CLI-first ADB will be used first and mobile-mcp remains the preferred semantic runtime.",
-      action: androidMcpOptIn
+      name: "mobile_mcp_available",
+      passed: Boolean(gatewayStatus.providers.mobile),
+      detail: gatewayStatus.providers.mobile?.lastError
+        ? `mobile-mcp unavailable: ${gatewayStatus.providers.mobile.lastError}`
+        : mobileTools.available
+          ? `mobile-mcp available with ${mobileTools.enabledCount} enabled tool(s).`
+          : "mobile-mcp is not currently available; CLI-first ADB remains the deterministic fallback.",
+      action: mobileTools.available
         ? undefined
-        : "Use --android-mcp only when you explicitly need the older Android MCP compatibility path.",
+        : "Start the bundled Foundry MCP gateway mobile provider when you need semantic Android/iOS interaction; this runner continues on the CLI-first fallback path.",
     });
-    if (androidMcpOptIn) {
-      trace.gates.push({
-        name: "gateway_initialized",
-        passed: Boolean(gatewayStatus.providers.android),
-        detail: gatewayStatus.providers.android?.lastError ?? "Gateway loaded.",
-      });
-      trace.gates.push({
-        name: "android_mcp_configured",
-        passed: androidConfigured,
-        detail: androidConfigured
-          ? "Legacy Android MCP is configured in cbx_config.json."
-          : "Legacy Android MCP is not configured in cbx_config.json.",
-        action: androidConfigured
-          ? undefined
-          : "Enable android in cbx_config.json only if you explicitly need the older Android MCP compatibility path.",
-      });
-      trace.gates.push({
-        name: "android_enabled_tools",
-        passed: Boolean(androidTools.available),
-        detail: androidTools.available
-          ? `Enabled tools: ${androidTools.enabledCount}`
-          : String(androidTools.lastError || "Android upstream unavailable."),
-        action: androidTools.available
-          ? undefined
-          : "Legacy Android MCP tools are unavailable; the run will continue on the default CLI-first ADB path.",
-      });
-    }
 
     if (!existsSync(path.resolve(args.charterPath))) {
       const blockedResult = {
@@ -206,9 +160,6 @@ export function createMobileTestingRunHandler(ctx: ToolRuntimeContext) {
       "--scope",
       scope,
     ];
-    if (androidMcpOptIn) {
-      commandArgs.push("--android-mcp");
-    }
     if (args.apkPath) {
       commandArgs.push("--apk", path.resolve(args.apkPath));
     }

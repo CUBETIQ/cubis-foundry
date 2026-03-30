@@ -191,7 +191,6 @@ const PLAYWRIGHT_MCP_SERVER_ID = "PlaywrightMCP";
 const PLAYWRIGHT_DEFAULT_PORT = 8931;
 const PLAYWRIGHT_MCP_URL = `http://localhost:${PLAYWRIGHT_DEFAULT_PORT}/mcp`;
 const ANDROID_MCP_SERVER_ID = "android";
-const ANDROID_MCP_PACKAGE_SPEC = "android-mcp-server@1.3.0";
 const POSTMAN_WORKSPACE_MANUAL_CHOICE = "__postman_workspace_manual__";
 const CBX_CONFIG_FILENAME = "cbx_config.json";
 const CBX_CREDENTIALS_ENV_FILENAME = "credentials.env";
@@ -5401,19 +5400,6 @@ function buildVsCodePlaywrightServer({ mcpUrl = PLAYWRIGHT_MCP_URL } = {}) {
   };
 }
 
-function buildAndroidMcpCommandArgs() {
-  return ["-y", ANDROID_MCP_PACKAGE_SPEC];
-}
-
-function buildVsCodeAndroidServer() {
-  return {
-    type: "stdio",
-    command: "npx",
-    args: buildAndroidMcpCommandArgs(),
-    env: {},
-  };
-}
-
 function buildCopilotCliPlaywrightServer({ mcpUrl = PLAYWRIGHT_MCP_URL } = {}) {
   return {
     type: "http",
@@ -5423,28 +5409,10 @@ function buildCopilotCliPlaywrightServer({ mcpUrl = PLAYWRIGHT_MCP_URL } = {}) {
   };
 }
 
-function buildCopilotCliAndroidServer() {
-  return {
-    type: "stdio",
-    command: "npx",
-    args: buildAndroidMcpCommandArgs(),
-    env: {},
-    tools: ["*"],
-  };
-}
-
 function buildGeminiPlaywrightServer({ mcpUrl = PLAYWRIGHT_MCP_URL } = {}) {
   return {
     httpUrl: mcpUrl,
     headers: {},
-  };
-}
-
-function buildGeminiAndroidServer() {
-  return {
-    command: "npx",
-    args: buildAndroidMcpCommandArgs(),
-    env: {},
   };
 }
 
@@ -5936,7 +5904,6 @@ async function applyPostmanMcpForPlatform({
   includeStitchMcp = false,
   includeFoundryMcp = true,
   includePlaywrightMcp = false,
-  includeAndroidMcp = false,
   foundryRuntime = "local",
   dryRun = false,
   cwd = process.cwd(),
@@ -5948,6 +5915,7 @@ async function applyPostmanMcpForPlatform({
   const cleanupLegacyServers = (servers) => {
     delete servers[POSTMAN_SKILL_ID];
     delete servers[STITCH_MCP_SERVER_ID];
+    delete servers[ANDROID_MCP_SERVER_ID];
     return servers;
   };
   let foundryDockerPort = DEFAULT_MCP_DOCKER_HOST_PORT;
@@ -5965,12 +5933,6 @@ async function applyPostmanMcpForPlatform({
       );
     }
   }
-  if (includeAndroidMcp) {
-    warnings.push(
-      `Android MCP is a legacy optional integration and uses '${ANDROID_MCP_PACKAGE_SPEC}' over stdio. The preferred semantic mobile runtime is mobile-mcp through the bundled Foundry MCP server, while Android/iOS CLI tooling remains the deterministic fallback. Install Android SDK platform-tools and set ANDROID_HOME only when you still need the legacy Android MCP wiring and SDK auto-discovery is unavailable.`,
-    );
-  }
-
   if (platform === "antigravity" || platform === "gemini") {
     const settingsPath =
       mcpScope === "global"
@@ -5998,9 +5960,6 @@ async function applyPostmanMcpForPlatform({
         }
         if (includePlaywrightMcp) {
           mcpServers[PLAYWRIGHT_MCP_SERVER_ID] = buildGeminiPlaywrightServer();
-        }
-        if (includeAndroidMcp) {
-          mcpServers[ANDROID_MCP_SERVER_ID] = buildGeminiAndroidServer();
         }
         next.mcpServers = mcpServers;
         return next;
@@ -6046,9 +6005,6 @@ async function applyPostmanMcpForPlatform({
           mcpServers[PLAYWRIGHT_MCP_SERVER_ID] =
             buildCopilotCliPlaywrightServer();
         }
-        if (includeAndroidMcp) {
-          mcpServers[ANDROID_MCP_SERVER_ID] = buildCopilotCliAndroidServer();
-        }
         next.mcpServers = mcpServers;
         return next;
       }
@@ -6071,9 +6027,6 @@ async function applyPostmanMcpForPlatform({
         }
         if (includePlaywrightMcp) {
           servers[PLAYWRIGHT_MCP_SERVER_ID] = buildVsCodePlaywrightServer();
-        }
-        if (includeAndroidMcp) {
-          servers[ANDROID_MCP_SERVER_ID] = buildVsCodeAndroidServer();
         }
         next.servers = servers;
         return next;
@@ -6122,9 +6075,6 @@ async function applyPostmanMcpForPlatform({
           }
           if (includePlaywrightMcp) {
             servers[PLAYWRIGHT_MCP_SERVER_ID] = buildVsCodePlaywrightServer();
-          }
-          if (includeAndroidMcp) {
-            servers[ANDROID_MCP_SERVER_ID] = buildVsCodeAndroidServer();
           }
           next.servers = servers;
           return next;
@@ -6230,27 +6180,6 @@ async function applyPostmanMcpForPlatform({
         );
       }
     }
-    if (includeAndroidMcp) {
-      try {
-        await execFile(
-          "codex",
-          [
-            "mcp",
-            "add",
-            ANDROID_MCP_SERVER_ID,
-            "--",
-            "npx",
-            ...buildAndroidMcpCommandArgs(),
-          ],
-          { cwd },
-        );
-      } catch (error) {
-        warnings.push(
-          `Failed to register ${ANDROID_MCP_SERVER_ID} MCP via Codex CLI. Ensure 'codex', 'npx', and Android SDK platform-tools are installed and rerun. (${error.message})`,
-        );
-      }
-    }
-
     return {
       kind: "codex-cli",
       scope: mcpScope,
@@ -6296,13 +6225,6 @@ async function applyPostmanMcpForPlatform({
           mcpServers[PLAYWRIGHT_MCP_SERVER_ID] = {
             type: "url",
             url: PLAYWRIGHT_MCP_URL,
-          };
-        }
-        if (includeAndroidMcp) {
-          mcpServers[ANDROID_MCP_SERVER_ID] = {
-            type: "stdio",
-            command: "npx",
-            args: buildAndroidMcpCommandArgs(),
           };
         }
         next.mcpServers = mcpServers;
@@ -6374,7 +6296,6 @@ async function resolvePostmanInstallSelection({
 
   const stitchRequested = Boolean(options.stitch);
   const playwrightRequested = Boolean(options.playwright);
-  const androidRequested = Boolean(options.android);
   const postmanRequested =
     Boolean(options.postman) ||
     hasWorkspaceOption ||
@@ -6395,7 +6316,6 @@ async function resolvePostmanInstallSelection({
     postmanRequested ||
     stitchRequested ||
     playwrightRequested ||
-    androidRequested ||
     foundryOnlyRequested;
   if (!enabled) return { enabled: false };
   const requestedPostmanMode = postmanRequested
@@ -6551,9 +6471,7 @@ async function resolvePostmanInstallSelection({
           ? FOUNDRY_MCP_SERVER_ID
           : playwrightRequested
             ? PLAYWRIGHT_MCP_SERVER_ID
-            : androidRequested
-              ? ANDROID_MCP_SERVER_ID
-              : FOUNDRY_MCP_SERVER_ID,
+            : FOUNDRY_MCP_SERVER_ID,
       platform,
       runtime: requestedRuntime,
       fallback: requestedFallback,
@@ -6603,25 +6521,12 @@ async function resolvePostmanInstallSelection({
       mcpUrl: PLAYWRIGHT_MCP_URL,
     };
   }
-  if (androidRequested) {
-    cbxConfig.android = {
-      enabled: true,
-      server: ANDROID_MCP_SERVER_ID,
-      package: ANDROID_MCP_PACKAGE_SPEC,
-      transport: "stdio",
-    };
-    warnings.push(
-      "Android MCP is a legacy optional integration via the external android-mcp-server package. The preferred semantic mobile runtime is mobile-mcp through the bundled Foundry MCP server, while Android/iOS CLI tooling remains the deterministic fallback. Set up Android SDK platform-tools and ANDROID_HOME only when you still need the legacy Android MCP wiring and auto-discovery is unavailable.",
-    );
-  }
-
   return {
     enabled: true,
     postmanEnabled: postmanRequested,
     apiKeySource,
     stitchEnabled,
     playwrightEnabled: playwrightRequested,
-    androidEnabled: androidRequested,
     stitchApiKeySource,
     mcpRuntime: requestedRuntime,
     effectiveMcpRuntime: runtimeSkipped ? null : effectiveRuntime,
@@ -6867,7 +6772,6 @@ async function configurePostmanInstallArtifacts({
         includeStitchMcp: shouldInstallStitch,
         includeFoundryMcp: postmanSelection.foundryMcpEnabled,
         includePlaywrightMcp: postmanSelection.playwrightEnabled ?? false,
-        includeAndroidMcp: postmanSelection.androidEnabled ?? false,
         foundryRuntime: postmanSelection.effectiveMcpRuntime || "local",
         dryRun,
         cwd,
@@ -6951,7 +6855,6 @@ async function configurePostmanInstallArtifacts({
     foundryMcpEnabled: postmanSelection.foundryMcpEnabled,
     postmanEnabled: shouldInstallPostman,
     playwrightEnabled: Boolean(postmanSelection.playwrightEnabled),
-    androidEnabled: Boolean(postmanSelection.androidEnabled),
     postmanMode:
       shouldInstallPostman && effectiveMcpUrl
         ? resolvePostmanModeFromUrl(
@@ -6962,9 +6865,6 @@ async function configurePostmanInstallArtifacts({
     postmanMcpUrl: shouldInstallPostman ? effectiveMcpUrl : null,
     playwrightMcpUrl: postmanSelection.playwrightEnabled
       ? PLAYWRIGHT_MCP_URL
-      : null,
-    androidMcpPackage: postmanSelection.androidEnabled
-      ? ANDROID_MCP_PACKAGE_SPEC
       : null,
     apiKeySource: effectiveApiKeySource,
     stitchApiKeySource: effectiveStitchApiKeySource,
@@ -7030,13 +6930,6 @@ async function applyPostmanConfigArtifacts({
   const playwrightMcpUrl =
     String(playwrightConfig?.mcpUrl || PLAYWRIGHT_MCP_URL).trim() ||
     PLAYWRIGHT_MCP_URL;
-  const androidConfig =
-    configValue?.android &&
-    typeof configValue.android === "object" &&
-    !Array.isArray(configValue.android)
-      ? configValue.android
-      : null;
-  const androidEnabled = Boolean(androidConfig?.enabled ?? configValue?.android);
   const stitchApiKeyEnvVar =
     normalizePostmanApiKey(stitchState?.apiKeyEnvVar) || STITCH_API_KEY_ENV_VAR;
   const stitchMcpUrl = stitchState?.mcpUrl || STITCH_MCP_URL;
@@ -7088,7 +6981,6 @@ async function applyPostmanConfigArtifacts({
       includeStitchMcp: stitchEnabled,
       includeFoundryMcp: true,
       includePlaywrightMcp: playwrightEnabled ?? false,
-      includeAndroidMcp: androidEnabled ?? false,
       foundryRuntime,
       dryRun,
       cwd,
@@ -7099,7 +6991,6 @@ async function applyPostmanConfigArtifacts({
   return {
     postmanEnabled,
     playwrightEnabled,
-    androidEnabled,
     playwrightMcpUrl: playwrightEnabled ? playwrightMcpUrl : null,
     legacyDefinitionCleanupResults,
     mcpRuntimeResult,
@@ -8123,11 +8014,6 @@ function printPostmanSetupSummary({ postmanSetup }) {
       `- Playwright MCP (canonical browser-testing runtime): enabled (${postmanSetup.playwrightMcpUrl || PLAYWRIGHT_MCP_URL})`,
     );
   }
-  if (postmanSetup.androidEnabled) {
-    console.log(
-      `- Android MCP integration (optional): enabled (${postmanSetup.androidMcpPackage || ANDROID_MCP_PACKAGE_SPEC})`,
-    );
-  }
   if (postmanSetup.postmanEnabled && postmanSetup.postmanMode) {
     console.log(`- Postman mode: ${postmanSetup.postmanMode}`);
   }
@@ -8298,10 +8184,6 @@ function withInstallOptions(command) {
     )
     .option("--playwright", "optional: include Playwright MCP browser-testing wiring (canonical browser-testing runtime)")
     .option(
-      "--android",
-      `optional: include legacy Android MCP wiring via ${ANDROID_MCP_PACKAGE_SPEC} (preferred semantic mobile runtime is mobile-mcp; CLI tooling remains the fallback)`,
-    )
-    .option(
       "--postman-api-key <key>",
       "deprecated: inline key mode is disabled. Use env vars + profiles.",
     )
@@ -8315,8 +8197,8 @@ function withInstallOptions(command) {
     )
     .option(
       "--mcp-scope <scope>",
-      "optional: MCP config scope for --postman/--stitch/--android (workspace/project only; global is coerced to project)",
-    )
+      "optional: MCP config scope for --postman/--stitch (workspace/project only; global is coerced to project)",
+      )
     .option(
       "--mcp-runtime <runtime>",
       "MCP runtime: docker|local",
@@ -13978,13 +13860,7 @@ function normalizeInitPlatforms(value) {
 }
 
 function normalizeInitMcpSelections(value) {
-  const allowed = new Set([
-    "cubis-foundry",
-    "postman",
-    "stitch",
-    "playwright",
-    "android",
-  ]);
+  const allowed = new Set(["cubis-foundry", "postman", "stitch", "playwright"]);
   const items = Array.isArray(value) ? value : parseCsvOption(value);
   const normalized = [];
   for (const item of items) {
@@ -14073,7 +13949,7 @@ async function runInitWizard(options) {
         ? normalizePostmanWorkspaceId(options.postmanWorkspaceId)
         : null;
     const defaultMcpSelections = normalizeInitMcpSelections(options.mcps);
-    // Mobile stacks default to CLI-first testing; Android MCP stays opt-in.
+    // Mobile stacks default to CLI-first testing with mobile-mcp as the semantic companion.
     const defaultPlatforms = normalizeInitPlatforms(options.platforms);
     const defaultMcpRuntime = normalizeMcpRuntime(
       options.mcpRuntime,

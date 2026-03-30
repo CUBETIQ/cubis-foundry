@@ -770,7 +770,7 @@ describe("skill tools", () => {
       await handleRouteResolve(
         {
           intent:
-            "design a flutter fashion ecommerce app with Stitch and Android MCP",
+            "design a flutter fashion ecommerce app with Stitch and mobile-mcp",
         },
         createStitchRouteManifest(),
       ),

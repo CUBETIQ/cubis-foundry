@@ -13,7 +13,6 @@ afterEach(() => {
   vi.resetModules();
   vi.restoreAllMocks();
   vi.unmock("node:child_process");
-  vi.unmock("../cbxConfig/index.js");
 });
 
 async function runDryRunner(args: string[]) {
@@ -70,7 +69,7 @@ describe("mobile testing runner", () => {
       const error = new Error("runner failed") as Error & { stdout?: string };
       error.stdout = JSON.stringify({
         status: "failed",
-        providerPreference: "android-mcp",
+        providerPreference: "adb",
         providerUsed: "adb",
         artifacts: {},
         reportPath: path.join(workdir, "report.json"),
@@ -79,26 +78,23 @@ describe("mobile testing runner", () => {
     });
 
     vi.doMock("node:child_process", () => ({ execFile: mockExecFile }));
-    vi.doMock("../cbxConfig/index.js", () => ({
-      readEffectiveConfig: () => ({ config: { android: { enabled: true } } }),
-    }));
 
     const { createMobileTestingRunHandler } = await import("./mobileTestingRun.js");
     const handler = createMobileTestingRunHandler({
       gatewayManager: {
         getStatus: () => ({
-          providers: { android: { lastError: null } },
+          providers: { mobile: { lastError: null } },
         }),
         listEnabledTools: () => ({
           available: true,
-          enabledCount: 1,
+          enabledCount: 4,
           lastError: null,
         }),
       },
     } as never);
 
     try {
-      const result = await handler({ charterPath, androidMcp: true });
+      const result = await handler({ charterPath });
       const data = JSON.parse(result.content[0].text) as Record<string, unknown>;
       expect(data.providerUsed).toBe("adb");
     } finally {
@@ -111,7 +107,7 @@ describe("mobile testing runner", () => {
     const handler = createMobileTestingRunHandler({
       gatewayManager: {
         getStatus: () => ({
-          providers: { android: { lastError: null } },
+          providers: { mobile: { lastError: null } },
         }),
         listEnabledTools: () => ({
           available: false,
@@ -129,22 +125,22 @@ describe("mobile testing runner", () => {
     );
   });
 
-  it("labels the Android MCP branch as legacy compatibility in trace guidance", async () => {
+  it("records mobile-mcp availability in trace guidance", async () => {
     const { createMobileTestingRunHandler } = await import("./mobileTestingRun.js");
     const handler = createMobileTestingRunHandler({
       gatewayManager: {
         getStatus: () => ({
-          providers: { android: { lastError: null } },
+          providers: { mobile: { lastError: null } },
         }),
         listEnabledTools: () => ({
           available: true,
-          enabledCount: 1,
+          enabledCount: 4,
           lastError: null,
         }),
       },
     } as never);
 
-    const result = await handler({ charterPath: "/tmp/missing-charter.yml", androidMcp: true });
+    const result = await handler({ charterPath: "/tmp/missing-charter.yml" });
     const data = JSON.parse(result.content[0].text) as Record<string, unknown>;
     const tracePath = data.tracePath as string;
     const traceText = await readFile(tracePath, "utf8");
@@ -155,8 +151,8 @@ describe("mobile testing runner", () => {
     expect(trace.gates).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          name: "android_mcp_opt_in",
-          detail: "Legacy Android MCP opt-in is enabled for this run.",
+          name: "mobile_mcp_available",
+          detail: "mobile-mcp available with 4 enabled tool(s).",
         }),
       ]),
     );

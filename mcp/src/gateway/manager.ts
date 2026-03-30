@@ -37,8 +37,7 @@ interface ProviderRuntime {
 function emptyProviderState(provider: UpstreamProvider): UpstreamState {
   return {
     provider,
-    transport:
-      provider === "android" || provider === "mobile" ? "stdio" : "http",
+    transport: provider === "mobile" ? "stdio" : "http",
     mcpUrl: null,
     authEnvVar: null,
     authConfigured: false,
@@ -118,16 +117,6 @@ export class GatewayManager {
         env: {},
         cwd: null,
       },
-      android: {
-        transport: "stdio",
-        mcpUrl: null,
-        headers: {},
-        authEnvVar: null,
-        command: null,
-        args: [],
-        env: {},
-        cwd: null,
-      },
       mobile: {
         transport: "stdio",
         mcpUrl: null,
@@ -143,7 +132,6 @@ export class GatewayManager {
     postman: emptyProviderState("postman"),
     stitch: emptyProviderState("stitch"),
     playwright: emptyProviderState("playwright"),
-    android: emptyProviderState("android"),
     mobile: emptyProviderState("mobile"),
   };
 
@@ -166,7 +154,6 @@ export class GatewayManager {
       this.syncProvider("postman", resolved.providers.postman),
       this.syncProvider("stitch", resolved.providers.stitch),
       this.syncProvider("playwright", resolved.providers.playwright),
-      this.syncProvider("android", resolved.providers.android),
       this.syncProvider("mobile", resolved.providers.mobile),
     ]);
   }
@@ -185,7 +172,6 @@ export class GatewayManager {
         postman: this.providerState.postman,
         stitch: this.providerState.stitch,
         playwright: this.providerState.playwright,
-        android: this.providerState.android,
         mobile: this.providerState.mobile,
       },
     };

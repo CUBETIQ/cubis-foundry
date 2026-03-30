@@ -2,7 +2,7 @@
  * Cubis Foundry MCP Server – server factory.
  *
  * Creates and configures the McpServer instance with built-in tools
- * (via declarative registry) plus dynamic Postman/Stitch/Playwright/Android/Mobile passthrough namespaces.
+ * (via declarative registry) plus dynamic Postman/Stitch/Playwright/Mobile passthrough namespaces.
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -32,7 +32,7 @@ function toolCallErrorResult({
   namespacedName,
   error,
 }: {
-  service: "postman" | "stitch" | "playwright" | "android" | "mobile";
+  service: "postman" | "stitch" | "playwright" | "mobile";
   namespacedName: string;
   error: unknown;
 }) {
@@ -110,7 +110,6 @@ export async function createServer({
     upstreamCatalogs.postman,
     upstreamCatalogs.stitch,
     upstreamCatalogs.playwright,
-    upstreamCatalogs.android,
     upstreamCatalogs.mobile,
   ]) {
     for (const tool of catalog.tools) {

@@ -103,7 +103,7 @@ export function registerCommands(deps: CliRegistrationDeps) {
     )
     .option(
       "--mcps <items>",
-      "comma-separated MCP selections: cubis-foundry,postman,stitch,playwright,android",
+      "comma-separated MCP selections: cubis-foundry,postman,stitch,playwright",
     )
     .option("--postman-mode <mode>", "Postman mode: full|minimal")
     .option(

@@ -107,19 +107,6 @@ function createTestContext(): ToolRuntimeContext {
             syncedAt: null,
             tools: [],
           },
-          android: {
-            provider: "android",
-            transport: "stdio",
-            mcpUrl: null,
-            authEnvVar: null,
-            authConfigured: false,
-            command: null,
-            available: false,
-            warnings: [],
-            lastError: null,
-            syncedAt: null,
-            tools: [],
-          },
           mobile: {
             provider: "mobile",
             transport: "stdio",
@@ -138,7 +125,7 @@ function createTestContext(): ToolRuntimeContext {
       listEnabledTools: (provider) => ({
         provider,
         transport:
-          provider === "android" || provider === "mobile" ? "stdio" : "http",
+          provider === "mobile" ? "stdio" : "http",
         available: false,
         enabledCount: 0,
         enabledTools: [],
@@ -286,7 +273,6 @@ describe("tool registry", () => {
     }
   });
 });
-
 
 
 

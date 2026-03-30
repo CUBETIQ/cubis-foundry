@@ -101,11 +101,6 @@ export async function promptInitMcpSelection(defaultMcps: InitMcpId[]) {
         value: "playwright",
         checked: defaultMcps.includes("playwright"),
       },
-      {
-        name: "Android MCP (optional integration, android-mcp-server)",
-        value: "android",
-        checked: defaultMcps.includes("android"),
-      },
     ],
   });
 }
