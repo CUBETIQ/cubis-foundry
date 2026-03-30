@@ -8610,7 +8610,7 @@ async function cleanupAntigravityTerminalIntegration({
   };
 }
 
-async function performWorkflowInstall(
+export async function performWorkflowInstall(
   options,
   { postmanSelectionOverride = null } = {},
 ) {
