@@ -35,9 +35,9 @@ This server exposes built-in tools plus dynamic passthrough tools discovered fro
 
 The MCP layer now uses a **route-first, lazy content model**: workflow/custom-agent intent resolves through `route_resolve` first, exact skill selection is validated via `skill_validate`, `skill_get` loads the core `SKILL.md`, and sidecar markdown is loaded only when needed via `skill_get_reference`.
 
-Web QA is intentionally anchored on the canonical `web-testing` skill and Playwright MCP. Browser-specialist aliases are no longer part of the public surface, so route resolution and skill loading should point at `web-testing` directly.
+Web testing is intentionally anchored on the canonical `web-testing` skill and Playwright MCP. Browser-specialist aliases are no longer part of the public surface, so route resolution and skill loading should point at `web-testing` directly.
 
-Mobile QA is intentionally dual-path. `mobile-mcp` is the preferred semantic runtime for Android and iOS when you need richer inspection, element-level interaction, or agentic navigation. CLI-first Android/iOS tooling remains the fallback for deterministic evidence capture, recovery flows, and environments where the heavier upstream stack is unavailable.
+Mobile testing is intentionally dual-path. `mobile-mcp` is the preferred semantic runtime for Android and iOS when you need richer inspection, element-level interaction, or agentic navigation. CLI-first Android/iOS tooling remains the fallback for deterministic evidence capture, recovery flows, and environments where the heavier upstream stack is unavailable.
 
 iOS setup is expected to be heavier than browser or Android automation because Simulator semantics still depend on native Apple tooling and WebDriverAgent-class setup. Treat that path as deliberate infrastructure, not zero-config automation.
 

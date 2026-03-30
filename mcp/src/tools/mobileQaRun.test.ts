@@ -42,6 +42,15 @@ async function runDryRunner(args: string[]) {
 }
 
 describe("mobile QA runner", () => {
+  it("describes the MCP tool as a compatibility entrypoint for canonical mobile testing", async () => {
+    const { mobileQaRunDescription } = await import("./mobileQaRun.js");
+
+    expect(mobileQaRunDescription).toMatch(/compatibility/i);
+    expect(mobileQaRunDescription).toContain("android-emulator-testing");
+    expect(mobileQaRunDescription).toContain("ios-simulator-testing");
+    expect(mobileQaRunDescription).toContain("mobile-mcp");
+  });
+
   it("defaults to adb/CLI-first provider selection in dry-run mode", async () => {
     const result = await runDryRunner([]);
 
@@ -96,5 +105,28 @@ describe("mobile QA runner", () => {
     } finally {
       await rm(workdir, { recursive: true, force: true });
     }
+  });
+
+  it("makes compatibility rerun guidance explicit when the charter is missing", async () => {
+    const { createMobileQaRunHandler } = await import("./mobileQaRun.js");
+    const handler = createMobileQaRunHandler({
+      gatewayManager: {
+        getStatus: () => ({
+          providers: { android: { lastError: null } },
+        }),
+        listEnabledTools: () => ({
+          available: false,
+          enabledCount: 0,
+          lastError: null,
+        }),
+      },
+    } as never);
+
+    const result = await handler({ charterPath: "/tmp/missing-charter.yml" });
+    const data = JSON.parse(result.content[0].text) as Record<string, unknown>;
+
+    expect(data.nextSuggestedAction).toBe(
+      "Create the mobile testing charter file first, then rerun the compatibility tool `mobile_qa_run`.",
+    );
   });
 });

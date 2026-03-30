@@ -91,7 +91,7 @@ export function registerCommands(deps: CliRegistrationDeps) {
     )
     .option(
       "--skill-profile <profile>",
-      "skills profile: core|web-backend|mobile-qa|full",
+      "skills profile: core|web-backend|mobile-qa (legacy mobile-testing id)|full",
     )
     .option(
       "--skills-scope <scope>",
@@ -369,4 +369,3 @@ export function registerCommands(deps: CliRegistrationDeps) {
 
   return program;
 }
-

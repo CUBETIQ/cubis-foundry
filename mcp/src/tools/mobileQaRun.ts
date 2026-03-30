@@ -16,10 +16,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const mobileQaRunName = "mobile_qa_run";
 
 export const mobileQaRunDescription =
-  "Run the mobile QA charter runtime with CLI-first ADB execution by default, optional Android MCP opt-in, and persisted execution traces.";
+  "Compatibility tool for charter-driven mobile testing across android-emulator-testing, ios-simulator-testing, and mobile-mcp, with CLI-first ADB execution by default and persisted execution traces.";
 
 export const mobileQaRunSchema = z.object({
-  charterPath: z.string().min(1).describe("Path to the YAML charter file."),
+  charterPath: z
+    .string()
+    .min(1)
+    .describe("Path to the YAML mobile testing charter file."),
   apkPath: z
     .string()
     .optional()
@@ -29,12 +32,14 @@ export const mobileQaRunSchema = z.object({
   artifactsDir: z
     .string()
     .optional()
-    .describe("Artifacts directory. Default: artifacts/mobile-qa"),
+    .describe(
+      "Artifacts directory. Default: artifacts/mobile-qa (legacy compatibility path).",
+    ),
   scope: z.enum(["auto", "global", "project"]).optional(),
   androidMcp: z
     .boolean()
     .optional()
-    .describe("Opt in to Android MCP-assisted execution."),
+    .describe("Opt in to Android MCP-assisted mobile testing execution."),
   dryRun: z.boolean().optional(),
 });
 
@@ -135,7 +140,7 @@ export function createMobileQaRunHandler(ctx: ToolRuntimeContext) {
       detail: args.charterPath,
       action: existsSync(path.resolve(args.charterPath))
         ? undefined
-        : "Create the QA charter YAML file and rerun mobile_qa_run.",
+        : "Create the mobile testing charter YAML file and rerun the compatibility tool `mobile_qa_run`.",
     });
     trace.gates.push({
       name: "android_mcp_opt_in",
@@ -180,7 +185,8 @@ export function createMobileQaRunHandler(ctx: ToolRuntimeContext) {
         status: "blocked",
         providerPreference,
         providerUsed: null,
-        nextSuggestedAction: "Create the QA charter file first.",
+        nextSuggestedAction:
+          "Create the mobile testing charter file first, then rerun the compatibility tool `mobile_qa_run`.",
       };
       const tracePath = await persistExecutionTrace(
         finishExecutionTrace(trace, blockedResult),

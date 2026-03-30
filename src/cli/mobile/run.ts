@@ -20,7 +20,7 @@ export async function runMobileQa(options: AnyOptions) {
     const runnerPath = resolveMobileQaRunnerPath();
     if (!existsSync(runnerPath)) {
       throw new Error(
-        `Mobile QA runner not found at ${runnerPath}. Reinstall or rebuild the package so mcp/runtime assets are present.`,
+        `Mobile testing compatibility runner not found at ${runnerPath}. Reinstall or rebuild the package so mcp/runtime assets are present.`,
       );
     }
 
@@ -59,11 +59,19 @@ export async function runMobileQa(options: AnyOptions) {
       child.once("error", reject);
       child.once("exit", (code, signal) => {
         if (signal) {
-          reject(new Error(`Mobile QA runner terminated by signal ${signal}.`));
+          reject(
+            new Error(
+              `Mobile testing compatibility runner terminated by signal ${signal}.`,
+            ),
+          );
           return;
         }
         if (code && code !== 0) {
-          reject(new Error(`Mobile QA runner exited with status ${code}.`));
+          reject(
+            new Error(
+              `Mobile testing compatibility runner exited with status ${code}.`,
+            ),
+          );
           return;
         }
         resolve(null);

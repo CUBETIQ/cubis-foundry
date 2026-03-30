@@ -11,6 +11,14 @@ afterEach(() => {
 });
 
 describe("web QA run", () => {
+  it("describes the MCP tool as a compatibility entrypoint for canonical web testing", async () => {
+    const { webQaRunDescription } = await import("./webQaRun.js");
+
+    expect(webQaRunDescription).toMatch(/compatibility/i);
+    expect(webQaRunDescription).toContain("web-testing");
+    expect(webQaRunDescription).toContain("Playwright MCP");
+  });
+
   it("keeps the trace pinned to web-testing and its canonical reference", async () => {
     const workingDir = await mkdtemp(path.join(tmpdir(), "foundry-web-qa-"));
     const charterPath = path.join(workingDir, "charter.yml");
@@ -106,6 +114,56 @@ describe("web QA run", () => {
       ]);
       expect(capturedTrace?.selectedSkills).not.toContain("playwright-interactive");
       expect(capturedTrace?.selectedReferences).not.toContain("playwright-interactive");
+    } finally {
+      await rm(workingDir, { recursive: true, force: true });
+    }
+  });
+
+  it("makes compatibility rerun guidance explicit when Playwright is unavailable", async () => {
+    const workingDir = await mkdtemp(path.join(tmpdir(), "foundry-web-qa-blocked-"));
+    const charterPath = path.join(workingDir, "charter.yml");
+    await writeFile(
+      charterPath,
+      ["flow: smoke", "steps:", "  - action: click"].join("\n"),
+      "utf8",
+    );
+
+    const { createWebQaRunHandler } = await import("./webQaRun.js");
+    const handler = createWebQaRunHandler({
+      gatewayManager: {
+        getStatus: () => ({
+          providers: {
+            playwright: {
+              lastError: "offline",
+            },
+          },
+        }),
+        listEnabledTools: () => ({
+          available: false,
+          enabledCount: 0,
+          enabledTools: [],
+          upstreamTools: [],
+          warnings: [],
+          lastError: "offline",
+          syncedAt: null,
+          mcpUrl: null,
+          command: null,
+          authEnvVar: null,
+          authConfigured: false,
+          catalogDir: workingDir,
+          provider: "playwright",
+          transport: "http",
+        }),
+      },
+    } as never);
+
+    try {
+      const response = await handler({ charterPath, scope: "auto" });
+      const payload = JSON.parse(response.content[0].text) as Record<string, unknown>;
+
+      expect(payload.nextSuggestedAction).toBe(
+        "Start the Playwright MCP server and rerun the compatibility tool `web_qa_run`.",
+      );
     } finally {
       await rm(workingDir, { recursive: true, force: true });
     }

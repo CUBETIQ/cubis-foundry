@@ -71,4 +71,14 @@ describe("registerCommands()", () => {
     expect(sync?.helpInformation()).toContain("postman|stitch|mobile|all");
     expect(list?.helpInformation()).toContain("postman|stitch|mobile");
   });
+
+  it("labels the mobile skill profile as a legacy compatibility id in init help", () => {
+    const program = registerCommands(makeDeps());
+    const init = program.commands.find((command) => command.name() === "init");
+    const help = init?.helpInformation() ?? "";
+
+    expect(help).toContain("--skill-profile <profile>");
+    expect(help).toContain("skills profile: core|web-backend|mobile-qa");
+    expect(help).toContain("(legacy mobile-testing id)|full");
+  });
 });

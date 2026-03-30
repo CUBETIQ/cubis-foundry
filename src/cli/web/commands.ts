@@ -8,19 +8,23 @@ export interface WebCommandDeps {
 export function registerWebCommands(program: Command, deps: WebCommandDeps) {
   const webCommand = program
     .command("web")
-    .description("Run first-class web QA workflows and validation helpers");
+    .description(
+      "Run canonical web testing flows and compatibility helpers",
+    );
 
   const qaCommand = webCommand
     .command("qa")
-    .description("Run deterministic Playwright QA flows");
+    .description(
+      "Compatibility command for charter-driven web testing on web-testing + Playwright MCP",
+    );
 
   qaCommand
     .command("run")
-    .description("Execute a charter-driven web QA run")
-    .requiredOption("--charter <path>", "path to the web QA YAML charter")
+    .description("Execute a charter-driven web testing run")
+    .requiredOption("--charter <path>", "path to the web testing YAML charter")
     .option(
       "--artifacts-dir <path>",
-      "artifact root directory",
+      "artifact root directory (default: artifacts/web-qa legacy compatibility path)",
       "artifacts/web-qa",
     )
     .option("--scope <scope>", "auto|global|project", "auto")

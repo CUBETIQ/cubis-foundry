@@ -2,11 +2,18 @@ import type {
   InitExecutionPlan,
   InitExecutionPlanItem,
   InitMcpId,
+  InitSkillProfile,
   InitWizardSelections,
 } from "./types.js";
 
 function hasMcpSelection(selectedMcps: InitMcpId[], mcpId: InitMcpId) {
   return selectedMcps.includes(mcpId);
+}
+
+function describeInitSkillProfile(profile: InitSkillProfile) {
+  return profile === "mobile-qa"
+    ? "mobile-testing (legacy id: mobile-qa)"
+    : profile;
 }
 
 export function buildInitExecutionPlan({
@@ -91,7 +98,7 @@ export function formatInitSummary(selections: InitWizardSelections) {
     "Init plan summary:",
     `- Bundle: ${selections.bundleId}`,
     `- Platforms: ${selections.platforms.join(", ")}`,
-    `- Skill profile: ${selections.skillProfile}`,
+    `- Skill profile: ${describeInitSkillProfile(selections.skillProfile)}`,
     `- Skills scope: ${selections.skillsScope}`,
     `- MCP scope: ${selections.mcpScope}`,
     `- MCP runtime: ${selections.mcpRuntime}${selections.mcpRuntime === "docker" ? (selections.mcpBuildLocal ? " (build local image)" : " (pull image)") : ""}`,

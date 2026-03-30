@@ -20,7 +20,7 @@ export async function runWebQa(options: AnyOptions) {
     const runnerPath = resolveWebQaRunnerPath();
     if (!existsSync(runnerPath)) {
       throw new Error(
-        `Web QA runner not found at ${runnerPath}. Reinstall or rebuild the package so mcp/runtime assets are present.`,
+        `Web testing compatibility runner not found at ${runnerPath}. Reinstall or rebuild the package so mcp/runtime assets are present.`,
       );
     }
 
@@ -47,11 +47,19 @@ export async function runWebQa(options: AnyOptions) {
       child.once("error", reject);
       child.once("exit", (code, signal) => {
         if (signal) {
-          reject(new Error(`Web QA runner terminated by signal ${signal}.`));
+          reject(
+            new Error(
+              `Web testing compatibility runner terminated by signal ${signal}.`,
+            ),
+          );
           return;
         }
         if (code && code !== 0) {
-          reject(new Error(`Web QA runner exited with status ${code}.`));
+          reject(
+            new Error(
+              `Web testing compatibility runner exited with status ${code}.`,
+            ),
+          );
           return;
         }
         resolve(null);

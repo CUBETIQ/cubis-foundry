@@ -17,14 +17,19 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const webQaRunName = "web_qa_run";
 
 export const webQaRunDescription =
-  "Run the web QA charter runtime with Playwright MCP execution, deterministic artifacts, and persisted execution traces.";
+  "Compatibility tool for charter-driven web testing on the canonical web-testing + Playwright MCP runtime, with deterministic artifacts and persisted execution traces.";
 
 export const webQaRunSchema = z.object({
-  charterPath: z.string().min(1).describe("Path to the YAML charter file."),
+  charterPath: z
+    .string()
+    .min(1)
+    .describe("Path to the YAML web testing charter file."),
   artifactsDir: z
     .string()
     .optional()
-    .describe("Artifacts directory. Default: artifacts/web-qa"),
+    .describe(
+      "Artifacts directory. Default: artifacts/web-qa (legacy compatibility path).",
+    ),
   scope: z.enum(["auto", "global", "project"]).optional(),
   dryRun: z.boolean().optional(),
 });
@@ -67,7 +72,7 @@ export function createWebQaRunHandler(_ctx: ToolRuntimeContext) {
       detail: args.charterPath,
       action: existsSync(path.resolve(args.charterPath))
         ? undefined
-        : "Create the QA charter YAML file and rerun web_qa_run.",
+        : "Create the web testing charter YAML file and rerun the compatibility tool `web_qa_run`.",
     });
     trace.gates.push({
       name: "gateway_initialized",
@@ -91,8 +96,8 @@ export function createWebQaRunHandler(_ctx: ToolRuntimeContext) {
         providerPreference: "playwright-mcp",
         providerUsed: null,
         nextSuggestedAction: !existsSync(path.resolve(args.charterPath))
-          ? "Create the QA charter file first."
-          : "Start the Playwright MCP server and rerun web_qa_run.",
+          ? "Create the web testing charter file first, then rerun the compatibility tool `web_qa_run`."
+          : "Start the Playwright MCP server and rerun the compatibility tool `web_qa_run`.",
       };
       const tracePath = await persistExecutionTrace(
         finishExecutionTrace(trace, blockedResult),

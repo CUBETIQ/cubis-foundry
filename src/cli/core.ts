@@ -380,7 +380,7 @@ function normalizeSkillProfile(value) {
     .toLowerCase();
   if (!SKILL_PROFILES.has(normalized)) {
     throw new Error(
-      `Unknown skill profile '${value}'. Use core|web-backend|mobile-qa|full.`,
+      `Unknown skill profile '${value}'. Use core|web-backend|mobile-qa (legacy mobile-testing id)|full.`,
     );
   }
   return normalized;
