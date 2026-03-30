@@ -1,4 +1,4 @@
-import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { execFile } from "node:child_process";
@@ -127,6 +127,39 @@ describe("mobile QA runner", () => {
 
     expect(data.nextSuggestedAction).toBe(
       "Create the mobile testing charter file first, then rerun the compatibility tool `mobile_qa_run`.",
+    );
+  });
+
+  it("labels the Android MCP branch as legacy compatibility in trace guidance", async () => {
+    const { createMobileQaRunHandler } = await import("./mobileQaRun.js");
+    const handler = createMobileQaRunHandler({
+      gatewayManager: {
+        getStatus: () => ({
+          providers: { android: { lastError: null } },
+        }),
+        listEnabledTools: () => ({
+          available: true,
+          enabledCount: 1,
+          lastError: null,
+        }),
+      },
+    } as never);
+
+    const result = await handler({ charterPath: "/tmp/missing-charter.yml", androidMcp: true });
+    const data = JSON.parse(result.content[0].text) as Record<string, unknown>;
+    const tracePath = data.tracePath as string;
+    const traceText = await readFile(tracePath, "utf8");
+    const trace = JSON.parse(traceText) as {
+      gates: Array<{ name: string; detail?: string | null }>;
+    };
+
+    expect(trace.gates).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          name: "android_mcp_opt_in",
+          detail: "Legacy Android MCP opt-in is enabled for this run.",
+        }),
+      ]),
     );
   });
 });
