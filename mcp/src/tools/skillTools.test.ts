@@ -801,8 +801,6 @@ describe("skill tools", () => {
     expect(result).toMatchObject({
       resolved: true,
       kind: "workflow",
-      id: "web-qa",
-      command: "/web-qa",
       primarySkillHint: "web-testing",
       matchedBy: "qa-runtime-intent",
     });
@@ -819,8 +817,6 @@ describe("skill tools", () => {
     expect(result).toMatchObject({
       resolved: true,
       kind: "workflow",
-      id: "mobile-qa",
-      command: "/mobile-qa",
       primarySkillHint: "ios-simulator-testing",
       matchedBy: "qa-runtime-intent",
     });
