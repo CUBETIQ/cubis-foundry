@@ -129,7 +129,7 @@ Controls vault roots, transport defaults, and summary truncation:
 {
   "server": { "name": "cubis-foundry-mcp", "version": "0.1.0" },
   "vault": {
-    "roots": ["../workflows/skills"],
+    "roots": ["../foundry/modules"],
     "summaryMaxLength": 200
   },
   "telemetry": {

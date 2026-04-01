@@ -23,6 +23,11 @@ afterEach(() => {
 });
 
 describe("config loading", () => {
+  it("loads the bundled default config with foundry modules as the vault root", () => {
+    const config = loadServerConfig();
+    expect(config.vault.roots).toEqual(["../foundry/modules"]);
+  });
+
   it("loads an explicit config file and applies schema defaults", () => {
     const dir = createTempDir("mcp-config-");
     const configPath = path.join(dir, "config.json");
@@ -31,7 +36,7 @@ describe("config loading", () => {
       configPath,
       JSON.stringify({
         server: { name: "cubis-foundry-mcp", version: "0.1.0" },
-        vault: { roots: ["../workflows/skills"] },
+        vault: { roots: ["../foundry/modules"] },
         transport: { default: "stdio" },
       }),
       "utf8",
@@ -75,7 +80,7 @@ describe("credential field rejection", () => {
     expect(() =>
       rejectCredentialFields({
         server: { name: "ok", version: "1.0.0" },
-        vault: { roots: ["../workflows/skills"] },
+        vault: { roots: ["../foundry/modules"] },
       }),
     ).not.toThrow();
   });

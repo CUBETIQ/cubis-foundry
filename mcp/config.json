@@ -5,7 +5,7 @@
     "description": "Cubis Foundry MCP Server – SkillPointer vault browsing, Postman mode, and Stitch profile tools"
   },
   "vault": {
-    "roots": ["../workflows/skills"],
+    "roots": ["../foundry/modules"],
     "summaryMaxLength": 200
   },
   "telemetry": {

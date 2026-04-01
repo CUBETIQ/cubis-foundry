@@ -26,6 +26,7 @@ import { registerCommands } from "./commands/register.js";
 import { DEFAULT_SKILL_PROFILE } from "./constants.js";
 import { createDoctorReport, printDoctorReport } from "./doctor/index.js";
 import { assertBundledMcpBuildFreshness } from "./mcp/buildFreshness.js";
+import { resolveMcpSkillRootCandidates } from "./mcp/skillRoots.js";
 import { runMobileTesting } from "./mobile/run.js";
 import { runWebTesting } from "./web/run.js";
 import {
@@ -11741,46 +11742,6 @@ function resolveCbxRootPath({ scope, cwd = process.cwd() }) {
   }
   const workspaceRoot = findWorkspaceRoot(cwd);
   return path.join(workspaceRoot, ".cbx");
-}
-
-function dedupePaths(paths) {
-  const seen = new Set();
-  const out = [];
-  for (const value of paths) {
-    const normalized = path.resolve(value);
-    if (seen.has(normalized)) continue;
-    seen.add(normalized);
-    out.push(normalized);
-  }
-  return out;
-}
-
-function resolveMcpSkillRootCandidates({
-  scope,
-  cwd = process.cwd(),
-  explicitSkillsRoot = null,
-}) {
-  if (explicitSkillsRoot) {
-    return dedupePaths([path.resolve(cwd, explicitSkillsRoot)]);
-  }
-
-  const workspaceRoot = findWorkspaceRoot(cwd);
-  const workspaceCandidates = [
-    path.join(workspaceRoot, ".agents", "skills"),
-    path.join(workspaceRoot, ".github", "skills"),
-    path.join(workspaceRoot, ".agent", "skills"),
-  ];
-  const homeCandidates = [
-    path.join(os.homedir(), ".agents", "skills"),
-    path.join(os.homedir(), ".copilot", "skills"),
-    path.join(os.homedir(), ".gemini", "antigravity", "skills"),
-  ];
-
-  return dedupePaths(
-    scope === "global"
-      ? [...homeCandidates, ...workspaceCandidates]
-      : [...workspaceCandidates, ...homeCandidates],
-  );
 }
 
 async function resolveMcpSkillRoot({
