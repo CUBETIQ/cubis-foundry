@@ -1,0 +1,19 @@
+id: frontend-design-mobile-patterns
+kind: capability
+label: "Frontend Design Mobile Patterns"
+description: "frontend-design-mobile-patterns guidance migrated from workflows/skills."
+stability: stable
+profiles:
+  - developer
+routeHints:
+  - frontend
+  - design
+  - mobile
+  - patterns
+capability:
+  type: tool
+  domains: [frontend, design, mobile, patterns]
+  outputs:
+    - type: skill
+      path: generated/skills/frontend-design-mobile-patterns.md
+      platforms: [claude]

@@ -1,0 +1,66 @@
+[
+  {
+    "name": "modular-api-with-guards",
+    "description": "Validate that the skill produces a modular NestJS API with proper module structure, guards for authentication, DTOs with validation, and correct dependency injection patterns.",
+    "prompt": "Create a NestJS 11 REST API for a task management system. The API has a TasksModule with a TasksController and TasksService. Tasks belong to a Project and are assigned to a User. Implement a JWT AuthGuard that protects all task endpoints, a RolesGuard for admin-only delete, DTOs with class-validator decorators for create and update, and register everything in the TasksModule with proper imports and exports.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "@Module(",
+        "description": "Must use @Module() decorator to define the feature module with explicit imports, providers, controllers, and exports arrays."
+      },
+      {
+        "type": "contains",
+        "value": "CanActivate",
+        "description": "Must implement the CanActivate interface for the JWT authentication guard to integrate with the NestJS guard lifecycle."
+      },
+      {
+        "type": "contains",
+        "value": "@UseGuards(",
+        "description": "Must apply guards with @UseGuards() decorator on controllers or individual route handlers for authentication and authorization."
+      },
+      {
+        "type": "contains",
+        "value": "ValidationPipe",
+        "description": "Must use ValidationPipe to activate class-validator decorators on incoming DTOs for runtime type safety."
+      },
+      {
+        "type": "contains",
+        "value": "@Injectable()",
+        "description": "Must mark services and guards with @Injectable() to register them in the NestJS dependency injection container."
+      }
+    ]
+  },
+  {
+    "name": "microservice-communication",
+    "description": "Validate that the skill produces correct NestJS microservice patterns with transport configuration, message patterns, hybrid application setup, and proper serialization.",
+    "prompt": "Build a NestJS microservices setup with two services: an API Gateway (HTTP) and an OrderService (TCP transport). The gateway receives HTTP requests and forwards them to OrderService using ClientProxy. OrderService handles a 'create_order' message pattern and emits an 'order_created' event. Show the hybrid application bootstrap, ClientsModule registration, message and event pattern handlers, and DTOs shared between services.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "ClientsModule",
+        "description": "Must use ClientsModule.register() or registerAsync() to configure the microservice client with transport and connection options."
+      },
+      {
+        "type": "contains",
+        "value": "@MessagePattern(",
+        "description": "Must use @MessagePattern() decorator for request-response communication between microservices."
+      },
+      {
+        "type": "contains",
+        "value": "@EventPattern(",
+        "description": "Must use @EventPattern() decorator for event-driven fire-and-forget communication between services."
+      },
+      {
+        "type": "contains",
+        "value": "Transport.",
+        "description": "Must specify the transport layer enum (Transport.TCP, Transport.REDIS, etc.) for microservice connection configuration."
+      },
+      {
+        "type": "contains",
+        "value": "connectMicroservice",
+        "description": "Must call connectMicroservice() on the application instance to create a hybrid HTTP + microservice application."
+      }
+    ]
+  }
+]

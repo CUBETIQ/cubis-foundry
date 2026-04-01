@@ -1,0 +1,19 @@
+id: frontend-design-screen-brief
+kind: capability
+label: "Frontend Design Screen Brief"
+description: "frontend-design-screen-brief guidance migrated from workflows/skills."
+stability: stable
+profiles:
+  - developer
+routeHints:
+  - frontend
+  - design
+  - screen
+  - brief
+capability:
+  type: tool
+  domains: [frontend, design, screen, brief]
+  outputs:
+    - type: skill
+      path: generated/skills/frontend-design-screen-brief.md
+      platforms: [claude]

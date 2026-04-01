@@ -1,0 +1,66 @@
+[
+  {
+    "name": "api-documentation-generation",
+    "description": "Validate that the skill produces comprehensive API documentation with endpoint descriptions, authentication details, request/response examples, and error catalogs.",
+    "input": "Write API documentation for a user management service with these endpoints: POST /api/users (create user), GET /api/users/:id (get user by ID), PATCH /api/users/:id (update user), DELETE /api/users/:id (delete user), POST /api/users/login (authenticate). The API uses JWT bearer tokens for authentication. Include request/response examples, error codes, and rate limiting information.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "Bearer",
+        "description": "Authentication documentation must specify Bearer token format because API consumers need to know the exact authorization header format to make authenticated requests."
+      },
+      {
+        "type": "contains",
+        "value": "curl",
+        "description": "At least one working curl example must be provided for each endpoint because copy-pasteable examples are the fastest path to API consumer success."
+      },
+      {
+        "type": "contains",
+        "value": "400",
+        "description": "Error documentation must include HTTP 400 (Bad Request) responses with descriptions because validation errors are the most common API consumer mistake."
+      },
+      {
+        "type": "contains",
+        "value": "401",
+        "description": "Error documentation must include HTTP 401 (Unauthorized) responses because authentication failures need clear documentation for debugging."
+      },
+      {
+        "type": "contains",
+        "value": "application/json",
+        "description": "Request and response content types must be specified explicitly because content type mismatches are a frequent source of integration errors."
+      }
+    ]
+  },
+  {
+    "name": "runbook-writing",
+    "description": "Validate that the skill produces an operational runbook with numbered steps, prerequisites, expected outcomes, escalation paths, and rollback procedures.",
+    "input": "Write an operational runbook for performing a zero-downtime PostgreSQL major version upgrade (e.g., 14 to 16) on a production system running on AWS RDS. The system serves a web application with approximately 1000 requests per second. Include prerequisites, step-by-step procedure, verification steps, rollback plan, and escalation contacts.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "## Prerequisites",
+        "description": "The runbook must include a Prerequisites section listing required access, tools, and conditions to verify before starting because missing prerequisites discovered mid-procedure cause failures."
+      },
+      {
+        "type": "contains",
+        "value": "## Rollback",
+        "description": "The runbook must include a Rollback section with explicit steps to revert changes because production procedures without rollback plans turn failures into outages."
+      },
+      {
+        "type": "contains",
+        "value": "snapshot",
+        "description": "The procedure must include creating a database snapshot or backup before the upgrade because data safety is the non-negotiable first step of any destructive operation."
+      },
+      {
+        "type": "contains",
+        "value": "## Verification",
+        "description": "The runbook must include a Verification section with specific checks to confirm the upgrade succeeded because procedures without verification steps leave ambiguous outcomes."
+      },
+      {
+        "type": "contains",
+        "value": "Escalat",
+        "description": "The runbook must include escalation information (contacts, conditions for escalation) because on-call engineers need to know when and who to contact if the procedure fails."
+      }
+    ]
+  }
+]

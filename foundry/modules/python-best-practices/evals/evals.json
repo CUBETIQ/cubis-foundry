@@ -1,0 +1,54 @@
+[
+  {
+    "id": "python-typing-migration",
+    "prompt": "I have a Python 3.10 codebase using `from typing import TypeVar, Optional, List, Dict, Union`. Migrate the following module to Python 3.13+ modern typing idioms:\n\n```python\nfrom typing import TypeVar, Optional, List, Dict, Union, Generic\n\nT = TypeVar('T')\nK = TypeVar('K')\nV = TypeVar('V')\n\nclass Repository(Generic[T]):\n    def __init__(self, items: List[T]) -> None:\n        self._items = items\n\n    def find(self, predicate) -> Optional[T]:\n        for item in self._items:\n            if predicate(item):\n                return item\n        return None\n\n    def find_all(self, predicate) -> List[T]:\n        return [item for item in self._items if predicate(item)]\n\ndef merge_dicts(a: Dict[K, V], b: Dict[K, V]) -> Dict[K, V]:\n    result: Dict[K, V] = {}\n    result.update(a)\n    result.update(b)\n    return result\n\ndef process_value(value: Union[str, int, None]) -> str:\n    if value is None:\n        return 'empty'\n    return str(value)\n```",
+    "assertions": [
+      {
+        "type": "content",
+        "value": "type parameter syntax with square brackets on the class or function definition (e.g., `class Repository[T]:` or `def merge_dicts[K, V]`)"
+      },
+      {
+        "type": "content",
+        "value": "replaces Optional[T] with T | None union syntax"
+      },
+      {
+        "type": "content",
+        "value": "replaces List[T] and Dict[K, V] with lowercase built-in generics list[T] and dict[K, V]"
+      },
+      {
+        "type": "content",
+        "value": "replaces Union[str, int, None] with str | int | None"
+      },
+      {
+        "type": "content",
+        "value": "removes the explicit TypeVar declarations and the Generic import since PEP 695 scopes type parameters to the class/function"
+      }
+    ]
+  },
+  {
+    "id": "python-async-service",
+    "prompt": "Design an async Python worker service that reads messages from a Redis stream, processes them, and writes results to PostgreSQL. Requirements: structured concurrency with TaskGroup, graceful shutdown on SIGTERM, connection pooling for both Redis and PostgreSQL, and proper error handling. Target Python 3.13+.",
+    "assertions": [
+      {
+        "type": "content",
+        "value": "uses asyncio.TaskGroup for structured concurrency to manage worker coroutines"
+      },
+      {
+        "type": "content",
+        "value": "implements graceful shutdown handling via asyncio signal handlers or a shutdown Event triggered by SIGTERM"
+      },
+      {
+        "type": "content",
+        "value": "uses async context managers (async with) for connection pool lifecycle management"
+      },
+      {
+        "type": "content",
+        "value": "defines explicit exception types or uses structured error handling rather than bare except clauses"
+      },
+      {
+        "type": "content",
+        "value": "includes structured logging with contextual information such as message IDs or worker identifiers"
+      }
+    ]
+  }
+]

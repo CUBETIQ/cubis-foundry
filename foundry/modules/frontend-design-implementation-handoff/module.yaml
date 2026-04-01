@@ -1,0 +1,19 @@
+id: frontend-design-implementation-handoff
+kind: capability
+label: "Frontend Design Implementation Handoff"
+description: "frontend-design-implementation-handoff guidance migrated from workflows/skills."
+stability: stable
+profiles:
+  - developer
+routeHints:
+  - frontend
+  - design
+  - implementation
+  - handoff
+capability:
+  type: tool
+  domains: [frontend, design, implementation, handoff]
+  outputs:
+    - type: skill
+      path: generated/skills/frontend-design-implementation-handoff.md
+      platforms: [claude]

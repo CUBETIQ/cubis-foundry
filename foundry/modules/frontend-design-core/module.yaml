@@ -1,0 +1,18 @@
+id: frontend-design-core
+kind: capability
+label: "Frontend Design Core"
+description: "frontend-design-core guidance migrated from workflows/skills."
+stability: stable
+profiles:
+  - developer
+routeHints:
+  - frontend
+  - design
+  - core
+capability:
+  type: tool
+  domains: [frontend, design, core]
+  outputs:
+    - type: skill
+      path: generated/skills/frontend-design-core.md
+      platforms: [claude]

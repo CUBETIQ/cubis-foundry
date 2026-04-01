@@ -1,0 +1,18 @@
+id: frontend-design-system
+kind: capability
+label: "Frontend Design System"
+description: "frontend-design-system guidance migrated from workflows/skills."
+stability: stable
+profiles:
+  - developer
+routeHints:
+  - frontend
+  - design
+  - system
+capability:
+  type: tool
+  domains: [frontend, design, system]
+  outputs:
+    - type: skill
+      path: generated/skills/frontend-design-system.md
+      platforms: [claude]

@@ -1,0 +1,66 @@
+[
+  {
+    "name": "rolling-deployment-with-health-checks",
+    "description": "Validate that the skill produces a Kubernetes Deployment with proper rolling update strategy, all three probe types, resource management, and production hardening.",
+    "input": "Create a Kubernetes Deployment manifest for a Node.js API service called 'order-api' in the 'commerce' namespace. Configure 3 replicas with a rolling update strategy (maxSurge: 1, maxUnavailable: 0). Add startup, readiness, and liveness probes hitting /healthz. Set resource requests (256Mi memory, 250m CPU) and limits (512Mi memory, 500m CPU). Add pod anti-affinity to spread replicas across nodes. Run as non-root user with a read-only root filesystem. Include a PodDisruptionBudget allowing at most 1 unavailable pod.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "startupProbe:",
+        "description": "The Deployment must include a startup probe to handle slow container initialization without triggering premature liveness probe failures."
+      },
+      {
+        "type": "contains",
+        "value": "readinessProbe:",
+        "description": "The Deployment must include a readiness probe so Kubernetes removes unhealthy pods from Service endpoints during rolling updates."
+      },
+      {
+        "type": "contains",
+        "value": "maxSurge:",
+        "description": "The rolling update strategy must specify maxSurge to control how many extra pods are created during deployment, managing cluster resource consumption."
+      },
+      {
+        "type": "contains",
+        "value": "runAsNonRoot:",
+        "description": "The pod security context must enforce non-root execution to prevent privilege escalation attacks from within the container."
+      },
+      {
+        "type": "contains",
+        "value": "PodDisruptionBudget",
+        "description": "A PodDisruptionBudget must be defined to prevent voluntary disruptions (node drains) from evicting too many replicas simultaneously."
+      }
+    ]
+  },
+  {
+    "name": "helm-chart-design",
+    "description": "Validate that the skill produces a well-structured Helm chart with parameterized values, environment-specific overrides, and deployment best practices.",
+    "input": "Create a Helm chart for a microservice called 'notification-service'. The chart should include: a Deployment template with configurable replicas, resources, and image tag; a Service (ClusterIP); an Ingress with TLS; a ConfigMap for application settings; a HorizontalPodAutoscaler scaling between 2-10 replicas based on CPU (70% target). Provide values.yaml with sensible defaults and a values-production.yaml override with higher replicas, stricter resources, and production domain.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "{{ .Values.",
+        "description": "Templates must use Helm value references for all configurable fields so that environment-specific overrides work without modifying templates."
+      },
+      {
+        "type": "contains",
+        "value": "HorizontalPodAutoscaler",
+        "description": "The chart must include a HorizontalPodAutoscaler resource to enable automatic scaling based on resource utilization metrics."
+      },
+      {
+        "type": "contains",
+        "value": "values-production",
+        "description": "A production values file must be provided with environment-specific overrides for replicas, resources, and domain configuration."
+      },
+      {
+        "type": "contains",
+        "value": "tls:",
+        "description": "The Ingress resource must include TLS configuration to enforce encrypted traffic for production endpoints."
+      },
+      {
+        "type": "contains",
+        "value": "ConfigMap",
+        "description": "Application configuration must be externalized into a ConfigMap rather than hardcoded in the Deployment, enabling configuration changes without redeployment."
+      }
+    ]
+  }
+]

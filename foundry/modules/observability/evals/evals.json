@@ -1,0 +1,66 @@
+[
+  {
+    "name": "opentelemetry-instrumentation",
+    "description": "Validate that the skill produces correct OpenTelemetry instrumentation with auto-instrumentation, manual spans, trace propagation, and collector configuration for a Python FastAPI service.",
+    "input": "Instrument a Python FastAPI microservice with OpenTelemetry. Configure auto-instrumentation for HTTP and database spans. Add a custom span for a business-critical payment processing function that records the payment amount and status as span attributes. Set up W3C Trace Context propagation. Configure an OpenTelemetry Collector pipeline that receives OTLP traces, applies tail-based sampling (keep all error traces and 10% of successful traces), and exports to both Jaeger and Prometheus. Include resource attributes for service.name, service.version, and deployment.environment.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "FastAPIInstrumentor",
+        "description": "The instrumentation must use FastAPIInstrumentor for automatic HTTP span creation on every request, providing baseline visibility without manual code changes."
+      },
+      {
+        "type": "contains",
+        "value": "set_attribute",
+        "description": "Custom spans must record business-relevant attributes (payment amount, status) using set_attribute for rich trace context during incident investigation."
+      },
+      {
+        "type": "contains",
+        "value": "tail_sampling",
+        "description": "The collector configuration must use a tail-based sampling processor to retain error traces while sampling routine successful traces."
+      },
+      {
+        "type": "contains",
+        "value": "service.name",
+        "description": "Resource attributes must include service.name to enable filtering telemetry by service in multi-service environments."
+      },
+      {
+        "type": "contains",
+        "value": "OTLPSpanExporter",
+        "description": "The SDK must export spans using the OTLP exporter protocol to the OpenTelemetry Collector, maintaining vendor neutrality."
+      }
+    ]
+  },
+  {
+    "name": "slo-based-alerting",
+    "description": "Validate that the skill produces correct SLO definitions with SLI specifications, error budgets, multi-window burn-rate alerts, and linked runbooks.",
+    "input": "Define SLOs for an e-commerce checkout API. Create two SLOs: (1) Availability SLO: 99.9% of checkout requests return a non-5xx response over a 30-day rolling window; (2) Latency SLO: 99% of checkout requests complete within 500ms over a 30-day rolling window. For each SLO, write the SLI query in PromQL, calculate the error budget, configure multi-window burn-rate alerts (5m/1h fast burn, 30m/6h slow burn), define severity levels, and create a runbook template with investigation steps.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "burn_rate",
+        "description": "Alert rules must use burn-rate calculations rather than static thresholds to adapt alert sensitivity to the speed of error budget consumption."
+      },
+      {
+        "type": "contains",
+        "value": "error_budget",
+        "description": "The SLO definition must include explicit error budget calculations (1 - SLO target) to quantify the allowable failure margin."
+      },
+      {
+        "type": "contains",
+        "value": "histogram_quantile",
+        "description": "The latency SLI must use histogram_quantile in PromQL to calculate percentile latency from histogram buckets rather than averages."
+      },
+      {
+        "type": "contains",
+        "value": "runbook",
+        "description": "Every alert must link to a runbook that describes symptoms, investigation steps, and remediation actions for on-call engineers."
+      },
+      {
+        "type": "contains",
+        "value": "30d",
+        "description": "SLO measurement windows must use a 30-day rolling window as specified, providing a meaningful time horizon for error budget calculations."
+      }
+    ]
+  }
+]

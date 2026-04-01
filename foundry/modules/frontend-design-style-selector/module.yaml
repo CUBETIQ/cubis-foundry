@@ -1,0 +1,19 @@
+id: frontend-design-style-selector
+kind: capability
+label: "Frontend Design Style Selector"
+description: "frontend-design-style-selector guidance migrated from workflows/skills."
+stability: stable
+profiles:
+  - developer
+routeHints:
+  - frontend
+  - design
+  - style
+  - selector
+capability:
+  type: tool
+  domains: [frontend, design, style, selector]
+  outputs:
+    - type: skill
+      path: generated/skills/frontend-design-style-selector.md
+      platforms: [claude]

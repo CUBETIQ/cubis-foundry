@@ -1,0 +1,68 @@
+[
+  {
+    "id": "integration-testing-eval-001",
+    "name": "API contract verification between services",
+    "description": "Evaluate the skill's ability to design consumer-driven contract tests between a frontend application and a backend user service API, ensuring contracts are verified independently.",
+    "prompt": "Our frontend app consumes a GET /api/users/:id endpoint from the user-service. The response includes id, name, email, and role fields. Recently, the backend team renamed 'role' to 'userRole' and broke the frontend. Design an integration testing strategy using contract tests to prevent this from happening again. Include the contract definition, provider verification, and CI integration.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "contract",
+        "description": "Should recommend consumer-driven contract testing as the primary solution"
+      },
+      {
+        "type": "contains",
+        "value": "consumer",
+        "description": "Should identify the frontend as the consumer that defines expected response shape"
+      },
+      {
+        "type": "contains",
+        "value": "provider",
+        "description": "Should describe provider-side verification that runs against the contract"
+      },
+      {
+        "type": "contains",
+        "value": "CI",
+        "description": "Should integrate contract verification into CI/CD pipeline to catch breaks before deploy"
+      },
+      {
+        "type": "contains",
+        "value": "schema",
+        "description": "Should define a contract schema that specifies expected field names and types"
+      }
+    ]
+  },
+  {
+    "id": "integration-testing-eval-002",
+    "name": "Database integration test setup with containers",
+    "description": "Evaluate the skill's ability to set up a database integration test environment using test containers, including migration, fixture seeding, isolation, and teardown.",
+    "prompt": "I need to write integration tests for a UserRepository that performs CRUD operations against PostgreSQL. The tests should run in CI without requiring a shared database. Design the complete test setup including database provisioning, schema migration, test data seeding, per-test isolation, and cleanup. Show the test lifecycle.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "container",
+        "description": "Should recommend Testcontainers or ephemeral container-based PostgreSQL for CI isolation"
+      },
+      {
+        "type": "contains",
+        "value": "migrat",
+        "description": "Should include running database migrations as part of the test setup phase"
+      },
+      {
+        "type": "contains",
+        "value": "rollback",
+        "description": "Should use transaction rollback or equivalent for per-test data isolation"
+      },
+      {
+        "type": "contains",
+        "value": "seed",
+        "description": "Should describe a fixture seeding strategy for test data"
+      },
+      {
+        "type": "contains",
+        "value": "cleanup",
+        "description": "Should include a teardown or cleanup phase to remove test artifacts"
+      }
+    ]
+  }
+]

@@ -1,0 +1,19 @@
+id: qa
+kind: capability
+label: QA
+description: Consolidated QA capability covering Foundry UI harness evaluation, charter-driven web QA, and Flutter mobile QA.
+stability: stable
+profiles:
+  - developer
+routeHints:
+  - qa
+  - testing
+  - browser
+  - mobile
+capability:
+  type: stack
+  domains: [qa, testing, browser, mobile]
+  outputs:
+    - type: skill
+      path: generated/skills/qa.md
+      platforms: [claude]
