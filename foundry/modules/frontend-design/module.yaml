@@ -1,0 +1,19 @@
+id: frontend-design
+kind: capability
+label: Frontend Design
+description: Distinctive frontend design guidance for visual direction, design systems, accessibility, responsiveness, and polished UI implementation.
+stability: stable
+profiles:
+  - developer
+  - research
+routeHints:
+  - design
+  - ui
+  - frontend
+capability:
+  type: stack
+  domains: [frontend, design, ui]
+  outputs:
+    - type: skill
+      path: generated/skills/frontend-design.md
+      platforms: [claude]
