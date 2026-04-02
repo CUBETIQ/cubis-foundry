@@ -1,0 +1,8 @@
+id: stitch
+kind: compat-alias
+label: Stitch
+description: Compatibility alias for older Stitch requests that now route into the current design-first Stitch flow.
+stability: deprecated
+routeHints:
+  - stitch
+  - google-stitch

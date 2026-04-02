@@ -1,0 +1,17 @@
+id: spec-driven-delivery
+kind: skill
+label: Spec-Driven Delivery
+description: "Turn a non-trivial request into a Git-tracked spec pack, maintain traceability during execution, and update specs before code when requirements or architecture change."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - process
+  outputs:
+    - type: skill
+      path: foundry/modules/spec-driven-delivery/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

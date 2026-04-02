@@ -1,0 +1,19 @@
+id: fastapi
+kind: skill
+label: FastAPI
+description: "Use when building FastAPI 0.115+ applications with Pydantic v2 models, async endpoints, dependency injection, OpenAPI documentation, background tasks, and security patterns."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - python
+    - api-design
+    - web
+  outputs:
+    - type: skill
+      path: foundry/modules/fastapi/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

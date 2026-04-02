@@ -1,0 +1,56 @@
+[
+  {
+    "name": "latest-capability-verification",
+    "description": "Validate that the skill performs repo-first research, prioritizes official documentation, labels secondary evidence, and recommends a next route.",
+    "prompt": "Research whether the latest official Claude Code hook surface supports reinforcing route honoring before implementation. Start with the current repo state, then use official docs if needed. If community sources add useful practical context, include them but label them appropriately. End with the next workflow, agent, or skill we should use.",
+    "assertions": [
+      {
+        "id": "repo-first",
+        "description": "Starts with repo or local evidence before using external sources."
+      },
+      {
+        "id": "official-first",
+        "description": "Treats official docs or upstream sources as the primary evidence."
+      },
+      {
+        "id": "secondary-labeled",
+        "description": "Labels any Reddit or community evidence as secondary rather than authoritative."
+      },
+      {
+        "id": "gaps-called-out",
+        "description": "States any unresolved gaps, conflicts, or unknowns."
+      },
+      {
+        "id": "next-route",
+        "description": "Ends with a concrete recommended next route."
+      }
+    ]
+  },
+  {
+    "name": "tool-comparison",
+    "description": "Validate that the skill compares options with a clear frame, ties findings back to repo impact, and produces a decision-ready output.",
+    "prompt": "Compare whether our CLI should keep enforcement in Gemini command wrappers only or also add Claude hook templates. Use the repo state first, then official docs for current platform capabilities, and include community evidence only if it adds implementation nuance. Finish with a recommendation and the next route to take.",
+    "assertions": [
+      {
+        "id": "comparison-frame",
+        "description": "Defines concrete comparison axes such as repo impact, enforcement surface, and maintenance cost."
+      },
+      {
+        "id": "repo-impact",
+        "description": "Connects each option back to the current repo or bundle behavior."
+      },
+      {
+        "id": "fact-vs-inference",
+        "description": "Separates verified facts from inference or interpretation."
+      },
+      {
+        "id": "decision-oriented",
+        "description": "Produces a recommendation or explicit defer condition."
+      },
+      {
+        "id": "no-research-sprawl",
+        "description": "Keeps the answer structured instead of turning into an unfiltered dump of sources."
+      }
+    ]
+  }
+]

@@ -1,0 +1,19 @@
+id: mobile-ui-design
+kind: skill
+label: Mobile UI Design
+description: "Design mobile-first interfaces with strong small-screen hierarchy, thumb-reachable interactions, native-feeling flow decisions, and implementation-aware handoff."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - design
+    - frontend
+    - mobile
+  outputs:
+    - type: skill
+      path: foundry/modules/mobile-ui-design/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

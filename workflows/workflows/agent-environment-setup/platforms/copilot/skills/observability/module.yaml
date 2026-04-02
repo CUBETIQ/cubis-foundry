@@ -1,0 +1,17 @@
+id: observability
+kind: skill
+label: Observability
+description: "Implement observability and monitoring: OpenTelemetry instrumentation, structured logging, metrics design, distributed tracing, alerting strategies, SLO/SLI definitions, dashboards, and incident response runbooks."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/observability/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

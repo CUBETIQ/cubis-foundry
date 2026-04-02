@@ -1,0 +1,17 @@
+id: deep-research
+kind: skill
+label: Deep Research
+description: "Investigate latest vendor behavior, compare tools or platforms, verify claims beyond the repo, or gather external evidence before implementation."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - research
+  outputs:
+    - type: skill
+      path: foundry/modules/deep-research/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

@@ -1,0 +1,17 @@
+id: csharp-best-practices
+kind: skill
+label: C# Best Practices
+description: "Write, review, or refactor modern C#/.NET code, including minimal APIs, records, async streams, pattern matching, DI lifetimes, and memory-efficient performance tuning."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/csharp-best-practices/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

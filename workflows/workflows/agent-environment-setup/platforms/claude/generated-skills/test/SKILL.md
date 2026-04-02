@@ -31,10 +31,11 @@ Use this when the implementation exists but verification is weak, missing, or to
 
 ## Skill routing
 
+- Start with `unit-testing` for narrow code-level coverage and add `integration-testing` when the proof crosses a real boundary.
 - Route browser QA to `web-testing`.
 - Route Android emulator work to `android-emulator-testing`.
 - Route iOS simulator work to `ios-simulator-testing`.
-- For code-level unit or integration coverage, load the owning language or framework skill instead of generic testing wrappers.
+- Load the owning language or framework skill alongside these testing surfaces when the target stack has specific test conventions.
 
 ## Context notes
 

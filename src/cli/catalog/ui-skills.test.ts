@@ -9,11 +9,30 @@ function readSkill(relativePath: string): string {
 }
 
 describe("canonical UI skill content", () => {
+  it("keeps frontend-design as the public umbrella without sending users back to the helper stack", () => {
+    const content = readSkill("foundry/modules/frontend-design/SKILL.md");
+
+    expect(content).toContain("public umbrella entrypoint");
+    expect(content).toContain("style contract");
+    expect(content).toContain("visual thesis");
+    expect(content).toContain("interaction thesis");
+    expect(content).toContain("../design/SKILL.md");
+    expect(content).toContain("../design-system/SKILL.md");
+    expect(content).toContain("../web-ui-design/SKILL.md");
+    expect(content).toContain("../mobile-ui-design/SKILL.md");
+    expect(content).toContain("../desktop-ui-design/SKILL.md");
+    expect(content).toContain("Keep the legacy `frontend-design-*` helper stack out of the recommended path");
+    expect(content).not.toContain("frontend-design-core");
+    expect(content).not.toContain("frontend-design-style-selector");
+  });
+
   it("requires the design router to demand visual thesis and interaction thesis", () => {
     const content = readSkill("foundry/modules/design/SKILL.md");
+    expect(content).toContain("style contract");
     expect(content).toContain("visual thesis");
     expect(content).toContain("interaction thesis");
     expect(content).toContain("content plan");
+    expect(content).toContain("../frontend-design/SKILL.md");
     expect(content).toContain("../design-system/SKILL.md");
     expect(content).toContain("../web-ui-design/SKILL.md");
     expect(content).toContain("../mobile-ui-design/SKILL.md");
@@ -69,22 +88,43 @@ describe("canonical UI skill content", () => {
     const contractContent = readSkill("foundry/modules/design/references/execution-contract.md");
 
     for (const content of [skillContent, templateContent]) {
+      expect(content).toContain("style contract");
+      expect(content).toContain("thesis set");
       expect(content).toContain("token language");
       expect(content).toContain("typography system");
       expect(content).toContain("interaction/state language");
       expect(content).toContain("Keep screen execution out of this surface");
       expect(content).toContain("web, mobile, and desktop");
       expect(content).toContain("semantic aliases");
+      expect(content).toContain("do and do not guidance");
       expect(content).toContain("downstream surfaces should consume the refresh");
       expect(content).not.toContain(".stitch/DESIGN.md");
     }
 
+    expect(contractContent).toContain("frontend-design");
     expect(contractContent).toContain("design-system");
     expect(contractContent).toContain("browser execution surface");
     expect(contractContent).toContain("mobile execution surface");
     expect(contractContent).toContain("desktop execution surface");
     expect(contractContent).toContain("typography system");
     expect(contractContent).toContain("interaction/state language");
+    expect(contractContent).toContain("docs/foundation/DESIGN.md");
+  });
+
+  it("keeps Stitch docs aligned to the modern design-first route instead of the helper stack", () => {
+    const orchestrator = readSkill("foundry/modules/stitch-design-orchestrator/SKILL.md");
+    const compatibility = readSkill("foundry/modules/stitch/SKILL.md");
+
+    expect(orchestrator).toContain("Start with `frontend-design`");
+    expect(orchestrator).toContain("Use `design` to choose the owning execution surface");
+    expect(orchestrator).toContain("run `design-system` first");
+    expect(orchestrator).not.toContain("frontend-design-core");
+    expect(orchestrator).not.toContain("frontend-design-style-selector");
+    expect(orchestrator).not.toContain("frontend-design-screen-brief");
+
+    expect(compatibility).toContain("1. `frontend-design`");
+    expect(compatibility).toContain("2. `design`");
+    expect(compatibility).toContain("3. `design-system`");
   });
 
   it("requires Android and iOS testing skills to describe the mobile-mcp-first dual-path model", () => {
@@ -100,5 +140,34 @@ describe("canonical UI skill content", () => {
     expect(ios).toContain("WebDriverAgent");
     expect(ios).toContain("preferred path");
     expect(ios).toContain("fallback path");
+  });
+
+  it("keeps runtime testing metadata aligned with the canonical web and mobile testing surfaces", () => {
+    const workflow = readSkill("foundry/modules/workflows/test/workflow.md");
+    const androidModule = readSkill("foundry/modules/android-emulator-testing/module.yaml");
+    const iosModule = readSkill("foundry/modules/ios-simulator-testing/module.yaml");
+    const webModule = readSkill("foundry/modules/web-testing/module.yaml");
+
+    expect(workflow).toContain("primarySkills:");
+    expect(workflow).toContain("  - unit-testing");
+    expect(workflow).toContain("  - integration-testing");
+    expect(workflow).toContain("Route browser QA to `web-testing`.");
+    expect(workflow).toContain("Route Android emulator work to `android-emulator-testing`.");
+    expect(workflow).toContain("Route iOS simulator work to `ios-simulator-testing`.");
+
+    expect(androidModule).toContain("Canonical dual-path skill");
+    expect(androidModule).toContain("mobile-mcp as the preferred path");
+    expect(androidModule).toContain("routeHints:");
+    expect(androidModule).toContain("  - mobile testing");
+
+    expect(iosModule).toContain("Canonical dual-path skill");
+    expect(iosModule).toContain("mobile-mcp as the preferred path");
+    expect(iosModule).toContain("routeHints:");
+    expect(iosModule).toContain("  - mobile testing");
+
+    expect(webModule).toContain("routeHints:");
+    expect(webModule).toContain("  - web");
+    expect(webModule).toContain("  - browser");
+    expect(webModule).toContain("    - web");
   });
 });

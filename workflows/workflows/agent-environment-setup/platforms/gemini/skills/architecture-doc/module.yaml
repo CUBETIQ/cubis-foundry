@@ -1,0 +1,17 @@
+id: architecture-doc
+kind: skill
+label: Architecture Documentation
+description: "Create architecture documentation including C4 model diagrams, Architecture Decision Records, system context views, deployment diagrams, and quality attribute specifications."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/architecture-doc/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

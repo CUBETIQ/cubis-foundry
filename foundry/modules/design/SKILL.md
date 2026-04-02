@@ -1,8 +1,6 @@
 ---
 name: design
-description: Top-level design routing and critique skill for choosing the right
-  system, web, mobile, or desktop design path, running audit-first diagnosis, and
-  keeping downstream execution aligned to one clear contract.
+description: Top-level design routing and critique skill for choosing the right system, web, mobile, or desktop design path, running audit-first diagnosis, and keeping downstream execution aligned to one clear contract.
 triggers:
   - design
   - frontend
@@ -15,8 +13,7 @@ triggers:
 domains:
   - design
   - frontend
-whenToUse: When a task is primarily about visual hierarchy, interaction quality,
-  or selecting the right downstream web or mobile design path.
+whenToUse: When a task is primarily about visual hierarchy, interaction quality, or selecting the right downstream web, mobile, or desktop design path after the public UI-design intent is clear.
 priority: primary
 compatibility:
   - claude
@@ -30,12 +27,13 @@ compatibility:
 
 ## Purpose
 
-Provide the top-level routing and critique skill for design work. Use it to decide whether the task needs audit, canonical systemization, browser-first execution, mobile-first execution, desktop-first execution, or a tighter implementation handoff rather than jumping straight into arbitrary visual changes.
+Provide the routing and critique layer for design work once the UI-design intent is established. Use it directly for audit-first diagnosis or downstream of `frontend-design` when the task now needs route selection, critique language, and strict execution boundaries.
 
 ## Working Model
 
-Before any execution route is chosen, require three explicit inputs:
+Before any execution route is chosen, require four explicit inputs:
 
+- style contract
 - visual thesis
 - content plan
 - interaction thesis
@@ -53,14 +51,15 @@ Normalize the brief before routing when the request is messy. Capture product, u
 
 ## Instructions
 
-1. Start by classifying the request as routing/critique, systemization, browser execution, or mobile execution.
-2. Run audit-first when the interface already exists and quality is uncertain. Use the scoring cues in `references/scoring-rubric.md` and name the primary gap before anything else.
-3. Load `references/foundation.md` first when the task spans more than one surface so shared nouns, tokens, and state language are settled before platform-specific execution.
-4. Use `../design-system/SKILL.md` when the canonical visual language, token language, or component vocabulary needs to be refreshed before screen work.
-5. Choose `../web-ui-design/SKILL.md` for browser-first execution, `../mobile-ui-design/SKILL.md` for phone-first execution, and `../desktop-ui-design/SKILL.md` for desktop-first execution. Do not flatten those surfaces into one copied layout.
-6. Use `references/responsive-adaptive-systems.md` plus the surface-specific reference docs when the same product spans more than one surface family or major size class.
-7. Keep this surface at the routing/critique layer: return the route, why it fits, the next owning surface, and the non-negotiable constraints.
-8. Use `references/execution-contract.md` and `references/output-template.md` when the answer needs a stricter handoff contract.
+1. Start by classifying the request as routing, critique, systemization, browser execution, mobile execution, or desktop execution.
+2. Require the style contract plus the visual thesis, content plan, and interaction thesis before selecting the owning surface.
+3. Run audit-first when the interface already exists and quality is uncertain. Use the scoring cues in `references/scoring-rubric.md`, identify the primary failure dimension, and route from that diagnosis instead of from taste alone.
+4. Load `references/foundation.md` first when the task spans more than one surface so shared nouns, tokens, and state language are settled before platform-specific execution.
+5. Use `../design-system/SKILL.md` when the canonical visual language, token language, or component vocabulary must be refreshed before screen work.
+6. Choose `../web-ui-design/SKILL.md` for browser-first execution, `../mobile-ui-design/SKILL.md` for phone-first execution, and `../desktop-ui-design/SKILL.md` for desktop-first execution. Do not flatten those surfaces into one copied layout.
+7. Use `references/responsive-adaptive-systems.md` plus the surface-specific reference docs when the same product spans more than one surface family or major size class.
+8. Keep this surface at the routing and critique layer: return the route, why it fits, the next owning surface, and the non-negotiable constraints.
+9. Use `references/execution-contract.md` and `references/output-template.md` when the answer needs a stricter handoff contract.
 
 ## Deterministic Helper
 
@@ -68,6 +67,7 @@ When the user needs a structured audit, adaptive matrix, or reusable prompt pack
 
 ## Route-First Constraints
 
+- preserve the style contract the design direction depends on
 - preserve the visual thesis the user actually needs
 - preserve the content plan the layout must serve
 - preserve the interaction thesis that changes how the UI feels
@@ -78,7 +78,8 @@ When the user needs a structured audit, adaptive matrix, or reusable prompt pack
 - Do not give generic style advice detached from product purpose, state design, or interaction cost.
 - Do not skip hierarchy, readability, or affordance in favor of pure aesthetics.
 - Do not collapse routing, systemization, and execution into one blended answer.
-- Do not keep users on the fragmented `frontend-design*` stack when a simpler route through `design`, `design-system`, `web-ui-design`, `mobile-ui-design`, or `desktop-ui-design` is clearer.
+- Do not bypass `frontend-design` when the public request is still ambiguous and needs a clearer UI-design front door.
+- Do not keep users on the fragmented `frontend-design-*` helper stack when a simpler route through `frontend-design`, `design-system`, `web-ui-design`, `mobile-ui-design`, or `desktop-ui-design` is clearer.
 
 ## Output Format
 
@@ -91,6 +92,7 @@ Return:
 
 ## References
 
+- `../frontend-design/SKILL.md`
 - `references/scoring-rubric.md`
 - `references/foundation.md`
 - `references/design-directions.md`

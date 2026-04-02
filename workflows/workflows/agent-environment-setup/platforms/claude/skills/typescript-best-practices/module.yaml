@@ -1,0 +1,19 @@
+id: typescript-best-practices
+kind: skill
+label: TypeScript Best Practices
+description: "Use when writing production TypeScript 5.9+ code: strict configuration, advanced type-level programming, discriminated unions, branded types, and patterns that prepare codebases for TS 6/7 evolution."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - typescript
+    - frontend
+    - web
+  outputs:
+    - type: skill
+      path: foundry/modules/typescript-best-practices/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

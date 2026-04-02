@@ -1,0 +1,17 @@
+id: kotlin-best-practices
+kind: skill
+label: Kotlin Best Practices
+description: "Write, refactor, or review modern Kotlin (2.1+) code across JVM, Android, iOS, and multiplatform targets. Covers coroutines, Flow, Compose patterns, KMP architecture, DSL design, and production testing."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/kotlin-best-practices/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

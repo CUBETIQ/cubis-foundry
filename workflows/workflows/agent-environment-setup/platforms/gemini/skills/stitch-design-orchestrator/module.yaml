@@ -1,0 +1,18 @@
+id: stitch-design-orchestrator
+kind: capability
+label: "Stitch Design Orchestrator"
+description: "stitch-design-orchestrator guidance migrated from workflows/skills."
+stability: stable
+profiles:
+  - developer
+routeHints:
+  - stitch
+  - design
+  - orchestrator
+capability:
+  type: tool
+  domains: [stitch, design, orchestrator]
+  outputs:
+    - type: skill
+      path: generated/skills/stitch-design-orchestrator.md
+      platforms: [claude]

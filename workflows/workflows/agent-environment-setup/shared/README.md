@@ -2,13 +2,13 @@
 
 This directory is the canonical source for shared specialist routes and workflows.
 
-Canonical skills are authored separately under `workflows/skills/<id>`.
+Canonical skills are authored separately under `foundry/modules/<id>`.
 Platform skill folders under `platforms/*/skills` are generated mirrors, not source.
-Active maintained skill mirrors are `platforms/copilot/skills` and `platforms/claude/skills`.
+Active maintained skill mirrors are `platforms/antigravity/skills`, `platforms/codex/skills`, `platforms/copilot/skills`, `platforms/claude/skills`, and `platforms/gemini/skills`.
 Any `platforms/cursor/skills` or `platforms/windsurf/skills` directories should be treated as legacy leftovers unless explicitly reintroduced.
 
 - Edit `shared/agents/*.md` and `shared/workflows/*.md` only.
-- Edit canonical skill packages under `workflows/skills/<id>` only.
+- Edit canonical skill packages under `foundry/modules/<id>` only.
 - Regenerate every generated target with:
   - `npm run generate:all`
 - Validate mirror parity and CI coverage with:

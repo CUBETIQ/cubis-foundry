@@ -1,0 +1,51 @@
+{
+  "product_name": "",
+  "product_type": "",
+  "platforms": ["mobile", "web", "desktop"],
+  "goals": [],
+  "users": [],
+  "jobs_to_be_done": [],
+  "brand_adjectives": [],
+  "screens": [
+    {
+      "name": "",
+      "priority": "high",
+      "tasks": []
+    }
+  ],
+  "constraints": {
+    "accessibility_target": "wcag 2.2 aa",
+    "motion_tolerance": "subtle",
+    "locales": ["en"],
+    "offline_support": false,
+    "real_time": false,
+    "seo": false,
+    "browser_support": [],
+    "desktop_os": [],
+    "device_features": []
+  },
+  "platform_details": {
+    "mobile": {
+      "targets": ["ios", "android"],
+      "one_handed_use": true,
+      "primary_navigation": ""
+    },
+    "web": {
+      "targets": ["responsive app"],
+      "primary_navigation": "",
+      "breakpoints": [360, 768, 1024, 1440]
+    },
+    "desktop": {
+      "targets": ["macos", "windows"],
+      "primary_navigation": "",
+      "keyboard_shortcuts": true,
+      "multi_window": false
+    }
+  },
+  "design_direction": {
+    "style_family": "",
+    "density": "balanced",
+    "color_mood": "",
+    "motion_style": "subtle"
+  }
+}

@@ -17,10 +17,13 @@ describe("registerMobileCommands()", () => {
     const help = normalizeWhitespace(run?.helpInformation() ?? "");
 
     expect(mobile?.description()).toContain("mobile testing");
+    expect(test?.description()).toContain("Android-focused");
     expect(test?.description()).toContain("android-emulator-testing");
     expect(test?.description()).toContain("ios-simulator-testing");
     expect(test?.description()).toContain("mobile-mcp");
     expect(help).toContain("--artifacts-dir <path>");
+    expect(help).toContain("optional Android APK to install before launch");
+    expect(help).toContain("optional Android AVD name to target");
     expect(help).toContain("artifact root directory (default: artifacts/mobile-testing)");
   });
 });

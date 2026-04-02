@@ -1,0 +1,68 @@
+[
+  {
+    "id": "nextjs-eval-01",
+    "name": "Server Component data fetching with caching",
+    "description": "Validate that the skill correctly guides creation of a Next.js 15 page using async Server Components for data fetching with appropriate caching configuration.",
+    "prompt": "Create a Next.js 15 App Router blog post page at app/blog/[slug]/page.tsx that fetches post data from an API using a Server Component. Configure time-based revalidation of 60 seconds, implement loading.tsx for streaming, error.tsx for error handling, and generateMetadata for dynamic SEO metadata based on the post title and description.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "async",
+        "description": "Must use an async Server Component function for server-side data fetching without useEffect"
+      },
+      {
+        "type": "pattern",
+        "value": "revalidate|next:\\s*\\{",
+        "description": "Must configure caching/revalidation using segment config or fetch options since Next.js 15 does not cache by default"
+      },
+      {
+        "type": "contains",
+        "value": "generateMetadata",
+        "description": "Must export generateMetadata for dynamic SEO metadata based on fetched post data"
+      },
+      {
+        "type": "contains",
+        "value": "loading.tsx",
+        "description": "Must reference or create loading.tsx for Suspense-based streaming of the route segment"
+      },
+      {
+        "type": "excludes",
+        "value": "useEffect",
+        "description": "Must NOT use useEffect for data fetching since Server Components fetch data directly on the server"
+      }
+    ]
+  },
+  {
+    "id": "nextjs-eval-02",
+    "name": "Server Action form with validation and revalidation",
+    "description": "Validate that the skill correctly implements a Server Action for form mutation with Zod validation, error handling, and cache revalidation.",
+    "prompt": "Implement a Next.js 15 contact form using Server Actions. Create a Server Action in a separate actions.ts file with 'use server' directive that validates name (required, 2-100 chars) and email (required, valid format) with Zod. Return structured errors on failure. Build the form in a Client Component using useActionState for pending/error states. After successful submission, revalidate the /messages path.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "'use server'",
+        "description": "Must include the 'use server' directive to mark the function as a Server Action"
+      },
+      {
+        "type": "contains",
+        "value": "useActionState",
+        "description": "Must use useActionState hook for managing form submission state and displaying results"
+      },
+      {
+        "type": "pattern",
+        "value": "z\\.(string|object)|zod",
+        "description": "Must use Zod for server-side input validation since Server Actions are public HTTP endpoints"
+      },
+      {
+        "type": "contains",
+        "value": "revalidatePath",
+        "description": "Must call revalidatePath or revalidateTag after successful mutation to invalidate stale cached data"
+      },
+      {
+        "type": "contains",
+        "value": "'use client'",
+        "description": "Must mark the form component with 'use client' since it uses hooks for interactive state management"
+      }
+    ]
+  }
+]

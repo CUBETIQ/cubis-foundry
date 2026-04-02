@@ -17,24 +17,24 @@ Use when the product direction changed and the design system or overlays need a 
 ## Routing
 
 1. **Explore**: `@explorer` finds the current design docs, overlays, and implementation surfaces touched by the direction change.
-2. **Plan**: `@planner` decides what must be refreshed and what can stay stable.
+2. **Plan**: `@planner` locks the style contract, thesis set, and which canonical artifacts must be refreshed before screen execution resumes.
 3. **Implement**: `@implementer` updates canonical design state and overlays.
 4. **Review**: `@reviewer` checks that the refreshed design state is coherent and ready for downstream implementation.
 
 ## Skill Routing
 
-- Primary skills: `design`, `web-ui-design`, `design-system`
+- Primary skills: `frontend-design`, `design-system`, `design`
 - Supporting skills (optional): `mobile-ui-design`, `tech-doc`
 
 ## Context notes
 
-- Provide what changed in product direction or UI structure and which downstream surfaces are now stale.
+- Provide what changed in product direction or UI structure, the updated style contract or anti-patterns, and which downstream surfaces are now stale.
 - This route refreshes design state; it should not silently skip dependent overlays.
 
 ## Workflow steps
 
 1. Explorer finds the current design docs, overlays, and implementation surfaces touched by the direction change.
-2. Planner decides what must be refreshed and what can stay stable.
+2. Planner decides what must be refreshed and what can stay stable, including whether the change affects canonical `docs/foundation/DESIGN.md`, overlays, or only execution surfaces.
 3. Implementer updates canonical design state and overlays.
 4. Reviewer checks that the refreshed design state is coherent and ready for downstream implementation.
 

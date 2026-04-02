@@ -1,0 +1,66 @@
+[
+  {
+    "name": "c4-diagram-generation",
+    "description": "Validate that the skill produces correct C4 model diagrams at Context and Container levels with proper notation, relationships, and technology labels.",
+    "input": "Create C4 model diagrams (System Context and Container level) for a SaaS analytics platform. The system has: a React single-page application, a REST API built with Node.js/Express, a PostgreSQL database, a Redis cache, a background job processor (Bull/Redis), and integrations with Stripe for billing and SendGrid for email. Users include end-users (dashboard viewers), admin users, and an external data ingestion API consumer. Provide the diagrams in Mermaid syntax.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "Person",
+        "description": "The System Context diagram must identify external actors as Person elements to distinguish human users from system integrations."
+      },
+      {
+        "type": "contains",
+        "value": "System_Boundary",
+        "description": "The Container diagram must use System_Boundary to clearly delineate which containers are inside the system vs external dependencies."
+      },
+      {
+        "type": "contains",
+        "value": "Container",
+        "description": "Each deployable unit (SPA, API, database, cache, job processor) must be modeled as a Container element with technology labels."
+      },
+      {
+        "type": "contains",
+        "value": "Rel",
+        "description": "Relationships between elements must be explicitly defined with Rel statements that describe the purpose and protocol of each connection."
+      },
+      {
+        "type": "contains",
+        "value": "System_Ext",
+        "description": "External systems (Stripe, SendGrid) must be modeled as System_Ext to distinguish them from internal containers and make integration boundaries visible."
+      }
+    ]
+  },
+  {
+    "name": "adr-writing",
+    "description": "Validate that the skill produces a well-structured Architecture Decision Record with proper sections, alternatives analysis, and consequence documentation.",
+    "input": "Write an Architecture Decision Record for the following decision: The team is choosing between PostgreSQL and MongoDB as the primary database for a multi-tenant SaaS application. The application has strong relational data (users, organizations, billing) but also needs to store flexible form submissions with varying schemas. The team has more PostgreSQL experience. Write the ADR in the standard format.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "## Status",
+        "description": "The ADR must include a Status section (Proposed, Accepted, Deprecated, or Superseded) to indicate the decision lifecycle stage."
+      },
+      {
+        "type": "contains",
+        "value": "## Context",
+        "description": "The ADR must include a Context section explaining the forces, constraints, and business requirements that drive the decision."
+      },
+      {
+        "type": "contains",
+        "value": "## Decision",
+        "description": "The ADR must include a Decision section that clearly states what was decided, not just what was considered."
+      },
+      {
+        "type": "contains",
+        "value": "## Consequences",
+        "description": "The ADR must include a Consequences section documenting both positive and negative outcomes of the decision."
+      },
+      {
+        "type": "contains",
+        "value": "MongoDB",
+        "description": "The ADR must discuss MongoDB as a considered alternative with specific trade-offs evaluated, not just mention the chosen option."
+      }
+    ]
+  }
+]

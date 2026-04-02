@@ -1,0 +1,18 @@
+id: stitch-design-system
+kind: capability
+label: "Stitch Design System"
+description: "stitch-design-system guidance migrated from workflows/skills."
+stability: stable
+profiles:
+  - developer
+routeHints:
+  - stitch
+  - design
+  - system
+capability:
+  type: tool
+  domains: [stitch, design, system]
+  outputs:
+    - type: skill
+      path: generated/skills/stitch-design-system.md
+      platforms: [claude]

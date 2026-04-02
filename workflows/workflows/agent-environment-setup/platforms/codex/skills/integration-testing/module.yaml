@@ -1,0 +1,17 @@
+id: integration-testing
+kind: capability
+label: "Integration Testing"
+description: "integration-testing guidance migrated from workflows/skills."
+stability: stable
+profiles:
+  - developer
+routeHints:
+  - integration
+  - testing
+capability:
+  type: tool
+  domains: [integration, testing]
+  outputs:
+    - type: skill
+      path: generated/skills/integration-testing.md
+      platforms: [claude]

@@ -50,6 +50,6 @@ Deliver:
 
 | File | Load when |
 | --- | --- |
-| `../ui-testing-harness/SKILL.md` | Building the anti-slop benchmark harness or scenario matrix. |
-| `../playwright-web-qa/SKILL.md` | Running a live charter against a web app. |
-| `../flutter-mobile-qa/SKILL.md` | Running Flutter/Android QA with screenshots, UI trees, and log capture. |
+| `../web-testing/SKILL.md` | Running a live charter against a web app with Playwright evidence. |
+| `../android-emulator-testing/SKILL.md` | Running Android QA with screenshots, UI trees, and log capture. |
+| `../ios-simulator-testing/SKILL.md` | Running iOS simulator QA with equivalent mobile evidence. |

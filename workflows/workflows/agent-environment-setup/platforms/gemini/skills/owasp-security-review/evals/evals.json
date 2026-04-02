@@ -1,0 +1,68 @@
+[
+  {
+    "id": "owasp-injection-detection",
+    "title": "Detect injection vulnerabilities in code sample",
+    "description": "Given a code sample with SQL injection and XSS vulnerabilities, the skill should identify both, classify them under the correct OWASP categories, and provide remediation.",
+    "prompt": "Review the following Express.js route handler for OWASP Top 10 vulnerabilities:\n\n```javascript\napp.get('/users', (req, res) => {\n  const query = `SELECT * FROM users WHERE name = '${req.query.name}'`;\n  db.query(query, (err, results) => {\n    if (err) {\n      res.status(500).send(`<h1>Error: ${err.message}</h1>`);\n    }\n    res.send(`<h1>Results for ${req.query.name}</h1><pre>${JSON.stringify(results)}</pre>`);\n  });\n});\n```",
+    "assertions": [
+      {
+        "type": "content_contains",
+        "value": "SQL injection",
+        "description": "Must identify SQL injection from string concatenation in query"
+      },
+      {
+        "type": "content_contains",
+        "value": "XSS",
+        "description": "Must identify reflected XSS from unsanitized user input in HTML response"
+      },
+      {
+        "type": "content_matches_regex",
+        "value": "A0[3]|Injection|injection",
+        "description": "Must reference the OWASP Injection category (A03:2025)"
+      },
+      {
+        "type": "content_contains",
+        "value": "parameterized",
+        "description": "Must recommend parameterized queries as SQL injection remediation"
+      },
+      {
+        "type": "content_matches_regex",
+        "value": "encod|escap|sanitiz|DOMPurify",
+        "description": "Must recommend output encoding or sanitization for XSS remediation"
+      }
+    ]
+  },
+  {
+    "id": "owasp-threat-model-generation",
+    "title": "Generate a threat model for an authentication service",
+    "description": "Given a description of an authentication microservice, the skill should produce a threat model covering STRIDE categories, trust boundaries, and risk ratings.",
+    "prompt": "Build a threat model for the following service:\n\nAn authentication microservice that accepts username/password via REST API, validates against a PostgreSQL database, issues JWT tokens, supports OAuth2 with Google and GitHub, exposes a /reset-password endpoint that sends email via SendGrid, and runs in a Kubernetes pod with a public-facing ingress.",
+    "assertions": [
+      {
+        "type": "content_matches_regex",
+        "value": "STRIDE|spoofing|tampering|repudiation|information disclosure|denial of service|elevation of privilege",
+        "description": "Must use STRIDE or enumerate STRIDE threat categories"
+      },
+      {
+        "type": "content_matches_regex",
+        "value": "trust boundar|boundary|ingress|external|internal",
+        "description": "Must identify trust boundaries between external clients, ingress, and internal services"
+      },
+      {
+        "type": "content_matches_regex",
+        "value": "JWT|token|session",
+        "description": "Must analyze JWT token security (signing, expiry, storage)"
+      },
+      {
+        "type": "content_matches_regex",
+        "value": "password reset|reset.password|account takeover",
+        "description": "Must identify password reset flow as a threat vector"
+      },
+      {
+        "type": "content_matches_regex",
+        "value": "Critical|High|Medium|Low|severity|risk.*(rating|level)",
+        "description": "Must assign risk or severity ratings to identified threats"
+      }
+    ]
+  }
+]

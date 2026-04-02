@@ -81,7 +81,7 @@ function listSkillDirs(dir) {
     .map((entry) => entry.name)
     .sort();
 }
-const canonical = listSkillDirs(path.join(root, 'workflows', 'skills'));
+const canonical = listSkillDirs(path.join(root, 'foundry', 'modules'));
 for (const label of ['copilot', 'claude']) {
   const mirror = listSkillDirs(path.join(root, 'workflows', 'workflows', 'agent-environment-setup', 'platforms', label, 'skills'));
   if (mirror.length !== canonical.length) {

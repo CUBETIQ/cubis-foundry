@@ -89,6 +89,17 @@ const CANONICAL_HOOK_ENTRIES = [
   "scripts",
 ];
 
+const REMOVED_TOP_LEVEL_SKILL_IDS = new Set([
+  "qa",
+  "unit-testing",
+  "integration-testing",
+  "playwright-interactive",
+  "stitch",
+  "mcp-core",
+  "research-core",
+  "rules-core",
+]);
+
 const COPILOT_ALLOWED_AGENT_KEYS = new Set([
   "agents",
   "name",
@@ -800,6 +811,7 @@ async function listTopLevelCanonicalSkillIds() {
   const skillIds = [];
   for (const entry of entries) {
     if (!entry.isDirectory() || entry.name.startsWith("_")) continue;
+    if (REMOVED_TOP_LEVEL_SKILL_IDS.has(entry.name)) continue;
     const skillFile = path.join(CANONICAL_SKILLS_DIR, entry.name, "SKILL.md");
     if (!(await pathExists(skillFile))) continue;
     skillIds.push(entry.name);

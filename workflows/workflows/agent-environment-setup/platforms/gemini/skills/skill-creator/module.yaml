@@ -1,0 +1,17 @@
+id: skill-creator
+kind: skill
+label: Skill Creator
+description: "Create or update skills, evaluate skill performance, or benchmark instruction quality. Covers skill authoring, edits, eval design, and iterative improvement of skill behavior."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - process
+  outputs:
+    - type: skill
+      path: foundry/modules/skill-creator/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

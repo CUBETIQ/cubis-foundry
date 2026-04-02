@@ -1,0 +1,17 @@
+id: playwright-interactive
+kind: capability
+label: "Playwright Interactive"
+description: "playwright-interactive guidance migrated from workflows/skills."
+stability: stable
+profiles:
+  - developer
+routeHints:
+  - playwright
+  - interactive
+capability:
+  type: tool
+  domains: [playwright, interactive]
+  outputs:
+    - type: skill
+      path: generated/skills/playwright-interactive.md
+      platforms: [claude]

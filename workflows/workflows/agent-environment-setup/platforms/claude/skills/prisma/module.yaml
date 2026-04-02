@@ -1,0 +1,17 @@
+id: prisma
+kind: skill
+label: Prisma
+description: "Work with Prisma 6+ for schema design, database migrations, client queries, relation modeling, edge deployment, and type-safe database access in TypeScript and Node.js applications."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/prisma/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

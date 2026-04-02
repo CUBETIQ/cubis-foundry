@@ -1,0 +1,24 @@
+{
+  "evals": [
+    {
+      "prompt": "Create a new skill called 'graphql-gateway' for building GraphQL federation gateways with Apollo Router, subgraph composition, and schema stitching.",
+      "assertions": [
+        "generates a SKILL.md with valid YAML frontmatter including name, description, license, metadata, and compatibility fields",
+        "description starts with 'Use when' and includes 3-6 specific trigger conditions for GraphQL gateway scenarios",
+        "includes 12-18 numbered instructions in WHAT + WHY format with 'because' reasoning",
+        "creates a References table with 3-6 reference files and 'Load when' conditions",
+        "produces an evals.json with at least 2 eval prompts and 5 assertions each"
+      ]
+    },
+    {
+      "prompt": "Evaluate the python-best-practices skill by running its evals and reporting which assertions pass or fail with evidence.",
+      "assertions": [
+        "reads the existing skill's evals.json before running evaluations",
+        "runs each eval prompt and checks every assertion individually",
+        "reports pass/fail per assertion with specific evidence from the output",
+        "identifies any flaky or borderline assertions that might fail inconsistently",
+        "provides actionable improvement suggestions for failed assertions"
+      ]
+    }
+  ]
+}

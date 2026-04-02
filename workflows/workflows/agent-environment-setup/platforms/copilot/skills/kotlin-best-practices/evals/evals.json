@@ -1,0 +1,32 @@
+{
+  "skill_name": "kotlin-best-practices",
+  "platform": "claude-code",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm building a Kotlin backend service that needs to fetch user profiles from a database, enrich them with data from 3 external APIs (preferences, activity, recommendations), and return the combined result. Each external API call takes 200-500ms. Design a coroutine-based service layer with proper structured concurrency, timeout handling (2 second deadline for the whole operation), and graceful degradation (return partial data if some enrichment calls fail).",
+      "expected_output": "A coroutine-based service using supervisorScope for parallel enrichment calls with individual timeouts, a composed deadline via withTimeout, and result types that model partial success.",
+      "files": [],
+      "assertions": [
+        "Uses supervisorScope or async with SupervisorJob for parallel enrichment calls so that one failure does not cancel siblings",
+        "Applies withTimeout or withTimeoutOrNull for the overall 2-second deadline and individual call timeouts",
+        "Uses a sealed class or Result type to model partial success where some enrichment data may be missing",
+        "Dispatches I/O calls on Dispatchers.IO using withContext and does not block the calling dispatcher",
+        "Includes structured error handling that does not catch CancellationException (or explicitly rethrows it)"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I'm starting a Kotlin Multiplatform project that shares a domain layer between an Android app and an iOS app. The shared module needs: a data model with sealed types for order states, a repository interface with Flow-based reactive queries, kotlinx.serialization for API responses, and expect/actual for platform-specific logging. Show me the module structure and key implementations.",
+      "expected_output": "A KMP module structure with commonMain containing sealed domain types, repository interface returning Flow, serialization models, and expect/actual declarations, plus androidMain and iosMain actual implementations.",
+      "files": [],
+      "assertions": [
+        "Defines the shared module with commonMain, androidMain, and iosMain source sets in the Gradle configuration",
+        "Uses sealed class or sealed interface in commonMain for order state modeling with data class variants",
+        "Defines a repository interface in commonMain returning Flow<T> for reactive data access",
+        "Uses @Serializable annotations from kotlinx.serialization for API response models in commonMain",
+        "Implements expect/actual pattern for platform-specific logging (expect in commonMain, actual in androidMain and iosMain)"
+      ]
+    }
+  ]
+}

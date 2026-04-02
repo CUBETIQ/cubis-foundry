@@ -1,0 +1,89 @@
+{
+  "product_name": "SignalOps",
+  "product_type": "b2b operations workspace",
+  "platforms": ["mobile", "web", "desktop"],
+  "goals": [
+    "Help field technicians capture and close jobs faster",
+    "Help dispatchers triage incidents and schedule work",
+    "Give operations managers a live service overview"
+  ],
+  "users": [
+    "field technicians",
+    "dispatchers",
+    "operations managers"
+  ],
+  "jobs_to_be_done": [
+    "Capture job details on site",
+    "Track active incidents",
+    "Reschedule and assign work quickly",
+    "Review operational performance"
+  ],
+  "brand_adjectives": [
+    "durable",
+    "clear",
+    "high-trust",
+    "fast"
+  ],
+  "screens": [
+    {
+      "name": "dashboard",
+      "priority": "high",
+      "tasks": ["monitor live status", "spot bottlenecks"]
+    },
+    {
+      "name": "job detail",
+      "priority": "high",
+      "tasks": ["review work order", "capture notes", "upload proof"]
+    },
+    {
+      "name": "schedule",
+      "priority": "high",
+      "tasks": ["assign work", "reschedule visits"]
+    },
+    {
+      "name": "incident triage",
+      "priority": "high",
+      "tasks": ["prioritize issues", "route response"]
+    },
+    {
+      "name": "reports",
+      "priority": "medium",
+      "tasks": ["review trends", "share performance"]
+    }
+  ],
+  "constraints": {
+    "accessibility_target": "wcag 2.2 aa",
+    "motion_tolerance": "subtle",
+    "locales": ["en", "es"],
+    "offline_support": true,
+    "real_time": true,
+    "seo": false,
+    "browser_support": ["chrome", "edge", "safari"],
+    "desktop_os": ["macos", "windows"],
+    "device_features": ["camera", "location", "push notifications"]
+  },
+  "platform_details": {
+    "mobile": {
+      "targets": ["ios", "android"],
+      "one_handed_use": true,
+      "primary_navigation": "bottom tabs plus stack"
+    },
+    "web": {
+      "targets": ["responsive app"],
+      "primary_navigation": "header plus side rail",
+      "breakpoints": [360, 768, 1024, 1440]
+    },
+    "desktop": {
+      "targets": ["macos", "windows"],
+      "primary_navigation": "sidebar plus multi-pane workspace",
+      "keyboard_shortcuts": true,
+      "multi_window": false
+    }
+  },
+  "design_direction": {
+    "style_family": "industrial operations",
+    "density": "balanced to dense",
+    "color_mood": "industrial",
+    "motion_style": "minimal"
+  }
+}

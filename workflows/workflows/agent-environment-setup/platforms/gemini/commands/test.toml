@@ -8,8 +8,8 @@ Execution contract:
 1. Treat route selection as already resolved by this command; do not begin with skill discovery.
 2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.
 Attached skills:
-- Load these exact skill IDs first: `web-testing`, `android-emulator-testing`, `ios-simulator-testing`.
-- Local skill file hints if installed: `.gemini/skills/web-testing/SKILL.md`, `.gemini/skills/android-emulator-testing/SKILL.md`, `.gemini/skills/ios-simulator-testing/SKILL.md`.
+- Load these exact skill IDs first: `unit-testing`, `integration-testing`, `web-testing`, `android-emulator-testing`, `ios-simulator-testing`.
+- Local skill file hints if installed: `.gemini/skills/unit-testing/SKILL.md`, `.gemini/skills/integration-testing/SKILL.md`, `.gemini/skills/web-testing/SKILL.md`, `.gemini/skills/android-emulator-testing/SKILL.md`, `.gemini/skills/ios-simulator-testing/SKILL.md`.
 - Treat the skill bundle as already resolved for this workflow. Do not start with route discovery.
 3. Confirm the request fits the workflow's "When to use" section before acting.
 4. Execute according to "Workflow steps" and apply "Context notes".
@@ -41,10 +41,11 @@ Use this when the implementation exists but verification is weak, missing, or to
 
 ## Skill routing
 
+- Start with `unit-testing` for narrow code-level coverage and add `integration-testing` when the proof crosses a real boundary.
 - Route browser QA to `web-testing`.
 - Route Android emulator work to `android-emulator-testing`.
 - Route iOS simulator work to `ios-simulator-testing`.
-- For code-level unit or integration coverage, load the owning language or framework skill instead of generic testing wrappers.
+- Load the owning language or framework skill alongside these testing surfaces when the target stack has specific test conventions.
 
 ## Context notes
 

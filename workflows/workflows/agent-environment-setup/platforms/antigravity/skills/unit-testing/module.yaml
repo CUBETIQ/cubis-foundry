@@ -1,0 +1,17 @@
+id: unit-testing
+kind: capability
+label: "Unit Testing"
+description: "unit-testing guidance migrated from workflows/skills."
+stability: stable
+profiles:
+  - developer
+routeHints:
+  - unit
+  - testing
+capability:
+  type: tool
+  domains: [unit, testing]
+  outputs:
+    - type: skill
+      path: generated/skills/unit-testing.md
+      platforms: [claude]

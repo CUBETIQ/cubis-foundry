@@ -1,0 +1,18 @@
+id: stitch-implementation-handoff
+kind: capability
+label: "Stitch Implementation Handoff"
+description: "stitch-implementation-handoff guidance migrated from workflows/skills."
+stability: stable
+profiles:
+  - developer
+routeHints:
+  - stitch
+  - implementation
+  - handoff
+capability:
+  type: tool
+  domains: [stitch, implementation, handoff]
+  outputs:
+    - type: skill
+      path: generated/skills/stitch-implementation-handoff.md
+      platforms: [claude]

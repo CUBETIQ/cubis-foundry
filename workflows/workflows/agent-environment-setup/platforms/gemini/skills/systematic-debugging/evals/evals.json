@@ -1,0 +1,68 @@
+[
+  {
+    "id": "systematic-debugging-eval-001",
+    "name": "Root cause analysis for intermittent null pointer",
+    "description": "Evaluate the skill's ability to conduct a structured root cause analysis for an intermittent NullPointerException in a multi-threaded service, applying the Five Whys and evidence-based investigation.",
+    "prompt": "Our user-service throws a NullPointerException about 5% of the time when handling GET /api/users/:id requests. It only happens under load (>100 concurrent requests). The stack trace points to UserCache.get() returning null. The cache is a ConcurrentHashMap populated on startup. Walk me through a systematic debugging process to find the root cause.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "reproduce",
+        "description": "Should start by establishing reliable reproduction steps under load conditions"
+      },
+      {
+        "type": "contains",
+        "value": "hypothesis",
+        "description": "Should form a specific, falsifiable hypothesis about the cause (e.g., race condition, cache eviction)"
+      },
+      {
+        "type": "contains",
+        "value": "why",
+        "description": "Should apply the Five Whys or equivalent root cause analysis technique"
+      },
+      {
+        "type": "contains",
+        "value": "thread",
+        "description": "Should investigate thread safety and concurrent access patterns as a likely root cause"
+      },
+      {
+        "type": "contains",
+        "value": "regression test",
+        "description": "Should recommend a regression test that verifies the fix under concurrent conditions"
+      }
+    ]
+  },
+  {
+    "id": "systematic-debugging-eval-002",
+    "name": "Systematic bisection for deployment regression",
+    "description": "Evaluate the skill's ability to apply systematic bisection (git bisect or equivalent) to identify the exact commit that introduced a performance regression after a release.",
+    "prompt": "After deploying version 2.4.0 (containing 47 commits), our API response time jumped from 150ms to 800ms. We need to find the responsible commit. Design a systematic bisection strategy. The commits span database changes, new middleware, dependency updates, and feature code. Show the bisection process, how to define good/bad criteria, and how to handle commits that can't be tested in isolation.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "bisect",
+        "description": "Should recommend git bisect or equivalent binary search strategy to narrow from 47 commits"
+      },
+      {
+        "type": "contains",
+        "value": "good",
+        "description": "Should define clear good/bad criteria based on measurable response time threshold"
+      },
+      {
+        "type": "contains",
+        "value": "skip",
+        "description": "Should address how to handle untestable commits (git bisect skip or manual workaround)"
+      },
+      {
+        "type": "contains",
+        "value": "log",
+        "description": "Should suggest using logarithmic narrowing (O(log n) steps) for efficiency"
+      },
+      {
+        "type": "contains",
+        "value": "automat",
+        "description": "Should recommend automating the bisection with a test script for consistent evaluation"
+      }
+    ]
+  }
+]

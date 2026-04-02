@@ -1,0 +1,17 @@
+id: svelte-sveltekit
+kind: skill
+label: Svelte / SvelteKit
+description: "Build web applications with Svelte 5 and SvelteKit. Invoke for rune-based reactivity, file-based routing, form actions, server-side rendering, load functions, and deployment."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/svelte-sveltekit/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

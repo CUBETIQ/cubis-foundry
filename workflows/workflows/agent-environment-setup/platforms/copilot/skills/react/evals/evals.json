@@ -1,0 +1,68 @@
+[
+  {
+    "id": "react-eval-01",
+    "name": "use() hook with Suspense for data fetching",
+    "description": "Validate that the skill correctly guides implementation of the React 19 use() hook with Suspense boundaries for promise-based data fetching.",
+    "prompt": "Create a React 19 UserProfile component that receives a user data promise as a prop and reads it with the use() hook. Wrap it in a Suspense boundary with a skeleton fallback. Include an ErrorBoundary for fetch failures. The component should display name, email, and avatar. Type all props with TypeScript interfaces.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "use(",
+        "description": "Must use the React 19 use() hook to read the promise instead of useEffect + useState pattern"
+      },
+      {
+        "type": "contains",
+        "value": "<Suspense",
+        "description": "Must wrap the component in a Suspense boundary since use() suspends rendering until the promise resolves"
+      },
+      {
+        "type": "contains",
+        "value": "fallback",
+        "description": "Must provide a fallback prop to Suspense for displaying a loading skeleton while data loads"
+      },
+      {
+        "type": "pattern",
+        "value": "ErrorBoundary|error.boundary|componentDidCatch",
+        "description": "Must include an Error Boundary to catch and display fetch failures gracefully"
+      },
+      {
+        "type": "pattern",
+        "value": "interface|type\\s+\\w+\\s*=",
+        "description": "Must define TypeScript interfaces or type aliases for component props to ensure type safety"
+      }
+    ]
+  },
+  {
+    "id": "react-eval-02",
+    "name": "Form with useActionState and useOptimistic",
+    "description": "Validate that the skill correctly implements a React 19 form using useActionState for state management and useOptimistic for instant UI feedback.",
+    "prompt": "Build a React 19 todo list with an add-todo form. Use useActionState to handle form submission with a server action that saves the todo. Use useOptimistic to show the new todo immediately in the list before the server responds. Handle the error case by reverting the optimistic update. Include a pending state indicator on the submit button using the useFormStatus hook.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "useActionState",
+        "description": "Must use useActionState to manage form action state including pending state and previous results"
+      },
+      {
+        "type": "contains",
+        "value": "useOptimistic",
+        "description": "Must use useOptimistic to provide instant UI feedback before the server action completes"
+      },
+      {
+        "type": "pattern",
+        "value": "action[=:]|<form.*action",
+        "description": "Must pass the action function to a form element's action prop for React 19 form handling"
+      },
+      {
+        "type": "pattern",
+        "value": "useFormStatus|pending",
+        "description": "Must track pending state to disable the submit button and show a loading indicator during submission"
+      },
+      {
+        "type": "contains",
+        "value": "'use server'",
+        "description": "Must include a server action marked with 'use server' for the form mutation handler"
+      }
+    ]
+  }
+]

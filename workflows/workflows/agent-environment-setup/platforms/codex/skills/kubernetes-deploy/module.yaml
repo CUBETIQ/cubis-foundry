@@ -1,0 +1,17 @@
+id: kubernetes-deploy
+kind: skill
+label: Kubernetes Deploy
+description: "Design or manage Kubernetes deployments: Deployment and StatefulSet configurations, Service and Ingress routing, Helm chart authoring, resource requests and limits, health checks, rolling updates, and production hardening."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/kubernetes-deploy/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

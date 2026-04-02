@@ -1,0 +1,17 @@
+id: django-drf
+kind: skill
+label: Django DRF
+description: "Build Django 5.1+ REST APIs with Django REST Framework 3.15+, covering serializers, viewsets, permissions, filtering, pagination, and async support."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/django-drf/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

@@ -1,0 +1,68 @@
+[
+  {
+    "id": "kaizen-iteration-eval-001",
+    "name": "Sprint retrospective with root cause analysis",
+    "description": "Evaluate the skill's ability to facilitate a structured retrospective, extract patterns from observations, and perform root cause analysis using the 5 Whys technique.",
+    "prompt": "Run a retrospective for our sprint. Here are the observations from the team: (1) We missed the deadline for the search feature by 3 days. (2) Two critical bugs were found in production after deployment. (3) Code reviews took an average of 4 days to complete. (4) The design handoff was unclear, causing 2 days of rework. (5) Deployment pipeline failed 6 times during the sprint. Categorize these, perform root cause analysis on the top 2 issues, and propose improvement experiments.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "root cause",
+        "description": "Should perform root cause analysis using 5 Whys or equivalent technique to dig beneath symptoms"
+      },
+      {
+        "type": "contains",
+        "value": "hypothesis",
+        "description": "Should formulate improvements as testable hypotheses with measurable outcomes"
+      },
+      {
+        "type": "contains",
+        "value": "metric",
+        "description": "Should identify specific metrics to track whether improvements are working"
+      },
+      {
+        "type": "contains",
+        "value": "owner",
+        "description": "Should recommend assigning a single owner to each improvement experiment"
+      },
+      {
+        "type": "contains",
+        "value": "categor",
+        "description": "Should categorize observations into types like process, tooling, communication, or technical debt"
+      }
+    ]
+  },
+  {
+    "id": "kaizen-iteration-eval-002",
+    "name": "Metrics-driven improvement cycle evaluation",
+    "description": "Evaluate the skill's ability to analyze team metrics, establish baselines, identify improvement opportunities, and design experiments with timeboxes.",
+    "prompt": "Here are our team's DORA metrics for the last quarter: Deployment frequency: 2/week (industry median: 1/week). Lead time for changes: 8 days (industry median: 1 week). Change failure rate: 22% (industry median: 15%). Mean time to recovery: 6 hours (industry median: 1 hour). Analyze these metrics, identify the most impactful improvement opportunity, and design a kaizen experiment to address it. Include baseline, target, timebox, and success criteria.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "baseline",
+        "description": "Should establish a clear metrics baseline from the provided data before proposing changes"
+      },
+      {
+        "type": "contains",
+        "value": "recovery",
+        "description": "Should identify MTTR as a significant improvement opportunity since it is 6x the industry median"
+      },
+      {
+        "type": "contains",
+        "value": "experiment",
+        "description": "Should design a structured improvement experiment with clear parameters"
+      },
+      {
+        "type": "contains",
+        "value": "timebox",
+        "description": "Should set a fixed evaluation period for the improvement experiment"
+      },
+      {
+        "type": "contains",
+        "value": "failure rate",
+        "description": "Should address the change failure rate as it is above industry median"
+      }
+    ]
+  }
+]

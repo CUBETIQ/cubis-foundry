@@ -1,0 +1,17 @@
+id: golang-best-practices
+kind: skill
+label: Go Best Practices
+description: "Write production Go 1.24+ code: generics with constraints, structured concurrency via errgroup and context, comprehensive error handling with wrapped sentinels, and performance-profiled service design."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/golang-best-practices/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

@@ -1,7 +1,7 @@
 {
   "$schema": "./cubis-foundry-route-manifest-v2.schema.json",
   "generatedAt": "1970-01-01T00:00:00.000Z",
-  "contentHash": "2060ae5d6e6c54cc",
+  "contentHash": "e603f42a1fea23cf",
   "summary": {
     "totalRoutes": 18,
     "workflows": 10,
@@ -386,6 +386,7 @@
       "primaryAgent": "reviewer",
       "supportingAgents": [],
       "primarySkills": [
+        "frontend-design",
         "design"
       ],
       "supportingSkills": [
@@ -433,10 +434,11 @@
         "implementer"
       ],
       "primarySkills": [
-        "design",
-        "web-ui-design"
+        "frontend-design",
+        "design"
       ],
       "supportingSkills": [
+        "web-ui-design",
         "mobile-ui-design",
         "desktop-ui-design",
         "design-system"
@@ -476,13 +478,17 @@
         "component library",
         "ui consistency"
       ],
-      "primaryAgent": "implementer",
-      "supportingAgents": [],
+      "primaryAgent": "planner",
+      "supportingAgents": [
+        "implementer"
+      ],
       "primarySkills": [
-        "design",
-        "web-ui-design"
+        "frontend-design",
+        "design-system"
       ],
       "supportingSkills": [
+        "design",
+        "web-ui-design",
         "mobile-ui-design",
         "desktop-ui-design"
       ],
@@ -701,9 +707,11 @@
       "primaryAgent": "tester",
       "supportingAgents": [],
       "primarySkills": [
-        "web-testing"
+        "unit-testing"
       ],
       "supportingSkills": [
+        "integration-testing",
+        "web-testing",
         "android-emulator-testing",
         "ios-simulator-testing"
       ],

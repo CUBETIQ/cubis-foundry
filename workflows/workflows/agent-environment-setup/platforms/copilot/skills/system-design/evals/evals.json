@@ -1,0 +1,68 @@
+{
+  "evals": [
+    {
+      "name": "distributed-cache-design",
+      "description": "Validate that the skill produces a distributed caching architecture with proper invalidation strategy, consistency model, failure handling, and capacity planning for a high-traffic read-heavy application.",
+      "input": "Design a distributed caching layer for an e-commerce product catalog that serves 50,000 read QPS with a 99th percentile latency target of 10ms. The catalog has 2 million products updated by merchants approximately 500 times per minute. Design the caching architecture including cache topology, invalidation strategy, consistency model, failure handling, and capacity estimates.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "cache-aside",
+          "description": "The design must identify and justify the caching pattern (cache-aside, write-through, or write-behind) based on the read-heavy access pattern and consistency requirements."
+        },
+        {
+          "type": "contains",
+          "value": "TTL",
+          "description": "The design must specify a TTL-based expiration policy with concrete duration values tied to the acceptable staleness window for product catalog data."
+        },
+        {
+          "type": "contains",
+          "value": "invalidat",
+          "description": "The design must include an active cache invalidation strategy (event-driven, pub/sub, or direct invalidation) to handle the 500 updates per minute without relying solely on TTL expiry."
+        },
+        {
+          "type": "contains",
+          "value": "failover",
+          "description": "The design must address cache failure scenarios with a fallback strategy (database direct read, local cache, or degraded response) to maintain availability when the cache layer is unavailable."
+        },
+        {
+          "type": "contains",
+          "value": "consistent hashing",
+          "description": "The design must use consistent hashing or a similar partitioning strategy for distributing cache keys across nodes so that node additions or removals minimize cache misses."
+        }
+      ]
+    },
+    {
+      "name": "event-driven-architecture",
+      "description": "Validate that the skill produces an event-driven architecture with proper event schema design, delivery guarantees, ordering, consumer group management, and dead letter handling for an order processing system.",
+      "input": "Design an event-driven architecture for an order processing system that handles order placement, payment processing, inventory reservation, shipping coordination, and notification delivery. The system must guarantee that no order is lost, handle out-of-order events, support replay for debugging, and scale to 10,000 orders per minute at peak. Include event schema design, topic structure, consumer group configuration, and dead letter queue handling.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "idempoten",
+          "description": "The design must address idempotency in event consumers so that duplicate message delivery (inherent in at-least-once systems) does not cause duplicate side effects."
+        },
+        {
+          "type": "contains",
+          "value": "dead letter",
+          "description": "The design must include a dead letter queue or topic for events that fail processing after retries so that poison messages do not block the consumer pipeline."
+        },
+        {
+          "type": "contains",
+          "value": "partition",
+          "description": "The design must specify a partitioning strategy (e.g., by order ID) to maintain event ordering within a single order while enabling parallel processing across orders."
+        },
+        {
+          "type": "contains",
+          "value": "schema",
+          "description": "The design must define event schemas with versioning (Avro, JSON Schema, or Protobuf) so that producers and consumers can evolve independently without breaking contracts."
+        },
+        {
+          "type": "contains",
+          "value": "at-least-once",
+          "description": "The design must explicitly state the delivery guarantee (at-least-once with idempotent consumers) and explain why exactly-once is impractical in a distributed system."
+        }
+      ]
+    }
+  ]
+}

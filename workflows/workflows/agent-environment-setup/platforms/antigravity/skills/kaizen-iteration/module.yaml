@@ -1,0 +1,17 @@
+id: kaizen-iteration
+kind: skill
+label: Kaizen Iteration
+description: "Run retrospectives, analyze team metrics, perform root-cause analysis, and drive incremental process improvement."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - process
+  outputs:
+    - type: skill
+      path: foundry/modules/kaizen-iteration/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

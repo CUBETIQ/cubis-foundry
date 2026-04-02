@@ -1,0 +1,17 @@
+id: system-design
+kind: skill
+label: System Design
+description: "System design and architecture guidance covering distributed systems, scalability, reliability, CAP theorem, load balancing, and caching strategies for production infrastructure."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/system-design/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

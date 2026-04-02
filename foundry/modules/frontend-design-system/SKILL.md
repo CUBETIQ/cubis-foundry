@@ -27,7 +27,7 @@ Author and refresh the project's canonical design-system state so design, Stitch
 2. **Write scoped overlays only when needed** — Use the page overlays directory under `docs/foundation/design/pages/`, the flow overlays directory under `docs/foundation/design/flows/`, or the mobile overlays directory under `docs/foundation/design/mobile/` when a narrower slice of the product needs additional detail.
 3. **Use semantic token naming** — Load `workflows/design-datasets/token-language.json` and preserve semantic roles instead of raw color dumps.
 4. **Preserve source metadata in the authoring process, not the final doc body** — The final design docs should be crisp and implementation-oriented, but the chosen direction should come from normalized datasets with source provenance.
-5. **Mirror to `.stitch/DESIGN.md` when Stitch flows are in scope** — The mirror should be generated from the canonical state and applicable overlays, never hand-maintained separately.
+5. **Mirror to Stitch-facing design context when Stitch flows are in scope** — The mirror should be generated from the canonical state and applicable overlays, never hand-maintained separately.
 
 ## Output Format
 
@@ -37,4 +37,4 @@ Deliver:
 2. Token language
 3. Component vocabulary
 4. Overlay files created or refreshed
-5. Whether `.stitch/DESIGN.md` was updated
+5. Whether the Stitch-facing design mirror was updated

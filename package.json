@@ -1,6 +1,6 @@
 {
   "name": "@cubis/foundry",
-  "version": "0.3.85",
+  "version": "0.3.86",
   "description": "Cubis Foundry CLI for workflow-first AI agent environments",
   "type": "module",
   "bin": {

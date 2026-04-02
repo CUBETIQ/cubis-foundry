@@ -1,0 +1,17 @@
+id: prompt-engineering
+kind: skill
+label: Prompt Engineering
+description: "Design system prompts, craft few-shot examples, implement chain-of-thought reasoning, extract structured output from LLMs, or build tool-use patterns for agent systems."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - ai
+  outputs:
+    - type: skill
+      path: foundry/modules/prompt-engineering/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

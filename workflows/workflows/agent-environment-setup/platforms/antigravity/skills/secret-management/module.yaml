@@ -1,0 +1,17 @@
+id: secret-management
+kind: skill
+label: Secret Management
+description: "Design and implement secret and credential management strategies including vault integration, environment variable handling, rotation policies, secret scanning, and zero-trust credential distribution."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - security
+  outputs:
+    - type: skill
+      path: foundry/modules/secret-management/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

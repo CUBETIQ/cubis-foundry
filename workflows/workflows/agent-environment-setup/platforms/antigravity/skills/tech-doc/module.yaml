@@ -1,0 +1,17 @@
+id: tech-doc
+kind: skill
+label: Technical Documentation
+description: "Write technical documentation including API references, operational runbooks, onboarding guides, decision logs, and changelog standards."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - process
+  outputs:
+    - type: skill
+      path: foundry/modules/tech-doc/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

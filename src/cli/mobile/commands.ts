@@ -16,7 +16,7 @@ export function registerMobileCommands(
   const testingCommand = mobileCommand
     .command("test")
     .description(
-      "Run charter-driven mobile testing via android-emulator-testing, ios-simulator-testing, and mobile-mcp",
+      "Run the Android-focused mobile testing compatibility runner while routing broader work through android-emulator-testing, ios-simulator-testing, and mobile-mcp",
     );
 
   testingCommand
@@ -26,9 +26,9 @@ export function registerMobileCommands(
       "--charter <path>",
       "path to the mobile testing YAML charter",
     )
-    .option("--apk <path>", "optional APK to install before launch")
-    .option("--package <id>", "optional package id override")
-    .option("--avd <name>", "optional AVD name to target")
+    .option("--apk <path>", "optional Android APK to install before launch")
+    .option("--package <id>", "optional Android package id override")
+    .option("--avd <name>", "optional Android AVD name to target")
     .option(
       "--artifacts-dir <path>",
       "artifact root directory (default: artifacts/mobile-testing)",

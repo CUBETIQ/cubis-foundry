@@ -1,0 +1,18 @@
+id: stitch-prompt-enhancement
+kind: capability
+label: "Stitch Prompt Enhancement"
+description: "stitch-prompt-enhancement guidance migrated from workflows/skills."
+stability: stable
+profiles:
+  - developer
+routeHints:
+  - stitch
+  - prompt
+  - enhancement
+capability:
+  type: tool
+  domains: [stitch, prompt, enhancement]
+  outputs:
+    - type: skill
+      path: generated/skills/stitch-prompt-enhancement.md
+      platforms: [claude]

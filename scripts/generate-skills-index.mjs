@@ -23,10 +23,11 @@ const DEFAULT_TARGETS = {
     roots: [
       path.join(
         ROOT,
-        "generated",
-        "runtime-assets",
+        "workflows",
+        "workflows",
+        "agent-environment-setup",
+        "platforms",
         "copilot",
-        ".github",
         "skills",
       ),
     ],
@@ -46,10 +47,11 @@ const DEFAULT_TARGETS = {
     roots: [
       path.join(
         ROOT,
-        "generated",
-        "runtime-assets",
+        "workflows",
+        "workflows",
+        "agent-environment-setup",
+        "platforms",
         "claude",
-        ".claude",
         "skills",
       ),
     ],

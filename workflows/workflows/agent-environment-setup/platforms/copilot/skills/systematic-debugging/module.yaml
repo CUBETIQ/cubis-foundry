@@ -1,0 +1,17 @@
+id: systematic-debugging
+kind: skill
+label: Systematic Debugging
+description: "Systematic debugging methodology covering root cause analysis, bisection, logging strategies, debugger workflows, and post-mortem documentation."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/systematic-debugging/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

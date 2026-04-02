@@ -1,0 +1,17 @@
+id: expo-app
+kind: skill
+label: Expo App
+description: "Build or maintain Expo applications: SDK 52+ features, EAS Build and Submit pipelines, OTA updates with expo-updates, native module integration via config plugins, push notifications with expo-notifications, and cross-platform testing."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/expo-app/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

@@ -1,0 +1,17 @@
+id: java-best-practices
+kind: skill
+label: Java Best Practices
+description: "Write, refactor, or review modern Java (21+) code. Covers records, sealed classes, pattern matching, virtual threads, structured concurrency, and production testing with JUnit 5."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/java-best-practices/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

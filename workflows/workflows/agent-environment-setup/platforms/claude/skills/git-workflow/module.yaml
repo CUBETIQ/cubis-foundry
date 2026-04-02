@@ -1,0 +1,17 @@
+id: git-workflow
+kind: skill
+label: Git Workflow
+description: "Define git branching, commit conventions, merge or rebase policy, release flow, or monorepo collaboration patterns."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/git-workflow/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

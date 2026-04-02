@@ -1,0 +1,64 @@
+[
+  {
+    "id": "csharp-minimal-api-with-records",
+    "prompt": "Design a .NET 9 minimal API for an order management service. The API should use records for request/response DTOs, TypedResults for compile-time response contracts, dependency injection with proper lifetimes, and nullable reference types. Include endpoints for creating an order, getting an order by ID, and listing orders with pagination.",
+    "assertions": [
+      {
+        "id": "record-types-for-dtos",
+        "description": "Request and response types are declared as record or record struct (e.g., record CreateOrderRequest, record OrderResponse) with required properties and value equality semantics — not plain classes with mutable properties.",
+        "weight": 1.0
+      },
+      {
+        "id": "typed-results-on-endpoints",
+        "description": "Endpoint handler return types use TypedResults (e.g., Results<Ok<OrderResponse>, NotFound, ValidationProblem>) providing compile-time verification that all return paths match the declared result types.",
+        "weight": 1.0
+      },
+      {
+        "id": "di-lifetime-correctness",
+        "description": "Services are registered with appropriate lifetimes: repositories as Scoped (per-request), stateless validators as Transient, and shared caches as Singleton. No Scoped services injected into Singleton registrations.",
+        "weight": 1.0
+      },
+      {
+        "id": "nullable-annotations",
+        "description": "Nullable reference types are enabled. Optional fields use nullable types (string?) while required fields are non-nullable. Try-pattern methods use [NotNullWhen(true)] or similar attributes for flow analysis.",
+        "weight": 1.0
+      },
+      {
+        "id": "cancellation-token-propagation",
+        "description": "All async endpoint handlers accept CancellationToken as a parameter, and it is passed through to every async service and repository call in the chain.",
+        "weight": 1.0
+      }
+    ]
+  },
+  {
+    "id": "csharp-async-stream-processing",
+    "prompt": "Implement an async stream processing pipeline in C# 13 that reads events from a database cursor, transforms them through multiple stages (filtering, enrichment, batching), and writes results to an output sink. The pipeline should support cancellation, backpressure, and graceful error handling. Include unit tests for the pipeline stages.",
+    "assertions": [
+      {
+        "id": "iasyncenumerable-pipeline",
+        "description": "The pipeline uses IAsyncEnumerable<T> as the core abstraction, with each stage accepting and returning IAsyncEnumerable<T>. Stages are composed via extension methods or LINQ-style chaining, enabling lazy evaluation.",
+        "weight": 1.0
+      },
+      {
+        "id": "cancellation-with-enumerator-token",
+        "description": "IAsyncEnumerable methods accept [EnumeratorCancellation] CancellationToken parameters, and cancellation is checked or propagated within yield loops using Task.Delay, database reads, or explicit Task.checkCancellation checks.",
+        "weight": 1.0
+      },
+      {
+        "id": "batching-with-backpressure",
+        "description": "A batching stage collects items into fixed-size batches before yielding them downstream, implementing natural backpressure — the producer does not advance until the consumer processes the current batch.",
+        "weight": 1.0
+      },
+      {
+        "id": "structured-error-handling",
+        "description": "Error handling uses try-catch at stage boundaries with specific exception types or Result<T> patterns. Failed items are logged or routed to a dead-letter mechanism rather than crashing the entire pipeline.",
+        "weight": 1.0
+      },
+      {
+        "id": "testable-stage-isolation",
+        "description": "Unit tests verify individual pipeline stages in isolation by passing in-memory IAsyncEnumerable sources (e.g., from async generator methods) and asserting on collected output. Tests cover normal flow, empty input, cancellation, and error cases.",
+        "weight": 1.0
+      }
+    ]
+  }
+]

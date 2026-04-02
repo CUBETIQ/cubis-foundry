@@ -1,0 +1,17 @@
+id: react
+kind: skill
+label: React
+description: "Build user interfaces with React 19+. Invoke for Server Components, the use() hook, Suspense, Actions, concurrent features, ref callbacks, and component architecture."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/react/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

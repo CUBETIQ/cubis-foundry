@@ -1,0 +1,17 @@
+id: mcp-server-builder
+kind: skill
+label: MCP Server Builder
+description: "Build MCP servers with spec-compliant tools, structured outputs, resource providers, transport configuration, and server testing."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/mcp-server-builder/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

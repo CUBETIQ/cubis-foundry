@@ -1,0 +1,17 @@
+id: ci-cd-pipeline
+kind: skill
+label: CI/CD Pipeline
+description: "Design, optimize, or debug CI/CD pipelines: GitHub Actions workflows, GitLab CI configurations, pipeline caching strategies, matrix builds, deployment gates, artifact management, and release automation."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/ci-cd-pipeline/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

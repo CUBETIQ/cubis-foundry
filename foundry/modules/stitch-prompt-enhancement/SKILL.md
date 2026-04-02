@@ -25,9 +25,9 @@ Improve UI prompts before they reach Stitch. This skill turns vague product or d
 
 1. **Start from the real task, not a generic design template** — Restate the actual screen, route, audience, and product goal before writing the Stitch prompt.
 
-2. **Pull the visual direction from `frontend-design` and the design engine** — Use the chosen mood, composition, typography voice, token language, and any `frontend-design-screen-brief` output instead of inventing an unrelated aesthetic.
+2. **Pull the visual direction from `frontend-design` plus canonical design state** — Use the chosen direction name, style contract, thesis set, token language, and any downstream screen brief instead of inventing an unrelated aesthetic.
 
-3. **Read `docs/foundation/DESIGN.md` and overlays when they exist** — Use the canonical design context plus any relevant page, flow, or mobile overlay as the source of truth, then assume `.stitch/DESIGN.md` mirrors the resolved state for Stitch-facing flows.
+3. **Read `docs/foundation/DESIGN.md` and overlays when they exist** — Use the canonical design context plus any relevant page, flow, or mobile overlay as the source of truth, then treat the Stitch-facing design mirror only as the remote copy of the resolved state.
 
 4. **Keep prompts compact and structured** — Name platform, page purpose, visual style, component hierarchy, and the exact requested change. Do not dump raw repo context or large docs into the prompt.
 
@@ -53,8 +53,9 @@ Deliver:
 | File | Load when |
 | --- | --- |
 | `references/prompt-structure.md` | Need the preferred structure for a Stitch-ready prompt. |
-| `../frontend-design/references/visual-direction.md` | Need the product mood and compositional voice before prompting Stitch. |
-| `../frontend-design/references/design-tokens.md` | Need semantic token language for colors, spacing, radius, and typography. |
+| `../design/references/visual-direction.md` | Need the product mood and compositional voice before prompting Stitch. |
+| `../design/references/design-tokens.md` | Need semantic token language for colors, spacing, radius, and typography. |
+| `../design/references/execution-contract.md` | Need the modern route split before composing a prompt. |
 
 ## Examples
 

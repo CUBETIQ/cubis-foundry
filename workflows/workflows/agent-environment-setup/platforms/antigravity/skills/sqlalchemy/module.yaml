@@ -1,0 +1,17 @@
+id: sqlalchemy
+kind: skill
+label: SQLAlchemy
+description: "Build or refactor Python data layers with SQLAlchemy 2.0+ declarative models, async sessions, Alembic migrations, relationship loading strategies, and ORM testing patterns."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/sqlalchemy/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

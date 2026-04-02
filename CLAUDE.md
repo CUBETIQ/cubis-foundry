@@ -265,3 +265,24 @@ Selection policy:
 3. Use skill_search only when workflow intent is unclear.
 
 <!-- cbx:workflows:auto:end -->
+
+<!-- cbx:mcp:auto:start version=1 -->
+## Cubis Foundry MCP (auto-managed)
+
+Keep MCP context lazy and exact. Skills are supporting context, not the route layer.
+
+1. Never begin with `skill_search`. Inspect the repo/task locally first.
+2. If the user already named `/workflow`, `@agent`, or an exact skill ID, honor it directly. For exact skills, run `skill_validate` first and skip `route_resolve` when valid.
+3. Resolve only free-text workflow/agent intent with `route_resolve` before loading non-explicit skills.
+4. If the route is still unresolved and local grounding leaves the domain unclear, use one narrow `skill_search`.
+5. Always run `skill_validate` on the exact selected ID before `skill_get`.
+6. Call `skill_get` with `includeReferences:false` by default.
+7. Load at most one sidecar markdown file at a time with `skill_get_reference`.
+8. Do not auto-prime every specialist with a skill. Load only what the task clearly needs.
+9. For research: repo/local evidence first, official docs next, Reddit/community only as labeled secondary evidence.
+10. Escalate to research only when freshness matters, public comparison matters, or the user explicitly asks to research/verify.
+11. For non-trivial work, read `ENGINEERING_RULES.md` first and `TECH.md` next when they exist.
+12. If those docs declare architecture or design-system rules, follow them unless the current spec or task explicitly changes them.
+13. Use upstream MCP servers such as `postman`, `stitch`, or `playwright` for real cloud/browser actions when available.
+
+<!-- cbx:mcp:auto:end -->

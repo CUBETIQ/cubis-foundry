@@ -1,12 +1,12 @@
 {
   "$schema": "cubis-foundry-mcp-manifest-v1",
-  "generatedAt": "2026-03-30T02:15:19.470Z",
-  "contentHash": "fce32f0561677489",
+  "generatedAt": "2026-04-02T12:33:41.029Z",
+  "contentHash": "60e1048eb32eaa05",
   "summary": {
-    "totalSkills": 46,
+    "totalSkills": 59,
     "totalCategories": 11,
-    "totalBytes": 316634,
-    "estimatedTokens": 79159
+    "totalBytes": 365955,
+    "estimatedTokens": 91489
   },
   "categories": [
     {
@@ -35,11 +35,11 @@
     },
     {
       "name": "frontend",
-      "skillCount": 2
+      "skillCount": 9
     },
     {
       "name": "general",
-      "skillCount": 25
+      "skillCount": 31
     },
     {
       "name": "mcp",
@@ -59,7 +59,7 @@
       "id": "android-emulator-testing",
       "name": "android-emulator-testing",
       "displayName": null,
-      "description": "Canonical CLI-first skill for Android emulator testing, adb control,",
+      "description": "Canonical dual-path skill for Android emulator testing, mobile-mcp",
       "category": "testing",
       "keywords": [
         "android-emulator-testing",
@@ -82,7 +82,7 @@
         "testing"
       ],
       "path": "foundry/modules/android-emulator-testing/SKILL.md",
-      "fileBytes": 3995
+      "fileBytes": 5461
     },
     {
       "id": "api-design",
@@ -213,7 +213,7 @@
         "csharp"
       ],
       "path": "foundry/modules/csharp-best-practices/SKILL.md",
-      "fileBytes": 9158
+      "fileBytes": 9155
     },
     {
       "id": "database-design",
@@ -272,7 +272,7 @@
       "id": "design",
       "name": "design",
       "displayName": null,
-      "description": "Top-level design routing and critique skill for choosing the right",
+      "description": "Top-level design routing and critique skill for choosing the right system, web, mobile, or desktop design path, running audit-first diagnosis, and keeping downstream execution aligned to one clear contract.",
       "category": "general",
       "keywords": [
         "design"
@@ -287,23 +287,41 @@
         "choose web or mobile design path"
       ],
       "path": "foundry/modules/design/SKILL.md",
+      "fileBytes": 5665,
+      "warnings": [
+        "description too long (206 chars)"
+      ]
+    },
+    {
+      "id": "design-context-capture",
+      "name": "design-context-capture",
+      "displayName": null,
+      "description": "Capture or refresh the project's canonical design context in `docs/foundation/DESIGN.md` so downstream design, implementation, and QA skills stop relying on vague taste or one-off prompts.",
+      "category": "general",
+      "keywords": [
+        "design-context-capture",
+        "design context capture",
+        "context",
+        "capture"
+      ],
+      "triggers": [
+        "design-context-capture",
+        "design context capture",
+        "context",
+        "capture"
+      ],
+      "path": "foundry/modules/design-context-capture/SKILL.md",
       "metadata": {
-        "aliases": [
-          "frontend-design",
-          "frontend-design-core",
-          "frontend-design-implementation-handoff",
-          "frontend-design-screen-brief",
-          "frontend-design-style-selector",
-          "design-audit"
-        ]
+        "author": "cubis-foundry",
+        "version": "1.0"
       },
-      "fileBytes": 3314
+      "fileBytes": 3173
     },
     {
       "id": "design-system",
       "name": "design-system",
       "displayName": null,
-      "description": "Build or refresh the canonical design-system state for a repo,",
+      "description": "Build or refresh the canonical design-system state for a repo, including DESIGN.md, overlays, token language, and platform-specific adaptation notes across web, mobile, and desktop.",
       "category": "design",
       "keywords": [
         "design-system",
@@ -322,12 +340,34 @@
         "design-system"
       ],
       "path": "foundry/modules/design-system/SKILL.md",
-      "metadata": {
-        "aliases": [
-          "frontend-design-system"
-        ]
-      },
-      "fileBytes": 2733
+      "fileBytes": 4604
+    },
+    {
+      "id": "desktop-ui-design",
+      "name": "desktop-ui-design",
+      "displayName": null,
+      "description": "Design desktop-first interfaces with multi-pane structure,",
+      "category": "general",
+      "keywords": [
+        "desktop-ui-design",
+        "desktop ui design",
+        "desktop",
+        "ui"
+      ],
+      "triggers": [
+        "desktop ui design",
+        "desktop app design",
+        "mac app design",
+        "windows app design",
+        "electron ui",
+        "multi-pane workspace",
+        "desktop workspace",
+        "desktop-ui-design",
+        "desktop",
+        "ui"
+      ],
+      "path": "foundry/modules/desktop-ui-design/SKILL.md",
+      "fileBytes": 3841
     },
     {
       "id": "django-drf",
@@ -355,7 +395,7 @@
         "drf"
       ],
       "path": "foundry/modules/django-drf/SKILL.md",
-      "fileBytes": 6454
+      "fileBytes": 6453
     },
     {
       "id": "docker-compose-dev",
@@ -413,7 +453,7 @@
         "app"
       ],
       "path": "foundry/modules/expo-app/SKILL.md",
-      "fileBytes": 7320
+      "fileBytes": 7319
     },
     {
       "id": "fastapi",
@@ -434,7 +474,187 @@
         "openapi documentation"
       ],
       "path": "foundry/modules/fastapi/SKILL.md",
-      "fileBytes": 7491
+      "fileBytes": 7490
+    },
+    {
+      "id": "frontend-design",
+      "name": "frontend-design",
+      "displayName": null,
+      "description": "Use when a task needs a public UI-design entrypoint that locks visual direction, captures a style contract, and routes into design-system, web, mobile, or desktop execution without generic AI aesthetics.",
+      "category": "frontend",
+      "keywords": [
+        "frontend-design",
+        "frontend design",
+        "frontend"
+      ],
+      "triggers": [
+        "frontend-design",
+        "frontend design",
+        "frontend"
+      ],
+      "path": "foundry/modules/frontend-design/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "3.3"
+      },
+      "fileBytes": 5015,
+      "warnings": [
+        "description too long (203 chars)"
+      ]
+    },
+    {
+      "id": "frontend-design-core",
+      "name": "frontend-design-core",
+      "displayName": null,
+      "description": "Establish the design-engine execution order, canonical design-state model, and the repo-first constraints for serious frontend or mobile design work.",
+      "category": "frontend",
+      "keywords": [
+        "frontend-design-core",
+        "frontend design core",
+        "frontend",
+        "core"
+      ],
+      "triggers": [
+        "frontend-design-core",
+        "frontend design core",
+        "frontend",
+        "core"
+      ],
+      "path": "foundry/modules/frontend-design-core/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 2360
+    },
+    {
+      "id": "frontend-design-implementation-handoff",
+      "name": "frontend-design-implementation-handoff",
+      "displayName": null,
+      "description": "Translate design-engine output into repo-native implementation work, preferring real components, Flutter widgets, and existing tokens over pasted generated markup.",
+      "category": "frontend",
+      "keywords": [
+        "frontend-design-implementation-handoff",
+        "frontend design implementation handoff",
+        "frontend",
+        "implementation",
+        "handoff"
+      ],
+      "triggers": [
+        "frontend-design-implementation-handoff",
+        "frontend design implementation handoff",
+        "frontend",
+        "implementation",
+        "handoff"
+      ],
+      "path": "foundry/modules/frontend-design-implementation-handoff/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 1673
+    },
+    {
+      "id": "frontend-design-mobile-patterns",
+      "name": "frontend-design-mobile-patterns",
+      "displayName": null,
+      "description": "Adapt the design engine to mobile and Flutter surfaces using Foundry's normalized mobile-pattern dataset and implementation-first constraints.",
+      "category": "frontend",
+      "keywords": [
+        "frontend-design-mobile-patterns",
+        "frontend design mobile patterns",
+        "frontend",
+        "mobile"
+      ],
+      "triggers": [
+        "frontend-design-mobile-patterns",
+        "frontend design mobile patterns",
+        "frontend",
+        "mobile"
+      ],
+      "path": "foundry/modules/frontend-design-mobile-patterns/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 1763
+    },
+    {
+      "id": "frontend-design-screen-brief",
+      "name": "frontend-design-screen-brief",
+      "displayName": null,
+      "description": "Turn canonical design state plus overlays into a compact, high-signal screen brief for Stitch, frontend implementation, or Flutter/mobile work.",
+      "category": "frontend",
+      "keywords": [
+        "frontend-design-screen-brief",
+        "frontend design screen brief",
+        "frontend",
+        "screen",
+        "brief"
+      ],
+      "triggers": [
+        "frontend-design-screen-brief",
+        "frontend design screen brief",
+        "frontend",
+        "screen",
+        "brief"
+      ],
+      "path": "foundry/modules/frontend-design-screen-brief/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 1650
+    },
+    {
+      "id": "frontend-design-style-selector",
+      "name": "frontend-design-style-selector",
+      "displayName": null,
+      "description": "Select a non-generic visual direction from Foundry's normalized design datasets and align it to the product's domain, audience, and platform.",
+      "category": "frontend",
+      "keywords": [
+        "frontend-design-style-selector",
+        "frontend design style selector",
+        "frontend",
+        "style",
+        "selector"
+      ],
+      "triggers": [
+        "frontend-design-style-selector",
+        "frontend design style selector",
+        "frontend",
+        "style",
+        "selector"
+      ],
+      "path": "foundry/modules/frontend-design-style-selector/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 1706
+    },
+    {
+      "id": "frontend-design-system",
+      "name": "frontend-design-system",
+      "displayName": null,
+      "description": "Build or refresh the canonical design-system state for a repo, including DESIGN.md, overlays, token language, and platform-specific adaptation notes.",
+      "category": "frontend",
+      "keywords": [
+        "frontend-design-system",
+        "frontend design system",
+        "frontend"
+      ],
+      "triggers": [
+        "frontend-design-system",
+        "frontend design system",
+        "frontend"
+      ],
+      "path": "foundry/modules/frontend-design-system/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 2073
     },
     {
       "id": "git-workflow",
@@ -486,13 +706,13 @@
         "golang"
       ],
       "path": "foundry/modules/golang-best-practices/SKILL.md",
-      "fileBytes": 8057
+      "fileBytes": 8054
     },
     {
       "id": "ios-simulator-testing",
       "name": "ios-simulator-testing",
       "displayName": null,
-      "description": "Canonical CLI-first skill for iOS simulator testing, build",
+      "description": "Canonical dual-path skill for iOS simulator testing, mobile-mcp",
       "category": "testing",
       "keywords": [
         "ios-simulator-testing",
@@ -515,7 +735,7 @@
         "testing"
       ],
       "path": "foundry/modules/ios-simulator-testing/SKILL.md",
-      "fileBytes": 4279
+      "fileBytes": 6084
     },
     {
       "id": "java-best-practices",
@@ -541,7 +761,7 @@
         "java"
       ],
       "path": "foundry/modules/java-best-practices/SKILL.md",
-      "fileBytes": 9731
+      "fileBytes": 9728
     },
     {
       "id": "kaizen-iteration",
@@ -595,7 +815,7 @@
         "kotlin"
       ],
       "path": "foundry/modules/kotlin-best-practices/SKILL.md",
-      "fileBytes": 11005
+      "fileBytes": 11002
     },
     {
       "id": "kubernetes-deploy",
@@ -678,12 +898,7 @@
         "ui"
       ],
       "path": "foundry/modules/mobile-ui-design/SKILL.md",
-      "metadata": {
-        "aliases": [
-          "frontend-design-mobile-patterns"
-        ]
-      },
-      "fileBytes": 3181
+      "fileBytes": 4300
     },
     {
       "id": "nestjs",
@@ -705,7 +920,7 @@
         "pipes"
       ],
       "path": "foundry/modules/nestjs/SKILL.md",
-      "fileBytes": 7502
+      "fileBytes": 7501
     },
     {
       "id": "nextjs",
@@ -727,7 +942,7 @@
         "parallel routes"
       ],
       "path": "foundry/modules/nextjs/SKILL.md",
-      "fileBytes": 7941
+      "fileBytes": 7762
     },
     {
       "id": "observability",
@@ -821,7 +1036,7 @@
         "node.js applications"
       ],
       "path": "foundry/modules/prisma/SKILL.md",
-      "fileBytes": 8923
+      "fileBytes": 8922
     },
     {
       "id": "prompt-engineering",
@@ -873,7 +1088,7 @@
         "python"
       ],
       "path": "foundry/modules/python-best-practices/SKILL.md",
-      "fileBytes": 8218
+      "fileBytes": 8215
     },
     {
       "id": "react",
@@ -895,7 +1110,7 @@
         "ref callbacks"
       ],
       "path": "foundry/modules/react/SKILL.md",
-      "fileBytes": 7897
+      "fileBytes": 7661
     },
     {
       "id": "rust-best-practices",
@@ -921,7 +1136,7 @@
         "rust"
       ],
       "path": "foundry/modules/rust-best-practices/SKILL.md",
-      "fileBytes": 9374
+      "fileBytes": 9371
     },
     {
       "id": "secret-management",
@@ -973,7 +1188,7 @@
         "creator"
       ],
       "path": "foundry/modules/skill-creator/SKILL.md",
-      "fileBytes": 9286
+      "fileBytes": 9251
     },
     {
       "id": "spec-driven-delivery",
@@ -1028,7 +1243,7 @@
         "boot"
       ],
       "path": "foundry/modules/spring-boot/SKILL.md",
-      "fileBytes": 7821
+      "fileBytes": 7820
     },
     {
       "id": "sqlalchemy",
@@ -1050,7 +1265,115 @@
         "async database sessions"
       ],
       "path": "foundry/modules/sqlalchemy/SKILL.md",
-      "fileBytes": 7539
+      "fileBytes": 7538
+    },
+    {
+      "id": "stitch-design-orchestrator",
+      "name": "stitch-design-orchestrator",
+      "displayName": null,
+      "description": "Orchestrate safe, design-first Google Stitch generation and editing by sequencing frontend-design, canonical design-system sync, prompt enhancement, Stitch MCP tool selection, and implementation handoff.",
+      "category": "general",
+      "keywords": [
+        "stitch-design-orchestrator",
+        "stitch design orchestrator",
+        "stitch",
+        "orchestrator"
+      ],
+      "triggers": [
+        "stitch-design-orchestrator",
+        "stitch design orchestrator",
+        "stitch",
+        "orchestrator"
+      ],
+      "path": "foundry/modules/stitch-design-orchestrator/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.1"
+      },
+      "fileBytes": 5557,
+      "warnings": [
+        "description too long (203 chars)"
+      ]
+    },
+    {
+      "id": "stitch-design-system",
+      "name": "stitch-design-system",
+      "displayName": null,
+      "description": "Create or refresh a Stitch-compatible design-system context by maintaining docs/foundation/DESIGN.md as the canonical source and mirroring it to a Stitch-facing design file when Stitch flows need persistent visual consistency.",
+      "category": "general",
+      "keywords": [
+        "stitch-design-system",
+        "stitch design system",
+        "stitch"
+      ],
+      "triggers": [
+        "stitch-design-system",
+        "stitch design system",
+        "stitch"
+      ],
+      "path": "foundry/modules/stitch-design-system/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 3548,
+      "warnings": [
+        "description too long (226 chars)"
+      ]
+    },
+    {
+      "id": "stitch-implementation-handoff",
+      "name": "stitch-implementation-handoff",
+      "displayName": null,
+      "description": "Convert final Stitch screen artifacts into minimal, repo-native frontend changes by reusing local components, preserving validated logic, and documenting any intentional drift from the design source.",
+      "category": "general",
+      "keywords": [
+        "stitch-implementation-handoff",
+        "stitch implementation handoff",
+        "stitch",
+        "implementation",
+        "handoff"
+      ],
+      "triggers": [
+        "stitch-implementation-handoff",
+        "stitch implementation handoff",
+        "stitch",
+        "implementation",
+        "handoff"
+      ],
+      "path": "foundry/modules/stitch-implementation-handoff/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 3603
+    },
+    {
+      "id": "stitch-prompt-enhancement",
+      "name": "stitch-prompt-enhancement",
+      "displayName": null,
+      "description": "Transform rough UI intent into compact, Stitch-ready prompts that encode visual direction, component structure, design-system context, and constrained change scope.",
+      "category": "general",
+      "keywords": [
+        "stitch-prompt-enhancement",
+        "stitch prompt enhancement",
+        "stitch",
+        "prompt",
+        "enhancement"
+      ],
+      "triggers": [
+        "stitch-prompt-enhancement",
+        "stitch prompt enhancement",
+        "stitch",
+        "prompt",
+        "enhancement"
+      ],
+      "path": "foundry/modules/stitch-prompt-enhancement/SKILL.md",
+      "metadata": {
+        "author": "cubis-foundry",
+        "version": "1.0"
+      },
+      "fileBytes": 3506
     },
     {
       "id": "svelte-sveltekit",
@@ -1078,7 +1401,7 @@
         "sveltekit"
       ],
       "path": "foundry/modules/svelte-sveltekit/SKILL.md",
-      "fileBytes": 6858
+      "fileBytes": 6689
     },
     {
       "id": "swift-best-practices",
@@ -1104,7 +1427,7 @@
         "swift"
       ],
       "path": "foundry/modules/swift-best-practices/SKILL.md",
-      "fileBytes": 8728
+      "fileBytes": 8725
     },
     {
       "id": "system-design",
@@ -1205,7 +1528,7 @@
         "typescript-best-practices"
       ],
       "path": "foundry/modules/typescript-best-practices/SKILL.md",
-      "fileBytes": 8665
+      "fileBytes": 8662
     },
     {
       "id": "web-testing",
@@ -1232,7 +1555,7 @@
         "testing"
       ],
       "path": "foundry/modules/web-testing/SKILL.md",
-      "fileBytes": 3694
+      "fileBytes": 3861
     },
     {
       "id": "web-ui-design",
@@ -1259,7 +1582,7 @@
         "ui"
       ],
       "path": "foundry/modules/web-ui-design/SKILL.md",
-      "fileBytes": 3596
+      "fileBytes": 5320
     }
   ],
   "builtinTools": [

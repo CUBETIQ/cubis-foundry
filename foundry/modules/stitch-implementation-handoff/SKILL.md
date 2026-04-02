@@ -26,7 +26,7 @@ Turn the final Stitch artifact into production-ready UI changes without guessing
 
 1. **Pull the actual final Stitch artifact before coding** — Use the latest screen artifact, metadata, and image/snapshot from Stitch. Do not reconstruct the screen from memory or from a stale prompt.
 
-2. **Map Stitch output into the repo's real stack** — Re-express the artifact in the project's framework, routing model, styling system, tokens, and component primitives.
+2. **Map Stitch output into the repo's real stack** — Re-express the artifact in the project's framework, routing model, styling system, tokens, and component primitives, with `docs/foundation/DESIGN.md` treated as the authoritative design contract.
 
 3. **Prefer local component reuse over one-off markup** — If the project already has buttons, cards, typography, navigation, or layout primitives, use those instead of cloning raw Stitch structure.
 
@@ -36,7 +36,7 @@ Turn the final Stitch artifact into production-ready UI changes without guessing
 
 6. **Preserve accessibility and interaction states** — Maintain semantic structure, keyboard flow, focus treatment, labels, contrast, loading/error/empty states, and responsive behavior while translating the design.
 
-7. **Call out unavoidable drift explicitly** — If the repo's design system, data model, or framework constraints prevent a literal Stitch match, explain the exact deviation and why it was necessary.
+7. **Call out unavoidable drift explicitly** — If the repo's canonical design system, data model, or framework constraints prevent a literal Stitch match, explain the exact deviation and why it was necessary.
 
 ## Output Format
 
@@ -52,10 +52,8 @@ Deliver:
 
 | File | Load when |
 | --- | --- |
-| `../stitch/references/platform-setup.md` | Need to verify Stitch availability, gateway status, or secure credential expectations. |
-| `../stitch/references/implementation-patterns.md` | Need guidance for mapping Stitch artifacts into web or mobile stacks and existing design systems. |
-| `../stitch/references/update-diff-workflow.md` | Updating an existing implementation from revised Stitch artifacts or running a UI diff workflow. |
-| `../frontend-design/references/component-architecture.md` | Need to map a Stitch screen into reusable primitives and composite components. |
+| `../design/references/execution-contract.md` | Need the modern split between canonical design state, owning surface, and implementation handoff. |
+| `../web-ui-design/references/component-architecture.md` | Need to map a Stitch screen into reusable primitives and composite components. |
 
 ## Examples
 

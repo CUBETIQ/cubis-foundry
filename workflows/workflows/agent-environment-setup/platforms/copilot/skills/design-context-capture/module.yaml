@@ -1,0 +1,18 @@
+id: design-context-capture
+kind: capability
+label: "Design Context Capture"
+description: "design-context-capture guidance migrated from workflows/skills."
+stability: stable
+profiles:
+  - developer
+routeHints:
+  - design
+  - context
+  - capture
+capability:
+  type: tool
+  domains: [design, context, capture]
+  outputs:
+    - type: skill
+      path: generated/skills/design-context-capture.md
+      platforms: [claude]

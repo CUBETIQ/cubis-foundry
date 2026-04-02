@@ -1,0 +1,19 @@
+id: desktop-ui-design
+kind: skill
+label: Desktop UI Design
+description: "Design desktop-first interfaces with multi-pane structure, dense but legible information design, keyboard-first productivity, and implementation-aware handoff."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - design
+    - frontend
+    - desktop
+  outputs:
+    - type: skill
+      path: foundry/modules/desktop-ui-design/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

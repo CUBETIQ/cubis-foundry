@@ -1,0 +1,66 @@
+[
+  {
+    "name": "eas-build-configuration",
+    "description": "Validate that the skill produces a correct EAS Build configuration with development, preview, and production profiles, proper signing, environment variables, and runtime versioning for OTA update compatibility.",
+    "input": "Configure EAS Build for an Expo SDK 52 app. Create three build profiles: development (with expo-dev-client, internal distribution), preview (for TestFlight/internal testing), and production (for App Store/Play Store). Set up environment variables for API keys that differ per environment. Configure runtime versioning with the fingerprint policy for OTA update compatibility. Include iOS provisioning and Android keystore configuration.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "eas.json",
+        "description": "Must create or reference an eas.json configuration file with build profiles, as EAS Build reads all configuration from this file."
+      },
+      {
+        "type": "contains",
+        "value": "developmentClient",
+        "description": "Development profile must set developmentClient: true to build with expo-dev-client instead of Expo Go, enabling custom native module support."
+      },
+      {
+        "type": "contains",
+        "value": "distribution",
+        "description": "Must configure distribution settings per profile (internal for development/preview, store for production) to control how builds are distributed."
+      },
+      {
+        "type": "contains",
+        "value": "runtimeVersion",
+        "description": "Must configure runtimeVersion with fingerprint or appVersion policy to tie OTA updates to compatible native binaries and prevent crash-on-launch."
+      },
+      {
+        "type": "contains",
+        "value": "env",
+        "description": "Must configure environment variables per build profile to inject different API keys and configuration for development, preview, and production builds."
+      }
+    ]
+  },
+  {
+    "name": "push-notification-setup",
+    "description": "Validate that the skill produces a complete push notification implementation with expo-notifications including permission handling, token registration, foreground and background handlers, and server-side delivery.",
+    "input": "Implement push notifications for an Expo app. Register for push tokens on app launch and send them to the backend. Handle notification permissions on iOS and Android 13+. Display notifications when the app is in the foreground. Handle notification taps to navigate to specific screens using expo-router. Set up a server endpoint that sends push notifications through Expo's push API. Handle token refresh and error responses.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "getExpoPushTokenAsync",
+        "description": "Must use Notifications.getExpoPushTokenAsync to obtain the device's Expo push token for server-side registration."
+      },
+      {
+        "type": "contains",
+        "value": "requestPermissionsAsync",
+        "description": "Must request notification permissions before attempting to register for push tokens, as iOS and Android 13+ require explicit consent."
+      },
+      {
+        "type": "contains",
+        "value": "setNotificationHandler",
+        "description": "Must configure Notifications.setNotificationHandler to control foreground notification display behavior (shouldShowAlert, shouldPlaySound, shouldSetBadge)."
+      },
+      {
+        "type": "contains",
+        "value": "addNotificationResponseReceivedListener",
+        "description": "Must register a notification response listener to handle user taps on notifications and navigate to the appropriate screen."
+      },
+      {
+        "type": "contains",
+        "value": "expo.dev/--/api/v2/push/send",
+        "description": "Server-side push delivery must use Expo's push API endpoint to send notifications with the registered Expo push token."
+      }
+    ]
+  }
+]

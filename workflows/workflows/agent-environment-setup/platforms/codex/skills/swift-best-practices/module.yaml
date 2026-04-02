@@ -1,0 +1,17 @@
+id: swift-best-practices
+kind: skill
+label: Swift Best Practices
+description: "Write, review, or refactor modern Swift, including strict concurrency, actors, SwiftUI with @Observable, structured concurrency, protocol-oriented design, and SPM modules."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/swift-best-practices/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

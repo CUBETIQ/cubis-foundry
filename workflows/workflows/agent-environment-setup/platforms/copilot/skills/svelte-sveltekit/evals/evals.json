@@ -1,0 +1,68 @@
+[
+  {
+    "id": "svelte-sveltekit-eval-01",
+    "name": "Rune-based component state management",
+    "description": "Validate that the skill correctly guides creation of a Svelte 5 component using $state, $derived, and $effect runes for a counter with computed values and side effects.",
+    "prompt": "Create a Svelte 5 component called `TemperatureConverter.svelte` that lets users enter a Celsius value and shows the Fahrenheit equivalent. Use $state for the Celsius input, $derived for the Fahrenheit computation, and $effect to log every conversion to the console. Include input validation that rejects non-numeric values.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "$state",
+        "description": "Must use $state rune for mutable reactive state instead of Svelte 4 let declarations"
+      },
+      {
+        "type": "contains",
+        "value": "$derived",
+        "description": "Must use $derived rune for computed Fahrenheit value instead of reactive statements ($:)"
+      },
+      {
+        "type": "contains",
+        "value": "$effect",
+        "description": "Must use $effect rune for the console logging side effect"
+      },
+      {
+        "type": "pattern",
+        "value": "<script[^>]*>",
+        "description": "Must include a script block using Svelte 5 component syntax"
+      },
+      {
+        "type": "excludes",
+        "value": "$:",
+        "description": "Must NOT use Svelte 4 reactive declaration syntax ($:) since the component targets Svelte 5 runes"
+      }
+    ]
+  },
+  {
+    "id": "svelte-sveltekit-eval-02",
+    "name": "SvelteKit form action with progressive enhancement",
+    "description": "Validate that the skill correctly guides implementation of a SvelteKit form action with server-side validation, use:enhance progressive enhancement, and proper error handling.",
+    "prompt": "Implement a SvelteKit contact form with a name field (required, 2-100 chars) and email field (required, valid format). Create the +page.server.ts with a form action that validates with Zod, the +page.svelte with use:enhance for progressive enhancement showing loading and error states, and the +error.svelte boundary. Return validation errors to the form using SvelteKit's fail() helper.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "use:enhance",
+        "description": "Must use SvelteKit's use:enhance directive for progressive enhancement of the form"
+      },
+      {
+        "type": "contains",
+        "value": "fail(",
+        "description": "Must use SvelteKit's fail() helper to return validation errors with appropriate HTTP status codes"
+      },
+      {
+        "type": "pattern",
+        "value": "actions.*=.*\\{",
+        "description": "Must define form actions using the SvelteKit actions export pattern in +page.server.ts"
+      },
+      {
+        "type": "pattern",
+        "value": "z\\.(string|object)|zod",
+        "description": "Must use Zod schema validation for server-side form data validation"
+      },
+      {
+        "type": "contains",
+        "value": "+page.server.ts",
+        "description": "Must reference or create the +page.server.ts file for server-side form action handling"
+      }
+    ]
+  }
+]

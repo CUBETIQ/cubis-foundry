@@ -29,8 +29,8 @@ Establish the short, durable design document that the rest of Foundry should tre
 4. **State what must not happen** — List banned defaults such as card nesting, default system typography, generic gradients, or weak mobile collapse because exclusions are part of anti-slop control.
 5. **Keep it compact** — A concise design context is more reusable than a giant narrative brief. Prefer bullets and short sections over long prose.
 6. **Route external references through Foundry language** — Convert benchmarks into Foundry-owned terms instead of copying raw prompts or long passages.
-7. **Feed follow-on work into the right skill** — Use `frontend-design-style-selector` and `frontend-design-screen-brief` for new work, or the remediation skills when fixing existing UI.
-8. **Mirror for Stitch only when needed** — If the task explicitly enters a Stitch flow, hand the resolved design state to `stitch-design-system` so `.stitch/DESIGN.md` stays aligned.
+7. **Feed follow-on work into the right skill** — Use `frontend-design` for public UI-design intake, `design-system` when canonical state is stale, `/design-screen` for concrete screen work, or the remediation skills when fixing existing UI.
+8. **Mirror for Stitch only when needed** — If the task explicitly enters a Stitch flow, hand the resolved design state to `stitch-design-system` so the Stitch-facing design mirror stays aligned.
 
 ## Output Format
 
@@ -46,6 +46,6 @@ Deliver:
 
 | File | Load when |
 | --- | --- |
-| `../frontend-design/references/visual-direction.md` | Defining the point of view, dominant motif, and anti-generic checks. |
-| `../frontend-design/references/design-tokens.md` | Translating visual language into token-ready rules. |
+| `../design/references/visual-direction.md` | Defining the point of view, dominant motif, and anti-generic checks. |
+| `../design/references/design-tokens.md` | Translating visual language into token-ready rules. |
 | `../stitch-design-system/SKILL.md` | The task also needs Stitch-facing design state kept in sync. |

@@ -1,0 +1,17 @@
+id: nestjs
+kind: skill
+label: NestJS
+description: "Build NestJS 11+ applications with TypeScript decorators, dependency injection, modular architecture, guards, interceptors, pipes, microservices, and GraphQL integration."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/nestjs/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

@@ -20,7 +20,7 @@ export async function runMobileTesting(options: AnyOptions) {
     const runnerPath = resolveMobileTestingRunnerPath();
     if (!existsSync(runnerPath)) {
       throw new Error(
-        `Mobile testing compatibility runner not found at ${runnerPath}. Reinstall or rebuild the package so mcp/runtime assets are present.`,
+        `Android mobile testing compatibility runner not found at ${runnerPath}. Reinstall or rebuild the package so mcp/runtime assets are present.`,
       );
     }
 

@@ -1,0 +1,17 @@
+id: owasp-security-review
+kind: skill
+label: OWASP Security Review
+description: "Perform OWASP-aligned security reviews, including vulnerability analysis, secure code review, threat modeling, and SAST/DAST integration."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - security
+  outputs:
+    - type: skill
+      path: foundry/modules/owasp-security-review/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

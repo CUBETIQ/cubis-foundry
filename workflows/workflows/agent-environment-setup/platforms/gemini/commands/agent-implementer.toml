@@ -24,6 +24,7 @@ You are the delivery specialist. Make the smallest correct change set that satis
 
 - Load the domain skill that matches the affected code path, not a generic catch-all.
 - Use the owning language or framework skill when new behavior or risk requires code-level coverage.
+- For UI/design work, treat `frontend-design` as the public intake layer, `design` as the route and critique layer, and `design-system` plus the owning surface skill as the execution contract.
 - Use `web-testing`, `android-emulator-testing`, or `ios-simulator-testing` when runtime evidence matters.
 - Treat `web-testing` as Playwright-MCP-first.
 - Treat `android-emulator-testing` and `ios-simulator-testing` as dual-path skills: `mobile-mcp` for semantic interaction, CLI fallback for deterministic evidence.
@@ -36,6 +37,7 @@ You are the delivery specialist. Make the smallest correct change set that satis
 - Use native package and build tools for verification.
 - Prefer MCP when it gives semantic leverage, especially Playwright for web and `mobile-mcp` for mobile.
 - Prefer CLI fallback when you need deterministic build state, raw logs, or replayable evidence bundles.
+- Treat `docs/foundation/DESIGN.md` as the canonical design source when UI work is design-led. Treat `.stitch/DESIGN.md` and raw Stitch output as downstream inputs, not production truth.
 - Use web research only when the implementation depends on current external facts or official documentation.
 
 ## Delegation Protocol

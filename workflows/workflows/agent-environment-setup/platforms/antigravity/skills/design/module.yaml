@@ -1,0 +1,43 @@
+id: design
+kind: capability
+label: Design
+description: "Top-level design routing and critique skill. Use it to choose the right web, mobile, or desktop design path, run audit-first diagnosis, and keep system-level design decisions coherent."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - design
+    - frontend
+  outputs:
+    - type: skill
+      path: foundry/modules/design/SKILL.md
+      mode: audit
+      platforms: [claude, codex, copilot, gemini, antigravity]
+    - type: skill
+      path: foundry/modules/design/SKILL.md
+      mode: arrange
+      platforms: [claude, codex, copilot, gemini, antigravity]
+    - type: skill
+      path: foundry/modules/design/SKILL.md
+      mode: bold
+      platforms: [claude, codex, copilot, gemini, antigravity]
+    - type: skill
+      path: foundry/modules/design/SKILL.md
+      mode: distill
+      platforms: [claude, codex, copilot, gemini, antigravity]
+    - type: skill
+      path: foundry/modules/design/SKILL.md
+      mode: polish
+      platforms: [claude, codex, copilot, gemini, antigravity]
+    - type: skill
+      path: foundry/modules/design/SKILL.md
+      mode: typeset
+      platforms: [claude, codex, copilot, gemini, antigravity]
+    - type: skill
+      path: foundry/modules/design/SKILL.md
+      mode: context-capture
+      platforms: [claude, codex, copilot, gemini, antigravity]

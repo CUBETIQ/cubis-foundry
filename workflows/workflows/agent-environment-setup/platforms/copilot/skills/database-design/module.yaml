@@ -1,0 +1,17 @@
+id: database-design
+kind: skill
+label: Database Design
+description: "Design database schemas, normalization strategies, indexing plans, query optimization, and migration workflows for relational, document, or hybrid data stores."
+stability: stable
+profiles:
+  - core
+  - developer
+dependencies: []
+capability:
+  type: tool
+  domains:
+    - engineering
+  outputs:
+    - type: skill
+      path: foundry/modules/database-design/SKILL.md
+      platforms: [claude, codex, copilot, gemini, antigravity]

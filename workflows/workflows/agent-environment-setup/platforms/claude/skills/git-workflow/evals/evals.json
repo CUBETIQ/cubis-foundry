@@ -1,0 +1,66 @@
+[
+  {
+    "name": "branching-strategy-selection",
+    "description": "Validate that the skill recommends an appropriate branching strategy based on team context, with clear rationale and actionable configuration steps.",
+    "input": "Our team has 8 developers working on a B2B SaaS product. We deploy to production twice a week. We currently use GitFlow with develop, release, and hotfix branches, but PRs are taking 3-5 days to merge and we have frequent merge conflicts. We want to move faster. What branching strategy should we adopt and how do we migrate?",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "trunk-based",
+        "description": "Must recommend trunk-based development or GitHub Flow for a team that wants to ship faster, not double down on GitFlow."
+      },
+      {
+        "type": "contains",
+        "value": "feature flag",
+        "description": "Must mention feature flags as the mechanism for handling incomplete work on main, since trunk-based development requires merging frequently."
+      },
+      {
+        "type": "contains",
+        "value": "short-lived",
+        "description": "Must emphasize short-lived branches (1-2 days) as the key practice change, since the current 3-5 day PR cycle is the root cause of merge conflicts."
+      },
+      {
+        "type": "contains",
+        "value": "migration",
+        "description": "Must provide a migration plan from GitFlow to the recommended model, not just describe the target state."
+      },
+      {
+        "type": "contains",
+        "value": "branch protection",
+        "description": "Must include branch protection configuration as part of the recommendation, since unprotected branches undermine any branching strategy."
+      }
+    ]
+  },
+  {
+    "name": "commit-message-writing",
+    "description": "Validate that the skill produces properly formatted conventional commit messages with meaningful descriptions that explain intent.",
+    "input": "I made the following changes and need help writing commit messages:\n1. Added rate limiting middleware to the Express API routes (max 100 requests per minute per IP) to prevent abuse after we saw a spike in traffic last week.\n2. Fixed a bug where the user profile page crashed when the user had no avatar URL (it was passing null to the Image component).\n3. Refactored the database connection pool to use a singleton pattern instead of creating a new pool per request.\n4. Updated the CI pipeline to run tests in parallel across 4 workers instead of sequentially.\nWrite conventional commit messages for each change.",
+    "assertions": [
+      {
+        "type": "contains",
+        "value": "feat",
+        "description": "The rate limiting middleware is a new feature and must use the feat type, not fix or chore."
+      },
+      {
+        "type": "contains",
+        "value": "fix",
+        "description": "The avatar null crash is a bug fix and must use the fix type with a clear description of what was broken."
+      },
+      {
+        "type": "contains",
+        "value": "refactor",
+        "description": "The database connection pool change is a refactor (no behavior change) and must use the refactor type."
+      },
+      {
+        "type": "contains",
+        "value": "ci",
+        "description": "The pipeline parallelization is a CI change and must use the ci type, not build or chore."
+      },
+      {
+        "type": "contains",
+        "value": "imperative",
+        "description": "Must use or explain imperative mood in commit subjects (add, fix, refactor) rather than past tense (added, fixed, refactored)."
+      }
+    ]
+  }
+]

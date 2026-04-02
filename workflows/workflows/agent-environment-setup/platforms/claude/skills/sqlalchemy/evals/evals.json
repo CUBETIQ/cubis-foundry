@@ -1,0 +1,32 @@
+{
+  "skill_name": "sqlalchemy",
+  "platform": "claude-code",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have an async FastAPI application using SQLAlchemy 2.0 with asyncpg. I need to load a User along with their Team and all the team's Projects in a single endpoint. The User has a many-to-one relationship to Team, and Team has a one-to-many relationship to Project. Show me how to set up the async session, write the query with proper eager loading, and handle the case where the user has no team. I keep getting MissingGreenlet errors.",
+      "expected_output": "A complete solution showing async session configuration with expire_on_commit=False, a select() query using joinedload for the User->Team relationship and selectinload for Team->Projects, proper error handling for None team, and explanation of why MissingGreenlet occurs.",
+      "files": [],
+      "assertions": [
+        "Output uses expire_on_commit=False in async_sessionmaker configuration to prevent MissingGreenlet errors after commit",
+        "Query uses joinedload for the many-to-one User.team relationship (single LEFT JOIN, efficient for single objects)",
+        "Query uses selectinload for the one-to-many Team.projects collection (separate IN query, avoids cartesian product)",
+        "Solution includes handling for user.team being None before accessing team.projects",
+        "Code uses SQLAlchemy 2.0 select() syntax instead of legacy Query API"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I need to add a non-nullable 'role' enum column (admin, member, viewer) to our existing 'users' table that has 2 million rows in production Postgres. Write the Alembic migration that won't lock the table or fail on existing rows. Also show me how to add a concurrent index on the new column. We use async SQLAlchemy with asyncpg.",
+      "expected_output": "A multi-step Alembic migration that adds the column safely: first as nullable with server_default, then optionally alters to non-nullable, with concurrent index creation outside a transaction, and both upgrade() and downgrade() functions.",
+      "files": [],
+      "assertions": [
+        "Migration adds the column with server_default to handle existing rows without failure on the 2M row table",
+        "Migration uses postgresql_concurrently=True or equivalent for index creation to avoid locking the table",
+        "Migration includes both upgrade() and downgrade() functions for rollback capability",
+        "Column type uses a Python enum mapped to database ENUM or VARCHAR with CHECK constraint",
+        "Migration handles the transaction boundary correctly for concurrent index creation (commits or runs outside transaction)"
+      ]
+    }
+  ]
+}
