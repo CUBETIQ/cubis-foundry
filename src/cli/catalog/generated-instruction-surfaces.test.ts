@@ -47,4 +47,15 @@ describe("generated instruction surfaces", () => {
     expect(postToolGuide).toContain("Playwright MCP");
     expect(postToolGuide).toContain("`mobile-mcp`");
   });
+
+  it("documents route-specific foundation doc loading and platform-native specialist surfaces", () => {
+    const generatorSource = readRelative("scripts/generate-platform-assets.mjs");
+
+    expect(generatorSource).toContain("Load docs in this order");
+    expect(generatorSource).toContain("docs/foundation/STRUCTURE.md");
+    expect(generatorSource).toContain("docs/foundation/DESIGN.md");
+    expect(generatorSource).toContain("native specialist surface");
+    expect(generatorSource).toContain("custom agent");
+    expect(generatorSource).toContain("agent-route command");
+  });
 });

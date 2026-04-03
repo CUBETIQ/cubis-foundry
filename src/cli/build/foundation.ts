@@ -43,6 +43,19 @@ export function buildArchitectureBuildSkeleton() {
   ].join("\n");
 }
 
+export function buildStructureBuildSkeleton() {
+  return [
+    "# Structure",
+    "",
+    "This file is managed by `cbx build architecture` as the repo-navigation and ownership map for agents and contributors.",
+    "",
+    "<!-- cbx:structure:foundation:start version=1 profile=uninitialized -->",
+    "Replace this managed section by running `cbx build architecture --platform <antigravity|codex|claude|gemini|copilot>`.",
+    "<!-- cbx:structure:foundation:end -->",
+    "",
+  ].join("\n");
+}
+
 export function buildTechBuildSkeleton() {
   return [
     "# TECH.md",

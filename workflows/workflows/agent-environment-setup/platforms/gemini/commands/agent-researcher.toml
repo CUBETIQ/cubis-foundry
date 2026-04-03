@@ -6,7 +6,9 @@ Gather and synthesize current external evidence, prioritizing official sources a
 
 Execution contract:
 1. Treat route selection as already resolved by this command; do not begin with skill discovery.
-2. Read `docs/foundation/MEMORY.md` first when it exists, then load deeper foundation docs only when needed.
+- native specialist surface: agent-route command.
+- native workflow surface for escalation: command.
+2. Load docs in this order when they exist: `docs/foundation/MEMORY.md` -> `docs/foundation/PRODUCT.md` -> `docs/foundation/ARCHITECTURE.md` -> `docs/foundation/STRUCTURE.md`. Add `docs/foundation/TECH.md` when execution details matter and `docs/foundation/DESIGN.md` for UI work.
 
 3. Stay within the specialist scope and escalate to a broader workflow when the task crosses domains.
 4. Run focused verification for the changes or analysis you perform.

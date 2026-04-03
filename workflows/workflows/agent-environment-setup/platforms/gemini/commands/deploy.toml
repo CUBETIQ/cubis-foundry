@@ -6,7 +6,9 @@ Plan and implement delivery pipeline or runtime deployment changes with verifica
 
 Execution contract:
 1. Treat route selection as already resolved by this command; do not begin with skill discovery.
-2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.
+- native workflow surface: command.
+- native specialist surface: agent-route command.
+2. Load docs in this order when they exist: `docs/foundation/MEMORY.md` -> `docs/foundation/TECH.md` -> `docs/foundation/memory/runtime.md` -> `docs/foundation/memory/integrations.md` -> `docs/foundation/ARCHITECTURE.md`.
 Attached skills:
 - Load these exact skill IDs first: `ci-cd-pipeline`, `kubernetes-deploy`, `observability`.
 - Local skill file hints if installed: `.gemini/skills/ci-cd-pipeline/SKILL.md`, `.gemini/skills/kubernetes-deploy/SKILL.md`, `.gemini/skills/observability/SKILL.md`.

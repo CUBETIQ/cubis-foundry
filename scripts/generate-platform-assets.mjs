@@ -1096,13 +1096,98 @@ function buildGeneratedWorkflowSkill(workflow, platformLabel) {
   });
 }
 
+function describeNativeWorkflowSurface(platform) {
+  switch (platform) {
+    case "codex":
+    case "claude":
+      return "generated skill";
+    case "copilot":
+      return "prompt";
+    case "gemini":
+    case "antigravity":
+      return "command";
+    default:
+      return "workflow surface";
+  }
+}
+
+function describeNativeSpecialistSurface(platform) {
+  switch (platform) {
+    case "codex":
+    case "claude":
+      return "subagent";
+    case "copilot":
+      return "custom agent";
+    case "gemini":
+    case "antigravity":
+      return "agent-route command";
+    default:
+      return "specialist surface";
+  }
+}
+
+function buildWorkflowDocLoadLine(workflowId) {
+  const memory = "`docs/foundation/MEMORY.md`";
+  const product = "`docs/foundation/PRODUCT.md`";
+  const architecture = "`docs/foundation/ARCHITECTURE.md`";
+  const structure = "`docs/foundation/STRUCTURE.md`";
+  const design = "`docs/foundation/DESIGN.md`";
+  const tech = "`docs/foundation/TECH.md`";
+  const debugging = "`docs/foundation/memory/debugging.md`";
+  const runtime = "`docs/foundation/memory/runtime.md`";
+  const integrations = "`docs/foundation/memory/integrations.md`";
+
+  if (["plan", "architecture", "loop"].includes(workflowId)) {
+    return `2. Load docs in this order when they exist: ${memory} -> ${product} -> ${architecture} -> ${structure}. Add ${design} only for UI or design-heavy work, and ${tech} only when execution details matter.`;
+  }
+  if (workflowId === "implement") {
+    return `2. Load docs in this order when they exist: ${memory} -> ${tech} -> ${architecture} -> ${structure}. Add ${product} for business-rule changes and ${design} for UI work.`;
+  }
+  if (["debug", "test"].includes(workflowId)) {
+    return `2. Load docs in this order when they exist: ${memory} -> ${debugging} -> ${runtime} -> ${integrations} -> ${tech}. Add ${architecture} when the failure crosses boundaries.`;
+  }
+  if (workflowId === "review") {
+    return `2. Load docs in this order when they exist: ${memory} -> ${architecture} -> ${product} -> ${tech}. Add ${design} for UI or design-system review.`;
+  }
+  if (workflowId === "deploy") {
+    return `2. Load docs in this order when they exist: ${memory} -> ${tech} -> ${runtime} -> ${integrations} -> ${architecture}.`;
+  }
+  if (workflowId.startsWith("design-")) {
+    return `2. Load docs in this order when they exist: ${memory} -> ${design} -> ${product} -> ${architecture} -> ${structure}. Add ${tech} only when implementation constraints matter.`;
+  }
+  return `2. Load docs in this order when they exist: ${memory} -> ${product} -> ${architecture} -> ${structure}. Add ${tech} when execution details matter and ${design} for UI work.`;
+}
+
+function buildAgentDocLoadLine(agentId) {
+  const memory = "`docs/foundation/MEMORY.md`";
+  const product = "`docs/foundation/PRODUCT.md`";
+  const architecture = "`docs/foundation/ARCHITECTURE.md`";
+  const structure = "`docs/foundation/STRUCTURE.md`";
+  const design = "`docs/foundation/DESIGN.md`";
+  const tech = "`docs/foundation/TECH.md`";
+  const debugging = "`docs/foundation/memory/debugging.md`";
+  const runtime = "`docs/foundation/memory/runtime.md`";
+  const integrations = "`docs/foundation/memory/integrations.md`";
+
+  if (["planner", "explorer", "orchestrator"].includes(agentId)) {
+    return `2. Load docs in this order when they exist: ${memory} -> ${product} -> ${architecture} -> ${structure}. Add ${design} only for UI or design-heavy work, and ${tech} only when execution details matter.`;
+  }
+  if (agentId === "implementer") {
+    return `2. Load docs in this order when they exist: ${memory} -> ${tech} -> ${architecture} -> ${structure}. Add ${product} for business-rule changes and ${design} for UI work.`;
+  }
+  if (["debugger", "tester"].includes(agentId)) {
+    return `2. Load docs in this order when they exist: ${memory} -> ${debugging} -> ${runtime} -> ${integrations} -> ${tech}. Add ${architecture} when the failure crosses boundaries.`;
+  }
+  if (agentId === "reviewer") {
+    return `2. Load docs in this order when they exist: ${memory} -> ${architecture} -> ${product} -> ${tech}. Add ${design} for UI or design-system review.`;
+  }
+  return `2. Load docs in this order when they exist: ${memory} -> ${product} -> ${architecture} -> ${structure}. Add ${tech} when execution details matter and ${design} for UI work.`;
+}
+
 function buildWorkflowExecutionPrompt(workflow, platform) {
   const { id, command, description } = workflow;
   const attachedSkills = buildWorkflowAttachedSkillsSection(workflow, platform);
-  const docReadLine =
-    id === "architecture"
-      ? "2. Read `docs/foundation/PRODUCT.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution."
-      : "2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.";
+  const docReadLine = buildWorkflowDocLoadLine(id);
   return [
     `Execute the native projection of the ${command} workflow.`,
     "",
@@ -1110,6 +1195,8 @@ function buildWorkflowExecutionPrompt(workflow, platform) {
     "",
     "Execution contract:",
     "1. Treat route selection as already resolved by this command; do not begin with skill discovery.",
+    `- native workflow surface: ${describeNativeWorkflowSurface(platform)}.`,
+    `- native specialist surface: ${describeNativeSpecialistSurface(platform)}.`,
     docReadLine,
     attachedSkills.trimEnd(),
     '3. Confirm the request fits the workflow\'s "When to use" section before acting.',
@@ -1137,7 +1224,9 @@ function buildAgentExecutionPrompt(agent, platform) {
     "",
     "Execution contract:",
     "1. Treat route selection as already resolved by this command; do not begin with skill discovery.",
-    "2. Read `docs/foundation/MEMORY.md` first when it exists, then load deeper foundation docs only when needed.",
+    `- native specialist surface: ${describeNativeSpecialistSurface(platform)}.`,
+    `- native workflow surface for escalation: ${describeNativeWorkflowSurface(platform)}.`,
+    buildAgentDocLoadLine(agentId),
     attachedSkills.trimEnd(),
     "3. Stay within the specialist scope and escalate to a broader workflow when the task crosses domains.",
     "4. Run focused verification for the changes or analysis you perform.",

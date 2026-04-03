@@ -77,6 +77,7 @@ describe("formatInitSummary()", () => {
       "AGENTS.md",
       "CLAUDE.md",
       ".gemini/GEMINI.md",
+      "GEMINI.md",
       ".agents/rules/GEMINI.md",
       ".github/copilot-instructions.md",
       ".codex/agents/debugger.toml",

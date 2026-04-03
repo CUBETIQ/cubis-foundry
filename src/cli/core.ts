@@ -55,6 +55,7 @@ import {
   buildMemoryBuildSkeleton,
   buildMemoryTopicSkeleton,
   buildProductBuildSkeleton,
+  buildStructureBuildSkeleton,
   buildTechBuildSkeleton,
 } from "./build/foundation.js";
 import {
@@ -129,6 +130,10 @@ const PRODUCT_FOUNDATION_BLOCK_END_RE =
 const ARCHITECTURE_DOC_BLOCK_START_RE =
   /<!--\s*cbx:architecture:doc:start[^>]*-->/g;
 const ARCHITECTURE_DOC_BLOCK_END_RE = /<!--\s*cbx:architecture:doc:end\s*-->/g;
+const STRUCTURE_FOUNDATION_BLOCK_START_RE =
+  /<!--\s*cbx:structure:foundation:start[^>]*-->/g;
+const STRUCTURE_FOUNDATION_BLOCK_END_RE =
+  /<!--\s*cbx:structure:foundation:end\s*-->/g;
 const TECH_ARCHITECTURE_BLOCK_START_RE =
   /<!--\s*cbx:architecture:tech:start[^>]*-->/g;
 const TECH_ARCHITECTURE_BLOCK_END_RE =
@@ -1994,6 +1999,7 @@ async function ensureArchitectureBuildScaffold({
   const foundationRoot = path.join(workspaceRoot, FOUNDATION_DOCS_DIR);
   const productPath = path.join(foundationRoot, "PRODUCT.md");
   const architectureDocPath = path.join(foundationRoot, "ARCHITECTURE.md");
+  const structureDocPath = path.join(foundationRoot, "STRUCTURE.md");
   const designDocPath = path.join(foundationRoot, "DESIGN.md");
   const techMdPath = path.join(foundationRoot, "TECH.md");
   const memoryPath = path.join(foundationRoot, "MEMORY.md");
@@ -2035,6 +2041,20 @@ async function ensureArchitectureBuildScaffold({
     ].join("\n"),
     startPattern: ARCHITECTURE_DOC_BLOCK_START_RE,
     endPattern: ARCHITECTURE_DOC_BLOCK_END_RE,
+    dryRun,
+  });
+
+  const structureDocResult = await upsertTaggedSectionInFile({
+    targetPath: structureDocPath,
+    initialContent: `${buildStructureBuildSkeleton()}\n`,
+    block: [
+      "<!-- cbx:structure:foundation:start version=1 profile=uninitialized -->",
+      "Replace this managed section by running `cbx build architecture --platform <antigravity|codex|claude|gemini|copilot>`.",
+      "<!-- cbx:structure:foundation:end -->",
+      "",
+    ].join("\n"),
+    startPattern: STRUCTURE_FOUNDATION_BLOCK_START_RE,
+    endPattern: STRUCTURE_FOUNDATION_BLOCK_END_RE,
     dryRun,
   });
 
@@ -2158,6 +2178,7 @@ async function ensureArchitectureBuildScaffold({
   return {
     productPath,
     architectureDocPath,
+    structureDocPath,
     designDocPath,
     techMdPath,
     memoryPath,
@@ -2169,6 +2190,7 @@ async function ensureArchitectureBuildScaffold({
     adrTemplatePath,
     productResult,
     architectureDocResult,
+    structureDocResult,
     designDocResult,
     techResult,
     memoryResult,
@@ -4664,12 +4686,53 @@ function analyzeTerminalVerificationBlock(content) {
 
 async function resolveRuleFilePath(profileId, scope, cwd = process.cwd()) {
   const profilePaths = await resolveProfilePaths(profileId, scope, cwd);
+  return profilePaths.ruleFilesByPriority[0] || null;
+}
 
-  for (const ruleFilePath of profilePaths.ruleFilesByPriority) {
-    if (await pathExists(ruleFilePath)) return ruleFilePath;
+async function syncCompatibilityRuleFiles({
+  platform,
+  scope,
+  sourceRuleFile,
+  cwd = process.cwd(),
+  dryRun = false,
+}) {
+  if (scope !== "project" || !sourceRuleFile) return [];
+
+  const profilePaths = await resolveProfilePaths(platform, scope, cwd);
+  const compatibilityRuleFiles = profilePaths.ruleFilesByPriority
+    .slice(1)
+    .filter(Boolean)
+    .filter((ruleFilePath) => path.resolve(ruleFilePath) !== path.resolve(sourceRuleFile));
+
+  if (compatibilityRuleFiles.length === 0 || !(await pathExists(sourceRuleFile))) {
+    return [];
   }
 
-  return profilePaths.ruleFilesByPriority[0] || null;
+  const sourceContent = await readFile(sourceRuleFile, "utf8");
+  const results = [];
+  for (const targetPath of compatibilityRuleFiles) {
+    const exists = await pathExists(targetPath);
+    const original = exists ? await readFile(targetPath, "utf8") : null;
+    const changed = original !== sourceContent;
+    if (changed && !dryRun) {
+      await mkdir(path.dirname(targetPath), { recursive: true });
+      await writeFile(targetPath, sourceContent, "utf8");
+    }
+    results.push({
+      filePath: targetPath,
+      action: changed
+        ? exists
+          ? dryRun
+            ? "would-patch"
+            : "patched"
+          : dryRun
+            ? "would-create"
+            : "created"
+        : "unchanged",
+    });
+  }
+
+  return results;
 }
 
 async function upsertManagedRuleBlock(
@@ -4845,6 +4908,13 @@ async function syncRulesForPlatform({
     workflows,
     dryRun,
   });
+  const compatibilityRuleSync = await syncCompatibilityRuleFiles({
+    platform,
+    scope,
+    sourceRuleFile: ruleFilePath,
+    cwd,
+    dryRun,
+  });
   const warnings = [...patchResult.warnings];
 
   if (workspaceRuleSync) {
@@ -4869,6 +4939,7 @@ async function syncRulesForPlatform({
     dryRun,
     filePath: ruleFilePath,
     action: patchResult.action,
+    compatibilityRuleSync,
     warnings,
     workflowsCount: workflows.length,
     workspaceRuleSync: workspaceRuleSync
@@ -7968,6 +8039,11 @@ function printRuleSyncResult(result) {
   console.log(`- File: ${result.filePath}`);
   console.log(`- Action: ${result.action}`);
   console.log(`- Workflows indexed: ${result.workflowsCount}`);
+  if (Array.isArray(result.compatibilityRuleSync)) {
+    for (const sync of result.compatibilityRuleSync) {
+      console.log(`- Compatibility file: ${sync.filePath} (${sync.action})`);
+    }
+  }
   if (result.workspaceRuleSync) {
     console.log(
       `- Workspace precedence file: ${result.workspaceRuleSync.filePath}`,
@@ -12241,7 +12317,7 @@ function printInstallDocumentationNotice() {
   console.log("\nProject backbone docs:");
   console.log("- Install only wires the rule references and workflow assets.");
   console.log(
-    `- Use \`cbx rules init\` to scaffold ENGINEERING_RULES.md and TECH.md, or \`cbx build architecture --platform <antigravity|codex|claude|gemini|copilot>\` to generate ${FOUNDATION_DOCS_DIR}/MEMORY.md, ${FOUNDATION_DOCS_DIR}/PRODUCT.md, ${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md, ${FOUNDATION_DOCS_DIR}/TECH.md, topic memory docs, and ADR scaffolds.`,
+    `- Use \`cbx rules init\` to scaffold ENGINEERING_RULES.md and TECH.md, or \`cbx build architecture --platform <antigravity|codex|claude|gemini|copilot>\` to generate ${FOUNDATION_DOCS_DIR}/MEMORY.md, ${FOUNDATION_DOCS_DIR}/PRODUCT.md, ${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md, ${FOUNDATION_DOCS_DIR}/STRUCTURE.md, ${FOUNDATION_DOCS_DIR}/DESIGN.md, ${FOUNDATION_DOCS_DIR}/TECH.md, topic memory docs, and ADR scaffolds.`,
   );
 }
 
@@ -12567,6 +12643,7 @@ function buildArchitecturePrompt({
   const memoryPath = `${FOUNDATION_DOCS_DIR}/MEMORY.md`;
   const productPath = `${FOUNDATION_DOCS_DIR}/PRODUCT.md`;
   const architecturePath = `${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md`;
+  const structurePath = `${FOUNDATION_DOCS_DIR}/STRUCTURE.md`;
   const designPath = `${FOUNDATION_DOCS_DIR}/DESIGN.md`;
   const techPath = `${FOUNDATION_DOCS_DIR}/TECH.md`;
   const designPagesPath = `${FOUNDATION_DESIGN_DIR}/pages`;
@@ -12590,7 +12667,7 @@ function buildArchitecturePrompt({
     ARCHITECTURE_BUILD_PLATFORM_CAPABILITIES[platform] || "",
     "",
     "Objective:",
-    `- Inspect the repository at ${toPosixPath(workspaceRoot)} and author or refresh the core foundation docs in ${memoryPath}, ${productPath}, ${architecturePath}, ${designPath}, ${techPath}, ${domainMemoryPath}, ${runtimeMemoryPath}, ${integrationsMemoryPath}, ${debuggingMemoryPath}, ${adrReadmePath}, and ${adrTemplatePath}.`,
+    `- Inspect the repository at ${toPosixPath(workspaceRoot)} and author or refresh the core foundation docs in ${memoryPath}, ${productPath}, ${architecturePath}, ${structurePath}, ${designPath}, ${techPath}, ${domainMemoryPath}, ${runtimeMemoryPath}, ${integrationsMemoryPath}, ${debuggingMemoryPath}, ${adrReadmePath}, and ${adrTemplatePath}.`,
     "- The content should be primarily AI-authored from repository inspection, not copied from placeholder scaffolding.",
     "- Preserve manual content outside the managed `cbx:*` markers.",
     "- The output docs must be immediately useful to any AI agent (Copilot, Claude, Gemini, Codex) inspecting this repo for the first time, reducing search and exploration time.",
@@ -12627,6 +12704,7 @@ function buildArchitecturePrompt({
     `- ${memoryPath} is the durable AI entrypoint and first-stop index. Keep it concise, keep it under roughly 120 lines when possible, and route readers to deeper docs instead of duplicating every deep detail.`,
     `- ${productPath} is for planning, scoping, specs, product intent, business rules, and domain vocabulary.`,
     `- ${architecturePath} is for structure, boundaries, dependency rules, ADR-worthy decisions, refactors, and design-system governance.`,
+    `- ${structurePath} is the repo-navigation and ownership map. Use it for filesystem orientation, module ownership, platform-specific surface placement, and "where to look first" guidance.`,
     `- ${designPath} is the canonical design-system backbone for web, desktop, and Flutter/mobile work. Use ${designPagesPath}, ${designFlowsPath}, and ${designMobilePath} for narrower overlays.`,
     `- ${techPath} is for build, test, run, debug, CI/CD, tooling, runtime operations, and exact commands.`,
     `- ${domainMemoryPath}, ${runtimeMemoryPath}, ${integrationsMemoryPath}, and ${debuggingMemoryPath} are load-on-demand drill-down docs for their named topics.`,
@@ -12657,8 +12735,8 @@ function buildArchitecturePrompt({
     "1. Inspect the repository first before writing any backbone doc content. Derive structure, product surfaces, runtime boundaries, and technical constraints from the actual codebase.",
     "2. Complete a real inspection pass before drafting. At minimum, inspect the concrete anchors listed above, plus any adjacent directories needed to understand the main execution paths, data boundaries, and integration surfaces.",
     "3. Do not infer architecture from filenames alone when you can open representative files. Read enough source to validate the main app boundaries, runtime flows, and persistence/integration patterns.",
-    `4. Then read ${memoryPath}, ${productPath}, ${architecturePath}, ${techPath}, ${domainMemoryPath}, ${runtimeMemoryPath}, ${integrationsMemoryPath}, and ${debuggingMemoryPath} in that order when they exist so you can preserve useful manual context and update existing managed sections cleanly.`,
-    `5. Replace or update only the content between the existing managed markers in ${memoryPath}, ${productPath}, ${architecturePath}, ${techPath}, ${domainMemoryPath}, ${runtimeMemoryPath}, ${integrationsMemoryPath}, and ${debuggingMemoryPath}. Do not append a second marker block.`,
+    `4. Then read ${memoryPath}, ${productPath}, ${architecturePath}, ${structurePath}, ${designPath}, ${techPath}, ${domainMemoryPath}, ${runtimeMemoryPath}, ${integrationsMemoryPath}, and ${debuggingMemoryPath} in that order when they exist so you can preserve useful manual context and update existing managed sections cleanly.`,
+    `5. Replace or update only the content between the existing managed markers in ${memoryPath}, ${productPath}, ${architecturePath}, ${structurePath}, ${designPath}, ${techPath}, ${domainMemoryPath}, ${runtimeMemoryPath}, ${integrationsMemoryPath}, and ${debuggingMemoryPath}. Do not append a second marker block.`,
     "",
     `6. In ${memoryPath}, write the durable AI memory index:`,
     "   - A terse project summary that a fresh agent can absorb in under a minute.",
@@ -12692,9 +12770,24 @@ function buildArchitecturePrompt({
     "   - Known risks and tech debt visible in the codebase (TODOs, deprecated deps, missing tests).",
     "   - Deployment/operability notes.",
     "   - Testing/debugging strategy with concrete test commands and coverage tooling.",
-    "   - A dedicated folder-structure guide listing every important directory, what it owns, and contributor rules.",
+    "   - Keep ARCHITECTURE focused on system boundaries and rules; defer detailed repo navigation and ownership maps to STRUCTURE.md.",
     "",
-    `9. In ${techPath}, write the developer-facing technical map that an AI agent can use to start working immediately:`,
+    `9. In ${structurePath}, write the repo-navigation and ownership map:`,
+    "   - A short consumer note explaining that STRUCTURE is the doc for filesystem orientation, ownership boundaries, platform rule placement, and codebase pathfinding.",
+    "   - High-level repository shape with the main roots and why they exist.",
+    "   - Key directories and files, what they own, and where contributors should start when changing each area.",
+    "   - Platform-specific instruction, workflow, skill, command, prompt, hook, custom-agent, or subagent placement as actually implemented in the repo.",
+    "   - Ownership and dependency boundaries that matter when moving or adding files.",
+    "   - Search and navigation shortcuts: where to look first for CLI logic, generators, workflows, platform assets, design-system state, docs, and tests.",
+    "",
+    `10. In ${designPath}, write the canonical design foundation:`,
+    "   - A short consumer note explaining that DESIGN is the doc for design-system state, tokens, component vocabulary, motion rules, and downstream UI consistency.",
+    "   - System-wide visual direction and brand/interaction constraints inferred from the repo when present.",
+    "   - Canonical tokens, primitives, component language, motion rules, and accessibility constraints that downstream UI work should follow.",
+    "   - Platform adaptation notes for web, desktop, and mobile surfaces when the repo shows evidence of those surfaces.",
+    "   - Downstream consumers and overlays: when a task should stay in DESIGN versus use pages, flows, or mobile overlays.",
+    "",
+    `11. In ${techPath}, write the developer-facing technical map that an AI agent can use to start working immediately:`,
     "   - Stack snapshot as a table (runtime, language, framework, version if discoverable).",
     "   - A short consumer note explaining that TECH is the doc for build, run, test, debug, CI/CD, and tooling execution.",
     "   - Repository layout: directory tree with one-line purpose per directory.",
@@ -12711,22 +12804,22 @@ function buildArchitecturePrompt({
     "   - Change hotspots: files/directories that change most often or have the most coupling, so agents know where to look first.",
     "   - Practical editing notes: conventions for naming, imports, test file placement, and PR hygiene.",
     "",
-    `10. In ${domainMemoryPath}, write the domain memory topic doc:`,
+    `12. In ${domainMemoryPath}, write the domain memory topic doc:`,
     "   - Core entities, bounded contexts, business terminology, and invariants.",
     "   - A short consumer note explaining that this topic doc is for domain modeling and product-language alignment.",
     "   - Which files or modules embody each important concept.",
     "   - Ambiguous terminology or overloaded names that agents should avoid misusing.",
     "",
-    `11. In ${runtimeMemoryPath}, write the runtime memory topic doc:`,
+    `13. In ${runtimeMemoryPath}, write the runtime memory topic doc:`,
     "   - Runtime topology, entrypoints, queues/jobs, background workers, schedules, and deployment-time assumptions.",
     "   - A short consumer note explaining that this topic doc is for request flow, process lifecycle, workers, and deployment reasoning.",
     "   - The shortest path to understand request flow and process lifecycle.",
     "",
-    `12. In ${integrationsMemoryPath}, write the integrations memory topic doc:`,
+    `14. In ${integrationsMemoryPath}, write the integrations memory topic doc:`,
     "   - External services, APIs, auth boundaries, data contracts, webhook/event flows, and migration-sensitive integration notes.",
     "   - A short consumer note explaining that this topic doc is for external-service, API, auth-boundary, and contract-sensitive work.",
     "",
-    `13. In ${debuggingMemoryPath}, write the debugging memory topic doc:`,
+    `15. In ${debuggingMemoryPath}, write the debugging memory topic doc:`,
     "   - Common failures, hot logs, exact investigation commands, smoke checks, and repo-specific diagnostic shortcuts.",
     "   - A short consumer note explaining that this topic doc is for triage, incident response, and debugging workflows.",
     "",
@@ -12735,31 +12828,33 @@ function buildArchitecturePrompt({
     "- In MEMORY.md, name the likely downstream consumers of each deeper doc using concrete route families such as planning/spec, architecture/refactor, build/test/debug, runtime/integration, and ADR work.",
     "- Keep MEMORY.md lean enough to be imported frequently. Prefer short bullets, compact tables only when necessary, and links outward instead of repeated explanations.",
     "",
-    `14. ${techPath} should complement ${architecturePath}; do not repeat the same structure prose unless it helps a developer act faster.`,
+    `16. ${techPath} should complement ${architecturePath} and ${structurePath}; do not repeat the same structure prose unless it helps a developer act faster.`,
     "",
-    `15. Use exact required headings in ${memoryPath}: \`## Project Summary\`, \`## Load These Docs By Task\`, \`## Durable Facts\`, \`## Active Watchpoints\`.`,
-    `16. Use exact required headings in ${productPath}: \`## Product Scope\`, \`## Product Purpose\`, \`## Primary Users And Operators\`, \`## Main Journeys\`, \`## Business Capabilities That Matter\`, \`## Operational Constraints\`, \`## Preservation Rules For Future Contributors\`, \`## Domain Glossary\`.`,
-    `17. Use exact required headings in ${architecturePath}: \`## Architecture Type\`, \`## System Purpose\`, \`## Constraints And Architectural Drivers\`, \`## Repository Structure Guide\`, \`## Bounded Contexts\`, \`## Major Building Blocks\`, \`## Dependency Rules\`, \`## Data Boundaries\`, \`## Integration Boundaries\`, \`## Runtime Flows\`, \`## Crosscutting Concerns\`, \`## Quality Requirements\`, \`## Risks And Tech Debt\`, \`## Deployment And Operability\`, \`## Testing And Debugging Strategy\`, \`## Architectural Guidance\`.`,
-    `18. Use exact required headings in ${techPath}: \`## Stack Snapshot\`, \`## Repository Layout\`, \`## Entrypoints\`, \`## Key Commands\`, \`## Build And Validation\`, \`## CI CD Pipeline\`, \`## Runtime Data Stores\`, \`## External Services And Integration Surfaces\`, \`## Environment And Config Surfaces\`, \`## Generated Artifacts To Respect\`, \`## Error Patterns And Debugging\`, \`## Change Hotspots\`, \`## Practical Editing Notes\`.`,
-    `19. Use exact required headings in ${domainMemoryPath}: \`## Core Concepts\`, \`## Bounded Context Vocabulary\`, \`## Invariants To Preserve\`, \`## File Ownership Map\`.`,
-    `20. Use exact required headings in ${runtimeMemoryPath}: \`## Runtime Topology\`, \`## Entrypoint Paths\`, \`## Background Work\`, \`## Deployment Assumptions\`.`,
-    `21. Use exact required headings in ${integrationsMemoryPath}: \`## External Services\`, \`## Contracts And Schemas\`, \`## Auth And Trust Boundaries\`, \`## Change Risks\`.`,
-    `22. Use exact required headings in ${debuggingMemoryPath}: \`## Fast Triage Paths\`, \`## Logs And Signals\`, \`## Known Failure Modes\`, \`## Verification Shortcuts\`.`,
+    `17. Use exact required headings in ${memoryPath}: \`## Project Summary\`, \`## Load These Docs By Task\`, \`## Durable Facts\`, \`## Active Watchpoints\`.`,
+    `18. Use exact required headings in ${productPath}: \`## Product Scope\`, \`## Product Purpose\`, \`## Primary Users And Operators\`, \`## Main Journeys\`, \`## Business Capabilities That Matter\`, \`## Operational Constraints\`, \`## Preservation Rules For Future Contributors\`, \`## Domain Glossary\`.`,
+    `19. Use exact required headings in ${architecturePath}: \`## Architecture Type\`, \`## System Purpose\`, \`## Constraints And Architectural Drivers\`, \`## Repository Structure Guide\`, \`## Bounded Contexts\`, \`## Major Building Blocks\`, \`## Dependency Rules\`, \`## Data Boundaries\`, \`## Integration Boundaries\`, \`## Runtime Flows\`, \`## Crosscutting Concerns\`, \`## Quality Requirements\`, \`## Risks And Tech Debt\`, \`## Deployment And Operability\`, \`## Testing And Debugging Strategy\`, \`## Architectural Guidance\`.`,
+    `20. Use exact required headings in ${structurePath}: \`## Structure Role\`, \`## Repository Shape\`, \`## Ownership Map\`, \`## Platform Surface Placement\`, \`## Navigation Shortcuts\`, \`## Change Boundaries\`.`,
+    `21. Use exact required headings in ${designPath}: \`## Design System Summary\`, \`## Visual Direction\`, \`## Tokens And Primitives\`, \`## Component Vocabulary\`, \`## Motion And Interaction\`, \`## Accessibility And Quality Bar\`, \`## Platform Adaptation Notes\`, \`## Downstream Design Consumers\`.`,
+    `22. Use exact required headings in ${techPath}: \`## Stack Snapshot\`, \`## Repository Layout\`, \`## Entrypoints\`, \`## Key Commands\`, \`## Build And Validation\`, \`## CI CD Pipeline\`, \`## Runtime Data Stores\`, \`## External Services And Integration Surfaces\`, \`## Environment And Config Surfaces\`, \`## Generated Artifacts To Respect\`, \`## Error Patterns And Debugging\`, \`## Change Hotspots\`, \`## Practical Editing Notes\`.`,
+    `23. Use exact required headings in ${domainMemoryPath}: \`## Core Concepts\`, \`## Bounded Context Vocabulary\`, \`## Invariants To Preserve\`, \`## File Ownership Map\`.`,
+    `24. Use exact required headings in ${runtimeMemoryPath}: \`## Runtime Topology\`, \`## Entrypoint Paths\`, \`## Background Work\`, \`## Deployment Assumptions\`.`,
+    `25. Use exact required headings in ${integrationsMemoryPath}: \`## External Services\`, \`## Contracts And Schemas\`, \`## Auth And Trust Boundaries\`, \`## Change Risks\`.`,
+    `26. Use exact required headings in ${debuggingMemoryPath}: \`## Fast Triage Paths\`, \`## Logs And Signals\`, \`## Known Failure Modes\`, \`## Verification Shortcuts\`.`,
     "",
     "23. Every major claim should be grounded in repository evidence. Mention concrete repo paths in the docs when a structural claim would otherwise be ambiguous.",
     "24. Avoid placeholder filler, generic checklists, and duplicated content across files. Each doc should have a clear job.",
     "25. Do not create ROADMAP.md, ENGINEERING_RULES.md, or other extra docs unless the prompt explicitly asks for them.",
     researchMode === "never"
-      ? "26. Stay repo-only. Do not use outside research."
-      : "26. Use repo evidence first. Use official docs when needed. Treat Reddit or community sources only as labeled secondary evidence.",
+      ? "27. Stay repo-only. Do not use outside research."
+      : "27. Use repo evidence first. Use official docs when needed. Treat Reddit or community sources only as labeled secondary evidence.",
     researchMode === "always"
-      ? `27. Include an external research evidence subsection in ${techPath} with clearly labeled primary and secondary evidence.`
-      : "27. Include external research notes only if they materially informed the architecture update.",
-    `28. If the project clearly follows Clean Architecture, feature-first modules, DDD, modular monolith, or another stable structure, make that explicit in ${architecturePath} with evidence from the repo.`,
-    `29. Ensure ${adrReadmePath} and ${adrTemplatePath} exist as ADR entrypoints, but keep them lean.`,
-    "30. In all docs, when referencing other foundation docs, use relative markdown links: `[ARCHITECTURE.md](docs/foundation/ARCHITECTURE.md)`. This lets AI agents and humans navigate between docs.",
-    "31. Validate all Mermaid diagram syntax before writing. Each diagram must render without errors. Use simple node IDs (alphanumeric, no special characters) and quote labels containing spaces.",
-    "32. For each key command documented, note the expected exit code (0 for success) and any common failure modes. This helps AI agents validate their own changes.",
+      ? `28. Include an external research evidence subsection in ${techPath} with clearly labeled primary and secondary evidence.`
+      : "28. Include external research notes only if they materially informed the architecture update.",
+    `29. If the project clearly follows Clean Architecture, feature-first modules, DDD, modular monolith, or another stable structure, make that explicit in ${architecturePath} with evidence from the repo.`,
+    `30. Ensure ${adrReadmePath} and ${adrTemplatePath} exist as ADR entrypoints, but keep them lean.`,
+    "31. In all docs, when referencing other foundation docs, use relative markdown links: `[ARCHITECTURE.md](docs/foundation/ARCHITECTURE.md)`. This lets AI agents and humans navigate between docs.",
+    "32. Validate all Mermaid diagram syntax before writing. Each diagram must render without errors. Use simple node IDs (alphanumeric, no special characters) and quote labels containing spaces.",
+    "33. For each key command documented, note the expected exit code (0 for success) and any common failure modes. This helps AI agents validate their own changes.",
     "",
     "Platform context-loading awareness (these docs will be @imported into agent rule files):",
     "- Claude loads CLAUDE.md at session start via @file imports; each imported doc should be concise and self-contained.",
@@ -12773,7 +12868,7 @@ function buildArchitecturePrompt({
     "- Front-load the most actionable information (commands, paths, constraints) in each doc; put supplementary detail later.",
     "",
     "Return one JSON object on the last line with this shape:",
-    `{"files_written":["${memoryPath}","${productPath}","${architecturePath}","${techPath}","${domainMemoryPath}","${runtimeMemoryPath}","${integrationsMemoryPath}","${debuggingMemoryPath}","${adrReadmePath}","${adrTemplatePath}"],"research_used":false,"gaps":[],"next_actions":[]}`,
+    `{"files_written":["${memoryPath}","${productPath}","${architecturePath}","${structurePath}","${designPath}","${techPath}","${domainMemoryPath}","${runtimeMemoryPath}","${integrationsMemoryPath}","${debuggingMemoryPath}","${adrReadmePath}","${adrTemplatePath}"],"research_used":false,"gaps":[],"next_actions":[]}`,
     "",
     "Do not emit placeholder TODOs in the managed sections.",
   ].join("\n");
@@ -13311,6 +13406,16 @@ async function normalizeArchitectureBuildOutputs(scaffold) {
     endPattern: ARCHITECTURE_DOC_BLOCK_END_RE,
   });
   await collapseDuplicateTaggedBlocks({
+    targetPath: scaffold.structureDocPath,
+    startPattern: STRUCTURE_FOUNDATION_BLOCK_START_RE,
+    endPattern: STRUCTURE_FOUNDATION_BLOCK_END_RE,
+  });
+  await collapseDuplicateTaggedBlocks({
+    targetPath: scaffold.designDocPath,
+    startPattern: DESIGN_FOUNDATION_BLOCK_START_RE,
+    endPattern: DESIGN_FOUNDATION_BLOCK_END_RE,
+  });
+  await collapseDuplicateTaggedBlocks({
     targetPath: scaffold.techMdPath,
     startPattern: TECH_ARCHITECTURE_BLOCK_START_RE,
     endPattern: TECH_ARCHITECTURE_BLOCK_END_RE,
@@ -13341,6 +13446,7 @@ async function readArchitectureDriftStatus(workspaceRoot, snapshot) {
     FOUNDATION_DOCS_DIR,
     "ARCHITECTURE.md",
   );
+  const structurePath = path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "STRUCTURE.md");
   const designPath = path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "DESIGN.md");
   const techPath = path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "TECH.md");
   const domainMemoryPath = path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "domain.md");
@@ -13360,6 +13466,7 @@ async function readArchitectureDriftStatus(workspaceRoot, snapshot) {
   const memoryExists = await pathExists(memoryPath);
   const productExists = await pathExists(productPath);
   const architectureExists = await pathExists(architecturePath);
+  const structureExists = await pathExists(structurePath);
   const designExists = await pathExists(designPath);
   const techExists = await pathExists(techPath);
   const topicPaths = [
@@ -13389,6 +13496,7 @@ async function readArchitectureDriftStatus(workspaceRoot, snapshot) {
   }
   let actualProductHash = null;
   let actualArchitectureHash = null;
+  let actualStructureHash = null;
   let actualDesignHash = null;
   let actualTechHash = null;
 
@@ -13420,6 +13528,22 @@ async function readArchitectureDriftStatus(workspaceRoot, snapshot) {
     if (!actualArchitectureHash) {
       findings.push(
         `${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md is missing the managed architecture backbone block.`,
+      );
+    }
+  }
+
+  if (!structureExists) {
+    findings.push(`${FOUNDATION_DOCS_DIR}/STRUCTURE.md is missing.`);
+  } else {
+    const content = await readFile(structurePath, "utf8");
+    actualStructureHash = extractTaggedMarkerAttribute(
+      content,
+      STRUCTURE_FOUNDATION_BLOCK_START_RE,
+      "profile",
+    );
+    if (!actualStructureHash) {
+      findings.push(
+        `${FOUNDATION_DOCS_DIR}/STRUCTURE.md is missing the managed structure foundation block.`,
       );
     }
   }
@@ -13489,12 +13613,14 @@ async function readArchitectureDriftStatus(workspaceRoot, snapshot) {
     memoryPath,
     productPath,
     architecturePath,
+    structurePath,
     designPath,
     techPath,
     adrReadmePath,
     metadataPath,
     actualProductHash,
     actualArchitectureHash,
+    actualStructureHash,
     actualDesignHash,
     actualTechHash,
   };
@@ -13529,6 +13655,7 @@ async function executeContextGeneration(options) {
     path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "MEMORY.md"),
     path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "PRODUCT.md"),
     path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "ARCHITECTURE.md"),
+    path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "STRUCTURE.md"),
     path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "DESIGN.md"),
     path.join(workspaceRoot, FOUNDATION_DOCS_DIR, "TECH.md"),
     path.join(workspaceRoot, FOUNDATION_MEMORY_DIR, "domain.md"),
@@ -13628,6 +13755,8 @@ async function executeContextGeneration(options) {
       `${FOUNDATION_DOCS_DIR}/MEMORY.md`,
       `${FOUNDATION_DOCS_DIR}/PRODUCT.md`,
       `${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md`,
+      `${FOUNDATION_DOCS_DIR}/STRUCTURE.md`,
+      `${FOUNDATION_DOCS_DIR}/DESIGN.md`,
       `${FOUNDATION_DOCS_DIR}/TECH.md`,
       `${FOUNDATION_MEMORY_DIR}/domain.md`,
       `${FOUNDATION_MEMORY_DIR}/runtime.md`,
@@ -13672,7 +13801,7 @@ async function runBuildArchitecture(options) {
         console.log(`Workspace: ${outcome.workspaceRoot}`);
         console.log(`Status: ${outcome.drift.stale ? "stale" : "fresh"}`);
         console.log(
-          `Backbone docs: ${FOUNDATION_DOCS_DIR}/MEMORY.md, ${FOUNDATION_DOCS_DIR}/PRODUCT.md, ${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md, ${FOUNDATION_DOCS_DIR}/TECH.md, ${FOUNDATION_MEMORY_DIR}/*.md, ${FOUNDATION_ADR_DIR}/README.md`,
+          `Backbone docs: ${FOUNDATION_DOCS_DIR}/MEMORY.md, ${FOUNDATION_DOCS_DIR}/PRODUCT.md, ${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md, ${FOUNDATION_DOCS_DIR}/STRUCTURE.md, ${FOUNDATION_DOCS_DIR}/DESIGN.md, ${FOUNDATION_DOCS_DIR}/TECH.md, ${FOUNDATION_MEMORY_DIR}/*.md, ${FOUNDATION_ADR_DIR}/README.md`,
         );
         if (outcome.drift.findings.length > 0) {
           console.log("Findings:");
@@ -13720,7 +13849,7 @@ async function runBuildArchitecture(options) {
     console.log(`Adapter: ${outcome.adapter}`);
     console.log(`Workspace: ${outcome.workspaceRoot}`);
     console.log(
-      `Managed docs: ${FOUNDATION_DOCS_DIR}/MEMORY.md, ${FOUNDATION_DOCS_DIR}/PRODUCT.md, ${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md, ${FOUNDATION_DOCS_DIR}/TECH.md, ${FOUNDATION_MEMORY_DIR}/*.md`,
+      `Managed docs: ${FOUNDATION_DOCS_DIR}/MEMORY.md, ${FOUNDATION_DOCS_DIR}/PRODUCT.md, ${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md, ${FOUNDATION_DOCS_DIR}/STRUCTURE.md, ${FOUNDATION_DOCS_DIR}/DESIGN.md, ${FOUNDATION_DOCS_DIR}/TECH.md, ${FOUNDATION_MEMORY_DIR}/*.md`,
     );
     console.log(
       `ADR scaffold: ${FOUNDATION_ADR_DIR}/README.md, ${FOUNDATION_ADR_DIR}/0000-template.md`,
@@ -14414,6 +14543,7 @@ async function resolveWorkspaceControlState(cwd, overrides = {}) {
 function buildRequiredContextDocs(manifest = {}) {
   const required = [
     path.join(FOUNDATION_DOCS_DIR, "ARCHITECTURE.md"),
+    path.join(FOUNDATION_DOCS_DIR, "STRUCTURE.md"),
     path.join(FOUNDATION_DOCS_DIR, "DESIGN.md"),
     path.join(FOUNDATION_DOCS_DIR, "TECH.md"),
     path.join(FOUNDATION_DOCS_DIR, "MEMORY.md"),
@@ -14424,7 +14554,10 @@ function buildRequiredContextDocs(manifest = {}) {
   if (authoringAi === "claude") {
     required.push("CLAUDE.md");
   } else if (authoringAi === "gemini") {
+    required.push(".gemini/GEMINI.md");
     required.push("GEMINI.md");
+  } else if (authoringAi === "copilot") {
+    required.push(".github/copilot-instructions.md");
   } else {
     required.push("AGENTS.md");
   }

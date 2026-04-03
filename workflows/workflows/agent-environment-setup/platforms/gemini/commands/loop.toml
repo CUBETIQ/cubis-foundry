@@ -6,7 +6,9 @@ Run a bounded autonomous iteration loop that keeps executing, verifying, and tig
 
 Execution contract:
 1. Treat route selection as already resolved by this command; do not begin with skill discovery.
-2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.
+- native workflow surface: command.
+- native specialist surface: agent-route command.
+2. Load docs in this order when they exist: `docs/foundation/MEMORY.md` -> `docs/foundation/PRODUCT.md` -> `docs/foundation/ARCHITECTURE.md` -> `docs/foundation/STRUCTURE.md`. Add `docs/foundation/DESIGN.md` only for UI or design-heavy work, and `docs/foundation/TECH.md` only when execution details matter.
 Attached skills:
 - Load these exact skill IDs first: `spec-driven-delivery`, `web-testing`.
 - Local skill file hints if installed: `.gemini/skills/spec-driven-delivery/SKILL.md`, `.gemini/skills/web-testing/SKILL.md`.

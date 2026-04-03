@@ -6,7 +6,9 @@ Audit a change set for correctness, regression risk, missing tests, and security
 
 Execution contract:
 1. Treat route selection as already resolved by this command; do not begin with skill discovery.
-2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.
+- native workflow surface: command.
+- native specialist surface: agent-route command.
+2. Load docs in this order when they exist: `docs/foundation/MEMORY.md` -> `docs/foundation/ARCHITECTURE.md` -> `docs/foundation/PRODUCT.md` -> `docs/foundation/TECH.md`. Add `docs/foundation/DESIGN.md` for UI or design-system review.
 Attached skills:
 - Load these exact skill IDs first: `code-review`, `owasp-security-review`.
 - Local skill file hints if installed: `.agents/skills/code-review/SKILL.md`, `.agents/skills/owasp-security-review/SKILL.md`.

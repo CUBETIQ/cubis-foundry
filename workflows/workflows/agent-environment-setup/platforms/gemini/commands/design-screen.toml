@@ -6,7 +6,9 @@ Turn a product goal into a concrete screen direction, then implement or hand off
 
 Execution contract:
 1. Treat route selection as already resolved by this command; do not begin with skill discovery.
-2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.
+- native workflow surface: command.
+- native specialist surface: agent-route command.
+2. Load docs in this order when they exist: `docs/foundation/MEMORY.md` -> `docs/foundation/DESIGN.md` -> `docs/foundation/PRODUCT.md` -> `docs/foundation/ARCHITECTURE.md` -> `docs/foundation/STRUCTURE.md`. Add `docs/foundation/TECH.md` only when implementation constraints matter.
 Attached skills:
 - Load these exact skill IDs first: `frontend-design`, `design`, `web-ui-design`, `mobile-ui-design`, `desktop-ui-design`, `design-system`.
 - Local skill file hints if installed: `.gemini/skills/frontend-design/SKILL.md`, `.gemini/skills/design/SKILL.md`, `.gemini/skills/web-ui-design/SKILL.md`, `.gemini/skills/mobile-ui-design/SKILL.md`, `.gemini/skills/desktop-ui-design/SKILL.md`, `.gemini/skills/design-system/SKILL.md`.

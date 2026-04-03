@@ -6,7 +6,9 @@ Research the relevant codebase surface and produce a structured implementation p
 
 Execution contract:
 1. Treat route selection as already resolved by this command; do not begin with skill discovery.
-2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.
+- native workflow surface: command.
+- native specialist surface: agent-route command.
+2. Load docs in this order when they exist: `docs/foundation/MEMORY.md` -> `docs/foundation/PRODUCT.md` -> `docs/foundation/ARCHITECTURE.md` -> `docs/foundation/STRUCTURE.md`. Add `docs/foundation/DESIGN.md` only for UI or design-heavy work, and `docs/foundation/TECH.md` only when execution details matter.
 Attached skills:
 - Load these exact skill IDs first: `spec-driven-delivery`, `system-design`, `deep-research`.
 - Local skill file hints if installed: `.agents/skills/spec-driven-delivery/SKILL.md`, `.agents/skills/system-design/SKILL.md`, `.agents/skills/deep-research/SKILL.md`.

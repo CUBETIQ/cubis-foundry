@@ -6,7 +6,9 @@ Map the relevant codebase surface quickly, identify ownership boundaries, and re
 
 Execution contract:
 1. Treat route selection as already resolved by this command; do not begin with skill discovery.
-2. Read `docs/foundation/MEMORY.md` first when it exists, then load deeper foundation docs only when needed.
+- native specialist surface: agent-route command.
+- native workflow surface for escalation: command.
+2. Load docs in this order when they exist: `docs/foundation/MEMORY.md` -> `docs/foundation/PRODUCT.md` -> `docs/foundation/ARCHITECTURE.md` -> `docs/foundation/STRUCTURE.md`. Add `docs/foundation/DESIGN.md` only for UI or design-heavy work, and `docs/foundation/TECH.md` only when execution details matter.
 
 3. Stay within the specialist scope and escalate to a broader workflow when the task crosses domains.
 4. Run focused verification for the changes or analysis you perform.

@@ -97,7 +97,7 @@ if ((name === 'codex' && args[0] === 'exec' && args[1] === '--help') || (name !=
   process.exit(0);
 }
 const prompt = args[args.length - 1] || '';
-if (!prompt.includes('docs/foundation/MEMORY.md') || !prompt.includes('docs/foundation/PRODUCT.md') || !prompt.includes('docs/foundation/ARCHITECTURE.md') || !prompt.includes('docs/foundation/TECH.md') || !prompt.includes('docs/foundation/memory/domain.md') || !prompt.includes('docs/foundation/adr/README.md') || !prompt.includes('Load these exact skill IDs first')) {
+if (!prompt.includes('docs/foundation/MEMORY.md') || !prompt.includes('docs/foundation/PRODUCT.md') || !prompt.includes('docs/foundation/ARCHITECTURE.md') || !prompt.includes('docs/foundation/STRUCTURE.md') || !prompt.includes('docs/foundation/DESIGN.md') || !prompt.includes('docs/foundation/TECH.md') || !prompt.includes('docs/foundation/memory/domain.md') || !prompt.includes('docs/foundation/adr/README.md') || !prompt.includes('Load these exact skill IDs first')) {
   console.error('prompt missing required architecture instructions');
   process.exit(2);
 }
@@ -111,22 +111,30 @@ if (name === 'gemini' && process.env.CBX_STUB_GEMINI_FAIL === '1') {
   process.exit(1);
 }
 const foundationDir = path.join(process.cwd(), 'docs', 'foundation');
-const fileMap = {
-  memory: path.join(foundationDir, 'MEMORY.md'),
-  product: path.join(foundationDir, 'PRODUCT.md'),
-  architecture: path.join(foundationDir, 'ARCHITECTURE.md'),
-  tech: path.join(foundationDir, 'TECH.md'),
+  const fileMap = {
+    memory: path.join(foundationDir, 'MEMORY.md'),
+    product: path.join(foundationDir, 'PRODUCT.md'),
+    architecture: path.join(foundationDir, 'ARCHITECTURE.md'),
+    structure: path.join(foundationDir, 'STRUCTURE.md'),
+    design: path.join(foundationDir, 'DESIGN.md'),
+    tech: path.join(foundationDir, 'TECH.md'),
   domain: path.join(foundationDir, 'memory', 'domain.md'),
   runtime: path.join(foundationDir, 'memory', 'runtime.md'),
   integrations: path.join(foundationDir, 'memory', 'integrations.md'),
   debugging: path.join(foundationDir, 'memory', 'debugging.md')
 };
-const richBlocks = {
-  memory: [
-    '<!-- cbx:memory:foundation:start version=1 profile=stub -->',
-    '## Project Memory',
+  const richBlocks = {
+    memory: [
+    '<!-- cbx:memory:index:start version=1 profile=stub -->',
+    '## Project Summary',
     'Stub memory index grounded in repo evidence.',
-    '<!-- cbx:memory:foundation:end -->',
+    '## Load These Docs By Task',
+    '- planning/spec: PRODUCT then ARCHITECTURE then STRUCTURE',
+    '## Durable Facts',
+    '- Stub durable fact.',
+    '## Active Watchpoints',
+    '- Stub watchpoint.',
+    '<!-- cbx:memory:index:end -->',
     ''
   ].join('\\n'),
   product: [
@@ -141,10 +149,48 @@ const richBlocks = {
     '## Architecture Type',
     '- Feature-first modular app with a modular monolith backend.',
     '',
-    '## Folder Structure Guide',
+    '## Repository Structure Guide',
     '- apps/ owns runnable surfaces.',
     '- packages/ owns shared code.',
     '<!-- cbx:architecture:doc:end -->',
+    ''
+  ].join('\\n'),
+  structure: [
+    '<!-- cbx:structure:foundation:start version=1 profile=stub -->',
+    '## Structure Role',
+    'Stub structure content grounded in repo evidence.',
+    '## Repository Shape',
+    '- src/ owns product code.',
+    '## Ownership Map',
+    '- src/cli owns CLI flows.',
+    '## Platform Surface Placement',
+    '- .gemini/ owns native Gemini surfaces.',
+    '## Navigation Shortcuts',
+    '- Start at src/cli/core.ts for install and sync logic.',
+    '## Change Boundaries',
+    '- Keep generated assets aligned with workflowProfiles.',
+    '<!-- cbx:structure:foundation:end -->',
+    ''
+  ].join('\\n'),
+  design: [
+    '<!-- cbx:design:foundation:start version=1 profile=stub -->',
+    '## Design System Summary',
+    'Stub design foundation content grounded in repo evidence.',
+    '## Visual Direction',
+    '- Preserve the canonical design state in DESIGN.md.',
+    '## Tokens And Primitives',
+    '- Stub token guidance.',
+    '## Component Vocabulary',
+    '- Stub component guidance.',
+    '## Motion And Interaction',
+    '- Stub motion guidance.',
+    '## Accessibility And Quality Bar',
+    '- Stub accessibility guidance.',
+    '## Platform Adaptation Notes',
+    '- Stub adaptation guidance.',
+    '## Downstream Design Consumers',
+    '- UI workflows and implementation routes consume this doc.',
+    '<!-- cbx:design:foundation:end -->',
     ''
   ].join('\\n'),
   tech: [
@@ -189,7 +235,7 @@ for (const [nameKey, block] of Object.entries(richBlocks)) {
   fs.writeFileSync(filePath, existing + '\\n' + block, 'utf8');
 }
 process.stdout.write(JSON.stringify({
-  files_written: ['docs/foundation/MEMORY.md', 'docs/foundation/PRODUCT.md', 'docs/foundation/ARCHITECTURE.md', 'docs/foundation/TECH.md', 'docs/foundation/memory/domain.md', 'docs/foundation/memory/runtime.md', 'docs/foundation/memory/integrations.md', 'docs/foundation/memory/debugging.md', 'docs/foundation/adr/README.md', 'docs/foundation/adr/0000-template.md'],
+  files_written: ['docs/foundation/MEMORY.md', 'docs/foundation/PRODUCT.md', 'docs/foundation/ARCHITECTURE.md', 'docs/foundation/STRUCTURE.md', 'docs/foundation/DESIGN.md', 'docs/foundation/TECH.md', 'docs/foundation/memory/domain.md', 'docs/foundation/memory/runtime.md', 'docs/foundation/memory/integrations.md', 'docs/foundation/memory/debugging.md', 'docs/foundation/adr/README.md', 'docs/foundation/adr/0000-template.md'],
   research_used: prompt.includes('external research evidence'),
   gaps: [],
   next_actions: []
@@ -287,6 +333,8 @@ function createArchitectureCommandStubs(logPath) {
         !normalizedPrompt.includes("docs/foundation/MEMORY.md") ||
         !normalizedPrompt.includes("docs/foundation/PRODUCT.md") ||
         !normalizedPrompt.includes("docs/foundation/ARCHITECTURE.md") ||
+        !normalizedPrompt.includes("docs/foundation/STRUCTURE.md") ||
+        !normalizedPrompt.includes("docs/foundation/DESIGN.md") ||
         !normalizedPrompt.includes("docs/foundation/TECH.md") ||
         !normalizedPrompt.includes("docs/foundation/memory/domain.md") ||
         !normalizedPrompt.includes("docs/foundation/adr/README.md") ||
@@ -331,6 +379,8 @@ function createArchitectureCommandStubs(logPath) {
         memory: path.join(foundationDir, "MEMORY.md"),
         product: path.join(foundationDir, "PRODUCT.md"),
         architecture: path.join(foundationDir, "ARCHITECTURE.md"),
+        structure: path.join(foundationDir, "STRUCTURE.md"),
+        design: path.join(foundationDir, "DESIGN.md"),
         tech: path.join(foundationDir, "TECH.md"),
         domain: path.join(foundationDir, "memory", "domain.md"),
         runtime: path.join(foundationDir, "memory", "runtime.md"),
@@ -339,10 +389,16 @@ function createArchitectureCommandStubs(logPath) {
       };
       const richBlocks = {
         memory: [
-          "<!-- cbx:memory:foundation:start version=1 profile=stub -->",
-          "## Project Memory",
+          "<!-- cbx:memory:index:start version=1 profile=stub -->",
+          "## Project Summary",
           "Stub memory index grounded in repo evidence.",
-          "<!-- cbx:memory:foundation:end -->",
+          "## Load These Docs By Task",
+          "- planning/spec: PRODUCT then ARCHITECTURE then STRUCTURE",
+          "## Durable Facts",
+          "- Stub durable fact.",
+          "## Active Watchpoints",
+          "- Stub watchpoint.",
+          "<!-- cbx:memory:index:end -->",
           "",
         ].join("\n"),
         product: [
@@ -357,10 +413,48 @@ function createArchitectureCommandStubs(logPath) {
           "## Architecture Type",
           "- Feature-first modular app with a modular monolith backend.",
           "",
-          "## Folder Structure Guide",
+          "## Repository Structure Guide",
           "- apps/ owns runnable surfaces.",
           "- packages/ owns shared code.",
           "<!-- cbx:architecture:doc:end -->",
+          "",
+        ].join("\n"),
+        structure: [
+          "<!-- cbx:structure:foundation:start version=1 profile=stub -->",
+          "## Structure Role",
+          "Stub structure content grounded in repo evidence.",
+          "## Repository Shape",
+          "- src/ owns product code.",
+          "## Ownership Map",
+          "- src/cli owns CLI flows.",
+          "## Platform Surface Placement",
+          "- .gemini/ owns native Gemini surfaces.",
+          "## Navigation Shortcuts",
+          "- Start at src/cli/core.ts for install and sync logic.",
+          "## Change Boundaries",
+          "- Keep generated assets aligned with workflowProfiles.",
+          "<!-- cbx:structure:foundation:end -->",
+          "",
+        ].join("\n"),
+        design: [
+          "<!-- cbx:design:foundation:start version=1 profile=stub -->",
+          "## Design System Summary",
+          "Stub design foundation content grounded in repo evidence.",
+          "## Visual Direction",
+          "- Preserve the canonical design state in DESIGN.md.",
+          "## Tokens And Primitives",
+          "- Stub token guidance.",
+          "## Component Vocabulary",
+          "- Stub component guidance.",
+          "## Motion And Interaction",
+          "- Stub motion guidance.",
+          "## Accessibility And Quality Bar",
+          "- Stub accessibility guidance.",
+          "## Platform Adaptation Notes",
+          "- Stub adaptation guidance.",
+          "## Downstream Design Consumers",
+          "- UI workflows and implementation routes consume this doc.",
+          "<!-- cbx:design:foundation:end -->",
           "",
         ].join("\n"),
         tech: [
@@ -411,6 +505,8 @@ function createArchitectureCommandStubs(logPath) {
             "docs/foundation/MEMORY.md",
             "docs/foundation/PRODUCT.md",
             "docs/foundation/ARCHITECTURE.md",
+            "docs/foundation/STRUCTURE.md",
+            "docs/foundation/DESIGN.md",
             "docs/foundation/TECH.md",
             "docs/foundation/memory/domain.md",
             "docs/foundation/memory/runtime.md",
@@ -571,6 +667,8 @@ async function main() {
     assert(buildJson.result.filesWritten.includes("docs/foundation/MEMORY.md"), "build result missing docs/foundation/MEMORY.md");
     assert(buildJson.result.filesWritten.includes("docs/foundation/PRODUCT.md"), "build result missing docs/foundation/PRODUCT.md");
     assert(buildJson.result.filesWritten.includes("docs/foundation/ARCHITECTURE.md"), "build result missing docs/foundation/ARCHITECTURE.md");
+    assert(buildJson.result.filesWritten.includes("docs/foundation/STRUCTURE.md"), "build result missing docs/foundation/STRUCTURE.md");
+    assert(buildJson.result.filesWritten.includes("docs/foundation/DESIGN.md"), "build result missing docs/foundation/DESIGN.md");
     assert(buildJson.result.filesWritten.includes("docs/foundation/TECH.md"), "build result missing docs/foundation/TECH.md");
     assert(
       existsSync(path.join(workspace, ".cbx", "architecture-build.json")),
@@ -579,15 +677,22 @@ async function main() {
     const memoryDoc = readFileSync(path.join(workspace, "docs", "foundation", "MEMORY.md"), "utf8");
     const productDoc = readFileSync(path.join(workspace, "docs", "foundation", "PRODUCT.md"), "utf8");
     const architectureDoc = readFileSync(path.join(workspace, "docs", "foundation", "ARCHITECTURE.md"), "utf8");
+    const structureDoc = readFileSync(path.join(workspace, "docs", "foundation", "STRUCTURE.md"), "utf8");
+    const designDoc = readFileSync(path.join(workspace, "docs", "foundation", "DESIGN.md"), "utf8");
     const techDoc = readFileSync(path.join(workspace, "docs", "foundation", "TECH.md"), "utf8");
     const domainMemoryDoc = readFileSync(path.join(workspace, "docs", "foundation", "memory", "domain.md"), "utf8");
     const runtimeMemoryDoc = readFileSync(path.join(workspace, "docs", "foundation", "memory", "runtime.md"), "utf8");
+    const metadata = JSON.parse(
+      readFileSync(path.join(workspace, ".cbx", "architecture-build.json"), "utf8"),
+    );
     assert(productDoc.includes("cbx:product:foundation:start"), "product doc missing managed block");
-    assert(memoryDoc.includes("cbx:memory:foundation:start"), "memory doc missing managed block");
+    assert(memoryDoc.includes("cbx:memory:index:start"), "memory doc missing managed block");
     assert(architectureDoc.includes("cbx:architecture:doc:start"), "architecture doc missing managed block");
+    assert(structureDoc.includes("cbx:structure:foundation:start"), "structure doc missing managed block");
+    assert(designDoc.includes("cbx:design:foundation:start"), "design doc missing managed block");
     assert(techDoc.includes("cbx:architecture:tech:start"), "tech doc missing architecture block");
     assert(
-      (memoryDoc.match(/cbx:memory:foundation:start/g) || []).length === 1,
+      (memoryDoc.match(/cbx:memory:index:start/g) || []).length === 1,
       "memory doc should contain one managed block after normalization",
     );
     assert(
@@ -599,6 +704,14 @@ async function main() {
       "architecture doc should contain one managed block after normalization",
     );
     assert(
+      (structureDoc.match(/cbx:structure:foundation:start/g) || []).length === 1,
+      "structure doc should contain one managed block after normalization",
+    );
+    assert(
+      (designDoc.match(/cbx:design:foundation:start/g) || []).length === 1,
+      "design doc should contain one managed block after normalization",
+    );
+    assert(
       (techDoc.match(/cbx:architecture:tech:start/g) || []).length === 1,
       "tech doc should contain one managed block after normalization",
     );
@@ -607,8 +720,16 @@ async function main() {
       "architecture doc should include explicit architecture type guidance",
     );
     assert(
-      architectureDoc.includes("## Folder Structure Guide"),
-      "architecture doc should include folder structure guidance",
+      architectureDoc.includes("## Repository Structure Guide"),
+      "architecture doc should include repository structure guidance",
+    );
+    assert(
+      structureDoc.includes("## Structure Role"),
+      "structure doc should include structure guidance",
+    );
+    assert(
+      designDoc.includes("## Design System Summary"),
+      "design doc should include design-system guidance",
     );
     assert(
       domainMemoryDoc.includes("cbx:memory:topic:start"),
@@ -617,6 +738,12 @@ async function main() {
     assert(
       runtimeMemoryDoc.includes("cbx:memory:topic:start"),
       "runtime memory doc should include managed topic block",
+    );
+    assert(
+      Array.isArray(metadata.managedDocs) &&
+        metadata.managedDocs.includes("docs/foundation/STRUCTURE.md") &&
+        metadata.managedDocs.includes("docs/foundation/DESIGN.md"),
+      "architecture metadata should track structure and design docs",
     );
     assert(
       existsSync(path.join(workspace, "docs", "foundation", "adr", "README.md")),
@@ -682,14 +809,18 @@ async function main() {
     assert(
       loggedPrompt.includes("docs/foundation/PRODUCT.md") &&
         loggedPrompt.includes("docs/foundation/ARCHITECTURE.md") &&
+        loggedPrompt.includes("docs/foundation/STRUCTURE.md") &&
+        loggedPrompt.includes("docs/foundation/DESIGN.md") &&
         loggedPrompt.includes("docs/foundation/TECH.md") &&
         loggedPrompt.includes("Inspect the repository first") &&
         loggedPrompt.includes("Inspection anchors:") &&
         loggedPrompt.includes("Every major claim should be grounded in repository evidence") &&
         loggedPrompt.includes("Architecture classification") &&
-        loggedPrompt.includes("folder-structure guide") &&
+        loggedPrompt.includes("Repository Structure Guide") &&
+        loggedPrompt.includes("the repo-navigation and ownership map") &&
         loggedPrompt.includes("Use exact required headings in docs/foundation/PRODUCT.md") &&
-        loggedPrompt.includes("## Repository Structure Guide") &&
+        loggedPrompt.includes("Use exact required headings in docs/foundation/STRUCTURE.md") &&
+        loggedPrompt.includes("Use exact required headings in docs/foundation/DESIGN.md") &&
         loggedPrompt.includes("## Change Hotspots") &&
         loggedPrompt.includes("AI-authored"),
       "stub prompt missing scan-first foundation instructions",

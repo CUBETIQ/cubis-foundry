@@ -6,7 +6,9 @@ Add or harden verification so the target behavior is covered by repeatable tests
 
 Execution contract:
 1. Treat route selection as already resolved by this command; do not begin with skill discovery.
-2. Read `docs/foundation/PRODUCT.md`, `ENGINEERING_RULES.md`, `docs/foundation/ARCHITECTURE.md`, and `docs/foundation/TECH.md` in that order when they exist before non-trivial execution.
+- native workflow surface: command.
+- native specialist surface: agent-route command.
+2. Load docs in this order when they exist: `docs/foundation/MEMORY.md` -> `docs/foundation/memory/debugging.md` -> `docs/foundation/memory/runtime.md` -> `docs/foundation/memory/integrations.md` -> `docs/foundation/TECH.md`. Add `docs/foundation/ARCHITECTURE.md` when the failure crosses boundaries.
 Attached skills:
 - Load these exact skill IDs first: `unit-testing`, `integration-testing`, `web-testing`, `android-emulator-testing`, `ios-simulator-testing`.
 - Local skill file hints if installed: `.gemini/skills/unit-testing/SKILL.md`, `.gemini/skills/integration-testing/SKILL.md`, `.gemini/skills/web-testing/SKILL.md`, `.gemini/skills/android-emulator-testing/SKILL.md`, `.gemini/skills/ios-simulator-testing/SKILL.md`.

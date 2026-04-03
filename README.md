@@ -212,6 +212,8 @@ Files generated or refreshed:
 - `docs/foundation/MEMORY.md`
 - `docs/foundation/PRODUCT.md`
 - `docs/foundation/ARCHITECTURE.md`
+- `docs/foundation/STRUCTURE.md`
+- `docs/foundation/DESIGN.md`
 - `docs/foundation/TECH.md`
 - `docs/foundation/memory/domain.md`
 - `docs/foundation/memory/runtime.md`

@@ -421,12 +421,16 @@ async function hashFiles(cwd: string, relativePaths: string[]) {
 export async function collectFoundationDocState(cwd: string) {
   const docs = [
     "docs/foundation/ARCHITECTURE.md",
+    "docs/foundation/STRUCTURE.md",
     "docs/foundation/DESIGN.md",
     "docs/foundation/TECH.md",
     "docs/foundation/MEMORY.md",
     "docs/foundation/PRODUCT.md",
     "CLAUDE.md",
     "AGENTS.md",
+    ".github/copilot-instructions.md",
+    ".gemini/GEMINI.md",
+    ".agents/rules/GEMINI.md",
     "GEMINI.md",
     WORKSPACE_SUMMARY_FILE,
   ];
