@@ -1,0 +1,15 @@
+{
+  "$schema": "cubis-foundry-external-skill-intake-v1",
+  "generatedAt": "1970-01-01T00:00:00.000Z",
+  "source": null,
+  "summary": {
+    "total": 0,
+    "keep": 0,
+    "adapt": 0,
+    "reject": 0,
+    "legal-review": 0,
+    "aliasApplied": 0,
+    "adoptedAliases": 0
+  },
+  "entries": []
+}

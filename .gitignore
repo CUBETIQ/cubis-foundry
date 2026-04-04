@@ -27,3 +27,5 @@ mcp/coverage/
 !.agents/rules/GEMINI.md
 !workflows/workflows/agent-environment-setup/platforms/codex/rules/AGENTS.md
 generated/
+!workflows/skills/generated/
+!workflows/skills/generated/**
