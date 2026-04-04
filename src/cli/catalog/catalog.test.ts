@@ -9,11 +9,6 @@ import {
 
 const REPO_ROOT = resolve(import.meta.dirname, "../../..");
 const DELETED_MODULE_IDS = [
-  "qa",
-  "unit-testing",
-  "integration-testing",
-  "playwright-interactive",
-  "stitch",
   "mcp-core",
   "research-core",
   "rules-core",

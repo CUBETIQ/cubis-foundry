@@ -417,7 +417,7 @@ function buildWorkflowAttachedSkillsSection(workflow, platform) {
 
 function buildAgentAttachedSkillsSection(agent, platform) {
   return buildAttachedSkillsSection(
-    normalizeSkillIds(getArray(agent.frontmatter, "skills")),
+    [...parseAgentSkillRouting(agent).primarySkills, ...parseAgentSkillRouting(agent).supportingSkills],
     platform,
   );
 }
@@ -443,6 +443,28 @@ function parseAgentTriggers(agent) {
       .map((item) => stripQuotes(item.trim()))
       .filter(Boolean),
   );
+}
+
+function parseAgentSkillRouting(agent) {
+  const direct = normalizeSkillIds(getArray(agent.frontmatter, "skills"));
+  if (direct.length > 0) {
+    return {
+      primarySkills: direct.slice(0, 2),
+      supportingSkills: direct.slice(2),
+    };
+  }
+
+  const skillRouting =
+    extractSection(agent.body, "Skill and Workflow Selection") ||
+    extractSection(agent.body, "Skill Routing");
+  const referencedSkills = normalizeSkillIds(
+    [...String(skillRouting).matchAll(/`([^`]+)`/g)].map((match) => match[1]),
+  );
+
+  return {
+    primarySkills: referencedSkills.slice(0, 2),
+    supportingSkills: referencedSkills.slice(2),
+  };
 }
 
 function buildRouteManifest({ sharedAgents, sharedWorkflows }) {
@@ -489,7 +511,7 @@ function buildRouteManifest({ sharedAgents, sharedWorkflows }) {
 
   const agentRoutes = sharedAgents.map((agent) => {
     const agentId = normalizeMarkdownId(agent.fileName);
-    const allSkills = normalizeSkillIds(getArray(agent.frontmatter, "skills"));
+    const { primarySkills, supportingSkills } = parseAgentSkillRouting(agent);
     return {
       kind: "agent",
       id: agentId,
@@ -499,8 +521,8 @@ function buildRouteManifest({ sharedAgents, sharedWorkflows }) {
       triggers: parseAgentTriggers(agent),
       primaryAgent: agentId,
       supportingAgents: [],
-      primarySkills: allSkills.slice(0, 2),
-      supportingSkills: allSkills.slice(2),
+      primarySkills,
+      supportingSkills,
       artifacts: {
         codex: {
           target: "subagent",
@@ -758,6 +780,9 @@ function buildPlatformSurfaceSpecSchema() {
           required: [
             "vendorSupport",
             "foundryStatus",
+            "evidenceKinds",
+            "surfaceScope",
+            "stability",
             "projectPath",
             "globalPath",
             "format",
@@ -767,6 +792,13 @@ function buildPlatformSurfaceSpecSchema() {
           properties: {
             vendorSupport: { type: "string" },
             foundryStatus: { type: "string" },
+            evidenceKinds: {
+              type: "array",
+              items: { type: "string" },
+              minItems: 1,
+            },
+            surfaceScope: { type: "string" },
+            stability: { type: "string" },
             projectPath: { type: ["string", "null"] },
             globalPath: { type: ["string", "null"] },
             format: { type: "string" },
@@ -795,7 +827,47 @@ function buildUpstreamCapabilityAuditSchema() {
       properties: {
         $schema: { type: "string" },
         generatedAt: { type: "string", format: "date-time" },
-        audits: { type: "array", items: { type: "object" } },
+        audits: {
+          type: "array",
+          items: {
+            type: "object",
+            required: [
+              "runtime",
+              "audit_source_id",
+              "audited_version_or_date",
+              "audited_at",
+              "source_type",
+              "summary",
+              "evidence",
+            ],
+            properties: {
+              runtime: { type: "string" },
+              audit_source_id: { type: "string" },
+              audited_commit: { type: ["string", "null"] },
+              audited_version_or_date: { type: "string" },
+              audited_at: { type: "string" },
+              source_type: { type: "string" },
+              summary: { type: "string" },
+              evidence: {
+                type: "array",
+                minItems: 1,
+                items: {
+                  type: "object",
+                  required: ["kind", "scope", "stability", "source", "notes"],
+                  properties: {
+                    kind: { type: "string" },
+                    scope: { type: "string" },
+                    stability: { type: "string" },
+                    source: { type: "string" },
+                    notes: { type: "string" },
+                  },
+                  additionalProperties: false,
+                },
+              },
+            },
+            additionalProperties: true,
+          },
+        },
       },
       additionalProperties: false,
     },

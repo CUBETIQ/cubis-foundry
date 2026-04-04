@@ -6,9 +6,11 @@ import { existsSync } from "node:fs";
 import {
   chmod,
   cp,
+  mkdtemp,
   mkdir,
   readdir,
   readFile,
+  realpath,
   rename,
   rm,
   stat,
@@ -105,6 +107,25 @@ import {
 const require = createRequire(import.meta.url);
 const { version: CLI_VERSION } = require("../../package.json");
 const execFile = promisify(execFileCallback);
+const ARCHITECTURE_BUILD_EXECUTION_TIMEOUT_MS = 3 * 60 * 1000;
+const ARCHITECTURE_BUILD_PROBE_TIMEOUT_MS = 15 * 1000;
+const GEMINI_ARCHITECTURE_ENV_KEYS_TO_CLEAR = [
+  "GEMINI_CLI_IDE_AUTH_TOKEN",
+  "GEMINI_CLI_IDE_PID",
+  "GEMINI_CLI_IDE_SERVER_PORT",
+  "GEMINI_CLI_IDE_SERVER_STDIO_ARGS",
+  "GEMINI_CLI_IDE_SERVER_STDIO_COMMAND",
+  "GEMINI_CLI_IDE_WORKSPACE_PATH",
+];
+const GEMINI_ARCHITECTURE_VERTEX_ENV_KEYS = [
+  "GOOGLE_GENAI_USE_VERTEXAI",
+  "GOOGLE_CLOUD_PROJECT",
+  "GOOGLE_CLOUD_LOCATION",
+];
+const GEMINI_ARCHITECTURE_HOME_EXCLUDES = [
+  "antigravity",
+  "antigravity-browser-profile",
+];
 
 const MANAGED_BLOCK_START_RE = /<!--\s*cbx:workflows:auto:start[^>]*-->/g;
 const MANAGED_BLOCK_END_RE = /<!--\s*cbx:workflows:auto:end\s*-->/g;
@@ -12904,6 +12925,130 @@ function getEnvValueCaseInsensitive(env, key) {
   return match ? String(env[match] || "") : "";
 }
 
+function deleteEnvValueCaseInsensitive(env, key) {
+  if (!env) return;
+  const match = Object.keys(env).find(
+    (candidate) => candidate.toLowerCase() === key.toLowerCase(),
+  );
+  if (match) {
+    delete env[match];
+  }
+}
+
+function scanPosixPathForCommand(command, env = process.env) {
+  if (!command) return null;
+  if (path.isAbsolute(command) || command.includes("/")) {
+    return existsSync(command) ? command : null;
+  }
+  const pathValue = getEnvValueCaseInsensitive(env, "PATH");
+  if (!pathValue) return null;
+  const entries = pathValue
+    .split(path.delimiter)
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+  for (const entry of entries) {
+    const candidate = path.join(entry, command);
+    if (existsSync(candidate)) {
+      return candidate;
+    }
+  }
+  return null;
+}
+
+async function resolveExecutableCommand(
+  command,
+  env = process.env,
+  { dereference = false } = {},
+) {
+  const resolved =
+    process.platform === "win32"
+      ? await resolveWindowsCommand(command, env)
+      : scanPosixPathForCommand(command, env) || command;
+  if (!dereference) return resolved;
+  try {
+    return await realpath(resolved);
+  } catch {
+    return resolved;
+  }
+}
+
+async function readGeminiSelectedAuthType(settingsPath) {
+  if (!(await pathExists(settingsPath))) return null;
+  try {
+    const raw = await readFile(settingsPath, "utf8");
+    const parsed = parseJsonc(raw);
+    const auth = parsed?.security?.auth;
+    return typeof auth?.selectedType === "string" ? auth.selectedType : null;
+  } catch {
+    return null;
+  }
+}
+
+function shouldMirrorGeminiHomeEntry(name) {
+  if (!name) return false;
+  if (GEMINI_ARCHITECTURE_HOME_EXCLUDES.includes(name)) return false;
+  if (name.includes(".bak-")) return false;
+  return true;
+}
+
+async function prepareArchitectureBuildRuntime({
+  platform,
+  workspaceRoot,
+  baseEnv = process.env,
+}) {
+  if (platform !== "gemini" && platform !== "antigravity") {
+    return {
+      env: baseEnv,
+      timeoutMs: ARCHITECTURE_BUILD_EXECUTION_TIMEOUT_MS,
+      async cleanup() {},
+    };
+  }
+
+  const sourceHome = getEnvValueCaseInsensitive(baseEnv, "HOME") || os.homedir();
+  const sourceGeminiDir = path.join(sourceHome, ".gemini");
+  const isolatedHome = await mkdtemp(
+    path.join(os.tmpdir(), `cbx-${platform}-arch-home-`),
+  );
+  const targetGeminiDir = path.join(isolatedHome, ".gemini");
+  await mkdir(targetGeminiDir, { recursive: true });
+
+  if (await pathExists(sourceGeminiDir)) {
+    const entries = await readdir(sourceGeminiDir, { withFileTypes: true });
+    for (const entry of entries) {
+      if (!shouldMirrorGeminiHomeEntry(entry.name)) continue;
+      await cp(
+        path.join(sourceGeminiDir, entry.name),
+        path.join(targetGeminiDir, entry.name),
+        { recursive: true, force: true },
+      );
+    }
+  }
+
+  const selectedAuthType = await readGeminiSelectedAuthType(
+    path.join(targetGeminiDir, "settings.json"),
+  );
+  const env = { ...baseEnv, HOME: isolatedHome };
+  for (const key of GEMINI_ARCHITECTURE_ENV_KEYS_TO_CLEAR) {
+    deleteEnvValueCaseInsensitive(env, key);
+  }
+  if (!selectedAuthType || selectedAuthType === "oauth-personal") {
+    for (const key of GEMINI_ARCHITECTURE_VERTEX_ENV_KEYS) {
+      deleteEnvValueCaseInsensitive(env, key);
+    }
+  }
+
+  return {
+    env,
+    timeoutMs: ARCHITECTURE_BUILD_EXECUTION_TIMEOUT_MS,
+    binary: await resolveExecutableCommand("gemini", baseEnv, {
+      dereference: true,
+    }),
+    async cleanup() {
+      await rm(isolatedHome, { recursive: true, force: true });
+    },
+  };
+}
+
 function rankWindowsCommandCandidate(command, candidate) {
   const requestedBase = path.parse(command).name.toLowerCase();
   const parsedCandidate = path.parse(candidate);
@@ -12999,9 +13144,13 @@ async function execFileCapture(command, args, options = {}) {
     });
   }
   try {
+    const { timeoutMs, ...execOptions } = options;
     const result = await execFile(resolvedCommand, args, {
-      ...options,
+      ...execOptions,
       maxBuffer: 8 * 1024 * 1024,
+      ...(typeof timeoutMs === "number" && timeoutMs > 0
+        ? { timeout: timeoutMs }
+        : {}),
     });
     return {
       ok: true,
@@ -13057,7 +13206,13 @@ async function spawnCapture(command, args, options = {}) {
   if (architectureSpawnCaptureOverride) {
     return await architectureSpawnCaptureOverride(command, args, options);
   }
-  const { cwd, env, streamOutput = false, useShell } = options;
+  const {
+    cwd,
+    env,
+    streamOutput = false,
+    timeoutMs = 0,
+    useShell,
+  } = options;
   const resolvedCommand =
     process.platform === "win32"
       ? await resolveWindowsCommand(command, env)
@@ -13066,12 +13221,32 @@ async function spawnCapture(command, args, options = {}) {
     typeof useShell === "boolean"
       ? useShell
       : process.platform === "win32" && /\.(cmd|bat)$/i.test(resolvedCommand);
+  const killProcess = (child, signal) => {
+    if (!child?.pid) return;
+    if (process.platform !== "win32" && timeoutMs > 0) {
+      try {
+        process.kill(-child.pid, signal);
+        return;
+      } catch {
+        // fall through to direct child kill
+      }
+    }
+    try {
+      child.kill(signal);
+    } catch {
+      // ignore late kill attempts during shutdown
+    }
+  };
   return await new Promise((resolve, reject) => {
     let stdout = "";
     let stderr = "";
+    let timedOut = false;
+    let timeoutHandle = null;
+    let forceKillHandle = null;
     const child = spawn(resolvedCommand, args, {
       cwd,
       env,
+      detached: process.platform !== "win32" && timeoutMs > 0,
       shell,
       stdio: ["ignore", "pipe", "pipe"],
     });
@@ -13088,7 +13263,20 @@ async function spawnCapture(command, args, options = {}) {
       if (streamOutput) process.stderr.write(text);
     });
 
+    if (timeoutMs > 0) {
+      timeoutHandle = setTimeout(() => {
+        timedOut = true;
+        stderr += `Process timed out after ${timeoutMs}ms.\n`;
+        killProcess(child, "SIGTERM");
+        forceKillHandle = setTimeout(() => {
+          killProcess(child, "SIGKILL");
+        }, 1000);
+      }, timeoutMs);
+    }
+
     child.on("error", (error) => {
+      if (timeoutHandle) clearTimeout(timeoutHandle);
+      if (forceKillHandle) clearTimeout(forceKillHandle);
       if (error?.code === "ENOENT") {
         reject(
           new Error(
@@ -13101,11 +13289,13 @@ async function spawnCapture(command, args, options = {}) {
     });
 
     child.on("close", (code) => {
+      if (timeoutHandle) clearTimeout(timeoutHandle);
+      if (forceKillHandle) clearTimeout(forceKillHandle);
       resolve({
-        ok: code === 0,
+        ok: code === 0 && !timedOut,
         stdout,
         stderr,
-        code: code ?? 1,
+        code: timedOut ? 124 : code ?? 1,
       });
     });
   });
@@ -13135,6 +13325,11 @@ function explainArchitectureBuildFailure(platform, execution) {
         "Gemini CLI reached Google auth, but the active account or project cannot generate chat content. Re-authenticate Gemini CLI with a permitted account or configure a supported Gemini API credential and project before retrying.",
       );
     }
+    if (combined.includes("Process timed out after")) {
+      notes.push(
+        "Gemini CLI did not finish generating architecture docs before the timeout. The build reached Gemini successfully, but content generation stalled. Retry after checking the account state, prompt health, or the repo-specific Gemini command path.",
+      );
+    }
   }
 
   if (platform === "claude" && combined.includes("permission")) {
@@ -13156,7 +13351,7 @@ function explainArchitectureBuildFailure(platform, execution) {
     .join("\n");
 }
 
-async function probeArchitectureAdapter(platform, cwd) {
+async function probeArchitectureAdapter(platform, cwd, runtime = {}) {
   if (platform === "codex") {
     const help = await execFileCapture("codex", ["exec", "--help"], { cwd });
     return {
@@ -13198,7 +13393,12 @@ async function probeArchitectureAdapter(platform, cwd) {
   }
 
   if (platform === "gemini" || platform === "antigravity") {
-    const help = await execFileCapture("gemini", ["--help"], { cwd });
+    const binary = runtime.binary || "gemini";
+    const help = await execFileCapture(binary, ["--help"], {
+      cwd,
+      env: runtime.env,
+      timeoutMs: ARCHITECTURE_BUILD_PROBE_TIMEOUT_MS,
+    });
     const helpText = `${help.stdout}\n${help.stderr}`.trim();
     const promptFlag = helpText.includes("--prompt")
       ? "--prompt"
@@ -13212,7 +13412,7 @@ async function probeArchitectureAdapter(platform, cwd) {
     }
     return {
       platform,
-      binary: "gemini",
+      binary,
       helpText,
       buildInvocation(prompt) {
         return [promptFlag, prompt];
@@ -13715,33 +13915,47 @@ async function executeContextGeneration(options) {
     };
   }
 
-  const adapter = await probeArchitectureAdapter(platform, workspaceRoot);
-  const args = adapter.buildInvocation(prompt);
-  const filesBefore = await captureFileContents(managedFilePaths);
-  const scaffold = await ensureArchitectureBuildScaffold({
+  const runtime = await prepareArchitectureBuildRuntime({
+    platform,
     workspaceRoot,
-    dryRun,
+    baseEnv: process.env,
   });
+  let changedFiles = [];
+  let execution = null;
+  let adapter = null;
 
-  if (!quiet && !emitJson) {
-    console.log(`Streaming ${adapter.binary} output...`);
+  try {
+    adapter = await probeArchitectureAdapter(platform, workspaceRoot, runtime);
+    const args = adapter.buildInvocation(prompt);
+    const filesBefore = await captureFileContents(managedFilePaths);
+    const scaffold = await ensureArchitectureBuildScaffold({
+      workspaceRoot,
+      dryRun,
+    });
+
+    if (!quiet && !emitJson) {
+      console.log(`Streaming ${adapter.binary} output...`);
+    }
+
+    execution = await spawnCapture(adapter.binary, args, {
+      cwd: workspaceRoot,
+      env: runtime.env,
+      streamOutput: !quiet && !emitJson,
+      timeoutMs: runtime.timeoutMs,
+    });
+    if (!execution.ok) {
+      throw new Error(explainArchitectureBuildFailure(platform, execution));
+    }
+
+    await normalizeArchitectureBuildOutputs(scaffold);
+
+    const filesAfter = await captureFileContents(managedFilePaths);
+    changedFiles = managedFilePaths
+      .filter((filePath) => filesBefore[filePath] !== filesAfter[filePath])
+      .map((filePath) => toPosixPath(path.relative(workspaceRoot, filePath)));
+  } finally {
+    await runtime.cleanup();
   }
-
-  const execution = await spawnCapture(adapter.binary, args, {
-    cwd: workspaceRoot,
-    env: process.env,
-    streamOutput: !quiet && !emitJson,
-  });
-  if (!execution.ok) {
-    throw new Error(explainArchitectureBuildFailure(platform, execution));
-  }
-
-  await normalizeArchitectureBuildOutputs(scaffold);
-
-  const filesAfter = await captureFileContents(managedFilePaths);
-  const changedFiles = managedFilePaths
-    .filter((filePath) => filesBefore[filePath] !== filesAfter[filePath])
-    .map((filePath) => toPosixPath(path.relative(workspaceRoot, filePath)));
 
   const metadataPath = path.join(
     workspaceRoot,

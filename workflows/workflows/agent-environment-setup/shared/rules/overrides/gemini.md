@@ -16,5 +16,5 @@
 ## Platform Notes
 
 - Gemini CLI uses GEMINI.md plus TOML commands as the primary enforcement surface.
-- Gemini specialist behavior is command-based in the current Foundry ship model; do not claim `.gemini/agents/*.md` as a shipped surface until it is deliberately adopted.
+- Gemini specialist behavior is command-based in the current Foundry ship model; upstream Gemini docs also describe an experimental `.gemini/agents/*.md` subagent surface, but Foundry does not ship it yet.
 - Use command wrappers to reinforce route-resolved execution and research escalation when freshness or public comparison matters.

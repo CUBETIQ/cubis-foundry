@@ -78,6 +78,9 @@
       "required": [
         "vendorSupport",
         "foundryStatus",
+        "evidenceKinds",
+        "surfaceScope",
+        "stability",
         "projectPath",
         "globalPath",
         "format",
@@ -89,6 +92,19 @@
           "type": "string"
         },
         "foundryStatus": {
+          "type": "string"
+        },
+        "evidenceKinds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "surfaceScope": {
+          "type": "string"
+        },
+        "stability": {
           "type": "string"
         },
         "projectPath": {

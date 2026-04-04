@@ -1,25 +1,270 @@
 const AUDIT_SOURCE_IDS = {
+  antigravity: "antigravity-compat-ref",
   claude: "claude-audit-ref",
   codex: "codex-audit-ref",
+  copilot: "copilot-docs-ref",
   foundry: "foundry",
+  gemini: "gemini-docs-ref",
 };
 
 const AUDITED_REFERENCES = [
   {
+    runtime: "antigravity",
+    audit_source_id: AUDIT_SOURCE_IDS.antigravity,
+    audited_commit: null,
+    audited_at: "2026-04-04",
+    audited_version_or_date: "2026-04-04",
+    source_type: "inferred-compatibility",
+    source_summary:
+      "Compatibility target derived from Foundry's Antigravity adapter shape and Gemini-family routing model.",
+    evidence: [
+      {
+        kind: "inferred",
+        scope: "mixed",
+        stability: "inferred",
+        source:
+          "workflows/workflows/agent-environment-setup/platforms/antigravity",
+        notes:
+          "No public vendor spec was verified in this audit; Foundry treats Antigravity as an inferred compatibility target only.",
+      },
+    ],
+  },
+  {
     runtime: "claude",
     audit_source_id: AUDIT_SOURCE_IDS.claude,
     audited_commit: "1ac2b97df6199f8f76b3896d28f470ea44a90c25",
-    audited_at: "2026-03-17",
-    audited_version_or_date: "2026-03-17",
+    audited_at: "2026-04-04",
+    audited_version_or_date: "2026-04-04",
+    source_type: "official-doc",
+    source_summary:
+      "Anthropic Claude Code docs confirm native settings, hooks, project commands, and subagents.",
+    evidence: [
+      {
+        kind: "official-doc",
+        scope: "repo",
+        stability: "stable",
+        source: "https://docs.anthropic.com/en/docs/claude-code/settings",
+        notes:
+          "Settings docs describe project/user settings, CLAUDE.md, hooks, and .claude/agents/*.md subagents.",
+      },
+      {
+        kind: "official-doc",
+        scope: "repo",
+        stability: "stable",
+        source: "https://docs.anthropic.com/en/docs/claude-code/tutorials",
+        notes:
+          "Tutorial docs describe project-specific slash commands under .claude/commands.",
+      },
+    ],
   },
   {
     runtime: "codex",
     audit_source_id: AUDIT_SOURCE_IDS.codex,
     audited_commit: "782a03a2d4eb69d475075cbd6df6c1af4fb35e64",
-    audited_at: "2026-03-17",
-    audited_version_or_date: "2026-03-17",
+    audited_at: "2026-04-04",
+    audited_version_or_date: "codex-cli 0.118.0 / 2026-04-04",
+    source_type: "mixed",
+    source_summary:
+      "OpenAI Codex docs confirm AGENTS.md, skills, subagents, and hooks; local CLI confirms the current feature-gating state.",
+    evidence: [
+      {
+        kind: "official-doc",
+        scope: "repo",
+        stability: "stable",
+        source: "https://developers.openai.com/codex/skills",
+        notes:
+          "Codex docs describe repository skills under .agents/skills and related AGENTS.md guidance.",
+      },
+      {
+        kind: "official-doc",
+        scope: "repo",
+        stability: "experimental",
+        source: "https://developers.openai.com/codex/hooks",
+        notes:
+          "Codex docs describe project hook events including UserPromptSubmit and Stop.",
+      },
+      {
+        kind: "local-cli",
+        scope: "cli",
+        stability: "experimental",
+        source: "codex-cli 0.118.0",
+        notes:
+          "Local feature inspection still exposes codex_hooks as under development, so Foundry keeps hook emission gated.",
+      },
+    ],
+  },
+  {
+    runtime: "copilot",
+    audit_source_id: AUDIT_SOURCE_IDS.copilot,
+    audited_commit: null,
+    audited_at: "2026-04-04",
+    audited_version_or_date: "2026-04-04",
+    source_type: "official-doc",
+    source_summary:
+      "GitHub Docs confirm repository instructions, AGENTS.md, prompt files, skills, custom agents, hooks, and coding-agent surfaces, with feature availability varying by surface.",
+    evidence: [
+      {
+        kind: "official-doc",
+        scope: "mixed",
+        stability: "stable",
+        source:
+          "https://docs.github.com/en/copilot/how-tos/configure-custom-instructions/add-repository-instructions?tool=vscode",
+        notes:
+          "GitHub documents repository custom instructions, AGENTS.md agent instructions, and companion instruction files.",
+      },
+      {
+        kind: "official-doc",
+        scope: "cli",
+        stability: "stable",
+        source:
+          "https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/create-skills",
+        notes:
+          "Copilot CLI docs describe skills and project skill locations.",
+      },
+      {
+        kind: "official-doc",
+        scope: "cli",
+        stability: "stable",
+        source:
+          "https://docs.github.com/copilot/how-tos/copilot-cli/use-copilot-cli-agents/invoke-custom-agents",
+        notes:
+          "Copilot CLI docs describe custom agents as a first-class surface.",
+      },
+      {
+        kind: "official-doc",
+        scope: "ide",
+        stability: "preview",
+        source:
+          "https://docs.github.com/en/enterprise-cloud@latest/copilot/concepts/prompting/response-customization",
+        notes:
+          "Prompt files are documented as preview and limited to supported IDE surfaces.",
+      },
+    ],
+  },
+  {
+    runtime: "gemini",
+    audit_source_id: AUDIT_SOURCE_IDS.gemini,
+    audited_commit: null,
+    audited_at: "2026-04-04",
+    audited_version_or_date: "2026-04-04",
+    source_type: "official-doc",
+    source_summary:
+      "Gemini CLI docs confirm GEMINI.md, commands, settings, hooks, MCP, skills, and experimental remote subagents.",
+    evidence: [
+      {
+        kind: "official-doc",
+        scope: "repo",
+        stability: "stable",
+        source: "https://geminicli.com/docs/cli/custom-commands/",
+        notes:
+          "Gemini CLI docs describe project and global .gemini/commands command files.",
+      },
+      {
+        kind: "official-doc",
+        scope: "repo",
+        stability: "stable",
+        source: "https://geminicli.com/docs/",
+        notes:
+          "Gemini docs list GEMINI.md project context, agent skills, settings, and MCP as supported features.",
+      },
+      {
+        kind: "official-doc",
+        scope: "mixed",
+        stability: "experimental",
+        source: "https://geminicli.com/docs/core/remote-agents/",
+        notes:
+          "Gemini docs describe remote subagents as an experimental feature that must be explicitly enabled.",
+      },
+    ],
   },
 ];
+
+const SURFACE_PROVENANCE = {
+  antigravity: {
+    rules: { evidenceKinds: ["inferred"], surfaceScope: "repo", stability: "inferred" },
+    skills: { evidenceKinds: ["inferred"], surfaceScope: "repo", stability: "inferred" },
+    workflows: { evidenceKinds: ["inferred"], surfaceScope: "repo", stability: "inferred" },
+    customAgents: {
+      evidenceKinds: ["inferred"],
+      surfaceScope: "mixed",
+      stability: "unsupported",
+    },
+    subagents: {
+      evidenceKinds: ["inferred"],
+      surfaceScope: "mixed",
+      stability: "unsupported",
+    },
+    hooks: { evidenceKinds: ["inferred"], surfaceScope: "mixed", stability: "unsupported" },
+  },
+  claude: {
+    rules: { evidenceKinds: ["official-doc"], surfaceScope: "repo", stability: "stable" },
+    skills: { evidenceKinds: ["official-doc"], surfaceScope: "repo", stability: "stable" },
+    workflows: {
+      evidenceKinds: ["official-doc", "foundry-projection"],
+      surfaceScope: "repo",
+      stability: "stable",
+    },
+    customAgents: {
+      evidenceKinds: ["official-doc"],
+      surfaceScope: "mixed",
+      stability: "unsupported",
+    },
+    subagents: { evidenceKinds: ["official-doc"], surfaceScope: "repo", stability: "stable" },
+    hooks: { evidenceKinds: ["official-doc"], surfaceScope: "repo", stability: "stable" },
+  },
+  codex: {
+    rules: { evidenceKinds: ["official-doc"], surfaceScope: "repo", stability: "stable" },
+    skills: { evidenceKinds: ["official-doc"], surfaceScope: "repo", stability: "stable" },
+    workflows: {
+      evidenceKinds: ["official-doc", "foundry-projection"],
+      surfaceScope: "repo",
+      stability: "stable",
+    },
+    customAgents: {
+      evidenceKinds: ["official-doc"],
+      surfaceScope: "mixed",
+      stability: "unsupported",
+    },
+    subagents: {
+      evidenceKinds: ["official-doc"],
+      surfaceScope: "repo",
+      stability: "stable",
+    },
+    hooks: {
+      evidenceKinds: ["official-doc", "local-cli"],
+      surfaceScope: "repo",
+      stability: "experimental",
+    },
+  },
+  copilot: {
+    rules: { evidenceKinds: ["official-doc"], surfaceScope: "mixed", stability: "stable" },
+    skills: { evidenceKinds: ["official-doc"], surfaceScope: "repo", stability: "stable" },
+    workflows: { evidenceKinds: ["official-doc"], surfaceScope: "ide", stability: "preview" },
+    customAgents: { evidenceKinds: ["official-doc"], surfaceScope: "cli", stability: "stable" },
+    subagents: {
+      evidenceKinds: ["official-doc"],
+      surfaceScope: "mixed",
+      stability: "unsupported",
+    },
+    hooks: { evidenceKinds: ["official-doc"], surfaceScope: "repo", stability: "stable" },
+  },
+  gemini: {
+    rules: { evidenceKinds: ["official-doc"], surfaceScope: "repo", stability: "stable" },
+    skills: { evidenceKinds: ["official-doc"], surfaceScope: "repo", stability: "stable" },
+    workflows: { evidenceKinds: ["official-doc"], surfaceScope: "repo", stability: "stable" },
+    customAgents: {
+      evidenceKinds: ["official-doc"],
+      surfaceScope: "mixed",
+      stability: "unsupported",
+    },
+    subagents: {
+      evidenceKinds: ["official-doc"],
+      surfaceScope: "repo",
+      stability: "experimental",
+    },
+    hooks: { evidenceKinds: ["official-doc"], surfaceScope: "repo", stability: "stable" },
+  },
+};
 
 const ORCHESTRATION_SUBTYPES = [
   {
@@ -73,14 +318,15 @@ const HARNESS_PARITY_CAPABILITIES = [
     vendor_native_support: {
       claude: "`native`",
       codex:
-        "`degraded`; instructions, skills, subagents, and MCP are native, and Codex 0.116.0 adds an experimental `userpromptsubmit` hook, but the stable project hook schema is not yet documented for Foundry installs",
+        "`native`; instructions, skills, subagents, MCP, and documented hook events exist, though hook enablement remains feature-gated in current local CLI builds",
       copilot: "`native`, but split across GitHub, IDE, and CLI surfaces",
       gemini: "`native`",
       antigravity: "`degraded` and `inferred`",
     },
     ship_rules: {
       claude: "ship full harness parity",
-      codex: "ship limited harness parity with no hook-dependent claims",
+      codex:
+        "ship full packaging and subagent parity, but keep hook emission gated until Foundry verifies the local project install flow end to end",
       copilot:
         "ship full harness parity only on surfaces where the capability is actually available",
       gemini: "ship full harness parity",
@@ -92,15 +338,16 @@ const HARNESS_PARITY_CAPABILITIES = [
     vendor_native_support: {
       claude: "`native` via subagents plus hooks",
       codex:
-        "`degraded`; agent and subagent orchestration is native, and Codex 0.116.0 adds an experimental `userpromptsubmit` hook, but there is still no documented stop-hook or full loop-control contract",
+        "`native` via subagents plus documented hook continuation events",
       copilot:
         "`degraded` because hooks and autonomy exist, but there is not one shared repo-local loop primitive across all Copilot surfaces",
-      gemini: "`native` via commands, hooks, and subagents",
+      gemini: "`native` via commands, hooks, skills, and experimental subagents",
       antigravity: "`degraded` and `inferred`; current projection is command-driven",
     },
     ship_rules: {
       claude: "ship hook-backed native loop flow",
-      codex: "ship bounded degraded loop flow only",
+      codex:
+        "ship native loop semantics where rules, subagents, and approvals apply, but keep hook-backed continuation gated until local install verification is complete",
       copilot:
         "ship bounded degraded loop flow unless the selected Copilot surface supports the needed primitives",
       gemini: "ship command-plus-hook loop flow",
@@ -113,7 +360,7 @@ const HARNESS_PARITY_CAPABILITIES = [
       claude:
         "`native`; named profiles are a Foundry layer mapped onto native hooks",
       codex:
-        "`degraded`; Codex 0.116.0 ships an experimental `userpromptsubmit` hook, but Foundry should not treat hook profiles as stable until the project hook config/schema is documented",
+        "`native`; the hook surface is documented, but profile naming remains a Foundry abstraction and current local installs remain feature-gated",
       copilot:
         "`native`; hook surface exists, but profile naming remains a Foundry abstraction",
       gemini:
@@ -124,7 +371,7 @@ const HARNESS_PARITY_CAPABILITIES = [
     ship_rules: {
       claude: "ship `native`",
       codex:
-        "ship only behind an explicit experimental flag after the hook config/schema is verified",
+        "ship documented hook support behind a Foundry gate until the project install flow is locally verified",
       copilot:
         "ship `native` only when the adapter emits real hook artifacts",
       gemini:
@@ -160,7 +407,7 @@ const HARNESS_PARITY_CAPABILITIES = [
 
 const HARNESS_PARITY_CURRENT_STATUS = [
   "Claude is the current reference implementation for full harness parity. Native hook artifacts exist under `workflows/workflows/agent-environment-setup/platforms/claude/hooks/`.",
-  "Codex should be treated as a full packaging and security target. OpenAI's 0.116.0 release notes add an experimental `userpromptsubmit` hook, and local CLI inspection shows a `codex_hooks` feature flag marked under development. Foundry should treat that as experimental-only until the project hook config/schema is verified.",
+  "Codex should be treated as a full packaging and security target. OpenAI's Codex docs now describe project hook events, including `UserPromptSubmit` and `Stop`, and local CLI inspection still shows hook enablement as gated. Foundry should document hooks as real but keep emission behind a gate until project install verification is complete.",
   "Gemini and Copilot both have vendor-native hook surfaces, and Foundry now emits baseline hook artifacts for both. Gemini receives route/research plus shell-security templates; Copilot receives repo-native security guard hooks, while prompt-routing guidance remains in instructions and prompts.",
   "Antigravity currently remains a Gemini-family compatibility target. Foundry projects loop support through `workflows/workflows/agent-environment-setup/platforms/antigravity/commands/loop.toml` and rules through `workflows/workflows/agent-environment-setup/platforms/antigravity/rules/GEMINI.md`.",
   "Security posture should be treated as universal Foundry policy, but hard enforcement strength depends on the platform's native hook or policy surfaces.",
@@ -168,8 +415,8 @@ const HARNESS_PARITY_CURRENT_STATUS = [
 
 const HARNESS_PARITY_SOURCE_NOTES = [
   "Claude: official memory, hooks, and sub-agent docs support native harness and loop behavior.",
-  "Codex: official `AGENTS.md`, skills, and subagents docs support native packaging and harness layers. OpenAI's GitHub release 0.116.0 on 2026-03-19 adds an experimental `userpromptsubmit` hook, and local CLI inspection on 2026-03-20 shows a `codex_hooks` feature flag marked under development.",
-  "Gemini: official `GEMINI.md`, skills, commands, hooks, subagents, and MCP docs support a native harness model.",
+  "Codex: official `AGENTS.md`, skills, subagents, and hooks docs support native packaging and harness layers. Local CLI inspection on 2026-04-04 still shows hook enablement as gated, so Foundry should separate vendor support from local install readiness.",
+  "Gemini: official `GEMINI.md`, skills, commands, hooks, MCP, and experimental remote subagent docs support a native harness model with clearly scoped stability.",
   "Copilot: official repository instructions, custom agents, hooks, agent skills, MCP, and CLI autonomy docs support a native but fragmented harness model.",
   "Antigravity is an inference from Foundry's local adapter shape and Gemini-family positioning, not a verified public vendor spec.",
 ];
@@ -691,6 +938,7 @@ const PLATFORM_SPECS = {
       "research-escalation",
       "memory-loading",
       "project-vs-global-scope",
+      "hook-support",
       "mcp-integration",
       "agent-scoped-mcp",
       "runtime-as-mcp-server",
@@ -705,9 +953,9 @@ const PLATFORM_SPECS = {
     ]),
     pattern_overrides: {
       "hook-support": {
-        support_level: "degraded",
+        projection_surface: ".codex/hooks/*.json + .codex/config.toml",
         behavior_notes:
-          "Codex parity uses generated steering and skill/routing contracts instead of a first-class hook system.",
+          "Codex has a documented project hook surface, but Foundry keeps hook emission gated until the local feature flag and install flow are verified together.",
       },
       "scheduled-task": {
         support_level: "degraded",
@@ -920,16 +1168,16 @@ const PLATFORM_SPECS = {
       profiles: "degraded via Foundry presets",
     },
     agent_capabilities: {
-      native_agent_surface: "degraded via generated command routes",
-      skill_surface: "degraded via .gemini/skills skill installs",
+      native_agent_surface: ".gemini/agents/*.md (experimental, not shipped by Foundry)",
+      skill_surface: ".gemini/skills/<id>/SKILL.md",
       workflow_entry_surface: ".gemini/commands/*.toml",
       multi_agent: "degraded",
       batch_fanout: "degraded",
     },
     skill_capabilities: {
-      discovery: "degraded",
+      discovery: "native",
       preloaded_skills: "degraded",
-      frontmatter: "degraded",
+      frontmatter: "native",
       argument_binding: "degraded",
       isolated_skill_execution: "degraded",
     },
@@ -958,6 +1206,9 @@ const PLATFORM_SPECS = {
     native_patterns: new Set([
       "instructions-file",
       "workflow-entrypoint",
+      "supporting-skill",
+      "skill-discovery",
+      "skill-frontmatter",
       "orchestration-chain",
       "review-and-validation",
       "research-escalation",
@@ -1047,7 +1298,7 @@ const PLATFORM_SPECS = {
 const PLATFORM_SURFACE_SPEC = {
   codex: {
     label: "Codex",
-    hookSupport: "experimental",
+    hookSupport: "gated",
     workflowSurfaceKind: "generated-skill",
     specialistRouteRenderer: "subagent",
     rules: {
@@ -1098,14 +1349,14 @@ const PLATFORM_SURFACE_SPEC = {
       notes: "This is the only native specialist file surface Foundry ships for Codex.",
     },
     hooks: {
-      vendorSupport: "experimental",
-      foundryStatus: "experimental",
-      projectPath: null,
-      globalPath: null,
-      format: "unverified",
-      nativeOrProjected: "do-not-install",
+      vendorSupport: "native documented hook surface",
+      foundryStatus: "gated",
+      projectPath: ".codex/hooks/*.json + .codex/config.toml",
+      globalPath: "~/.codex/config.toml",
+      format: "JSON + command hook declarations",
+      nativeOrProjected: "native hook config",
       notes:
-        "Codex 0.116.0 exposes an experimental `userpromptsubmit` hook signal, but the project hook config/schema is not verified, so Foundry emits no hook artifacts by default.",
+        "Codex docs describe repo hook events, including UserPromptSubmit and Stop, but Foundry still gates hook emission until the local feature flag and install flow are verified together.",
     },
   },
   claude: {
@@ -1133,7 +1384,7 @@ const PLATFORM_SURFACE_SPEC = {
       notes: "Primary Claude skill install surface.",
     },
     workflows: {
-      vendorSupport: "native via workflow skills",
+      vendorSupport: "native slash commands; Foundry installs projected workflow skills",
       foundryStatus: "native",
       projectPath: ".claude/skills/<workflow-id>/SKILL.md",
       globalPath: "~/.claude/skills/<workflow-id>/SKILL.md",
@@ -1268,7 +1519,7 @@ const PLATFORM_SURFACE_SPEC = {
       notes: "This is the canonical shipped workflow surface for Gemini.",
     },
     customAgents: {
-      vendorSupport: "unsupported in current Foundry ship model",
+      vendorSupport: "unsupported in Foundry's current ship model",
       foundryStatus: "do-not-ship",
       projectPath: null,
       globalPath: null,
@@ -1277,13 +1528,14 @@ const PLATFORM_SURFACE_SPEC = {
       notes: "Foundry does not currently ship a Gemini custom-agent file surface.",
     },
     subagents: {
-      vendorSupport: "not shipped in current Foundry adapter",
+      vendorSupport: "experimental remote subagents",
       foundryStatus: "do-not-ship",
-      projectPath: null,
-      globalPath: null,
-      format: "n/a",
-      nativeOrProjected: "do-not-ship",
-      notes: "Specialist routes are rendered as command files until a verified native agent surface is adopted.",
+      projectPath: ".gemini/agents/*.md",
+      globalPath: "~/.gemini/agents/*.md",
+      format: "Markdown with YAML frontmatter",
+      nativeOrProjected: "native experimental subagent",
+      notes:
+        "Gemini documents an experimental subagent surface, but Foundry keeps specialist routes on command files until that surface is deliberately adopted.",
     },
     hooks: {
       vendorSupport: "native",
@@ -1302,7 +1554,7 @@ const PLATFORM_SURFACE_SPEC = {
     specialistRouteRenderer: "agent-route-command",
     rules: {
       vendorSupport: "degraded and inferred",
-      foundryStatus: "native",
+      foundryStatus: "compatibility-target",
       projectPath: ".agents/rules/GEMINI.md",
       globalPath: "~/.gemini/GEMINI.md",
       format: "Markdown",
@@ -1311,7 +1563,7 @@ const PLATFORM_SURFACE_SPEC = {
     },
     skills: {
       vendorSupport: "degraded and inferred",
-      foundryStatus: "native",
+      foundryStatus: "compatibility-target",
       projectPath: ".agents/skills/<skill-id>/SKILL.md",
       globalPath: "~/.gemini/antigravity/skills/<skill-id>/SKILL.md",
       format: "Markdown",
@@ -1320,7 +1572,7 @@ const PLATFORM_SURFACE_SPEC = {
     },
     workflows: {
       vendorSupport: "degraded command projection",
-      foundryStatus: "native",
+      foundryStatus: "compatibility-target",
       projectPath: ".gemini/commands/<workflow-id>.toml",
       globalPath: "~/.gemini/commands/<workflow-id>.toml",
       format: "TOML",
@@ -1436,6 +1688,32 @@ function defaultVerificationSteps(pattern, supportLevel) {
   ];
 }
 
+function defaultPatternEvidenceKinds(platformId, supportLevel) {
+  if (platformId === "antigravity") return ["inferred"];
+  if (supportLevel === "native") return ["official-doc"];
+  return ["official-doc", "foundry-projection"];
+}
+
+function defaultPatternSurfaceScope(platformId) {
+  switch (platformId) {
+    case "copilot":
+      return "mixed";
+    case "antigravity":
+      return "mixed";
+    default:
+      return "repo";
+  }
+}
+
+function defaultPatternStability(platformId, patternId, supportLevel) {
+  if (platformId === "antigravity") return "inferred";
+  if (platformId === "codex" && patternId === "hook-support") {
+    return "experimental";
+  }
+  if (platformId === "copilot") return "mixed";
+  return supportLevel === "native" ? "stable" : "projected";
+}
+
 function buildPatternSupport(platformId, platform, pattern) {
   const override = platform.pattern_overrides?.[pattern.id] || null;
   const supportLevel = override?.support_level
@@ -1448,12 +1726,22 @@ function buildPatternSupport(platformId, platform, pattern) {
   const hardLimits = override?.hard_limits || defaultHardLimits(pattern, supportLevel);
   const verificationSteps =
     override?.verification_steps || defaultVerificationSteps(pattern, supportLevel);
+  const evidenceKinds =
+    override?.evidence_kinds || defaultPatternEvidenceKinds(platformId, supportLevel);
+  const surfaceScope =
+    override?.surface_scope || defaultPatternSurfaceScope(platformId);
+  const stability =
+    override?.stability
+    || defaultPatternStability(platformId, pattern.id, supportLevel);
 
   return {
     pattern_id: pattern.id,
     support_level: supportLevel,
     projection_surface: projectionSurface,
     behavior_notes: behaviorNotes,
+    evidence_kinds: evidenceKinds,
+    surface_scope: surfaceScope,
+    stability,
     hard_limits: hardLimits,
     installable: supportLevel !== "blocked",
     verification_steps: verificationSteps,
@@ -1470,12 +1758,21 @@ export function buildPlatformSurfaceSpec() {
         hookSupport: spec.hookSupport,
         workflowSurfaceKind: spec.workflowSurfaceKind,
         specialistRouteRenderer: spec.specialistRouteRenderer,
-        rules: spec.rules,
-        skills: spec.skills,
-        workflows: spec.workflows,
-        customAgents: spec.customAgents,
-        subagents: spec.subagents,
-        hooks: spec.hooks,
+        rules: { ...spec.rules, ...SURFACE_PROVENANCE[platformId].rules },
+        skills: { ...spec.skills, ...SURFACE_PROVENANCE[platformId].skills },
+        workflows: {
+          ...spec.workflows,
+          ...SURFACE_PROVENANCE[platformId].workflows,
+        },
+        customAgents: {
+          ...spec.customAgents,
+          ...SURFACE_PROVENANCE[platformId].customAgents,
+        },
+        subagents: {
+          ...spec.subagents,
+          ...SURFACE_PROVENANCE[platformId].subagents,
+        },
+        hooks: { ...spec.hooks, ...SURFACE_PROVENANCE[platformId].hooks },
       },
     ]),
   );
@@ -1512,11 +1809,14 @@ export function buildUpstreamCapabilityAudit() {
       audited_commit: reference.audited_commit,
       audited_version_or_date: reference.audited_version_or_date,
       audited_at: reference.audited_at,
+      source_type: reference.source_type,
       diff_summary:
-        "Reference repo audited and mapped into the canonical parity registry and platform contracts.",
+        "Source evidence audited and mapped into the canonical parity registry and platform contracts.",
+      summary: reference.source_summary,
+      evidence: reference.evidence,
       parity_impacts: [
         "Maintains the runtime-specific feature vocabulary used by the parity registry.",
-        "Provides source evidence for native vs degraded support decisions.",
+        "Separates vendor-native support from Foundry ship policy and inferred compatibility.",
       ],
       required_manifest_changes: [
         "Keep pattern registry, capability contracts, and generated docs in sync with the audited reference.",
@@ -1567,7 +1867,7 @@ function renderHarnessParitySection() {
   const sourceNotes = HARNESS_PARITY_SOURCE_NOTES.map((line) => `- ${line}`).join("\n");
 
   return [
-    "## Foundry Harness Parity Spec (Verified 2026-03-20)",
+    "## Foundry Harness Parity Spec (Verified 2026-04-04)",
     "",
     "This section is the strict decision table for the ECC-inspired runtime layers: packaging, harness, loop control, hook profiles, and security posture. When this section conflicts with older broad pattern tables below, this section wins for Foundry product and adapter decisions.",
     "",
@@ -1645,13 +1945,31 @@ function renderPlatformSurfaceSpecSection(surfaceSpec) {
             "Surface",
             "Vendor Support",
             "Foundry Status",
+            "Scope",
+            "Stability",
+            "Evidence",
             "Project Path",
             "Global Path",
             "Format",
             "Native/Projected",
             "Notes",
           ],
-          rows,
+          rows.map((row, index) => {
+            const surface = platform[surfaceOrder[index]];
+            return [
+              row[0],
+              row[1],
+              row[2],
+              surface.surfaceScope,
+              surface.stability,
+              surface.evidenceKinds.join(", "),
+              row[3],
+              row[4],
+              row[5],
+              row[6],
+              row[7],
+            ];
+          }),
         ),
         "",
       ];
@@ -1926,11 +2244,41 @@ function renderPlatformCapabilityDetails(contracts) {
   ].join("\n");
 }
 
+function renderPlatformCapabilityAudit() {
+  return [
+    "# Platform Capability Audit",
+    "",
+    "This document records the current evidence basis for each supported platform. It separates official vendor support from local CLI observations and inferred compatibility targets.",
+    "",
+    ...AUDITED_REFERENCES.flatMap((reference) => [
+      `## ${titleCase(reference.runtime)}`,
+      "",
+      `- Source type: \`${reference.source_type}\``,
+      `- Audited at: \`${reference.audited_at}\``,
+      `- Version or date: \`${reference.audited_version_or_date}\``,
+      `- Summary: ${reference.source_summary}`,
+      "",
+      markdownTable(
+        ["Evidence Kind", "Scope", "Stability", "Source", "Notes"],
+        reference.evidence.map((entry) => [
+          entry.kind,
+          entry.scope,
+          entry.stability,
+          entry.source,
+          entry.notes,
+        ]),
+      ),
+      "",
+    ]),
+  ].join("\n");
+}
+
 export function buildParityDocs(contracts) {
   return new Map([
     ["platform-support-matrix.md", renderPlatformSupportSummary(contracts)],
     ["cross-platform-pattern-catalog.md", renderPatternCatalog()],
     ["platform-capability-details.md", renderPlatformCapabilityDetails(contracts)],
+    ["platform-capability-audit.md", renderPlatformCapabilityAudit()],
   ]);
 }
 

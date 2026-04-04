@@ -1,6 +1,6 @@
 ---
 name: qa
-description: Consolidated QA capability with three modes: harness, web, and mobile.
+description: "Consolidated QA capability with three modes: harness, web, and mobile."
 ---
 # QA
 

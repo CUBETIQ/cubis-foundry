@@ -9,7 +9,10 @@ Execution contract:
 - native specialist surface: agent-route command.
 - native workflow surface for escalation: command.
 2. Load docs in this order when they exist: `docs/foundation/MEMORY.md` -> `docs/foundation/PRODUCT.md` -> `docs/foundation/ARCHITECTURE.md` -> `docs/foundation/STRUCTURE.md`. Add `docs/foundation/DESIGN.md` only for UI or design-heavy work, and `docs/foundation/TECH.md` only when execution details matter.
-
+Attached skills:
+- Load these exact skill IDs first: `/plan`, `/implement`, `/debug`, `/review`, `/test`.
+- Local skill file hints if installed: `.gemini/skills//plan/SKILL.md`, `.gemini/skills//implement/SKILL.md`, `.gemini/skills//debug/SKILL.md`, `.gemini/skills//review/SKILL.md`, `.gemini/skills//test/SKILL.md`.
+- Treat the skill bundle as already resolved for this workflow. Do not start with route discovery.
 3. Stay within the specialist scope and escalate to a broader workflow when the task crosses domains.
 4. Run focused verification for the changes or analysis you perform.
 5. Keep runtime boundaries explicit: Playwright MCP for web, `mobile-mcp` first for semantic mobile work, CLI fallback for deterministic logs or replayable evidence.

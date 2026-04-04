@@ -328,6 +328,71 @@ function createTestingRouteManifest(): RouteManifest {
   };
 }
 
+function createCurrentWorkflowRouteManifest(): RouteManifest {
+  return {
+    $schema: "cubis-foundry-route-manifest-v1",
+    generatedAt: new Date(0).toISOString(),
+    contentHash: "current-workflows",
+    summary: { totalRoutes: 3, workflows: 3, agents: 0 },
+    routes: [
+      {
+        kind: "workflow",
+        id: "implement",
+        command: "/implement",
+        displayName: "Implement Workflow",
+        description: "Execute a scoped change end-to-end",
+        triggers: ["implement", "build", "change"],
+        primaryAgent: "implementer",
+        supportingAgents: [],
+        primarySkills: ["spec-driven-delivery"],
+        supportingSkills: ["web-testing"],
+        artifacts: {
+          codex: { compatibilityAlias: "$workflow-implement", workflowFile: "implement.md" },
+          copilot: { workflowFile: "implement.md", promptFile: "implement.prompt.md" },
+          antigravity: { workflowFile: "implement.md", commandFile: "implement.toml" },
+          claude: { workflowFile: "implement.md" },
+        },
+      },
+      {
+        kind: "workflow",
+        id: "plan",
+        command: "/plan",
+        displayName: "Plan Workflow",
+        description: "Research and scope a plan before editing",
+        triggers: ["plan", "scope", "design"],
+        primaryAgent: "planner",
+        supportingAgents: ["explorer"],
+        primarySkills: ["spec-driven-delivery", "system-design"],
+        supportingSkills: ["deep-research"],
+        artifacts: {
+          codex: { compatibilityAlias: "$workflow-plan", workflowFile: "plan.md" },
+          copilot: { workflowFile: "plan.md", promptFile: "plan.prompt.md" },
+          antigravity: { workflowFile: "plan.md", commandFile: "plan.toml" },
+          claude: { workflowFile: "plan.md" },
+        },
+      },
+      {
+        kind: "workflow",
+        id: "review",
+        command: "/review",
+        displayName: "Review Workflow",
+        description: "Audit changes for correctness and regressions",
+        triggers: ["review", "audit", "risk"],
+        primaryAgent: "reviewer",
+        supportingAgents: [],
+        primarySkills: ["code-review"],
+        supportingSkills: ["owasp-security-review"],
+        artifacts: {
+          codex: { compatibilityAlias: "$workflow-review", workflowFile: "review.md" },
+          copilot: { workflowFile: "review.md", promptFile: "review.prompt.md" },
+          antigravity: { workflowFile: "review.md", commandFile: "review.toml" },
+          claude: { workflowFile: "review.md" },
+        },
+      },
+    ],
+  };
+}
+
 const REPO_ROOT = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "../../..",
@@ -690,6 +755,22 @@ describe("skill tools", () => {
       resolved: true,
       kind: "workflow",
       id: "create",
+      primarySkillHint: "skill-creator",
+      matchedBy: "skill-creator-intent",
+    });
+  });
+
+  it("routes skill creator intent to implement when create is not installed", async () => {
+    const result = payload(
+      await handleRouteResolve(
+        { intent: "create a new skill package for Copilot and Codex" },
+        createCurrentWorkflowRouteManifest(),
+      ),
+    );
+    expect(result).toMatchObject({
+      resolved: true,
+      kind: "workflow",
+      id: "implement",
       primarySkillHint: "skill-creator",
       matchedBy: "skill-creator-intent",
     });

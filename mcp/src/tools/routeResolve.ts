@@ -266,22 +266,25 @@ function chooseSkillCreatorRoute(
   if (!isSkillCreatorIntent(intent)) return null;
 
   const normalizedIntent = normalize(intent);
-  let preferredRouteId = "create";
+  let candidateRouteIds = ["create", "implement", "plan"];
   if (includesAnyPhrase(normalizedIntent, SKILL_CREATOR_REVIEW_SIGNALS)) {
-    preferredRouteId = "review";
+    candidateRouteIds = ["review", "plan", "implement"];
   } else if (includesAnyPhrase(normalizedIntent, SKILL_CREATOR_PLAN_SIGNALS)) {
-    preferredRouteId = "plan";
+    candidateRouteIds = ["plan", "implement", "review"];
   } else if (
     includesAnyPhrase(normalizedIntent, SKILL_CREATOR_ORCHESTRATE_SIGNALS)
   ) {
-    preferredRouteId = "orchestrate";
+    candidateRouteIds = ["orchestrate", "plan", "implement"];
   }
 
-  return (
-    manifest.routes.find(
-      (entry) => entry.kind === "workflow" && entry.id === preferredRouteId,
-    ) || null
-  );
+  for (const routeId of candidateRouteIds) {
+    const route = manifest.routes.find(
+      (entry) => entry.kind === "workflow" && entry.id === routeId,
+    );
+    if (route) return route;
+  }
+
+  return null;
 }
 
 function buildSearchText(route: RouteEntry): string {

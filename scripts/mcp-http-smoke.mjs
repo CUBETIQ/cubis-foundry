@@ -367,12 +367,12 @@ async function main() {
     endpointUrl: endpoint,
     sessionId,
     name: "route_resolve",
-    args: { intent: "@explorer" },
+    args: { intent: "@researcher" },
   });
   const researchRoutePayload = parseToolTextPayload(researchRouteResolveResult);
   if (
     researchRoutePayload.resolved !== true ||
-    researchRoutePayload.id !== "explorer" ||
+    researchRoutePayload.id !== "researcher" ||
     researchRoutePayload.primarySkillHint !== "deep-research"
   ) {
     throw new Error("route_resolve failed research escalation routing");

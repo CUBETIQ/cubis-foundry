@@ -2,6 +2,13 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { resolveMcpSkillRootCandidates } from "./skillRoots.js";
 
+function portableResolve(baseDir: string, relativePath: string) {
+  if (/^[A-Za-z]:[\\/]/.test(baseDir)) {
+    return path.win32.resolve(baseDir, relativePath).replace(/\\/g, "/");
+  }
+  return path.resolve(baseDir, relativePath);
+}
+
 describe("resolveMcpSkillRootCandidates", () => {
   it("returns an explicit skills root ahead of auto-detection", () => {
     const cwd = path.join("D:", "repo", "workspace");
@@ -12,7 +19,7 @@ describe("resolveMcpSkillRootCandidates", () => {
       homeDir: path.join("C:", "Users", "tester"),
     });
 
-    expect(candidates).toEqual([path.resolve(cwd, ".custom-skills")]);
+    expect(candidates).toEqual([portableResolve(cwd, ".custom-skills")]);
   });
 
   it("prefers foundry modules before installed skill mirrors in project scope", () => {

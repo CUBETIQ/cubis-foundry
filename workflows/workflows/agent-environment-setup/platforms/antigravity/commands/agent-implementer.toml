@@ -9,7 +9,10 @@ Execution contract:
 - native specialist surface: agent-route command.
 - native workflow surface for escalation: command.
 2. Load docs in this order when they exist: `docs/foundation/MEMORY.md` -> `docs/foundation/TECH.md` -> `docs/foundation/ARCHITECTURE.md` -> `docs/foundation/STRUCTURE.md`. Add `docs/foundation/PRODUCT.md` for business-rule changes and `docs/foundation/DESIGN.md` for UI work.
-
+Attached skills:
+- Load these exact skill IDs first: `frontend-design`, `design`, `design-system`, `web-testing`, `android-emulator-testing`, `ios-simulator-testing`, `mobile-mcp`, `systematic-debugging`, `code-review`, `owasp-security-review`.
+- Local skill file hints if installed: `.agents/skills/frontend-design/SKILL.md`, `.agents/skills/design/SKILL.md`, `.agents/skills/design-system/SKILL.md`, `.agents/skills/web-testing/SKILL.md`, `.agents/skills/android-emulator-testing/SKILL.md`, `.agents/skills/ios-simulator-testing/SKILL.md`, `.agents/skills/mobile-mcp/SKILL.md`, `.agents/skills/systematic-debugging/SKILL.md`.
+- Treat the skill bundle as already resolved for this workflow. Do not start with route discovery.
 3. Stay within the specialist scope and escalate to a broader workflow when the task crosses domains.
 4. Run focused verification for the changes or analysis you perform.
 5. Keep runtime boundaries explicit: Playwright MCP for web, `mobile-mcp` first for semantic mobile work, CLI fallback for deterministic logs or replayable evidence.

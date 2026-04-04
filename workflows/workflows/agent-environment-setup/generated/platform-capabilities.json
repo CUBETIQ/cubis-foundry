@@ -64,6 +64,11 @@
           "support_level": "native",
           "projection_surface": "AGENTS.md",
           "behavior_notes": "Codex has native instructions-file support via AGENTS.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for instructions-file."
           ],
@@ -79,6 +84,11 @@
           "support_level": "native",
           "projection_surface": "AGENTS.md",
           "behavior_notes": "Codex has native instructions-hierarchy support via AGENTS.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for instructions-hierarchy."
           ],
@@ -94,6 +104,11 @@
           "support_level": "native",
           "projection_surface": "AGENTS.md",
           "behavior_notes": "Codex has native instructions-override support via AGENTS.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for instructions-override."
           ],
@@ -109,6 +124,11 @@
           "support_level": "native",
           "projection_surface": "<workspace>/.codex/config.toml",
           "behavior_notes": "Codex has native config-layering support via <workspace>/.codex/config.toml.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for config-layering."
           ],
@@ -124,6 +144,11 @@
           "support_level": "native",
           "projection_surface": "<workspace>/.codex/config.toml",
           "behavior_notes": "Codex has native config-profiles support via <workspace>/.codex/config.toml.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for config-profiles."
           ],
@@ -139,6 +164,11 @@
           "support_level": "native",
           "projection_surface": ".agents/skills/<workflow-id>/SKILL.md",
           "behavior_notes": "Codex has native workflow-entrypoint support via .agents/skills/<workflow-id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for workflow-entrypoint."
           ],
@@ -154,6 +184,11 @@
           "support_level": "native",
           "projection_surface": ".agents/skills/<id>/SKILL.md",
           "behavior_notes": "Codex has native supporting-skill support via .agents/skills/<id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for supporting-skill."
           ],
@@ -169,6 +204,11 @@
           "support_level": "native",
           "projection_surface": ".agents/skills/<id>/SKILL.md",
           "behavior_notes": "Codex has native skill-discovery support via .agents/skills/<id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for skill-discovery."
           ],
@@ -184,6 +224,11 @@
           "support_level": "native",
           "projection_surface": ".agents/skills/<id>/SKILL.md",
           "behavior_notes": "Codex has native skill-frontmatter support via .agents/skills/<id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for skill-frontmatter."
           ],
@@ -199,6 +244,11 @@
           "support_level": "native",
           "projection_surface": ".agents/skills/<id>/SKILL.md",
           "behavior_notes": "Codex has native skill-string-substitution support via .agents/skills/<id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for skill-string-substitution."
           ],
@@ -214,6 +264,11 @@
           "support_level": "native",
           "projection_surface": ".agents/skills/<id>/SKILL.md",
           "behavior_notes": "Codex has native skill-forked-execution support via .agents/skills/<id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for skill-forked-execution."
           ],
@@ -229,6 +284,11 @@
           "support_level": "native",
           "projection_surface": ".codex/agents/*.toml",
           "behavior_notes": "Codex has native agent-registration support via .codex/agents/*.toml.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for agent-registration."
           ],
@@ -244,6 +304,11 @@
           "support_level": "native",
           "projection_surface": ".codex/agents/*.toml",
           "behavior_notes": "Codex has native specialist-agent support via .codex/agents/*.toml.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for specialist-agent."
           ],
@@ -259,6 +324,11 @@
           "support_level": "native",
           "projection_surface": ".codex/agents/*.toml",
           "behavior_notes": "Codex has native agent-preloaded-skill support via .codex/agents/*.toml.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for agent-preloaded-skill."
           ],
@@ -274,6 +344,11 @@
           "support_level": "native",
           "projection_surface": ".codex/agents/*.toml",
           "behavior_notes": "Codex has native multi-agent-orchestration support via .codex/agents/*.toml.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for multi-agent-orchestration."
           ],
@@ -289,6 +364,11 @@
           "support_level": "native",
           "projection_surface": ".codex/agents/*.toml",
           "behavior_notes": "Codex has native batch-agent-fanout support via .codex/agents/*.toml.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for batch-agent-fanout."
           ],
@@ -304,6 +384,11 @@
           "support_level": "native",
           "projection_surface": ".agents/skills/<workflow-id>/SKILL.md",
           "behavior_notes": "Codex has native orchestration-chain support via .agents/skills/<workflow-id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for orchestration-chain."
           ],
@@ -319,6 +404,11 @@
           "support_level": "native",
           "projection_surface": ".agents/skills/<workflow-id>/SKILL.md",
           "behavior_notes": "Codex has native review-and-validation support via .agents/skills/<workflow-id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for review-and-validation."
           ],
@@ -334,6 +424,11 @@
           "support_level": "native",
           "projection_surface": ".agents/skills/<workflow-id>/SKILL.md",
           "behavior_notes": "Codex has native research-escalation support via .agents/skills/<workflow-id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for research-escalation."
           ],
@@ -349,6 +444,11 @@
           "support_level": "native",
           "projection_surface": "AGENTS.md",
           "behavior_notes": "Codex has native memory-loading support via AGENTS.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for memory-loading."
           ],
@@ -364,6 +464,11 @@
           "support_level": "native",
           "projection_surface": "<workspace>/.codex/config.toml",
           "behavior_notes": "Codex has native project-vs-global-scope support via <workspace>/.codex/config.toml.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for project-vs-global-scope."
           ],
@@ -376,17 +481,21 @@
         },
         {
           "pattern_id": "hook-support",
-          "support_level": "degraded",
-          "projection_surface": ".agents/skills/<workflow-id>/SKILL.md",
-          "behavior_notes": "Codex parity uses generated steering and skill/routing contracts instead of a first-class hook system.",
+          "support_level": "native",
+          "projection_surface": ".codex/hooks/*.json + .codex/config.toml",
+          "behavior_notes": "Codex has a documented project hook surface, but Foundry keeps hook emission gated until the local feature flag and install flow are verified together.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "experimental",
           "hard_limits": [
-            "Degraded projection for hook-support is semantic, not exact UI parity.",
-            "Operator-visible docs must be treated as part of the contract."
+            "Native runtime limits still apply for hook-support."
           ],
           "installable": true,
           "verification_steps": [
-            "Verify degraded hook-support projection is present in the generated manifest.",
-            "Verify degraded docs for hook-support are emitted and linked from the parity set.",
+            "Verify native hook-support projection is present in the generated manifest.",
+            "Verify native docs for hook-support are emitted and linked from the parity set.",
             "Ensure install metadata does not silently omit hook-support."
           ]
         },
@@ -395,6 +504,11 @@
           "support_level": "native",
           "projection_surface": "[mcp_servers.*] in .codex/config.toml",
           "behavior_notes": "Codex has native mcp-integration support via [mcp_servers.*] in .codex/config.toml.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for mcp-integration."
           ],
@@ -410,6 +524,11 @@
           "support_level": "native",
           "projection_surface": "[mcp_servers.*] in .codex/config.toml",
           "behavior_notes": "Codex has native agent-scoped-mcp support via [mcp_servers.*] in .codex/config.toml.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for agent-scoped-mcp."
           ],
@@ -425,6 +544,11 @@
           "support_level": "native",
           "projection_surface": "[mcp_servers.*] in .codex/config.toml",
           "behavior_notes": "Codex has native runtime-as-mcp-server support via [mcp_servers.*] in .codex/config.toml.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for runtime-as-mcp-server."
           ],
@@ -440,6 +564,11 @@
           "support_level": "native",
           "projection_surface": "native when browser MCP is configured",
           "behavior_notes": "Codex has native browser-verification support via native when browser MCP is configured.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for browser-verification."
           ],
@@ -455,6 +584,11 @@
           "support_level": "native",
           "projection_surface": "workspace-write + on-request",
           "behavior_notes": "Codex has native sandbox-policy support via workspace-write + on-request.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for sandbox-policy."
           ],
@@ -470,6 +604,11 @@
           "support_level": "native",
           "projection_surface": "workspace-write + on-request",
           "behavior_notes": "Codex has native approval-policy support via workspace-write + on-request.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for approval-policy."
           ],
@@ -485,6 +624,11 @@
           "support_level": "native",
           "projection_surface": "native",
           "behavior_notes": "Codex has native session-resume support via native.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for session-resume."
           ],
@@ -500,6 +644,11 @@
           "support_level": "native",
           "projection_surface": "native",
           "behavior_notes": "Codex has native session-fork support via native.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for session-fork."
           ],
@@ -515,6 +664,11 @@
           "support_level": "native",
           "projection_surface": "native",
           "behavior_notes": "Codex has native headless-exec support via native.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for headless-exec."
           ],
@@ -530,6 +684,11 @@
           "support_level": "native",
           "projection_surface": ".agents/skills/<workflow-id>/SKILL.md",
           "behavior_notes": "Codex has native worktree-isolation support via .agents/skills/<workflow-id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for worktree-isolation."
           ],
@@ -545,6 +704,12 @@
           "support_level": "degraded",
           "projection_surface": ".agents/skills/<workflow-id>/SKILL.md",
           "behavior_notes": "Recurring work is projected into external automation or future Foundry automation, not native in-session scheduling.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for scheduled-task is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -561,6 +726,11 @@
           "support_level": "native",
           "projection_surface": "Generated audit artifacts and CI validation",
           "behavior_notes": "Codex has native upstream-capability-audit support via Generated audit artifacts and CI validation.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for upstream-capability-audit."
           ],
@@ -635,6 +805,11 @@
           "support_level": "native",
           "projection_surface": "CLAUDE.md",
           "behavior_notes": "Claude Code has native instructions-file support via CLAUDE.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for instructions-file."
           ],
@@ -650,6 +825,11 @@
           "support_level": "native",
           "projection_surface": "CLAUDE.md",
           "behavior_notes": "Claude Code has native instructions-hierarchy support via CLAUDE.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for instructions-hierarchy."
           ],
@@ -665,6 +845,12 @@
           "support_level": "degraded",
           "projection_surface": "CLAUDE.md",
           "behavior_notes": "Personal overrides are projected through local settings and user-scoped rules rather than a dedicated override file.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for instructions-override is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -681,6 +867,11 @@
           "support_level": "native",
           "projection_surface": "<workspace>/.claude/settings.json",
           "behavior_notes": "Claude Code has native config-layering support via <workspace>/.claude/settings.json.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for config-layering."
           ],
@@ -696,6 +887,12 @@
           "support_level": "degraded",
           "projection_surface": "<workspace>/.claude/settings.json",
           "behavior_notes": "Named profiles are projected into documented safety presets instead of a native profile table.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for config-profiles is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -712,6 +909,11 @@
           "support_level": "native",
           "projection_surface": ".claude/skills/<workflow-id>/SKILL.md",
           "behavior_notes": "Claude Code has native workflow-entrypoint support via .claude/skills/<workflow-id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for workflow-entrypoint."
           ],
@@ -727,6 +929,11 @@
           "support_level": "native",
           "projection_surface": ".claude/skills/<id>/SKILL.md",
           "behavior_notes": "Claude Code has native supporting-skill support via .claude/skills/<id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for supporting-skill."
           ],
@@ -742,6 +949,11 @@
           "support_level": "native",
           "projection_surface": ".claude/skills/<id>/SKILL.md",
           "behavior_notes": "Claude Code has native skill-discovery support via .claude/skills/<id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for skill-discovery."
           ],
@@ -757,6 +969,11 @@
           "support_level": "native",
           "projection_surface": ".claude/skills/<id>/SKILL.md",
           "behavior_notes": "Claude Code has native skill-frontmatter support via .claude/skills/<id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for skill-frontmatter."
           ],
@@ -772,6 +989,12 @@
           "support_level": "degraded",
           "projection_surface": ".claude/skills/<id>/SKILL.md",
           "behavior_notes": "Argument binding is available but not modeled as a Codex-style substitution contract everywhere.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for skill-string-substitution is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -788,6 +1011,11 @@
           "support_level": "native",
           "projection_surface": ".claude/skills/<id>/SKILL.md",
           "behavior_notes": "Claude Code has native skill-forked-execution support via .claude/skills/<id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for skill-forked-execution."
           ],
@@ -803,6 +1031,11 @@
           "support_level": "native",
           "projection_surface": ".claude/agents/*.md",
           "behavior_notes": "Claude Code has native agent-registration support via .claude/agents/*.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for agent-registration."
           ],
@@ -818,6 +1051,11 @@
           "support_level": "native",
           "projection_surface": ".claude/agents/*.md",
           "behavior_notes": "Claude Code has native specialist-agent support via .claude/agents/*.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for specialist-agent."
           ],
@@ -833,6 +1071,11 @@
           "support_level": "native",
           "projection_surface": ".claude/agents/*.md",
           "behavior_notes": "Claude Code has native agent-preloaded-skill support via .claude/agents/*.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for agent-preloaded-skill."
           ],
@@ -848,6 +1091,11 @@
           "support_level": "native",
           "projection_surface": ".claude/agents/*.md",
           "behavior_notes": "Claude Code has native multi-agent-orchestration support via .claude/agents/*.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for multi-agent-orchestration."
           ],
@@ -863,6 +1111,12 @@
           "support_level": "degraded",
           "projection_surface": ".claude/agents/*.md",
           "behavior_notes": "Batch fanout is handled through orchestrator-managed delegation rather than a native CSV batch primitive.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for batch-agent-fanout is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -879,6 +1133,11 @@
           "support_level": "native",
           "projection_surface": ".claude/skills/<workflow-id>/SKILL.md",
           "behavior_notes": "Claude Code has native orchestration-chain support via .claude/skills/<workflow-id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for orchestration-chain."
           ],
@@ -894,6 +1153,11 @@
           "support_level": "native",
           "projection_surface": ".claude/skills/<workflow-id>/SKILL.md",
           "behavior_notes": "Claude Code has native review-and-validation support via .claude/skills/<workflow-id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for review-and-validation."
           ],
@@ -909,6 +1173,11 @@
           "support_level": "native",
           "projection_surface": ".claude/skills/<workflow-id>/SKILL.md",
           "behavior_notes": "Claude Code has native research-escalation support via .claude/skills/<workflow-id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for research-escalation."
           ],
@@ -924,6 +1193,11 @@
           "support_level": "native",
           "projection_surface": "CLAUDE.md",
           "behavior_notes": "Claude Code has native memory-loading support via CLAUDE.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for memory-loading."
           ],
@@ -939,6 +1213,11 @@
           "support_level": "native",
           "projection_surface": "<workspace>/.claude/settings.json",
           "behavior_notes": "Claude Code has native project-vs-global-scope support via <workspace>/.claude/settings.json.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for project-vs-global-scope."
           ],
@@ -954,6 +1233,11 @@
           "support_level": "native",
           "projection_surface": ".claude/skills/<workflow-id>/SKILL.md",
           "behavior_notes": "Claude Code has native hook-support support via .claude/skills/<workflow-id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for hook-support."
           ],
@@ -969,6 +1253,11 @@
           "support_level": "native",
           "projection_surface": ".mcp.json and Claude settings",
           "behavior_notes": "Claude Code has native mcp-integration support via .mcp.json and Claude settings.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for mcp-integration."
           ],
@@ -984,6 +1273,11 @@
           "support_level": "native",
           "projection_surface": ".mcp.json and Claude settings",
           "behavior_notes": "Claude Code has native agent-scoped-mcp support via .mcp.json and Claude settings.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for agent-scoped-mcp."
           ],
@@ -999,6 +1293,12 @@
           "support_level": "degraded",
           "projection_surface": ".mcp.json and Claude settings",
           "behavior_notes": "Claude parity uses Foundry or external servers for MCP serving; the runtime is primarily an MCP client.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for runtime-as-mcp-server is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1015,6 +1315,11 @@
           "support_level": "native",
           "projection_surface": "native when browser MCP is configured",
           "behavior_notes": "Claude Code has native browser-verification support via native when browser MCP is configured.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for browser-verification."
           ],
@@ -1030,6 +1335,11 @@
           "support_level": "native",
           "projection_surface": "accept-edits style settings and project hooks",
           "behavior_notes": "Claude Code has native sandbox-policy support via accept-edits style settings and project hooks.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for sandbox-policy."
           ],
@@ -1045,6 +1355,11 @@
           "support_level": "native",
           "projection_surface": "accept-edits style settings and project hooks",
           "behavior_notes": "Claude Code has native approval-policy support via accept-edits style settings and project hooks.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for approval-policy."
           ],
@@ -1060,6 +1375,11 @@
           "support_level": "native",
           "projection_surface": "native",
           "behavior_notes": "Claude Code has native session-resume support via native.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for session-resume."
           ],
@@ -1075,6 +1395,11 @@
           "support_level": "native",
           "projection_surface": "native",
           "behavior_notes": "Claude Code has native session-fork support via native.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for session-fork."
           ],
@@ -1090,6 +1415,11 @@
           "support_level": "native",
           "projection_surface": "native",
           "behavior_notes": "Claude Code has native headless-exec support via native.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for headless-exec."
           ],
@@ -1105,6 +1435,11 @@
           "support_level": "native",
           "projection_surface": ".claude/skills/<workflow-id>/SKILL.md",
           "behavior_notes": "Claude Code has native worktree-isolation support via .claude/skills/<workflow-id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for worktree-isolation."
           ],
@@ -1120,6 +1455,11 @@
           "support_level": "native",
           "projection_surface": ".claude/skills/<workflow-id>/SKILL.md",
           "behavior_notes": "Claude Code has native scheduled-task support via .claude/skills/<workflow-id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for scheduled-task."
           ],
@@ -1135,6 +1475,11 @@
           "support_level": "native",
           "projection_surface": "Generated audit artifacts and CI validation",
           "behavior_notes": "Claude Code has native upstream-capability-audit support via Generated audit artifacts and CI validation.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for upstream-capability-audit."
           ],
@@ -1209,6 +1554,11 @@
           "support_level": "native",
           "projection_surface": "AGENTS.md + .github/copilot-instructions.md",
           "behavior_notes": "GitHub Copilot has native instructions-file support via AGENTS.md + .github/copilot-instructions.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Native runtime limits still apply for instructions-file."
           ],
@@ -1224,6 +1574,12 @@
           "support_level": "degraded",
           "projection_surface": "AGENTS.md + .github/copilot-instructions.md",
           "behavior_notes": "GitHub Copilot projects instructions-hierarchy in degraded form via AGENTS.md + .github/copilot-instructions.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Degraded projection for instructions-hierarchy is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1240,6 +1596,12 @@
           "support_level": "degraded",
           "projection_surface": "AGENTS.md + .github/copilot-instructions.md",
           "behavior_notes": "GitHub Copilot projects instructions-override in degraded form via AGENTS.md + .github/copilot-instructions.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Degraded projection for instructions-override is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1256,6 +1618,12 @@
           "support_level": "degraded",
           "projection_surface": "<workspace>/.vscode/mcp.json",
           "behavior_notes": "GitHub Copilot projects config-layering in degraded form via <workspace>/.vscode/mcp.json and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Degraded projection for config-layering is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1272,6 +1640,12 @@
           "support_level": "degraded",
           "projection_surface": "<workspace>/.vscode/mcp.json",
           "behavior_notes": "GitHub Copilot projects config-profiles in degraded form via <workspace>/.vscode/mcp.json and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Degraded projection for config-profiles is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1288,6 +1662,11 @@
           "support_level": "native",
           "projection_surface": ".github/prompts/*.prompt.md",
           "behavior_notes": "GitHub Copilot has native workflow-entrypoint support via .github/prompts/*.prompt.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Native runtime limits still apply for workflow-entrypoint."
           ],
@@ -1303,6 +1682,11 @@
           "support_level": "native",
           "projection_surface": ".github/skills/<id>/SKILL.md",
           "behavior_notes": "GitHub Copilot has native supporting-skill support via .github/skills/<id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Native runtime limits still apply for supporting-skill."
           ],
@@ -1318,6 +1702,12 @@
           "support_level": "degraded",
           "projection_surface": ".github/skills/<id>/SKILL.md",
           "behavior_notes": "GitHub Copilot projects skill-discovery in degraded form via .github/skills/<id>/SKILL.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Degraded projection for skill-discovery is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1334,6 +1724,12 @@
           "support_level": "degraded",
           "projection_surface": ".github/skills/<id>/SKILL.md",
           "behavior_notes": "GitHub Copilot projects skill-frontmatter in degraded form via .github/skills/<id>/SKILL.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Degraded projection for skill-frontmatter is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1350,6 +1746,12 @@
           "support_level": "degraded",
           "projection_surface": ".github/skills/<id>/SKILL.md",
           "behavior_notes": "GitHub Copilot projects skill-string-substitution in degraded form via .github/skills/<id>/SKILL.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Degraded projection for skill-string-substitution is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1366,6 +1768,12 @@
           "support_level": "degraded",
           "projection_surface": ".github/skills/<id>/SKILL.md",
           "behavior_notes": "GitHub Copilot projects skill-forked-execution in degraded form via .github/skills/<id>/SKILL.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Degraded projection for skill-forked-execution is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1382,6 +1790,11 @@
           "support_level": "native",
           "projection_surface": ".github/agents/*.agent.md",
           "behavior_notes": "GitHub Copilot has native agent-registration support via .github/agents/*.agent.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Native runtime limits still apply for agent-registration."
           ],
@@ -1397,6 +1810,11 @@
           "support_level": "native",
           "projection_surface": ".github/agents/*.agent.md",
           "behavior_notes": "GitHub Copilot has native specialist-agent support via .github/agents/*.agent.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Native runtime limits still apply for specialist-agent."
           ],
@@ -1412,6 +1830,12 @@
           "support_level": "degraded",
           "projection_surface": ".github/agents/*.agent.md",
           "behavior_notes": "GitHub Copilot projects agent-preloaded-skill in degraded form via .github/agents/*.agent.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Degraded projection for agent-preloaded-skill is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1428,6 +1852,12 @@
           "support_level": "degraded",
           "projection_surface": ".github/agents/*.agent.md",
           "behavior_notes": "GitHub Copilot projects multi-agent-orchestration in degraded form via .github/agents/*.agent.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Degraded projection for multi-agent-orchestration is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1444,6 +1874,12 @@
           "support_level": "degraded",
           "projection_surface": ".github/agents/*.agent.md",
           "behavior_notes": "GitHub Copilot projects batch-agent-fanout in degraded form via .github/agents/*.agent.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Degraded projection for batch-agent-fanout is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1460,6 +1896,12 @@
           "support_level": "degraded",
           "projection_surface": ".github/prompts/*.prompt.md",
           "behavior_notes": "GitHub Copilot projects orchestration-chain in degraded form via .github/prompts/*.prompt.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Degraded projection for orchestration-chain is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1476,6 +1918,12 @@
           "support_level": "degraded",
           "projection_surface": ".github/prompts/*.prompt.md",
           "behavior_notes": "GitHub Copilot projects review-and-validation in degraded form via .github/prompts/*.prompt.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Degraded projection for review-and-validation is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1492,6 +1940,12 @@
           "support_level": "degraded",
           "projection_surface": ".github/prompts/*.prompt.md",
           "behavior_notes": "GitHub Copilot projects research-escalation in degraded form via .github/prompts/*.prompt.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Degraded projection for research-escalation is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1508,6 +1962,12 @@
           "support_level": "degraded",
           "projection_surface": "AGENTS.md + .github/copilot-instructions.md",
           "behavior_notes": "GitHub Copilot projects memory-loading in degraded form via AGENTS.md + .github/copilot-instructions.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Degraded projection for memory-loading is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1524,6 +1984,11 @@
           "support_level": "native",
           "projection_surface": "<workspace>/.vscode/mcp.json",
           "behavior_notes": "GitHub Copilot has native project-vs-global-scope support via <workspace>/.vscode/mcp.json.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Native runtime limits still apply for project-vs-global-scope."
           ],
@@ -1539,6 +2004,11 @@
           "support_level": "native",
           "projection_surface": ".github/hooks/*.json + .github/hooks/*.mjs",
           "behavior_notes": "GitHub Copilot has native repository hook support. Foundry emits security-focused preToolUse hooks there, while route and research guidance stays in instructions and prompts because Copilot hooks are not a prompt-rewrite surface.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Native runtime limits still apply for hook-support."
           ],
@@ -1554,6 +2024,11 @@
           "support_level": "native",
           "projection_surface": ".vscode/mcp.json or user mcp-config.json",
           "behavior_notes": "GitHub Copilot has native mcp-integration support via .vscode/mcp.json or user mcp-config.json.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Native runtime limits still apply for mcp-integration."
           ],
@@ -1569,6 +2044,12 @@
           "support_level": "degraded",
           "projection_surface": ".vscode/mcp.json or user mcp-config.json",
           "behavior_notes": "GitHub Copilot projects agent-scoped-mcp in degraded form via .vscode/mcp.json or user mcp-config.json and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Degraded projection for agent-scoped-mcp is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1585,6 +2066,12 @@
           "support_level": "degraded",
           "projection_surface": ".vscode/mcp.json or user mcp-config.json",
           "behavior_notes": "GitHub Copilot projects runtime-as-mcp-server in degraded form via .vscode/mcp.json or user mcp-config.json and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Degraded projection for runtime-as-mcp-server is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1601,6 +2088,11 @@
           "support_level": "native",
           "projection_surface": "native when Playwright/browser MCP is configured",
           "behavior_notes": "GitHub Copilot has native browser-verification support via native when Playwright/browser MCP is configured.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Native runtime limits still apply for browser-verification."
           ],
@@ -1616,6 +2108,12 @@
           "support_level": "degraded",
           "projection_surface": "degraded preset guidance",
           "behavior_notes": "GitHub Copilot projects sandbox-policy in degraded form via degraded preset guidance and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Degraded projection for sandbox-policy is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1632,6 +2130,12 @@
           "support_level": "degraded",
           "projection_surface": "degraded preset guidance",
           "behavior_notes": "GitHub Copilot projects approval-policy in degraded form via degraded preset guidance and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Degraded projection for approval-policy is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1648,6 +2152,12 @@
           "support_level": "degraded",
           "projection_surface": "degraded",
           "behavior_notes": "GitHub Copilot projects session-resume in degraded form via degraded and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Degraded projection for session-resume is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1664,6 +2174,12 @@
           "support_level": "degraded",
           "projection_surface": "degraded",
           "behavior_notes": "GitHub Copilot projects session-fork in degraded form via degraded and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Degraded projection for session-fork is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1680,6 +2196,12 @@
           "support_level": "degraded",
           "projection_surface": "degraded",
           "behavior_notes": "GitHub Copilot projects headless-exec in degraded form via degraded and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Degraded projection for headless-exec is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1696,6 +2218,12 @@
           "support_level": "degraded",
           "projection_surface": ".github/prompts/*.prompt.md",
           "behavior_notes": "GitHub Copilot projects worktree-isolation in degraded form via .github/prompts/*.prompt.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Degraded projection for worktree-isolation is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1712,6 +2240,12 @@
           "support_level": "degraded",
           "projection_surface": ".github/prompts/*.prompt.md",
           "behavior_notes": "GitHub Copilot projects scheduled-task in degraded form via .github/prompts/*.prompt.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Degraded projection for scheduled-task is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1728,6 +2262,11 @@
           "support_level": "native",
           "projection_surface": "Generated audit artifacts and CI validation",
           "behavior_notes": "GitHub Copilot has native upstream-capability-audit support via Generated audit artifacts and CI validation.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "mixed",
+          "stability": "mixed",
           "hard_limits": [
             "Native runtime limits still apply for upstream-capability-audit."
           ],
@@ -1761,16 +2300,16 @@
         "profiles": "degraded via Foundry presets"
       },
       "agent_capabilities": {
-        "native_agent_surface": "degraded via generated command routes",
-        "skill_surface": "degraded via .gemini/skills skill installs",
+        "native_agent_surface": ".gemini/agents/*.md (experimental, not shipped by Foundry)",
+        "skill_surface": ".gemini/skills/<id>/SKILL.md",
         "workflow_entry_surface": ".gemini/commands/*.toml",
         "multi_agent": "degraded",
         "batch_fanout": "degraded"
       },
       "skill_capabilities": {
-        "discovery": "degraded",
+        "discovery": "native",
         "preloaded_skills": "degraded",
-        "frontmatter": "degraded",
+        "frontmatter": "native",
         "argument_binding": "degraded",
         "isolated_skill_execution": "degraded"
       },
@@ -1802,6 +2341,11 @@
           "support_level": "native",
           "projection_surface": ".gemini/GEMINI.md",
           "behavior_notes": "Gemini CLI has native instructions-file support via .gemini/GEMINI.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for instructions-file."
           ],
@@ -1817,6 +2361,12 @@
           "support_level": "degraded",
           "projection_surface": ".gemini/GEMINI.md",
           "behavior_notes": "Gemini CLI projects instructions-hierarchy in degraded form via .gemini/GEMINI.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for instructions-hierarchy is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1833,6 +2383,12 @@
           "support_level": "degraded",
           "projection_surface": ".gemini/GEMINI.md",
           "behavior_notes": "Gemini CLI projects instructions-override in degraded form via .gemini/GEMINI.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for instructions-override is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1849,6 +2405,12 @@
           "support_level": "degraded",
           "projection_surface": "<workspace>/.gemini/settings.json",
           "behavior_notes": "Gemini CLI projects config-layering in degraded form via <workspace>/.gemini/settings.json and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for config-layering is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1865,6 +2427,12 @@
           "support_level": "degraded",
           "projection_surface": "<workspace>/.gemini/settings.json",
           "behavior_notes": "Gemini CLI projects config-profiles in degraded form via <workspace>/.gemini/settings.json and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for config-profiles is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1881,6 +2449,11 @@
           "support_level": "native",
           "projection_surface": ".gemini/commands/*.toml",
           "behavior_notes": "Gemini CLI has native workflow-entrypoint support via .gemini/commands/*.toml.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for workflow-entrypoint."
           ],
@@ -1893,57 +2466,75 @@
         },
         {
           "pattern_id": "supporting-skill",
-          "support_level": "degraded",
-          "projection_surface": "degraded via .gemini/skills skill installs",
-          "behavior_notes": "Gemini CLI projects supporting-skill in degraded form via degraded via .gemini/skills skill installs and explicit Foundry control-plane guidance.",
+          "support_level": "native",
+          "projection_surface": ".gemini/skills/<id>/SKILL.md",
+          "behavior_notes": "Gemini CLI has native supporting-skill support via .gemini/skills/<id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
-            "Degraded projection for supporting-skill is semantic, not exact UI parity.",
-            "Operator-visible docs must be treated as part of the contract."
+            "Native runtime limits still apply for supporting-skill."
           ],
           "installable": true,
           "verification_steps": [
-            "Verify degraded supporting-skill projection is present in the generated manifest.",
-            "Verify degraded docs for supporting-skill are emitted and linked from the parity set.",
+            "Verify native supporting-skill projection is present in the generated manifest.",
+            "Verify native docs for supporting-skill are emitted and linked from the parity set.",
             "Ensure install metadata does not silently omit supporting-skill."
           ]
         },
         {
           "pattern_id": "skill-discovery",
-          "support_level": "degraded",
-          "projection_surface": "degraded via .gemini/skills skill installs",
-          "behavior_notes": "Gemini CLI projects skill-discovery in degraded form via degraded via .gemini/skills skill installs and explicit Foundry control-plane guidance.",
+          "support_level": "native",
+          "projection_surface": ".gemini/skills/<id>/SKILL.md",
+          "behavior_notes": "Gemini CLI has native skill-discovery support via .gemini/skills/<id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
-            "Degraded projection for skill-discovery is semantic, not exact UI parity.",
-            "Operator-visible docs must be treated as part of the contract."
+            "Native runtime limits still apply for skill-discovery."
           ],
           "installable": true,
           "verification_steps": [
-            "Verify degraded skill-discovery projection is present in the generated manifest.",
-            "Verify degraded docs for skill-discovery are emitted and linked from the parity set.",
+            "Verify native skill-discovery projection is present in the generated manifest.",
+            "Verify native docs for skill-discovery are emitted and linked from the parity set.",
             "Ensure install metadata does not silently omit skill-discovery."
           ]
         },
         {
           "pattern_id": "skill-frontmatter",
-          "support_level": "degraded",
-          "projection_surface": "degraded via .gemini/skills skill installs",
-          "behavior_notes": "Gemini CLI projects skill-frontmatter in degraded form via degraded via .gemini/skills skill installs and explicit Foundry control-plane guidance.",
+          "support_level": "native",
+          "projection_surface": ".gemini/skills/<id>/SKILL.md",
+          "behavior_notes": "Gemini CLI has native skill-frontmatter support via .gemini/skills/<id>/SKILL.md.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
-            "Degraded projection for skill-frontmatter is semantic, not exact UI parity.",
-            "Operator-visible docs must be treated as part of the contract."
+            "Native runtime limits still apply for skill-frontmatter."
           ],
           "installable": true,
           "verification_steps": [
-            "Verify degraded skill-frontmatter projection is present in the generated manifest.",
-            "Verify degraded docs for skill-frontmatter are emitted and linked from the parity set.",
+            "Verify native skill-frontmatter projection is present in the generated manifest.",
+            "Verify native docs for skill-frontmatter are emitted and linked from the parity set.",
             "Ensure install metadata does not silently omit skill-frontmatter."
           ]
         },
         {
           "pattern_id": "skill-string-substitution",
           "support_level": "degraded",
-          "projection_surface": "degraded via .gemini/skills skill installs",
-          "behavior_notes": "Gemini CLI projects skill-string-substitution in degraded form via degraded via .gemini/skills skill installs and explicit Foundry control-plane guidance.",
+          "projection_surface": ".gemini/skills/<id>/SKILL.md",
+          "behavior_notes": "Gemini CLI projects skill-string-substitution in degraded form via .gemini/skills/<id>/SKILL.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for skill-string-substitution is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1958,8 +2549,14 @@
         {
           "pattern_id": "skill-forked-execution",
           "support_level": "degraded",
-          "projection_surface": "degraded via .gemini/skills skill installs",
-          "behavior_notes": "Gemini CLI projects skill-forked-execution in degraded form via degraded via .gemini/skills skill installs and explicit Foundry control-plane guidance.",
+          "projection_surface": ".gemini/skills/<id>/SKILL.md",
+          "behavior_notes": "Gemini CLI projects skill-forked-execution in degraded form via .gemini/skills/<id>/SKILL.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for skill-forked-execution is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1974,8 +2571,14 @@
         {
           "pattern_id": "agent-registration",
           "support_level": "degraded",
-          "projection_surface": "degraded via generated command routes",
-          "behavior_notes": "Gemini CLI projects agent-registration in degraded form via degraded via generated command routes and explicit Foundry control-plane guidance.",
+          "projection_surface": ".gemini/agents/*.md (experimental, not shipped by Foundry)",
+          "behavior_notes": "Gemini CLI projects agent-registration in degraded form via .gemini/agents/*.md (experimental, not shipped by Foundry) and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for agent-registration is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -1990,8 +2593,14 @@
         {
           "pattern_id": "specialist-agent",
           "support_level": "degraded",
-          "projection_surface": "degraded via generated command routes",
-          "behavior_notes": "Gemini CLI projects specialist-agent in degraded form via degraded via generated command routes and explicit Foundry control-plane guidance.",
+          "projection_surface": ".gemini/agents/*.md (experimental, not shipped by Foundry)",
+          "behavior_notes": "Gemini CLI projects specialist-agent in degraded form via .gemini/agents/*.md (experimental, not shipped by Foundry) and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for specialist-agent is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2006,8 +2615,14 @@
         {
           "pattern_id": "agent-preloaded-skill",
           "support_level": "degraded",
-          "projection_surface": "degraded via generated command routes",
-          "behavior_notes": "Gemini CLI projects agent-preloaded-skill in degraded form via degraded via generated command routes and explicit Foundry control-plane guidance.",
+          "projection_surface": ".gemini/agents/*.md (experimental, not shipped by Foundry)",
+          "behavior_notes": "Gemini CLI projects agent-preloaded-skill in degraded form via .gemini/agents/*.md (experimental, not shipped by Foundry) and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for agent-preloaded-skill is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2022,8 +2637,14 @@
         {
           "pattern_id": "multi-agent-orchestration",
           "support_level": "degraded",
-          "projection_surface": "degraded via generated command routes",
-          "behavior_notes": "Gemini CLI projects multi-agent-orchestration in degraded form via degraded via generated command routes and explicit Foundry control-plane guidance.",
+          "projection_surface": ".gemini/agents/*.md (experimental, not shipped by Foundry)",
+          "behavior_notes": "Gemini CLI projects multi-agent-orchestration in degraded form via .gemini/agents/*.md (experimental, not shipped by Foundry) and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for multi-agent-orchestration is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2038,8 +2659,14 @@
         {
           "pattern_id": "batch-agent-fanout",
           "support_level": "degraded",
-          "projection_surface": "degraded via generated command routes",
-          "behavior_notes": "Gemini CLI projects batch-agent-fanout in degraded form via degraded via generated command routes and explicit Foundry control-plane guidance.",
+          "projection_surface": ".gemini/agents/*.md (experimental, not shipped by Foundry)",
+          "behavior_notes": "Gemini CLI projects batch-agent-fanout in degraded form via .gemini/agents/*.md (experimental, not shipped by Foundry) and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for batch-agent-fanout is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2056,6 +2683,11 @@
           "support_level": "native",
           "projection_surface": ".gemini/commands/*.toml",
           "behavior_notes": "Gemini CLI has native orchestration-chain support via .gemini/commands/*.toml.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for orchestration-chain."
           ],
@@ -2071,6 +2703,11 @@
           "support_level": "native",
           "projection_surface": ".gemini/commands/*.toml",
           "behavior_notes": "Gemini CLI has native review-and-validation support via .gemini/commands/*.toml.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for review-and-validation."
           ],
@@ -2086,6 +2723,11 @@
           "support_level": "native",
           "projection_surface": ".gemini/commands/*.toml",
           "behavior_notes": "Gemini CLI has native research-escalation support via .gemini/commands/*.toml.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for research-escalation."
           ],
@@ -2101,6 +2743,12 @@
           "support_level": "degraded",
           "projection_surface": ".gemini/GEMINI.md",
           "behavior_notes": "Gemini CLI projects memory-loading in degraded form via .gemini/GEMINI.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for memory-loading is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2117,6 +2765,11 @@
           "support_level": "native",
           "projection_surface": "<workspace>/.gemini/settings.json",
           "behavior_notes": "Gemini CLI has native project-vs-global-scope support via <workspace>/.gemini/settings.json.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for project-vs-global-scope."
           ],
@@ -2132,6 +2785,11 @@
           "support_level": "native",
           "projection_surface": ".gemini/settings.json hooks + .gemini/hooks/*",
           "behavior_notes": "Gemini CLI has native hook support. Foundry emits BeforeAgent and BeforeTool hook templates for route/research context injection and shell-security enforcement.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for hook-support."
           ],
@@ -2147,6 +2805,11 @@
           "support_level": "native",
           "projection_surface": ".gemini/settings.json mcpServers",
           "behavior_notes": "Gemini CLI has native mcp-integration support via .gemini/settings.json mcpServers.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for mcp-integration."
           ],
@@ -2162,6 +2825,12 @@
           "support_level": "degraded",
           "projection_surface": ".gemini/settings.json mcpServers",
           "behavior_notes": "Gemini CLI projects agent-scoped-mcp in degraded form via .gemini/settings.json mcpServers and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for agent-scoped-mcp is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2178,6 +2847,12 @@
           "support_level": "degraded",
           "projection_surface": ".gemini/settings.json mcpServers",
           "behavior_notes": "Gemini CLI projects runtime-as-mcp-server in degraded form via .gemini/settings.json mcpServers and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for runtime-as-mcp-server is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2194,6 +2869,11 @@
           "support_level": "native",
           "projection_surface": "native when MCP/browser tooling is configured",
           "behavior_notes": "Gemini CLI has native browser-verification support via native when MCP/browser tooling is configured.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for browser-verification."
           ],
@@ -2209,6 +2889,12 @@
           "support_level": "degraded",
           "projection_surface": "degraded preset guidance",
           "behavior_notes": "Gemini CLI projects sandbox-policy in degraded form via degraded preset guidance and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for sandbox-policy is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2225,6 +2911,12 @@
           "support_level": "degraded",
           "projection_surface": "degraded preset guidance",
           "behavior_notes": "Gemini CLI projects approval-policy in degraded form via degraded preset guidance and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for approval-policy is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2241,6 +2933,12 @@
           "support_level": "degraded",
           "projection_surface": "degraded",
           "behavior_notes": "Gemini CLI projects session-resume in degraded form via degraded and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for session-resume is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2257,6 +2955,12 @@
           "support_level": "degraded",
           "projection_surface": "degraded",
           "behavior_notes": "Gemini CLI projects session-fork in degraded form via degraded and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for session-fork is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2273,6 +2977,12 @@
           "support_level": "degraded",
           "projection_surface": "degraded",
           "behavior_notes": "Gemini CLI projects headless-exec in degraded form via degraded and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for headless-exec is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2289,6 +2999,12 @@
           "support_level": "degraded",
           "projection_surface": ".gemini/commands/*.toml",
           "behavior_notes": "Gemini CLI projects worktree-isolation in degraded form via .gemini/commands/*.toml and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for worktree-isolation is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2305,6 +3021,12 @@
           "support_level": "degraded",
           "projection_surface": ".gemini/commands/*.toml",
           "behavior_notes": "Gemini CLI projects scheduled-task in degraded form via .gemini/commands/*.toml and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "official-doc",
+            "foundry-projection"
+          ],
+          "surface_scope": "repo",
+          "stability": "projected",
           "hard_limits": [
             "Degraded projection for scheduled-task is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2321,6 +3043,11 @@
           "support_level": "native",
           "projection_surface": "Generated audit artifacts and CI validation",
           "behavior_notes": "Gemini CLI has native upstream-capability-audit support via Generated audit artifacts and CI validation.",
+          "evidence_kinds": [
+            "official-doc"
+          ],
+          "surface_scope": "repo",
+          "stability": "stable",
           "hard_limits": [
             "Native runtime limits still apply for upstream-capability-audit."
           ],
@@ -2395,6 +3122,11 @@
           "support_level": "native",
           "projection_surface": ".agents/rules/GEMINI.md",
           "behavior_notes": "Antigravity has native instructions-file support via .agents/rules/GEMINI.md.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Native runtime limits still apply for instructions-file."
           ],
@@ -2410,6 +3142,11 @@
           "support_level": "degraded",
           "projection_surface": ".agents/rules/GEMINI.md",
           "behavior_notes": "Antigravity projects instructions-hierarchy in degraded form via .agents/rules/GEMINI.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Degraded projection for instructions-hierarchy is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2426,6 +3163,11 @@
           "support_level": "degraded",
           "projection_surface": ".agents/rules/GEMINI.md",
           "behavior_notes": "Antigravity projects instructions-override in degraded form via .agents/rules/GEMINI.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Degraded projection for instructions-override is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2442,6 +3184,11 @@
           "support_level": "degraded",
           "projection_surface": "<workspace>/.gemini/settings.json",
           "behavior_notes": "Antigravity projects config-layering in degraded form via <workspace>/.gemini/settings.json and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Degraded projection for config-layering is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2458,6 +3205,11 @@
           "support_level": "degraded",
           "projection_surface": "<workspace>/.gemini/settings.json",
           "behavior_notes": "Antigravity projects config-profiles in degraded form via <workspace>/.gemini/settings.json and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Degraded projection for config-profiles is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2474,6 +3226,11 @@
           "support_level": "native",
           "projection_surface": ".gemini/commands/*.toml",
           "behavior_notes": "Antigravity has native workflow-entrypoint support via .gemini/commands/*.toml.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Native runtime limits still apply for workflow-entrypoint."
           ],
@@ -2489,6 +3246,11 @@
           "support_level": "native",
           "projection_surface": ".agents/skills/<id>/SKILL.md",
           "behavior_notes": "Antigravity has native supporting-skill support via .agents/skills/<id>/SKILL.md.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Native runtime limits still apply for supporting-skill."
           ],
@@ -2504,6 +3266,11 @@
           "support_level": "native",
           "projection_surface": ".agents/skills/<id>/SKILL.md",
           "behavior_notes": "Antigravity has native skill-discovery support via .agents/skills/<id>/SKILL.md.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Native runtime limits still apply for skill-discovery."
           ],
@@ -2519,6 +3286,11 @@
           "support_level": "degraded",
           "projection_surface": ".agents/skills/<id>/SKILL.md",
           "behavior_notes": "Antigravity projects skill-frontmatter in degraded form via .agents/skills/<id>/SKILL.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Degraded projection for skill-frontmatter is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2535,6 +3307,11 @@
           "support_level": "degraded",
           "projection_surface": ".agents/skills/<id>/SKILL.md",
           "behavior_notes": "Antigravity projects skill-string-substitution in degraded form via .agents/skills/<id>/SKILL.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Degraded projection for skill-string-substitution is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2551,6 +3328,11 @@
           "support_level": "degraded",
           "projection_surface": ".agents/skills/<id>/SKILL.md",
           "behavior_notes": "Antigravity projects skill-forked-execution in degraded form via .agents/skills/<id>/SKILL.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Degraded projection for skill-forked-execution is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2567,6 +3349,11 @@
           "support_level": "degraded",
           "projection_surface": "degraded via generated specialist commands",
           "behavior_notes": "Antigravity projects agent-registration in degraded form via degraded via generated specialist commands and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Degraded projection for agent-registration is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2583,6 +3370,11 @@
           "support_level": "degraded",
           "projection_surface": "degraded via generated specialist commands",
           "behavior_notes": "Antigravity projects specialist-agent in degraded form via degraded via generated specialist commands and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Degraded projection for specialist-agent is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2599,6 +3391,11 @@
           "support_level": "degraded",
           "projection_surface": "degraded via generated specialist commands",
           "behavior_notes": "Antigravity projects agent-preloaded-skill in degraded form via degraded via generated specialist commands and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Degraded projection for agent-preloaded-skill is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2615,6 +3412,11 @@
           "support_level": "degraded",
           "projection_surface": "degraded via generated specialist commands",
           "behavior_notes": "Antigravity projects multi-agent-orchestration in degraded form via degraded via generated specialist commands and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Degraded projection for multi-agent-orchestration is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2631,6 +3433,11 @@
           "support_level": "degraded",
           "projection_surface": "degraded via generated specialist commands",
           "behavior_notes": "Antigravity projects batch-agent-fanout in degraded form via degraded via generated specialist commands and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Degraded projection for batch-agent-fanout is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2647,6 +3454,11 @@
           "support_level": "native",
           "projection_surface": ".gemini/commands/*.toml",
           "behavior_notes": "Antigravity has native orchestration-chain support via .gemini/commands/*.toml.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Native runtime limits still apply for orchestration-chain."
           ],
@@ -2662,6 +3474,11 @@
           "support_level": "native",
           "projection_surface": ".gemini/commands/*.toml",
           "behavior_notes": "Antigravity has native review-and-validation support via .gemini/commands/*.toml.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Native runtime limits still apply for review-and-validation."
           ],
@@ -2677,6 +3494,11 @@
           "support_level": "native",
           "projection_surface": ".gemini/commands/*.toml",
           "behavior_notes": "Antigravity has native research-escalation support via .gemini/commands/*.toml.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Native runtime limits still apply for research-escalation."
           ],
@@ -2692,6 +3514,11 @@
           "support_level": "degraded",
           "projection_surface": ".agents/rules/GEMINI.md",
           "behavior_notes": "Antigravity projects memory-loading in degraded form via .agents/rules/GEMINI.md and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Degraded projection for memory-loading is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2708,6 +3535,11 @@
           "support_level": "native",
           "projection_surface": "<workspace>/.gemini/settings.json",
           "behavior_notes": "Antigravity has native project-vs-global-scope support via <workspace>/.gemini/settings.json.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Native runtime limits still apply for project-vs-global-scope."
           ],
@@ -2723,6 +3555,11 @@
           "support_level": "degraded",
           "projection_surface": ".gemini/commands/*.toml",
           "behavior_notes": "Antigravity projects hook-support in degraded form via .gemini/commands/*.toml and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Degraded projection for hook-support is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2739,6 +3576,11 @@
           "support_level": "native",
           "projection_surface": "Foundry gateway + runtime MCP settings",
           "behavior_notes": "Antigravity has native mcp-integration support via Foundry gateway + runtime MCP settings.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Native runtime limits still apply for mcp-integration."
           ],
@@ -2754,6 +3596,11 @@
           "support_level": "degraded",
           "projection_surface": "Foundry gateway + runtime MCP settings",
           "behavior_notes": "Antigravity projects agent-scoped-mcp in degraded form via Foundry gateway + runtime MCP settings and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Degraded projection for agent-scoped-mcp is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2770,6 +3617,11 @@
           "support_level": "degraded",
           "projection_surface": "Foundry gateway + runtime MCP settings",
           "behavior_notes": "Antigravity projects runtime-as-mcp-server in degraded form via Foundry gateway + runtime MCP settings and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Degraded projection for runtime-as-mcp-server is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2786,6 +3638,11 @@
           "support_level": "native",
           "projection_surface": "native when Playwright/browser MCP is configured",
           "behavior_notes": "Antigravity has native browser-verification support via native when Playwright/browser MCP is configured.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Native runtime limits still apply for browser-verification."
           ],
@@ -2801,6 +3658,11 @@
           "support_level": "degraded",
           "projection_surface": "degraded preset guidance",
           "behavior_notes": "Antigravity projects sandbox-policy in degraded form via degraded preset guidance and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Degraded projection for sandbox-policy is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2817,6 +3679,11 @@
           "support_level": "degraded",
           "projection_surface": "degraded preset guidance",
           "behavior_notes": "Antigravity projects approval-policy in degraded form via degraded preset guidance and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Degraded projection for approval-policy is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2833,6 +3700,11 @@
           "support_level": "degraded",
           "projection_surface": "degraded",
           "behavior_notes": "Antigravity projects session-resume in degraded form via degraded and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Degraded projection for session-resume is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2849,6 +3721,11 @@
           "support_level": "degraded",
           "projection_surface": "degraded",
           "behavior_notes": "Antigravity projects session-fork in degraded form via degraded and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Degraded projection for session-fork is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2865,6 +3742,11 @@
           "support_level": "degraded",
           "projection_surface": "degraded",
           "behavior_notes": "Antigravity projects headless-exec in degraded form via degraded and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Degraded projection for headless-exec is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2881,6 +3763,11 @@
           "support_level": "degraded",
           "projection_surface": ".gemini/commands/*.toml",
           "behavior_notes": "Antigravity projects worktree-isolation in degraded form via .gemini/commands/*.toml and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Degraded projection for worktree-isolation is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2897,6 +3784,11 @@
           "support_level": "degraded",
           "projection_surface": ".gemini/commands/*.toml",
           "behavior_notes": "Antigravity projects scheduled-task in degraded form via .gemini/commands/*.toml and explicit Foundry control-plane guidance.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Degraded projection for scheduled-task is semantic, not exact UI parity.",
             "Operator-visible docs must be treated as part of the contract."
@@ -2913,6 +3805,11 @@
           "support_level": "native",
           "projection_surface": "Generated audit artifacts and CI validation",
           "behavior_notes": "Antigravity has native upstream-capability-audit support via Generated audit artifacts and CI validation.",
+          "evidence_kinds": [
+            "inferred"
+          ],
+          "surface_scope": "mixed",
+          "stability": "inferred",
           "hard_limits": [
             "Native runtime limits still apply for upstream-capability-audit."
           ],

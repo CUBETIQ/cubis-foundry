@@ -14,12 +14,33 @@ function dedupePaths(paths: string[]) {
   const seen = new Set<string>();
   const out: string[] = [];
   for (const value of paths) {
-    const normalized = path.resolve(value);
+    const normalized = normalizePortablePath(value);
     if (seen.has(normalized)) continue;
     seen.add(normalized);
     out.push(normalized);
   }
   return out;
+}
+
+function isWindowsAbsolutePath(value: string) {
+  return /^[A-Za-z]:[\\/]/.test(value);
+}
+
+function normalizePortablePath(value: string) {
+  if (isWindowsAbsolutePath(value)) {
+    return path.win32.normalize(value).replace(/\\/g, "/");
+  }
+  return path.resolve(value);
+}
+
+function resolvePortablePath(baseDir: string, targetPath: string) {
+  if (isWindowsAbsolutePath(targetPath)) {
+    return normalizePortablePath(targetPath);
+  }
+  if (isWindowsAbsolutePath(baseDir)) {
+    return path.win32.resolve(baseDir, targetPath).replace(/\\/g, "/");
+  }
+  return path.resolve(baseDir, targetPath);
 }
 
 export function resolveMcpSkillRootCandidates({
@@ -30,7 +51,7 @@ export function resolveMcpSkillRootCandidates({
   workspaceRoot = findWorkspaceRoot(cwd),
 }: ResolveMcpSkillRootCandidatesOptions) {
   if (explicitSkillsRoot) {
-    return dedupePaths([path.resolve(cwd, explicitSkillsRoot)]);
+    return dedupePaths([resolvePortablePath(cwd, explicitSkillsRoot)]);
   }
 
   const workspaceCandidates = [

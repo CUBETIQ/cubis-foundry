@@ -46,7 +46,7 @@ export const WORKFLOW_PROFILES = {
     installsCustomAgents: true,
     workflowSurfaceKind: "generated-skill",
     specialistSurfaceKind: "subagent",
-    hookSupport: "experimental",
+    hookSupport: "gated",
     project: {
       workflowDirs: [],
       agentDirs: [".codex/agents"],

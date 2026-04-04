@@ -9,6 +9,7 @@ export const MANAGED_PARITY_DOC_FILES = Object.freeze([
   "platform-support-matrix.md",
   "cross-platform-pattern-catalog.md",
   "platform-capability-details.md",
+  "platform-capability-audit.md",
 ]);
 
 export const EXPECTED_PARITY_PLATFORM_IDS = Object.freeze([

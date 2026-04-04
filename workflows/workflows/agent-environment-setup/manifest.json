@@ -5,18 +5,150 @@
   "parity": {
     "auditedReferences": [
       {
+        "runtime": "antigravity",
+        "audit_source_id": "antigravity-compat-ref",
+        "audited_commit": null,
+        "audited_at": "2026-04-04",
+        "audited_version_or_date": "2026-04-04",
+        "source_type": "inferred-compatibility",
+        "source_summary": "Compatibility target derived from Foundry's Antigravity adapter shape and Gemini-family routing model.",
+        "evidence": [
+          {
+            "kind": "inferred",
+            "scope": "mixed",
+            "stability": "inferred",
+            "source": "workflows/workflows/agent-environment-setup/platforms/antigravity",
+            "notes": "No public vendor spec was verified in this audit; Foundry treats Antigravity as an inferred compatibility target only."
+          }
+        ]
+      },
+      {
         "runtime": "claude",
         "audit_source_id": "claude-audit-ref",
         "audited_commit": "1ac2b97df6199f8f76b3896d28f470ea44a90c25",
-        "audited_at": "2026-03-17",
-        "audited_version_or_date": "2026-03-17"
+        "audited_at": "2026-04-04",
+        "audited_version_or_date": "2026-04-04",
+        "source_type": "official-doc",
+        "source_summary": "Anthropic Claude Code docs confirm native settings, hooks, project commands, and subagents.",
+        "evidence": [
+          {
+            "kind": "official-doc",
+            "scope": "repo",
+            "stability": "stable",
+            "source": "https://docs.anthropic.com/en/docs/claude-code/settings",
+            "notes": "Settings docs describe project/user settings, CLAUDE.md, hooks, and .claude/agents/*.md subagents."
+          },
+          {
+            "kind": "official-doc",
+            "scope": "repo",
+            "stability": "stable",
+            "source": "https://docs.anthropic.com/en/docs/claude-code/tutorials",
+            "notes": "Tutorial docs describe project-specific slash commands under .claude/commands."
+          }
+        ]
       },
       {
         "runtime": "codex",
         "audit_source_id": "codex-audit-ref",
         "audited_commit": "782a03a2d4eb69d475075cbd6df6c1af4fb35e64",
-        "audited_at": "2026-03-17",
-        "audited_version_or_date": "2026-03-17"
+        "audited_at": "2026-04-04",
+        "audited_version_or_date": "codex-cli 0.118.0 / 2026-04-04",
+        "source_type": "mixed",
+        "source_summary": "OpenAI Codex docs confirm AGENTS.md, skills, subagents, and hooks; local CLI confirms the current feature-gating state.",
+        "evidence": [
+          {
+            "kind": "official-doc",
+            "scope": "repo",
+            "stability": "stable",
+            "source": "https://developers.openai.com/codex/skills",
+            "notes": "Codex docs describe repository skills under .agents/skills and related AGENTS.md guidance."
+          },
+          {
+            "kind": "official-doc",
+            "scope": "repo",
+            "stability": "experimental",
+            "source": "https://developers.openai.com/codex/hooks",
+            "notes": "Codex docs describe project hook events including UserPromptSubmit and Stop."
+          },
+          {
+            "kind": "local-cli",
+            "scope": "cli",
+            "stability": "experimental",
+            "source": "codex-cli 0.118.0",
+            "notes": "Local feature inspection still exposes codex_hooks as under development, so Foundry keeps hook emission gated."
+          }
+        ]
+      },
+      {
+        "runtime": "copilot",
+        "audit_source_id": "copilot-docs-ref",
+        "audited_commit": null,
+        "audited_at": "2026-04-04",
+        "audited_version_or_date": "2026-04-04",
+        "source_type": "official-doc",
+        "source_summary": "GitHub Docs confirm repository instructions, AGENTS.md, prompt files, skills, custom agents, hooks, and coding-agent surfaces, with feature availability varying by surface.",
+        "evidence": [
+          {
+            "kind": "official-doc",
+            "scope": "mixed",
+            "stability": "stable",
+            "source": "https://docs.github.com/en/copilot/how-tos/configure-custom-instructions/add-repository-instructions?tool=vscode",
+            "notes": "GitHub documents repository custom instructions, AGENTS.md agent instructions, and companion instruction files."
+          },
+          {
+            "kind": "official-doc",
+            "scope": "cli",
+            "stability": "stable",
+            "source": "https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/create-skills",
+            "notes": "Copilot CLI docs describe skills and project skill locations."
+          },
+          {
+            "kind": "official-doc",
+            "scope": "cli",
+            "stability": "stable",
+            "source": "https://docs.github.com/copilot/how-tos/copilot-cli/use-copilot-cli-agents/invoke-custom-agents",
+            "notes": "Copilot CLI docs describe custom agents as a first-class surface."
+          },
+          {
+            "kind": "official-doc",
+            "scope": "ide",
+            "stability": "preview",
+            "source": "https://docs.github.com/en/enterprise-cloud@latest/copilot/concepts/prompting/response-customization",
+            "notes": "Prompt files are documented as preview and limited to supported IDE surfaces."
+          }
+        ]
+      },
+      {
+        "runtime": "gemini",
+        "audit_source_id": "gemini-docs-ref",
+        "audited_commit": null,
+        "audited_at": "2026-04-04",
+        "audited_version_or_date": "2026-04-04",
+        "source_type": "official-doc",
+        "source_summary": "Gemini CLI docs confirm GEMINI.md, commands, settings, hooks, MCP, skills, and experimental remote subagents.",
+        "evidence": [
+          {
+            "kind": "official-doc",
+            "scope": "repo",
+            "stability": "stable",
+            "source": "https://geminicli.com/docs/cli/custom-commands/",
+            "notes": "Gemini CLI docs describe project and global .gemini/commands command files."
+          },
+          {
+            "kind": "official-doc",
+            "scope": "repo",
+            "stability": "stable",
+            "source": "https://geminicli.com/docs/",
+            "notes": "Gemini docs list GEMINI.md project context, agent skills, settings, and MCP as supported features."
+          },
+          {
+            "kind": "official-doc",
+            "scope": "mixed",
+            "stability": "experimental",
+            "source": "https://geminicli.com/docs/core/remote-agents/",
+            "notes": "Gemini docs describe remote subagents as an experimental feature that must be explicitly enabled."
+          }
+        ]
       }
     ],
     "orchestrationSubtypes": [
@@ -56,7 +188,8 @@
       "docs": [
         "docs/platform-support-matrix.md",
         "docs/cross-platform-pattern-catalog.md",
-        "docs/platform-capability-details.md"
+        "docs/platform-capability-details.md",
+        "docs/platform-capability-audit.md"
       ]
     },
     "summary": {
@@ -64,8 +197,8 @@
       "totalPlatforms": 5,
       "blockingSummary": {
         "codex": {
-          "native": 32,
-          "degraded": 2,
+          "native": 33,
+          "degraded": 1,
           "blocked": 0
         },
         "claude": {
@@ -79,8 +212,8 @@
           "blocked": 0
         },
         "gemini": {
-          "native": 10,
-          "degraded": 24,
+          "native": 13,
+          "degraded": 21,
           "blocked": 0
         },
         "antigravity": {

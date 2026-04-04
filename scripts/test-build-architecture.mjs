@@ -276,6 +276,9 @@ function withPathEnv(pathValue, extras = {}) {
 }
 
 function commandExistsOnPath(command, pathValue) {
+  if (path.isAbsolute(command) || command.includes(path.sep)) {
+    return existsSync(command);
+  }
   const entries = String(pathValue || "")
     .split(path.delimiter)
     .map((entry) => entry.trim())
@@ -313,13 +316,16 @@ function createArchitectureCommandStubs(logPath) {
   return {
     async execFileCapture(command, args) {
       assertCommandAvailable(command);
+      const commandName = path.parse(command).name;
       if (
-        (command === "codex" && args[0] === "exec" && args[1] === "--help") ||
-        (command !== "codex" && args[0] === "--help")
+        (commandName === "codex" &&
+          args[0] === "exec" &&
+          args[1] === "--help") ||
+        (commandName !== "codex" && args[0] === "--help")
       ) {
         return {
           ok: true,
-          stdout: help[command] || "",
+          stdout: help[commandName] || "",
           stderr: "",
         };
       }
@@ -327,6 +333,7 @@ function createArchitectureCommandStubs(logPath) {
     },
     async spawnCapture(command, args, options = {}) {
       assertCommandAvailable(command);
+      const commandName = path.parse(command).name;
       const prompt = args[args.length - 1] || "";
       const normalizedPrompt = prompt.replace(/\\/g, "/");
       if (
@@ -352,14 +359,31 @@ function createArchitectureCommandStubs(logPath) {
           logPath,
           `${JSON.stringify({
             name: command,
+            commandName,
             args,
             cwd: options.cwd || process.cwd(),
             prompt,
+            env: {
+              HOME: options.env?.HOME || null,
+              GOOGLE_GENAI_USE_VERTEXAI:
+                options.env?.GOOGLE_GENAI_USE_VERTEXAI ?? null,
+              GOOGLE_CLOUD_PROJECT:
+                options.env?.GOOGLE_CLOUD_PROJECT ?? null,
+              GOOGLE_CLOUD_LOCATION:
+                options.env?.GOOGLE_CLOUD_LOCATION ?? null,
+              GEMINI_CLI_IDE_AUTH_TOKEN:
+                options.env?.GEMINI_CLI_IDE_AUTH_TOKEN ?? null,
+              GEMINI_CLI_IDE_SERVER_PORT:
+                options.env?.GEMINI_CLI_IDE_SERVER_PORT ?? null,
+              GEMINI_CLI_IDE_WORKSPACE_PATH:
+                options.env?.GEMINI_CLI_IDE_WORKSPACE_PATH ?? null,
+            },
+            timeoutMs: options.timeoutMs ?? null,
           })}\n`,
           { encoding: "utf8", flag: existsSync(logPath) ? "a" : "w" },
         );
       }
-      if (command === "gemini" && process.env.CBX_STUB_GEMINI_FAIL === "1") {
+      if (commandName === "gemini" && process.env.CBX_STUB_GEMINI_FAIL === "1") {
         return {
           ok: false,
           stdout: "",
@@ -599,6 +623,7 @@ async function main() {
   const workspace = createWorkspace();
   const stubDir = createStubBins();
   const logPath = path.join(workspace, "stub-log.jsonl");
+  let geminiHome = null;
   const env = withPathEnv(
     `${stubDir}${path.delimiter}${process.env.PATH || ""}`,
     { CBX_STUB_LOG: logPath },
@@ -799,11 +824,62 @@ async function main() {
       "gemini failure missing auth guidance",
     );
 
+    geminiHome = mkdtempSync(path.join(os.tmpdir(), "cbx-gemini-home-fixture-"));
+    mkdirSync(path.join(geminiHome, ".gemini"), { recursive: true });
+    writeFileSync(
+      path.join(geminiHome, ".gemini", "settings.json"),
+      JSON.stringify(
+        {
+          security: {
+            auth: {
+              selectedType: "oauth-personal",
+            },
+          },
+        },
+        null,
+        2,
+      ),
+    );
+    writeFileSync(
+      path.join(geminiHome, ".gemini", "projects.json"),
+      JSON.stringify({ projects: {} }, null, 2),
+    );
+    const geminiSanitizedRun = await runCli(
+      ["build", "architecture", "--platform", "gemini", "--json"],
+      {
+        cwd: workspace,
+        env: {
+          ...env,
+          HOME: geminiHome,
+          GOOGLE_GENAI_USE_VERTEXAI: "true",
+          GOOGLE_CLOUD_PROJECT: "forced-project",
+          GOOGLE_CLOUD_LOCATION: "global",
+          GEMINI_CLI_IDE_AUTH_TOKEN: "token",
+          GEMINI_CLI_IDE_SERVER_PORT: "12345",
+          GEMINI_CLI_IDE_WORKSPACE_PATH: "/tmp/ide-workspace",
+        },
+      },
+    );
+    assert(
+      geminiSanitizedRun.status === 0,
+      `gemini sanitized run failed: ${geminiSanitizedRun.stderr}`,
+    );
+
     const logLines = readFileSync(logPath, "utf8")
       .trim()
       .split(/\r?\n/)
       .filter(Boolean)
       .map((line) => JSON.parse(line));
+    const geminiSanitizedLog = [...logLines]
+      .reverse()
+      .find(
+        (entry) =>
+          entry.commandName === "gemini" &&
+          Array.isArray(entry.args) &&
+          entry.args.some((arg) => String(arg || "").includes("Reply with exactly OK")) === false &&
+          typeof entry.prompt === "string" &&
+          entry.prompt.includes("docs/foundation/MEMORY.md"),
+      );
     const loggedPrompt = String(logLines[0]?.prompt || "").replace(/\\/g, "/");
     assert(logLines.length >= 1, "stub execution log missing");
     assert(
@@ -825,12 +901,40 @@ async function main() {
         loggedPrompt.includes("AI-authored"),
       "stub prompt missing scan-first foundation instructions",
     );
+    assert(geminiSanitizedLog, "gemini sanitized execution log missing");
+    assert(
+      geminiSanitizedLog.timeoutMs && geminiSanitizedLog.timeoutMs > 0,
+      "gemini architecture build should set an execution timeout",
+    );
+    assert(
+      geminiSanitizedLog.env &&
+        geminiSanitizedLog.env.HOME &&
+        geminiSanitizedLog.env.HOME !== geminiHome,
+      "gemini architecture build should use an isolated HOME",
+    );
+    assert(
+      geminiSanitizedLog.env.GOOGLE_GENAI_USE_VERTEXAI === null,
+      "gemini architecture build should clear forced Vertex routing",
+    );
+    assert(
+      geminiSanitizedLog.env.GOOGLE_CLOUD_PROJECT === null,
+      "gemini architecture build should clear forced cloud project routing",
+    );
+    assert(
+      geminiSanitizedLog.env.GEMINI_CLI_IDE_AUTH_TOKEN === null &&
+        geminiSanitizedLog.env.GEMINI_CLI_IDE_SERVER_PORT === null &&
+        geminiSanitizedLog.env.GEMINI_CLI_IDE_WORKSPACE_PATH === null,
+      "gemini architecture build should clear injected IDE bridge env",
+    );
 
     console.log("Architecture build tests passed.");
   } finally {
     __resetArchitectureCommandCaptureForTests();
     rmSync(workspace, { recursive: true, force: true });
     rmSync(stubDir, { recursive: true, force: true });
+    if (geminiHome) {
+      rmSync(geminiHome, { recursive: true, force: true });
+    }
   }
 }
 

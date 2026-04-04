@@ -4,18 +4,9 @@ import { describe, expect, it } from "vitest";
 
 const REPO_ROOT = resolve(import.meta.dirname, "../../..");
 const REMOVED_SKILLS = [
-  "qa",
-  "unit-testing",
-  "integration-testing",
-  "playwright-interactive",
-  "stitch",
   "flutter-mobile-qa",
   "playwright-web-qa",
   "ui-testing-harness",
-  "stitch-design-orchestrator",
-  "stitch-design-system",
-  "stitch-implementation-handoff",
-  "stitch-prompt-enhancement",
   "mcp-core",
   "research-core",
   "rules-core",
