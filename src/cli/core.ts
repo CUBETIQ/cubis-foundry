@@ -7883,7 +7883,7 @@ async function findWorkflowFileByTarget(workflowsDir, target) {
   return null;
 }
 
-async function removeBundleArtifacts({
+export async function removeBundleArtifacts({
   bundleId,
   manifest,
   platform,
@@ -7975,6 +7975,35 @@ async function removeBundleArtifacts({
       path.basename(generatedSkillDir),
     );
     if (await safeRemove(destination, dryRun)) removed.push(destination);
+  }
+
+  if (profilePaths.skillsDir) {
+    const remainingSkillDirs = await listInstalledTopLevelSkillDirs(
+      profilePaths.skillsDir,
+    );
+    if (remainingSkillDirs.length === 0) {
+      const skillsIndexPath = path.join(profilePaths.skillsDir, "skills_index.json");
+      if (await safeRemove(skillsIndexPath, dryRun)) removed.push(skillsIndexPath);
+      const cleanupRecords = [];
+      await removeEmptyDirectoryRecord({
+        dirPath: profilePaths.skillsDir,
+        category: "skills-dir",
+        dryRun,
+        records: cleanupRecords,
+      });
+      removed.push(...cleanupRecords.map((item) => item.path));
+    }
+  }
+
+  if (profilePaths.agentsDir) {
+    const cleanupRecords = [];
+    await removeEmptyDirectoryRecord({
+      dirPath: profilePaths.agentsDir,
+      category: "agents-dir",
+      dryRun,
+      records: cleanupRecords,
+    });
+    removed.push(...cleanupRecords.map((item) => item.path));
   }
 
   return { removed, profilePaths };

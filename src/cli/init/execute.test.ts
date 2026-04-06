@@ -1,4 +1,4 @@
-import { mkdirSync, existsSync } from "node:fs";
+import { mkdirSync, existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { execFileSync } from "node:child_process";
@@ -8,7 +8,9 @@ import {
   __resetArchitectureCommandCaptureForTests,
   __setArchitectureCommandCaptureForTests,
   performWorkflowInstall,
+  removeBundleArtifacts,
 } from "../core.js";
+import { packageRoot } from "../pathing.js";
 import { formatInitSummary } from "./execute.js";
 
 function makeTempRepo(prefix: string) {
@@ -106,6 +108,123 @@ describe("formatInitSummary()", () => {
     for (const relativePath of expectedPaths) {
       expect(existsSync(join(target, relativePath)), relativePath).toBe(true);
     }
+  });
+
+  it("installs top-level codex skills for full-profile init plans", async () => {
+    const target = makeTempRepo("foundry-init-full-codex");
+
+    const result = await performWorkflowInstall({
+      platform: "codex",
+      scope: "project",
+      bundle: "agent-environment-setup",
+      skillProfile: "full",
+      dryRun: false,
+      overwrite: false,
+      yes: true,
+      target,
+      foundryMcp: true,
+      playwright: true,
+      stitch: false,
+      postman: false,
+      stitchDefaultForAntigravity: false,
+      mcpScope: "project",
+      mcpToolSync: false,
+      mcpRuntime: "local",
+      mcpFallback: "local",
+      mcpBuildLocal: false,
+      initWizardMode: true,
+      authoringAi: "codex",
+      skipContext: true,
+    });
+
+    expect(result.cancelled).toBe(false);
+    expect(existsSync(join(target, ".codex/agents/debugger.toml"))).toBe(true);
+    expect(existsSync(join(target, ".agents/skills/api-design/SKILL.md"))).toBe(
+      true,
+    );
+    expect(existsSync(join(target, ".agents/skills/react/SKILL.md"))).toBe(
+      true,
+    );
+    expect(
+      existsSync(join(target, ".agents/skills/workflow-plan/SKILL.md")),
+    ).toBe(true);
+  });
+
+  it("removes full-profile codex bundle artifacts including top-level skills", async () => {
+    const target = makeTempRepo("foundry-remove-full-codex");
+
+    const installResult = await performWorkflowInstall({
+      platform: "codex",
+      scope: "project",
+      bundle: "agent-environment-setup",
+      skillProfile: "full",
+      dryRun: false,
+      overwrite: false,
+      yes: true,
+      target,
+      foundryMcp: false,
+      playwright: false,
+      stitch: false,
+      postman: false,
+      stitchDefaultForAntigravity: false,
+      mcpScope: "project",
+      mcpToolSync: false,
+      mcpRuntime: "local",
+      mcpFallback: "local",
+      mcpBuildLocal: false,
+      initWizardMode: true,
+      authoringAi: "codex",
+      skipContext: true,
+    });
+
+    expect(installResult.cancelled).toBe(false);
+    expect(existsSync(join(target, ".agents/skills/api-design/SKILL.md"))).toBe(
+      true,
+    );
+    expect(
+      existsSync(join(target, ".agents/skills/workflow-plan/SKILL.md")),
+    ).toBe(true);
+
+    const manifest = JSON.parse(
+      readFileSync(
+        join(
+          packageRoot(),
+          "workflows",
+          "workflows",
+          "agent-environment-setup",
+          "manifest.json",
+        ),
+        "utf8",
+      ),
+    );
+
+    const removeResult = await removeBundleArtifacts({
+      bundleId: "agent-environment-setup",
+      manifest,
+      platform: "codex",
+      scope: "project",
+      dryRun: false,
+      cwd: target,
+    });
+
+    expect(removeResult.removed).toContain(
+      join(target, ".agents/skills/api-design"),
+    );
+    expect(removeResult.removed).toContain(
+      join(target, ".agents/skills/workflow-plan"),
+    );
+    expect(removeResult.removed).toContain(
+      join(target, ".codex/agents/debugger.toml"),
+    );
+    expect(existsSync(join(target, ".agents/skills/api-design/SKILL.md"))).toBe(
+      false,
+    );
+    expect(
+      existsSync(join(target, ".agents/skills/workflow-plan/SKILL.md")),
+    ).toBe(false);
+    expect(existsSync(join(target, ".agents/skills/skills_index.json"))).toBe(
+      false,
+    );
   });
 
   it("downgrades init context-generation timeouts to warnings", async () => {

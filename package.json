@@ -1,6 +1,6 @@
 {
   "name": "@cubis/foundry",
-  "version": "0.3.88",
+  "version": "0.3.89",
   "description": "Cubis Foundry CLI for workflow-first AI agent environments",
   "type": "module",
   "bin": {
@@ -10,6 +10,8 @@
   },
   "files": [
     "bin",
+    "foundry/catalogs",
+    "foundry/modules",
     "workflows",
     "!workflows/workflows/agent-environment-setup/platforms/*/skills/**/evals",
     "!workflows/workflows/agent-environment-setup/platforms/*/skills/**/evals/**",
