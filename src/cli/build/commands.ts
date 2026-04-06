@@ -29,6 +29,10 @@ export function registerBuildCommands(
     )
     .option("--check", "report managed architecture-doc drift without writing")
     .option("--overwrite", "overwrite existing managed scaffolding when needed")
+    .option(
+      "--timeout-ms <ms>",
+      "subprocess timeout in milliseconds; use 0 to disable",
+    )
     .option("--dry-run", "probe the target CLI and print the planned invocation")
     .option("--json", "output JSON")
     .action(deps.runBuildArchitecture);

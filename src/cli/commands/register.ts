@@ -80,6 +80,10 @@ export function registerCommands(deps: CliRegistrationDeps) {
     .option("--profile <profile>", "workspace profile: core|developer|security|research|full")
     .option("--template <template>", "optional organization template name")
     .option("--authoring-ai <platform>", "AI used for context docs: codex|claude|gemini|copilot")
+    .option(
+      "--timeout-ms <ms>",
+      "context subprocess timeout in milliseconds; use 0 to disable",
+    )
     .option("--skip-context", "skip automatic context generation after install")
     .option(
       "--capability-packs <items>",
@@ -147,6 +151,10 @@ export function registerCommands(deps: CliRegistrationDeps) {
     .option("--platform <platform>", "authoring AI: codex|claude|gemini|copilot")
     .option("--research <mode>", "research mode: auto|always|never", "auto")
     .option("--overwrite", "overwrite managed context scaffolding")
+    .option(
+      "--timeout-ms <ms>",
+      "subprocess timeout in milliseconds; use 0 to disable",
+    )
     .option("--watch", "reserved for future watch mode")
     .option("--dry-run", "preview generation invocation without writing files")
     .option("--json", "output JSON")

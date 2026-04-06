@@ -18,6 +18,7 @@ export interface InitWizardSelections {
   bundleId: string;
   platforms: InitPlatformId[];
   skillProfile: InitSkillProfile;
+  timeoutMs: number;
   skillsScope: InitScope;
   mcpScope: InitScope;
   mcpRuntime: InitMcpRuntime;

@@ -83,5 +83,21 @@ describe("registerCommands()", () => {
 
     expect(help).toContain("--skill-profile <profile>");
     expect(help).toContain("skills profile: core|web-backend|mobile-testing|full");
+    expect(help).toContain("--timeout-ms <ms>");
+  });
+
+  it("exposes timeout overrides for architecture context generation", () => {
+    const program = registerCommands(makeDeps());
+    const context = program.commands.find((command) => command.name() === "context");
+    const generate = context?.commands.find((command) => command.name() === "generate");
+    const build = program.commands.find((command) => command.name() === "build");
+    const architecture = build?.commands.find((command) => command.name() === "architecture");
+
+    expect(normalizeWhitespace(generate?.helpInformation() ?? "")).toContain(
+      "--timeout-ms <ms>",
+    );
+    expect(normalizeWhitespace(architecture?.helpInformation() ?? "")).toContain(
+      "--timeout-ms <ms>",
+    );
   });
 });

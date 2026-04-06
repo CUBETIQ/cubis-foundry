@@ -94,6 +94,7 @@ export function formatInitSummary(selections: InitWizardSelections) {
     `- Bundle: ${selections.bundleId}`,
     `- Platforms: ${selections.platforms.join(", ")}`,
     `- Skill profile: ${describeInitSkillProfile(selections.skillProfile)}`,
+    `- Context timeout: ${selections.timeoutMs === 0 ? "disabled" : `${selections.timeoutMs}ms`}`,
     `- Skills scope: ${selections.skillsScope}`,
     `- MCP scope: ${selections.mcpScope}`,
     `- MCP runtime: ${selections.mcpRuntime}${selections.mcpRuntime === "docker" ? (selections.mcpBuildLocal ? " (build local image)" : " (pull image)") : ""}`,

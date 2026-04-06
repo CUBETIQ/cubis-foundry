@@ -12995,11 +12995,12 @@ async function prepareArchitectureBuildRuntime({
   platform,
   workspaceRoot,
   baseEnv = process.env,
+  timeoutMs = ARCHITECTURE_BUILD_EXECUTION_TIMEOUT_MS,
 }) {
   if (platform !== "gemini" && platform !== "antigravity") {
     return {
       env: baseEnv,
-      timeoutMs: ARCHITECTURE_BUILD_EXECUTION_TIMEOUT_MS,
+      timeoutMs,
       async cleanup() {},
     };
   }
@@ -13039,7 +13040,7 @@ async function prepareArchitectureBuildRuntime({
 
   return {
     env,
-    timeoutMs: ARCHITECTURE_BUILD_EXECUTION_TIMEOUT_MS,
+    timeoutMs,
     binary: await resolveExecutableCommand("gemini", baseEnv, {
       dereference: true,
     }),
@@ -13469,6 +13470,22 @@ function buildArchitectureDryRunPlan(platform, prompt) {
   };
 }
 
+function normalizeArchitectureTimeoutMs(
+  value,
+  fallback = ARCHITECTURE_BUILD_EXECUTION_TIMEOUT_MS,
+) {
+  if (value === undefined || value === null || value === "") {
+    return fallback;
+  }
+  const normalized = Number.parseInt(String(value).trim(), 10);
+  if (!Number.isFinite(normalized) || normalized < 0) {
+    throw new Error(
+      `Invalid timeout '${value}'. Use a non-negative integer in milliseconds.`,
+    );
+  }
+  return normalized;
+}
+
 
 function normalizeArchitectureResult({
   stdout,
@@ -13830,6 +13847,7 @@ async function executeContextGeneration(options) {
   const opts = resolveActionOptions(options);
   const platform = normalizeArchitectureBuildPlatform(opts.platform);
   const researchMode = normalizeArchitectureResearchMode(opts.research);
+  const timeoutMs = normalizeArchitectureTimeoutMs(opts.timeoutMs);
   const overwrite = Boolean(opts.overwrite);
   const dryRun = Boolean(opts.dryRun);
   const checkOnly = Boolean(opts.check);
@@ -13910,6 +13928,7 @@ async function executeContextGeneration(options) {
       workspaceRoot: toPosixPath(workspaceRoot),
       adapter: dryRunPlan.adapter,
       invocation: dryRunPlan.invocation,
+      timeoutMs,
       managedTargets,
       skillBundle,
     };
@@ -13919,6 +13938,7 @@ async function executeContextGeneration(options) {
     platform,
     workspaceRoot,
     baseEnv: process.env,
+    timeoutMs,
   });
   let changedFiles = [];
   let execution = null;
@@ -13996,10 +14016,40 @@ async function executeContextGeneration(options) {
     researchMode,
     workspaceRoot: toPosixPath(workspaceRoot),
     adapter: adapter.binary,
+    timeoutMs,
     skillBundle,
     managedTargets,
     result,
   };
+}
+
+function buildInitContextGenerationWarning(platform, error) {
+  const message = error?.message || String(error);
+  const timedOut = message.includes("Process timed out after");
+  const recovery = `Re-run \`cbx build architecture --platform ${platform}\` when ready, or use \`cbx init --skip-context\` to skip this step.`;
+  if (timedOut) {
+    return `Context generation via ${platform} timed out during init. Workspace install completed, but doc generation exceeded the ${ARCHITECTURE_BUILD_EXECUTION_TIMEOUT_MS}ms timeout. ${recovery}`;
+  }
+  return `Context generation via ${platform} failed during init. Workspace install completed, but doc generation did not finish successfully. ${recovery} Raw error: ${message}`;
+}
+
+async function executeInitContextGeneration(options) {
+  try {
+    const contextResult = await executeContextGeneration(options);
+    return {
+      contextResult,
+      warning: null,
+    };
+  } catch (error) {
+    return {
+      contextResult: null,
+      warning: buildInitContextGenerationWarning(options.platform, error),
+    };
+  }
+}
+
+export async function __executeInitContextGenerationForTests(options) {
+  return executeInitContextGeneration(options);
 }
 
 async function runBuildArchitecture(options) {
@@ -14036,6 +14086,9 @@ async function runBuildArchitecture(options) {
         console.log(`Workspace: ${outcome.workspaceRoot}`);
         console.log(`Adapter: ${outcome.adapter}`);
         console.log(`Research mode: ${outcome.researchMode}`);
+        console.log(
+          `Timeout: ${outcome.timeoutMs === 0 ? "disabled" : `${outcome.timeoutMs}ms`}`,
+        );
         console.log(`Managed targets: ${outcome.managedTargets.join(", ")}`);
         console.log(`Skill bundle: ${outcome.skillBundle.join(", ")}`);
         console.log(`Invocation: ${outcome.invocation.join(" ")}`);
@@ -14062,6 +14115,9 @@ async function runBuildArchitecture(options) {
     console.log(`Platform: ${outcome.platform}`);
     console.log(`Adapter: ${outcome.adapter}`);
     console.log(`Workspace: ${outcome.workspaceRoot}`);
+    console.log(
+      `Timeout: ${outcome.timeoutMs === 0 ? "disabled" : `${outcome.timeoutMs}ms`}`,
+    );
     console.log(
       `Managed docs: ${FOUNDATION_DOCS_DIR}/MEMORY.md, ${FOUNDATION_DOCS_DIR}/PRODUCT.md, ${FOUNDATION_DOCS_DIR}/ARCHITECTURE.md, ${FOUNDATION_DOCS_DIR}/STRUCTURE.md, ${FOUNDATION_DOCS_DIR}/DESIGN.md, ${FOUNDATION_DOCS_DIR}/TECH.md, ${FOUNDATION_MEMORY_DIR}/*.md`,
     );
@@ -14319,6 +14375,7 @@ async function runInitWizard(options) {
       options.capabilityPacks,
     );
     const defaultAuthoringAi = normalizeAuthoringAi(options.authoringAi);
+    const defaultTimeoutMs = normalizeArchitectureTimeoutMs(options.timeoutMs);
     const skipContext = Boolean(options.skipContext);
 
     const inferredSkillProfile =
@@ -14384,6 +14441,7 @@ async function runInitWizard(options) {
       skillProfile: isInteractive
         ? await promptInitSkillProfile(defaultSkillProfile)
         : defaultSkillProfile,
+      timeoutMs: defaultTimeoutMs,
       authoringAi: isInteractive
         ? await promptInitAuthoringAi(defaultAuthoringAi)
         : defaultAuthoringAi,
@@ -14491,6 +14549,7 @@ async function runInitWizard(options) {
       `Detected stack: ${selections.stack} (${detectedStack.confidence})`,
       `Stack evidence: ${detectedStack.evidence.join(", ") || "(none)"}`,
       `Authoring AI: ${selections.authoringAi}`,
+      `Context timeout: ${selections.timeoutMs === 0 ? "disabled" : `${selections.timeoutMs}ms`}`,
       `Capability packs: ${selections.capabilityPacks.join(", ") || "(none)"}`,
       `Context generation: ${selections.skipContext ? "skip" : "generate"}`,
     ].join("\n");
@@ -14573,16 +14632,23 @@ async function runInitWizard(options) {
     }
 
     let contextResult = null;
+    let contextGenerationWarning = null;
     if (!selections.skipContext) {
-      contextResult = await executeContextGeneration({
+      const contextGeneration = await executeInitContextGeneration({
         platform: selections.authoringAi,
         research: "auto",
+        timeoutMs: selections.timeoutMs,
         overwrite,
         dryRun,
         quiet: true,
         target: cwd,
       });
-      if (!emitJson) {
+      contextResult = contextGeneration.contextResult;
+      contextGenerationWarning = contextGeneration.warning;
+      if (contextGenerationWarning) {
+        initWarnings.push(contextGenerationWarning);
+      }
+      if (!emitJson && contextResult) {
         console.log("\nContext generation:");
         console.log(`- Platform: ${contextResult.platform}`);
         console.log(`- Mode: ${contextResult.mode}`);
@@ -14591,6 +14657,11 @@ async function runInitWizard(options) {
             `- Files written: ${(contextResult.result.filesWritten || []).join(", ") || "(none reported)"}`,
           );
         }
+      } else if (!emitJson && contextGenerationWarning) {
+        console.log("\nContext generation:");
+        console.log(`- Platform: ${selections.authoringAi}`);
+        console.log("- Mode: failed");
+        console.log(`- Warning: ${contextGenerationWarning}`);
       }
     }
 
@@ -14655,6 +14726,25 @@ async function runInitWizard(options) {
             dryRun,
             selections: sanitizedSelections,
             results,
+            contextGeneration: contextResult
+              ? {
+                  status: contextResult.mode,
+                  platform: contextResult.platform,
+                  filesWritten:
+                    contextResult.mode === "generate"
+                      ? contextResult.result.filesWritten || []
+                      : [],
+                }
+              : selections.skipContext
+                ? {
+                    status: "skipped",
+                    platform: selections.authoringAi,
+                  }
+                : {
+                    status: "failed",
+                    platform: selections.authoringAi,
+                    warning: contextGenerationWarning,
+                  },
             persistedCredentials,
             workspaceManifest,
           },
@@ -15090,6 +15180,9 @@ async function runContextGenerate(options) {
       console.log(`Platform: ${outcome.platform}`);
       console.log(`Workspace: ${outcome.workspaceRoot}`);
       console.log(`Adapter: ${outcome.adapter}`);
+      console.log(
+        `Timeout: ${outcome.timeoutMs === 0 ? "disabled" : `${outcome.timeoutMs}ms`}`,
+      );
       console.log(`Managed targets: ${outcome.managedTargets.join(", ")}`);
       console.log(`Skill bundle: ${outcome.skillBundle.join(", ")}`);
       console.log(`Invocation: ${outcome.invocation.join(" ")}`);
@@ -15099,6 +15192,9 @@ async function runContextGenerate(options) {
     console.log(`Platform: ${outcome.platform}`);
     console.log(`Workspace: ${outcome.workspaceRoot}`);
     console.log(`Adapter: ${outcome.adapter}`);
+    console.log(
+      `Timeout: ${outcome.timeoutMs === 0 ? "disabled" : `${outcome.timeoutMs}ms`}`,
+    );
     console.log(
       `Files written: ${(outcome.result.filesWritten || []).join(", ") || "(none reported)"}`,
     );
