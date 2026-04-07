@@ -16,45 +16,45 @@ If any check fails, restart the decision.
 
 ## 1) Platform Paths
 
-| Asset | Path |
-| --- | --- |
-| Rules | `AGENTS.md` |
-| Native subagents | `.codex/agents/*.toml` |
-| Skills | `.agents/skills/<skill-id>/SKILL.md` |
+| Asset            | Path                                 |
+| ---------------- | ------------------------------------ |
+| Rules            | `AGENTS.md`                          |
+| Native subagents | `.codex/agents/*.toml`               |
+| Skills           | `.agents/skills/<skill-id>/SKILL.md` |
 
 ## 2) Route Resolution
 
 Execute this top-to-bottom and stop at the first clean match.
 
 1. Trivial, obvious, reversible?
-Just do it. No routing.
+   Just do it. No routing.
 
 2. User named `/workflow`, `@agent`, or exact skill ID?
-Honor it directly. For exact skill IDs, run `skill_validate` first.
+   Honor it directly. For exact skill IDs, run `skill_validate` first.
 
 3. Explicit UI or design work?
-Prefer `/design-screen`, `/design-system`, `/design-audit`, or `/design-refresh`.
+   Prefer `/design-screen`, `/design-system`, `/design-audit`, or `/design-refresh`.
 
 4. Non-trivial feature, architecture, or spec-shaped work?
-Prefer `/plan`.
+   Prefer `/plan`.
 
 5. Bug, runtime error, failing test, or regression?
-Prefer `/debug`.
+   Prefer `/debug`.
 
 6. Test authoring, test repair, coverage, or verification?
-Prefer `/test`.
+   Prefer `/test`.
 
 7. Review, audit, or security work?
-Prefer `/review`.
+   Prefer `/review`.
 
 8. Deployment, Docker, CI/CD, infra, or release work?
-Prefer `/deploy`.
+   Prefer `/deploy`.
 
 9. Cross-domain work with real specialist handoffs?
-Use `@orchestrator`.
+   Use `@orchestrator`.
 
 10. Still unclear?
-Use `route_resolve`, then load only the recommended skill surface.
+    Use `route_resolve`, then load only the recommended skill surface.
 
 Hard rules:
 
@@ -68,19 +68,19 @@ Hard rules:
 Use these surfaces in this order:
 
 1. Direct execution
-For trivial tasks.
+   For trivial tasks.
 
 2. Workflow
-For multi-step work with a known pattern.
+   For multi-step work with a known pattern.
 
 3. Native subagent
-For genuine specialist delegation through `.codex/agents/*.toml`.
+   For genuine specialist delegation through `.codex/agents/*.toml`.
 
 4. MCP route tools
-For unresolved intent, not as the default starting point.
+   For unresolved intent, not as the default starting point.
 
 5. MCP skill
-For supporting domain knowledge after route selection.
+   For supporting domain knowledge after route selection.
 
 ## 3.5) Codex Workflow, Skill, And Subagent Contract
 
@@ -107,6 +107,8 @@ Do not use subagents as a replacement for route selection. Choose the route firs
 5. Load references lazily, one at a time.
 6. Use one narrow `skill_search` only if the domain is still unclear after routing.
 7. Do not pass workflow IDs or agent IDs to skill tools.
+8. **Load acknowledgment:** After calling `route_resolve`, `skill_get`, or delegating to a `@agent`, emit a single-line acknowledgment visible to the user: `🔧 Foundry: loaded <kind> "<id>"` (e.g. `🔧 Foundry: loaded skill "typescript-best-practices"`, `🔧 Foundry: loaded workflow "/implement"`). Keep it one line, no extra explanation.
+9. **Diagnostic:** If the user asks whether Foundry is active or working, call `skill_budget_report` and display the summary.
 
 ## 5) MCP Usage Contract
 
@@ -219,10 +221,13 @@ Rule of thumb:
 - Design foundation: `docs/foundation/DESIGN.md`
 
 <!-- cbx:workflows:auto:start platform=codex version=1 -->
+
 ## CBX Workflow Routing (auto-managed)
 
 <!-- cbx:managed:skill-routing start -->
+
 Classify intent before any MCP call.
+
 - TIER 1 DIRECT: `skill_get <exact-skill-id>` when skill ID is known from route or context.
 - TIER 1b ROUTE-RECOMMENDED: after `route_resolve`, load `primarySkillHint` or first `primarySkills` entry via `skill_validate` -> `skill_get` before executing non-trivial tasks.
 - TIER 2 TARGETED SEARCH: one `skill_search <1-3 word noun>` max when domain is unclear, then `skill_validate` -> `skill_get`.
@@ -231,21 +236,28 @@ Classify intent before any MCP call.
 - Keep one primary agent and one primary skill by default.
 - Add supporting skills only when the active task explicitly crosses domains.
 - Direct skill-package creation or repair work to `skill-creator` instead of starting with `skill_search`.
+
 # Full reference: foundry-detail.md#tiered-routing
+
 <!-- cbx:managed:skill-routing end -->
 
 <!-- cbx:managed:long-plan-execution start -->
+
 When `PLAN_HANDOFF` is present, continue task 1→N without confirmation pauses.
+
 - Pre-load deduped `skill_hint` values once, then run `skill_budget_report`.
 - Execute in order, respecting `depends_on` and `stop_if_failed`.
 - Emit `CHECKPOINT` every ~3 tasks in runs of 5+.
 - Finish with `EXECUTION_SUMMARY {completed, skipped, stopped_at, artifacts, skills_used, dropped}`.
 - Stop only for blocking artifact failure, unplanned destructive action, missing required skill after one search, or explicit user halt.
 - Codex: compact before context exhaustion. Antigravity/Gemini: native long context. Copilot: write `.copilot-tracking/handoff.md`.
+
 # Full reference: foundry-detail.md#plan-handoff-and-execution
+
 <!-- cbx:managed:long-plan-execution end -->
 
 Prefer direct route identifiers first:
+
 - Workflows: `/workflow-name`
 - Agents: `@agent-name`
 - Native agents: `.codex/agents/*.toml`
@@ -254,6 +266,7 @@ Prefer direct route identifiers first:
 - No installed workflows found yet.
 
 Selection policy:
+
 1. If the user names `/workflow` or `@agent`, use that route directly.
 2. Else map intent to one primary workflow.
 3. Load supporting skills only after route selection.

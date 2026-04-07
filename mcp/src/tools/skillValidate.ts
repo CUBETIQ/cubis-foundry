@@ -54,7 +54,8 @@ export async function handleSkillValidate(
       replacementId: null,
       availableReferences: [],
     };
-    const text = JSON.stringify(payload, null, 2);
+    const banner = `\uD83D\uDCCC Foundry validated skill "${id}" \u2192 not found\n\n`;
+    const text = `${banner}${JSON.stringify(payload, null, 2)}`;
     const metrics = buildSkillToolMetrics({
       charsPerToken,
       fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
@@ -74,7 +75,9 @@ export async function handleSkillValidate(
     frontmatter.metadata.replaced_by || frontmatter.metadata.alias_of || null;
   const replacementId = skill.canonicalId || frontmatterReplacementId || null;
   const isAlias = Boolean(
-    skill.canonicalId || frontmatterReplacementId || frontmatter.metadata.deprecated,
+    skill.canonicalId ||
+    frontmatterReplacementId ||
+    frontmatter.metadata.deprecated,
   );
   const availableReferences = await listReferencedMarkdownPaths(skill.path);
   const payload = {
@@ -88,7 +91,8 @@ export async function handleSkillValidate(
     replacementId,
     availableReferences,
   };
-  const text = JSON.stringify(payload, null, 2);
+  const banner = `\uD83D\uDCCC Foundry validated skill "${id}" \u2192 found (${skill.category})\n\n`;
+  const text = `${banner}${JSON.stringify(payload, null, 2)}`;
   const metrics = buildSkillToolMetrics({
     charsPerToken,
     fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,

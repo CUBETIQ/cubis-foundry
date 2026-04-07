@@ -57,16 +57,16 @@ Follow this decision tree for every user request:
 
 ## 2) Layer Reference
 
-| Layer | What it is | When to use it | How to invoke | Example |
-| --- | --- | --- | --- | --- |
-| Direct execution | No routing needed | Small, clear, single-step tasks | Just do it | "rename this variable" |
-| Workflow | Multi-step recipe with verification | Structured task with known pattern | `/plan`, `/implement`, `/debug`, `/test`, `/review`, `/deploy`, `/loop`, `/design-system`, `/design-screen`, `/design-audit`, `/design-refresh` | "plan the auth system" |
-| Agent | Specialist persona with domain skills | Domain expertise needed for execution | `@implementer`, `@reviewer` | "design the API schema" |
-| Named skill | Exact skill selected by the user | User already named the skill and it validates cleanly | `skill_validate` -> `skill_get` | "use web-testing for this flow" |
-| Skill (MCP) | Supporting domain knowledge | Domain context that a workflow or agent does not cover | `skill_get` after `skill_validate` | loading `typescript-best-practices` |
-| skill_search | Fuzzy discovery tool | Domain unclear, no skill ID known yet | One narrow search after route resolution | "what skill covers Prisma?" |
-| route_resolve | Intent to route mapper | Free-text request does not match any known route | MCP tool call with task description | "I need to optimize my database" |
-| Orchestrator | Multi-specialist coordinator | Work genuinely spans 2+ domains | `@orchestrator` | "build full-stack feature with auth" |
+| Layer            | What it is                            | When to use it                                         | How to invoke                                                                                                                                   | Example                              |
+| ---------------- | ------------------------------------- | ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| Direct execution | No routing needed                     | Small, clear, single-step tasks                        | Just do it                                                                                                                                      | "rename this variable"               |
+| Workflow         | Multi-step recipe with verification   | Structured task with known pattern                     | `/plan`, `/implement`, `/debug`, `/test`, `/review`, `/deploy`, `/loop`, `/design-system`, `/design-screen`, `/design-audit`, `/design-refresh` | "plan the auth system"               |
+| Agent            | Specialist persona with domain skills | Domain expertise needed for execution                  | `@implementer`, `@reviewer`                                                                                                                     | "design the API schema"              |
+| Named skill      | Exact skill selected by the user      | User already named the skill and it validates cleanly  | `skill_validate` -> `skill_get`                                                                                                                 | "use web-testing for this flow"      |
+| Skill (MCP)      | Supporting domain knowledge           | Domain context that a workflow or agent does not cover | `skill_get` after `skill_validate`                                                                                                              | loading `typescript-best-practices`  |
+| skill_search     | Fuzzy discovery tool                  | Domain unclear, no skill ID known yet                  | One narrow search after route resolution                                                                                                        | "what skill covers Prisma?"          |
+| route_resolve    | Intent to route mapper                | Free-text request does not match any known route       | MCP tool call with task description                                                                                                             | "I need to optimize my database"     |
+| Orchestrator     | Multi-specialist coordinator          | Work genuinely spans 2+ domains                        | `@orchestrator`                                                                                                                                 | "build full-stack feature with auth" |
 
 ---
 
@@ -85,6 +85,8 @@ Skills are supporting context unless the user explicitly named the exact skill. 
 9. Do not auto-prime every specialist. Only load what `primarySkills` recommends or the task clearly needs.
 10. Never pass workflow IDs or agent IDs to skill tools.
 11. For design-generation UI work, use this order: `frontend-design` -> `design` -> `design-system` only when canonical design state is stale -> `web-ui-design`, `mobile-ui-design`, or `desktop-ui-design` for the owning execution surface -> external design-generation tools only after the design state is resolved.
+12. **Load acknowledgment:** After calling `route_resolve`, `skill_get`, or delegating to a `@agent`, emit a single-line acknowledgment visible to the user: `🔧 Foundry: loaded <kind> "<id>"` (e.g. `🔧 Foundry: loaded skill "typescript-best-practices"`, `🔧 Foundry: loaded workflow "/implement"`, `🔧 Foundry: loaded agent "@reviewer"`). Keep it one line, no extra explanation.
+13. **Diagnostic:** If the user asks whether Foundry is active or working, call `skill_budget_report` and display the summary (skills available, estimated tokens saved).
 
 ---
 
@@ -117,15 +119,15 @@ When the research result changes product direction, project structure, boundarie
 
 Use the smallest specialist set needed:
 
-| Domain | Primary Specialist | Supporting |
-| --- | --- | --- |
-| Planning / architecture | `@planner` | `@explorer` |
-| Exploration | `@explorer` | `@planner` |
-| Implementation | `@implementer` | `@tester`, `@reviewer` |
-| Debugging | `@debugger` | `@tester` |
-| Testing / QA | `@tester` | `@reviewer` |
-| Code review / security | `@reviewer` | `@implementer` |
-| Cross-domain | `@orchestrator` | delegates as needed |
+| Domain                  | Primary Specialist | Supporting             |
+| ----------------------- | ------------------ | ---------------------- |
+| Planning / architecture | `@planner`         | `@explorer`            |
+| Exploration             | `@explorer`        | `@planner`             |
+| Implementation          | `@implementer`     | `@tester`, `@reviewer` |
+| Debugging               | `@debugger`        | `@tester`              |
+| Testing / QA            | `@tester`          | `@reviewer`            |
+| Code review / security  | `@reviewer`        | `@implementer`         |
+| Cross-domain            | `@orchestrator`    | delegates as needed    |
 
 ### Orchestrator Rules
 
@@ -138,20 +140,20 @@ Use the smallest specialist set needed:
 
 ## 6) Workflow Quick Reference
 
-| Intent Pattern | Workflow | Primary Agent |
-| --- | --- | --- |
-| Plan a feature or architecture | `/plan` | `@explorer` -> `@planner` |
-| Build a feature end-to-end | `/implement` | `@implementer` |
-| Establish or refresh design foundations | `/design-system` | `@planner` -> `@implementer` |
-| Design a screen before generation or implementation | `/design-screen` | `@planner` -> `@implementer` |
-| Audit visual quality and design drift | `/design-audit` | `@reviewer` |
-| Refresh design state after product or UI direction changes | `/design-refresh` | `@implementer` |
-| Debug a complex issue | `/debug` | `@debugger` |
-| Write or improve tests | `/test` | `@tester` |
-| Code review + security audit | `/review` | `@reviewer` |
-| Deploy, CI/CD, infrastructure | `/deploy` | `@planner` -> `@implementer` |
-| Bounded autonomous iteration | `/loop` | `@orchestrator` |
-| Cross-domain coordination | `@orchestrator` | delegates to others |
+| Intent Pattern                                             | Workflow          | Primary Agent                |
+| ---------------------------------------------------------- | ----------------- | ---------------------------- |
+| Plan a feature or architecture                             | `/plan`           | `@explorer` -> `@planner`    |
+| Build a feature end-to-end                                 | `/implement`      | `@implementer`               |
+| Establish or refresh design foundations                    | `/design-system`  | `@planner` -> `@implementer` |
+| Design a screen before generation or implementation        | `/design-screen`  | `@planner` -> `@implementer` |
+| Audit visual quality and design drift                      | `/design-audit`   | `@reviewer`                  |
+| Refresh design state after product or UI direction changes | `/design-refresh` | `@implementer`               |
+| Debug a complex issue                                      | `/debug`          | `@debugger`                  |
+| Write or improve tests                                     | `/test`           | `@tester`                    |
+| Code review + security audit                               | `/review`         | `@reviewer`                  |
+| Deploy, CI/CD, infrastructure                              | `/deploy`         | `@planner` -> `@implementer` |
+| Bounded autonomous iteration                               | `/loop`           | `@orchestrator`              |
+| Cross-domain coordination                                  | `@orchestrator`   | delegates to others          |
 
 ---
 

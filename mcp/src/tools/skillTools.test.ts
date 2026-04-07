@@ -21,19 +21,36 @@ import { handleRouteResolve } from "./routeResolve.js";
 import { handleSkillSearch } from "./skillSearch.js";
 import { handleSkillValidate } from "./skillValidate.js";
 
-function payload(result: { content: Array<{ text: string }> }): Record<string, unknown> {
-  return JSON.parse(result.content[0].text) as Record<string, unknown>;
+function payload(result: {
+  content: Array<{ text: string }>;
+  structuredContent?: Record<string, unknown>;
+}): Record<string, unknown> {
+  // Prefer JSON.parse of text content when it's valid JSON.
+  // Fall back to structuredContent for tools whose text now has a banner prefix.
+  try {
+    return JSON.parse(result.content[0].text) as Record<string, unknown>;
+  } catch {
+    if (result.structuredContent) {
+      return result.structuredContent as Record<string, unknown>;
+    }
+    throw new Error("No parseable payload in tool response");
+  }
 }
 
-function metrics(result: { structuredContent?: Record<string, unknown> }): Record<string, unknown> {
-  return (
-    result.structuredContent?.metrics ||
-    (result as { _meta?: { metrics?: Record<string, unknown> } })._meta?.metrics ||
-    {}
-  ) as Record<string, unknown>;
+function metrics(result: {
+  structuredContent?: Record<string, unknown>;
+}): Record<string, unknown> {
+  return (result.structuredContent?.metrics ||
+    (result as { _meta?: { metrics?: Record<string, unknown> } })._meta
+      ?.metrics ||
+    {}) as Record<string, unknown>;
 }
 
-function createSkillFile(id: string, description: string, body = "# Content"): string {
+function createSkillFile(
+  id: string,
+  description: string,
+  body = "# Content",
+): string {
   const dir = mkdtempSync(path.join(os.tmpdir(), `mcp-skill-${id}-`));
   const file = path.join(dir, "SKILL.md");
   writeFileSync(
@@ -99,9 +116,18 @@ function createRouteManifest(): RouteManifest {
         primarySkills: ["feature-forge", "architecture-designer"],
         supportingSkills: ["lint-and-validate", "test-master"],
         artifacts: {
-          codex: { compatibilityAlias: "$workflow-create", workflowFile: "create.md" },
-          copilot: { workflowFile: "create.md", promptFile: "workflow-create.prompt.md" },
-          antigravity: { workflowFile: "create.md", commandFile: "create.toml" },
+          codex: {
+            compatibilityAlias: "$workflow-create",
+            workflowFile: "create.md",
+          },
+          copilot: {
+            workflowFile: "create.md",
+            promptFile: "workflow-create.prompt.md",
+          },
+          antigravity: {
+            workflowFile: "create.md",
+            commandFile: "create.toml",
+          },
         },
       },
       {
@@ -116,9 +142,18 @@ function createRouteManifest(): RouteManifest {
         primarySkills: ["mobile-design", "flutter-expert"],
         supportingSkills: ["riverpod-3"],
         artifacts: {
-          codex: { compatibilityAlias: "$workflow-mobile", workflowFile: "mobile.md" },
-          copilot: { workflowFile: "mobile.md", promptFile: "workflow-mobile.prompt.md" },
-          antigravity: { workflowFile: "mobile.md", commandFile: "mobile.toml" },
+          codex: {
+            compatibilityAlias: "$workflow-mobile",
+            workflowFile: "mobile.md",
+          },
+          copilot: {
+            workflowFile: "mobile.md",
+            promptFile: "workflow-mobile.prompt.md",
+          },
+          antigravity: {
+            workflowFile: "mobile.md",
+            commandFile: "mobile.toml",
+          },
           claude: { workflowFile: "mobile.md" },
         },
       },
@@ -134,9 +169,18 @@ function createRouteManifest(): RouteManifest {
         primarySkills: ["find-bugs"],
         supportingSkills: ["security-reviewer"],
         artifacts: {
-          codex: { compatibilityAlias: "$workflow-review", workflowFile: "review.md" },
-          copilot: { workflowFile: "review.md", promptFile: "workflow-review.prompt.md" },
-          antigravity: { workflowFile: "review.md", commandFile: "review.toml" },
+          codex: {
+            compatibilityAlias: "$workflow-review",
+            workflowFile: "review.md",
+          },
+          copilot: {
+            workflowFile: "review.md",
+            promptFile: "workflow-review.prompt.md",
+          },
+          antigravity: {
+            workflowFile: "review.md",
+            commandFile: "review.toml",
+          },
         },
       },
       {
@@ -151,8 +195,14 @@ function createRouteManifest(): RouteManifest {
         primarySkills: ["plan-writing", "architecture-designer"],
         supportingSkills: ["feature-forge", "api-designer"],
         artifacts: {
-          codex: { compatibilityAlias: "$workflow-plan", workflowFile: "plan.md" },
-          copilot: { workflowFile: "plan.md", promptFile: "workflow-plan.prompt.md" },
+          codex: {
+            compatibilityAlias: "$workflow-plan",
+            workflowFile: "plan.md",
+          },
+          copilot: {
+            workflowFile: "plan.md",
+            promptFile: "workflow-plan.prompt.md",
+          },
           antigravity: { workflowFile: "plan.md", commandFile: "plan.toml" },
         },
       },
@@ -168,9 +218,18 @@ function createRouteManifest(): RouteManifest {
         primarySkills: ["parallel-agents", "architecture-designer"],
         supportingSkills: ["plan-writing", "feature-forge"],
         artifacts: {
-          codex: { compatibilityAlias: "$workflow-orchestrate", workflowFile: "orchestrate.md" },
-          copilot: { workflowFile: "orchestrate.md", promptFile: "workflow-orchestrate.prompt.md" },
-          antigravity: { workflowFile: "orchestrate.md", commandFile: "orchestrate.toml" },
+          codex: {
+            compatibilityAlias: "$workflow-orchestrate",
+            workflowFile: "orchestrate.md",
+          },
+          copilot: {
+            workflowFile: "orchestrate.md",
+            promptFile: "workflow-orchestrate.prompt.md",
+          },
+          antigravity: {
+            workflowFile: "orchestrate.md",
+            commandFile: "orchestrate.toml",
+          },
         },
       },
       {
@@ -185,7 +244,10 @@ function createRouteManifest(): RouteManifest {
         primarySkills: ["mobile-design", "flutter-expert"],
         supportingSkills: ["flutter-test-master"],
         artifacts: {
-          codex: { compatibilityAlias: "$agent-mobile-developer", agentFile: "mobile-developer.md" },
+          codex: {
+            compatibilityAlias: "$agent-mobile-developer",
+            agentFile: "mobile-developer.md",
+          },
           copilot: { agentFile: "mobile-developer.md" },
           antigravity: { agentFile: "mobile-developer.md" },
         },
@@ -202,7 +264,10 @@ function createRouteManifest(): RouteManifest {
         primarySkills: ["test-master", "web-testing"],
         supportingSkills: ["code-review"],
         artifacts: {
-          codex: { compatibilityAlias: "$agent-test-engineer", agentFile: "test-engineer.md" },
+          codex: {
+            compatibilityAlias: "$agent-test-engineer",
+            agentFile: "test-engineer.md",
+          },
           copilot: { agentFile: "test-engineer.md" },
           antigravity: { agentFile: "test-engineer.md" },
         },
@@ -219,7 +284,10 @@ function createRouteManifest(): RouteManifest {
         primarySkills: ["deep-research", "architecture-designer"],
         supportingSkills: ["prompt-engineer"],
         artifacts: {
-          codex: { compatibilityAlias: "$agent-researcher", agentFile: "researcher.md" },
+          codex: {
+            compatibilityAlias: "$agent-researcher",
+            agentFile: "researcher.md",
+          },
           copilot: { agentFile: "researcher.md" },
           antigravity: { agentFile: "researcher.md" },
         },
@@ -240,22 +308,26 @@ function createStitchRouteManifest(): RouteManifest {
         id: "design-screen",
         command: "/design-screen",
         displayName: "Design Screen Workflow",
-        description: "Resolve the design engine before Stitch or implementation",
+        description:
+          "Resolve the design engine before Stitch or implementation",
         triggers: ["design screen", "ui design", "stitch"],
         primaryAgent: "implementer",
         supportingAgents: ["explorer", "planner"],
-        primarySkills: [
-          "design",
-          "web-ui-design",
-        ],
-        supportingSkills: [
-          "mobile-ui-design",
-          "design-system",
-        ],
+        primarySkills: ["design", "web-ui-design"],
+        supportingSkills: ["mobile-ui-design", "design-system"],
         artifacts: {
-          codex: { compatibilityAlias: "$workflow-design-screen", workflowFile: "design-screen.md" },
-          copilot: { workflowFile: "design-screen.md", promptFile: "design-screen.prompt.md" },
-          antigravity: { workflowFile: "design-screen.md", commandFile: "design-screen.toml" },
+          codex: {
+            compatibilityAlias: "$workflow-design-screen",
+            workflowFile: "design-screen.md",
+          },
+          copilot: {
+            workflowFile: "design-screen.md",
+            promptFile: "design-screen.prompt.md",
+          },
+          antigravity: {
+            workflowFile: "design-screen.md",
+            commandFile: "design-screen.toml",
+          },
           claude: { workflowFile: "design-screen.md" },
         },
       },
@@ -271,9 +343,18 @@ function createStitchRouteManifest(): RouteManifest {
         primarySkills: ["api-design", "typescript-best-practices"],
         supportingSkills: ["web-testing", "code-review"],
         artifacts: {
-          codex: { compatibilityAlias: "$workflow-implement", workflowFile: "implement.md" },
-          copilot: { workflowFile: "implement.md", promptFile: "implement.prompt.md" },
-          antigravity: { workflowFile: "implement.md", commandFile: "implement.toml" },
+          codex: {
+            compatibilityAlias: "$workflow-implement",
+            workflowFile: "implement.md",
+          },
+          copilot: {
+            workflowFile: "implement.md",
+            promptFile: "implement.prompt.md",
+          },
+          antigravity: {
+            workflowFile: "implement.md",
+            commandFile: "implement.toml",
+          },
           claude: { workflowFile: "implement.md" },
         },
       },
@@ -293,16 +374,26 @@ function createTestingRouteManifest(): RouteManifest {
         id: "web-testing",
         command: "/web-testing",
         displayName: "Web Testing Workflow",
-        description: "Run browser testing through the canonical web-testing path",
+        description:
+          "Run browser testing through the canonical web-testing path",
         triggers: ["web testing", "browser testing", "playwright"],
         primaryAgent: "tester",
         supportingAgents: [],
         primarySkills: ["web-testing"],
         supportingSkills: [],
         artifacts: {
-          codex: { compatibilityAlias: "$workflow-web-testing", workflowFile: "web-testing.md" },
-          copilot: { workflowFile: "web-testing.md", promptFile: "web-testing.prompt.md" },
-          antigravity: { workflowFile: "web-testing.md", commandFile: "web-testing.toml" },
+          codex: {
+            compatibilityAlias: "$workflow-web-testing",
+            workflowFile: "web-testing.md",
+          },
+          copilot: {
+            workflowFile: "web-testing.md",
+            promptFile: "web-testing.prompt.md",
+          },
+          antigravity: {
+            workflowFile: "web-testing.md",
+            commandFile: "web-testing.toml",
+          },
           claude: { workflowFile: "web-testing.md" },
         },
       },
@@ -311,16 +402,26 @@ function createTestingRouteManifest(): RouteManifest {
         id: "mobile-testing",
         command: "/mobile-testing",
         displayName: "Mobile Testing Workflow",
-        description: "Run CLI-first mobile testing through canonical Android and iOS testing paths",
+        description:
+          "Run CLI-first mobile testing through canonical Android and iOS testing paths",
         triggers: ["mobile testing", "android testing", "ios testing"],
         primaryAgent: "tester",
         supportingAgents: [],
         primarySkills: ["android-emulator-testing", "ios-simulator-testing"],
         supportingSkills: [],
         artifacts: {
-          codex: { compatibilityAlias: "$workflow-mobile-testing", workflowFile: "mobile-testing.md" },
-          copilot: { workflowFile: "mobile-testing.md", promptFile: "mobile-testing.prompt.md" },
-          antigravity: { workflowFile: "mobile-testing.md", commandFile: "mobile-testing.toml" },
+          codex: {
+            compatibilityAlias: "$workflow-mobile-testing",
+            workflowFile: "mobile-testing.md",
+          },
+          copilot: {
+            workflowFile: "mobile-testing.md",
+            promptFile: "mobile-testing.prompt.md",
+          },
+          antigravity: {
+            workflowFile: "mobile-testing.md",
+            commandFile: "mobile-testing.toml",
+          },
           claude: { workflowFile: "mobile-testing.md" },
         },
       },
@@ -347,9 +448,18 @@ function createCurrentWorkflowRouteManifest(): RouteManifest {
         primarySkills: ["spec-driven-delivery"],
         supportingSkills: ["web-testing"],
         artifacts: {
-          codex: { compatibilityAlias: "$workflow-implement", workflowFile: "implement.md" },
-          copilot: { workflowFile: "implement.md", promptFile: "implement.prompt.md" },
-          antigravity: { workflowFile: "implement.md", commandFile: "implement.toml" },
+          codex: {
+            compatibilityAlias: "$workflow-implement",
+            workflowFile: "implement.md",
+          },
+          copilot: {
+            workflowFile: "implement.md",
+            promptFile: "implement.prompt.md",
+          },
+          antigravity: {
+            workflowFile: "implement.md",
+            commandFile: "implement.toml",
+          },
           claude: { workflowFile: "implement.md" },
         },
       },
@@ -365,7 +475,10 @@ function createCurrentWorkflowRouteManifest(): RouteManifest {
         primarySkills: ["spec-driven-delivery", "system-design"],
         supportingSkills: ["deep-research"],
         artifacts: {
-          codex: { compatibilityAlias: "$workflow-plan", workflowFile: "plan.md" },
+          codex: {
+            compatibilityAlias: "$workflow-plan",
+            workflowFile: "plan.md",
+          },
           copilot: { workflowFile: "plan.md", promptFile: "plan.prompt.md" },
           antigravity: { workflowFile: "plan.md", commandFile: "plan.toml" },
           claude: { workflowFile: "plan.md" },
@@ -383,9 +496,18 @@ function createCurrentWorkflowRouteManifest(): RouteManifest {
         primarySkills: ["code-review"],
         supportingSkills: ["owasp-security-review"],
         artifacts: {
-          codex: { compatibilityAlias: "$workflow-review", workflowFile: "review.md" },
-          copilot: { workflowFile: "review.md", promptFile: "review.prompt.md" },
-          antigravity: { workflowFile: "review.md", commandFile: "review.toml" },
+          codex: {
+            compatibilityAlias: "$workflow-review",
+            workflowFile: "review.md",
+          },
+          copilot: {
+            workflowFile: "review.md",
+            promptFile: "review.prompt.md",
+          },
+          antigravity: {
+            workflowFile: "review.md",
+            commandFile: "review.toml",
+          },
           claude: { workflowFile: "review.md" },
         },
       },
@@ -423,7 +545,9 @@ function loadGeneratedCatalog(): {
     readFileSync(GENERATED_MANIFEST_PATH, "utf8"),
   ) as GeneratedSkillManifest;
   const runtimeManifest: VaultManifest = {
-    categories: [...new Set(generated.skills.map((skill) => skill.category))].sort(),
+    categories: [
+      ...new Set(generated.skills.map((skill) => skill.category)),
+    ].sort(),
     skills: generated.skills.map((skill) => ({
       id: skill.id,
       canonicalId: skill.metadata?.alias_of ?? skill.metadata?.replaced_by,
@@ -631,10 +755,7 @@ describe("skill tools", () => {
   });
 
   it("prioritizes keyword and trigger matches ahead of description-only matches", async () => {
-    const apiFile = createSkillFile(
-      "api-designer",
-      "Contract design guidance",
-    );
+    const apiFile = createSkillFile("api-designer", "Contract design guidance");
     const docsFile = createSkillFile(
       "documentation-writer",
       "Writes OpenAPI and Swagger documentation",
@@ -706,7 +827,10 @@ describe("skill tools", () => {
 
   it("does not resolve removed legacy workflow aliases", async () => {
     const result = payload(
-      await handleRouteResolve({ intent: "/brainstorm" }, createRouteManifest()),
+      await handleRouteResolve(
+        { intent: "/brainstorm" },
+        createRouteManifest(),
+      ),
     );
     expect(result).toMatchObject({
       resolved: false,
@@ -875,7 +999,10 @@ describe("skill tools", () => {
   it("routes desktop workspace design intent through the desktop execution surface", async () => {
     const result = payload(
       await handleRouteResolve(
-        { intent: "design a desktop trading workspace with inspector panes and keyboard shortcuts" },
+        {
+          intent:
+            "design a desktop trading workspace with inspector panes and keyboard shortcuts",
+        },
         createStitchRouteManifest(),
       ),
     );
@@ -887,10 +1014,7 @@ describe("skill tools", () => {
       primarySkillHint: "design",
       matchedBy: "design-intent",
     });
-    expect(result.primarySkills).toEqual([
-      "design",
-      "desktop-ui-design",
-    ]);
+    expect(result.primarySkills).toEqual(["design", "desktop-ui-design"]);
   });
 
   it("routes browser testing intent to web-testing", async () => {
@@ -945,8 +1069,16 @@ describe("skill tools", () => {
   it("adds a repo-signal language skill hint when TypeScript signals exist", async () => {
     const originalCwd = process.cwd();
     const tempDir = mkdtempSync(path.join(os.tmpdir(), "route-resolve-ts-"));
-    writeFileSync(path.join(tempDir, "package.json"), '{"name":"tmp"}\n', "utf8");
-    writeFileSync(path.join(tempDir, "tsconfig.json"), '{"compilerOptions":{"strict":true}}\n', "utf8");
+    writeFileSync(
+      path.join(tempDir, "package.json"),
+      '{"name":"tmp"}\n',
+      "utf8",
+    );
+    writeFileSync(
+      path.join(tempDir, "tsconfig.json"),
+      '{"compilerOptions":{"strict":true}}\n',
+      "utf8",
+    );
     process.chdir(tempDir);
 
     try {
@@ -970,7 +1102,9 @@ describe("skill tools", () => {
       const result = payload(
         await handleSkillSearch({ query: skill.id }, runtimeManifest, 200, 4),
       );
-      const ids = (result.results as Array<{ id: string }>).map((item) => item.id);
+      const ids = (result.results as Array<{ id: string }>).map(
+        (item) => item.id,
+      );
       if (!ids.includes(skill.id)) {
         missing.push(skill.id);
       }
@@ -1005,7 +1139,9 @@ describe("skill tools", () => {
       const result = payload(
         await handleSkillSearch({ query }, runtimeManifest, 200, 4),
       );
-      const ids = (result.results as Array<{ id: string }>).map((item) => item.id);
+      const ids = (result.results as Array<{ id: string }>).map(
+        (item) => item.id,
+      );
       if (!ids.includes(skill.id)) {
         failures.push({ id: skill.id, query });
       }
@@ -1089,7 +1225,9 @@ describe("skill tools", () => {
   });
 
   it("filters cross-skill markdown links out of availableReferences", async () => {
-    const dir = mkdtempSync(path.join(os.tmpdir(), "mcp-skill-validate-scope-"));
+    const dir = mkdtempSync(
+      path.join(os.tmpdir(), "mcp-skill-validate-scope-"),
+    );
     const skillFile = path.join(dir, "SKILL.md");
     const referencesDir = path.join(dir, "references");
     mkdirSync(referencesDir, { recursive: true });
@@ -1135,14 +1273,21 @@ describe("skill tools", () => {
     const aliases = generated.skills.filter(
       (skill) => skill.metadata?.replaced_by || skill.metadata?.alias_of,
     );
-    const failures: Array<{ id: string; expected: string | null; actual: unknown }> = [];
+    const failures: Array<{
+      id: string;
+      expected: string | null;
+      actual: unknown;
+    }> = [];
 
     for (const alias of aliases) {
-      const runtimeSkill = runtimeManifest.skills.find((skill) => skill.id === alias.id);
+      const runtimeSkill = runtimeManifest.skills.find(
+        (skill) => skill.id === alias.id,
+      );
       if (!runtimeSkill || !existsSync(runtimeSkill.path)) {
         failures.push({
           id: alias.id,
-          expected: alias.metadata?.replaced_by ?? alias.metadata?.alias_of ?? null,
+          expected:
+            alias.metadata?.replaced_by ?? alias.metadata?.alias_of ?? null,
           actual: "missing-skill-file",
         });
         continue;
@@ -1219,7 +1364,11 @@ describe("skill tools", () => {
       fullCatalogEstimatedTokens: Math.ceil(skillBytes / 4),
     };
 
-    const result = await handleSkillGet({ id: "referenced-skill" }, manifest, 4);
+    const result = await handleSkillGet(
+      { id: "referenced-skill" },
+      manifest,
+      4,
+    );
     expect(result.content[0].text).not.toContain("## Referenced Files");
     expect(result.content[0].text).not.toContain("### references/guide.md");
     expect(result.content[0].text).not.toContain("Referenced content");
@@ -1359,9 +1508,9 @@ describe("skill tools", () => {
 
   it("throws when skill_get cannot find the requested skill", async () => {
     const manifest = createManifest();
-    await expect(handleSkillGet({ id: "missing" }, manifest, 4)).rejects.toThrow(
-      'Skill not found: "missing"',
-    );
+    await expect(
+      handleSkillGet({ id: "missing" }, manifest, 4),
+    ).rejects.toThrow('Skill not found: "missing"');
   });
 
   it("throws a wrapper guidance error when skill_get receives workflow id", async () => {
@@ -1433,9 +1582,13 @@ describe("skill tools", () => {
     const skillFile = path.join(dir, "SKILL.md");
     writeFileSync(
       skillFile,
-      ["---", "name: invalid-ref-skill", "description: invalid", "---", "# Skill"].join(
-        "\n",
-      ),
+      [
+        "---",
+        "name: invalid-ref-skill",
+        "description: invalid",
+        "---",
+        "# Skill",
+      ].join("\n"),
       "utf8",
     );
     const skillBytes = statSync(skillFile).size;

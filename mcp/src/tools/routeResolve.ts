@@ -98,9 +98,15 @@ const SKILL_CREATOR_ORCHESTRATE_SIGNALS = [
 ];
 
 const LANGUAGE_SIGNAL_FILES: Array<{ skillId: string; files: string[] }> = [
-  { skillId: "typescript-pro", files: ["tsconfig.json", "tsconfig.base.json", "deno.json"] },
+  {
+    skillId: "typescript-pro",
+    files: ["tsconfig.json", "tsconfig.base.json", "deno.json"],
+  },
   { skillId: "javascript-pro", files: ["package.json"] },
-  { skillId: "python-pro", files: ["pyproject.toml", "requirements.txt", "requirements-dev.txt"] },
+  {
+    skillId: "python-pro",
+    files: ["pyproject.toml", "requirements.txt", "requirements-dev.txt"],
+  },
   { skillId: "golang-pro", files: ["go.mod"] },
   { skillId: "rust-pro", files: ["Cargo.toml"] },
   { skillId: "csharp-pro", files: [".sln", ".csproj"] },
@@ -157,16 +163,9 @@ const DESIGN_SCREEN_SIGNALS = [
   "desktop app design",
   "workspace design",
 ];
-const DESIGN_GENERATION_SUPPORTING_SKILLS = [
-  "web-ui-design",
-  "design-system",
-];
-const MOBILE_DESIGN_SUPPORTING_SKILLS = [
-  "mobile-ui-design",
-];
-const DESKTOP_DESIGN_SUPPORTING_SKILLS = [
-  "desktop-ui-design",
-];
+const DESIGN_GENERATION_SUPPORTING_SKILLS = ["web-ui-design", "design-system"];
+const MOBILE_DESIGN_SUPPORTING_SKILLS = ["mobile-ui-design"];
+const DESKTOP_DESIGN_SUPPORTING_SKILLS = ["desktop-ui-design"];
 const MOBILE_TESTING_SIGNALS = [
   "mobile testing",
   "android testing",
@@ -182,7 +181,10 @@ const WEB_TESTING_SIGNALS = [
 ];
 
 function normalize(value: string): string {
-  return value.toLowerCase().replace(/[^a-z0-9@/$+-]+/g, " ").trim();
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9@/$+-]+/g, " ")
+    .trim();
 }
 
 function tokenize(value: string): string[] {
@@ -205,7 +207,10 @@ function countTokenMatches(haystack: string, tokens: string[]): number {
   return matches;
 }
 
-function includesAnyPhrase(normalizedIntent: string, phrases: string[]): boolean {
+function includesAnyPhrase(
+  normalizedIntent: string,
+  phrases: string[],
+): boolean {
   return phrases.some((phrase) => normalizedIntent.includes(phrase));
 }
 
@@ -241,12 +246,12 @@ function isDesignIntent(intent: string): boolean {
 
 function designSurfaceSkills(intent: string): string[] {
   const normalizedIntent = normalize(intent);
-  const needsMobilePatterns = /\b(mobile|flutter|android|ios|tablet|phone)\b/i.test(
-    normalizedIntent,
-  );
-  const needsDesktopPatterns = /\b(desktop|mac|macos|windows|electron|workspace|inspector|sidebar|pane|multi pane|multi-pane)\b/i.test(
-    normalizedIntent,
-  );
+  const needsMobilePatterns =
+    /\b(mobile|flutter|android|ios|tablet|phone)\b/i.test(normalizedIntent);
+  const needsDesktopPatterns =
+    /\b(desktop|mac|macos|windows|electron|workspace|inspector|sidebar|pane|multi pane|multi-pane)\b/i.test(
+      normalizedIntent,
+    );
 
   if (needsDesktopPatterns) {
     return DESKTOP_DESIGN_SUPPORTING_SKILLS;
@@ -336,7 +341,8 @@ function findExplicitRoute(
   if (trimmed.startsWith("@")) {
     const normalizedAgent = trimmed.slice(1).toLowerCase();
     const route = manifest.routes.find(
-      (entry) => entry.kind === "agent" && entry.id.toLowerCase() === normalizedAgent,
+      (entry) =>
+        entry.kind === "agent" && entry.id.toLowerCase() === normalizedAgent,
     );
     if (route) return { route, matchedBy: "explicit-agent" };
     return {
@@ -351,7 +357,8 @@ function findExplicitRoute(
     const normalizedAlias = trimmed.toLowerCase();
     const route = manifest.routes.find(
       (entry) =>
-        entry.artifacts.codex?.compatibilityAlias?.toLowerCase() === normalizedAlias,
+        entry.artifacts.codex?.compatibilityAlias?.toLowerCase() ===
+        normalizedAlias,
     );
     if (route) return { route, matchedBy: "compatibility-alias" };
     return {
@@ -372,9 +379,12 @@ function resolveByIntent(
   const normalizedIntent = normalize(intent);
   const tokens = tokenize(intent);
 
-  let best:
-    | { route: RouteEntry; matchedBy: string; score: number; tokenMatches: number }
-    | null = null;
+  let best: {
+    route: RouteEntry;
+    matchedBy: string;
+    score: number;
+    tokenMatches: number;
+  } | null = null;
 
   for (const route of manifest.routes) {
     const searchText = buildSearchText(route);
@@ -425,9 +435,9 @@ function buildResolvedPayload(
   const primarySkills = (overrides.primarySkills || route.primarySkills).filter(
     (skillId) => !DELETED_SKILL_IDS.has(skillId),
   );
-  const supportingSkills = (overrides.supportingSkills || route.supportingSkills).filter(
-    (skillId) => !DELETED_SKILL_IDS.has(skillId),
-  );
+  const supportingSkills = (
+    overrides.supportingSkills || route.supportingSkills
+  ).filter((skillId) => !DELETED_SKILL_IDS.has(skillId));
   const primarySkillHint =
     overrides.primarySkillHint !== undefined
       ? overrides.primarySkillHint
@@ -462,6 +472,15 @@ function buildResolvedPayload(
   };
 }
 
+function buildRouteResponseText(payload: Record<string, unknown>): string {
+  const json = JSON.stringify(payload, null, 2);
+  if (payload.resolved) {
+    const banner = `\uD83D\uDCCC Foundry resolved route: ${payload.kind} "${payload.id}" (matched by: ${payload.matchedBy})`;
+    return `${banner}\n\n${json}`;
+  }
+  return json;
+}
+
 function buildUnresolvedPayload(
   input: string,
   detectedLanguageSkill: string | null,
@@ -492,7 +511,9 @@ function buildUnresolvedPayload(
   };
 }
 
-function chooseDesignGenerationRoute(manifest: RouteManifest): RouteEntry | null {
+function chooseDesignGenerationRoute(
+  manifest: RouteManifest,
+): RouteEntry | null {
   return (
     manifest.routes.find(
       (entry) =>
@@ -502,11 +523,17 @@ function chooseDesignGenerationRoute(manifest: RouteManifest): RouteEntry | null
   );
 }
 
-function chooseTestingRoute(intent: string, manifest: RouteManifest): RouteEntry | null {
+function chooseTestingRoute(
+  intent: string,
+  manifest: RouteManifest,
+): RouteEntry | null {
   const normalizedIntent = normalize(intent);
   const wantsMobileTesting =
     includesAnyPhrase(normalizedIntent, MOBILE_TESTING_SIGNALS) ||
-    (/\b(android|flutter|emulator|adb|ios|iphone|ipad|simulator|simctl)\b/.test(normalizedIntent) && /\b(test|verify|validation)\b/.test(normalizedIntent));
+    (/\b(android|flutter|emulator|adb|ios|iphone|ipad|simulator|simctl)\b/.test(
+      normalizedIntent,
+    ) &&
+      /\b(test|verify|validation)\b/.test(normalizedIntent));
   if (wantsMobileTesting) {
     return (
       manifest.routes.find(
@@ -517,7 +544,8 @@ function chooseTestingRoute(intent: string, manifest: RouteManifest): RouteEntry
 
   const wantsWebTesting =
     includesAnyPhrase(normalizedIntent, WEB_TESTING_SIGNALS) ||
-    (/\b(playwright|browser|web|website|page|pages)\b/.test(normalizedIntent) && /\b(test|verify|validation)\b/.test(normalizedIntent));
+    (/\b(playwright|browser|web|website|page|pages)\b/.test(normalizedIntent) &&
+      /\b(test|verify|validation)\b/.test(normalizedIntent));
   if (wantsWebTesting) {
     return (
       manifest.routes.find(
@@ -528,7 +556,10 @@ function chooseTestingRoute(intent: string, manifest: RouteManifest): RouteEntry
 
   return null;
 }
-function chooseDesignRoute(intent: string, manifest: RouteManifest): RouteEntry | null {
+function chooseDesignRoute(
+  intent: string,
+  manifest: RouteManifest,
+): RouteEntry | null {
   const normalizedIntent = normalize(intent);
   let preferredWorkflowId = "design-screen";
   if (includesAnyPhrase(normalizedIntent, DESIGN_SYSTEM_SIGNALS)) {
@@ -570,7 +601,11 @@ async function detectLanguageSkillHint() {
       }
       if (has(fileName) || (await fileExists(path.join(cwd, fileName)))) {
         if (entry.skillId === "javascript-pro") {
-          const tsSignals = ["tsconfig.json", "tsconfig.base.json", "deno.json"];
+          const tsSignals = [
+            "tsconfig.json",
+            "tsconfig.base.json",
+            "deno.json",
+          ];
           if (tsSignals.some((signal) => has(signal))) {
             return "typescript-pro";
           }
@@ -597,7 +632,9 @@ export async function handleRouteResolve(
         explanation: explicit.explanation,
       });
       return {
-        content: [{ type: "text" as const, text: JSON.stringify(payload, null, 2) }],
+        content: [
+          { type: "text" as const, text: buildRouteResponseText(payload) },
+        ],
         structuredContent: payload,
       };
     }
@@ -608,7 +645,9 @@ export async function handleRouteResolve(
       detectedLanguageSkill,
     );
     return {
-      content: [{ type: "text" as const, text: JSON.stringify(payload, null, 2) }],
+      content: [
+        { type: "text" as const, text: buildRouteResponseText(payload) },
+      ],
       structuredContent: payload,
     };
   }
@@ -622,7 +661,9 @@ export async function handleRouteResolve(
       detectedLanguageSkill,
     );
     return {
-      content: [{ type: "text" as const, text: JSON.stringify(payload, null, 2) }],
+      content: [
+        { type: "text" as const, text: buildRouteResponseText(payload) },
+      ],
       structuredContent: payload,
     };
   }
@@ -643,8 +684,12 @@ export async function handleRouteResolve(
       "testing-runtime-intent",
       detectedLanguageSkill,
       {
-        primarySkillHint: isWebTestingRoute ? "web-testing" : mobilePrimarySkill,
-        primarySkills: isWebTestingRoute ? ["web-testing"] : mobilePrimarySkills,
+        primarySkillHint: isWebTestingRoute
+          ? "web-testing"
+          : mobilePrimarySkill,
+        primarySkills: isWebTestingRoute
+          ? ["web-testing"]
+          : mobilePrimarySkills,
         supportingSkills: testingRoute.supportingSkills,
         explanation: isWebTestingRoute
           ? "Matched browser testing intent and routed to /web-testing so Playwright MCP execution, evidence capture, and reporting stay on the canonical web-testing runtime path."
@@ -654,7 +699,9 @@ export async function handleRouteResolve(
       },
     );
     return {
-      content: [{ type: "text" as const, text: JSON.stringify(payload, null, 2) }],
+      content: [
+        { type: "text" as const, text: buildRouteResponseText(payload) },
+      ],
       structuredContent: payload,
     };
   }
@@ -662,7 +709,9 @@ export async function handleRouteResolve(
   if (isDesignGenerationIntent(intent)) {
     const designGenerationRoute = chooseDesignGenerationRoute(routeManifest);
     if (designGenerationRoute) {
-      const needsMobilePatterns = /\b(mobile|flutter|android|ios)\b/i.test(intent);
+      const needsMobilePatterns = /\b(mobile|flutter|android|ios)\b/i.test(
+        intent,
+      );
       const payload = buildResolvedPayload(
         intent,
         designGenerationRoute,
@@ -681,7 +730,9 @@ export async function handleRouteResolve(
         },
       );
       return {
-        content: [{ type: "text" as const, text: JSON.stringify(payload, null, 2) }],
+        content: [
+          { type: "text" as const, text: buildRouteResponseText(payload) },
+        ],
         structuredContent: payload,
       };
     }
@@ -707,7 +758,9 @@ export async function handleRouteResolve(
         },
       );
       return {
-        content: [{ type: "text" as const, text: JSON.stringify(payload, null, 2) }],
+        content: [
+          { type: "text" as const, text: buildRouteResponseText(payload) },
+        ],
         structuredContent: payload,
       };
     }
@@ -722,7 +775,9 @@ export async function handleRouteResolve(
       detectedLanguageSkill,
     );
     return {
-      content: [{ type: "text" as const, text: JSON.stringify(payload, null, 2) }],
+      content: [
+        { type: "text" as const, text: buildRouteResponseText(payload) },
+      ],
       structuredContent: payload,
     };
   }
@@ -730,7 +785,7 @@ export async function handleRouteResolve(
   const payload = buildUnresolvedPayload(intent, detectedLanguageSkill);
 
   return {
-    content: [{ type: "text" as const, text: JSON.stringify(payload, null, 2) }],
+    content: [{ type: "text" as const, text: buildRouteResponseText(payload) }],
     structuredContent: payload,
   };
 }

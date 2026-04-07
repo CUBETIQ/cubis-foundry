@@ -14,37 +14,37 @@ Silent checks before every substantial action:
 
 ## 1) Platform Paths
 
-| Asset | Path |
-| --- | --- |
-| Rules | `.github/copilot-instructions.md` |
-| Custom agents | `.github/agents/*.agent.md` |
-| Workflow prompts | `.github/prompts/*.prompt.md` |
-| Skills | `.github/skills/<skill-id>/SKILL.md` |
-| Hooks | `.github/hooks/*.json` |
-| MCP config | `.vscode/mcp.json` |
+| Asset            | Path                                 |
+| ---------------- | ------------------------------------ |
+| Rules            | `.github/copilot-instructions.md`    |
+| Custom agents    | `.github/agents/*.agent.md`          |
+| Workflow prompts | `.github/prompts/*.prompt.md`        |
+| Skills           | `.github/skills/<skill-id>/SKILL.md` |
+| Hooks            | `.github/hooks/*.json`               |
+| MCP config       | `.vscode/mcp.json`                   |
 
 ## 2) Route Resolution
 
 1. Trivial, obvious, reversible?
-Do it directly.
+   Do it directly.
 
 2. User named an explicit prompt, `@agent`, or exact skill?
-Honor it directly. For exact skill IDs, validate first.
+   Honor it directly. For exact skill IDs, validate first.
 
 3. UI or design work?
-Prefer the canonical design workflows and skills.
+   Prefer the canonical design workflows and skills.
 
 4. Non-trivial feature or architecture work?
-Prefer `/plan`.
+   Prefer `/plan`.
 
 5. Bug/debug/test/review/deploy intent?
-Choose the matching canonical workflow.
+   Choose the matching canonical workflow.
 
 6. Cross-domain work with real handoffs?
-Use the orchestrator custom agent or the matching workflow prompt.
+   Use the orchestrator custom agent or the matching workflow prompt.
 
 7. Still unclear?
-Use `route_resolve`, then load the smallest supporting skill set.
+   Use `route_resolve`, then load the smallest supporting skill set.
 
 ## 3) Foundry Surface Hierarchy
 
@@ -87,6 +87,8 @@ Rule of thumb:
 - Use `playwright` for web testing.
 - Use `mobile-mcp` first for mobile interaction.
 - Keep references lazy and exact.
+- **Load acknowledgment:** After calling `route_resolve`, `skill_get`, or delegating to a `@agent`, emit a single-line acknowledgment visible to the user: `🔧 Foundry: loaded <kind> "<id>"` (e.g. `🔧 Foundry: loaded skill "typescript-best-practices"`, `🔧 Foundry: loaded workflow "/implement"`). Keep it one line, no extra explanation.
+- **Diagnostic:** If the user asks whether Foundry is active or working, call `skill_budget_report` and display the summary.
 
 ## 6) Canonical Current Surfaces
 
@@ -144,10 +146,13 @@ Keep MCP context lazy and exact. Skills are supporting context, not the route la
 <!-- cbx:mcp:auto:end -->
 
 <!-- cbx:workflows:auto:start platform=copilot version=1 -->
+
 ## CBX Workflow Routing (auto-managed)
 
 <!-- cbx:managed:skill-routing start -->
+
 Classify intent before any MCP call.
+
 - TIER 1 DIRECT: `skill_get <exact-skill-id>` when skill ID is known from route or context.
 - TIER 1b ROUTE-RECOMMENDED: after `route_resolve`, load `primarySkillHint` or first `primarySkills` entry via `skill_validate` -> `skill_get` before executing non-trivial tasks.
 - TIER 2 TARGETED SEARCH: one `skill_search <1-3 word noun>` max when domain is unclear, then `skill_validate` -> `skill_get`.
@@ -156,21 +161,28 @@ Classify intent before any MCP call.
 - Keep one primary agent and one primary skill by default.
 - Add supporting skills only when the active task explicitly crosses domains.
 - Direct skill-package creation or repair work to `skill-creator` instead of starting with `skill_search`.
+
 # Full reference: foundry-detail.md#tiered-routing
+
 <!-- cbx:managed:skill-routing end -->
 
 <!-- cbx:managed:long-plan-execution start -->
+
 When `PLAN_HANDOFF` is present, continue task 1→N without confirmation pauses.
+
 - Pre-load deduped `skill_hint` values once, then run `skill_budget_report`.
 - Execute in order, respecting `depends_on` and `stop_if_failed`.
 - Emit `CHECKPOINT` every ~3 tasks in runs of 5+.
 - Finish with `EXECUTION_SUMMARY {completed, skipped, stopped_at, artifacts, skills_used, dropped}`.
 - Stop only for blocking artifact failure, unplanned destructive action, missing required skill after one search, or explicit user halt.
 - Codex: compact before context exhaustion. Antigravity/Gemini: native long context. Copilot: write `.copilot-tracking/handoff.md`.
+
 # Full reference: foundry-detail.md#plan-handoff-and-execution
+
 <!-- cbx:managed:long-plan-execution end -->
 
 Prefer native Copilot route surfaces first:
+
 - Workflow prompts: `.github/prompts/*.prompt.md`
 - Custom agents: `.github/agents/*.agent.md`
 - Skills: `.github/skills/<skill>/SKILL.md`
@@ -182,6 +194,7 @@ Use the following workflows proactively when task intent matches:
 - No installed workflows found yet.
 
 Selection policy:
+
 1. Match explicit workflow prompt or `@agent` first.
 2. Else match user intent to one primary workflow and reuse the matching prompt file.
 3. Use skill_search only when the best workflow or agent route is unclear.

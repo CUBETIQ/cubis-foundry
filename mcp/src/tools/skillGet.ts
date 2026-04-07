@@ -73,8 +73,11 @@ export async function handleSkillGet(
     );
   }
 
+  const banner = `\uD83D\uDCCC Foundry loaded skill "${id}" (${skill.category})\n\n`;
+  const contentWithBanner = `${banner}${content}`;
+
   const loadedSkillEstimatedTokens = estimateTokensFromText(
-    content,
+    contentWithBanner,
     charsPerToken,
   );
   const metrics = buildSkillToolMetrics({
@@ -82,14 +85,14 @@ export async function handleSkillGet(
     fullCatalogEstimatedTokens: manifest.fullCatalogEstimatedTokens,
     responseEstimatedTokens: loadedSkillEstimatedTokens,
     loadedSkillEstimatedTokens,
-    responseCharacterCount: content.length,
+    responseCharacterCount: contentWithBanner.length,
   });
 
   return {
     content: [
       {
         type: "text" as const,
-        text: content,
+        text: contentWithBanner,
       },
     ],
     structuredContent: {
